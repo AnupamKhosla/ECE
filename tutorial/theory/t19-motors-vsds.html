@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T19 · Motors and variable speed drives</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget controls. Colours come only from the shared theme variables, so dark mode works. */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 14px}
+.wsmall{font-size:14px;color:var(--muted)}
+.widget .readings .out{font-size:18px}
+.widget .readings .sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.wstatus{border-radius:8px;padding:10px 14px;margin:12px 0 4px;font-size:15px;border:1px solid var(--line);background:var(--wash)}
+.wstatus.ok{background:var(--career-soft);border-color:var(--career)}
+.wstatus.amber{background:var(--tip-soft);border-color:var(--tip)}
+.wstatus.bad{background:var(--warn-soft);border-color:var(--warn)}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 5 · Systems theory for the field</div>
+    <span class="eyebrow">Theory · T19</span>
+    <h1>Motors and variable speed drives</h1>
+    <p class="lede">Fans, pumps, compressors, lift doors and camera heads all move because a magnetic field pushes on a current. This chapter builds the motor from that one force, explains why the three-phase induction motor runs just below a speed set by the supply frequency, shows what a variable speed drive (VSD) does to change that speed, proves with the fan affinity laws why slowing a fan by 20 % cuts its power by half, and ends with how a BMS controller starts, speeds up and watches a VSD through its low-voltage control terminals.</p>
+    <div class="meta"><span><b>Reading</b> ~85 min</span><span><b>Level</b> Beginner → intermediate</span><span><b>Builds on</b> T06, T07, T09, T18</span><span><b>Used in</b> P13, C01, C02, C03</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <div class="callout warn"><span class="label">Safety first</span><p>Motor terminals and VSD power terminals carry <b>mains or three-phase voltage</b> (230 V single-phase, 400 V three-phase). A VSD also holds a <b>dangerous charge on its DC bus</b> (about 540–565 V DC) for minutes after it is switched off and isolated. In Australia only a <b>licensed electrician</b> may open, wire, test or repair the power side of a motor or drive. A BMS technician works only on the <b>control-terminal side</b>, which is extra-low voltage (ELV). Everything you build in this course stays at ELV: batteries, 5 V, 12 V and 24 V DC.</p></div>
+
+    <h2>Force on a current in a magnetic field</h2>
+    <p>Chapter <a href="t06-magnetism-inductors.html">T06</a> showed that a current makes a magnetic field and that a changing field makes a voltage. The motor uses the other half of the story: <b>a magnetic field pushes sideways on a wire that carries current</b>. This is the same push that deflected the charges in the Hall sensor (T18); here we add up the push on all the moving charges in a length of wire.</p>
+    <div class="formula">F = B · I · L
+      <small>F = force in newtons (N). B = magnetic flux density in tesla (T). I = current in amperes. L = length of wire inside the field, in metres. This holds when the wire is at right angles to the field. Worked: a magnet gives B = 0.5 T across a 0.1 m wire carrying 10 A: F = 0.5 × 10 × 0.1 = <b>0.5 N</b>, about the weight of a 50 g mass.</small></div>
+    <p>The direction of the force is at right angles to <i>both</i> the field and the current. A quick memory aid is <b>Fleming's left-hand rule</b> (for motors): point the first finger along the field (N to S), the second finger along the current, and the thumb shows the force and motion. Reverse the current and the force reverses. Reverse the field and the force reverses too.</p>
+
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-label="Left: a conductor carrying current out of the page between magnet poles is pushed sideways. Right: a coil in a field is pushed in opposite directions on its two sides, so it turns.">
+        <defs>
+          <marker id="t19f1-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t19f1-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t19f1-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="160" y="20" text-anchor="middle">Force on one wire</text>
+        <rect class="f-wash s-line" x="60" y="30" width="200" height="30" rx="3"/>
+        <text class="t t-bold" x="160" y="51" text-anchor="middle">N</text>
+        <rect class="f-wash s-line" x="60" y="240" width="200" height="30" rx="3"/>
+        <text class="t t-bold" x="160" y="261" text-anchor="middle">S</text>
+        <path class="s-blue" d="M90 68 V112" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M130 68 V112" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M190 68 V112" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M230 68 V112" marker-end="url(#t19f1-b)"/>
+        <path class="s-blue" d="M90 188 V232" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M130 188 V232" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M190 188 V232" marker-end="url(#t19f1-b)"/><path class="s-blue" d="M230 188 V232" marker-end="url(#t19f1-b)"/>
+        <text class="t t-blue t-bold" x="250" y="96">B</text>
+        <circle class="f-panel s-line" cx="160" cy="150" r="13"/><circle class="f-ink" cx="160" cy="150" r="3.5"/>
+        <path class="s-red" d="M178 150 H252" marker-end="url(#t19f1-r)"/>
+        <text class="t t-red t-small t-bold" x="186" y="140">F = B I L</text>
+        <text class="t t-small" x="160" y="178" text-anchor="middle">I out of the page</text>
+        <text class="t t-small t-muted" x="160" y="288" text-anchor="middle">B down, I out: force to the right</text>
+
+        <text class="t t-bold" x="510" y="20" text-anchor="middle">A coil turns: a motor</text>
+        <rect class="f-wash s-line" x="355" y="80" width="40" height="140" rx="3"/>
+        <text class="t t-bold" x="375" y="155" text-anchor="middle">N</text>
+        <rect class="f-wash s-line" x="625" y="80" width="40" height="140" rx="3"/>
+        <text class="t t-bold" x="645" y="155" text-anchor="middle">S</text>
+        <path class="s-blue" d="M400 92 H620" marker-end="url(#t19f1-b)"/>
+        <path class="s-blue" d="M400 228 H620" marker-end="url(#t19f1-b)"/>
+        <text class="t t-blue t-bold" x="510" y="84" text-anchor="middle">B</text>
+        <circle class="f-panel s-line" cx="450" cy="150" r="13"/><path class="s-line" d="M444 144 L456 156 M456 144 L444 156"/>
+        <circle class="f-panel s-line" cx="570" cy="150" r="13"/><circle class="f-ink" cx="570" cy="150" r="3.5"/>
+        <path class="s-line" d="M463 150 H557"/>
+        <path class="s-red" d="M450 168 V202" marker-end="url(#t19f1-r)"/>
+        <path class="s-red" d="M570 132 V100" marker-end="url(#t19f1-r)"/>
+        <text class="t t-small t-red t-bold" x="462" y="196">F</text>
+        <text class="t t-small t-red t-bold" x="582" y="114">F</text>
+        <text class="t t-small" x="450" y="126" text-anchor="middle">I into page</text>
+        <text class="t t-small" x="570" y="186" text-anchor="middle">I out of page</text>
+        <path class="s-accent" d="M545 128 A40 40 0 0 0 475 128" marker-end="url(#t19f1-a)"/>
+        <path class="s-accent" d="M475 172 A40 40 0 0 0 545 172" marker-end="url(#t19f1-a)"/>
+        <text class="t t-small t-muted" x="340" y="262">Commutator + brushes reverse the current</text>
+        <text class="t t-small t-muted" x="340" y="280">every half turn: torque keeps its direction</text>
+      </svg>
+      <figcaption>Figure 1. Left: one wire in a field feels a sideways force F = BIL. Right: a coil has current going in on one side and out on the other, so the two sides are pushed in opposite directions and the coil turns. A brushed DC motor adds a commutator to keep reversing the current as the coil turns.</figcaption>
+    </figure>
+    <p>For a coil of width w and length L, the two sides each feel F = BIL at a lever arm of w/2 from the axle, so the torque (turning force) is 2 × (w/2) × BIL = B·I·(wL) = B·I·A, where A is the coil area. With N turns it is N·B·I·A. Torque is proportional to current. Remember this: it explains most of what follows.</p>
+
+    <h2>Brushed DC motors: back-EMF and why stall current is huge</h2>
+    <p>A <b>brushed DC motor</b> has a rotating coil (the <b>armature</b>) in a fixed magnetic field made by permanent magnets. Two carbon <b>brushes</b> press against a split ring (the <b>commutator</b>) and feed current to the coil. As the coil passes the vertical, the commutator swaps the connections, so the current in each side reverses just in time. The torque always pushes the same way.</p>
+    <p>Here is the key idea. A coil moving through a magnetic field is also what a generator is (T07). Spinning the armature makes a voltage in it, and by Lenz's law (T06) that voltage <b>opposes</b> the supply. It is called the <b>back-EMF</b>, E, and it is proportional to speed:</p>
+    <div class="formula">E = k · ω       I = (V − E) / R       torque = k · I
+      <small>V = supply voltage, R = armature winding resistance, ω = angular speed in rad/s (rpm × 2π/60), and k = the motor constant in V·s/rad, which is also N·m/A. The same k links back-EMF to speed and torque to current.</small></div>
+    <h3>Worked example: a 12 V motor with R = 1.2 Ω and k = 0.036</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Condition</th><th>Speed</th><th>Back-EMF E = kω</th><th>Current I = (12 − E)/1.2</th><th>Torque kI</th></tr>
+      <tr><td>Stalled (shaft held)</td><td>0 rpm</td><td>0 V</td><td><b>10 A</b></td><td>0.36 N·m</td></tr>
+      <tr><td>Working under load</td><td>2230 rpm (234 rad/s)</td><td>8.4 V</td><td>3 A</td><td>0.108 N·m</td></tr>
+      <tr><td>No load</td><td>3000 rpm (314 rad/s)</td><td>11.3 V</td><td>0.6 A</td><td>0.02 N·m</td></tr>
+    </table></div>
+    <ul>
+      <li><b>Why stall current is high.</b> At standstill there is no back-EMF to fight the supply, so the only limit is the winding resistance: 12 V / 1.2 Ω = 10 A. As the motor speeds up, E rises and the current falls. When it is stalled, all that power turns into heat: I²R = 10² × 1.2 = <b>120 W</b> in a small motor, compared with 0.4 W when running free. A jammed motor burns out in seconds to minutes. This is the same reason a mains fan motor that cannot turn gets very hot, and why starting currents are large.</li>
+      <li><b>Speed is proportional to voltage.</b> Rearrange: ω = (V − I·R)/k. With little load the I·R term is small, so speed ≈ V/k. Half the voltage gives roughly half the speed. That is how PWM (P09, P13) controls small DC motors: the average voltage sets the speed.</li>
+      <li><b>Speed falls as load rises.</b> More load needs more torque, so more current, so a bigger I·R drop and lower speed (table above: 3000 rpm to 2230 rpm).</li>
+      <li><b>Reversing and flyback.</b> Reverse the supply and the motor reverses. Because the coil is an inductor, switching it off makes a voltage spike, so drivers have flyback diodes (T06, P08, P13).</li>
+    </ul>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Spin a small DC motor by hand with its leads across a multimeter set to millivolts or volts: it makes a voltage that rises with speed. That is the back-EMF, and it shows a motor is also a generator.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>You will meet small DC motors inside door closers, damper and valve actuators (with gearboxes), and in security gear such as PTZ camera heads and turnstiles. When an actuator "stalls" at the end of its travel, the controller or limit switch must cut the current; a good actuator has built-in limit or torque switches.</p></div>
+
+    <h2>Stepper motors</h2>
+    <p>A <b>stepper motor</b> does not spin freely. It moves in small fixed angles, one per pulse. It has coils on the stator and a toothed or magnetised rotor. A controller energises the coils in a sequence, and the rotor snaps to line up with each new magnetic field direction, one <b>step</b> at a time.</p>
+    <ul>
+      <li><b>Steps per revolution</b> = 360° / step angle. The common 1.8° motor has 360 / 1.8 = <b>200 steps per revolution</b>. A 0.9° motor has 400. With <b>microstepping</b> the driver splits each step into smaller current steps, for example 1/16, giving 3200 steps per revolution for a 1.8° motor.</li>
+      <li><b>Speed</b> is set by the step rate: rpm = (steps per second ÷ steps per revolution) × 60. At 1000 steps/s on a 200-step motor: 1000 / 200 = 5 rev/s = <b>300 rpm</b>.</li>
+      <li><b>Holding torque</b> is the torque the motor can resist when its coils are energised and it is standing still. It is the headline figure on a datasheet (in N·m). Torque falls as speed rises, so a stepper that holds well can stall at high speed.</li>
+      <li><b>Open loop.</b> A stepper counts pulses and assumes the rotor followed. If the load is too much, it silently <b>loses steps</b> and the controller never knows. That is why steppers are used where the load is predictable (3D printers, small actuators, the 28BYJ-48 in lab P13 with 2048 steps per output turn).</li>
+      <li>It draws current even when standing still to keep holding, so it gets warm.</li>
+    </ul>
+
+    <h2>BLDC and EC fans</h2>
+    <p>A <b>brushless DC (BLDC)</b> motor turns the brushed motor inside out. The permanent magnets sit on the rotor, and the coils are fixed in the stator, so there is no commutator or brush. But then something else must switch the current in the coils at the right moment: an electronic circuit. It needs to know where the rotor is, usually from three <b>Hall sensors</b> (T18) that sense the rotor magnet. The circuit energises the three coils in a rotating sequence that drags the rotor around. Some designs skip the Hall sensors and sense the back-EMF instead.</p>
+    <p>In building services a BLDC fan with its electronics built in is called an <b>EC fan</b> (electronically commutated). It is increasingly common in new AHUs, fan coil units, EC condenser fans and computer-room cooling. It connects to mains, rectifies it, and drives the motor with its own inverter, so it behaves like a motor and a VSD in one housing. Benefits over an older AC induction fan: no rotor current losses (permanent magnets), good efficiency across the whole speed range, no belt, and easy speed control.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Terminals on an EC fan</th><th>What they are</th><th>Who works on them</th></tr>
+      <tr><td>Mains or three-phase supply</td><td>Power for the fan</td><td>Licensed electrician only</td></tr>
+      <tr><td>0–10 V (or PWM) speed input</td><td>Control: 0 V is off or minimum, 10 V is full speed</td><td>BMS technician (ELV)</td></tr>
+      <tr><td>Tacho or speed output; alarm relay</td><td>Feedback and fault</td><td>BMS technician (ELV)</td></tr>
+      <tr><td>RS-485 (Modbus RTU on many models)</td><td>Digital control and status (P14)</td><td>BMS technician (ELV)</td></tr>
+    </table></div>
+
+    <h2>The three-phase induction motor</h2>
+    <p>Most of the motor power in a commercial building is in <b>three-phase induction motors</b>: chiller compressors, pumps, older AHU fans, cooling-tower fans. They are simple, rugged and cheap. They have no brushes and no magnets. The trick is that the stator makes a magnetic field that <b>rotates</b>.</p>
+    <h3>The rotating field</h3>
+    <p>Three-phase supply (T09) gives three AC currents of the same frequency, 120° apart in time. Place three coils in the stator 120° apart in space and feed one phase to each. The field of each coil points along its own axis and pulses in size with its current. At any instant the three fields add up (as vectors) to one field of constant size, whose direction <b>moves round the circle</b> once per cycle. At 50 Hz it makes 50 turns per second. No part moves; the pattern of current does.</p>
+    <figure>
+      <svg viewBox="0 0 680 290" role="img" aria-label="Three phase currents 120 degrees apart, and the rotating stator field direction at four instants">
+        <defs><marker id="t19f2-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small t-bold" x="20" y="28">Phase currents, 120° apart</text>
+        <text class="t t-small t-red t-bold" x="20" y="46">phase A</text>
+        <text class="t t-small t-blue t-bold" x="95" y="46">phase B</text>
+        <text class="t t-small t-green t-bold" x="170" y="46">phase C</text>
+        <line class="s-thin" x1="20" y1="150" x2="320" y2="150"/>
+        <path class="s-red" d="M20 150 26 143.1 32 136.3 38 129.8 44 123.5 50 117.7 56 112.3 62 107.6 68 103.6 74 100.2 80 97.7 86 96 92 95.1 98 95.1 104 96 110 97.7 116 100.2 122 103.6 128 107.6 134 112.3 140 117.7 146 123.5 152 129.8 158 136.3 164 143.1 170 150 176 156.9 182 163.7 188 170.2 194 176.5 200 182.3 206 187.7 212 192.4 218 196.4 224 199.8 230 202.3 236 204 242 204.9 248 204.9 254 204 260 202.3 266 199.8 272 196.4 278 192.4 284 187.7 290 182.3 296 176.5 302 170.2 308 163.7 314 156.9 320 150"/>
+        <path class="s-blue" d="M20 197.6 26 200.7 32 203 38 204.4 44 205 50 204.7 56 203.5 62 201.6 68 198.7 74 195.2 80 190.9 86 185.9 92 180.4 98 174.5 104 168.1 110 161.4 116 154.6 122 147.7 128 140.8 134 134.1 140 127.6 146 121.5 152 115.8 158 110.7 164 106.2 170 102.4 176 99.3 182 97 188 95.6 194 95 200 95.3 206 96.5 212 98.4 218 101.3 224 104.8 230 109.1 236 114.1 242 119.6 248 125.5 254 131.9 260 138.6 266 145.4 272 152.3 278 159.2 284 165.9 290 172.4 296 178.5 302 184.2 308 189.3 314 193.8 320 197.6"/>
+        <path class="s-green" d="M20 102.4 26 106.2 32 110.7 38 115.8 44 121.5 50 127.6 56 134.1 62 140.8 68 147.7 74 154.6 80 161.4 86 168.1 92 174.5 98 180.4 104 185.9 110 190.9 116 195.2 122 198.7 128 201.6 134 203.5 140 204.7 146 205 152 204.4 158 203 164 200.7 170 197.6 176 193.8 182 189.3 188 184.2 194 178.5 200 172.4 206 165.9 212 159.2 218 152.3 224 145.4 230 138.6 236 131.9 242 125.5 248 119.6 254 114.1 260 109.1 266 104.8 272 101.3 278 98.4 284 96.5 290 95.3 296 95 302 95.6 308 97 314 99.3 320 102.4"/>
+        <path class="s-thin s-dash" d="M20 80 V218 M70 80 V218 M120 80 V218 M170 80 V218"/>
+        <text class="t t-small t-bold" x="20" y="234" text-anchor="middle">t1</text>
+        <text class="t t-small t-bold" x="70" y="234" text-anchor="middle">t2</text>
+        <text class="t t-small t-bold" x="120" y="234" text-anchor="middle">t3</text>
+        <text class="t t-small t-bold" x="170" y="234" text-anchor="middle">t4</text>
+        <text class="t t-small t-muted" x="20" y="256">0°</text>
+        <text class="t t-small t-muted" x="170" y="256" text-anchor="middle">180°</text>
+        <text class="t t-small t-muted" x="320" y="256" text-anchor="end">360°</text>
+
+        <circle class="f-none s-line" cx="510" cy="150" r="100"/>
+        <path class="s-thin s-dash" d="M510 150 V50 M510 150 L596.6 200 M510 150 L423.4 200"/>
+        <text class="t t-small t-bold" x="510" y="42" text-anchor="middle">A</text>
+        <text class="t t-small t-bold" x="604" y="216">B</text>
+        <text class="t t-small t-bold" x="416" y="216" text-anchor="end">C</text>
+        <circle class="f-wash s-line" cx="510" cy="150" r="26"/>
+        <text class="t t-small t-muted" x="510" y="154" text-anchor="middle">rotor</text>
+        <path class="s-red" style="opacity:.35" d="M476 150 L434 150" marker-end="url(#t19f2-a)"/>
+        <path class="s-red" style="opacity:.55" d="M493 120.6 L472 84.2" marker-end="url(#t19f2-a)"/>
+        <path class="s-red" style="opacity:.8" d="M527 120.6 L548 84.2" marker-end="url(#t19f2-a)"/>
+        <path class="s-red" d="M544 150 L586 150" marker-end="url(#t19f2-a)"/>
+        <text class="t t-small t-bold" x="418" y="168">t1</text>
+        <text class="t t-small t-bold" x="454" y="72">t2</text>
+        <text class="t t-small t-bold" x="548" y="72">t3</text>
+        <text class="t t-small t-bold" x="596" y="168">t4</text>
+        <text class="t t-small t-muted" x="510" y="280" text-anchor="middle">stator field: one turn per electrical cycle</text>
+      </svg>
+      <figcaption>Figure 2. Left: three currents 120° apart. Right: the stator field (red arrow) at four instants. At t1 phase A is zero and B and C are equal and opposite, so the field points left. Sixty degrees later it has turned 60° clockwise, and so on. The magnitude stays constant while the direction rotates.</figcaption>
+    </figure>
+    <h3>Why the rotor follows, and why it must lag</h3>
+    <p>Inside the stator sits the <b>rotor</b>, usually a "squirrel cage": aluminium or copper bars joined at both ends by rings. It has no wires to the outside. The rotating field sweeps past the bars. By Faraday's law (T06), a changing flux through a loop induces a voltage, and the bars are part of shorted loops, so current flows. The field then pushes on those currents with F = BIL, and the force drags the rotor in the direction of the field. By Lenz's law, the rotor tries to reduce the relative motion between itself and the field, so it follows it.</p>
+    <p>But if the rotor ever reached the field's speed, the bars would see no change in flux, there would be no induced voltage, no current and no force. So the rotor always runs a little <b>slower</b> than the field. The field's speed is the <b>synchronous speed</b>, n<sub>s</sub>, and the shortfall is the <b>slip</b>.</p>
+    <div class="formula">n<sub>s</sub> = 120 · f / p      slip s = (n<sub>s</sub> − n) / n<sub>s</sub>      rotor frequency f<sub>r</sub> = s · f
+      <small>f = supply frequency in Hz. p = number of poles (always even: 2, 4, 6 …). n = actual rotor speed in rpm. Why 120? One pole <i>pair</i> makes one field turn per cycle, so n<sub>s</sub> = 60 f / (p/2) = 120 f / p. Worked: 4-pole at 50 Hz: n<sub>s</sub> = 120 × 50 / 4 = <b>1500 rpm</b>. Actual speed on the nameplate is 1440 rpm, so slip = (1500 − 1440)/1500 = 4 %, and rotor frequency = 0.04 × 50 = 2 Hz.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Poles</th><th>n<sub>s</sub> at 50 Hz (Australia)</th><th>Typical full-load speed</th><th>n<sub>s</sub> at 60 Hz (USA)</th></tr>
+      <tr><td>2</td><td>3000 rpm</td><td>2880–2950 rpm</td><td>3600 rpm</td></tr>
+      <tr><td>4</td><td>1500 rpm</td><td>1440–1480 rpm</td><td>1800 rpm</td></tr>
+      <tr><td>6</td><td>1000 rpm</td><td>950–985 rpm</td><td>1200 rpm</td></tr>
+      <tr><td>8</td><td>750 rpm</td><td>710–740 rpm</td><td>900 rpm</td></tr>
+    </table></div>
+    <div class="widget" id="t19-sync">
+      <span class="label">Interactive · Synchronous speed and slip calculator</span>
+      <p class="wsmall">Pick the number of poles, the frequency, and the speed from the nameplate. Try 50 Hz and 1440 rpm, then a VSD frequency of 30 Hz.</p>
+      <div class="wgrid">
+        <label>Poles<select id="t19s-p"><option value="2">2</option><option value="4" selected>4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option></select></label>
+        <label>Frequency (Hz)<input type="number" id="t19s-f" min="1" max="120" step="0.5" value="50"></label>
+        <label>Rotor speed from nameplate (rpm)<input type="number" id="t19s-n" min="0" max="7200" step="1" value="1440"></label>
+      </div>
+      <div class="readings">
+        <div><small>Synchronous speed</small><span class="out" id="t19s-ns">1500 rpm</span></div>
+        <div><small>Slip</small><span class="out" id="t19s-sl">60 rpm</span><span class="sub" id="t19s-sp">4.0 %</span></div>
+        <div><small>Rotor frequency</small><span class="out" id="t19s-fr">2.0 Hz</span></div>
+        <div><small>Poles that fit the speed</small><span class="out" id="t19s-pg">4</span></div>
+        <div><small>VSD voltage by V/f (400 V at 50 Hz)</small><span class="out" id="t19s-v">400 V</span></div>
+      </div>
+      <div class="wstatus ok" id="t19s-st">OK</div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var pS=g('t19s-p'),fN=g('t19s-f'),nN=g('t19s-n'),st=g('t19s-st');
+      function upd(){
+        var p=+pS.value,f=parseFloat(fN.value),n=parseFloat(nN.value);
+        if(!(f>0)||!(n>=0)){st.className='wstatus amber';st.textContent='Enter a frequency and a speed.';return;}
+        var ns=120*f/p,sl=ns-n,pct=sl/ns*100,fr=f*pct/100;
+        g('t19s-ns').textContent=ns.toFixed(0)+' rpm';
+        g('t19s-sl').textContent=sl.toFixed(0)+' rpm';
+        g('t19s-sp').textContent=pct.toFixed(1)+' % slip';
+        g('t19s-fr').textContent=fr.toFixed(1)+' Hz';
+        g('t19s-pg').textContent=n>0?String(2*Math.floor(60*f/n)):'-';
+        g('t19s-v').textContent=(f<=50?(400*f/50).toFixed(0)+' V':'400 V (limit)');
+        if(n>=ns){st.className='wstatus bad';st.textContent='An induction motor cannot reach synchronous speed. The rpm must be below '+ns.toFixed(0)+' rpm for '+p+' poles at '+f+' Hz. Check the pole count and the nameplate.';}
+        else if(pct<0.5){st.className='wstatus amber';st.textContent='Slip under 0.5 % is unusually small. Check the numbers: a standard induction motor normally shows about 1–8 % at full load.';}
+        else if(pct>8){st.className='wstatus amber';st.textContent='Slip over 8 % is unusual at full load for a standard motor. Either the pole count is wrong, it is overloaded, or the figure is not full-load speed.';}
+        else{st.className='wstatus ok';st.textContent='Realistic: '+pct.toFixed(1)+' % slip at '+n+' rpm on '+p+' poles. '+(f>50?'Above 50 Hz the drive cannot raise the voltage any further, so the motor works in a constant-voltage, weaker-field region.':'');}
+      }
+      pS.onchange=upd;pS.oninput=upd;fN.oninput=upd;nN.oninput=upd;upd();
+    })();
+    </script>
+    <h3>Torque against speed</h3>
+    <p>The torque the motor makes depends on slip. At very small slip, torque grows roughly in proportion to slip. It reaches a peak (the <b>breakdown torque</b>) and then falls toward standstill, though the starting torque is still strong.</p>
+    <figure>
+      <svg viewBox="0 0 680 290" role="img" aria-label="Torque against speed for an induction motor with the fan load curve crossing it near synchronous speed">
+        <defs><marker id="t19f3-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M70 220 V36" marker-end="url(#t19f3-a)"/>
+        <path class="s-line" d="M70 220 H650" marker-end="url(#t19f3-a)"/>
+        <text class="t t-small t-bold" x="14" y="30">torque</text>
+        <text class="t t-small t-muted" x="70" y="240" text-anchor="middle">0</text>
+        <text class="t t-small t-muted" x="640" y="240" text-anchor="end">synchronous speed</text>
+        <text class="t t-small t-bold" x="355" y="262" text-anchor="middle">speed</text>
+        <path class="s-accent" d="M70 140 81.4 138.6 92.8 137.1 104.2 135.5 115.6 134 127 132.3 138.4 130.6 149.8 128.9 161.2 127 172.6 125.2 184 123.2 195.4 121.2 206.8 119.1 218.2 116.9 229.6 114.6 241 112.3 252.4 109.9 263.8 107.4 275.2 104.8 286.6 102.1 298 99.3 309.4 96.4 320.8 93.4 332.2 90.4 343.6 87.2 355 84 366.4 80.7 377.8 77.4 389.2 74 400.6 70.6 412 67.2 423.4 63.9 434.8 60.7 446.2 57.7 457.6 55.1 469 52.8 480.4 51.1 491.8 50.1 503.2 50.1 514.6 51.4 526 54.1 537.4 58.8 548.8 65.6 560.2 75.1 571.6 87.4 583 102.8 594.4 121.3 605.8 142.8 617.2 167 628.6 193 634.3 206.4 640 220"/>
+        <path class="s-red s-dash" d="M70 220 92.8 219.9 115.6 219.6 138.4 219.2 161.2 218.5 184 217.7 206.8 216.7 229.6 215.5 252.4 214.1 275.2 212.5 298 210.8 320.8 208.8 343.6 206.7 366.4 204.4 389.2 201.9 412 199.2 434.8 196.4 457.6 193.3 480.4 190.1 503.2 186.7 526 183.1 548.8 179.3 571.6 175.4 594.4 171.2 617.2 166.9"/>
+        <circle class="f-accent-soft s-accent" cx="70" cy="140" r="9"/><text class="t t-small t-bold" x="70" y="144" text-anchor="middle">1</text>
+        <circle class="f-accent-soft s-accent" cx="497" cy="50" r="9"/><text class="t t-small t-bold" x="497" y="54" text-anchor="middle">2</text>
+        <circle class="f-accent-soft s-accent" cx="617" cy="167" r="9"/><text class="t t-small t-bold" x="617" y="171" text-anchor="middle">3</text>
+        <text class="t t-small" x="100" y="38">1  starting torque</text>
+        <text class="t t-small" x="100" y="56">2  breakdown torque</text>
+        <text class="t t-small" x="100" y="74">3  rated point, slip about 4 %</text>
+        <text class="t t-small t-accent" x="100" y="168">solid: motor torque</text>
+        <text class="t t-small t-red" x="100" y="186">dashed: fan load torque (∝ speed²)</text>
+      </svg>
+      <figcaption>Figure 3. Torque against speed for an induction motor (schematic shape, not to scale). A fan or pump needs little torque at low speed (the dashed ∝ speed² curve), so the motor accelerates easily and settles where the two curves cross, close to synchronous speed. That crossing point is the rated point, and the small gap from synchronous speed is the slip.</figcaption>
+    </figure>
+    <h3>Reading a nameplate</h3>
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-label="A three-phase induction motor nameplate with six numbered fields">
+        <rect class="f-wash s-line" x="60" y="16" width="560" height="268" rx="14"/>
+        <text class="t t-bold" x="340" y="46" text-anchor="middle">3 ~ INDUCTION MOTOR</text>
+        <line class="s-thin" x1="80" y1="58" x2="600" y2="58"/>
+        <circle class="f-accent-soft s-accent" cx="88" cy="85" r="10"/><text class="t t-small t-bold" x="88" y="89" text-anchor="middle">1</text>
+        <text class="t" x="110" y="90">Output  4.0 kW</text>
+        <text class="t" x="360" y="90">Speed  1440 r/min</text>
+        <circle class="f-accent-soft s-accent" cx="88" cy="125" r="10"/><text class="t t-small t-bold" x="88" y="129" text-anchor="middle">2</text>
+        <text class="t" x="110" y="130">Voltage  400 V Δ / 690 V Y</text>
+        <text class="t" x="360" y="130">Current  8.1 A / 4.7 A</text>
+        <circle class="f-accent-soft s-accent" cx="88" cy="165" r="10"/><text class="t t-small t-bold" x="88" y="169" text-anchor="middle">3</text>
+        <text class="t" x="110" y="170">Frequency  50 Hz</text>
+        <text class="t" x="360" y="170">Power factor  cos φ 0.82</text>
+        <circle class="f-accent-soft s-accent" cx="88" cy="205" r="10"/><text class="t t-small t-bold" x="88" y="209" text-anchor="middle">4</text>
+        <text class="t" x="110" y="210">Efficiency  87 %</text>
+        <text class="t" x="360" y="210">Duty  S1 (continuous)</text>
+        <circle class="f-accent-soft s-accent" cx="88" cy="245" r="10"/><text class="t t-small t-bold" x="88" y="249" text-anchor="middle">5</text>
+        <text class="t" x="110" y="250">Protection  IP55</text>
+        <text class="t" x="360" y="250">Insulation  class F</text>
+        <text class="t t-small t-muted" x="600" y="274" text-anchor="end">Frame 112M (shaft centre height 112 mm)</text>
+      </svg>
+      <figcaption>Figure 4. A typical nameplate (illustrative numbers for a 4 kW, 4-pole motor). The numbers 1 to 5 are explained in the table below.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Field</th><th>What it tells you</th></tr>
+      <tr><td>1</td><td>kW and r/min</td><td><b>kW is shaft output</b>, not electrical input. 1440 r/min means 4-pole at 50 Hz (n<sub>s</sub> 1500, slip 4 %). Shaft torque = P / ω = 4000 / (2π × 1440 / 60) = <b>26.5 N·m</b>.</td></tr>
+      <tr><td>2</td><td>Voltage and current</td><td>"400 V Δ / 690 V Y" means: connect the windings in <b>delta</b> on a 400 V supply, or in <b>star</b> on 690 V. At 400 V delta the full-load current (FLC) is 8.1 A. Australia's nominal low-voltage supply is 230/400 V (many people still say 415 V).</td></tr>
+      <tr><td>3</td><td>Frequency, cos φ</td><td>50 Hz for Australia. Power factor 0.82 means the motor draws apparent power S = P<sub>out</sub> / (η · cos φ) (T07). Check: input 4.0/0.87 = 4.6 kW; I = 4600 / (√3 × 400 × 0.82) = <b>8.1 A</b>, matching the plate.</td></tr>
+      <tr><td>4</td><td>Efficiency, duty</td><td>87 % means 13 % of input becomes heat. S1 means continuous running is allowed. Australia sets minimum efficiency levels for many three-phase motors; check the current requirement with the regulator.</td></tr>
+      <tr><td>5</td><td>IP and insulation</td><td>IP55 is dust-protected and water-jet resistant (indoor plant rooms and outdoors under cover). Insulation class F is a temperature class for the winding.</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A 4 kW motor draws 4 kW." <b>Right:</b> 4 kW is the <b>mechanical power at the shaft</b>. The electrical input is higher, about 4.6 kW here, because of losses, and the current is set by apparent power: 8.1 A at 400 V, not 4000/400/√3 = 5.8 A. And a motor that is lightly loaded draws much less than its nameplate. The plate shows the <i>rating</i>, not the actual load.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Motor sizes, efficiency levels and the wiring of motor circuits are covered by standards and by the regulator for energy efficiency (the Greenhouse and Energy Minimum Standards scheme). Motor wiring and starter installation fall under AS/NZS 3000 and the state electrical licensing rules. Confirm the current requirements with the relevant regulator, because rules change and differ by state.</p></div>
+
+    <h2>Starting a motor: DOL, star-delta, soft starter and VSD</h2>
+    <p>When a stationary induction motor is switched on, the rotor sees the field sweeping past at full speed (slip = 100 %), so it induces large rotor currents, and the stator draws a large <b>starting current</b>. Connecting the motor straight to the supply, called <b>direct-on-line (DOL)</b>, typically draws about 6–8 times the full-load current for a few seconds (indicative; check the motor data). For our 4 kW motor with FLC 8.1 A, that is about 57 A. Big motors on weak supplies can cause lights to dip, and the sudden torque shocks belts and couplings.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Method</th><th>How it works</th><th>Start current (4 kW example)</th><th>Speed control?</th></tr>
+      <tr><td>DOL</td><td>A contactor connects the full supply</td><td>~7 × 8.1 ≈ 57 A</td><td>No</td></tr>
+      <tr><td>Star-delta</td><td>Starts with windings in star (1/3 of the power), then switches to delta</td><td>~1/3 of DOL ≈ 19 A, with a jolt at the changeover</td><td>No</td></tr>
+      <tr><td>Soft starter</td><td>Back-to-back thyristors (power switches that latch on) trim each phase's voltage and ramp it up over seconds. A bypass contactor takes over when up to speed</td><td>Set by the ramp, typically 2–4 × FLC ≈ 24 A. Torque falls with voltage squared, so it is gentler but weaker.</td><td>No (ramps up and down only)</td></tr>
+      <tr><td>VSD</td><td>Changes frequency and voltage together; the field starts slowly and speeds up</td><td>About FLC or a little more, with full torque available from near zero speed</td><td><b>Yes</b></td></tr>
+    </table></div>
+    <p>A soft starter is a good answer when you only need a gentle start and stop (a pump that suffers water hammer, a conveyor). A VSD is the answer when you need to <b>vary the speed</b> during normal running, which is what saves energy on fans and pumps.</p>
+
+    <h2>Why VSDs exist, and what is inside one</h2>
+    <p>Speed is set by n<sub>s</sub> = 120 f / p. You cannot change the number of poles easily, so the way to change the speed is to <b>change the frequency</b>. The mains supply is fixed at 50 Hz, so a VSD (also called a variable frequency drive, VFD, or inverter) makes its own AC supply at any frequency from near 0 to 50 Hz or more.</p>
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-label="Block diagram of a variable speed drive: three-phase supply, rectifier, DC bus, IGBT inverter, motor; below it a pulse-width-modulated waveform that averages to a sine wave">
+        <defs><marker id="t19f4-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="10" y="20" width="110" height="64" rx="8"/>
+        <text class="t t-small t-bold" x="65" y="48" text-anchor="middle">3-phase</text>
+        <text class="t t-small t-bold" x="65" y="65" text-anchor="middle">supply</text>
+        <rect class="f-wash s-line" x="145" y="20" width="110" height="64" rx="8"/>
+        <text class="t t-small t-bold" x="200" y="48" text-anchor="middle">Rectifier</text>
+        <text class="t t-small" x="200" y="65" text-anchor="middle">6 diodes</text>
+        <rect class="f-accent-soft s-accent" x="280" y="20" width="110" height="64" rx="8"/>
+        <text class="t t-small t-bold" x="335" y="48" text-anchor="middle">DC bus</text>
+        <text class="t t-small" x="335" y="65" text-anchor="middle">capacitors</text>
+        <rect class="f-wash s-line" x="415" y="20" width="110" height="64" rx="8"/>
+        <text class="t t-small t-bold" x="470" y="48" text-anchor="middle">Inverter</text>
+        <text class="t t-small" x="470" y="65" text-anchor="middle">6 IGBTs</text>
+        <rect class="f-wash s-line" x="550" y="20" width="110" height="64" rx="8"/>
+        <text class="t t-small t-bold" x="605" y="48" text-anchor="middle">Motor</text>
+        <text class="t t-small" x="605" y="65" text-anchor="middle">3-phase</text>
+        <path class="s-line" d="M120 52 H141" marker-end="url(#t19f4-a)"/>
+        <path class="s-line" d="M255 52 H276" marker-end="url(#t19f4-a)"/>
+        <path class="s-line" d="M390 52 H411" marker-end="url(#t19f4-a)"/>
+        <path class="s-line" d="M525 52 H546" marker-end="url(#t19f4-a)"/>
+        <text class="t t-small t-muted" x="65" y="104" text-anchor="middle">400 V AC, 50 Hz</text>
+        <text class="t t-small t-muted" x="200" y="104" text-anchor="middle">AC to DC</text>
+        <text class="t t-small t-red" x="335" y="104" text-anchor="middle">about 540–565 V DC</text>
+        <text class="t t-small t-muted" x="470" y="104" text-anchor="middle">DC to pulses</text>
+        <text class="t t-small t-muted" x="605" y="104" text-anchor="middle">variable V and f</text>
+        <text class="t t-small t-bold" x="40" y="176">Inverter output for one phase: pulse-width modulation (PWM)</text>
+        <path class="s-accent" d="M40 270 H45.5 V200 H59.5 V270 H69.1 V200 H85.9 V270 H92.8 V200 H112.2 V270 H116.8 V200 H138.2 V270 H141.1 V200 H163.9 V270 H165.7 V200 H189.3 V270 H190.7 V200 H214.3 V270 H216.1 V200 H238.9 V270 H241.8 V200 H263.2 V270 H267.8 V200 H287.2 V270 H294.1 V200 H310.9 V270 H320.5 V200 H334.5 V270 H347 V200 H358 V270 H373.4 V200 H381.6 V270 H399.7 V200 H405.3 V270 H425.7 V200 H429.3 V270 H451.4 V200 H453.6 V270 H476.8 V200 H478.2 V270 H501.8 V200 H503.2 V270 H526.4 V200 H528.6 V270 H550.7 V200 H554.3 V270 H574.7 V200 H580.3 V270 H598.4 V200 H606.6 V270 H622 V200 H633 V270 H640"/>
+        <path class="s-red s-dash" d="M40 235 46 233 52 231.1 58 229.1 64 227.2 70 225.3 76 223.4 82 221.6 88 219.8 94 218.1 100 216.5 106 214.9 112 213.4 118 212 124 210.7 130 209.5 136 208.4 142 207.4 148 206.5 154 205.7 160 205 166 204.5 172 204.1 178 203.7 184 203.6 190 203.5 196 203.6 202 203.7 208 204.1 214 204.5 220 205 226 205.7 232 206.5 238 207.4 244 208.4 250 209.5 256 210.7 262 212 268 213.4 274 214.9 280 216.5 286 218.1 292 219.8 298 221.6 304 223.4 310 225.3 316 227.2 322 229.1 328 231.1 334 233 340 235 346 237 352 238.9 358 240.9 364 242.8 370 244.7 376 246.6 382 248.4 388 250.2 394 251.9 400 253.5 406 255.1 412 256.6 418 258 424 259.3 430 260.5 436 261.6 442 262.6 448 263.5 454 264.3 460 265 466 265.5 472 265.9 478 266.3 484 266.4 490 266.5 496 266.4 502 266.3 508 265.9 514 265.5 520 265 526 264.3 532 263.5 538 262.6 544 261.6 550 260.5 556 259.3 562 258 568 256.6 574 255.1 580 253.5 586 251.9 592 250.2 598 248.4 604 246.6 610 244.7 616 242.8 622 240.9 628 238.9 634 237 640 235"/>
+        <text class="t t-small t-accent" x="640" y="192" text-anchor="end">solid: pulses, fixed height, varying width</text>
+        <text class="t t-small t-red" x="640" y="290" text-anchor="end">dashed: the smooth sine the motor current follows</text>
+      </svg>
+      <figcaption>Figure 5. Inside a VSD. A rectifier turns the 50 Hz supply into DC, capacitors on the DC bus smooth it (and keep their charge for minutes), and six IGBT switches chop the DC bus into pulses. The pulses are all the same height; their <i>width</i> follows a sine wave of the wanted frequency. The motor's inductance (T06) smooths the pulses into a near-sinusoidal current.</figcaption>
+    </figure>
+    <ol>
+      <li><b>Rectifier.</b> Six diodes (T11, P06) turn the three-phase AC into DC. The DC voltage is about 1.35 × the line voltage: 1.35 × 400 = 540 V, and up to √2 × 400 = 566 V when lightly loaded.</li>
+      <li><b>DC bus.</b> Large capacitors (T05) smooth the DC and store energy. <b>They stay charged after the power is switched off.</b> Many drives bleed this off slowly through resistors, so the wait time on the warning label is commonly several minutes (read the label on the actual drive). Only an electrician, using a proper procedure and instrument, may test that the bus is safe.</li>
+      <li><b>Inverter.</b> Six <b>IGBTs</b> (insulated-gate bipolar transistors, a power switch that combines a MOSFET gate (T13) with a bipolar output (T12)) switch very fast, typically a few thousand times a second. By changing the width of the pulses, the drive controls both the frequency and the effective (average) voltage of the output.</li>
+      <li><b>Control.</b> A small microprocessor board (T15) takes the speed reference, calculates the pulses, watches current and temperature, and trips on a fault. This low-voltage board and its terminals are the part a BMS connects to.</li>
+    </ol>
+    <h3>V/f control</h3>
+    <p>If you simply lower the frequency and leave the voltage alone, the magnetic flux in the motor rises (flux is proportional to V/f), the iron saturates, and the current shoots up. So a drive keeps the <b>ratio V/f constant</b>. For a 400 V, 50 Hz motor that is 400/50 = <b>8 V per Hz</b>:</p>
+    <div class="formula">V = 8 V/Hz × f     30 Hz → 240 V     25 Hz → 200 V     10 Hz → 80 V (plus a small boost)
+      <small>At low frequency the winding's resistive drop is a larger part of the voltage, so drives add a "boost" there. Above 50 Hz the output voltage cannot rise beyond the supply, so V/f falls: the motor enters the <b>field-weakening</b> region, where it can run faster but with less torque.</small></div>
+    <p>A VSD also gives other benefits: it starts the motor gently (like a soft starter), it can stop it smoothly, it protects against overload and phase loss, and it reports current, power and faults. The costs are the purchase price, the heat it makes (typically a few percent of the power; indicative), and electrical noise.</p>
+    <div class="callout tip"><span class="label">Noise and cables</span><p>The fast edges of the PWM pulses make radio-frequency noise. Motor cables from a VSD are therefore usually <b>screened, with the screen bonded to earth at both ends</b>, and kept apart from control and signal cables (cross them at 90° if you must cross). This is the opposite of the single-end earthing used for your 4–20 mA instrument cables (T16). The goal is different: instrument cables fight low-frequency hum and ground loops; motor cables contain high-frequency radiated noise. Follow the drive maker's installation guide and the electrician's design.</p></div>
+
+    <h2>The fan affinity laws</h2>
+    <p>A fan or centrifugal pump moves a fluid. If you change its speed, three things scale in a predictable way. Imagine the blades slowing to 80 % of the speed.</p>
+    <ul>
+      <li><b>Flow ∝ speed.</b> The tips of the blades sweep out 80 % as much air per second. Q₂/Q₁ = n₂/n₁.</li>
+      <li><b>Pressure ∝ speed².</b> The pressure a fan makes is the energy it gives each kilogram of air. Kinetic energy goes as velocity squared, so ΔP₂/ΔP₁ = (n₂/n₁)².</li>
+      <li><b>Power ∝ speed³.</b> Power is flow × pressure. Flow goes as n and pressure as n², so P₂/P₁ = (n₂/n₁)³.</li>
+    </ul>
+    <div class="formula">Q ∝ n      ΔP ∝ n²      P ∝ n³
+      <small>Worked: 80 % speed → flow 80 %, pressure 0.8² = 64 %, power 0.8³ = <b>51.2 %</b>. At 90 % speed: power 72.9 % (a 27 % saving for a 10 % slow-down). At 60 %: flow 60 %, pressure 36 %, power 21.6 %. At 50 %: power 12.5 %. A small drop in flow saves a large amount of energy.</small></div>
+    <p>These laws hold when the system resistance is all friction (ducts, coils, filters), so the system pressure also scales with flow squared and the fan's operating point just slides along the system curve. They are only approximate where there is a fixed static head (a pump lifting water up a building), where the saving is smaller, and at very low speed where fan and motor efficiency fall. Drive and motor losses also eat a few percent of the saving.</p>
+    <h3>Why a damper wastes energy</h3>
+    <p>The old way to reduce airflow was to throttle it with a damper while the fan ran at full speed. The fan still makes full pressure, and the damper simply burns off the excess pressure as turbulence. Because the fan motor keeps pushing against a higher system resistance, the power only falls a little (for many fan types, to roughly 85–95 % of full power at 80 % flow; indicative and fan-dependent). Slowing the fan down to 80 % speed reaches the same 80 % flow at about 51 % of full power.</p>
+    <h3>Worked example: annual energy</h3>
+    <p>A 15 kW supply fan runs 6000 hours a year. At A$0.25 per kWh (an assumed tariff; use your own), full speed uses 15 × 6000 = 90,000 kWh = A$22,500 a year. At 80 % speed all year it would use 0.512 × 90,000 = 46,080 kWh = A$11,520, saving 43,920 kWh or about <b>A$10,980</b>. A real fan runs at varying speeds, so the actual saving depends on the load profile over the year, but this shows why VSDs on fans and pumps pay back so quickly.</p>
+    <div class="widget" id="t19-aff">
+      <span class="label">Interactive · Fan affinity laws and annual saving (indicative)</span>
+      <p class="wsmall">The saving compares the same fan running at full speed (100 %) with running at the chosen speed for all of the hours entered. Real savings depend on the speed profile over the year, the fan curve, static head, and drive losses. Use it to feel the cube law, not as a quote.</p>
+      <label>Fan speed <span class="out" id="t19a-so">80 %</span><input type="range" id="t19a-s" min="20" max="100" step="1" value="80"></label>
+      <div class="wgrid">
+        <label>Motor kW<input type="number" id="t19a-kw" min="0.1" max="500" step="0.1" value="15"></label>
+        <label>Running hours per year<input type="number" id="t19a-h" min="0" max="8760" step="100" value="6000"></label>
+        <label>Tariff (A$ per kWh)<input type="number" id="t19a-t" min="0" max="2" step="0.01" value="0.25"></label>
+        <label>Extra drive loss (%)<input type="number" id="t19a-l" min="0" max="20" step="0.5" value="0"></label>
+      </div>
+      <svg id="t19a-svg" viewBox="0 0 600 240" role="img" aria-label="Flow, pressure and power against fan speed"></svg>
+      <div class="readings">
+        <div><small>Flow</small><span class="out" id="t19a-q">80 %</span></div>
+        <div><small>Pressure</small><span class="out" id="t19a-p">64 %</span></div>
+        <div><small>Power</small><span class="out" id="t19a-w">51.2 %</span><span class="sub" id="t19a-kw2">7.7 kW</span></div>
+        <div><small>Energy saved per year</small><span class="out" id="t19a-e">43,920 kWh</span></div>
+        <div><small>Money saved per year</small><span class="out" id="t19a-m">A$10,980</span></div>
+      </div>
+      <div class="wstatus" id="t19a-note"></div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var sS=g('t19a-s'),kwN=g('t19a-kw'),hN=g('t19a-h'),tN=g('t19a-t'),lN=g('t19a-l'),svg=g('t19a-svg');
+      function X(sp){return 60+(sp-20)/80*510;}
+      function Y(p){return 190-p/100*170;}
+      function curve(fn){var p='',sp;for(sp=20;sp<=100;sp+=2){p+=(p?' ':'M')+X(sp).toFixed(1)+' '+Y(fn(sp/100)*100).toFixed(1);}return p;}
+      function money(x){return 'A$'+Math.round(x).toLocaleString('en-AU');}
+      function upd(){
+        var sp=+sS.value,s=sp/100,kw=parseFloat(kwN.value),h=parseFloat(hN.value),t=parseFloat(tN.value),l=parseFloat(lN.value);
+        g('t19a-so').textContent=sp+' %';
+        if(!(kw>0)||!(h>=0)||!(t>=0)||!(l>=0)){g('t19a-note').textContent='Enter positive numbers for kW, hours, tariff and loss.';return;}
+        var pw=s*s*s*(1+l/100),pk=kw*pw,full=kw*h,now=pk*h,save=full-now;
+        g('t19a-q').textContent=sp.toFixed(0)+' %';
+        g('t19a-p').textContent=(s*s*100).toFixed(1)+' %';
+        g('t19a-w').textContent=(pw*100).toFixed(1)+' %';
+        g('t19a-kw2').textContent=pk.toFixed(2)+' kW of '+kw.toFixed(1)+' kW';
+        g('t19a-e').textContent=Math.round(save).toLocaleString('en-AU')+' kWh';
+        g('t19a-m').textContent=money(save*t);
+        var i,h2='';
+        for(i=0;i<=2;i++){var yy=Y(i*50).toFixed(1);h2+='<line class="s-thin s-dash" x1="60" y1="'+yy+'" x2="570" y2="'+yy+'"/><text class="t t-small t-muted" x="54" y="'+(+yy+4)+'" text-anchor="end">'+(i*50)+' %</text>';}
+        [20,40,60,80,100].forEach(function(v){h2+='<line class="s-thin" x1="'+X(v).toFixed(1)+'" y1="190" x2="'+X(v).toFixed(1)+'" y2="196"/><text class="t t-small t-muted" x="'+X(v).toFixed(1)+'" y="212" text-anchor="middle">'+v+'</text>';});
+        h2+='<text class="t t-small t-muted" x="570" y="232" text-anchor="end">fan speed, % of full</text>';
+        h2+='<path class="s-blue" d="'+curve(function(x){return x;})+'"/>';
+        h2+='<path class="s-green" d="'+curve(function(x){return x*x;})+'"/>';
+        h2+='<path class="s-red" d="'+curve(function(x){return x*x*x;})+'"/>';
+        h2+='<line class="s-thin s-dash" x1="'+X(sp).toFixed(1)+'" y1="20" x2="'+X(sp).toFixed(1)+'" y2="190"/>';
+        h2+='<circle class="f-blue" cx="'+X(sp).toFixed(1)+'" cy="'+Y(s*100).toFixed(1)+'" r="5"/><circle class="f-green" cx="'+X(sp).toFixed(1)+'" cy="'+Y(s*s*100).toFixed(1)+'" r="5"/><circle class="f-red" cx="'+X(sp).toFixed(1)+'" cy="'+Y(s*s*s*100).toFixed(1)+'" r="5"/>';
+        h2+='<text class="t t-small t-blue" x="76" y="34">flow ∝ speed</text><text class="t t-small t-green" x="76" y="52">pressure ∝ speed²</text><text class="t t-small t-red" x="76" y="70">power ∝ speed³</text>';
+        svg.innerHTML=h2;
+        var msg='At '+sp+' % speed the fan delivers '+sp+' % of the flow but needs only '+(pw*100).toFixed(1)+' % of the power.';
+        if(l>0){msg+=' Drive loss of '+l+' % is included, so a few percent of the saving is given back.';}
+        if(sp>=100&&l>0){msg+=' At full speed a drive only adds losses, so the saving is negative: it makes sense to run it at full speed only if you need the control.';}
+        g('t19a-note').textContent=msg;
+      }
+      sS.oninput=upd;kwN.oninput=upd;hN.oninput=upd;tN.oninput=upd;lN.oninput=upd;upd();
+    })();
+    </script>
+
+    <h2>How a BMS controls a VSD</h2>
+    <p>A BMS does not touch the motor power. It talks to the drive's <b>control terminals</b>, which are low-voltage. A typical hardwired connection uses five signals, or a single serial link replaces them all.</p>
+    <figure>
+      <svg viewBox="0 0 680 440" role="img" aria-label="Wiring between a BMS controller and a VSD's control terminals: start/stop contact, 0 to 10 V speed reference, run status, fault, and speed feedback; with a power side box below marked for electricians only">
+        <defs>
+          <marker id="t19f6-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t19f6-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-small t-bold" x="105" y="28" text-anchor="middle">BMS controller</text>
+        <text class="t t-small t-bold" x="575" y="28" text-anchor="middle">VSD control terminals</text>
+        <rect class="f-wash s-line" x="20" y="40" width="170" height="300" rx="8"/>
+        <rect class="f-accent-soft s-accent" x="490" y="40" width="170" height="300" rx="8"/>
+        <text class="t t-small t-bold" x="182" y="89" text-anchor="end">DO1</text>
+        <text class="t t-small t-bold" x="182" y="146" text-anchor="end">AO1</text>
+        <text class="t t-small t-bold" x="182" y="203" text-anchor="end">DI1</text>
+        <text class="t t-small t-bold" x="182" y="260" text-anchor="end">DI2</text>
+        <text class="t t-small t-bold" x="182" y="317" text-anchor="end">AI1</text>
+        <text class="t t-small t-bold" x="498" y="89">DI  start</text>
+        <text class="t t-small t-bold" x="498" y="146">AI  speed ref</text>
+        <text class="t t-small t-bold" x="498" y="203">RO1  run</text>
+        <text class="t t-small t-bold" x="498" y="260">RO2  fault</text>
+        <text class="t t-small t-bold" x="498" y="317">AO1  freq</text>
+        <path class="s-accent" d="M190 85 H486" marker-end="url(#t19f6-a)"/>
+        <path class="s-accent" d="M190 142 H486" marker-end="url(#t19f6-a)"/>
+        <path class="s-green" d="M490 199 H194" marker-end="url(#t19f6-g)"/>
+        <path class="s-green" d="M490 256 H194" marker-end="url(#t19f6-g)"/>
+        <path class="s-green" d="M490 313 H194" marker-end="url(#t19f6-g)"/>
+        <circle class="f-ink" cx="190" cy="85" r="3.5"/><circle class="f-ink" cx="190" cy="142" r="3.5"/><circle class="f-ink" cx="190" cy="199" r="3.5"/><circle class="f-ink" cx="190" cy="256" r="3.5"/><circle class="f-ink" cx="190" cy="313" r="3.5"/>
+        <circle class="f-ink" cx="490" cy="85" r="3.5"/><circle class="f-ink" cx="490" cy="142" r="3.5"/><circle class="f-ink" cx="490" cy="199" r="3.5"/><circle class="f-ink" cx="490" cy="256" r="3.5"/><circle class="f-ink" cx="490" cy="313" r="3.5"/>
+        <text class="t t-small" x="340" y="76" text-anchor="middle">start/stop: relay contact</text>
+        <text class="t t-small" x="340" y="133" text-anchor="middle">speed reference 0–10 V</text>
+        <text class="t t-small" x="340" y="190" text-anchor="middle">run status: dry contact</text>
+        <text class="t t-small" x="340" y="247" text-anchor="middle">fault: dry contact</text>
+        <text class="t t-small" x="340" y="304" text-anchor="middle">speed feedback 0–10 V</text>
+        <path class="s-blue s-dash" d="M190 378 H490"/>
+        <text class="t t-small t-blue" x="340" y="368" text-anchor="middle">or one RS-485 pair: Modbus RTU / BACnet MS/TP</text>
+        <rect class="f-warn-soft s-red s-dash" x="20" y="394" width="640" height="38" rx="8"/>
+        <text class="t t-small t-bold" x="340" y="417" text-anchor="middle">POWER SIDE: mains or three-phase in, motor out. Licensed electricians only.</text>
+      </svg>
+      <figcaption>Figure 6. A typical control connection. Blue-green arrows show the direction of each signal. Commands go from the BMS to the drive (accent colour); status and feedback come back (green). The power terminals, shown below, are a separate area that the BMS technician never opens.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Signal</th><th>Direction</th><th>Type</th><th>What it does</th></tr>
+      <tr><td>Start/stop</td><td>BMS → VSD</td><td>Digital output (relay), dry contact</td><td>Closed means run, open means stop. Wired into a drive digital input, which is supplied with 24 V DC by the drive. The BMS relay only gives the contact.</td></tr>
+      <tr><td>Speed reference</td><td>BMS → VSD</td><td>Analogue output: 0–10 V (or 2–10 V, or 4–20 mA)</td><td>The BMS computes the speed it wants (from a PID loop, C03). The drive scales 0–10 V to 0–50 Hz (or to its set min and max).</td></tr>
+      <tr><td>Run status</td><td>VSD → BMS</td><td>Digital input from the drive's relay</td><td>Tells the BMS the drive is running. It does <b>not</b> prove air or water is moving.</td></tr>
+      <tr><td>Fault</td><td>VSD → BMS</td><td>Digital input from the drive's relay</td><td>The drive has tripped (overcurrent, overvoltage, overheating, earth fault). Often wired so a loss of drive power also reads as a fault.</td></tr>
+      <tr><td>Speed or current feedback</td><td>VSD → BMS</td><td>Analogue input, 0–10 V or 4–20 mA</td><td>Actual frequency, current or power, for graphs and alarms.</td></tr>
+      <tr><td>Serial link</td><td>Both ways</td><td>RS-485: Modbus RTU or BACnet MS/TP (P14, C02)</td><td>Replaces most of the wires above and adds many more values (hours run, power, fault codes). Needs correct address, baud rate and parity.</td></tr>
+    </table></div>
+    <h3>Worked scaling</h3>
+    <p>The BMS commands 80 % speed. For a 0–10 V reference, the output is 0.80 × 10 = <b>8.0 V</b>. The drive maps 0–10 V to 0–50 Hz, so the frequency is 40 Hz. A 4-pole motor has n<sub>s</sub> = 120 × 40 / 4 = <b>1200 rpm</b> (a little less with slip), and by the affinity laws the fan moves about 80 % of its full-speed air using about 51 % of its full-speed power. If the drive has a minimum speed of 20 Hz (40 %), a command of 20 % (2.0 V) will still run it at 20 Hz.</p>
+    <h3>What the BMS technician sets up</h3>
+    <ul>
+      <li><b>Check the input type.</b> The drive's analogue input has a switch or parameter for 0–10 V versus 4–20 mA. The wrong choice is the most common reason a drive "ignores" the BMS (T16).</li>
+      <li><b>Check Hand-Off-Auto.</b> Most motor control panels have a selector. The BMS controls the drive only in <b>Auto</b>. If someone leaves it in Hand, the BMS cannot start or stop the fan, and it may show "running" while the BMS command is ignored.</li>
+      <li><b>Minimum and maximum speed.</b> Set in the drive by the person commissioning it (not the BMS). A minimum speed (often 20–30 Hz for fans; indicative) prevents hunting and stalling.</li>
+      <li><b>Prove airflow or flow.</b> Use a DP sensor or switch across the fan (T18), not just the run contact, to detect a broken belt or a slipped coupling.</li>
+      <li><b>Fire mode.</b> In many buildings smoke-control fans must keep running in a fire, so the drive has a fire-mode input from the fire panel that overrides the BMS and some faults. Never remove or bypass these (C04).</li>
+      <li><b>Test the whole loop.</b> Command 0 %, 50 % and 100 % and watch the feedback; trip the fault and check the alarm point.</li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety: even the "control" side can surprise you</span><p>The control terminals are normally 24 V DC (ELV), but the drive's <b>relay outputs</b> can switch up to 230 V, and an electrician may have used one to switch a mains circuit (a damper actuator, a signal lamp, a contactor coil). Never assume a terminal is ELV because it sits on the control board. If you are not sure, do not touch or measure it: ask the electrician to confirm what it carries, or to isolate it. Do not remove covers over power terminals. After isolation, the DC bus can still be charged: it is not yours to test.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>The split of work is clear in practice. An electrician installs the drive, its power cabling and protection, and sets its motor parameters. The BMS technician (or controls contractor) lands the ELV control wires, configures the BMS points, and commissions the control loop. Licensing categories differ between states, so confirm what a BMS technician may do on a drive with the state electrical regulator and your employer.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Typical service calls: "fan runs at full speed all the time" (the 0–10 V is missing, shorted or the input is set to the wrong mode), "fan will not start from the BMS" (Hand-Off-Auto in Hand, run enable open, drive faulted), "VSD trips on overvoltage when stopping" (deceleration too fast; the electrician or drive specialist adjusts it), "BMS shows the fan running but there is no air" (belt or coupling failure, caught only by a DP proof). The BMS technician reads the fault code and signals; the drive specialist or electrician fixes the power side.</p></div>
+
+    <h2>Field faults you can reason about</h2>
+    <p>Only measure terminals that the drawings or the electrician have confirmed are ELV control terminals. The checks below are all on that side.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>What you can check on the ELV side</th></tr>
+      <tr><td>Fan will not start from the BMS</td><td>Hand-Off-Auto not in Auto, run enable open, drive faulted, BMS output off</td><td>Selector, fault light, BMS output state, voltage across the start contact</td></tr>
+      <tr><td>Speed does not follow the BMS</td><td>Analogue input in the wrong mode, wrong reference source set in the drive, broken wire, reference below the minimum speed</td><td>Measure 0–10 V at the drive terminals with the BMS at 0 %, 50 % and 100 %</td></tr>
+      <tr><td>Speed hunts up and down</td><td>PID loop gain too high, noisy signal, resonance</td><td>Trend the sensor and the output; check the signal shield</td></tr>
+      <tr><td>Fan always runs at full speed</td><td>Reference stuck at 10 V, or drive in bypass or in local reference</td><td>Voltage at the drive terminals; selector position</td></tr>
+      <tr><td>Fault trips at start or stop</td><td>Ramp times too short, overload, mechanical jam</td><td>Fault code; report to the electrician or drive specialist</td></tr>
+      <tr><td>Status says running, no air</td><td>Broken belt, slipped coupling, damper closed</td><td>DP proof reading, damper position, listen at the motor</td></tr>
+    </table></div>
+
+    <h2>See it on the bench and on the job</h2>
+    <a class="crosslink" href="../practice/p13-actuators-motors.html">Practice P13 · Actuators: DC motors with drivers, servos, steppers and switching real loads safely</a>
+    <a class="crosslink" href="t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors: the field, Faraday, Lenz and back-EMF</a>
+    <a class="crosslink" href="t18-sensor-physics.html">Theory T18 · Sensor physics: DP sensors, Hall sensors and the signals a VSD reads</a>
+    <a class="crosslink" href="t16-signals-noise-loops.html">Theory T16 · Signals: 0–10 V and 4–20 mA, noise and shields</a>
+    <a class="crosslink" href="../career/c01-bms-fundamentals.html">Career C01 · BMS fundamentals: the AO, DO, AI and DI points that control a drive</a>
+    <a class="crosslink" href="../career/c02-bms-protocols-commissioning.html">Career C02 · BMS protocols and commissioning: Modbus and BACnet to a VSD</a>
+    <a class="crosslink" href="../career/c03-hvac-for-technicians.html">Career C03 · HVAC for electronics people: AHU fans, pumps and the PID loops that drive them</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A 0.2 m length of conductor in a 0.4 T field carries 15 A at right angles to the field. What is the force?</summary><div class="answer"><p>F = B I L = 0.4 × 15 × 0.2 = 1.2 N. It acts at right angles to both the field and the current. Doubling the current or the length doubles the force, which is why motor torque is proportional to current.</p></div></details>
+    <details class="quiz"><summary>A 24 V brushed DC motor has an armature resistance of 2 Ω. What current flows at stall? What if it is spinning freely with a back-EMF of 21 V?</summary><div class="answer"><p>At stall there is no back-EMF: I = 24 / 2 = 12 A, and the heat is I²R = 288 W, so a jammed motor cooks itself. When spinning with E = 21 V: I = (24 − 21)/2 = 1.5 A. The motor's own generator action cuts the current by a factor of eight.</p></div></details>
+    <details class="quiz"><summary>A 1.8° stepper is driven at 2000 steps per second with no microstepping. How fast does it turn?</summary><div class="answer"><p>A 1.8° motor has 360 / 1.8 = 200 steps per revolution. 2000 / 200 = 10 revolutions per second = 600 rpm. At that speed the torque will have fallen well below the holding torque, so check the speed-torque curve for the load.</p></div></details>
+    <details class="quiz"><summary>A 6-pole motor on 50 Hz has 960 rpm on its plate. Find the synchronous speed, slip and rotor frequency.</summary><div class="answer"><p>n<sub>s</sub> = 120 × 50 / 6 = 1000 rpm. Slip = (1000 − 960) / 1000 = 4 %. Rotor frequency = 0.04 × 50 = 2 Hz. A plate speed just under a "round" synchronous speed is the clue to the pole count.</p></div></details>
+    <details class="quiz"><summary>A VSD runs a 400 V / 50 Hz, 4-pole motor at 30 Hz. What output voltage does V/f give, and what is the synchronous speed?</summary><div class="answer"><p>V/f = 400 / 50 = 8 V/Hz, so at 30 Hz the voltage is 240 V. n<sub>s</sub> = 120 × 30 / 4 = 900 rpm, and the real speed is a little under that because of slip. Keeping V/f constant holds the motor flux constant so the motor does not saturate.</p></div></details>
+    <details class="quiz"><summary>A 22 kW fan is slowed to 60 % of full speed. What are the flow, pressure and power, and the power in kW?</summary><div class="answer"><p>Flow = 60 %. Pressure = 0.6² = 36 %. Power = 0.6³ = 21.6 %, which is 0.216 × 22 = 4.75 kW. So a 40 % reduction in flow cuts power by nearly 80 % (before allowing for drive and motor losses at low load).</p></div></details>
+    <details class="quiz"><summary>The BMS sends a 6.0 V reference to a drive scaled 0–10 V = 0–50 Hz, but the fan runs flat out. List the first four checks.</summary><div class="answer"><p>1) Measure the voltage at the drive's ELV analogue input terminals to see whether the 6.0 V actually arrives. 2) Check that the input type is set to voltage and not current. 3) Check the Hand-Off-Auto selector and whether the drive is using its local keypad reference instead of the terminal. 4) Check the reference-source parameter and scaling in the drive (set by an authorised person). Also check the shield and common wiring (T16).</p></div></details>
+    <details class="quiz"><summary>A colleague has just isolated a VSD and wants to open its cover to look at the power terminals "right now, it is switched off". What do you say?</summary><div class="answer"><p>Stop. The DC bus capacitors can hold a dangerous charge (roughly 540–565 V DC) for several minutes after isolation, and the terminals carry mains or three-phase supply. Only a licensed electrician may open the power side, follow the maker's wait time on the label, and prove the bus is safe with a suitable instrument. A BMS technician works only on the control terminals.</p></div></details>
+    <details class="more"><summary>Go deeper (optional): why the torque falls at breakdown</summary><p>At small slip the rotor frequency is low, so the rotor's inductive reactance (2πf<sub>r</sub>L) is small and the rotor current is mostly in phase with the induced voltage. Current grows in proportion to slip, and so does torque. As slip increases, the rotor frequency rises, the reactance grows, and the rotor current lags more and more behind the voltage that drives it. A lagging current makes less torque per amp. The result is a peak (breakdown torque) and then a fall. A simple model is T = 2·T<sub>max</sub> / (s/s<sub>b</sub> + s<sub>b</sub>/s), where s<sub>b</sub> is the slip at breakdown. This is the shape of Figure 3.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can use F = BIL and explain why a coil in a field turns.</span></li>
+      <li><input type="checkbox"><span>I can explain back-EMF, why a stalled DC motor draws a huge current, and why speed is proportional to voltage.</span></li>
+      <li><input type="checkbox"><span>I can calculate steps per revolution and rpm for a stepper, and explain holding torque and lost steps.</span></li>
+      <li><input type="checkbox"><span>I know what a BLDC or EC fan is, and which of its terminals are ELV control and which are mains.</span></li>
+      <li><input type="checkbox"><span>I can calculate synchronous speed (120f/p) and slip, and read a three-phase motor nameplate.</span></li>
+      <li><input type="checkbox"><span>I can describe the blocks inside a VSD, explain V/f control, and say why the DC bus is dangerous after isolation.</span></li>
+      <li><input type="checkbox"><span>I can use the affinity laws to show that 80 % speed gives about 51 % power, and estimate an annual saving.</span></li>
+      <li><input type="checkbox"><span>I can compare DOL, star-delta, soft starter and VSD.</span></li>
+      <li><input type="checkbox"><span>I can list the signals between a BMS and a VSD, scale a 0–10 V reference, and diagnose a drive that ignores the BMS.</span></li>
+      <li><input type="checkbox"><span>I know that only a licensed electrician opens or wires the power side, and that I stay on the ELV control side.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

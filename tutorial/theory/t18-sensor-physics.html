@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T18 · Sensor physics: how sensors turn the world into signals</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget controls. Colours come only from the shared theme variables, so dark mode works. */
+.widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:220px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 14px}
+.wsmall{font-size:14px;color:var(--muted)}
+.widget .readings .out{font-size:18px}
+.widget .readings .sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.wstatus{border-radius:8px;padding:10px 14px;margin:12px 0 4px;font-size:15px;border:1px solid var(--line);background:var(--wash)}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 5 · Systems theory for the field</div>
+    <span class="eyebrow">Theory · T18</span>
+    <h1>Sensor physics: how sensors turn the world into signals</h1>
+    <p class="lede">Every number on a BMS screen started as a physical effect in a tiny piece of material: a resistance that changed with heat, a voltage made by two metals, a charge released by a warm body, a plate that bent. This chapter explains the physics of the sensors you will meet in buildings and security systems, gives you the numbers to check them with a meter, and shows how each one ends up as 0–10 V, 4–20 mA, a contact or a digital message at the controller.</p>
+    <div class="meta"><span><b>Reading</b> ~80 min</span><span><b>Level</b> Beginner → intermediate</span><span><b>Builds on</b> T02, T05, T06, T16</span><span><b>Used in</b> P12, C01, C03, C04, C06</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>From the world to a signal: the sensor chain</h2>
+    <p>A <b>sensor</b> is a part whose electrical behaviour changes in a known way when something in the world changes. A <b>transducer</b> is the general word for any part that converts one kind of energy into another. In a building, almost every sensor follows the same chain of five steps.</p>
+
+    <figure>
+      <svg viewBox="0 0 680 200" role="img" aria-label="Five boxes in a row: physical quantity, sensing element, signal conditioning, output signal, controller input">
+        <defs><marker id="t18f1-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="10" y="30" width="108" height="56" rx="8"/>
+        <text class="t t-small t-bold" x="64" y="55" text-anchor="middle">Physical</text>
+        <text class="t t-small t-bold" x="64" y="72" text-anchor="middle">quantity</text>
+        <rect class="f-accent-soft s-accent" x="148" y="30" width="108" height="56" rx="8"/>
+        <text class="t t-small t-bold" x="202" y="55" text-anchor="middle">Sensing</text>
+        <text class="t t-small t-bold" x="202" y="72" text-anchor="middle">element</text>
+        <rect class="f-wash s-line" x="286" y="30" width="108" height="56" rx="8"/>
+        <text class="t t-small t-bold" x="340" y="55" text-anchor="middle">Signal</text>
+        <text class="t t-small t-bold" x="340" y="72" text-anchor="middle">conditioning</text>
+        <rect class="f-wash s-line" x="424" y="30" width="108" height="56" rx="8"/>
+        <text class="t t-small t-bold" x="478" y="55" text-anchor="middle">Output</text>
+        <text class="t t-small t-bold" x="478" y="72" text-anchor="middle">signal</text>
+        <rect class="f-wash s-line" x="562" y="30" width="108" height="56" rx="8"/>
+        <text class="t t-small t-bold" x="616" y="55" text-anchor="middle">Controller</text>
+        <text class="t t-small t-bold" x="616" y="72" text-anchor="middle">input</text>
+        <path class="s-line" d="M118 58 H144" marker-end="url(#t18f1-a)"/>
+        <path class="s-line" d="M256 58 H282" marker-end="url(#t18f1-a)"/>
+        <path class="s-line" d="M394 58 H420" marker-end="url(#t18f1-a)"/>
+        <path class="s-line" d="M532 58 H558" marker-end="url(#t18f1-a)"/>
+        <text class="t t-small t-muted" x="64" y="110" text-anchor="middle">°C, Pa, ppm,</text>
+        <text class="t t-small t-muted" x="64" y="126" text-anchor="middle">motion, light</text>
+        <text class="t t-small t-muted" x="202" y="110" text-anchor="middle">resistance, mV,</text>
+        <text class="t t-small t-muted" x="202" y="126" text-anchor="middle">pF, charge</text>
+        <text class="t t-small t-muted" x="340" y="110" text-anchor="middle">divider, bridge,</text>
+        <text class="t t-small t-muted" x="340" y="126" text-anchor="middle">amplifier, filter</text>
+        <text class="t t-small t-muted" x="478" y="110" text-anchor="middle">0–10 V, 4–20 mA,</text>
+        <text class="t t-small t-muted" x="478" y="126" text-anchor="middle">contact, bus</text>
+        <text class="t t-small t-muted" x="616" y="110" text-anchor="middle">AI, DI or UI</text>
+        <text class="t t-small t-muted" x="616" y="126" text-anchor="middle">point</text>
+        <text class="t t-small t-accent" x="202" y="156" text-anchor="middle">the physics lives here</text>
+        <path class="s-accent" d="M202 138 V90" marker-end="url(#t18f1-a)"/>
+        <text class="t t-small t-muted" x="340" y="190" text-anchor="middle">Boxes 3 and 4 are often built into one housing: that housing is called a transmitter.</text>
+      </svg>
+      <figcaption>Figure 1. Every sensor in this chapter follows this chain. The physics of box 2 is different for each sensor. Boxes 3 and 4 are electronics that turn a weak or awkward signal into a standard one that any controller can read (T16).</figcaption>
+    </figure>
+
+    <p>Three questions help you with any new sensor. <b>What physical effect does it use?</b> <b>What does it output when nothing is happening?</b> <b>What does a broken wire look like?</b> The third question matters most for fault-finding, so we will answer it for every sensor.</p>
+
+    <h2>Temperature: why resistance changes with heat</h2>
+    <p>Temperature sensors are the most common sensors in buildings: room, supply air, return air, outside air, chilled water, hot water. Three of the four common types simply change their <b>resistance</b> or <b>voltage</b> with temperature. Chapter <a href="t02-resistance-ohms-law.html">T02</a> explained resistance as electrons colliding with a vibrating lattice. Now heat changes that picture in two opposite ways.</p>
+    <div class="cards">
+      <div class="card"><h4>Metals: resistance rises (PTC)</h4><p>Hot atoms vibrate harder, so the free electrons collide more often. A metal has a huge, fixed number of free electrons, so more collisions simply means more resistance. Platinum rises about 0.39 % per °C. This is the <b>RTD</b> (resistance temperature detector).</p></div>
+      <div class="card"><h4>Semiconductors: resistance falls (NTC)</h4><p>In a metal-oxide ceramic few electrons are free at low temperature. Heat shakes more of them loose, so there are many more carriers to conduct. The extra carriers win by far over the extra collisions. This is the <b>NTC thermistor</b> (negative temperature coefficient).</p></div>
+      <div class="card"><h4>Two metals: a voltage (Seebeck)</h4><p>Join two different metals and keep their ends at different temperatures. A small voltage appears with no battery at all. This is the <b>thermocouple</b>, and it needs no power supply.</p></div>
+    </div>
+
+    <h2>NTC thermistors and the Beta equation</h2>
+    <p>A <b>thermistor</b> (thermal resistor) is a small bead or disc of metal-oxide ceramic. The ordinary BMS room and duct sensor is a <b>10 kΩ NTC</b>: it has 10,000 Ω at 25 °C. Its resistance falls by a large percentage for every degree, which makes it very sensitive but curved.</p>
+    <p>Why does the curve look the way it does? To free a carrier, the ceramic needs a certain energy. The fraction of carriers that get that energy from heat grows like e<sup>−E/kT</sup>, where k is Boltzmann's constant and T is the temperature in kelvin. More carriers means lower resistance, so the resistance follows the same exponential in reverse. Engineers wrap this into one number from the datasheet, the <b>Beta value</b> (B), measured in kelvin.</p>
+    <div class="formula">R(T) = R<sub>0</sub> · exp[ B · (1/T − 1/T<sub>0</sub>) ]    (T and T<sub>0</sub> in kelvin = °C + 273.15)
+      <small>R<sub>0</sub> is the resistance at the reference temperature T<sub>0</sub> = 298.15 K (25 °C). For a "10 kΩ, Beta 3950" part, R<sub>0</sub> = 10,000 Ω and B = 3950 K. B is really an energy: B × k is the activation energy, here 3950 × 8.617×10⁻⁵ eV/K ≈ 0.34 eV.</small></div>
+    <h3>Worked example: 10 kΩ, Beta 3950</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Temperature</th><th>1/T − 1/T<sub>0</sub> (per K)</th><th>B × that</th><th>R = 10 kΩ × e<sup>(…)</sup></th></tr>
+      <tr><td>0 °C (273.15 K)</td><td>+0.000307</td><td>+1.213</td><td>33.6 kΩ</td></tr>
+      <tr><td>25 °C (298.15 K)</td><td>0</td><td>0</td><td>10.0 kΩ</td></tr>
+      <tr><td>50 °C (323.15 K)</td><td>−0.0002595</td><td>−1.025</td><td>3.59 kΩ</td></tr>
+      <tr><td>100 °C (373.15 K)</td><td>−0.000710</td><td>−2.805</td><td>0.70 kΩ</td></tr>
+    </table></div>
+    <p><b>How sensitive is it?</b> Differentiate the formula and you get dR/dT = −B·R/T². At 25 °C that is −3950 × 10,000 / 298.15² ≈ <b>−444 Ω per °C</b>, or −4.4 % of the resistance for each degree. A platinum sensor changes by 0.39 % per °C. The NTC is about ten times more sensitive, which is why a cheap ADC can read it well. The price is the curve: you need the equation (or a lookup table) to convert, and the Beta model is only good to a fraction of a degree over a modest range around 25 °C. For wider ranges, controllers use the more accurate three-term <b>Steinhart–Hart</b> equation or the maker's table.</p>
+    <h3>Reading it with a divider</h3>
+    <p>The ADC reads voltage, so the NTC is put in a <b>voltage divider</b> with a fixed 10 kΩ resistor (T04, and the lab P12). With the NTC to ground and 5 V across the pair:</p>
+    <div class="formula">V<sub>out</sub> = 5 V × R<sub>NTC</sub> / (R<sub>NTC</sub> + 10 kΩ)   → 25 °C: 2.500 V,   50 °C: 1.320 V,   0 °C: 3.854 V
+      <small>Near 25 °C the output changes by about −56 mV per °C. A 10-bit Arduino step is 4.88 mV (T16), so one step is only 4.88 / 56 ≈ 0.09 °C. That is why a 10 kΩ NTC and a 10 kΩ resistor make such a good pair: the sensitivity is greatest when both resistances are equal.</small></div>
+    <div class="callout tip"><span class="label">Self-heating</span><p>Current through the NTC warms it slightly: the divider above puts 0.25 mA through 10 kΩ, which is P = I²R ≈ 0.6 mW. Datasheets give a <b>dissipation constant</b>, typically of the order of 1–2 mW per °C in still air, so the sensor reads a fraction of a degree high. Good controllers keep the current small for this reason. Do not "improve" a reading by swapping in a smaller fixed resistor.</p></div>
+    <div class="callout job"><span class="label">What a broken wire looks like</span><p>An <b>open circuit</b> makes the NTC's resistance look infinite, so the controller reads <b>very cold</b> (often −40 °C or the bottom of the range). A <b>short circuit</b> reads <b>very hot</b>. A temperature stuck at an extreme value is almost always a wiring fault, not the weather. BMS controllers raise a "sensor fault" alarm for it.</p></div>
+
+    <h2>RTDs: PT100 and PT1000</h2>
+    <p>An <b>RTD</b> is a thin film or fine wire of platinum on a ceramic base. Platinum is chosen because it does not corrode, it can be made very pure, and its resistance rises in a smooth, repeatable way. The name tells you the resistance at 0 °C: <b>PT100 = 100 Ω</b>, <b>PT1000 = 1000 Ω</b>. The international standard (IEC 60751) fixes the curve, so a PT100 from any maker should agree with another. That interchangeability is why RTDs are the reference in industry.</p>
+    <div class="formula">R(T) = R<sub>0</sub> · (1 + A·T + B·T²)  for T ≥ 0 °C,    A = 3.9083×10⁻³ /°C,  B = −5.775×10⁻⁷ /°C²
+      <small>This is the Callendar–Van Dusen equation (IEC 60751). Rule of thumb for a PT100: <b>about 0.385 Ω per °C</b>. A PT1000 is exactly ten times larger: 3.85 Ω per °C. At 0 °C, PT100 = 100.00 Ω. At 100 °C it is 100 × (1 + 0.39083 − 0.005775) = <b>138.51 Ω</b>.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>°C</th><th>PT100</th><th>PT1000</th><th>Linear rule 100 + 0.385·T</th></tr>
+      <tr><td>−40</td><td>84.27 Ω</td><td>842.7 Ω</td><td>84.6 Ω</td></tr>
+      <tr><td>0</td><td>100.00 Ω</td><td>1000.0 Ω</td><td>100.0 Ω</td></tr>
+      <tr><td>25</td><td>109.73 Ω</td><td>1097.3 Ω</td><td>109.6 Ω</td></tr>
+      <tr><td>50</td><td>119.40 Ω</td><td>1194.0 Ω</td><td>119.3 Ω</td></tr>
+      <tr><td>100</td><td>138.51 Ω</td><td>1385.1 Ω</td><td>138.5 Ω</td></tr>
+      <tr><td>150</td><td>157.33 Ω</td><td>1573.3 Ω</td><td>157.8 Ω</td></tr>
+    </table></div>
+    <p>The linear rule is good to within about half a degree from 0 to 100 °C, but it drifts outside that range because of the small negative B term. The sensor is graded by tolerance: <b>Class A</b> is ±(0.15 + 0.002·|T|) °C and <b>Class B</b> is ±(0.30 + 0.005·|T|) °C, so a Class B element is within 0.3 °C at 0 °C and within 0.55 °C at 50 °C. That is far better than a typical NTC or thermocouple.</p>
+    <p>An RTD must be measured by passing a small known current through it and reading the voltage. That current heats it, so it is kept to about 1 mA or less for a PT100 (power I²R = 0.1 mW). A PT1000 is read with a smaller current for the same signal, which is another reason it is popular.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>BMS and HVAC controllers in Australian buildings take many sensor types, and the controller's input must be configured to match the sensor. PT1000 and 10 kΩ NTC are very common for room, duct and pipe sensors. Older sites may have nickel-based 1000 Ω sensors. Always check the controller's list of supported input types and the sensor's datasheet before you wire anything.</p></div>
+
+    <h2>Lead resistance: 2-, 3- and 4-wire</h2>
+    <p>The sensor may sit 30 m from the controller. The copper cable has resistance too, and the controller cannot tell cable resistance from sensor resistance. This is the <b>lead-resistance problem</b>. A 0.5 mm² copper conductor has about 0.0344 Ω per metre (T16), so 30 m of cable has 1.03 Ω in each conductor.</p>
+    <figure>
+      <svg viewBox="0 0 680 290" role="img" aria-label="Three RTD connections: 2-wire, 3-wire and 4-wire, with lead resistances marked">
+        <text class="t t-bold" x="115" y="22" text-anchor="middle">2-wire</text>
+        <rect class="f-wash s-line" x="10" y="45" width="56" height="150" rx="6"/>
+        <text class="t t-small" x="38" y="124" text-anchor="middle">meter</text>
+        <path class="s-line" d="M66 70 H182 V95"/>
+        <path class="s-line" d="M66 170 H182 V145"/>
+        <rect class="f-accent-soft s-accent" x="160" y="95" width="44" height="50"/>
+        <text class="t t-small t-accent" x="182" y="124" text-anchor="middle">PT100</text>
+        <rect class="f-panel s-line" x="96" y="63" width="30" height="14"/>
+        <rect class="f-panel s-line" x="96" y="163" width="30" height="14"/>
+        <text class="t t-small t-red" x="111" y="56" text-anchor="middle">R lead</text>
+        <text class="t t-small t-red" x="111" y="194" text-anchor="middle">R lead</text>
+
+        <text class="t t-bold" x="340" y="22" text-anchor="middle">3-wire</text>
+        <rect class="f-wash s-line" x="235" y="45" width="56" height="150" rx="6"/>
+        <text class="t t-small" x="263" y="124" text-anchor="middle">meter</text>
+        <path class="s-line" d="M291 70 H407 V95"/>
+        <path class="s-line" d="M291 160 H407 V145"/>
+        <path class="s-blue" d="M291 180 H407 V160"/>
+        <circle class="f-ink" cx="407" cy="145" r="3.5"/>
+        <rect class="f-accent-soft s-accent" x="385" y="95" width="44" height="50"/>
+        <text class="t t-small t-accent" x="407" y="124" text-anchor="middle">PT100</text>
+        <rect class="f-panel s-line" x="321" y="63" width="30" height="14"/>
+        <rect class="f-panel s-line" x="321" y="153" width="30" height="14"/>
+        <rect class="f-panel s-blue" x="321" y="173" width="30" height="14"/>
+        <text class="t t-small t-red" x="336" y="56" text-anchor="middle">R lead</text>
+
+        <text class="t t-bold" x="565" y="22" text-anchor="middle">4-wire</text>
+        <rect class="f-wash s-line" x="460" y="45" width="56" height="150" rx="6"/>
+        <text class="t t-small" x="488" y="124" text-anchor="middle">meter</text>
+        <path class="s-red" d="M516 62 H643 V95"/>
+        <path class="s-blue" d="M516 82 H631 V95"/>
+        <path class="s-blue" d="M516 170 H631 V145"/>
+        <path class="s-red" d="M516 188 H643 V145"/>
+        <rect class="f-accent-soft s-accent" x="614" y="95" width="46" height="50"/>
+        <text class="t t-small t-red" x="522" y="56">I+</text>
+        <text class="t t-small t-blue" x="522" y="98">V+</text>
+        <text class="t t-small t-blue" x="522" y="162">V−</text>
+        <text class="t t-small t-red" x="522" y="204">I−</text>
+        <text class="t t-small t-accent" x="637" y="124" text-anchor="middle">PT100</text>
+
+        <text class="t t-small" x="115" y="228" text-anchor="middle">Meter sees R + 2 × R lead</text>
+        <text class="t t-small t-red" x="115" y="246" text-anchor="middle">2 × 1 Ω of lead = +2 Ω</text>
+        <text class="t t-small t-red" x="115" y="264" text-anchor="middle">= +5.2 °C error on PT100</text>
+        <text class="t t-small" x="340" y="228" text-anchor="middle">Third wire lets the meter</text>
+        <text class="t t-small" x="340" y="246" text-anchor="middle">measure one lead and</text>
+        <text class="t t-small" x="340" y="264" text-anchor="middle">subtract it (leads equal)</text>
+        <text class="t t-small" x="565" y="228" text-anchor="middle">Red pair forces current,</text>
+        <text class="t t-small" x="565" y="246" text-anchor="middle">blue pair senses voltage</text>
+        <text class="t t-small" x="565" y="264" text-anchor="middle">with ~zero current: no drop</text>
+      </svg>
+      <figcaption>Figure 2. Left: with two wires the meter measures the sensor plus both leads. Middle: a third wire gives the meter a measurement of lead resistance, and it assumes the other lead matches. Right: four wires (Kelvin connection) separate the current path from the voltage-sensing path, so lead resistance drops out completely.</figcaption>
+    </figure>
+    <h3>Worked example</h3>
+    <p>A PT100 sits 30 m from the controller on 0.5 mm² cable and is connected by two wires. Lead resistance is 2 × 1.03 = 2.06 Ω. The controller thinks the extra 2.06 Ω is sensor resistance and reads high by 2.06 / 0.385 = <b>5.4 °C</b>. The same cable with a PT1000 adds the same 2.06 Ω, but the PT1000 changes by 3.85 Ω per °C, so the error is only 2.06 / 3.85 = <b>0.5 °C</b>. With a 10 kΩ NTC changing 444 Ω per °C at 25 °C, the same 2 Ω is only 0.005 °C and can be ignored. This is the main reason HVAC uses PT1000 and NTC sensors on long runs, and PT100 with 3 or 4 wires in industry.</p>
+    <div class="widget" id="t18-lead">
+      <span class="label">Interactive · Lead-resistance error</span>
+      <p class="wsmall">Copper at 20 °C, resistivity 1.72×10⁻⁸ Ω·m. The error is for a <b>2-wire</b> connection. 3-wire and 4-wire connections remove most or all of it.</p>
+      <div class="wgrid">
+        <label>Cable length, one way (m)<input type="number" id="t18l-len" min="0" max="500" step="1" value="30"></label>
+        <label>Conductor size<select id="t18l-mm"><option value="0.22">0.22 mm²</option><option value="0.5" selected>0.5 mm²</option><option value="0.75">0.75 mm²</option><option value="1">1.0 mm²</option><option value="1.5">1.5 mm²</option></select></label>
+      </div>
+      <div class="readings">
+        <div><small>One conductor</small><span class="out" id="t18l-rc">1.03 Ω</span></div>
+        <div><small>Both conductors</small><span class="out" id="t18l-r2">2.06 Ω</span></div>
+        <div><small>Error, PT100</small><span class="out" id="t18l-e100">5.4 °C</span></div>
+        <div><small>Error, PT1000</small><span class="out" id="t18l-e1000">0.54 °C</span></div>
+        <div><small>Error, 10 kΩ NTC at 25 °C</small><span class="out" id="t18l-entc">0.005 °C</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var len=g('t18l-len'),mm=g('t18l-mm');
+      function upd(){
+        var L=parseFloat(len.value),A=parseFloat(mm.value);
+        if(!(L>=0)||!(A>0)){return;}
+        var rc=1.72e-8*L/(A*1e-6),r2=2*rc;
+        g('t18l-rc').textContent=rc.toFixed(2)+' Ω';
+        g('t18l-r2').textContent=r2.toFixed(2)+' Ω';
+        g('t18l-e100').textContent=(r2/0.385).toFixed(2)+' °C';
+        g('t18l-e1000').textContent=(r2/3.85).toFixed(2)+' °C';
+        g('t18l-entc').textContent=(r2/444).toFixed(3)+' °C';
+      }
+      len.oninput=upd;mm.onchange=upd;mm.oninput=upd;upd();
+    })();
+    </script>
+    <div class="callout job"><span class="label">What a broken wire looks like</span><p>An open RTD circuit gives a huge resistance, so the controller reads <b>very hot</b> (the opposite of an NTC). A short gives about 0 Ω, which reads far below −100 °C. In a 3-wire RTD, if the sense wire breaks the controller can no longer subtract lead resistance and the reading jumps by a few degrees: a puzzling fault that looks like a sensor drifting.</p></div>
+
+    <h2>Thermocouples: the Seebeck effect</h2>
+    <p>Heat a metal rod at one end. The electrons at the hot end have more energy and spread out more, so some diffuse towards the cold end and build up there. The result is a small voltage along the rod. This is the <b>Seebeck effect</b>. How large the voltage is depends on the metal. If you use <b>two different metals</b> and join them at the hot end, the voltages along the two wires differ. Compare them at the cold ends and you get a net voltage that depends on the temperature <i>difference</i> between the hot end and the cold end.</p>
+    <div class="formula">V ≈ S × (T<sub>hot</sub> − T<sub>cold</sub>),   Type K: S ≈ 41 µV/°C
+      <small>Type K is chromel (nickel-chromium) against alumel (nickel-aluminium). It is the standard general-purpose thermocouple and works from below −100 °C to roughly 1,200 °C in normal use. A table value: 100 °C above a 0 °C reference gives 4.096 mV (40.96 µV/°C on average); 1000 °C gives 41.276 mV. The slope is close to, but not exactly, constant, so the 41 µV/°C rule is approximate.</small></div>
+    <p>The voltage is tiny. At 100 °C it is about 4 mV, and one degree is 41 millionths of a volt. This brings three practical consequences.</p>
+    <ol>
+      <li><b>It needs an amplifier or a transmitter</b> near the sensor. A thermocouple-input card or a head-mounted transmitter turns the microvolts into 4–20 mA (T16). The T16 noise example showed that a signal this small is easily swamped by hum, so use twisted, shielded pairs and earth the shield at one end.</li>
+      <li><b>You must use the right wire all the way.</b> Every joint between two different metals makes its own thermocouple. Copper to chromel in a terminal is a junction. So the thermocouple (or matching extension cable) must run unbroken to the controller's terminals, with matching plugs.</li>
+      <li><b>You must know the cold-junction temperature</b>, as explained next.</li>
+    </ol>
+    <h3>Cold-junction compensation</h3>
+    <p>The voltage depends on <i>both</i> temperatures. The controller is not at 0 °C: its terminal block might be at 25 °C. The "cold junction" is wherever the thermocouple wires meet the controller's copper. If the controller only looked at the voltage, a warm panel would make the process look colder than it is. So the controller has a small thermistor or sensor chip at its terminals, measures the terminal temperature, calculates the voltage that temperature would make, and <b>adds it back</b>. This is <b>cold-junction compensation</b> (CJC).</p>
+    <figure>
+      <svg viewBox="0 0 680 260" role="img" aria-label="A type K thermocouple: hot junction at the left, two wires to a terminal block at the cold junction, then copper to the controller">
+        <circle class="f-red" cx="70" cy="110" r="8"/>
+        <text class="t t-small" x="70" y="140" text-anchor="middle">hot junction</text>
+        <text class="t t-small t-red" x="70" y="156" text-anchor="middle">at T hot</text>
+        <path class="s-red" d="M77 105 C150 60 300 60 400 78"/>
+        <path class="s-blue" d="M77 115 C150 160 300 160 400 142"/>
+        <text class="t t-small t-red" x="230" y="52">chromel (+)</text>
+        <text class="t t-small t-blue" x="230" y="186">alumel (−)</text>
+        <rect class="f-wash s-line" x="400" y="58" width="100" height="104" rx="6"/>
+        <text class="t t-small t-bold" x="450" y="104" text-anchor="middle">terminals</text>
+        <text class="t t-small" x="450" y="120" text-anchor="middle">cold junction</text>
+        <text class="t t-small t-muted" x="450" y="182" text-anchor="middle">T cold sensor inside</text>
+        <circle class="f-ink" cx="400" cy="78" r="3.5"/><circle class="f-ink" cx="400" cy="142" r="3.5"/>
+        <path class="s-line" d="M500 78 H580"/><path class="s-line" d="M500 142 H580"/>
+        <text class="t t-small t-muted" x="540" y="70" text-anchor="middle">copper</text>
+        <rect class="f-accent-soft s-accent" x="580" y="62" width="90" height="96" rx="8"/>
+        <text class="t t-small t-bold" x="625" y="104" text-anchor="middle">controller</text>
+        <text class="t t-small" x="625" y="120" text-anchor="middle">mV input</text>
+        <text class="t" x="20" y="226">V = 41 µV × (T hot − T cold)</text>
+        <text class="t t-small t-muted" x="20" y="246">The controller adds back the T cold part, so it can report T hot.</text>
+      </svg>
+      <figcaption>Figure 3. A thermocouple measures the <i>difference</i> between the hot junction and the cold junction at the controller's terminals. The controller measures its own terminal temperature and corrects for it.</figcaption>
+    </figure>
+    <h3>Worked example</h3>
+    <p>A type K probe in a flue is connected to a transmitter whose terminals are at 25 °C. The transmitter measures 10.0 mV across its input. At 25 °C the cold junction accounts for 41 µV × 25 = 1.03 mV. The full voltage from 0 °C is 10.0 + 1.03 = 11.03 mV, so T<sub>hot</sub> ≈ 11.03 / 0.041 ≈ <b>269 °C</b> by the linear rule. A proper table gives about 271 °C, so the shortcut is good here. Without compensation the transmitter would have reported 10.0 / 0.041 = 244 °C, which is 25 °C too low.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The voltage is made at the junction where the two metals touch." <b>Right:</b> the voltage develops <i>along the wires</i>, wherever they pass through a temperature gradient. The junction only joins the two wires so that the difference can be read at the other end. This is why a thermocouple measures the temperature <i>at the hot junction</i> only if the wire is uniform, and why damaged or mixed wire gives errors even when the tip is fine.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Plugs and sheaths of type K are not the same colour in all countries. The American code makes the <b>red</b> wire negative, which surprises people used to red meaning positive. The international (IEC) code differs again. Check the type marked on the probe and the datasheet instead of relying on colours.</p></div>
+    <div class="callout job"><span class="label">What a broken wire looks like</span><p>A thermocouple input has almost no current flowing, so a break gives no sign by itself. Good inputs inject a tiny current to detect it and drive the reading to the top or bottom of the range (called <b>burnout</b>). A standard-grade type K is typically only good to about ±2.5 °C or 0.75 % of the reading (indicative; see the datasheet), so for ±0.5 °C accuracy near room temperature an RTD is the better choice. Thermocouples earn their place at high temperatures and fast response.</p></div>
+
+    <h2>Try it: temperature-sensor comparator</h2>
+    <p>Move the slider and compare the four temperature sensors. Watch how much the NTC changes against how little the PT100 changes. The thermocouple voltage uses the linear 41 µV/°C rule and is <b>approximate</b>. Resistances are calculated from the Beta equation (NTC 10 kΩ, B = 3950) and the IEC 60751 equation (PT100, PT1000).</p>
+    <div class="widget" id="t18-cmp">
+      <span class="label">Interactive · Temperature-sensor comparator</span>
+      <label>Temperature at the sensor <span class="out" id="t18c-to">25 °C</span><input type="range" id="t18c-t" min="-40" max="150" step="1" value="25"></label>
+      <label>Controller terminals (cold junction) <span class="out" id="t18c-co">25 °C</span><input type="range" id="t18c-c" min="0" max="50" step="1" value="25"></label>
+      <svg id="t18c-svg" viewBox="0 0 600 230" role="img" aria-label="Resistance of NTC and platinum sensors against temperature, relative to their 25 degree value, on a log scale"></svg>
+      <div class="readings">
+        <div><small>NTC 10 kΩ, Beta 3950</small><span class="out" id="t18c-ntc">10.00 kΩ</span><span class="sub" id="t18c-ntcs"></span></div>
+        <div><small>NTC in divider (10 kΩ to 5 V)</small><span class="out" id="t18c-div">2.500 V</span></div>
+        <div><small>PT100</small><span class="out" id="t18c-p100">109.73 Ω</span><span class="sub" id="t18c-p100s"></span></div>
+        <div><small>PT1000</small><span class="out" id="t18c-p1k">1097.3 Ω</span><span class="sub" id="t18c-p1ks"></span></div>
+        <div><small>Type K from 0 °C (approx.)</small><span class="out" id="t18c-k0">1.025 mV</span><span class="sub">41 µV per °C</span></div>
+        <div><small>Type K at the terminals (approx.)</small><span class="out" id="t18c-k1">0.000 mV</span><span class="sub" id="t18c-k1s"></span></div>
+      </div>
+      <div class="wstatus" id="t18c-note"></div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var tS=g('t18c-t'),cS=g('t18c-c'),svg=g('t18c-svg');
+      var A=3.9083e-3,B=-5.775e-7,C=-4.183e-12;
+      function ntc(T){var K=T+273.15;return 10000*Math.exp(3950*(1/K-1/298.15));}
+      function pt(T,R0){var r=1+A*T+B*T*T;if(T<0){r+=C*(T-100)*T*T*T;}return R0*r;}
+      function kv(T){return 0.041*T;}
+      function fR(r){return r>=1000?(r/1000).toFixed(2)+' kΩ':r.toFixed(1)+' Ω';}
+      function slope(fn,T){return fn(T+0.5)-fn(T-0.5);}
+      function sl(x){return (x>0?'+':'−')+Math.abs(x).toFixed(Math.abs(x)<10?2:0)+' Ω per °C';}
+      var XL=60,XR=570;
+      function X(T){return XL+(T+40)/190*(XR-XL);}
+      function Y(r){return 20+(2-Math.log(r)/Math.LN10)/4*160;}
+      function curve(fn,ref){var p='',T;for(T=-40;T<=150;T+=2){p+=(p?' ':'M')+X(T).toFixed(1)+' '+Y(fn(T)/ref).toFixed(1);}return p;}
+      function upd(){
+        var T=+tS.value,Tc=+cS.value,i,h='';
+        g('t18c-to').textContent=T+' °C';
+        g('t18c-co').textContent=Tc+' °C';
+        var rn=ntc(T),r1=pt(T,100),r2=pt(T,1000);
+        var sn=slope(ntc,T),s1=slope(function(x){return pt(x,100);},T),s2=slope(function(x){return pt(x,1000);},T);
+        g('t18c-ntc').textContent=fR(rn);
+        g('t18c-ntcs').textContent=sl(sn);
+        g('t18c-div').textContent=(5*rn/(rn+10000)).toFixed(3)+' V';
+        g('t18c-p100').textContent=r1.toFixed(2)+' Ω';
+        g('t18c-p100s').textContent=sl(s1);
+        g('t18c-p1k').textContent=r2.toFixed(1)+' Ω';
+        g('t18c-p1ks').textContent=sl(s2);
+        g('t18c-k0').textContent=kv(T).toFixed(3)+' mV';
+        var vt=kv(T)-kv(Tc);
+        g('t18c-k1').textContent=vt.toFixed(3)+' mV';
+        g('t18c-k1s').textContent='cold junction at '+Tc+' °C removes '+kv(Tc).toFixed(3)+' mV';
+        for(i=0;i<5;i++){
+          var yy=Y(Math.pow(10,2-i)).toFixed(1);
+          h+='<line class="s-thin s-dash" x1="'+XL+'" y1="'+yy+'" x2="'+XR+'" y2="'+yy+'"/>';
+          h+='<text class="t t-small t-muted" x="'+(XL-6)+'" y="'+(+yy+4)+'" text-anchor="end">'+['100×','10×','1×','0.1×','0.01×'][i]+'</text>';
+        }
+        [-40,0,50,100,150].forEach(function(t){h+='<line class="s-thin" x1="'+X(t).toFixed(1)+'" y1="180" x2="'+X(t).toFixed(1)+'" y2="186"/><text class="t t-small t-muted" x="'+X(t).toFixed(1)+'" y="200" text-anchor="middle">'+t+'</text>';});
+        h+='<text class="t t-small t-muted" x="'+XR+'" y="222" text-anchor="end">temperature, °C</text>';
+        h+='<text class="t t-small t-muted" x="'+XL+'" y="222">R compared with its value at 25 °C</text>';
+        h+='<path class="s-accent" d="'+curve(ntc,10000)+'"/>';
+        h+='<path class="s-red" d="'+curve(function(x){return pt(x,100);},pt(25,100))+'"/>';
+        h+='<line class="s-thin s-dash" x1="'+X(T).toFixed(1)+'" y1="20" x2="'+X(T).toFixed(1)+'" y2="180"/>';
+        h+='<circle class="f-accent" cx="'+X(T).toFixed(1)+'" cy="'+Y(rn/10000).toFixed(1)+'" r="5"/>';
+        h+='<circle class="f-red" cx="'+X(T).toFixed(1)+'" cy="'+Y(r1/pt(25,100)).toFixed(1)+'" r="5"/>';
+        h+='<text class="t t-small t-accent" x="300" y="34">NTC 10 kΩ: falls steeply, and bends</text>';
+        h+='<text class="t t-small t-red" x="300" y="52">PT100/PT1000: gentle, nearly straight</text>';
+        svg.innerHTML=h;
+        var a=Math.abs(sn)/rn*100,b=s1/r1*100;
+        g('t18c-note').textContent='At '+T+' °C one degree changes the NTC by '+a.toFixed(2)+' % of its resistance, but the platinum sensor by only '+b.toFixed(2)+' %. The NTC is about '+(a/b).toFixed(0)+' times more sensitive here, and the platinum sensor is far more linear. Type K gives just 41 µV per °C, so it always needs an amplifier.';
+      }
+      tS.oninput=upd;cS.oninput=upd;upd();
+    })();
+    </script>
+
+    <h2>Motion: the PIR sensor</h2>
+    <p><b>PIR</b> means <b>passive infrared</b>: "passive" because it sends nothing out, it only listens for the infrared that warm objects already emit. Every object gives off infrared radiation, and a human body at about 34 °C skin temperature has its peak near λ = 2898 µm·K / 307 K ≈ <b>9.4 µm</b> (Wien's law), which is in the far infrared (the 8–14 µm band). A PIR is built to see exactly that band.</p>
+    <h3>The pyroelectric crystal</h3>
+    <p>The heart of a PIR is a thin slice of <b>pyroelectric</b> material, such as lithium tantalate. In such a crystal, the atoms are slightly offset in a way that makes one face positive and the other negative. The size of this offset (the <b>polarisation</b>) changes with temperature. When infrared lands on the crystal and warms it, its polarisation changes, and charge flows onto the electrodes: a tiny current, for a moment. Then the crystal reaches a steady temperature, the polarisation stops changing, and the current stops. <b>A pyroelectric crystal responds to a change in temperature, not to temperature itself.</b> A small transistor built into the sensor turns the very high-impedance charge into a usable voltage.</p>
+    <h3>Two elements and a Fresnel lens</h3>
+    <ul>
+      <li><b>Two elements wired in opposite polarity.</b> If the whole room warms (sunlight, a heater switching on), both elements warm together and their signals cancel. If a warm person crosses from the view of element A to the view of element B, the output swings positive, then negative. The electronics look for those paired pulses.</li>
+      <li><b>A Fresnel lens</b> (a moulded plastic lens with many small facets) divides the room into many narrow <b>zones</b> and focuses each one onto the elements. Ordinary glass blocks far infrared, but the thin polyethylene plastic of the lens passes it. A person moving from one zone into the next causes the repeated pulses.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-label="Top view of PIR detection zones with a person crossing them, and the pulse train from the sensor compared with a person standing still">
+        <defs><marker id="t18f4-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <polygon class="f-accent-soft s-thin" points="40,150 340,10 340,47"/>
+        <polygon class="f-accent-soft s-thin" points="40,150 340,75 340,108"/>
+        <polygon class="f-accent-soft s-thin" points="40,150 340,134 340,166"/>
+        <polygon class="f-accent-soft s-thin" points="40,150 340,192 340,225"/>
+        <polygon class="f-accent-soft s-thin" points="40,150 340,253 340,290"/>
+        <rect class="f-ink" x="26" y="140" width="14" height="20" rx="2"/>
+        <text class="t t-small" x="20" y="184">sensor + lens</text>
+        <path class="s-red s-dash" d="M240 272 V34" marker-end="url(#t18f4-a)"/>
+        <circle class="f-red" cx="240" cy="150" r="7"/>
+        <text class="t t-small t-red" x="20" y="44">person walks across</text>
+        <text class="t t-small t-muted" x="20" y="64">shaded = zones the</text>
+        <text class="t t-small t-muted" x="20" y="80">sensor can see</text>
+        <text class="t t-small t-muted" x="20" y="288">top view of a room</text>
+        <text class="t t-small t-muted" x="390" y="44">amplified sensor output</text>
+        <line class="s-thin" x1="390" y1="150" x2="665" y2="150"/>
+        <line class="s-thin s-dash" x1="390" y1="110" x2="665" y2="110"/>
+        <line class="s-thin s-dash" x1="390" y1="190" x2="665" y2="190"/>
+        <text class="t t-small t-muted" x="665" y="104" text-anchor="end">threshold</text>
+        <path class="s-accent" d="M400 150 421 149.9 424 149.1 427 144.7 430 131.6 433 111.1 436 100 439 111.5 442 134.7 445 157.5 448 181.1 451 198.5 454 194.7 457 175 460 158.4 463 151.3 466 147.1 469 137.2 472 117.9 475 101.4 478 105.5 481 126.8 484 150 487 173.2 490 194.5 493 198.6 496 182.1 499 162.8 502 152.9 505 148.7 508 141.6 511 125 514 105.3 517 101.5 520 118.9 523 142.5 526 165.3 529 188.5 532 200 535 188.9 538 168.4 541 155.3 544 150.9 547 150 665 150"/>
+        <text class="t t-small" x="480" y="225" text-anchor="middle">walking across:</text>
+        <text class="t t-small" x="480" y="241" text-anchor="middle">pulse pairs, alarm</text>
+        <text class="t t-small" x="610" y="225" text-anchor="middle">standing still:</text>
+        <text class="t t-small" x="610" y="241" text-anchor="middle">flat, no alarm</text>
+      </svg>
+      <figcaption>Figure 4. The lens splits the room into narrow zones. A person walking across them makes a train of positive and negative pulses (the two elements take turns). A person who stops moving gives a steady signal, so the output falls to zero. The sensor sees movement, not presence.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A PIR detects a warm body, so it will always see a person in the room." <b>Right:</b> it detects a <b>change</b> in the infrared pattern across its zones. A person sitting still at a desk can make the lights switch off. Moving <i>across</i> the zones triggers it much more strongly than walking <i>directly towards</i> it. It also does not see through glass. In very hot weather, when the background is close to body temperature, sensitivity drops.</p></div>
+    <p>A security PIR is usually a relay contact (normally closed, with a tamper switch) in an alarm zone (C06). A BMS occupancy sensor is usually a dry contact into a digital input, with a time delay in the controller so the lights stay on for 10–15 minutes after the last movement. Dual-technology sensors add a second method (microwave or ultrasonic) so that both must agree, which cuts false alarms from heaters and sunlight. Typical false triggers are hot-air vents, curtains moving in the draught of an air-con outlet, and sun through a window falling on a warm wall.</p>
+
+    <h2>Magnetic sensors: the Hall effect and reed switches</h2>
+    <h3>The Hall effect</h3>
+    <p>Chapter <a href="t06-magnetism-inductors.html">T06</a> showed that a magnetic field pushes sideways on moving charge: the force on one charge q moving at speed v is F = qvB. Now run a current along a flat strip of conductor and put a magnetic field through the strip. The moving charges are pushed to one side, so one edge becomes slightly negative and the other slightly positive. Charge piles up until the sideways electric force balances the magnetic push. The voltage across the strip is the <b>Hall voltage</b>.</p>
+    <div class="formula">V<sub>H</sub> = I · B / (n · q · t)
+      <small>I = current along the strip, B = flux density through it (tesla), n = number of free charges per cubic metre, q = 1.602×10⁻¹⁹ C, t = strip thickness. Worked: silicon-type material n = 10²² /m³, t = 0.1 mm, I = 5 mA, B = 50 mT gives V<sub>H</sub> = 0.005 × 0.05 / (10²² × 1.602×10⁻¹⁹ × 10⁻⁴) ≈ <b>1.6 mV</b>. The same strip in copper (n = 8.5×10²⁸) gives about 0.0000000002 V. That is why Hall sensors use <b>semiconductors</b>: with few free charges, each one is pushed hard.</small></div>
+    <p>A silicon Hall element is built into a chip with an amplifier. The chip comes in two forms.</p>
+    <ul>
+      <li><b>Linear (analogue) Hall sensor.</b> Output is half the supply voltage with no field, and swings up or down in proportion to the field (a few millivolts per millitesla, depending on the part). It is <b>ratiometric</b>: it scales with the supply, which is fine if the ADC uses the same supply as its reference.</li>
+      <li><b>Hall switch.</b> The chip has a comparator inside and gives a digital on/off when the field passes a threshold. Many switches respond to one magnetic pole only, so the magnet must be turned the right way round. Some are latching and need the opposite pole to switch back.</li>
+    </ul>
+    <p><b>Current sensors.</b> A current makes a field (Ampère, T06). Thread a conductor through a ring of magnetic material with a small gap, place a Hall chip in the gap, and the chip's output is proportional to the current, with <b>electrical isolation</b> from the measured conductor. Unlike a current transformer (T08), it works down to <b>DC</b>. Variable speed drives (T19), solar inverters and battery systems all use Hall current sensors. A DC clamp meter is a Hall device; a plain AC clamp meter is a current transformer. Illustrative numbers: a sensor with output 2.5 V at 0 A and 40 mV per amp reads 2.9 V at 10 A and 2.1 V at −10 A.</p>
+    <p><b>Position sensing.</b> A small magnet on a door, shutter, damper blade or rotor, and a Hall chip fixed nearby, give a contactless position sensor with no mechanical wear. Brushless motor fans (T19) use three Hall sensors to know where the rotor is.</p>
+
+    <h3>Reed switches</h3>
+    <p>A <b>reed switch</b> is two thin strips of magnetic metal (the <b>reeds</b>) sealed in a glass tube filled with inert gas. Their tips overlap with a small gap. Bring a magnet close and both reeds become magnets: the tip of one becomes a north pole and the overlapping tip of the other a south pole. Opposite poles attract, so the tips touch and the switch <b>closes</b>. Take the magnet away and the springy reeds open again. The magnet does the switching directly; no power is needed at the switch.</p>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Reed switch</th><th>Hall switch</th></tr>
+      <tr><td>Needs power at the sensor</td><td>No: passive contact</td><td>Yes: a few volts</td></tr>
+      <tr><td>Output</td><td>Clean contact open/closed</td><td>Logic level or open-collector</td></tr>
+      <tr><td>Wear and shock</td><td>Contacts wear; glass can crack</td><td>No moving parts; billions of operations</td></tr>
+      <tr><td>Bounce</td><td>Yes: debounce in software</td><td>No</td></tr>
+      <tr><td>Load</td><td>Small: fractions of an amp. Do not switch inductive loads directly</td><td>Small signals only</td></tr>
+      <tr><td>Typical use</td><td>Door and window contacts, cheap flow meters, cylinder position</td><td>Motor commutation, current sensing, lock/door status, rotation counting</td></tr>
+    </table></div>
+    <div class="callout job"><span class="label">On the job · security door contacts</span><p>A <b>door contact</b> in an intruder-alarm system is a reed switch in the frame and a magnet in the door. Typical gap rating is around 15–25 mm for surface contacts (wide-gap versions are larger; see the datasheet). It is wired in an alarm zone with an <b>end-of-line (EOL) resistor</b> so the panel can tell the difference between closed, open and cut or shorted cable (C06). A big magnet held against the frame can fool a plain reed contact. High-security sites use <b>balanced (biased) magnetic switches</b> with two reeds and a bias magnet, so a second magnet cannot hold the contact shut. In security these are abbreviated "BMS", which is a completely different BMS from the building management system.</p></div>
+    <div class="callout job"><span class="label">On the job · fan and pump status</span><p>BMS jobs often use a <b>current switch</b>: a split-core clamp that goes around one motor cable and closes a contact when current flows (some use a Hall element or a current transformer). It proves that the motor is really drawing current, which is a better "running" signal than the start command. An electrician installs it in the switchboard; you wire the dry contact into a digital input.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Clamping a meter or sensor around a conductor means being inside a switchboard or motor terminal box. That is mains or three-phase. In Australia only a licensed electrician may open it and work on it. This course keeps you at extra-low voltage: practise on batteries and 12 V or 24 V DC circuits only.</p></div>
+
+    <h2>Pressure and differential pressure</h2>
+    <p><b>Pressure</b> is force per area. The SI unit is the <b>pascal</b> (Pa): 1 newton on 1 square metre. A pascal is small, so HVAC air pressure is quoted in pascals (a duct might sit at 250 Pa) and water pressure in kilopascals or bar (1 bar = 100 kPa). Three kinds exist: <b>gauge</b> (compared with the air around), <b>absolute</b> (compared with a vacuum) and <b>differential</b> (the difference between two ports).</p>
+    <h3>Strain gauge and the bridge</h3>
+    <p>Most pressure sensors use the <b>piezoresistive</b> effect: when a conductor is stretched, its resistance changes. A stretched wire is longer and thinner (T02: R = ρL/A), and in a semiconductor the stretch also changes the crystal's resistivity. The sensitivity is the <b>gauge factor</b>, GF = (ΔR/R) / strain. Metal foil gauges have GF of about 2. Silicon gauges are far more sensitive, with GF of the order of 100.</p>
+    <p>Four gauges are mounted on a thin <b>diaphragm</b> (a flexible plate) and connected as a <b>Wheatstone bridge</b>. When pressure bends the plate, two gauges stretch and two compress, so two resistances go up and two go down. A bridge turns that small difference into a voltage and cancels the large common effects, such as temperature drift that moves all four gauges together.</p>
+    <figure>
+      <svg viewBox="0 0 680 280" role="img" aria-label="A differential pressure sensor with a bending diaphragm, and the Wheatstone bridge of four strain gauges">
+        <defs><marker id="t18f5-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker><marker id="t18f5-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="60" y="60" width="250" height="140" rx="6"/>
+        <path class="s-thin s-dash" d="M185 60 V200"/>
+        <path class="s-accent" style="stroke-width:4" d="M185 60 Q215 130 185 200"/>
+        <rect class="f-ink" x="199" y="84" width="12" height="7"/><rect class="f-ink" x="199" y="168" width="12" height="7"/>
+        <path class="s-line" d="M20 122 H60 M20 138 H60 M310 122 H350 M310 138 H350"/>
+        <path class="s-red" d="M80 100 H150" marker-end="url(#t18f5-r)"/>
+        <path class="s-red" d="M80 130 H150" marker-end="url(#t18f5-r)"/>
+        <path class="s-red" d="M80 160 H150" marker-end="url(#t18f5-r)"/>
+        <path class="s-blue" d="M290 130 H250" marker-end="url(#t18f5-b)"/>
+        <text class="t t-small t-bold" x="20" y="44">P1 (high side)</text>
+        <text class="t t-small t-bold" x="350" y="44" text-anchor="end">P2 (low side)</text>
+        <text class="t t-small" x="185" y="224" text-anchor="middle">diaphragm bends toward P2</text>
+        <text class="t t-small t-muted" x="185" y="242" text-anchor="middle">strain gauges bonded to it</text>
+        <text class="t t-small t-muted" x="185" y="262" text-anchor="middle">bend = P1 − P2</text>
+        <line class="s-line" x1="500" y1="40" x2="500" y2="50"/>
+        <path class="s-line" d="M500 50 L580 130 L500 210 L420 130 Z"/>
+        <circle class="f-ink" cx="500" cy="50" r="3.5"/><circle class="f-ink" cx="580" cy="130" r="3.5"/><circle class="f-ink" cx="500" cy="210" r="3.5"/><circle class="f-ink" cx="420" cy="130" r="3.5"/>
+        <rect class="f-accent-soft s-accent" x="525" y="84" width="34" height="12" transform="rotate(45 542 90)"/>
+        <rect class="f-accent-soft s-accent" x="525" y="164" width="34" height="12" transform="rotate(-45 542 170)"/>
+        <rect class="f-accent-soft s-accent" x="441" y="164" width="34" height="12" transform="rotate(45 458 170)"/>
+        <rect class="f-accent-soft s-accent" x="441" y="84" width="34" height="12" transform="rotate(-45 458 90)"/>
+        <text class="t t-small" x="566" y="82">R+ΔR</text>
+        <text class="t t-small" x="566" y="188">R−ΔR</text>
+        <text class="t t-small" x="434" y="82" text-anchor="end">R−ΔR</text>
+        <text class="t t-small" x="434" y="188" text-anchor="end">R+ΔR</text>
+        <text class="t t-small t-bold" x="500" y="30" text-anchor="middle">+V excitation</text>
+        <text class="t t-small t-bold" x="500" y="232" text-anchor="middle">0 V</text>
+        <path class="s-line" d="M580 130 H625"/><path class="s-line" d="M420 130 H375"/>
+        <text class="t t-small t-bold" x="627" y="134">out +</text>
+        <text class="t t-small t-bold" x="373" y="134" text-anchor="end">out −</text>
+        <text class="t t-small t-muted" x="500" y="262" text-anchor="middle">V out = V excitation × ΔR/R</text>
+      </svg>
+      <figcaption>Figure 5. Left: pressure on the high side bends the diaphragm toward the low side. Right: four strain gauges form a Wheatstone bridge. Two are stretched (R+ΔR), two are compressed (R−ΔR), so the middle two nodes move apart and the output voltage is proportional to the pressure difference.</figcaption>
+    </figure>
+    <div class="formula">Full bridge, all four gauges active:  V<sub>out</sub> = V<sub>exc</sub> × (ΔR / R)
+      <small>Worked: V<sub>exc</sub> = 5 V and ΔR/R = 1 % at full scale gives V<sub>out</sub> = 50 mV. That is 10 mV per volt of excitation, which is about the size of a real pressure sensor chip. An amplifier inside the transmitter lifts 50 mV to 5 V or 10 V, or to 20 mA (T16).</small></div>
+    <h3>Differential pressure in HVAC</h3>
+    <p>A <b>differential pressure (DP)</b> sensor has two ports and measures P1 − P2. It is everywhere in air handling.</p>
+    <ul>
+      <li><b>Filter condition.</b> Air passing through a filter loses pressure. A clean filter might show about 80 Pa and a dirty one 250 Pa or more (indicative; the filter maker states the final pressure at which to change it). The BMS raises a "filter dirty" alarm above a setpoint.</li>
+      <li><b>Fan proof.</b> A DP sensor across a fan reads high when air is moving and near zero when a belt breaks. It proves airflow, which the VSD's "run" signal does not (T19).</li>
+      <li><b>Duct static pressure.</b> A VAV system keeps pressure in the supply duct at a setpoint (often a few hundred pascals; the designer sets it). The BMS varies the fan speed with a PID loop to hold it (C03).</li>
+      <li><b>Airflow.</b> A pitot tube or flow station gives DP proportional to air speed squared: v = √(2·ΔP/ρ). With ΔP = 100 Pa and air density ρ = 1.2 kg/m³, v = √(166.7) = <b>12.9 m/s</b>. A DP sensor is therefore often an airflow sensor in disguise, and the square root means the sensor is least accurate at low flow.</li>
+      <li><b>Water.</b> A DP sensor across a chilled-water or hot-water circuit tells the BMS how hard to run the pump (T19).</li>
+    </ul>
+    <div class="callout job"><span class="label">What a broken tube looks like</span><p>DP sensors use two plastic tubes. A kinked, blocked or pulled-off tube gives a reading stuck near zero or at the last value. Tubes swapped between the high and low ports give a <b>negative</b> reading. A transmitter that reads 4.0 mA is at 0 Pa; if the loop reads 3.5 mA, the wiring or sensor is faulty (T16). Never blow into a sensor port to "test" it: you can exceed its pressure limit and destroy the diaphragm.</p></div>
+
+    <h2>Humidity: the capacitive sensor</h2>
+    <p>Air always contains some water vapour. <b>Relative humidity (RH)</b> says how much, as a percentage of the most the air could hold at the <i>same temperature</i>. Warm air can hold much more water than cold air. So RH changes when the temperature changes even if no water is added.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "50 % RH is a fixed amount of water." <b>Right:</b> 50 % RH at 30 °C holds much more water than 50 % RH at 10 °C. The <b>dew point</b> is the temperature at which the air would be 100 % RH, and condensation forms on any surface colder than that. A handy rule for RH above 50 %: dew point ≈ T − (100 − RH) / 5. At 25 °C and 60 % RH, dew point ≈ 25 − 8 = <b>17 °C</b>. A chilled-water pipe at 7 °C will sweat, and a 14 °C supply duct without insulation is a mould risk.</p></div>
+    <p>A <b>capacitive humidity sensor</b> is a tiny capacitor (T05). Its two electrodes are separated by a thin polymer film that absorbs water vapour from the air. Water is unusual: its relative permittivity (ε<sub>r</sub> ≈ 80) is far higher than that of the dry polymer (around 3). The capacitance of a parallel-plate capacitor is C = ε<sub>0</sub>ε<sub>r</sub>A/d, so as the film absorbs water, ε<sub>r</sub> rises and the capacitance rises. Typical sensors have a few hundred picofarads, changing by a fraction of a picofarad per 1 % RH. A small chip measures that capacitance (an oscillator whose frequency depends on C is one way) and outputs voltage, current or a digital message.</p>
+    <ul>
+      <li>Because RH depends on temperature, humidity sensors always include a temperature sensor, and most output both.</li>
+      <li>The film is exposed to the air, so dust, condensation, cleaning chemicals and drift all affect it. Typical accuracy is ±2–3 % RH (indicative), and the sensor is checked or replaced on a schedule.</li>
+      <li>Place it where the air is representative: not in direct sun, not above a heater, not at an exhaust grille.</li>
+      <li>Comfort and building guidelines are often 40–60 % RH for offices (indicative; the designer's specification governs).</li>
+    </ul>
+
+    <h2>CO₂: how NDIR counts molecules</h2>
+    <p>Fresh outdoor air has about 420–430 ppm of carbon dioxide (<b>ppm</b> = parts per million). People breathe out about 40,000 ppm (4 %). In a crowded, poorly ventilated room the CO₂ level rises, and the BMS reads it as a proxy for how many people are inside and how much fresh air they are getting. Around 1,000 ppm is a common benchmark in building guidance; the designer's specification sets the trigger. CO₂ at these levels is not toxic. It is an indicator of stale air.</p>
+    <p>The sensor type is <b>NDIR: non-dispersive infrared</b>. A CO₂ molecule is three atoms in a line, and it can vibrate in ways that absorb infrared of one specific wavelength, <b>4.26 µm</b>. Shine light through the air, filter it to that wavelength, and measure how much arrives. The more CO₂, the more light is absorbed. This is the <b>Beer–Lambert law</b>:</p>
+    <div class="formula">I = I<sub>0</sub> · exp(−k · c · L)
+      <small>I<sub>0</sub> = light entering the tube, I = light reaching the detector, c = CO₂ concentration, L = length of the gas path, k = absorption constant for CO₂ at 4.26 µm. A longer tube gives a bigger effect, which is why NDIR cells have mirrors that fold a long path inside a small housing. At room levels the change in light is small, so a drift in the lamp can look like a change in gas.</small></div>
+    <figure>
+      <svg viewBox="0 0 680 220" role="img" aria-label="NDIR CO2 sensor: infrared lamp, gas tube with CO2 molecules, optical filter, detector">
+        <circle class="f-amber" cx="50" cy="110" r="14"/>
+        <path class="s-amber" d="M50 84 V74 M50 146 V156 M24 110 H14 M86 110 H76"/>
+        <text class="t t-small" x="50" y="180" text-anchor="middle">IR lamp</text>
+        <rect class="f-wash s-line" x="100" y="80" width="360" height="60" rx="4"/>
+        <path class="s-amber" style="stroke-width:7" d="M100 110 H200"/>
+        <path class="s-amber" style="stroke-width:5" d="M200 110 H330"/>
+        <path class="s-amber" style="stroke-width:3" d="M330 110 H460"/>
+        <circle class="f-blue" cx="150" cy="95" r="3.5"/><circle class="f-blue" cx="190" cy="125" r="3.5"/><circle class="f-blue" cx="230" cy="92" r="3.5"/><circle class="f-blue" cx="262" cy="128" r="3.5"/><circle class="f-blue" cx="300" cy="100" r="3.5"/><circle class="f-blue" cx="336" cy="126" r="3.5"/><circle class="f-blue" cx="372" cy="94" r="3.5"/><circle class="f-blue" cx="410" cy="124" r="3.5"/><circle class="f-blue" cx="438" cy="98" r="3.5"/>
+        <text class="t t-small t-blue" x="280" y="164" text-anchor="middle">CO₂ molecules absorb 4.26 µm light</text>
+        <text class="t t-small t-muted" x="280" y="68" text-anchor="middle">air diffuses in through a vent</text>
+        <rect class="f-violet" x="470" y="80" width="8" height="60"/>
+        <text class="t t-small" x="474" y="70" text-anchor="middle">filter 4.26 µm</text>
+        <rect class="f-accent-soft s-accent" x="500" y="85" width="40" height="50" rx="4"/>
+        <text class="t t-small" x="520" y="156" text-anchor="middle">detector</text>
+        <text class="t t-small t-bold" x="575" y="100">less light</text>
+        <text class="t t-small t-bold" x="575" y="118">arrives =</text>
+        <text class="t t-small t-bold" x="575" y="136">more CO₂</text>
+      </svg>
+      <figcaption>Figure 6. In an NDIR cell, the infrared beam gets weaker the more CO₂ it crosses (thinner line toward the right). A second detector or filter at a wavelength CO₂ does not absorb is often used as a reference, so lamp ageing cancels.</figcaption>
+    </figure>
+    <div class="callout warn"><span class="label">Field trap · ABC and fake CO₂</span><p>Many NDIR sensors have <b>ABC</b> (automatic baseline correction): once a week they assume the lowest reading they saw was fresh air (about 420 ppm) and reset their zero to it. That works in an office that is empty at night. In a space that is occupied 24 hours (a ward, a control room, a data hall with people), the sensor "learns" a wrong zero and reads low. Turn ABC off in those spaces and calibrate against outside air instead. Cheap sensors that report "eCO₂" estimate CO₂ from a VOC (volatile organic compounds) chip. They do not measure CO₂ at all: they respond to breath, deodorant and cleaning products. They are not suitable for ventilation control.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Mechanical ventilation of buildings is covered by AS 1668.2 and the National Construction Code. CO₂-based demand-controlled ventilation lets the BMS bring in less outside air when a room is quiet, saving energy. The CO₂ trigger values come from the designer's specification, not from this chapter. Confirm the current standard and the project specification.</p></div>
+
+    <h2>Smoke: photoelectric and ionisation</h2>
+    <p>A smoke detector senses the tiny particles of a fire, not the fire itself. Two physical methods exist.</p>
+    <figure>
+      <svg viewBox="0 0 680 280" role="img" aria-label="Two smoke detector chambers: photoelectric light scattering on the left, ionisation current on the right">
+        <defs><marker id="t18f7-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="170" y="22" text-anchor="middle">Photoelectric</text>
+        <rect class="f-wash s-line" x="20" y="36" width="300" height="170" rx="10"/>
+        <rect class="f-ink" x="40" y="112" width="18" height="26"/>
+        <text class="t t-small" x="49" y="158" text-anchor="middle">LED</text>
+        <path class="s-amber" d="M60 125 H260" marker-end="url(#t18f7-a)"/>
+        <rect class="f-ink" x="262" y="104" width="10" height="42"/>
+        <text class="t t-small" x="268" y="166" text-anchor="middle">light trap</text>
+        <rect class="f-accent-soft s-accent" x="150" y="46" width="40" height="18"/>
+        <text class="t t-small" x="170" y="86" text-anchor="middle">photodiode</text>
+        <circle class="f-grey" cx="158" cy="118" r="3.5"/><circle class="f-grey" cx="172" cy="132" r="3"/><circle class="f-grey" cx="184" cy="120" r="3.5"/><circle class="f-grey" cx="166" cy="104" r="2.5"/><circle class="f-grey" cx="194" cy="136" r="2.5"/>
+        <path class="s-amber s-dash" d="M170 112 L170 68" marker-end="url(#t18f7-a)"/>
+        <text class="t t-small t-muted" x="170" y="228" text-anchor="middle">No smoke: beam misses the photodiode.</text>
+        <text class="t t-small t-muted" x="170" y="246" text-anchor="middle">Smoke scatters light onto it: alarm.</text>
+        <text class="t t-bold" x="510" y="22" text-anchor="middle">Ionisation</text>
+        <rect class="f-wash s-line" x="360" y="36" width="300" height="170" rx="10"/>
+        <rect class="f-ink" x="410" y="64" width="200" height="8"/>
+        <rect class="f-ink" x="410" y="170" width="200" height="8"/>
+        <text class="t t-small" x="510" y="58" text-anchor="middle">+ plate</text>
+        <text class="t t-small" x="510" y="196" text-anchor="middle">− plate</text>
+        <rect class="f-red" x="490" y="106" width="40" height="12" rx="3"/>
+        <text class="t t-small t-red" x="510" y="136" text-anchor="middle">Am-241 source</text>
+        <path class="s-thin s-dash" d="M450 78 V164 M570 78 V164"/>
+        <text class="t t-small t-blue" x="450" y="102" text-anchor="middle">−</text>
+        <text class="t t-small t-red" x="570" y="102" text-anchor="middle">+</text>
+        <path class="s-line" d="M410 68 H380 V174 H410"/>
+        <circle class="f-panel s-line" cx="380" cy="121" r="13"/>
+        <text class="t t-small t-bold" x="380" y="126" text-anchor="middle">A</text>
+        <text class="t t-small t-muted" x="510" y="228" text-anchor="middle">Source ionises air: small steady current.</text>
+        <text class="t t-small t-muted" x="510" y="246" text-anchor="middle">Smoke captures ions: current drops: alarm.</text>
+      </svg>
+      <figcaption>Figure 7. Left: a photoelectric (optical) detector keeps its LED and photodiode out of line of sight; only smoke scatters light across. Right: an ionisation detector uses a tiny radioactive source to make the air conduct a small current; smoke particles capture the ions and the current falls.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Photoelectric (optical)</th><th>Ionisation</th></tr>
+      <tr><td>Physics</td><td>Smoke scatters a light beam onto a photodiode</td><td>Smoke particles capture ions and reduce a small current</td></tr>
+      <tr><td>Best at</td><td>Larger particles from <b>smouldering</b> fires (couches, bedding, overheated cable)</td><td>Very small particles from fast, flaming fires</td></tr>
+      <tr><td>Weak at</td><td>Very clean, fast flaming fires (slightly slower)</td><td>Smouldering fires: can be late</td></tr>
+      <tr><td>False alarms</td><td>Steam and dust can scatter light</td><td>Cooking and toasting set it off often, so people disable it</td></tr>
+      <tr><td>Contains</td><td>LED and photodiode</td><td>A small americium-241 source (disposal rules apply)</td></tr>
+    </table></div>
+    <p>The dangerous house fire is often the one that smoulders for a long time at night while people sleep, and that is the fire the photoelectric alarm sees earliest. For that reason fire services and regulators in Australia have been moving household alarms to photoelectric. Queensland has the strictest rules, which have been phased in since 2017: photoelectric and interconnected alarms are required in homes. Other states and territories have different rules that are being tightened over time. Commercial buildings use addressable detectors on a fire panel (C04): optical, heat, or combined (multi-criteria) heads under AS 1670.1.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Household smoke alarms are covered by AS 3786 and the National Construction Code, and the state and territory regulations decide where they must go and which type is required. <b>Confirm the current state rule</b> with your state's fire service or building regulator before telling a customer anything: dates and details differ by state and have changed in recent years. Fire detection systems in commercial buildings (AS 1670.1) are specialist work with their own licensing and training (C04).</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Many household smoke alarms are hard-wired to 230 V mains. Replacing or wiring them is electrical work that only a licensed electrician may do in Australia. The BMS does <b>not</b> replace the fire panel: for life safety, the fire system works on its own, and the BMS only receives a volt-free contact from it. Never disable or bypass a detector to stop nuisance alarms.</p></div>
+
+    <h2>From sensor to BMS point: 0–10 V, 4–20 mA, contacts and digital</h2>
+    <p>Chapter <a href="t16-signals-noise-loops.html">T16</a> explained 0–10 V and 4–20 mA signals. Here is what each sensor in this chapter actually delivers to a controller (the points of C01).</p>
+    <div class="table-wrap"><table>
+      <tr><th>Sensor</th><th>Raw electrical effect</th><th>What the controller usually sees</th></tr>
+      <tr><td>NTC 10 kΩ</td><td>Resistance, 33.6 kΩ at 0 °C to 3.6 kΩ at 50 °C</td><td>Direct resistive input (type set in software). No transmitter.</td></tr>
+      <tr><td>PT1000 / PT100</td><td>Resistance, 3.85 / 0.385 Ω per °C</td><td>Direct RTD input, or a transmitter giving 4–20 mA / 0–10 V</td></tr>
+      <tr><td>Thermocouple</td><td>Millivolts</td><td>Thermocouple input card, or a transmitter giving 4–20 mA</td></tr>
+      <tr><td>PIR</td><td>Charge pulses, amplified and compared</td><td>Dry contact into a digital input (DI)</td></tr>
+      <tr><td>Reed switch</td><td>Contact closes in a magnetic field</td><td>Dry contact into a DI, often with an EOL resistor</td></tr>
+      <tr><td>Hall current sensor</td><td>mV in proportion to current</td><td>0–10 V or 4–20 mA analogue input (AI), or a DI from a current switch</td></tr>
+      <tr><td>Pressure / DP</td><td>Bridge output of tens of mV</td><td>0–10 V, 2–10 V or 4–20 mA into an AI</td></tr>
+      <tr><td>Humidity</td><td>Capacitance in picofarads</td><td>0–10 V or 4–20 mA, or a digital message (Modbus / BACnet MS/TP)</td></tr>
+      <tr><td>CO₂ (NDIR)</td><td>Small change in the detector signal</td><td>0–10 V (for example 0–2000 ppm), 4–20 mA, or Modbus</td></tr>
+      <tr><td>Smoke detector</td><td>Scattered light or ionisation current</td><td>Fire panel only. The BMS gets a volt-free contact from the panel.</td></tr>
+    </table></div>
+    <h3>Worked scaling examples</h3>
+    <ul>
+      <li><b>CO₂, 0–10 V for 0–2000 ppm.</b> The controller reads 3.4 V. Fraction of span = 3.4 / 10 = 34 %, so the reading is 0.34 × 2000 = <b>680 ppm</b>.</li>
+      <li><b>DP, 4–20 mA for 0–500 Pa.</b> The loop current is 8 mA. Fraction of span = (8 − 4) / 16 = 25 %, so the pressure is <b>125 Pa</b> (T16).</li>
+      <li><b>Duct sensor, NTC in a divider.</b> The input measures 1.32 V from the 5 V divider. Rearranging V = 5R/(R + 10k) gives R = 10k × V/(5 − V) = 10k × 1.32 / 3.68 = 3.59 kΩ, which is <b>50 °C</b> on the table above.</li>
+    </ul>
+    <h3>Universal inputs and configuration</h3>
+    <p>Most modern BMS controllers have <b>universal inputs (UI)</b> that can be configured in software and by jumpers to read a voltage, a current, a resistance or a contact. This is flexible and also a common source of mistakes. A 4–20 mA sensor on an input set to 0–10 V reads nonsense; an input set to 0–10 V can read 0 when the loop is open. Always match the input type to the sensor, then confirm the reading with a meter at the terminals.</p>
+    <p>Digital sensors skip the analogue steps and send numbers over a serial bus: RS-485 with Modbus RTU or BACnet MS/TP (P14, C02). The advantage is that one pair of wires carries many values, and there is no scaling error or lead resistance. The price is that each device needs an address and the right settings.</p>
+
+    <h2>Field faults and what the readings tell you</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>First check</th></tr>
+      <tr><td>NTC reads −40 °C or the bottom of the range</td><td>Open circuit (loose terminal, cut cable, unplugged)</td><td>Meter across the sensor wires with the controller disconnected: should be 5–30 kΩ, not open</td></tr>
+      <tr><td>NTC reads +100 °C or more, stuck</td><td>Short circuit (damaged cable, wet terminal)</td><td>Meter reads near 0 Ω across the sensor wires</td></tr>
+      <tr><td>PT1000 reads very hot</td><td>Open circuit (opposite way to an NTC)</td><td>Meter should show about 1.1 kΩ at room temperature</td></tr>
+      <tr><td>RTD always reads a few degrees high on a long run</td><td>2-wire lead resistance</td><td>Calculate cable resistance and subtract, or rewire as 3-wire</td></tr>
+      <tr><td>Thermocouple reads far off by a steady amount</td><td>Wrong type set, wrong extension wire, or cold-junction error</td><td>Compare the type on the probe with the input setting</td></tr>
+      <tr><td>Room temperature wobbles near a motor or VSD</td><td>Noise pickup (T16)</td><td>Cable route and separation; shield earthed at the panel end only</td></tr>
+      <tr><td>PIR alarms with no one there</td><td>Heater, sun patch, curtain or insect on the lens</td><td>Walk-test and check the aiming</td></tr>
+      <tr><td>Door contact fault or alarm with the door shut</td><td>Gap too large, magnet loose, EOL resistor missing</td><td>Meter across the loop with the door closed</td></tr>
+      <tr><td>DP reads negative or stuck</td><td>Tubes swapped, kinked or pulled off</td><td>Check tubes and fit before suspecting the electronics</td></tr>
+      <tr><td>Humidity reads 100 % or drifts</td><td>Sensor wet, contaminated or aged</td><td>Replace; do not clean with solvents</td></tr>
+      <tr><td>CO₂ never rises in a busy room</td><td>ABC resets the zero, or the sensor is an eCO₂ type</td><td>Check the model and ABC setting</td></tr>
+    </table></div>
+
+    <h2>See it on the bench and on the job</h2>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC: wire an NTC divider, a PIR and an LDR, and read them as numbers</a>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: 4–20 mA loops, 0–10 V weaknesses and noise (the output stage of every sensor here)</a>
+    <a class="crosslink" href="../career/c01-bms-fundamentals.html">Career C01 · BMS fundamentals: how sensors become AI, DI and UI points</a>
+    <a class="crosslink" href="../career/c03-hvac-for-technicians.html">Career C03 · HVAC for electronics people: temperature, DP, CO₂ and humidity sensors in a real AHU</a>
+    <a class="crosslink" href="../career/c04-fire-detection-ewis.html">Career C04 · Fire detection and EWIS basics: detectors, panels and standards</a>
+    <a class="crosslink" href="../career/c06-access-control-alarms.html">Career C06 · Access control and intruder alarms: door contacts, PIRs and end-of-line resistors</a>
+    <a class="crosslink" href="../career/c10-plc-instrumentation.html">Career C10 · PLCs and industrial instrumentation: 4–20 mA transmitters, RTDs and thermocouples</a>
+    <a class="crosslink" href="t19-motors-vsds.html">Theory T19 · Motors and variable speed drives: Hall sensors in brushless motors, DP-controlled fans</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A 10 kΩ Beta 3950 NTC sits at 50 °C. What is its resistance, and what will a 10 kΩ / 5 V divider (NTC to ground) read?</summary><div class="answer"><p>T = 323.15 K, T<sub>0</sub> = 298.15 K. 1/T − 1/T<sub>0</sub> = 0.0030945 − 0.0033540 = −0.0002595. Multiply by B: −1.025. e<sup>−1.025</sup> = 0.359, so R = 3.59 kΩ. Divider voltage = 5 × 3.59 / (3.59 + 10) = 1.32 V. The resistance fell to about a third while the temperature rose only 25 °C.</p></div></details>
+    <details class="quiz"><summary>A PT100 is connected with two wires over 60 m of 0.5 mm² cable (60 m each way). What error will the controller show, and how would you fix it?</summary><div class="answer"><p>Each conductor: 0.0344 × 60 = 2.06 Ω. Both: 4.13 Ω. Error = 4.13 / 0.385 ≈ 10.7 °C too high. Fix by changing to a 3-wire or 4-wire connection, or by using a PT1000 (error 4.13 / 3.85 ≈ 1.1 °C), or by measuring the cable resistance and entering an offset. A 3-wire connection only works if the three leads have equal resistance.</p></div></details>
+    <details class="quiz"><summary>A type K thermocouple input reads 6.15 mV. The controller's terminals are at 25 °C. What is the probe temperature (linear rule)?</summary><div class="answer"><p>The cold junction accounts for 41 µV × 25 = 1.03 mV. Total from 0 °C = 6.15 + 1.03 = 7.18 mV. T = 7.18 / 0.041 ≈ 175 °C. (A proper table gives about 176 °C.) Without cold-junction compensation the controller would show 6.15 / 0.041 = 150 °C, which is 25 °C wrong.</p></div></details>
+    <details class="quiz"><summary>A PIR light sensor switches the lights off while a person is working at a desk. Why, and what are two fixes?</summary><div class="answer"><p>A PIR responds to a <i>change</i> in the infrared pattern across its zones, not to presence. A person sitting still gives a steady signal, so the sensor sees nothing happening and the timer runs out. Fixes: move or re-aim the sensor so the desk is in the zones that see small hand and body movements; lengthen the off-delay; or use a dual-technology sensor (PIR plus ultrasonic or microwave) that detects small movements.</p></div></details>
+    <details class="quiz"><summary>You need to know whether a door is shut at a secure site, and also count wheel rotations on a flow meter. Which of reed switch and Hall switch would you choose for each, and why?</summary><div class="answer"><p>For a basic alarm door contact, a reed switch: it needs no power, gives a clean contact for the alarm zone with an EOL resistor, and is cheap. For high-security sites use a balanced (biased) magnetic switch, because a plain reed can be defeated with a second magnet. For counting wheel rotations at speed and for years, a Hall switch: it has no moving parts or contact wear and no bounce, whereas a reed's contacts wear out and bounce.</p></div></details>
+    <details class="quiz"><summary>A 4–20 mA differential pressure transmitter has a range of 0–500 Pa. The loop current is 10.4 mA. What is the pressure? What would 3.2 mA tell you?</summary><div class="answer"><p>Fraction = (10.4 − 4) / 16 = 0.40, so the pressure is 0.40 × 500 = 200 Pa. 3.2 mA is below 3.8 mA, outside the valid range, so it is a fault (broken wire, transmitter fault or low supply), not a pressure. DP can never be less than 0 Pa on a transmitter ranged 0–500 Pa.</p></div></details>
+    <details class="quiz"><summary>A CO₂ sensor in a 24-hour control room always reads about 420 ppm at midday. The room is full. What is probably wrong?</summary><div class="answer"><p>ABC (automatic baseline correction) is probably on. It assumes the lowest reading in the last few days was fresh air at about 420 ppm and resets the zero to match. In a room that is never empty, the lowest reading is not fresh air, so the sensor shifts its zero and reads low. Turn ABC off and calibrate against outdoor air. Another possibility is a cheap "eCO₂" sensor that does not measure CO₂ at all.</p></div></details>
+    <details class="quiz"><summary>Why do fire services favour photoelectric over ionisation alarms in homes, and what must you do before quoting the state rule?</summary><div class="answer"><p>Photoelectric alarms see the larger particles from smouldering fires earlier, and the smouldering fire at night is the dangerous one. Ionisation alarms also trigger often on cooking, so people disable them. Rules differ by state and territory and have been changing (Queensland is the strictest). Confirm the current rule with the state fire service or building regulator before telling anyone it is required or sufficient.</p></div></details>
+    <details class="more"><summary>Go deeper (optional): why the Beta equation is only approximate</summary><p>The Beta model assumes the activation energy of carrier release is constant. In real ceramics it varies a little with temperature, so B itself drifts: the maker may quote B25/50 (between 25 and 50 °C) and B25/85 (between 25 and 85 °C) with slightly different values. Over a wide range, such as −40 to 150 °C, the Beta equation can be off by several degrees at the extremes. The Steinhart–Hart equation, 1/T = a + b·ln R + c·(ln R)³, adds terms to follow the curve to within a few hundredths of a degree. The comparator widget above uses the simple Beta form, so its NTC values at −40 and 150 °C will differ from a maker's table.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can use the Beta equation to find an NTC's resistance at a temperature, and explain why it falls with heat while a metal's rises.</span></li>
+      <li><input type="checkbox"><span>I know PT100 = 100 Ω and PT1000 = 1000 Ω at 0 °C, about 0.385 and 3.85 Ω per °C, and can estimate a temperature from a measured resistance.</span></li>
+      <li><input type="checkbox"><span>I can calculate the lead-resistance error for a 2-wire RTD and explain how 3-wire and 4-wire connections fix it.</span></li>
+      <li><input type="checkbox"><span>I can explain the Seebeck effect, why type K is about 41 µV/°C, and why cold-junction compensation is needed.</span></li>
+      <li><input type="checkbox"><span>I can explain why a PIR sees movement and not presence, and name common false-trigger causes.</span></li>
+      <li><input type="checkbox"><span>I can explain the Hall voltage, say why Hall sensors use semiconductors, and compare a Hall switch with a reed switch.</span></li>
+      <li><input type="checkbox"><span>I can explain how a bridge of strain gauges measures pressure, and name four uses of differential pressure in HVAC.</span></li>
+      <li><input type="checkbox"><span>I can explain capacitive humidity sensing, dew point, NDIR CO₂ sensing and the ABC trap.</span></li>
+      <li><input type="checkbox"><span>I can describe photoelectric and ionisation smoke detection, and I know to confirm the current state rules and leave mains-wired alarms to a licensed electrician.</span></li>
+      <li><input type="checkbox"><span>I can say, for each sensor, what signal the controller sees and what a broken wire looks like.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

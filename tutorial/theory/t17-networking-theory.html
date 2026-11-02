@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T17 · How networks really work: Ethernet, IP, TCP/UDP</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget controls. Colours come only from the shared theme variables, so dark mode works. */
+.wbtn{font:600 14px var(--sans);border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);padding:7px 14px;border-radius:6px;cursor:pointer;margin:4px 6px 4px 0}
+.widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:240px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:4px 14px}
+.wsmall{font-size:14px;color:var(--muted)}
+.wstatus{border-radius:8px;padding:10px 14px;margin:12px 0 4px;font-size:15px;border:1px solid var(--line);background:var(--wash)}
+.wstatus.ok{background:var(--career-soft);border-color:var(--career)}
+.wstatus.amber{background:var(--tip-soft);border-color:var(--tip)}
+.wstatus.bad{background:var(--warn-soft);border-color:var(--warn)}
+.ports{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.pbox{border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font-size:14px;background:var(--wash)}
+.pbox small{display:block;color:var(--muted);font-size:12px}
+.pbox.src{background:var(--accent-soft);border-color:var(--accent)}
+.pbox.hit{background:var(--warn-soft);border-color:var(--warn)}
+pre.bits{margin:10px 0 0;font-size:13.5px}
+.mono td:first-child,td.mono{font-family:var(--mono);font-size:14px}
+.wlog{font-size:14px;margin:6px 0 0;padding-left:20px;color:var(--muted)}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 5 · Systems theory for the field</div>
+    <span class="eyebrow">Theory · T17</span>
+    <h1>How networks really work: Ethernet, IP, TCP/UDP</h1>
+    <p class="lede">How a camera's picture gets to a recorder, one layer at a time: Ethernet frames and MAC addresses, how a switch learns where everything is, IPv4 addresses and subnet masks worked by hand, ARP, DHCP, routing, TCP and UDP ports, and why one badly set multicast stream can flatten a whole camera network.</p>
+    <div class="meta"><span><b>Reading</b> ~85 min</span><span><b>Level</b> Beginner → intermediate</span><span><b>Builds on</b> T15, T16</span><span><b>Used in</b> P16, P18, P19, P20, C02, C05</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Why a technician needs the theory</h2>
+    <p>Almost every system you will install or commission now sits on an Ethernet network: IP cameras, access controllers, BMS controllers talking BACnet/IP or Modbus TCP, IoT sensors, intercoms, even some fire-panel gateways. When one of them stops working, the fault is often not in the device. It is in how the device talks to its neighbours: a wrong mask, a missing gateway, a VLAN, a blocked port, or a link that cannot carry the load.</p>
+    <p>Practice lab <a href="../practice/p19-networking-hands-on.html">P19</a> teaches the hands-on skills: setting a static IP, finding devices, budgeting PoE, building a VLAN. This chapter is the mental model underneath, so the settings stop being magic words and you can work out the answer instead of guessing. Everything here is extra-low voltage: Ethernet signals are a few volts, and PoE is about 50 V DC.</p>
+
+    <h2>A network is an agreement: the layers</h2>
+    <p>Two machines can only swap data if they agree on many things at once: what a 1 and a 0 look like on the cable, how to name the machine next door, how to name a machine in another building, how to notice lost data, and what the data means. Engineers split these agreements into <b>layers</b>. Each layer does one job, uses the layer below as a service, and offers a service to the layer above. A <b>protocol</b> is the set of rules for one layer.</p>
+    <p>Think of posting a parcel. You write a letter (the application's message). You put it in an envelope with the street address (the IP address). The depot then puts it in a mailbag labelled for the next truck only (the Ethernet frame, whose address changes at every hop). At the far end each wrapper is removed in reverse order.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 306" role="img" aria-label="The four practical network layers with OSI numbers, data units, addresses and example devices">
+        <text class="t t-small t-muted t-bold" x="20" y="22">OSI no.</text>
+        <text class="t t-small t-muted t-bold" x="90" y="22">Practical layer</text>
+        <text class="t t-small t-muted t-bold" x="262" y="22">Data unit</text>
+        <text class="t t-small t-muted t-bold" x="400" y="22">Address used</text>
+        <text class="t t-small t-muted t-bold" x="520" y="22">Devices and tools</text>
+
+        <rect class="f-wash s-line" x="90" y="34" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="20" y="68">5 – 7</text>
+        <text class="t t-bold" x="100" y="56">Application</text>
+        <text class="t t-small t-muted" x="100" y="76">HTTP, RTSP, BACnet</text>
+        <text class="t t-small" x="262" y="66">message</text>
+        <text class="t t-small" x="400" y="66">URL, host name</text>
+        <text class="t t-small" x="520" y="58">NVR, camera web page</text>
+        <text class="t t-small t-muted" x="520" y="76">BMS front end</text>
+
+        <rect class="f-wash s-line" x="90" y="98" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="20" y="132">4</text>
+        <text class="t t-bold" x="100" y="120">Transport</text>
+        <text class="t t-small t-muted" x="100" y="140">TCP, UDP</text>
+        <text class="t t-small" x="262" y="122">segment (TCP)</text>
+        <text class="t t-small t-muted" x="262" y="140">datagram (UDP)</text>
+        <text class="t t-small" x="400" y="130">port number</text>
+        <text class="t t-small" x="520" y="122">firewall rules</text>
+        <text class="t t-small t-muted" x="520" y="140">(allow TCP 554)</text>
+
+        <rect class="f-wash s-line" x="90" y="162" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="20" y="196">3</text>
+        <text class="t t-bold" x="100" y="184">Internet (IP)</text>
+        <text class="t t-small t-muted" x="100" y="204">IP, ICMP, ARP</text>
+        <text class="t t-small" x="262" y="194">packet</text>
+        <text class="t t-small" x="400" y="194">IP address</text>
+        <text class="t t-small" x="520" y="186">router, L3 switch</text>
+        <text class="t t-small t-muted" x="520" y="204">default gateway</text>
+
+        <rect class="f-wash s-line" x="90" y="226" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="20" y="260">1 – 2</text>
+        <text class="t t-bold" x="100" y="248">Link</text>
+        <text class="t t-small t-muted" x="100" y="268">Ethernet, Wi-Fi</text>
+        <text class="t t-small" x="262" y="250">frame</text>
+        <text class="t t-small t-muted" x="262" y="268">bits on the wire</text>
+        <text class="t t-small" x="400" y="258">MAC address</text>
+        <text class="t t-small" x="520" y="250">switch, cable, Wi-Fi AP</text>
+        <text class="t t-small t-muted" x="520" y="268">PoE, patch cords</text>
+
+        <text class="t t-small t-muted" x="20" y="300">Sending: data goes down the stack. Receiving: it goes up.</text>
+      </svg>
+      <figcaption>Figure 1. The four layers of the TCP/IP model that real networks follow, with the OSI layer numbers technicians quote. The OSI model splits the top into three (5 session, 6 presentation, 7 application) and the bottom into two (1 physical, 2 data link). In daily talk, "layer 1" means cables and connectors, "layer 2" means switching and MACs, "layer 3" means IP and routing.</figcaption>
+    </figure>
+
+    <p>Each layer answers one question:</p>
+    <ul>
+      <li><b>Link:</b> how do I get bits to the device on the same cable or switch?</li>
+      <li><b>Internet:</b> how do I get a packet to a device on <i>another</i> network?</li>
+      <li><b>Transport:</b> which program gets it, and does it all arrive, in order?</li>
+      <li><b>Application:</b> what does the data mean?</li>
+    </ul>
+    <div class="callout tip"><span class="label">Bench tip</span><p>"It's a layer 1 problem" is an installer's joke for "check the cable first", and it is right most of the time. A wrong IP address (layer 3) is useless to debug if the link light (layer 1) is off. Always work from the bottom up. The fault-finding table near the end of this chapter does exactly that.</p></div>
+
+    <h2>Ethernet frames and MAC addresses</h2>
+    <p>On a wired LAN (local area network), the unit of data is the <b>frame</b>. Everything above it, the IP packet, the TCP segment and your actual data, rides inside the frame's payload like letters inside a mailbag.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 224" role="img" aria-label="An Ethernet frame with the IP packet and TCP segment nested inside it">
+        <path class="s-thin" d="M20 52 V44 H660 V52"/>
+        <text class="t t-small" x="340" y="34" text-anchor="middle">Ethernet frame: 64 to 1518 bytes (1522 with a VLAN tag)</text>
+        <path class="s-thin" d="M240 78 V70 H590 V78"/>
+        <text class="t t-small" x="415" y="62" text-anchor="middle">IP packet: up to 1500 bytes (the MTU)</text>
+        <path class="s-thin" d="M350 104 V96 H590 V104"/>
+        <text class="t t-small" x="470" y="88" text-anchor="middle">TCP segment (UDP: 8-byte header)</text>
+
+        <rect class="f-wash s-line" x="20" y="108" width="80" height="56"/>
+        <text class="t t-small" x="60" y="132" text-anchor="middle">Dest MAC</text>
+        <text class="t t-small t-muted" x="60" y="150" text-anchor="middle">6 bytes</text>
+        <rect class="f-wash s-line" x="100" y="108" width="80" height="56"/>
+        <text class="t t-small" x="140" y="132" text-anchor="middle">Source MAC</text>
+        <text class="t t-small t-muted" x="140" y="150" text-anchor="middle">6 bytes</text>
+        <rect class="f-wash s-line" x="180" y="108" width="60" height="56"/>
+        <text class="t t-small" x="210" y="132" text-anchor="middle">Type</text>
+        <text class="t t-small t-muted" x="210" y="150" text-anchor="middle">2 bytes</text>
+        <rect class="f-theory-soft s-line" x="240" y="108" width="110" height="56"/>
+        <text class="t t-small" x="295" y="132" text-anchor="middle">IP header</text>
+        <text class="t t-small t-muted" x="295" y="150" text-anchor="middle">20 bytes</text>
+        <rect class="f-career-soft s-line" x="350" y="108" width="110" height="56"/>
+        <text class="t t-small" x="405" y="132" text-anchor="middle">TCP header</text>
+        <text class="t t-small t-muted" x="405" y="150" text-anchor="middle">20 bytes</text>
+        <rect class="f-practice-soft s-line" x="460" y="108" width="130" height="56"/>
+        <text class="t t-small" x="525" y="132" text-anchor="middle">Your data</text>
+        <text class="t t-small t-muted" x="525" y="150" text-anchor="middle">up to 1460 bytes</text>
+        <rect class="f-wash s-line" x="590" y="108" width="70" height="56"/>
+        <text class="t t-small" x="625" y="132" text-anchor="middle">FCS</text>
+        <text class="t t-small t-muted" x="625" y="150" text-anchor="middle">4 bytes</text>
+
+        <text class="t t-small t-muted" x="20" y="186">An 8-byte preamble comes first and is not counted in the frame length.</text>
+        <text class="t t-small t-bold" x="20" y="208">A switch reads the MACs. A router reads the IP header. A firewall reads the ports.</text>
+      </svg>
+      <figcaption>Figure 2. An Ethernet frame carrying a TCP segment inside an IP packet. Each layer wraps the one above and adds its own header. A short payload is padded so the frame is never under 64 bytes. The Type field says what is inside: 0x0800 means IPv4, 0x0806 ARP, 0x86DD IPv6, 0x8100 a VLAN tag.</figcaption>
+    </figure>
+
+    <h3>The MAC address</h3>
+    <p>A <b>MAC address</b> (media access control address) is a 48-bit number, written as six bytes in hexadecimal, for example <code>A4:BB:6D:12:AB:34</code>. It is burned into the network chip at the factory and names one network interface. Two halves have a meaning:</p>
+    <ul>
+      <li>The first three bytes (<code>A4:BB:6D</code>) are the <b>OUI</b>, the maker's registered prefix. Free "OUI lookup" websites tell you the brand, which is a quick way to identify an unknown device on a site.</li>
+      <li>The last three bytes are the maker's serial number for that interface.</li>
+    </ul>
+    <p>Two bits of the first byte are flags. Write <code>A4</code> in binary: <code>1010 0100</code>. The lowest bit (0) says <b>unicast</b> (one receiver); a 1 would mean a group address. The next bit (0) says <b>globally unique</b>; a 1 would mean "locally administered", which is what phones use when they randomise their MAC for privacy. Two special addresses to remember: <code>FF:FF:FF:FF:FF:FF</code> is the <b>broadcast</b> address (everyone on the local network), and addresses starting <code>01:00:5E</code> are IPv4 <b>multicast</b> groups.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The MAC address is the device's true identity and travels with the data everywhere." <b>Right:</b> a MAC address only has meaning on the one cable or switch network the frame is crossing. When a router forwards a packet, it throws away the old frame and builds a new one with new MAC addresses. Only the IP addresses (and ports) stay the same end to end. This is why a remote site never sees your laptop's MAC.</p></div>
+
+    <h3>Speeds, pairs and the frame check</h3>
+    <p>The <b>FCS</b> (frame check sequence) at the end is a 32-bit CRC calculated from every other byte. The receiver recomputes it, and a frame that does not match is silently dropped. A switch port that shows rising "CRC" or "FCS error" counters is telling you about a bad cable, bad termination, interference, or a duplex mismatch. That is a layer 1 fault found with a layer 2 counter.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Name</th><th>Speed</th><th>Pairs used</th><th>Notes</th></tr>
+      <tr><td>10BASE-T</td><td>10 Mbps</td><td>2</td><td>Old, but some alarm gear still links at this speed</td></tr>
+      <tr><td>100BASE-TX</td><td>100 Mbps</td><td>2 (pins 1-2 and 3-6)</td><td>Many cameras and readers. Works on a cable with only two good pairs</td></tr>
+      <tr><td>1000BASE-T</td><td>1 Gbps</td><td>4</td><td>All four pairs, both directions at once. A cable with one bad pair often falls back to 100 Mbps</td></tr>
+      <tr><td>2.5G / 5GBASE-T</td><td>2.5 / 5 Gbps</td><td>4</td><td>Wi-Fi 6 access points, newer NVRs</td></tr>
+      <tr><td>10GBASE-T</td><td>10 Gbps</td><td>4</td><td>Needs Cat6A to reach the full 100 m</td></tr>
+    </table></div>
+    <p>All copper Ethernet is limited to a 100 m <b>channel</b>: in structured cabling that is up to 90 m of fixed cable plus up to 10 m of patch cords (see <a href="../career/c07-telecom-cabling-acma.html">C07</a>). Beyond that you use fibre or a switch in between. Modern links are <b>full duplex</b> (each pair direction carries data at once), and the two ends <b>auto-negotiate</b> speed and duplex. The one habit to avoid is forcing one end to a fixed setting while the other end auto-negotiates: it can produce a duplex mismatch with slow speeds and CRC errors.</p>
+    <a class="crosslink" href="../practice/p20-cat6-termination.html">Practice P20 · Cat6 termination and testing: why a bad pair becomes a slow link</a>
+
+    <h2>How a switch learns where everything is</h2>
+    <p>Old networks used a <b>hub</b>: whatever came in on one port was repeated out of every other port, so everyone shared one wire and collided. A <b>switch</b> is smarter. It reads the destination MAC of each frame and sends the frame only where it needs to go. The clever part is that nobody tells the switch where devices are. It learns by watching:</p>
+    <ol class="steps">
+      <li><p><b>Learn from the source.</b> A frame arrives on port 1 with source MAC A. The switch writes "A is on port 1" in its <b>MAC address table</b> (also called the CAM table).</p></li>
+      <li><p><b>Look up the destination.</b> If the destination MAC is in the table, the switch sends the frame out of that one port only.</p></li>
+      <li><p><b>Flood if unknown.</b> If the destination is not in the table yet, or it is the broadcast address, the switch copies the frame out of every port except the one it came in on.</p></li>
+      <li><p><b>Forget slowly.</b> Entries that are not refreshed expire, commonly after about five minutes, so the table follows devices that move.</p></li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 700 304" role="img" aria-label="Four hosts on a four-port switch; host A sends to unknown host C so the switch floods and learns A">
+        <defs><marker id="t17sw-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="20" y="40" width="100" height="50" rx="6"/>
+        <text class="t t-bold" x="70" y="62" text-anchor="middle">Host A</text>
+        <text class="t t-small t-muted" x="70" y="80" text-anchor="middle">MAC …:0A</text>
+        <rect class="f-wash s-line" x="20" y="210" width="100" height="50" rx="6"/>
+        <text class="t t-bold" x="70" y="232" text-anchor="middle">Host B</text>
+        <text class="t t-small t-muted" x="70" y="250" text-anchor="middle">MAC …:0B</text>
+        <rect class="f-wash s-line" x="580" y="40" width="100" height="50" rx="6"/>
+        <text class="t t-bold" x="630" y="62" text-anchor="middle">Host C</text>
+        <text class="t t-small t-muted" x="630" y="80" text-anchor="middle">MAC …:0C</text>
+        <rect class="f-wash s-line" x="580" y="210" width="100" height="50" rx="6"/>
+        <text class="t t-bold" x="630" y="232" text-anchor="middle">Host D</text>
+        <text class="t t-small t-muted" x="630" y="250" text-anchor="middle">MAC …:0D</text>
+
+        <path class="s-thin" d="M120 65 L250 115 M120 235 L250 185 M580 65 L450 115 M580 235 L450 185"/>
+        <rect class="f-accent-soft s-accent" x="250" y="80" width="200" height="140" rx="8"/>
+        <circle class="f-ink" cx="250" cy="115" r="4"/><circle class="f-ink" cx="250" cy="185" r="4"/><circle class="f-ink" cx="450" cy="115" r="4"/><circle class="f-ink" cx="450" cy="185" r="4"/>
+        <text class="t t-small t-muted" x="260" y="119">Port 1</text>
+        <text class="t t-small t-muted" x="260" y="189">Port 2</text>
+        <text class="t t-small t-muted" x="440" y="119" text-anchor="end">Port 3</text>
+        <text class="t t-small t-muted" x="440" y="189" text-anchor="end">Port 4</text>
+        <text class="t t-bold" x="350" y="102" text-anchor="middle">Switch</text>
+        <text class="t t-small t-muted" x="350" y="134" text-anchor="middle">MAC table</text>
+        <text class="t t-small t-bold" x="350" y="152" text-anchor="middle">A → port 1</text>
+        <text class="t t-small t-muted" x="350" y="170" text-anchor="middle">(B, C, D not learned yet)</text>
+
+        <path class="s-red" d="M120 65 L250 115" marker-end="url(#t17sw-a)"/>
+        <path class="s-red s-dash" d="M250 185 L120 235" marker-end="url(#t17sw-a)"/>
+        <path class="s-red s-dash" d="M450 115 L580 65" marker-end="url(#t17sw-a)"/>
+        <path class="s-red s-dash" d="M450 185 L580 235" marker-end="url(#t17sw-a)"/>
+        <text class="t t-small t-red" x="130" y="58">frame A → C</text>
+        <text class="t t-small t-red" x="130" y="255">flooded copy</text>
+        <text class="t t-small t-red" x="570" y="118" text-anchor="end">flooded copy</text>
+        <text class="t t-small t-red" x="570" y="255" text-anchor="end">flooded copy</text>
+
+        <text class="t t-small" x="20" y="280">Step 1: A sends to C. C is unknown, so the switch floods ports 2, 3 and 4.</text>
+        <text class="t t-small t-muted" x="20" y="297">It also notes the source: A is on port 1. When C answers, the switch learns C too.</text>
+      </svg>
+      <figcaption>Figure 3. A switch with an empty table. Host A's frame arrives on port 1, so the switch learns "A is on port 1" and, not knowing C, floods the frame everywhere else. Only C answers. That reply teaches the switch where C is, and from then on A and C talk through ports 1 and 3 only.</figcaption>
+    </figure>
+
+    <div class="widget" id="t17-sw">
+      <span class="label">Interactive · Teach a switch</span>
+      <p class="wsmall">Four devices sit on ports 1 to 4 of a switch whose MAC table starts empty. Choose a sender and a destination, press Send, and watch which ports get a copy. Try A → C twice, then C → A.</p>
+      <div class="wgrid">
+        <label>Sender<select id="t17w-src"><option value="A">Device A (port 1)</option><option value="B">Device B (port 2)</option><option value="C">Device C (port 3)</option><option value="D">Device D (port 4)</option></select></label>
+        <label>Destination<select id="t17w-dst"><option value="A">Device A</option><option value="B">Device B</option><option value="C" selected>Device C</option><option value="D">Device D</option><option value="ALL">Everyone (broadcast)</option></select></label>
+      </div>
+      <button class="wbtn" type="button" id="t17w-send">Send frame</button><button class="wbtn" type="button" id="t17w-reset">Empty the MAC table</button>
+      <div class="ports" id="t17w-ports"></div>
+      <div class="wstatus" id="t17w-msg">Press Send.</div>
+      <div class="table-wrap"><table><tr><th>MAC address</th><th>Learned on port</th></tr><tbody id="t17w-tbl"></tbody></table></div>
+      <ol class="wlog" id="t17w-log"></ol>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var port={A:1,B:2,C:3,D:4},mac={A:'00:11:22:33:44:0A',B:'00:11:22:33:44:0B',C:'00:11:22:33:44:0C',D:'00:11:22:33:44:0D'};
+      var table={},order=[],lines=[];
+      var src=g('t17w-src'),dst=g('t17w-dst'),pbox=g('t17w-ports'),msg=g('t17w-msg'),tbl=g('t17w-tbl'),log=g('t17w-log');
+      function others(p){var r=[],i;for(i=1;i<=4;i++){if(i!==p)r.push(i);}return r;}
+      function names(){return ['A','B','C','D'];}
+      function drawPorts(copies,sp){
+        pbox.textContent='';
+        names().forEach(function(n,i){
+          var d=document.createElement('div'),s=document.createElement('small'),p=i+1;
+          d.className='pbox'+(sp===p?' src':(copies.indexOf(p)>=0?' hit':''));
+          d.appendChild(document.createTextNode('Port '+p+' · '+n));
+          s.textContent=sp===p?'sender':(copies.indexOf(p)>=0?'receives a copy':'nothing');
+          d.appendChild(s);pbox.appendChild(d);
+        });
+      }
+      function drawTable(){
+        tbl.textContent='';
+        if(!order.length){var tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=2;td.textContent='(empty: the switch knows nothing yet)';tr.appendChild(td);tbl.appendChild(tr);return;}
+        order.forEach(function(n){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.className='mono';a.textContent=mac[n]+'  (device '+n+')';b.textContent='port '+table[n];tr.appendChild(a);tr.appendChild(b);tbl.appendChild(tr);});
+      }
+      function drawLog(){log.textContent='';lines.forEach(function(t){var li=document.createElement('li');li.textContent=t;log.appendChild(li);});}
+      function send(){
+        var s=src.value,d=dst.value,copies,txt,cls;
+        if(s===d){msg.className='wstatus amber';msg.textContent='Pick two different devices.';return;}
+        if(table[s]===undefined){table[s]=port[s];order.push(s);}
+        if(d==='ALL'){copies=others(port[s]);cls='wstatus amber';txt='Broadcast (FF:FF:FF:FF:FF:FF): a switch always floods it to every other port. The switch also learned that '+s+' is on port '+port[s]+'.';}
+        else if(table[d]!==undefined){copies=[table[d]];cls='wstatus ok';txt=d+' is already in the table (port '+table[d]+'), so the frame goes out of that one port only. Ports '+others(port[s]).filter(function(x){return x!==table[d];}).join(', ')+' never see it.';}
+        else{copies=others(port[s]);cls='wstatus bad';txt=d+' is not in the table yet, so the frame is flooded to ports '+copies.join(', ')+'. Only '+d+' will answer, and its reply teaches the switch where '+d+' is.';}
+        msg.className=cls;msg.textContent=txt;
+        drawPorts(copies,port[s]);drawTable();
+        lines.unshift(s+' → '+(d==='ALL'?'everyone':d)+': '+(d==='ALL'||table[d]===undefined?'flooded':'forwarded to port '+table[d]));
+        if(lines.length>6)lines.pop();
+        drawLog();
+      }
+      g('t17w-send').onclick=send;
+      g('t17w-reset').onclick=function(){table={};order=[];lines=[];drawPorts([],0);drawTable();drawLog();msg.className='wstatus';msg.textContent='Table emptied. Press Send.';};
+      drawPorts([],0);drawTable();
+    })();
+    </script>
+
+    <h3>Loops and broadcast storms</h3>
+    <p>Because a switch floods broadcasts, a <b>loop</b> is dangerous. If you plug a patch cable from one port of a switch into another port of the same switch (or build a ring of switches), a broadcast frame circulates forever, and each trip copies it again. Within seconds every port is saturated: this is a <b>broadcast storm</b>. All the link lights blink in unison and the network is dead. Managed switches run <b>STP/RSTP</b> (spanning tree), which notices loops and blocks one link. Cheap unmanaged switches do not. "Someone plugged both ends of a cable into the same switch" is one of the most common causes of a whole site going down.</p>
+
+    <h2>Broadcast domains and VLANs</h2>
+    <p>A <b>broadcast domain</b> is the set of devices that all receive a broadcast frame sent by any one of them. A plain switch network is one broadcast domain, however many switches are chained together. Routers do not forward broadcasts, so each router port starts a new domain.</p>
+    <p>Why care? Discovery tools, DHCP requests and ARP (below) are broadcasts. In a small network that is background noise. In a network with hundreds of devices, or where PCs and cameras share the same wire, it becomes both a load and a security problem: any PC can see, and try to talk to, every camera.</p>
+    <p>A <b>VLAN</b> (virtual LAN) fixes this in software. A managed switch can be told "ports 1 to 12 belong to VLAN 10, ports 13 to 24 to VLAN 20". The switch then behaves as if it were two separate switches: broadcasts and floods stay inside their own VLAN. The standard is <b>IEEE 802.1Q</b>.</p>
+    <ul>
+      <li>An <b>access port</b> belongs to one VLAN. The device plugged in (a camera, a PC) knows nothing about VLANs; the switch quietly adds and removes the label.</li>
+      <li>A <b>trunk port</b> carries several VLANs on one cable, for example from a switch to another switch or to a router. Each frame gets a 4-byte <b>tag</b> holding a 12-bit VLAN ID (usable values 1 to 4094) so the far end knows which VLAN it belongs to.</li>
+      <li>Traffic cannot cross from one VLAN to another except through a <b>router or Layer 3 switch</b>, because they are different broadcast domains. By convention each VLAN gets its own subnet.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 700 350" role="img" aria-label="One managed switch split into a camera VLAN and an office VLAN, joined to a router by a single trunk cable">
+        <text class="t t-bold t-blue" x="20" y="28">VLAN 10 · cameras</text>
+        <text class="t t-small t-muted" x="20" y="46">10.10.10.0/24</text>
+        <text class="t t-bold t-green" x="680" y="28" text-anchor="end">VLAN 20 · office</text>
+        <text class="t t-small t-muted" x="680" y="46" text-anchor="end">10.10.20.0/24</text>
+
+        <rect class="f-wash s-line" x="20" y="70" width="100" height="34" rx="5"/><text class="t t-small" x="70" y="92" text-anchor="middle">Camera 1</text>
+        <rect class="f-wash s-line" x="20" y="120" width="100" height="34" rx="5"/><text class="t t-small" x="70" y="142" text-anchor="middle">Camera 2</text>
+        <rect class="f-wash s-line" x="20" y="170" width="100" height="34" rx="5"/><text class="t t-small" x="70" y="192" text-anchor="middle">Camera 3</text>
+        <path class="s-blue" d="M120 87 L250 110 M120 137 L250 140 M120 187 L250 170"/>
+
+        <rect class="f-accent-soft s-accent" x="250" y="90" width="200" height="100" rx="8"/>
+        <text class="t t-bold" x="350" y="116" text-anchor="middle">Managed switch</text>
+        <text class="t t-small t-blue" x="350" y="136" text-anchor="middle">ports 1 to 3 = VLAN 10</text>
+        <text class="t t-small t-green" x="350" y="154" text-anchor="middle">ports 4 and 5 = VLAN 20</text>
+        <text class="t t-small t-muted" x="350" y="172" text-anchor="middle">port 24 = trunk</text>
+
+        <rect class="f-wash s-line" x="580" y="100" width="100" height="34" rx="5"/><text class="t t-small" x="630" y="122" text-anchor="middle">Office PC 1</text>
+        <rect class="f-wash s-line" x="580" y="150" width="100" height="34" rx="5"/><text class="t t-small" x="630" y="172" text-anchor="middle">Office PC 2</text>
+        <path class="s-green" d="M450 125 L580 117 M450 155 L580 167"/>
+
+        <path class="s-accent" d="M350 190 V260"/>
+        <text class="t t-small" x="362" y="216">802.1Q trunk: one cable,</text>
+        <text class="t t-small" x="362" y="234">frames tagged VLAN 10 or 20</text>
+        <rect class="f-wash s-line" x="250" y="260" width="200" height="60" rx="8"/>
+        <text class="t t-bold" x="350" y="284" text-anchor="middle">Router / firewall</text>
+        <text class="t t-small t-muted" x="350" y="304" text-anchor="middle">10.10.10.1 and 10.10.20.1</text>
+        <text class="t t-small t-muted" x="20" y="341">Cameras and PCs cannot reach each other unless the router allows it.</text>
+      </svg>
+      <figcaption>Figure 4. One physical switch acting as two. Cameras (VLAN 10) and office PCs (VLAN 20) are separate broadcast domains and separate subnets. The only way between them is the router, which is where you decide what is allowed: for example, "the NVR may talk to the cameras; PCs may not".</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Putting cameras on their own VLAN makes them secure." <b>Right:</b> a VLAN only separates the traffic. If the router lets everything through, the VLAN protects nothing. The security comes from the rules on the router or firewall between the VLANs. VLANs also do not help against a person who plugs a laptop into a camera port that has no port security.</p></div>
+
+    <h2>IPv4 addresses</h2>
+    <p>MAC addresses name an interface on one local network. They are flat and have no location, so they cannot work for the whole internet. For that we need the <b>IP address</b>, which has a network part (where) and a host part (who), like a street name and a house number.</p>
+    <p>An IPv4 address is 32 bits. People write it as four <b>octets</b> (8 bits each) in decimal, separated by dots. Each octet is a number from 0 to 255 because eight bits can hold 2⁸ = 256 values. To convert, add up the place values of the bits that are 1:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Bit position</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+      <tr><td>Value</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+      <tr><td>77 = 64 + 8 + 4 + 1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>192 = 128 + 64</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    </table></div>
+    <p>So <code>192.168.1.77</code> is <code>11000000.10101000.00000001.01001101</code>. You will not convert often, but you must be able to do it on paper when a subnet puzzle arrives.</p>
+    <h3>Private, public and special ranges</h3>
+    <div class="table-wrap"><table class="mono">
+      <tr><th>Range</th><th>Use</th></tr>
+      <tr><td>10.0.0.0/8</td><td>Private. Large sites. About 16.7 million addresses</td></tr>
+      <tr><td>172.16.0.0/12</td><td>Private. 172.16.x.x up to 172.31.x.x</td></tr>
+      <tr><td>192.168.0.0/16</td><td>Private. Homes, small sites, and most camera defaults</td></tr>
+      <tr><td>169.254.0.0/16</td><td>Link-local. A device gives itself one of these when DHCP failed. Seeing 169.254.x.x means "no DHCP answer"</td></tr>
+      <tr><td>127.0.0.0/8</td><td>Loopback. 127.0.0.1 is "this machine itself"</td></tr>
+      <tr><td>100.64.0.0/10</td><td>Shared space used by ISPs for carrier-grade NAT</td></tr>
+      <tr><td>224.0.0.0/4</td><td>Multicast groups (224.0.0.0 to 239.255.255.255)</td></tr>
+      <tr><td>255.255.255.255</td><td>Limited broadcast: every device on this network</td></tr>
+    </table></div>
+    <p>The three private ranges are never routed on the public internet. Your site's router uses <b>NAT</b> (network address translation) to swap a private address for its single public one on the way out, and swap back on the way in. It is also why a camera with a private address cannot be reached from the internet unless you deliberately open a path.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Many mobile and fixed-wireless connections, and some home services, sit behind carrier-grade NAT: the provider shares one public address between many customers, so you cannot accept incoming connections at all. Remote viewing of a CCTV system then has to use a vendor cloud relay or a VPN rather than a port forward. Never forward camera ports straight to the internet; exposed cameras are found and attacked quickly. Ask your client's IT provider what the service actually offers.</p></div>
+
+    <h2>Subnet masks and CIDR</h2>
+    <p>How does a device know whether another IP address is on its own network? It uses a <b>subnet mask</b>, a 32-bit number made of a block of 1s followed by 0s. The 1s mark the network part and the 0s mark the host part. Writing the number of 1s after a slash gives the shorter <b>CIDR</b> (Classless Inter-Domain Routing) notation: <code>255.255.255.0</code> has 24 ones, so it is <code>/24</code>. The old "class A, B, C" names (/8, /16, /24) survive in speech, but real networks use any prefix length.</p>
+    <div class="formula">network = IP AND mask &nbsp;&nbsp; broadcast = network OR (NOT mask) &nbsp;&nbsp; usable hosts = 2<sup>(32 − prefix)</sup> − 2
+      <small>AND keeps a bit only where both are 1, so ANDing with the mask wipes the host bits to zero and leaves the network address. The broadcast is all host bits set to 1. Two addresses are lost per subnet: the network address (all host bits 0) and the broadcast address (all host bits 1).</small></div>
+
+    <figure>
+      <svg viewBox="0 0 700 290" role="img" aria-label="Binary working for 192.168.1.77 with a /26 mask, giving network 192.168.1.64 and broadcast 192.168.1.127">
+        <rect class="f-accent-soft" x="450" y="46" width="60" height="24"/>
+        <rect class="f-accent-soft" x="450" y="80" width="60" height="24"/>
+        <rect class="f-accent-soft" x="450" y="124" width="60" height="24"/>
+        <rect class="f-accent-soft" x="450" y="164" width="60" height="24"/>
+        <text class="t t-bold" x="20" y="64">IP address</text>
+        <text class="t t-bold" x="20" y="98">Mask /26</text>
+        <text class="t t-bold" x="20" y="142">AND = network</text>
+        <text class="t t-bold" x="20" y="176">Broadcast</text>
+        <text class="t t-small t-muted" x="20" y="190">host bits all 1</text>
+        <text class="t" x="160" y="64" textLength="350" lengthAdjust="spacing" style="font-family:var(--mono);font-size:16px">11000000.10101000.00000001.01001101</text>
+        <text class="t" x="160" y="98" textLength="350" lengthAdjust="spacing" style="font-family:var(--mono);font-size:16px">11111111.11111111.11111111.11000000</text>
+        <line class="s-line" x1="20" y1="110" x2="680" y2="110"/>
+        <text class="t t-accent t-bold" x="160" y="142" textLength="350" lengthAdjust="spacing" style="font-family:var(--mono);font-size:16px">11000000.10101000.00000001.01000000</text>
+        <text class="t" x="160" y="176" textLength="350" lengthAdjust="spacing" style="font-family:var(--mono);font-size:16px">11000000.10101000.00000001.01111111</text>
+        <text class="t" x="540" y="64">192.168.1.77</text>
+        <text class="t" x="540" y="98">255.255.255.192</text>
+        <text class="t t-accent t-bold" x="540" y="142">192.168.1.64</text>
+        <text class="t" x="540" y="176">192.168.1.127</text>
+        <path class="s-thin" d="M160 196 V202 H450 V196"/>
+        <text class="t t-small" x="305" y="220" text-anchor="middle">26 network bits (mask has 1s)</text>
+        <path class="s-thin" d="M450 196 V202 H510 V196"/>
+        <text class="t t-small t-bold" x="480" y="236" text-anchor="middle">6 host bits</text>
+        <text class="t t-small t-muted" x="20" y="262">First host = network + 1 = 192.168.1.65.   Last host = broadcast − 1 = 192.168.1.126.</text>
+        <text class="t t-small t-muted" x="20" y="280">Usable hosts = 2⁶ − 2 = 62.   Shaded: the host bits that the mask wipes out.</text>
+      </svg>
+      <figcaption>Figure 5. The device 192.168.1.77 with a /26 mask. The mask's 26 ones keep the first 26 bits (the network) and wipe the last 6 (the host). The result, 192.168.1.64, is the network address. Setting all six host bits to 1 gives the broadcast address, 192.168.1.127.</figcaption>
+    </figure>
+
+    <h3>Worked example 1: 192.168.1.0/24</h3>
+    <p>Mask 255.255.255.0 has 8 host bits. Network 192.168.1.0. Broadcast 192.168.1.255. Usable hosts 192.168.1.1 to 192.168.1.254, which is 2⁸ − 2 = <b>254</b>. This is the common home and small-site subnet. A device at 192.168.1.50 and one at 192.168.1.200 are on the same subnet and talk directly through a switch.</p>
+    <h3>Worked example 2: 192.168.1.77/26</h3>
+    <p>/26 means 26 network bits and 6 host bits, so the mask is 255.255.255.192 and each subnet holds 2⁶ = 64 addresses. There is a quick shortcut called the <b>block size</b> method: block = 256 − 192 = 64. Subnets start at multiples of 64: .0, .64, .128, .192. The address .77 falls in the block that starts at .64. So the network is 192.168.1.64, the broadcast is the next network minus 1 (192.168.1.127), the usable range is .65 to .126, and there are 62 hosts. Figure 5 shows the same answer in bits.</p>
+    <h3>Worked example 3: splitting a /24 into four /26 subnets</h3>
+    <div class="table-wrap"><table class="mono">
+      <tr><th>Subnet</th><th>Usable hosts</th><th>Broadcast</th><th>Could be used for</th></tr>
+      <tr><td>192.168.1.0/26</td><td>.1 to .62</td><td>.63</td><td>Cameras</td></tr>
+      <tr><td>192.168.1.64/26</td><td>.65 to .126</td><td>.127</td><td>Office PCs</td></tr>
+      <tr><td>192.168.1.128/26</td><td>.129 to .190</td><td>.191</td><td>BMS controllers</td></tr>
+      <tr><td>192.168.1.192/26</td><td>.193 to .254</td><td>.255</td><td>Spare / guest</td></tr>
+    </table></div>
+    <p>Each of the four is its own network. A host at 192.168.1.60 and one at 192.168.1.70 look "close" but are on different subnets (.0/26 and .64/26), so they cannot talk without a router. That is the classic mistake when two devices have mismatched masks.</p>
+    <h3>Worked example 4: how big a subnet do I need?</h3>
+    <p>A camera system has 32 cameras, 1 NVR, 2 PoE switches, 1 gateway and 1 laptop: 37 addresses. Allow about 50 % for growth: roughly 56. A /27 holds only 30, too small. A /26 holds 62, just enough. In practice many installers use a /24 for a camera VLAN because it is simple and forgiving. Use a smaller prefix only when a plan requires it or when several VLANs must share a block.</p>
+    <div class="table-wrap"><table class="mono">
+      <tr><th>Prefix</th><th>Mask</th><th>Block size</th><th>Usable hosts</th></tr>
+      <tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2 (links between routers)</td></tr>
+      <tr><td>/29</td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
+      <tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+      <tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
+      <tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
+      <tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
+      <tr><td>/24</td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
+      <tr><td>/23</td><td>255.255.254.0</td><td>512</td><td>510</td></tr>
+      <tr><td>/22</td><td>255.255.252.0</td><td>1024</td><td>1022</td></tr>
+      <tr><td>/16</td><td>255.255.0.0</td><td>65,536</td><td>65,534</td></tr>
+    </table></div>
+    <p>The only mask octet values are 128, 192, 224, 240, 248, 252, 254 and 255, because the 1s must be unbroken. If a camera accepts a mask like 255.255.255.100, it is wrong.</p>
+
+    <div class="widget" id="t17-sn">
+      <span class="label">Interactive · Subnet calculator</span>
+      <p class="wsmall">Type an IP address and a prefix (<code>26</code> or <code>/26</code>) or a dotted mask (<code>255.255.255.192</code>). Add a second address to test whether the two devices are on the same subnet, and optionally split the network into smaller ones.</p>
+      <div class="wgrid">
+        <label>IP address<input type="text" id="t17sn-ip" value="192.168.1.77" autocomplete="off" spellcheck="false"></label>
+        <label>Prefix or mask<input type="text" id="t17sn-p" value="26" autocomplete="off" spellcheck="false"></label>
+        <label>Second IP (optional)<input type="text" id="t17sn-ip2" value="192.168.1.130" autocomplete="off" spellcheck="false"></label>
+        <label>Split the network into<select id="t17sn-split"><option value="0">no split</option><option value="1">2 equal subnets</option><option value="2">4 equal subnets</option><option value="3">8 equal subnets</option><option value="4">16 equal subnets</option></select></label>
+      </div>
+      <div>
+        <button class="wbtn" type="button" data-ex="192.168.1.10|24|192.168.1.200|0">Example: /24 office</button><button class="wbtn" type="button" data-ex="192.168.1.77|26|192.168.1.130|0">Example: the /26 above</button><button class="wbtn" type="button" data-ex="10.20.30.141|27|10.20.30.150|0">Example: /27</button><button class="wbtn" type="button" data-ex="192.168.1.10|24|192.168.1.60|2">Example: split a /24 in four</button>
+      </div>
+      <div class="readings" id="t17sn-out"></div>
+      <div class="wstatus" id="t17sn-same"></div>
+      <pre class="bits" id="t17sn-bin"></pre>
+      <div id="t17sn-splitout"></div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var ipE=g('t17sn-ip'),pE=g('t17sn-p'),ip2E=g('t17sn-ip2'),spE=g('t17sn-split'),out=g('t17sn-out'),same=g('t17sn-same'),bin=g('t17sn-bin'),spOut=g('t17sn-splitout');
+      function parseIP(s){var m=/^\s*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s*$/.exec(s),n=0,i,o;if(!m)return null;for(i=1;i<=4;i++){o=+m[i];if(o>255)return null;n=n*256+o;}return n;}
+      function toIP(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');}
+      function maskOf(p){return p===0?0:((0xFFFFFFFF<<(32-p))>>>0);}
+      function parsePrefix(s){
+        var p,m,inv;s=s.trim();if(s.charAt(0)==='/')s=s.slice(1);
+        if(/^\d{1,2}$/.test(s)){p=+s;return p<=32?p:null;}
+        m=parseIP(s);if(m===null)return null;
+        inv=(~m)>>>0;if((inv&((inv+1)>>>0))!==0)return null;
+        return 32-Math.round(Math.log(inv+1)/Math.LN2);
+      }
+      function bits(n){var s='',i;for(i=31;i>=0;i--){s+=((n>>>i)&1);if(i%8===0&&i>0)s+='.';}return s;}
+      function kind(n){
+        var a=n>>>24,b=(n>>>16)&255,c=n>>>8;
+        if(a===10)return 'Private (10.0.0.0/8)';
+        if(a===172&&b>=16&&b<=31)return 'Private (172.16.0.0/12)';
+        if(a===192&&b===168)return 'Private (192.168.0.0/16)';
+        if(a===127)return 'Loopback (this device only)';
+        if(a===169&&b===254)return 'Link-local (DHCP failed?)';
+        if(a===100&&b>=64&&b<=127)return 'Shared space (carrier NAT)';
+        if(c===0xC00002||c===0xC63364||c===0xCB0071)return 'Documentation example range';
+        if(a>=224&&a<=239)return 'Multicast group';
+        if(a>=240)return 'Reserved';
+        if(a===0)return 'This network (unspecified)';
+        return 'Public (routable on the internet)';
+      }
+      function row(label,val){var d=document.createElement('div'),s=document.createElement('small'),v=document.createElement('span');s.textContent=label;v.className='out';v.style.fontSize='16px';v.textContent=val;d.appendChild(s);d.appendChild(v);out.appendChild(d);}
+      function cell(tr,tag,txt){var c=document.createElement(tag);c.textContent=txt;tr.appendChild(c);}
+      function status(cls,txt){same.className='wstatus'+(cls?' '+cls:'');same.textContent=txt;}
+      function upd(){
+        var ip=parseIP(ipE.value),p=parsePrefix(pE.value),m,net,bc,total,hosts,first,last,s2,q,net2,k,q2,cnt,size,show,i,t,tr,wrap,tb,note;
+        out.textContent='';spOut.textContent='';bin.textContent='';
+        if(ip===null){status('bad','Enter the IP address as four numbers from 0 to 255, like 192.168.1.77.');return;}
+        if(p===null){status('bad','Enter the prefix as a number from 0 to 32 (like 24 or /24), or a valid mask like 255.255.255.0 (the 1s must be unbroken).');return;}
+        m=maskOf(p);net=(ip&m)>>>0;bc=(net|(~m))>>>0;total=Math.pow(2,32-p);
+        if(p<=30){hosts=total-2;first=net+1;last=bc-1;}else if(p===31){hosts=2;first=net;last=bc;}else{hosts=1;first=ip;last=ip;}
+        row('Network address',toIP(net)+'/'+p);
+        row('Subnet mask',toIP(m));
+        row('Broadcast address',p>=31?'not used (/'+p+')':toIP(bc));
+        row('First usable host',toIP(first));
+        row('Last usable host',toIP(last));
+        row('Usable hosts',String(hosts));
+        row('Block size',String(total));
+        row('Address type',kind(ip));
+        bin.textContent='IP       '+bits(ip)+'\nMask     '+bits(m)+'\nNetwork  '+bits(net);
+        s2=ip2E.value.trim();note='';
+        if(p<=30&&ip===net)note+=' Note: the first address is the network address itself, so no device can use it.';
+        if(p<=30&&ip===bc)note+=' Note: the first address is the broadcast address, so no device can use it.';
+        if(s2===''){status('','Add a second IP address to test whether the two devices are on the same subnet.'+note);}
+        else{
+          q=parseIP(s2);
+          if(q===null){status('bad','The second address is not a valid IPv4 address.');}
+          else{
+            net2=(q&m)>>>0;
+            if(p<=30&&(q===net2||q===((net2|(~m))>>>0)))note+=' Note: the second address is the network or broadcast address of its subnet, so no device can use it.';
+            if(q===ip)note+=' Both addresses are identical: that would be an IP conflict.';
+            if(net2===net)status('ok',toIP(q)+' is on the same subnet ('+toIP(net)+'/'+p+'). The two devices can reach each other directly through a switch, with no router.'+note);
+            else status('amber',toIP(q)+' is on a different subnet ('+toIP(net2)+'/'+p+'). Traffic must go through the default gateway and a router. Without one the devices cannot talk.'+note);
+          }
+        }
+        k=+spE.value;
+        if(k>0){
+          q2=p+k;
+          if(q2>30){spOut.textContent='A /'+p+' cannot be split into '+Math.pow(2,k)+' subnets that still have usable hosts.';return;}
+          cnt=Math.pow(2,k);size=Math.pow(2,32-q2);show=Math.min(cnt,16);
+          wrap=document.createElement('div');wrap.className='table-wrap';t=document.createElement('table');
+          tr=document.createElement('tr');cell(tr,'th','Subnet');cell(tr,'th','Usable range');cell(tr,'th','Broadcast');cell(tr,'th','Hosts');t.appendChild(tr);
+          for(i=0;i<show;i++){
+            var n0=net+i*size;
+            tr=document.createElement('tr');
+            cell(tr,'td',toIP(n0)+'/'+q2);cell(tr,'td',toIP(n0+1)+' to '+toIP(n0+size-2));cell(tr,'td',toIP(n0+size-1));cell(tr,'td',String(size-2));
+            t.appendChild(tr);
+          }
+          wrap.appendChild(t);spOut.appendChild(wrap);
+          if(cnt>show){var pp=document.createElement('p');pp.className='wsmall';pp.textContent='Showing the first '+show+' of '+cnt+' subnets.';spOut.appendChild(pp);}
+        }
+      }
+      ipE.oninput=upd;pE.oninput=upd;ip2E.oninput=upd;spE.onchange=upd;
+      [].forEach.call(document.querySelectorAll('#t17-sn [data-ex]'),function(b){b.onclick=function(){var a=b.getAttribute('data-ex').split('|');ipE.value=a[0];pE.value=a[1];ip2E.value=a[2];spE.value=a[3];upd();};});
+      upd();
+    })();
+    </script>
+    <a class="crosslink" href="../reference/r02-formula-sheet.html">Reference R02 · Formula sheet: subnet size, PoE budget and CCTV storage calculators</a>
+
+    <h2>The default gateway</h2>
+    <p>Every IP device is set up with four things: an <b>IP address</b>, a <b>subnet mask</b>, a <b>default gateway</b> and (usually) a <b>DNS server</b>. The gateway is the address of the router on this subnet, the exit door. Before sending, the device always asks one question: "Is the destination in my own subnet?" It answers by ANDing the destination with its own mask and comparing with its own network.</p>
+    <ul>
+      <li><b>Yes, same subnet:</b> send the frame directly to the destination's MAC address (found with ARP, below).</li>
+      <li><b>No, different subnet:</b> send the frame to the <i>gateway's</i> MAC address, with the destination IP unchanged, and let the router take it from there.</li>
+    </ul>
+    <p>The gateway must itself be inside the device's own subnet, otherwise the device cannot reach it either. A convention is to give the router the first or last usable address, like 192.168.1.1 or 192.168.1.254.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th></tr>
+      <tr><td>Can reach devices in the same subnet but nothing else, and no internet</td><td>Gateway missing or wrong</td></tr>
+      <tr><td>Camera answers ping from the router's side but its web page will not load from another VLAN</td><td>Camera has no gateway, so its replies never leave its own subnet</td></tr>
+      <tr><td>Two devices with similar IPs cannot see each other</td><td>Different masks put them in different subnets (for example one /24 and one /26)</td></tr>
+      <tr><td>Address starts 169.254</td><td>The device asked for DHCP and nobody answered</td></tr>
+    </table></div>
+
+    <h2>ARP: finding the MAC behind an IP address</h2>
+    <p>Layer 3 knows the destination's IP address, but the frame at layer 2 needs a MAC address. The bridge between the two is <b>ARP</b> (Address Resolution Protocol). The sender shouts to everyone: "Who has this IP? Tell me your MAC." The owner answers directly. The sender remembers the answer in its <b>ARP cache</b> (view it with <code>arp -a</code>) so it does not need to ask again for a few minutes.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 326" role="img" aria-label="Sequence of an ARP request and reply followed by a ping between PC A and camera C">
+        <defs>
+          <marker id="t17arp-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t17arp-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t17arp-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-wash s-line" x="30" y="10" width="160" height="44" rx="6"/>
+        <text class="t t-bold" x="110" y="28" text-anchor="middle">PC A</text>
+        <text class="t t-small t-muted" x="110" y="46" text-anchor="middle">192.168.1.10</text>
+        <rect class="f-wash s-line" x="510" y="10" width="160" height="44" rx="6"/>
+        <text class="t t-bold" x="590" y="28" text-anchor="middle">Camera C</text>
+        <text class="t t-small t-muted" x="590" y="46" text-anchor="middle">192.168.1.20</text>
+        <path class="s-thin s-dash" d="M110 54 V300 M590 54 V300"/>
+
+        <text class="t t-small t-red t-bold" x="350" y="84" text-anchor="middle">1 · ARP request (broadcast to FF:FF:FF:FF:FF:FF)</text>
+        <path class="s-red" d="M110 94 H590" marker-end="url(#t17arp-r)"/>
+        <text class="t t-small t-muted" x="350" y="112" text-anchor="middle">"Who has 192.168.1.20? Tell 192.168.1.10."</text>
+
+        <text class="t t-small t-blue t-bold" x="350" y="152" text-anchor="middle">2 · ARP reply (unicast to PC A's MAC)</text>
+        <path class="s-blue" d="M590 162 H110" marker-end="url(#t17arp-b)"/>
+        <text class="t t-small t-muted" x="350" y="180" text-anchor="middle">"192.168.1.20 is at MAC …:0C."</text>
+
+        <text class="t t-small t-green t-bold" x="350" y="224" text-anchor="middle">3 · ping: ICMP echo request, now sent to C's MAC</text>
+        <path class="s-green" d="M110 234 H590" marker-end="url(#t17arp-g)"/>
+        <text class="t t-small t-green t-bold" x="350" y="268" text-anchor="middle">4 · ICMP echo reply</text>
+        <path class="s-green" d="M590 278 H110" marker-end="url(#t17arp-g)"/>
+        <text class="t t-small t-muted" x="20" y="318">PC A keeps the answer in its ARP cache (try arp -a), usually for a few minutes.</text>
+      </svg>
+      <figcaption>Figure 6. The first ping to a device on the same subnet. Frame 1 is a broadcast, so every device on the VLAN receives it, but only the owner of 192.168.1.20 replies. After that, the PC knows the camera's MAC and the real traffic is unicast.</figcaption>
+    </figure>
+    <p>ARP also explains the pop-up "IP address conflict". When a device joins, it can send an ARP asking for its own address. If someone answers, two devices claim the same IP. It is one of the most common faults on sites where cameras are set with static addresses by different people. ARP is an IPv4 tool. IPv6 uses a similar mechanism called neighbour discovery.</p>
+    <div class="callout try"><span class="label">Try this</span><p>On your own laptop at home, run <code>arp -a</code> in a terminal and look at the list. You will see your router's IP next to its MAC, plus other devices you recently talked to. Compare the first three bytes of a MAC with a free OUI lookup site to see the maker. Do this only on a network you own.</p></div>
+
+    <h2>DHCP, static addresses and reservations</h2>
+    <p><b>DHCP</b> (Dynamic Host Configuration Protocol) hands out the four settings automatically. A new device has no address yet, so it must start with broadcasts:</p>
+    <ol class="steps">
+      <li><p><b>Discover.</b> The device broadcasts from 0.0.0.0 to 255.255.255.255: "Is there a DHCP server?" (UDP port 67 on the server, 68 on the client.)</p></li>
+      <li><p><b>Offer.</b> A server answers with an unused address, mask, gateway and DNS, valid for a <b>lease</b> time.</p></li>
+      <li><p><b>Request.</b> The device replies: "I'll take that one." (Another server's offer is then politely declined.)</p></li>
+      <li><p><b>Acknowledge.</b> The server confirms. The device renews quietly at about half the lease time.</p></li>
+    </ol>
+    <p>Because step 1 is a broadcast, a DHCP server only serves its own VLAN, unless a <b>relay</b> on the router forwards the request. A second router with DHCP switched on, plugged in by mistake, becomes a <b>rogue DHCP server</b> and hands half the devices a wrong gateway.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Method</th><th>How the device gets its address</th><th>Best for</th></tr>
+      <tr><td>DHCP, dynamic</td><td>Any free address from a pool; may change after a lease expires or a reboot</td><td>Laptops, phones, guest devices</td></tr>
+      <tr><td>DHCP reservation</td><td>The server always gives the same address to a particular MAC</td><td>Cameras, printers, controllers when you can edit the DHCP server: one central list</td></tr>
+      <tr><td>Static</td><td>You type the address into the device itself</td><td>Cameras, NVRs, door controllers, BMS controllers, switches, access points, anything others must find</td></tr>
+    </table></div>
+    <p>Why do cameras and controllers get static or reserved addresses? Because other things refer to them <i>by address</i>. The NVR has a camera's IP stored. A BMS front end polls a BACnet/IP controller or a Modbus TCP meter at a fixed IP. A firewall rule says "allow 10.10.10.10 to 10.10.10.0/24 on TCP 554". A door controller reports to a server at an address. If DHCP gave the device a new address after a power cut, every one of those links would break, and the first sign would be a camera showing "video loss".</p>
+    <p>Keep static addresses <b>outside the DHCP pool</b> (an exclusion range), and write them down in an <b>IP schedule</b>, a table of every device, address, MAC, location and VLAN. It is part of the as-built paperwork (see <a href="../practice/p22-reading-drawings.html">P22</a>). A sensible layout for a camera VLAN of 10.10.10.0/24:</p>
+    <div class="table-wrap"><table class="mono">
+      <tr><th>Addresses</th><th>Use</th></tr>
+      <tr><td>10.10.10.1</td><td>Gateway (router/firewall)</td></tr>
+      <tr><td>10.10.10.2 – .9</td><td>Switches and access points (management)</td></tr>
+      <tr><td>10.10.10.10 – .19</td><td>NVR / VMS servers</td></tr>
+      <tr><td>10.10.10.20 – .199</td><td>Cameras, numbered in the same order as on the drawings</td></tr>
+      <tr><td>10.10.10.200 – .254</td><td>Spare, laptops, temporary connections</td></tr>
+    </table></div>
+
+    <h2>Routing versus switching</h2>
+    <p>A switch moves frames <i>inside</i> one network using MACs. A <b>router</b> moves packets <i>between</i> networks using IP addresses. They are different tools, and mixing them up is a very common mistake.</p>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Switch (layer 2)</th><th>Router (layer 3)</th></tr>
+      <tr><td>Reads</td><td>Destination MAC</td><td>Destination IP address</td></tr>
+      <tr><td>Joins</td><td>Devices in one broadcast domain</td><td>Different subnets or VLANs</td></tr>
+      <tr><td>Broadcasts</td><td>Floods them inside the VLAN</td><td>Does not forward them</td></tr>
+      <tr><td>Its table</td><td>MAC table, learned automatically</td><td>Routing table, configured or learned from other routers</td></tr>
+      <tr><td>Changes the frame?</td><td>No (a VLAN tag at most)</td><td>Yes: new MACs and TTL one lower at every hop</td></tr>
+      <tr><td>Typical job</td><td>Connect cameras, PCs, controllers</td><td>Connect the camera network to the office and the internet</td></tr>
+    </table></div>
+    <p>A router looks the destination up in its <b>routing table</b> and picks the entry with the longest matching prefix (the most specific route). A small site router might have:</p>
+    <div class="table-wrap"><table class="mono">
+      <tr><th>Destination</th><th>Next hop</th><th>Out of</th></tr>
+      <tr><td>192.168.10.0/24</td><td>directly connected</td><td>port 1</td></tr>
+      <tr><td>192.168.20.0/24</td><td>directly connected</td><td>port 2</td></tr>
+      <tr><td>0.0.0.0/0 (default)</td><td>203.0.113.1 (the ISP; a documentation address)</td><td>WAN</td></tr>
+    </table></div>
+    <p>Each packet has a <b>TTL</b> (time to live) number that every router reduces by one. When it reaches 0 the packet is thrown away and an error returns. That stops lost packets circling forever, and it is how <code>traceroute</code> lists each router on the way. A "Layer 3 switch" is a switch with routing built in, used to route between VLANs at wire speed. The box in a home or small office is several devices in one: router, 4-port switch, Wi-Fi access point, DHCP server, firewall and NAT.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A switch and a router do the same job; a router is just a bigger one." <b>Right:</b> a switch extends one network, a router connects separate networks. Connect two switches and you have one big broadcast domain. Connect two networks with a router and each stays its own domain. Plugging two networks that both use 192.168.1.0/24 into one router will not work without NAT, because the router cannot tell which is which.</p></div>
+
+    <figure>
+      <svg viewBox="0 0 700 330" role="img" aria-label="A laptop on one subnet reaching a camera on another through a router, showing the MAC addresses change at each hop while the IP addresses stay the same">
+        <defs><marker id="t17rt-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="s-thin s-dash" x="10" y="20" width="250" height="150" rx="12"/>
+        <text class="t t-small t-muted" x="22" y="40">Subnet 192.168.10.0/24</text>
+        <rect class="s-thin s-dash" x="440" y="20" width="250" height="150" rx="12"/>
+        <text class="t t-small t-muted" x="452" y="40">Subnet 192.168.20.0/24</text>
+        <rect class="f-wash s-line" x="40" y="70" width="120" height="56" rx="6"/>
+        <text class="t t-bold" x="100" y="94" text-anchor="middle">Laptop</text>
+        <text class="t t-small" x="100" y="112" text-anchor="middle">192.168.10.50</text>
+        <rect class="f-accent-soft s-accent" x="275" y="60" width="150" height="86" rx="8"/>
+        <text class="t t-bold" x="350" y="84" text-anchor="middle">Router</text>
+        <text class="t t-small" x="350" y="104" text-anchor="middle">port 1: 192.168.10.1</text>
+        <text class="t t-small" x="350" y="124" text-anchor="middle">port 2: 192.168.20.1</text>
+        <rect class="f-wash s-line" x="540" y="70" width="120" height="56" rx="6"/>
+        <text class="t t-bold" x="600" y="94" text-anchor="middle">Camera</text>
+        <text class="t t-small" x="600" y="112" text-anchor="middle">192.168.20.15</text>
+        <path class="s-accent" d="M160 98 H275" marker-end="url(#t17rt-a)"/>
+        <path class="s-accent" d="M425 98 H540" marker-end="url(#t17rt-a)"/>
+        <text class="t t-small t-accent t-bold" x="217" y="88" text-anchor="middle">hop 1</text>
+        <text class="t t-small t-accent t-bold" x="482" y="88" text-anchor="middle">hop 2</text>
+
+        <rect class="f-panel s-line" x="10" y="190" width="330" height="120" rx="8"/>
+        <text class="t t-bold" x="22" y="214">Hop 1: laptop to router</text>
+        <text class="t t-small t-red" x="22" y="238">MAC: laptop → router port 1</text>
+        <text class="t t-small t-green" x="22" y="258">IP: 192.168.10.50 → 192.168.20.15</text>
+        <text class="t t-small t-muted" x="22" y="282">The router strips this frame, reads the IP</text>
+        <text class="t t-small t-muted" x="22" y="298">address and checks its routing table.</text>
+        <rect class="f-panel s-line" x="360" y="190" width="330" height="120" rx="8"/>
+        <text class="t t-bold" x="372" y="214">Hop 2: router to camera</text>
+        <text class="t t-small t-red" x="372" y="238">MAC: router port 2 → camera</text>
+        <text class="t t-small t-green" x="372" y="258">IP: 192.168.10.50 → 192.168.20.15</text>
+        <text class="t t-small t-muted" x="372" y="282">A brand-new frame with new MACs. The IPs</text>
+        <text class="t t-small t-muted" x="372" y="298">are unchanged; the TTL is one lower.</text>
+      </svg>
+      <figcaption>Figure 7. Switches between the devices are left out. The red MAC addresses change at every hop, because they only matter on one local network. The green IP addresses stay the same all the way, because they name the real source and destination.</figcaption>
+    </figure>
+
+    <h3>One request from end to end</h3>
+    <p>Put it all together. A laptop at 192.168.10.50/24 (gateway 192.168.10.1) opens the web page of a camera at 192.168.20.15:</p>
+    <ol class="steps">
+      <li><p><b>Same subnet?</b> The laptop ANDs 192.168.20.15 with its /24 mask: 192.168.20.0, which is not its own 192.168.10.0. So the frame must go to the gateway.</p></li>
+      <li><p><b>ARP for the gateway.</b> It broadcasts "who has 192.168.10.1?" and gets the router's MAC.</p></li>
+      <li><p><b>TCP handshake begins.</b> The first frame (SYN to port 80) has destination MAC = router, destination IP = camera.</p></li>
+      <li><p><b>The router forwards.</b> It reads the destination IP, finds 192.168.20.0/24 connected on port 2, does its own ARP for the camera, lowers the TTL and sends a new frame.</p></li>
+      <li><p><b>The reply comes back.</b> The camera sees 192.168.10.50 is not in its subnet, so it sends the answer to <i>its</i> gateway. If the camera has no gateway set, the reply is lost and the page never loads, although ping from the router's side works fine.</p></li>
+      <li><p><b>HTTP.</b> After the handshake the laptop sends its web request (GET) and the camera returns the page, in many frames.</p></li>
+    </ol>
+
+    <h2>TCP, UDP and ports</h2>
+    <p>IP delivers a packet to a <i>machine</i>, but a machine runs many programs at once: a web server, a streaming service, a time client. The <b>port number</b> (0 to 65,535) selects the program. The pair of IP address and port, such as <code>192.168.1.20:554</code>, is a <b>socket</b>. The server listens on a well-known port; the client picks a random high port for its side.</p>
+    <p>Two transport protocols sit on top of IP, with opposite philosophies:</p>
+    <div class="compare">
+      <div><h4>TCP: registered post</h4><p>Connection-oriented. A three-way handshake (SYN, SYN+ACK, ACK) sets up the connection. Every byte is numbered and acknowledged, lost segments are sent again, and data arrives in order. Cost: handshake delay, 20-byte header, and a stall when something is lost. Used for web pages, file transfer, Modbus TCP, MQTT, and the control side of video streaming.</p></div>
+      <div><h4>UDP: a postcard</h4><p>Connectionless. Just send. No handshake, no acknowledgements, no resending, no ordering. Cost: nothing is guaranteed. Benefit: very low delay, an 8-byte header, and it works with broadcast and multicast. Used for DHCP, DNS, NTP, BACnet/IP, and the live video itself in most cameras.</p></div>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 700 312" role="img" aria-label="TCP sequence with handshake and acknowledgements compared with UDP datagrams sent without acknowledgement, one lost">
+        <defs><marker id="t17tcp-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="16">TCP: connect first, then talk</text>
+        <text class="t t-bold" x="370" y="16">UDP: just send</text>
+        <path class="s-thin s-dash" d="M350 10 V250"/>
+        <rect class="f-wash s-line" x="20" y="28" width="100" height="26" rx="5"/><text class="t t-small" x="70" y="46" text-anchor="middle">Client</text>
+        <rect class="f-wash s-line" x="220" y="28" width="100" height="26" rx="5"/><text class="t t-small" x="270" y="46" text-anchor="middle">Server</text>
+        <path class="s-thin s-dash" d="M70 54 V250 M270 54 V250"/>
+        <path class="s-accent" d="M70 84 H270" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="170" y="76" text-anchor="middle">SYN</text>
+        <path class="s-accent" d="M270 118 H70" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="170" y="110" text-anchor="middle">SYN + ACK</text>
+        <path class="s-accent" d="M70 152 H270" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="170" y="144" text-anchor="middle">ACK</text>
+        <path class="s-accent" d="M70 190 H270" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="170" y="182" text-anchor="middle">data (request)</text>
+        <path class="s-accent" d="M270 224 H70" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="170" y="216" text-anchor="middle">ACK (got it)</text>
+
+        <rect class="f-wash s-line" x="370" y="28" width="100" height="26" rx="5"/><text class="t t-small" x="420" y="46" text-anchor="middle">Sender</text>
+        <rect class="f-wash s-line" x="570" y="28" width="100" height="26" rx="5"/><text class="t t-small" x="620" y="46" text-anchor="middle">Receiver</text>
+        <path class="s-thin s-dash" d="M420 54 V250 M620 54 V250"/>
+        <path class="s-accent" d="M420 84 H620" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="520" y="76" text-anchor="middle">datagram 1</text>
+        <path class="s-accent" d="M420 118 H620" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="520" y="110" text-anchor="middle">datagram 2</text>
+        <path class="s-accent s-dash" d="M420 152 H530"/>
+        <path class="s-red" d="M530 144 L546 160 M546 144 L530 160"/>
+        <text class="t t-small t-red" x="475" y="144" text-anchor="middle">datagram 3 (lost)</text>
+        <path class="s-accent" d="M420 190 H620" marker-end="url(#t17tcp-a)"/><text class="t t-small" x="520" y="182" text-anchor="middle">datagram 4</text>
+
+        <text class="t t-small t-muted" x="20" y="268">Handshake first. Every segment is</text>
+        <text class="t t-small t-muted" x="20" y="284">numbered and acknowledged; a lost one</text>
+        <text class="t t-small t-muted" x="20" y="300">is sent again, in order.</text>
+        <text class="t t-small t-muted" x="370" y="268">No handshake, no ACK, no resend.</text>
+        <text class="t t-small t-muted" x="370" y="284">A late video frame is useless, so</text>
+        <text class="t t-small t-muted" x="370" y="300">UDP lets it go and keeps moving.</text>
+      </svg>
+      <figcaption>Figure 8. TCP spends three messages setting up and then acknowledges what it receives, so nothing is lost silently. UDP just sends. For a live camera picture, a resent frame that arrives half a second late is worse than a small glitch, so video normally uses UDP-based RTP.</figcaption>
+    </figure>
+
+    <h3>Ports you will meet on the job</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Service</th><th>Port</th><th>Transport</th><th>What to remember</th></tr>
+      <tr><td>HTTP / HTTPS</td><td class="mono">80 / 443</td><td>TCP</td><td>Camera and controller web pages. Many devices let you move them to another port, like 8080</td></tr>
+      <tr><td>SSH</td><td class="mono">22</td><td>TCP</td><td>Command line on a Pi, a Linux box or a managed switch</td></tr>
+      <tr><td>DHCP</td><td class="mono">67 / 68</td><td>UDP</td><td>Server / client. Broadcast based</td></tr>
+      <tr><td>DNS</td><td class="mono">53</td><td>UDP (TCP for large answers)</td><td>Names to addresses</td></tr>
+      <tr><td>NTP</td><td class="mono">123</td><td>UDP</td><td>Clock sync. Wrong clocks make recordings and logs hard to use</td></tr>
+      <tr><td>SNMP</td><td class="mono">161 / 162</td><td>UDP</td><td>Monitoring of switches, UPSs and printers</td></tr>
+      <tr><td>RTSP</td><td class="mono">554</td><td>TCP (sometimes UDP)</td><td>The "remote control" for a video stream (describe, set up, play). The video itself is RTP, usually UDP on ports negotiated during set-up, or "interleaved" inside the TCP connection when a firewall or Wi-Fi link needs it</td></tr>
+      <tr><td>ONVIF discovery</td><td class="mono">3702</td><td>UDP multicast to 239.255.255.250</td><td>Finds cameras on the local subnet only. ONVIF commands themselves are web-service calls over HTTP or HTTPS</td></tr>
+      <tr><td>Modbus TCP</td><td class="mono">502</td><td>TCP</td><td>Read/write registers in meters, drives and controllers. Unicast, so it routes fine</td></tr>
+      <tr><td>BACnet/IP</td><td class="mono">47808</td><td>UDP</td><td>Hex 0xBAC0 (186 × 256 + 192 = 47,808). Discovery uses broadcasts</td></tr>
+      <tr><td>MQTT</td><td class="mono">1883 / 8883</td><td>TCP</td><td>Plain / TLS-encrypted IoT messaging (lab P18)</td></tr>
+      <tr><td>mDNS</td><td class="mono">5353</td><td>UDP multicast to 224.0.0.251</td><td>The ".local" names on small networks</td></tr>
+    </table></div>
+    <p>Port numbers are conventions, not laws. A vendor can move a service to any port, and some camera brands use extra vendor-specific ports for their own software. The device's network menu and manual are the authority. A firewall rule is simply "allow this source to that destination on this protocol and port", for example "allow the NVR to the camera VLAN on TCP 554".</p>
+    <p><b>Ping is neither TCP nor UDP.</b> It uses ICMP, which has no ports. A device that answers ping has a working layer 1 to 3 path, but nothing yet is proved about its web page or video. "Ping works, the page does not" points to layers 4 to 7: a wrong port, a blocked port, a stopped service, or a missing gateway for the reply.</p>
+    <div class="callout job"><span class="label">On the job</span><p>BACnet/IP finds devices with a <b>Who-Is</b> broadcast on UDP 47808. Routers do not forward broadcasts, so a BMS front end on one subnet will not see controllers on another. The fix is a <b>BBMD</b> (BACnet Broadcast Management Device) on each subnet, which forwards the broadcasts to its peers, or "foreign device" registration. Modbus TCP has no such problem because the client connects straight to a known IP on port 502. See <a href="../career/c02-bms-protocols-commissioning.html">C02</a>.</p></div>
+
+    <h2>Unicast, broadcast, multicast and why camera networks flood</h2>
+    <p>Data can be addressed to one, to many or to all:</p>
+    <ul>
+      <li><b>Unicast:</b> one sender, one receiver. Almost everything: web pages, Modbus, a camera sending its stream to an NVR.</li>
+      <li><b>Broadcast:</b> one sender, every device in the broadcast domain (ARP, DHCP discover, BACnet Who-Is).</li>
+      <li><b>Multicast:</b> one sender, any number of receivers that <i>asked</i> to receive. The sender transmits one copy to a <b>group address</b> from 224.0.0.0 to 239.255.255.255. IPv4 multicast groups map to MAC addresses starting <code>01:00:5E</code>. For example 239.1.1.1 becomes 01:00:5E:01:01:01: the low 23 bits of the IP address are copied into the MAC.</li>
+    </ul>
+    <p>Multicast is very efficient when many viewers watch the same stream: the camera or server sends 4 Mbps once, instead of 4 Mbps to each of ten viewers (40 Mbps). It is used by some video management systems, video walls and IPTV. But there is a catch in how a <b>switch</b> works. It learns MACs from the <i>source</i> field of frames. A multicast group MAC is only ever a destination; it is never a source. So the switch has nothing in its table for it, and by default it does what it always does with an unknown destination: it <b>floods</b> it out of every port.</p>
+    <p>That is how a single multicast camera stream can bring a network down. Numbers: 32 cameras each sending 4 Mbps of multicast video, with no IGMP snooping on the switches. Every port in the VLAN receives all 32 × 4 = 128 Mbps. A camera or PC on a 100 Mbps port is asked to take 128 Mbps, which is more than the port can carry. The port saturates, the device drops out or reboots, and a Wi-Fi access point on the VLAN is worse because multicast on Wi-Fi is sent at a very low, basic data rate and eats up airtime.</p>
+    <p>The cure is <b>IGMP snooping</b>. <b>IGMP</b> (Internet Group Management Protocol) is how a receiver says "I want to join group 239.1.1.1". A switch with snooping switched on listens to those messages and builds a table: group → ports that asked. It then sends the stream only to those ports. Two conditions have to be met:</p>
+    <ul>
+      <li>Snooping must be on in <b>every</b> switch between source and receivers, in that VLAN.</li>
+      <li>Something must act as the <b>IGMP querier</b> (usually the router or one switch) that asks about every 125 seconds "who still wants what?". If there is no querier, memberships time out after a few minutes and the stream stops, a puzzling fault that appears minutes after you set things up.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 700 340" role="img" aria-label="Left: a multicast stream flooded to every switch port. Right: with IGMP snooping the stream goes only to the NVR that asked.">
+        <defs>
+          <marker id="t17mc-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t17mc-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t17mc-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <path class="s-thin s-dash" d="M350 8 V334"/>
+
+        <text class="t t-bold" x="10" y="22">A · Snooping off: flooded</text>
+        <text class="t t-small t-muted" x="10" y="40">switch copies it out of every port</text>
+        <rect class="f-wash s-line" x="110" y="56" width="120" height="44" rx="6"/>
+        <text class="t t-small" x="170" y="75" text-anchor="middle">Multicast camera</text>
+        <text class="t t-small t-muted" x="170" y="91" text-anchor="middle">239.1.1.1</text>
+        <path class="s-accent" d="M170 100 V140" marker-end="url(#t17mc-a)"/>
+        <rect class="f-accent-soft s-accent" x="90" y="140" width="160" height="44" rx="6"/>
+        <text class="t t-bold" x="170" y="160" text-anchor="middle">Switch</text>
+        <text class="t t-small t-muted" x="170" y="176" text-anchor="middle">IGMP snooping off</text>
+        <path class="s-red" d="M170 184 L45 250" marker-end="url(#t17mc-r)"/>
+        <path class="s-red" d="M170 184 L125 250" marker-end="url(#t17mc-r)"/>
+        <path class="s-red" d="M170 184 L205 250" marker-end="url(#t17mc-r)"/>
+        <path class="s-red" d="M170 184 L285 250" marker-end="url(#t17mc-r)"/>
+        <rect class="f-career-soft s-line" x="10" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="45" y="271" text-anchor="middle">NVR</text>
+        <rect class="f-wash s-line" x="90" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="125" y="271" text-anchor="middle">PC</text>
+        <rect class="f-wash s-line" x="170" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="205" y="271" text-anchor="middle">Cam 2</text>
+        <rect class="f-wash s-line" x="250" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="285" y="271" text-anchor="middle">Cam 3</text>
+        <text class="t t-small t-muted" x="45" y="300" text-anchor="middle">joined</text>
+        <text class="t t-small t-red" x="125" y="300" text-anchor="middle">unwanted</text>
+        <text class="t t-small t-red" x="205" y="300" text-anchor="middle">unwanted</text>
+        <text class="t t-small t-red" x="285" y="300" text-anchor="middle">unwanted</text>
+        <text class="t t-small t-bold" x="10" y="326">Every port receives the full stream</text>
+
+        <text class="t t-bold" x="370" y="22">B · Snooping on: joiners only</text>
+        <text class="t t-small t-muted" x="370" y="40">switch forwards only to ports that asked</text>
+        <rect class="f-wash s-line" x="470" y="56" width="120" height="44" rx="6"/>
+        <text class="t t-small" x="530" y="75" text-anchor="middle">Multicast camera</text>
+        <text class="t t-small t-muted" x="530" y="91" text-anchor="middle">239.1.1.1</text>
+        <path class="s-accent" d="M530 100 V140" marker-end="url(#t17mc-a)"/>
+        <rect class="f-accent-soft s-accent" x="450" y="140" width="160" height="44" rx="6"/>
+        <text class="t t-bold" x="530" y="160" text-anchor="middle">Switch</text>
+        <text class="t t-small t-muted" x="530" y="176" text-anchor="middle">IGMP snooping on</text>
+        <path class="s-green" d="M530 184 L405 250" marker-end="url(#t17mc-g)"/>
+        <path class="s-thin s-dash" d="M530 184 L485 250 M530 184 L565 250 M530 184 L645 250"/>
+        <rect class="f-career-soft s-line" x="370" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="405" y="271" text-anchor="middle">NVR</text>
+        <rect class="f-wash s-line" x="450" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="485" y="271" text-anchor="middle">PC</text>
+        <rect class="f-wash s-line" x="530" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="565" y="271" text-anchor="middle">Cam 2</text>
+        <rect class="f-wash s-line" x="610" y="250" width="70" height="32" rx="5"/><text class="t t-small" x="645" y="271" text-anchor="middle">Cam 3</text>
+        <text class="t t-small t-green" x="405" y="300" text-anchor="middle">joined</text>
+        <text class="t t-small t-muted" x="485" y="300" text-anchor="middle">quiet</text>
+        <text class="t t-small t-muted" x="565" y="300" text-anchor="middle">quiet</text>
+        <text class="t t-small t-muted" x="645" y="300" text-anchor="middle">quiet</text>
+        <text class="t t-small t-bold" x="370" y="326">Only the NVR's port receives it</text>
+      </svg>
+      <figcaption>Figure 9. Without IGMP snooping (A), the switch cannot tell who wants the multicast group, so it floods all ports, including cameras and PCs that never asked. With snooping (B), the NVR's "join" message is noticed and only its port gets the stream.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "IP cameras always flood the network, so camera systems need special switches." <b>Right:</b> by default most IP cameras send <i>unicast</i> to the NVR, which is fine on any switch. The flooding problems come from (1) multicast streams without IGMP snooping, (2) a loop causing a broadcast storm, or (3) simply too many streams meeting at one link, covered next.</p></div>
+
+    <h2>Bandwidth arithmetic for a CCTV system</h2>
+    <p>Network speeds are quoted in <b>bits</b> per second (Mbps, Gbps). File sizes and disks use <b>bytes</b> (MB, TB). One byte is 8 bits, so 8 Mbps is 1 MB per second. This is the source of many "my 100 Mbps link only moves 12 MB/s" complaints, and it is not a fault.</p>
+    <p>Take 32 cameras, each streaming 4 Mbps (a typical figure for a 4 MP H.264 camera; the real number depends on codec, frame rate, scene and CBR or VBR, so always use the vendor's bitrate tool):</p>
+    <div class="formula">Network load into the NVR = 32 × 4 Mbps = 128 Mbps
+      <small>Add about 5 to 10 % for Ethernet, IP and RTP headers: roughly 136 Mbps on the wire. A 100 Mbps link cannot carry that (and in practice delivers only about 94 Mbps of payload). A 1 Gbps link, which delivers about 940 Mbps, carries it at roughly 14 % load.</small></div>
+    <div class="formula">Storage per camera per day = 4 Mbps × 86,400 s ÷ 8 = 43,200 MB = 43.2 GB
+      <small>32 cameras: 43.2 × 32 = 1,382 GB, about 1.38 TB per day. Keep 30 days: about 41.5 TB, then add 10 % margin and room for RAID: roughly 46 TB of raw disk. These are decimal terabytes, as disk makers count them.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 700 270" role="img" aria-label="Thirty-two cameras in two groups of sixteen feeding two PoE switches, then a core switch and an NVR, with Mbps shown on each link">
+        <rect class="f-wash s-line" x="20" y="30" width="110" height="60" rx="6"/>
+        <text class="t t-bold" x="75" y="55" text-anchor="middle">16 cameras</text>
+        <text class="t t-small t-muted" x="75" y="73" text-anchor="middle">4 Mbps each</text>
+        <rect class="f-wash s-line" x="20" y="140" width="110" height="60" rx="6"/>
+        <text class="t t-bold" x="75" y="165" text-anchor="middle">16 cameras</text>
+        <text class="t t-small t-muted" x="75" y="183" text-anchor="middle">4 Mbps each</text>
+        <rect class="f-accent-soft s-accent" x="200" y="30" width="110" height="60" rx="6"/>
+        <text class="t t-bold" x="255" y="55" text-anchor="middle">PoE switch 1</text>
+        <text class="t t-small t-muted" x="255" y="73" text-anchor="middle">1 Gbps uplink</text>
+        <rect class="f-accent-soft s-accent" x="200" y="140" width="110" height="60" rx="6"/>
+        <text class="t t-bold" x="255" y="165" text-anchor="middle">PoE switch 2</text>
+        <text class="t t-small t-muted" x="255" y="183" text-anchor="middle">1 Gbps uplink</text>
+        <rect class="f-wash s-line" x="400" y="85" width="100" height="60" rx="6"/>
+        <text class="t t-bold" x="450" y="110" text-anchor="middle">Core switch</text>
+        <text class="t t-small t-muted" x="450" y="128" text-anchor="middle">1 Gbps ports</text>
+        <rect class="f-career-soft s-line" x="590" y="85" width="90" height="60" rx="6"/>
+        <text class="t t-bold" x="635" y="110" text-anchor="middle">NVR</text>
+        <text class="t t-small t-muted" x="635" y="128" text-anchor="middle">1 Gbps NIC</text>
+        <path class="s-line" d="M130 60 H200 M130 170 H200 M310 60 L400 105 M310 170 L400 125 M500 115 H590"/>
+        <text class="t t-small t-bold" x="165" y="52" text-anchor="middle">64 Mbps</text>
+        <text class="t t-small t-bold" x="165" y="162" text-anchor="middle">64 Mbps</text>
+        <text class="t t-small t-bold" x="372" y="74" text-anchor="middle">64 Mbps</text>
+        <text class="t t-small t-bold" x="372" y="166" text-anchor="middle">64 Mbps</text>
+        <text class="t t-small t-bold t-red" x="545" y="107" text-anchor="middle">128 Mbps</text>
+        <text class="t t-small t-muted" x="20" y="240">Many small streams add up at the end of the funnel: the recorder's network port.</text>
+        <text class="t t-small t-muted" x="20" y="258">Check that link, and the NVR's rated incoming bandwidth, before anything else.</text>
+      </svg>
+      <figcaption>Figure 10. The funnel. Each camera link carries 4 Mbps and each switch uplink 64 Mbps, but the recorder's one port carries all 128 Mbps. If the NVR were on a 100 Mbps port or rated for only 100 Mbps of incoming video, channels would drop out even though every other link is nearly idle.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Link</th><th>Load</th><th>Capacity</th><th>Used</th><th>Verdict</th></tr>
+      <tr><td>One camera port</td><td>4 Mbps</td><td>100 Mbps</td><td>4 %</td><td>Fine</td></tr>
+      <tr><td>Switch uplink (16 cameras)</td><td>64 Mbps</td><td>1 Gbps</td><td>6.4 %</td><td>Fine</td></tr>
+      <tr><td>NVR port, 1 Gbps</td><td>128 Mbps</td><td>1 Gbps</td><td>12.8 %</td><td>Fine</td></tr>
+      <tr><td>NVR port, 100 Mbps</td><td>128 Mbps</td><td>100 Mbps</td><td>128 %</td><td>Impossible</td></tr>
+      <tr><td>64 cameras × 6 Mbps into an NVR rated for 256 Mbps in</td><td>384 Mbps</td><td>256 Mbps</td><td>150 %</td><td>Needs two recorders</td></tr>
+    </table></div>
+    <p>A common design rule is to keep any link under about 70 % busy in normal use, so that bursts, live-view viewers and playback do not squeeze the recorders. Remember also that viewing live from many cameras at once uses the cameras' lower-rate "sub-streams" (often 0.5 to 1 Mbps), which is why a control-room wall can show 32 pictures without matching the recording load.</p>
+
+    <div class="widget" id="t17-cc">
+      <span class="label">Interactive · CCTV network and storage calculator</span>
+      <p class="wsmall">Defaults are the 32-camera example. Change them to size a job. Overhead of 6 % is added for packet headers.</p>
+      <div class="wgrid">
+        <label>Cameras<input type="number" id="t17cc-n" value="32" min="1" step="1"></label>
+        <label>Bitrate per camera (Mbps)<input type="number" id="t17cc-b" value="4" min="0.1" step="0.1"></label>
+        <label>Recording hours per day<input type="number" id="t17cc-h" value="24" min="1" max="24" step="1"></label>
+        <label>Days to keep<input type="number" id="t17cc-d" value="30" min="1" step="1"></label>
+        <label>Margin (%)<input type="number" id="t17cc-m" value="10" min="0" step="1"></label>
+        <label>Link speed for NVR and uplinks<select id="t17cc-l"><option value="100">100 Mbps</option><option value="1000" selected>1 Gbps</option><option value="10000">10 Gbps</option></select></label>
+        <label>Cameras per PoE switch<input type="number" id="t17cc-s" value="16" min="1" step="1"></label>
+        <label>PoE power per camera (W, as allocated)<input type="number" id="t17cc-w" value="15.4" min="0" step="0.1"></label>
+        <label>PoE budget per switch (W)<input type="number" id="t17cc-bud" value="370" min="1" step="1"></label>
+      </div>
+      <div class="readings" id="t17cc-out"></div>
+      <div class="wstatus ok" id="t17cc-st">OK</div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var ids=['n','b','h','d','m','s','w','bud'],out=g('t17cc-out'),st=g('t17cc-st');
+      function v(k){return parseFloat(g('t17cc-'+k).value);}
+      function r(x,n){var m=Math.pow(10,n);return String(Math.round(x*m)/m);}
+      function row(label,val){var d=document.createElement('div'),s=document.createElement('small'),o=document.createElement('span');s.textContent=label;o.className='out';o.style.fontSize='16px';o.textContent=val;d.appendChild(s);d.appendChild(o);out.appendChild(d);}
+      function upd(){
+        var n=v('n'),b=v('b'),h=v('h'),d=v('d'),m=v('m'),s=v('s'),w=v('w'),bud=v('bud'),L=+g('t17cc-l').value;
+        var tot,wire,utilN,per,upl,utilU,swc,perDay,total,poe,poePct,worst=0,msgs=[];
+        out.textContent='';
+        if(!(n>0&&b>0&&h>0&&d>0&&s>0&&bud>0)||isNaN(m)||isNaN(w)||m<0||w<0){st.className='wstatus amber';st.textContent='Fill every box with a positive number.';return;}
+        tot=n*b;wire=tot*1.06;utilN=wire/L*100;
+        per=Math.min(s,n);upl=per*b*1.06;utilU=upl/L*100;swc=Math.ceil(n/s);
+        perDay=b*3600*h*n/8/1e6;total=perDay*d*(1+m/100);
+        poe=per*w;poePct=poe/bud*100;
+        row('Video into the NVR',r(tot,1)+' Mbps');
+        row('On the wire (+6 %)',r(wire,1)+' Mbps');
+        row('NVR link load',r(utilN,1)+' %');
+        row('PoE switches needed',String(swc));
+        row('Uplink per full switch',r(upl,1)+' Mbps ('+r(utilU,1)+' %)');
+        row('Storage per day',r(perDay,2)+' TB');
+        row('Storage for '+d+' days',r(total,1)+' TB');
+        row('PoE per full switch',r(poe,1)+' W ('+r(poePct,0)+' % of budget)');
+        if(utilN>100){worst=2;msgs.push('The NVR link cannot carry this load. Use a faster link or split the cameras across recorders.');}
+        else if(utilN>70){worst=Math.max(worst,1);msgs.push('The NVR link is over 70 % busy. Little room for live viewers or playback.');}
+        if(utilU>100){worst=2;msgs.push('A switch uplink is overloaded.');}
+        else if(utilU>70){worst=Math.max(worst,1);msgs.push('A switch uplink is over 70 % busy.');}
+        if(poePct>100){worst=2;msgs.push('The PoE budget is exceeded: the switch will refuse power to some ports.');}
+        else if(poePct>80){worst=Math.max(worst,1);msgs.push('PoE budget is tight (under 20 % spare).');}
+        st.className='wstatus'+(worst===2?' bad':(worst===1?' amber':' ok'));
+        st.textContent=msgs.length?msgs.join(' '):'Network load, uplinks and PoE budget all have comfortable headroom. Check the NVR’s rated incoming bandwidth against '+r(tot,0)+' Mbps as well.';
+      }
+      ids.forEach(function(k){g('t17cc-'+k).oninput=upd;});g('t17cc-l').onchange=upd;
+      upd();
+    })();
+    </script>
+
+    <h2>PoE budget basics</h2>
+    <p><b>PoE</b> (Power over Ethernet) sends DC power to a device along the same cable pairs as the data, at about 50 V DC, which is still extra-low voltage. The switch (or a mid-span injector) is the <b>PSE</b> (power sourcing equipment) and the camera or access point is the <b>PD</b> (powered device). They agree on a power class when the cable is plugged in, so the PD can be safely powered without you setting anything.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Standard</th><th>Common name</th><th>Power at the switch port</th><th>Guaranteed at the device</th><th>Typical use</th></tr>
+      <tr><td>IEEE 802.3af (Type 1)</td><td>PoE</td><td>15.4 W</td><td>12.95 W</td><td>Fixed cameras, phones, readers</td></tr>
+      <tr><td>IEEE 802.3at (Type 2)</td><td>PoE+</td><td>30 W</td><td>25.5 W</td><td>IR cameras, small PTZs, Wi-Fi access points</td></tr>
+      <tr><td>IEEE 802.3bt (Type 3)</td><td>PoE++</td><td>60 W</td><td>51 W</td><td>Large PTZs, multi-sensor cameras</td></tr>
+      <tr><td>IEEE 802.3bt (Type 4)</td><td>PoE++</td><td>90 W</td><td>about 71 W</td><td>Heated housings, high-power devices</td></tr>
+    </table></div>
+    <p>The difference between the two power columns is heat lost in the cable (I²R, see <a href="t03-power-energy-heat.html">T03</a>), worst case over 100 m. Two budgets matter, and the second one catches people out:</p>
+    <ul>
+      <li><b>Per-port limit:</b> the most one port can supply (15.4 W, 30 W …).</li>
+      <li><b>Switch total PoE budget:</b> the whole switch's power supply for PoE, for example 370 W. Many switches reserve power by the device's <i>class</i>, not by what it actually draws. A camera that draws 7 W but reports class 3 may still reserve 15.4 W of the budget.</li>
+    </ul>
+    <p><b>Worked example.</b> A switch has a 370 W PoE budget. You connect 12 fixed cameras (class 3, 15.4 W reserved each) and 4 IR/PTZ cameras (class 4, 30 W each):</p>
+    <div class="formula">12 × 15.4 W + 4 × 30 W = 184.8 + 120 = 304.8 W &nbsp;→&nbsp; 370 − 304.8 = 65.2 W spare (17.6 %)
+      <small>It fits, but with under 20 % spare. Plan on the worst case, not the average: IR illuminators and heaters draw most at night and in winter, exactly when you least want a camera to reboot. Choose a bigger switch or spread the cameras across two.</small></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Standard PoE is negotiated, so it is safe to plug a non-PoE laptop into a PoE port: the port stays unpowered until it detects a valid powered device. But "passive PoE" injectors and cheap kit that send fixed 12, 24 or 48 V on the spare pairs without negotiating can damage ordinary Ethernet ports. Never connect the output of a passive injector to a PC, a switch, or any device that is not labelled as designed for that supply. All of this stays at extra-low voltage; never connect mains equipment to any of it.</p></div>
+    <p>More PoE detail, cable heating in bundles and the PoE budget lab are in <a href="../practice/p19-networking-hands-on.html">P19</a> and <a href="../career/c05-cctv-ip-cameras.html">C05</a>.</p>
+
+    <h2>IPv6 in one page</h2>
+    <p>IPv4 has only about 4.3 billion addresses, and they ran out. <b>IPv6</b> uses 128-bit addresses, written as eight groups of four hexadecimal digits, with leading zeros dropped and one run of zero groups shortened to <code>::</code>. For example <code>2001:0db8:0000:0000:0000:0000:0000:0001</code> is written <code>2001:db8::1</code> (the 2001:db8::/32 block is reserved for documentation).</p>
+    <ul>
+      <li>A normal LAN subnet is a <b>/64</b>: the first 64 bits are the network, the last 64 identify the device. Nobody counts hosts.</li>
+      <li><b>No ARP and no broadcast.</b> IPv6 uses neighbour discovery over multicast instead.</li>
+      <li>Every interface has a <b>link-local</b> address starting <code>fe80::</code>, always present on its own network.</li>
+      <li>Devices can build their own address from the router's advertised prefix (<b>SLAAC</b>), or get one by DHCPv6.</li>
+    </ul>
+    <p>Most building-services and security gear (cameras, BACnet/IP and Modbus TCP devices, access controllers) is still configured and documented in IPv4, so this course uses IPv4. You will meet IPv6 on routers, on new NBN and mobile services, and on modern operating systems, which run both at once ("dual stack").</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Many Australian internet providers offer IPv6 on NBN services. Whether it is switched on, and how it is delivered, differs by provider and by modem, so check what the client's service actually does before assuming. Cabling for data in Australia is also covered by registration and standards rules; see <a href="../career/c07-telecom-cabling-acma.html">C07</a> for when a registered cabler is needed, and confirm the current rules with ACMA.</p></div>
+
+    <h2>Fault-finding up the layers</h2>
+    <p>The practical use of the layers is a checklist. Start at the bottom and only move up when the layer below is proved.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Layer</th><th>Question</th><th>How to test</th><th>Typical faults</th></tr>
+      <tr><td>1 · Physical</td><td>Is there a link?</td><td>Link and activity lights, tester, port speed and CRC counters</td><td>Bad crimp or punch-down, broken pair (link at 100 Mbps not 1 Gbps), over 100 m, PoE budget, dead port</td></tr>
+      <tr><td>2 · Data link</td><td>Is the MAC visible on the right port and VLAN?</td><td>Switch MAC table, VLAN membership of the port</td><td>Wrong VLAN, port disabled, loop, duplex mismatch</td></tr>
+      <tr><td>3 · Network</td><td>Do IP, mask and gateway fit together?</td><td><code>ipconfig</code> or <code>ip addr</code>, <code>ping</code>, <code>arp -a</code>, <code>tracert</code> or <code>traceroute</code></td><td>Wrong mask, duplicate IP, no gateway, 169.254.x.x, rogue DHCP</td></tr>
+      <tr><td>4 · Transport</td><td>Is the port reachable?</td><td><code>Test-NetConnection 192.168.1.20 -Port 554</code> (Windows) or <code>nc -vz 192.168.1.20 554</code> (Mac, Linux)</td><td>Firewall rule, service off, vendor changed the port</td></tr>
+      <tr><td>5 to 7 · Application</td><td>Does it log in and understand?</td><td>Browser, vendor tool, NVR channel status</td><td>Wrong password, wrong ONVIF profile, firmware mismatch, wrong BACnet device ID</td></tr>
+    </table></div>
+    <div class="callout warn"><span class="label">Safety and permission</span><p>Only plug into, scan or change a client's network with permission, and ask for the IP schedule and VLAN plan first. Port scanners and "find all devices" tools can disturb fragile building controllers, and unauthorised access to a computer network can be a criminal offence in Australia. On your own bench network you can practise freely.</p></div>
+
+    <h2>See it on the bench and on the job</h2>
+    <p>The ideas in this chapter appear again and again in the labs and the job track:</p>
+    <a class="crosslink" href="../practice/p19-networking-hands-on.html">Practice P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs. The commands and settings behind this chapter</a>
+    <a class="crosslink" href="../practice/p20-cat6-termination.html">Practice P20 · Cat6 termination and testing. Layer 1: why a bad crimp becomes a slow or dead link</a>
+    <a class="crosslink" href="../practice/p16-raspberry-pi-linux.html">Practice P16 · Raspberry Pi and the Linux you need. Your first device with an IP address, a gateway and open ports</a>
+    <a class="crosslink" href="../practice/p18-esp32-iot-mqtt.html">Practice P18 · ESP32 and IoT: Wi-Fi, DHCP and MQTT over TCP</a>
+    <a class="crosslink" href="../career/c05-cctv-ip-cameras.html">Career C05 · CCTV and IP camera installation: RTSP, PoE, VLANs and NVR sizing in a real job</a>
+    <a class="crosslink" href="../career/c02-bms-protocols-commissioning.html">Career C02 · BMS protocols and commissioning: BACnet/IP, Modbus TCP and the BBMD problem</a>
+    <a class="crosslink" href="../career/c14-security-platforms.html">Career C14 · Security platforms: servers, door controllers and cameras all rely on fixed addresses and open ports</a>
+    <a class="crosslink" href="../career/c07-telecom-cabling-acma.html">Career C07 · Telecom cabling in Australia: the 90 m + 10 m rule in practice</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A switch has just been powered on. Host A sends a frame to host C. Which ports receive it? What changes when C replies?</summary><div class="answer"><p>The table is empty, so C is unknown and the frame is flooded out of every port except A's. Meanwhile the switch learns "A is on port 1" from the source MAC. When C replies, the switch learns "C is on port 3" from C's source MAC, and sends the reply to port 1 only, because A is now known. From then on A and C talk through ports 1 and 3 only, and the other ports no longer see their unicast traffic.</p></div></details>
+    <details class="quiz"><summary>Work out the network address, broadcast address and usable range for 10.20.30.141/27.</summary><div class="answer"><p>/27 leaves 5 host bits: 32 addresses per subnet, mask 255.255.255.224. The block size is 256 − 224 = 32. Subnets in the last octet start at 0, 32, 64, 96, 128, 160 …. The value 141 sits in the block starting at 128. Network 10.20.30.128. The next network is 160, so the broadcast is 10.20.30.159. Usable range 10.20.30.129 to 10.20.30.158, which is 30 hosts.</p></div></details>
+    <details class="quiz"><summary>A laptop is 192.168.1.130/25 and a camera is 192.168.1.20/25. Both are in "192.168.1.x". Can they talk without a router?</summary><div class="answer"><p>No. A /25 splits the 256 addresses into 0 to 127 and 128 to 255. The camera is in the lower half (network .0/25) and the laptop in the upper half (.128/25), so they are on different subnets. Each would send traffic for the other to its gateway. Fix: set both to the same mask (/24 if the site is a /24), or put them in the same half.</p></div></details>
+    <details class="quiz"><summary>32 cameras stream 4 Mbps each. What is the network load on the NVR, can a 100 Mbps NVR port take it, and roughly how much storage does one day need?</summary><div class="answer"><p>32 × 4 = 128 Mbps (about 136 Mbps on the wire). A 100 Mbps port cannot carry that, and even less so in real life, where it delivers about 94 Mbps. A 1 Gbps port carries it at about 14 % load. Storage: 128 Mbps × 86,400 s ÷ 8 = 1,382,400 MB, about 1.38 TB per day.</p></div></details>
+    <details class="quiz"><summary>A BMS front end on 192.168.10.0/24 cannot find BACnet/IP controllers on 192.168.20.0/24, but it can poll a Modbus TCP meter there by its IP. Why?</summary><div class="answer"><p>BACnet/IP discovery (Who-Is) is a broadcast on UDP 47808, and routers do not forward broadcasts. The front end therefore never reaches the other subnet's controllers. Fix it with a BBMD on each subnet (or foreign-device registration). Modbus TCP is a unicast TCP connection to port 502 on a known IP address, which a router forwards without trouble.</p></div></details>
+    <details class="quiz"><summary>Everything on a camera VLAN slows to a crawl whenever someone opens the multicast video wall. What do you check?</summary><div class="answer"><p>Multicast without IGMP snooping. The switches flood the stream to every port, so every camera, PC and access point in the VLAN receives all of it. Turn on IGMP snooping in every switch in that VLAN, and make sure an IGMP querier exists (usually the router), otherwise memberships time out and the stream stops after a few minutes.</p></div></details>
+    <details class="quiz"><summary>Match the services to ports and transports: Modbus TCP, RTSP, BACnet/IP. A camera answers ping but its web page will not load. What does that tell you?</summary><div class="answer"><p>Modbus TCP is port 502 over TCP. RTSP is port 554, mainly over TCP, with the video itself usually in RTP over UDP. BACnet/IP is port 47808 over UDP. Ping uses ICMP, so it proves layers 1 to 3 only. The web page needs TCP 80 or 443, so look at layer 4 and above: the port, a firewall rule, a stopped web service, or the camera's missing gateway for the reply.</p></div></details>
+    <details class="quiz"><summary>A switch with a 150 W PoE budget feeds 6 class 3 cameras (15.4 W each) and 2 class 4 PoE+ cameras (30 W each). Does it work?</summary><div class="answer"><p>6 × 15.4 = 92.4 W, plus 2 × 30 = 60 W, total 152.4 W. That is 2.4 W over the 150 W budget, so the switch will refuse power to the last port or ports that came up (typically the lowest priority). Choose a switch with a bigger budget, or move cameras to a second switch. Even at 149 W you would have no margin.</p></div></details>
+    <details class="more"><summary>Go deeper (optional): /31 and /32, and why 2ⁿ − 2</summary><p>A /30 gives 4 addresses and 2 usable hosts, which is perfect for a link between two routers. A /31 has only 2 addresses; because a point-to-point link has no use for network or broadcast addresses, RFC 3021 lets both be used as hosts. A /32 is a single address: it identifies one device and appears in routing tables as a "host route", and as the loopback address of a router. The subtract-two rule applies to ordinary multi-host subnets only. The calculator above follows these rules.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the four practical layers, their OSI numbers, and which device works at each.</span></li>
+      <li><input type="checkbox"><span>I can describe an Ethernet frame and a MAC address, and say why a MAC does not survive a router.</span></li>
+      <li><input type="checkbox"><span>I can explain how a switch learns, when it floods, and why a loop causes a broadcast storm.</span></li>
+      <li><input type="checkbox"><span>I can explain what a VLAN is and why the router between VLANs is what provides the security.</span></li>
+      <li><input type="checkbox"><span>I can convert an octet to binary and work out network, broadcast and host range for a /24, /26 or /27 by hand.</span></li>
+      <li><input type="checkbox"><span>I can explain the roles of the gateway, ARP and DHCP, and why cameras and controllers get static or reserved IPs.</span></li>
+      <li><input type="checkbox"><span>I can say the difference between a switch and a router, and between TCP and UDP.</span></li>
+      <li><input type="checkbox"><span>I know the ports for HTTP/HTTPS, RTSP, Modbus TCP, BACnet/IP and ONVIF discovery.</span></li>
+      <li><input type="checkbox"><span>I can explain multicast flooding and the role of IGMP snooping and a querier.</span></li>
+      <li><input type="checkbox"><span>I can calculate camera bandwidth, daily storage and a PoE budget, and spot the link that will run out first.</span></li>
+      <li><input type="checkbox"><span>I can work up the layers to find a fault: link, VLAN, IP and gateway, port, then application.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
