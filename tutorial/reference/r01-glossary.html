@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R01 · Glossary: every term in plain English</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .gsearch{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .gsearch input[type=search]{flex:1 1 260px;font:16px var(--sans);padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+  .gsearch label{margin:0;font-size:14.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+  .ginfo{font-size:14px;color:var(--muted);margin-top:8px}
+  .az{display:flex;flex-wrap:wrap;gap:5px;margin:14px 0 6px;padding:8px 0;background:var(--bg)}
+  .az a{min-width:32px;text-align:center;padding:3px 6px;border:1px solid var(--line);border-radius:6px;text-decoration:none;font:600 14px var(--mono);background:var(--panel);color:var(--accent)}
+  .az a:hover{border-color:var(--accent)}
+  .az a.off{opacity:.3;pointer-events:none}
+  @media (min-width:981px){.az{position:sticky;top:0;z-index:5}}
+  h3.letter{font:600 30px/1 var(--serif);color:var(--accent);margin:34px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--accent-soft);scroll-margin-top:64px}
+  dl.gl{margin:0}
+  .ge{padding:9px 0 8px;border-bottom:1px dashed var(--line)}
+  .ge dt{font-weight:700;font-size:16.5px}
+  .ge dd{margin:2px 0 0;font-size:15.5px;line-height:1.6}
+  .ge a.go{font:600 12px var(--mono);text-decoration:none;background:var(--accent-soft);padding:1px 6px;border-radius:5px;margin-left:3px;white-space:nowrap}
+  .gnone{padding:14px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}
+</style>
+</head>
+<body class="book-reference">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Reference Shelf</div>
+    <span class="eyebrow">Reference · R01</span>
+    <h1>Glossary: every term in plain English</h1>
+    <p class="lede">Every word this course uses, from ampere to Zener and BACnet to VLAN, explained in one or two plain sentences. Each entry ends with a small tag (like <b>T01</b> or <b>C06</b>) that links to the chapter that teaches it properly.</p>
+    <div class="meta"><span><b>Type</b> Look-up page</span><span><b>Terms</b> <span id="g-count">190+</span></span><span><b>Covers</b> Practice, Theory, Job Track</span><span><b>Tip</b> press <kbd>/</kbd> to search</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Search the glossary</h2>
+    <p>Type part of a word (for example <code>poe</code>, <code>rs-485</code>, <code>fail</code> or <code>4–20</code>). The list below filters as you type. Tick "Names only" if you want to match only the term itself, not words inside the definitions. Hover over a chapter tag to see the chapter title.</p>
+
+    <div class="widget" id="w-gsearch">
+      <span class="label">Interactive · Live glossary search</span>
+      <div class="gsearch">
+        <input type="search" id="gq" placeholder="Search terms, e.g. VLAN, MEN, Wiegand…" autocomplete="off" aria-label="Search the glossary">
+        <label><input type="checkbox" id="gnames"> Names only</label>
+      </div>
+      <div class="ginfo" id="ginfo">Showing all terms.</div>
+    </div>
+
+    <div class="callout tip"><span class="label">How to use this page</span><p>Keep this tab open while you read a chapter or a job ad. When a word stops you, search it here, read the short version, then follow the tag to the full explanation. Abbreviations are listed under their letters (for example <b>RCD</b> under R), with the full name in the definition.</p></div>
+
+    <h2>Terms A–Z</h2>
+    <nav class="az" id="gaz" aria-label="Jump to letter">
+      <a href="#g-0">0–9</a><a href="#g-a">A</a><a href="#g-b">B</a><a href="#g-c">C</a><a href="#g-d">D</a><a href="#g-e">E</a><a href="#g-f">F</a><a href="#g-g">G</a><a href="#g-h">H</a><a href="#g-i">I</a><a href="#g-j">J</a><a href="#g-k">K</a><a href="#g-l">L</a><a href="#g-m">M</a><a href="#g-n">N</a><a href="#g-o">O</a><a href="#g-p">P</a><a href="#g-q">Q</a><a href="#g-r">R</a><a href="#g-s">S</a><a href="#g-t">T</a><a href="#g-u">U</a><a href="#g-v">V</a><a href="#g-w">W</a><a href="#g-x">X</a><a href="#g-y">Y</a><a href="#g-z">Z</a>
+    </nav>
+    <div class="gnone" id="gnone" hidden>No term matches that search. Try a shorter word, or untick "Names only".</div>
+
+    <section class="gs" id="g-0"><h3 class="letter">0–9</h3><dl class="gl">
+      <div class="ge"><dt>0–10 V signal</dt><dd>A common analogue control signal in buildings: 0 V means "closed / off / 0 %" and 10 V means "fully open / 100 %". Used to drive valve and damper actuators and variable speed drives. <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>4–20 mA loop</dt><dd>An industrial way to send a measurement as a current: 4 mA means the bottom of the range, 20 mA the top. Current is the same everywhere in a series loop, so long cables and resistance do not change the reading, and 0 mA clearly means a broken wire. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a> <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>8N1</dt><dd>The most common serial (UART) frame setting: 8 data bits, No parity bit, 1 stop bit. Both ends must use the same setting and baud rate. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>230 V / 400 V</dt><dd>Australian mains voltages (RMS): 230 V between an active and neutral (single phase), 400 V between two actives of a three-phase supply. Mains is low voltage (LV) and is for licensed electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>555 timer</dt><dd>A classic 8-pin timer chip. Wired as an astable it makes a continuous square wave (a blinker); wired as a monostable it makes one pulse of a set length when triggered. <a class="go" href="../practice/p09-555-timer.html">P09</a></dd></div>
+      <div class="ge"><dt>802.3af / at / bt</dt><dd>The IEEE standards for Power over Ethernet. Roughly: af gives up to 15.4 W at the switch port, at gives 30 W, and bt gives 60 W or 90 W; the device receives a bit less because of cable loss. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-a"><h3 class="letter">A</h3><dl class="gl">
+      <div class="ge"><dt>AC (alternating current)</dt><dd>Current that reverses direction many times a second. Australian mains is a 230 V, 50 Hz sine wave, so it reverses 100 times a second. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>AC plug-pack</dt><dd>A sealed wall adapter whose output is low-voltage AC (for example 12, 16 or 24 V AC) instead of DC. The mains part stays sealed inside; you only work on the ELV output side. <a class="go" href="../theory/t08-transformers.html">T08</a> <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>Access control</dt><dd>A system that decides who may open which door and when, using readers, credentials (cards, fobs, PINs), a controller and electric locks. It also logs every event. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>ACMA</dt><dd>Australian Communications and Media Authority: the federal regulator for telecommunications and radio. It sets the cabling rules that require customer cabling to be done by a registered cabler. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>Active (A)</dt><dd>In Australian wiring, the mains conductor that is at 230 V relative to earth. The new colour is brown; older installations used red. Dangerous: electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Actuator</dt><dd>Anything that turns an electrical command into movement or action: a motor, a valve or damper actuator, a solenoid, a relay, an electric lock. <a class="go" href="../practice/p13-actuators-motors.html">P13</a> <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>ADC (analogue-to-digital converter)</dt><dd>The part of a microcontroller that measures a voltage and turns it into a number. A 10-bit ADC gives numbers from 0 to 1023 across its reference voltage. <a class="go" href="../practice/p12-sensors-adc.html">P12</a> <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>AHU (air handling unit)</dt><dd>A large metal box of fans, filters, heating and cooling coils and dampers that conditions air and pushes it through a building's ducts. A typical BMS controls many points on each AHU. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>AI / AO / DI / DO</dt><dd>The four basic BMS point types. Analogue input (a measured value, e.g. temperature), analogue output (a variable command, e.g. valve 0–10 V), digital input (an on/off status, e.g. fan running), digital output (an on/off command, e.g. start pump). <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>Alarm (BMS)</dt><dd>A message the BMS raises when a point goes outside its limits or a device fails, for example "chiller fault" or "room too hot". Alarms have priorities and must be acknowledged by an operator. <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>Aliasing</dt><dd>A false, lower frequency that appears when a signal is sampled too slowly (less than twice its highest frequency). The data looks real but is wrong. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>Ammeter</dt><dd>A meter that measures current. It must be connected in series, so the current flows through it; connecting it across a supply blows its fuse. <a class="go" href="../practice/p03-multimeter-mastery.html">P03</a></dd></div>
+      <div class="ge"><dt>Ampere (A, amp)</dt><dd>The unit of current. One ampere is one coulomb of charge passing a point every second. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Amp-hour (Ah)</dt><dd>A battery capacity unit: current × hours. A 7 Ah battery can, in theory, give 0.7 A for 10 hours. Real capacity falls at high current and low temperature. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Amplifier</dt><dd>A circuit whose output is a larger copy of its input. Gain is output divided by input, often given in decibels. <a class="go" href="../theory/t14-op-amps.html">T14</a></dd></div>
+      <div class="ge"><dt>Analogue</dt><dd>A signal that can take any value in a range, like 0–10 V or 4–20 mA, as opposed to digital on/off levels. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Anode</dt><dd>The diode terminal that conventional current flows into when the diode conducts (the p side). On an LED it is the longer leg. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Antenna</dt><dd>A conductor shaped to turn electrical signals into radio waves and back. Its size is related to the wavelength; a quarter-wave antenna for 2.4 GHz Wi-Fi is about 3 cm long. <a class="go" href="../theory/t10-em-waves-antennas-fibre.html">T10</a></dd></div>
+      <div class="ge"><dt>APC / UPC</dt><dd>Two fibre connector end-face polishes. APC (angled physical contact) is polished at 8° and usually green; UPC (ultra physical contact) is flat-domed and usually blue. Never mate APC with UPC: the gap causes high loss and can damage the end faces. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>Apparent power (VA)</dt><dd>Volts × amps, ignoring phase. Measured in volt-amperes. Real power (W) equals apparent power × power factor. UPS and transformer sizes are often given in VA. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Arduino</dt><dd>A family of easy microcontroller boards (the Uno is the classic) programmed in C++ from the Arduino IDE over USB. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a></dd></div>
+      <div class="ge"><dt>AS/CA S009</dt><dd>The Australian standard for installing customer telecom cabling (the "telecommunications wiring rules"), made mandatory through ACMA's cabling rules. Check the current edition with ACMA. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>AS/NZS 3000</dt><dd>The Australian/New Zealand "Wiring Rules" for electrical installations. Among other things it defines ELV and LV and requires RCDs on most final circuits. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Astable</dt><dd>A circuit with no stable state, so it keeps switching back and forth by itself. A 555 astable is the classic LED blinker. <a class="go" href="../practice/p09-555-timer.html">P09</a></dd></div>
+      <div class="ge"><dt>Attenuation</dt><dd>Loss of signal strength along a cable or fibre, usually given in dB (for fibre, dB per km). <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a> <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-b"><h3 class="letter">B</h3><dl class="gl">
+      <div class="ge"><dt>Backbone cabling</dt><dd>Cabling that links communications rooms together, for example between floors or buildings, as opposed to horizontal cabling that runs out to the wall outlets. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>BACnet</dt><dd>The open data protocol for building automation (ASHRAE 135, also ISO 16484-5). Devices describe their data as "objects" (Analog Input, Binary Output, Schedule…) that any BACnet front end can read and write. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>BACnet/IP</dt><dd>BACnet carried over an ordinary Ethernet/IP network, by default on UDP port 47808. Used between supervisory controllers and the front end. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>BACnet MS/TP</dt><dd>BACnet over an RS-485 twisted pair, using a master–slave/token-passing scheme. Common for field controllers on a daisy-chained bus; every device needs a unique MAC address and the same baud rate. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Band gap</dt><dd>The energy gap between the bands where electrons are bound and where they can move freely. Silicon's band gap is about 1.12 eV; it sets how a material conducts and what colour an LED emits. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Baud rate</dt><dd>Signalling speed of a serial line in symbols per second. For UART and RS-485 one symbol is one bit, so 9600 baud means 9600 bits per second. Both ends must match. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>Beta (β, h<sub>FE</sub>)</dt><dd>The current gain of a bipolar transistor: collector current divided by base current. Typical small transistors have β of 100–300, but it varies widely, so designs must not depend on an exact value. <a class="go" href="../theory/t12-bjt-physics.html">T12</a></dd></div>
+      <div class="ge"><dt>Bias</dt><dd>The DC voltage or current applied to set a device's operating state. A diode is forward-biased when the anode is more positive than the cathode. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Bit / byte</dt><dd>A bit is one binary digit, 0 or 1. A byte is 8 bits. Data rates are in bits per second (Mb/s); file and disk sizes in bytes (MB, TB). Divide by 8 to convert. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Bitrate (video)</dt><dd>How many bits per second a camera stream uses, e.g. 4 Mb/s. It sets network load and NVR storage. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>BJT (bipolar junction transistor)</dt><dd>A three-layer transistor (NPN or PNP) with base, collector and emitter. A small base current controls a much larger collector current. <a class="go" href="../theory/t12-bjt-physics.html">T12</a> <a class="go" href="../practice/p08-transistor-switches.html">P08</a></dd></div>
+      <div class="ge"><dt>BMS (building management system)</dt><dd>The computer control system of a building: controllers, sensors and software that run air conditioning, ventilation, lighting and more, and raise alarms. Also called BAS (building automation system). <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>Breadboard</dt><dd>A solderless board with spring clips for building test circuits. Each short row of 5 holes is connected inside; the long side rails carry power. <a class="go" href="../practice/p02-breadboard-first-led.html">P02</a></dd></div>
+      <div class="ge"><dt>Bridge rectifier</dt><dd>Four diodes arranged so both halves of an AC wave come out as the same polarity, giving pulsing DC. Loses about two diode drops (about 1.4 V). <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>Broker (MQTT)</dt><dd>The server in an MQTT system. Devices publish messages to it under a topic, and it forwards them to every client that subscribed to that topic. Mosquitto is a common one. <a class="go" href="../practice/p18-esp32-iot-mqtt.html">P18</a></dd></div>
+      <div class="ge"><dt>Buck converter</dt><dd>A switching regulator that steps DC voltage down efficiently (often 85–95 %) by switching on and off quickly and smoothing with an inductor and capacitor. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Bus</dt><dd>A shared set of wires that several devices use to talk, taking turns according to a protocol. I²C, SPI, RS-485 and MS/TP are buses. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-c"><h3 class="letter">C</h3><dl class="gl">
+      <div class="ge"><dt>Cabling registration</dt><dd>In Australia, customer telecom cabling must be done (or directly supervised) by a cabler registered with an ACMA-accredited registrar. There are open and restricted registrations, with endorsements such as structured cabling and optical fibre. Confirm current categories with ACMA. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a> <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+      <div class="ge"><dt>Capacitance</dt><dd>How much charge a capacitor stores per volt, measured in farads. Bigger plates, a closer gap and a better dielectric give more capacitance. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a></dd></div>
+      <div class="ge"><dt>Capacitor</dt><dd>Two conductors separated by an insulator. It stores energy in an electric field, blocks steady DC and lets changing signals through. Used for smoothing, timing and decoupling. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a> <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>Cat6</dt><dd>Category 6 twisted-pair data cable, specified to 250 MHz. Supports gigabit Ethernet to 100 m (channel). The standard choice for new structured cabling and IP cameras. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+      <div class="ge"><dt>Cathode</dt><dd>The diode terminal current leaves from when it conducts (the n side). Marked by the band on a diode, and the shorter leg or flat edge on an LED. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>CCTV</dt><dd>Closed-circuit television: video surveillance. Modern systems use IP cameras powered by PoE and recorded on an NVR. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>Channel (cabling)</dt><dd>The complete end-to-end cable path between two pieces of equipment, including patch cords; limited to 100 m for twisted-pair Ethernet. Compare permanent link. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>Chiller</dt><dd>A large refrigeration machine that makes chilled water (often around 6–7 °C) for building cooling. The water is pumped to AHU and FCU coils. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>Circuit breaker</dt><dd>A resettable switch that opens automatically on overcurrent. Mains breakers live in switchboards and are electricians' work; small DC breakers are used in ELV panels. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Cleave</dt><dd>A clean, flat, 90° break of a stripped optical fibre, made with a precision cleaver just before splicing or connectorising. A bad cleave means a bad splice. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>Clock</dt><dd>A steady square wave that steps a digital circuit forward, one operation per tick. A 16 MHz clock ticks 16 million times a second. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>CMOS</dt><dd>The logic and chip technology built from complementary pairs of MOSFETs. It uses almost no current when not switching, which is why modern chips run cool. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Coaxial cable (coax)</dt><dd>Cable with a centre conductor inside a shield, separated by insulation. Used for TV, HFC networks, older analogue CCTV and radio antennas. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>Collector / base / emitter</dt><dd>The three terminals of a BJT. Base is the control input; main current flows between collector and emitter. <a class="go" href="../theory/t12-bjt-physics.html">T12</a></dd></div>
+      <div class="ge"><dt>Commissioning</dt><dd>Testing and proving that an installed system works as designed before handover: checking every point, alarm, sequence and label, and recording results. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Comparator</dt><dd>A circuit (often an op-amp) that outputs high or low depending on which of its two inputs is larger. Turns an analogue level into a yes/no decision. <a class="go" href="../theory/t14-op-amps.html">T14</a></dd></div>
+      <div class="ge"><dt>Conductor</dt><dd>A material with many free charges (like copper) so current flows easily. Also the word for one wire inside a cable. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Continuity test</dt><dd>A multimeter mode that beeps when resistance between the probes is very low, confirming a wire or path is connected. Only use it on circuits with the power off. <a class="go" href="../practice/p03-multimeter-mastery.html">P03</a></dd></div>
+      <div class="ge"><dt>Conventional current</dt><dd>Current drawn as flowing from + to −. Electrons in a wire actually move the other way; the convention is older than the electron and every schematic uses it. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Coulomb (C)</dt><dd>The unit of electric charge: about 6.24 × 10<sup>18</sup> electrons' worth. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Crimp</dt><dd>A joint made by squeezing a metal terminal or ferrule onto a wire with a matching crimp tool. A good crimp is gas-tight and stronger than solder for vibrating equipment. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Crystal (quartz)</dt><dd>A small piece of quartz that vibrates at a very precise frequency, used to make a stable clock (for example 16 MHz on an Arduino Uno). <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a> <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Current</dt><dd>The rate at which charge flows past a point, in amperes. It is the same at every point in a series loop. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-d"><h3 class="letter">D</h3><dl class="gl">
+      <div class="ge"><dt>Damper</dt><dd>A set of motorised blades in a duct that open and close to control airflow, driven by a damper actuator (often 0–10 V or on/off). <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>Datasheet</dt><dd>The manufacturer's document for a part: what it does, its limits, typical performance, pinout and package size. Always read it before you wire a part you do not know. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>dB (decibel)</dt><dd>A logarithmic way to compare two levels. For power, dB = 10 log(P2/P1); for voltage, dB = 20 log(V2/V1). +3 dB is double the power; −10 dB is one tenth. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>dBm</dt><dd>Power in decibels compared with 1 milliwatt. 0 dBm = 1 mW, +20 dBm = 100 mW, −30 dBm = 1 µW. Used for fibre light levels and radio signals. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a> <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>DC (direct current)</dt><dd>Current that flows in one direction only, like from a battery or a regulated supply. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Debounce</dt><dd>Ignoring the rapid on-off flicker a mechanical switch makes for a few milliseconds when it closes. Done in software with a short delay, or with an RC filter. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a></dd></div>
+      <div class="ge"><dt>Decoupling capacitor</dt><dd>A small capacitor (typically 100 nF) placed right next to each chip's power pins. It supplies the chip's fast current spikes locally and keeps noise off the supply. <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>Depletion region</dt><dd>The thin zone at a p–n junction that has lost its free carriers and holds a built-in electric field. It is why a diode conducts one way only. <a class="go" href="../theory/pn-junction-deep-dive.html">T11+</a></dd></div>
+      <div class="ge"><dt>DHCP</dt><dd>Dynamic Host Configuration Protocol: a server (often the router) hands out IP addresses, subnet mask, gateway and DNS to devices automatically. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Dielectric</dt><dd>The insulator between a capacitor's plates. Its relative permittivity (ε<sub>r</sub>) multiplies the capacitance compared with air. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a></dd></div>
+      <div class="ge"><dt>Differential signalling</dt><dd>Sending a signal as the difference between two wires (A and B), so noise that hits both equally cancels out. RS-485 and Ethernet use it. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a> <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>Digital</dt><dd>Information carried as discrete levels, usually two: 0 (low) and 1 (high). <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>DIN rail</dt><dd>A standard 35 mm "top-hat" metal rail that breakers, terminals, power supplies, relays and controllers clip onto inside control panels. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>Diode</dt><dd>A one-way valve for current: it conducts when forward-biased (anode more positive) and blocks the other way. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a> <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>DIP (dual in-line package)</dt><dd>A through-hole chip package with two rows of pins 2.54 mm apart, which fits a breadboard. A notch or dot marks pin 1. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Doping</dt><dd>Adding a tiny amount of impurity to pure silicon. Phosphorus gives extra free electrons (n-type); boron gives holes (p-type). <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Drain / gate / source</dt><dd>The three terminals of a MOSFET. The gate voltage controls current flowing between drain and source. <a class="go" href="../theory/t13-mosfet-physics.html">T13</a></dd></div>
+      <div class="ge"><dt>Drift velocity</dt><dd>The slow average speed of electrons along a wire, typically well under a millimetre per second. The signal itself travels close to the speed of light because the field moves, not the electrons. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Duty cycle</dt><dd>The percentage of each cycle a pulse signal is high. 25 % duty means on for a quarter of the time. <a class="go" href="../practice/p09-555-timer.html">P09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-e"><h3 class="letter">E</h3><dl class="gl">
+      <div class="ge"><dt>Earth (protective earth, PE)</dt><dd>The green/yellow conductor that connects exposed metal parts to the earthing system, so a fault causes a large current that trips the protection. Part of mains wiring: electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Efficiency (η)</dt><dd>Useful output power divided by input power. A 90 % efficient converter wastes 10 % of the input as heat. <a class="go" href="../theory/t03-power-energy-heat.html">T03</a></dd></div>
+      <div class="ge"><dt>EIA-96 code</dt><dd>A short marking on 1 % SMD resistors: two digits (an index into the E96 value list) and a letter multiplier. "01C" means 100 × 100 = 10 kΩ. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Electric field</dt><dd>The push that charges feel near other charges, measured in volts per metre. It is what actually drives current along a wire. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a></dd></div>
+      <div class="ge"><dt>Electric strike</dt><dd>A door lock part that replaces the strike plate in the frame and releases the latch when powered (or when unpowered, depending on type). Often fail-secure. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Electrolytic capacitor</dt><dd>A polarised capacitor with large value for its size (µF to mF), used for smoothing. Must be fitted the right way round; the stripe marks the negative lead. <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>Electron</dt><dd>The negatively charged particle that carries current in metals. Charge of one electron: 1.602 × 10<sup>−19</sup> C. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>ELV (extra-low voltage)</dt><dd>Under AS/NZS 3000: not more than 50 V AC or 120 V ripple-free DC. Everything you build in this course stays at ELV. <a class="go" href="../practice/p01-bench-kit-safety.html">P01</a> <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>EMF (electromotive force)</dt><dd>The voltage a source creates, such as a battery's chemistry or a generator's moving magnet. "Back-EMF" is the voltage a coil or motor makes that opposes the change driving it. <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>EOL resistor (end-of-line)</dt><dd>A resistor fitted at the far end of an alarm or fire detection circuit. The panel sees a known resistance when normal, so it can tell normal, alarm, open circuit (cut) and short circuit (tamper) apart. <a class="go" href="../career/c06-access-control-alarms.html">C06</a> <a class="go" href="../career/c04-fire-detection-ewis.html">C04</a></dd></div>
+      <div class="ge"><dt>ESD (electrostatic discharge)</dt><dd>A static spark from your body that can damage chips without you feeling it. Use an anti-static wrist strap and mat when handling boards. <a class="go" href="../practice/p01-bench-kit-safety.html">P01</a></dd></div>
+      <div class="ge"><dt>ESP32</dt><dd>A cheap microcontroller with built-in Wi-Fi and Bluetooth, widely used for IoT sensors. Its pins work at 3.3 V. <a class="go" href="../practice/p18-esp32-iot-mqtt.html">P18</a></dd></div>
+      <div class="ge"><dt>Ethernet</dt><dd>The wired local network standard (IEEE 802.3) used over twisted-pair copper and fibre. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>EWIS</dt><dd>Emergency warning and intercommunication system: the building PA that plays evacuation tones and voice messages, usually triggered by the fire system. <a class="go" href="../career/c04-fire-detection-ewis.html">C04</a></dd></div>
+      <div class="ge"><dt>EWP (elevating work platform)</dt><dd>A scissor lift, boom lift or similar. You need training to operate one; a boom with a reach of 11 m or more needs a high risk work licence (WP class). Confirm current rules with your state's WHS regulator. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-f"><h3 class="letter">F</h3><dl class="gl">
+      <div class="ge"><dt>Fail-safe (lock)</dt><dd>A lock that unlocks when power is lost, such as a maglock. "Safe" means safe for people leaving in an emergency. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Fail-secure (lock)</dt><dd>A lock that stays locked when power is lost, such as many electric strikes. Keeps property secure, but the door must still allow free exit by other means. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Farad (F)</dt><dd>The unit of capacitance: one coulomb stored per volt. Real parts are usually pF, nF or µF. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a></dd></div>
+      <div class="ge"><dt>FCU (fan coil unit)</dt><dd>A small unit with a fan and a heating/cooling coil that serves one room or zone, often in ceilings. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>Ferrule (bootlace)</dt><dd>A thin metal tube crimped onto the end of a stranded wire so it sits firmly in a screw terminal without stray strands. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Fibre (optical fibre)</dt><dd>A hair-thin glass strand that carries light. Light stays inside the core by total internal reflection, so it travels kilometres with tiny loss. <a class="go" href="../theory/t10-em-waves-antennas-fibre.html">T10</a> <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>Field of view (FOV)</dt><dd>How wide a camera sees, in degrees. A shorter focal length lens gives a wider view but less detail at distance. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>FIP (fire indicator panel)</dt><dd>The fire alarm control panel that monitors detectors and call points and signals the alarm. <a class="go" href="../career/c04-fire-detection-ewis.html">C04</a></dd></div>
+      <div class="ge"><dt>Firmware</dt><dd>The program stored inside a device's chip, such as a camera, controller or microcontroller. Updating it is called flashing. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a></dd></div>
+      <div class="ge"><dt>Flip-flop</dt><dd>A digital circuit that stores one bit and changes only on a clock edge. Registers and counters are made from them. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Floating input</dt><dd>A digital input connected to nothing. It picks up noise and reads randomly; fix it with a pull-up or pull-down resistor. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a></dd></div>
+      <div class="ge"><dt>Flyback diode</dt><dd>A diode placed across a relay coil, solenoid or motor (reverse-biased in normal use) to give the coil's current a safe path when switched off, stopping a damaging voltage spike. <a class="go" href="../practice/p08-transistor-switches.html">P08</a> <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>Forward voltage (V<sub>F</sub>)</dt><dd>The voltage across a diode when it conducts: about 0.6–0.7 V for silicon, 0.2–0.4 V for Schottky, about 2 V for red LEDs and about 3 V for blue and white LEDs. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Frequency (f)</dt><dd>How many cycles happen per second, in hertz. Australian mains is 50 Hz. Frequency = 1 / period. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Front end (head end)</dt><dd>The BMS or security software and server operators use to see graphics, alarms, schedules and trends, sitting above the field controllers. <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>FTTC (fibre to the curb)</dt><dd>NBN technology where fibre runs to a small unit in the pit outside, and the existing copper pair covers the last short distance to the premises. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>FTTN (fibre to the node)</dt><dd>NBN technology where fibre runs to a street cabinet (the node) and existing copper phone lines carry VDSL to each premises. Speed falls with copper length. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>FTTP (fibre to the premises)</dt><dd>NBN technology where fibre runs all the way to a box on or in the building. The fastest and most future-proof NBN type. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>Fuse</dt><dd>A thin link that melts and opens the circuit when current is too high, protecting wiring from overheating. Size it to protect the cable, not the device. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Fusion splice</dt><dd>A permanent joint between two fibres made by melting them together with an electric arc in a splicer. Typical loss is under 0.1 dB. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-g"><h3 class="letter">G</h3><dl class="gl">
+      <div class="ge"><dt>Gain</dt><dd>Output divided by input. A voltage gain of 10 is +20 dB. <a class="go" href="../theory/t14-op-amps.html">T14</a></dd></div>
+      <div class="ge"><dt>Gateway (default gateway)</dt><dd>The router address a device sends traffic to when the destination is not on its own subnet. A wrong gateway means local devices work but nothing beyond does. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Gate (logic)</dt><dd>A digital building block such as AND, OR, NOT, NAND or XOR that combines input bits into an output bit. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>GPIO</dt><dd>General-purpose input/output: a microcontroller or Raspberry Pi pin you can set as an input or an output in software. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a> <a class="go" href="../practice/p17-pi-gpio-python.html">P17</a></dd></div>
+      <div class="ge"><dt>GPON</dt><dd>Gigabit passive optical network: one fibre from the exchange is split passively to many premises. NBN FTTP uses GPON. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>Ground (GND, 0 V)</dt><dd>The reference point that other voltages in a circuit are measured from. In an ELV circuit "ground" is not necessarily connected to the earth. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Ground loop</dt><dd>An unwanted current path when two pieces of equipment are connected to ground at different points; it adds hum and noise to signals. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-h"><h3 class="letter">H</h3><dl class="gl">
+      <div class="ge"><dt>H-bridge</dt><dd>Four switches arranged so a DC motor can be driven in either direction. Motor driver boards contain one or two. <a class="go" href="../practice/p13-actuators-motors.html">P13</a></dd></div>
+      <div class="ge"><dt>H.264 / H.265</dt><dd>Video compression standards used by IP cameras. H.265 needs roughly half the bitrate of H.264 for similar quality, which cuts storage. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>HART</dt><dd>Highway Addressable Remote Transducer: a digital signal superimposed on a 4–20 mA loop as a small tone, so a handheld or system can read settings and diagnostics without disturbing the analogue value. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>Heatshrink</dt><dd>Plastic tubing that shrinks tight when heated, used to insulate and strengthen solder joints and cable ends. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Heatsink</dt><dd>A metal part that draws heat from a component (like a regulator or MOSFET) and spreads it into the air, so the junction stays below its limit. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Henry (H)</dt><dd>The unit of inductance. A coil has 1 H if a current change of 1 A per second induces 1 V across it. <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>Hertz (Hz)</dt><dd>The unit of frequency: one cycle per second. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>HFC (hybrid fibre-coaxial)</dt><dd>NBN technology using fibre to a street node and the old pay-TV coaxial cable to the premises. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>High risk work licence</dt><dd>A national licence needed for certain dangerous tasks, such as operating a boom-type EWP of 11 m or more (class WP). Issued by state WHS regulators. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+      <div class="ge"><dt>Hole</dt><dd>A missing electron in a semiconductor's bonds. It moves like a positive charge and carries current in p-type material. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Horizontal cabling</dt><dd>The cable from a floor's patch panel out to each wall outlet, usually Cat6, with a limit of 90 m for the fixed part. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>HVAC</dt><dd>Heating, ventilation and air conditioning: the plant a BMS mostly controls. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>Hysteresis (deadband)</dt><dd>Using a different switch-on and switch-off point so a control does not chatter on and off around one value. A thermostat that turns on at 21 °C and off at 23 °C has 2 °C of hysteresis. <a class="go" href="../theory/t14-op-amps.html">T14</a> <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-i"><h3 class="letter">I</h3><dl class="gl">
+      <div class="ge"><dt>I²C (I2C)</dt><dd>A two-wire bus (SDA data, SCL clock) for chips on the same board. Each device has an address; the lines are open-drain and need pull-up resistors. Common speeds 100 and 400 kHz. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>IEC symbols</dt><dd>The international style of schematic symbols (resistor as a plain box, for example). Common on Australian drawings, alongside the US zig-zag style. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Impedance (Z)</dt><dd>Total opposition to AC current, combining resistance and reactance, in ohms. It changes with frequency. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Inductance (L)</dt><dd>The property of a coil that opposes changes in its current, by storing energy in its magnetic field. Measured in henries. <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>Inductor</dt><dd>A coil of wire, often on a magnetic core. It smooths current, stores energy in buck converters, and kicks back a high voltage if its current is suddenly stopped. <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>Instance (BACnet device instance)</dt><dd>A number that must be unique for every BACnet device across the whole site network, so the front end can find each one. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Insulator</dt><dd>A material with almost no free charges, so current hardly flows: plastic, glass, rubber, dry air. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Internal resistance</dt><dd>The small resistance inside a battery or supply. It makes the terminal voltage sag when current flows, and grows as batteries age or get cold. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Intruder alarm</dt><dd>A security system with a panel, keypads, detectors (PIRs, reed switches) and sirens that is armed and disarmed, and can report to a monitoring centre. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>IP address</dt><dd>The number that identifies a device on a network, e.g. 192.168.1.20 (IPv4, 32 bits). Devices talk directly only when they are on the same subnet. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>IP rating (ingress protection)</dt><dd>Two digits that rate a box against dust and water, e.g. IP66 (dust-tight, strong water jets). Important for outdoor cameras and enclosures. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>IR illumination</dt><dd>Infrared LEDs on a camera (often around 850 nm) that light the scene at night; the image turns black and white. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>Isolation (galvanic)</dt><dd>No direct conductive path between two circuits; energy or signal crosses by a magnetic field (transformer) or light (opto-isolator). Keeps dangerous voltages away from what you touch. <a class="go" href="../theory/t08-transformers.html">T08</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-j"><h3 class="letter">J</h3><dl class="gl">
+      <div class="ge"><dt>JACE / Niagara</dt><dd>Niagara is a software framework widely used for BMS front ends and integration; a JACE is a Niagara controller that connects field buses (BACnet, Modbus) to the network. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Joule (J)</dt><dd>The unit of energy. One watt for one second is one joule. <a class="go" href="../theory/t03-power-energy-heat.html">T03</a></dd></div>
+      <div class="ge"><dt>Junction (p–n)</dt><dd>The boundary between p-type and n-type silicon inside a diode or transistor, where the depletion region forms. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a> <a class="go" href="../theory/pn-junction-deep-dive.html">T11+</a></dd></div>
+      <div class="ge"><dt>Junction dot</dt><dd>A filled dot on a schematic showing that crossing or meeting wires are connected. Crossing wires without a dot are not connected. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-k"><h3 class="letter">K</h3><dl class="gl">
+      <div class="ge"><dt>KCL (Kirchhoff's current law)</dt><dd>The current flowing into any junction equals the current flowing out. Charge does not pile up. <a class="go" href="../theory/t04-circuit-laws.html">T04</a> <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>Keystone jack</dt><dd>A snap-in RJ45 socket module that is terminated on the cable and clicks into a wall plate or patch panel. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+      <div class="ge"><dt>KVL (Kirchhoff's voltage law)</dt><dd>Around any closed loop, the voltage rises and drops add to zero. Energy is accounted for. <a class="go" href="../theory/t04-circuit-laws.html">T04</a> <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>kWh (kilowatt-hour)</dt><dd>Energy used by 1000 W for one hour (3.6 MJ). The unit on your power bill. <a class="go" href="../theory/t03-power-energy-heat.html">T03</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-l"><h3 class="letter">L</h3><dl class="gl">
+      <div class="ge"><dt>Ladder logic</dt><dd>A PLC programming language drawn like old relay wiring diagrams: rungs of contacts on the left driving coils on the right. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>LDO (low-dropout regulator)</dt><dd>A linear regulator that still works when the input is only a little above the output (e.g. 3.3 V from 3.6 V). It wastes the voltage difference as heat. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>LED (light-emitting diode)</dt><dd>A diode that gives off light when forward current flows. It always needs something to limit the current, usually a series resistor. <a class="go" href="../practice/p02-breadboard-first-led.html">P02</a> <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Lenz's law</dt><dd>An induced current always flows in the direction that opposes the change that caused it. It is why coils resist sudden current changes. <a class="go" href="../theory/t06-magnetism-inductors.html">T06</a></dd></div>
+      <div class="ge"><dt>Linux terminal</dt><dd>The text command line on a Raspberry Pi or server, where you type commands like <code>ls</code>, <code>cd</code> and <code>ping</code>. <a class="go" href="../practice/p16-raspberry-pi-linux.html">P16</a></dd></div>
+      <div class="ge"><dt>Logic analyser</dt><dd>A tool that records many digital lines at once and decodes protocols like UART, I²C and SPI into readable bytes. <a class="go" href="../practice/p15-oscilloscope-logic-analyser.html">P15</a></dd></div>
+      <div class="ge"><dt>Logic level</dt><dd>The voltages a chip treats as 0 and 1, set by its supply: 5 V logic (Arduino Uno) or 3.3 V logic (ESP32, Raspberry Pi). Feeding 5 V into a 3.3 V pin can damage it. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Loss budget</dt><dd>The sum of all losses on a fibre link (fibre per km, connectors, splices, plus a safety margin), compared with what the equipment can tolerate. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a> <a class="go" href="r02-formula-sheet.html">R02</a></dd></div>
+      <div class="ge"><dt>LV (low voltage)</dt><dd>In Australian electrical law, above ELV up to 1000 V AC or 1500 V DC, which includes 230 V and 400 V mains. Despite the name it is lethal and is electricians' work. (In casual trade talk "low voltage" sometimes means data cabling, which is confusing.) <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-m"><h3 class="letter">M</h3><dl class="gl">
+      <div class="ge"><dt>MAC address</dt><dd>The fixed 48-bit hardware address of a network interface, written like 3C:71:BF:12:34:56. Switches use it to forward frames. (BACnet MS/TP also uses "MAC" for its bus address.) <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Maglock (electromagnetic lock)</dt><dd>A lock that holds a door closed with an electromagnet while powered. Releases when power is cut, so it is fail-safe. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>MEN (multiple earthed neutral)</dt><dd>Australia's earthing system: the neutral is connected to earth at each installation's main switchboard and earthed at many points along the network. A fault to metal then has a low-resistance path back, so protection trips. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Microcontroller (MCU)</dt><dd>A small computer on one chip: processor, memory, timers, ADC and I/O pins. Runs one program forever, like the ATmega328P on an Arduino Uno. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+      <div class="ge"><dt>Modbus</dt><dd>A simple request–response protocol: a master (client) asks a slave (server) to read or write numbered registers. Modbus RTU runs on RS-485; Modbus TCP runs on Ethernet (port 502). Very common in plant rooms and meters. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a> <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Monostable</dt><dd>A circuit with one stable state. When triggered it gives one output pulse of a set length, then returns. <a class="go" href="../practice/p09-555-timer.html">P09</a></dd></div>
+      <div class="ge"><dt>MOSFET</dt><dd>Metal-oxide-semiconductor field-effect transistor. A voltage on the gate (almost no current) controls a channel between drain and source. The main power switch in modern electronics. <a class="go" href="../theory/t13-mosfet-physics.html">T13</a> <a class="go" href="../practice/p08-transistor-switches.html">P08</a></dd></div>
+      <div class="ge"><dt>MQTT</dt><dd>A lightweight publish/subscribe messaging protocol for IoT. Devices publish to named topics on a broker over TCP (usually port 1883, or 8883 with TLS). <a class="go" href="../practice/p18-esp32-iot-mqtt.html">P18</a></dd></div>
+      <div class="ge"><dt>Multimeter (DMM)</dt><dd>A meter that measures voltage, current, resistance, continuity and diode drop. Your most-used tool. <a class="go" href="../practice/p03-multimeter-mastery.html">P03</a></dd></div>
+      <div class="ge"><dt>Multimode fibre (MMF)</dt><dd>Fibre with a wide core (50 or 62.5 µm) that carries many light paths. Cheaper optics but limited to shorter links, inside buildings and campuses. Jackets are often aqua or orange. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-n"><h3 class="letter">N</h3><dl class="gl">
+      <div class="ge"><dt>NBN</dt><dd>National Broadband Network: Australia's wholesale broadband network, run by NBN Co, using FTTP, FTTC, FTTN, HFC, fixed wireless and satellite. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>Net</dt><dd>On a schematic, every point that is wired together. All pins on one net are at the same voltage. Nets can be joined by drawn wires or by giving them the same label. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Neutral (N)</dt><dd>The mains return conductor, kept near earth potential at the switchboard by the MEN link. The new colour is light blue; older wiring used black. It can still carry dangerous current: electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>NO / NC (normally open / normally closed)</dt><dd>Describes a contact's state when nothing is operating it. A NO contact closes when operated; a NC contact opens. Relays and door contacts come in both. <a class="go" href="../practice/p08-transistor-switches.html">P08</a> <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Node</dt><dd>A point where two or more components connect. In networking, a node is any connected device. <a class="go" href="../theory/t04-circuit-laws.html">T04</a></dd></div>
+      <div class="ge"><dt>Noise</dt><dd>Unwanted electrical signal added to the one you want, from interference, ground loops or the components themselves. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>NPN / PNP</dt><dd>The two BJT types. An NPN switches on when its base is pulled about 0.7 V above the emitter (usually used on the low side); a PNP switches on when the base is pulled below its emitter (high side). <a class="go" href="../theory/t12-bjt-physics.html">T12</a></dd></div>
+      <div class="ge"><dt>NTD (network termination device)</dt><dd>The NBN box at the premises where the NBN connection ends and the customer's equipment connects. <a class="go" href="../career/c08-nbn-technologies.html">C08</a></dd></div>
+      <div class="ge"><dt>NVR (network video recorder)</dt><dd>A box that records IP camera streams onto hard drives, and often supplies PoE to the cameras. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>Nyquist rate</dt><dd>To capture a signal correctly you must sample at more than twice its highest frequency. Slower sampling gives aliasing. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-o"><h3 class="letter">O</h3><dl class="gl">
+      <div class="ge"><dt>Ohm (Ω)</dt><dd>The unit of resistance. One ohm passes one ampere when one volt is across it. <a class="go" href="../theory/t02-resistance-ohms-law.html">T02</a></dd></div>
+      <div class="ge"><dt>Ohm's law</dt><dd>V = I × R: voltage across a resistor equals current times resistance. Holds for resistors at steady temperature, not for diodes or lamps. <a class="go" href="../theory/t02-resistance-ohms-law.html">T02</a> <a class="go" href="../practice/p02-breadboard-first-led.html">P02</a></dd></div>
+      <div class="ge"><dt>ONVIF</dt><dd>An industry standard that lets IP cameras, NVRs and video software from different brands work together (discovery, streaming, PTZ control). Check which ONVIF profile both sides support. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>Op-amp (operational amplifier)</dt><dd>A high-gain amplifier chip with two inputs (+ and −) and one output. With feedback resistors it becomes an accurate amplifier, buffer, filter or comparator. <a class="go" href="../theory/t14-op-amps.html">T14</a></dd></div>
+      <div class="ge"><dt>Open circuit</dt><dd>A break in the path, so no current flows. A meter reads "OL" (overload) for resistance across it. <a class="go" href="../practice/p03-multimeter-mastery.html">P03</a></dd></div>
+      <div class="ge"><dt>Opto-isolator (optocoupler)</dt><dd>An LED and a light sensor sealed in one package. A signal crosses as light, so the two sides share no electrical connection. <a class="go" href="../practice/p08-transistor-switches.html">P08</a></dd></div>
+      <div class="ge"><dt>Oscilloscope</dt><dd>An instrument that draws voltage against time, so you can see waveforms, pulses, noise and timing. <a class="go" href="../practice/p15-oscilloscope-logic-analyser.html">P15</a></dd></div>
+      <div class="ge"><dt>OSDP</dt><dd>Open Supervised Device Protocol: a modern reader-to-controller protocol over RS-485. It is two-way, supervised (the controller knows if a reader is removed) and can be encrypted (Secure Channel). The secure replacement for Wiegand. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>OTDR</dt><dd>Optical time-domain reflectometer: sends light pulses into a fibre and times the faint reflections and backscatter, drawing a trace that shows the distance and loss of every splice, connector and break. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-p"><h3 class="letter">P</h3><dl class="gl">
+      <div class="ge"><dt>Parallel</dt><dd>Components connected across the same two nodes. They all have the same voltage; their currents add. <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>Patch panel</dt><dd>A rack panel of numbered RJ45 ports where horizontal cables are terminated at the back; short patch leads connect the front to switches. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+      <div class="ge"><dt>PCB (printed circuit board)</dt><dd>A board with copper tracks that connect soldered components. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Peak / peak-to-peak</dt><dd>Peak is the highest voltage of a waveform from zero; peak-to-peak is from the lowest to the highest point. 230 V RMS mains has a peak of about 325 V and peak-to-peak of about 650 V. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Period (T)</dt><dd>The time for one complete cycle. T = 1/f, so 50 Hz has a period of 20 ms. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Permanent link</dt><dd>The fixed installed part of a cabling run, from patch panel to wall outlet, without patch cords. Limited to 90 m and tested with a certifier. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>Phase (angle)</dt><dd>How far one waveform is shifted in time from another, in degrees. In a capacitor, current leads voltage by 90°; in an inductor, it lags by 90°. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Photodiode</dt><dd>A diode that produces a current proportional to the light falling on it, usually used reverse-biased. Inside fibre receivers and light sensors. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>PID control</dt><dd>Proportional-integral-derivative: the standard feedback loop that adjusts an output (e.g. a valve) from the error between setpoint and measured value. P reacts to the error now, I removes long-term offset, D damps fast changes. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>PIR (passive infrared sensor)</dt><dd>A motion detector that senses the change in infrared heat when a warm body moves across its zones. Used in alarms, lighting and REX. <a class="go" href="../practice/p12-sensors-adc.html">P12</a> <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>PLC (programmable logic controller)</dt><dd>A rugged industrial computer with input and output modules, programmed (often in ladder logic) to control machines and processes. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>PoE (Power over Ethernet)</dt><dd>Sending DC power (around 48–57 V) along the same Cat5e/Cat6 cable as data. The switch or injector is the PSE (power sourcing equipment); the camera or phone is the PD (powered device). <a class="go" href="../practice/p19-networking-hands-on.html">P19</a> <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>PoE budget</dt><dd>The total PoE power a switch can supply across all its ports. Add up the devices' power (by class, for a worst case) and keep below it. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a> <a class="go" href="r02-formula-sheet.html">R02</a></dd></div>
+      <div class="ge"><dt>Point (BMS)</dt><dd>One piece of data in a BMS: a sensor reading, a status, a command or a setpoint. Every point has a name, a type and an address. <a class="go" href="../career/c01-bms-fundamentals.html">C01</a></dd></div>
+      <div class="ge"><dt>Polarised capacitor</dt><dd>A capacitor (electrolytic or tantalum) that must be connected with + to the more positive side. Reversed, it can overheat and burst. <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>Port (network)</dt><dd>Either a physical socket on a switch, or a number that identifies a service on a device (e.g. 502 for Modbus TCP, 1883 for MQTT, 22 for SSH). <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Potentiometer (pot)</dt><dd>A variable resistor with three terminals; the middle wiper slides along a track, making an adjustable voltage divider. <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>Power (P)</dt><dd>The rate of energy transfer, in watts. P = V × I. <a class="go" href="../theory/t03-power-energy-heat.html">T03</a></dd></div>
+      <div class="ge"><dt>Power factor (PF)</dt><dd>Real power (W) divided by apparent power (VA), from 0 to 1. For sine waves it is the cosine of the phase angle between voltage and current. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>PSU (power supply unit)</dt><dd>Anything that provides a steady supply voltage to equipment: plug-packs, DIN-rail 24 V supplies, bench supplies, battery-backed security supplies. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>PT100</dt><dd>A platinum resistance temperature detector (RTD) that is 100 Ω at 0 °C and rises about 0.385 Ω per °C. Accurate and common in industry. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>PTZ camera</dt><dd>A pan-tilt-zoom camera that can be steered and zoomed remotely. Uses much more power than a fixed camera. <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+      <div class="ge"><dt>Pull-up / pull-down resistor</dt><dd>A resistor (often 10 kΩ) that holds an input high (to the supply) or low (to ground) when nothing else is driving it, so it never floats. <a class="go" href="../practice/p11-arduino-first-steps.html">P11</a></dd></div>
+      <div class="ge"><dt>PWM (pulse-width modulation)</dt><dd>Switching fully on and off quickly and changing the duty cycle to control average power, e.g. LED brightness or motor speed. <a class="go" href="../practice/p09-555-timer.html">P09</a></dd></div>
+      <div class="ge"><dt>Python</dt><dd>An easy programming language used on the Raspberry Pi to read sensors, log data and serve web pages. <a class="go" href="../practice/p17-pi-gpio-python.html">P17</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-q"><h3 class="letter">Q</h3><dl class="gl">
+      <div class="ge"><dt>Quantisation</dt><dd>Rounding a measured value to the nearest ADC step. The rounding error is at most half a step and sets the finest detail the ADC can see. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>Quiescent current</dt><dd>The current a regulator or circuit draws for itself when doing nothing. Matters a lot for battery-powered devices. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-r"><h3 class="letter">R</h3><dl class="gl">
+      <div class="ge"><dt>Rack unit (RU, U)</dt><dd>The height unit for 19-inch equipment racks: 1 U = 44.45 mm. A "42 U rack" holds 42 units of equipment. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>Raspberry Pi</dt><dd>A small, cheap single-board computer running Linux, with GPIO pins for electronics. Good for data loggers, dashboards and gateways. <a class="go" href="../practice/p16-raspberry-pi-linux.html">P16</a></dd></div>
+      <div class="ge"><dt>RCD (residual current device)</dt><dd>A mains safety switch that compares active and neutral current and trips (typically at 30 mA difference, within milliseconds) when current leaks to earth, for example through a person. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Reactance (X)</dt><dd>The opposition of a capacitor or inductor to AC, in ohms. A capacitor's falls with frequency (X<sub>C</sub> = 1/2πfC); an inductor's rises (X<sub>L</sub> = 2πfL). <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Rectifier</dt><dd>A circuit, usually of diodes, that turns AC into DC (still bumpy until a capacitor smooths it). <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>Reed switch</dt><dd>Two thin metal contacts in a glass tube that close near a magnet. Used in door and window contacts for alarms and access control. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Register</dt><dd>A small numbered storage location: inside a microcontroller (a control register), or in a Modbus device (a holding or input register containing a value). <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a> <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>Regulator (voltage regulator)</dt><dd>A circuit or chip that keeps its output voltage steady while input voltage and load change. Linear (like the 7805) or switching (buck, boost). <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>Relay</dt><dd>An electrically operated switch: current in a coil pulls a contact over. Lets a small signal switch a separate, larger or isolated circuit. <a class="go" href="../practice/p08-transistor-switches.html">P08</a> <a class="go" href="../practice/p13-actuators-motors.html">P13</a></dd></div>
+      <div class="ge"><dt>Resistance (R)</dt><dd>How strongly something opposes current, in ohms. Comes from charges colliding with the material's atoms, and turns electrical energy into heat. <a class="go" href="../theory/t02-resistance-ohms-law.html">T02</a></dd></div>
+      <div class="ge"><dt>Resistivity (ρ)</dt><dd>A material's built-in resistance, in Ω·m. A wire's resistance is R = ρL/A. Copper is about 1.7 × 10<sup>−8</sup> Ω·m. <a class="go" href="../theory/t02-resistance-ohms-law.html">T02</a></dd></div>
+      <div class="ge"><dt>Resolution (ADC)</dt><dd>The smallest step an ADC can tell apart: reference voltage ÷ 2<sup>bits</sup>. A 10-bit ADC on 5 V has steps of about 4.9 mV. <a class="go" href="../practice/p12-sensors-adc.html">P12</a></dd></div>
+      <div class="ge"><dt>Resonance</dt><dd>The frequency where an inductor's and capacitor's reactances are equal and cancel: f = 1/(2π√LC). Used in tuned circuits and filters. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>REX (request to exit)</dt><dd>A button or PIR on the secure side of a door that tells the access controller someone is leaving, so the door unlocks or opens without raising a "forced door" alarm. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Ripple</dt><dd>The leftover AC wobble on a DC supply after rectifying and smoothing. Bigger smoothing capacitors and lighter loads give less ripple. <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>RJ45 (8P8C)</dt><dd>The 8-pin modular plug and socket used for Ethernet. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+      <div class="ge"><dt>RMS (root mean square)</dt><dd>The "heating-equivalent" value of an AC waveform: the DC voltage that would heat a resistor equally. For a sine wave, RMS = peak ÷ √2. Mains 230 V is an RMS figure. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Router</dt><dd>A device that forwards traffic between different networks or subnets, for example between a camera VLAN and the office VLAN, or to the internet. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>RS-485</dt><dd>A differential serial standard on a twisted pair (A/B plus a common reference). Many devices share one daisy-chained bus up to about 1200 m, with 120 Ω termination at each end. Carries Modbus RTU, BACnet MS/TP and OSDP. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>RTD (resistance temperature detector)</dt><dd>A temperature sensor whose resistance rises predictably with temperature, usually platinum (PT100, PT1000). <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>RTSP</dt><dd>Real Time Streaming Protocol: the usual way software asks an IP camera for its live video stream (an rtsp:// address). <a class="go" href="../career/c05-cctv-ip-cameras.html">C05</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-s"><h3 class="letter">S</h3><dl class="gl">
+      <div class="ge"><dt>Sample rate</dt><dd>How many measurements per second an ADC, scope or logger takes, in samples per second (S/s). <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>Saturation (BJT)</dt><dd>A BJT switched fully on, with only about 0.1–0.3 V left between collector and emitter. Give the base plenty of current to make sure of it. <a class="go" href="../theory/t12-bjt-physics.html">T12</a></dd></div>
+      <div class="ge"><dt>Schmitt trigger</dt><dd>An input with hysteresis, so a slow or noisy signal gives one clean switch instead of many. <a class="go" href="../theory/t14-op-amps.html">T14</a></dd></div>
+      <div class="ge"><dt>Schottky diode</dt><dd>A metal–semiconductor diode with a low forward drop (about 0.2–0.4 V) and very fast switching. Used in power supplies and reverse-polarity protection. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Security licence</dt><dd>In Australia, installing and servicing security equipment (CCTV, alarms, access control) generally needs a state or territory security licence. Requirements differ by state; check with your state's licensing body. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+      <div class="ge"><dt>Semiconductor</dt><dd>A material like silicon whose conductivity sits between a metal and an insulator and can be controlled by doping, light, heat and electric fields. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Sensor</dt><dd>A device that turns a physical quantity (temperature, light, motion, pressure) into an electrical signal. <a class="go" href="../practice/p12-sensors-adc.html">P12</a></dd></div>
+      <div class="ge"><dt>Series</dt><dd>Components connected end to end in one path. The same current flows through all; their voltages add. <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>Servo</dt><dd>A small motor with gears and position feedback that moves to an angle set by a pulse (about 1–2 ms long, every 20 ms). <a class="go" href="../practice/p13-actuators-motors.html">P13</a></dd></div>
+      <div class="ge"><dt>Setpoint</dt><dd>The target value a control loop tries to hold, such as 22.5 °C room temperature or 250 Pa duct pressure. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>Short circuit</dt><dd>An unintended very-low-resistance path, so a very large current flows. Causes heat, fire, blown fuses and dead parts. <a class="go" href="../practice/p03-multimeter-mastery.html">P03</a></dd></div>
+      <div class="ge"><dt>Single-mode fibre (SMF)</dt><dd>Fibre with a tiny core (about 9 µm) that carries one light path, for long distances (km). Used by NBN and carriers. Jackets are usually yellow; wavelengths 1310 and 1550 nm. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>SMD / SMT</dt><dd>Surface-mount device / technology: parts soldered onto pads on the board surface instead of through holes. Sizes like 0805 and 0603. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>SNR (signal-to-noise ratio)</dt><dd>How much stronger the wanted signal is than the noise, usually in dB. Higher is better. <a class="go" href="../theory/t16-signals-noise-loops.html">T16</a></dd></div>
+      <div class="ge"><dt>Solder</dt><dd>A low-melting metal alloy (tin-based, with flux inside) that joins wires and components when melted by a soldering iron. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>SPI</dt><dd>Serial Peripheral Interface: a fast board-level bus with a clock (SCK), data out (MOSI/COPI), data in (MISO/CIPO) and a chip-select line per device. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>Splice</dt><dd>A permanent joint between two fibres, made by fusion (melted) or mechanically (aligned in a clamp with gel). Protected in a splice tray. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>SSH</dt><dd>Secure Shell: an encrypted way to log into a remote computer's terminal over the network, usually on port 22. <a class="go" href="../practice/p16-raspberry-pi-linux.html">P16</a></dd></div>
+      <div class="ge"><dt>Static IP</dt><dd>An IP address set by hand on the device instead of handed out by DHCP. Cameras, controllers and NVRs usually get static addresses so they never move. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Stepper motor</dt><dd>A motor that moves in fixed steps (often 200 per turn), so position can be controlled without a sensor. <a class="go" href="../practice/p13-actuators-motors.html">P13</a></dd></div>
+      <div class="ge"><dt>Stripboard (Veroboard)</dt><dd>A board with parallel copper strips that you solder parts onto and cut where needed. The step after a breadboard for permanent circuits. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Structured cabling</dt><dd>A standard, planned cabling system for a building: outlets, horizontal cables, patch panels, backbone and labelling, all tested and documented. <a class="go" href="../career/c07-telecom-cabling-acma.html">C07</a></dd></div>
+      <div class="ge"><dt>Subnet / subnet mask</dt><dd>A block of IP addresses that can talk directly. The mask (e.g. 255.255.255.0, written /24) says which part of the address is the network. A /24 has 254 usable addresses. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Superposition</dt><dd>In a linear circuit with several sources, the total effect is the sum of each source's effect on its own (others zeroed). <a class="go" href="../theory/t04-circuit-laws.html">T04</a></dd></div>
+      <div class="ge"><dt>Switch (network)</dt><dd>A box that connects Ethernet devices and forwards each frame only to the port where the destination MAC address lives. Managed switches also do VLANs and PoE control. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Switch (SPST, SPDT)</dt><dd>Single-pole single-throw is a simple on/off switch; single-pole double-throw connects one common terminal to either of two others. <a class="go" href="r03-symbols-parts.html">R03</a></dd></div>
+      <div class="ge"><dt>Switchboard</dt><dd>The panel where mains enters a building and is split into circuits with breakers and RCDs. Electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>systemd service</dt><dd>On Linux, a background program managed by systemd so it starts at boot and restarts if it crashes. <a class="go" href="../practice/p17-pi-gpio-python.html">P17</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-t"><h3 class="letter">T</h3><dl class="gl">
+      <div class="ge"><dt>T568A / T568B</dt><dd>The two standard colour orders for the 8 wires in an RJ45 or keystone. Both work if every end on a job uses the same one; follow the site specification. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+      <div class="ge"><dt>Tamper</dt><dd>A switch or circuit that alarms if someone opens a device cover or cuts its wiring. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Terminal block</dt><dd>A screw or spring connector for joining wires in panels and devices, often DIN-rail mounted. Use ferrules on stranded wire. <a class="go" href="../practice/p05-soldering-wiring.html">P05</a></dd></div>
+      <div class="ge"><dt>Termination resistor</dt><dd>A resistor (120 Ω for RS-485) across the two wires at each far end of a bus, matching the cable so signals do not reflect. Never fit one at middle devices. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>Thermal voltage (V<sub>T</sub>)</dt><dd>kT/q, about 25.9 mV at room temperature (300 K). It sets how steeply diode current rises with voltage: about 10× for every 60 mV. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a></dd></div>
+      <div class="ge"><dt>Thermistor</dt><dd>A resistor whose value changes a lot with temperature. An NTC 10 kΩ thermistor is 10 kΩ at 25 °C and falls as it warms. <a class="go" href="../practice/p12-sensors-adc.html">P12</a></dd></div>
+      <div class="ge"><dt>Thermocouple</dt><dd>A junction of two different metals that produces a small voltage depending on temperature (type K is about 41 µV per °C). Good for very high temperatures. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>Thevenin equivalent</dt><dd>Any linear circuit, seen from two terminals, behaves like one voltage source in series with one resistance. Makes loading effects easy to calculate. <a class="go" href="../theory/t04-circuit-laws.html">T04</a></dd></div>
+      <div class="ge"><dt>Three-phase</dt><dd>Mains supply with three actives 120° apart. Each is 230 V to neutral and 400 V to another active (230 × √3 ≈ 400). Used for big motors and buildings. Electricians only. <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Threshold voltage (V<sub>GS(th)</sub>)</dt><dd>The gate-to-source voltage where a MOSFET just begins to conduct (a tiny current). It is not the voltage needed to turn it fully on; check R<sub>DS(on)</sub> at your gate voltage. <a class="go" href="../theory/t13-mosfet-physics.html">T13</a></dd></div>
+      <div class="ge"><dt>Time constant (τ)</dt><dd>τ = RC for a resistor–capacitor circuit, or L/R for an inductor. After one τ a charging capacitor reaches 63 % of the final voltage; after 5τ it is effectively full. <a class="go" href="../theory/t05-capacitors-fields.html">T05</a> <a class="go" href="../practice/p07-capacitors-rc.html">P07</a></dd></div>
+      <div class="ge"><dt>Tolerance</dt><dd>How far a part's real value may be from its marked value, e.g. ±5 % (gold band) or ±1 % (brown band). <a class="go" href="../practice/p02-breadboard-first-led.html">P02</a></dd></div>
+      <div class="ge"><dt>Topic (MQTT)</dt><dd>A slash-separated name such as <code>site1/level2/temp</code> that messages are published to and subscribed from. <a class="go" href="../practice/p18-esp32-iot-mqtt.html">P18</a></dd></div>
+      <div class="ge"><dt>Transformer</dt><dd>Two coils on a shared magnetic core. AC in one induces AC in the other, stepping voltage up or down by the turns ratio and giving isolation. Works only on AC. <a class="go" href="../theory/t08-transformers.html">T08</a></dd></div>
+      <div class="ge"><dt>Transistor</dt><dd>A three-terminal semiconductor that lets a small signal control a larger current: used as a switch or amplifier. Main types are BJT and MOSFET. <a class="go" href="../theory/t12-bjt-physics.html">T12</a> <a class="go" href="../practice/p08-transistor-switches.html">P08</a></dd></div>
+      <div class="ge"><dt>Transmitter (field instrument)</dt><dd>A device that measures something (pressure, temperature, level, flow) and sends it as a standard signal, usually 4–20 mA. A "2-wire" transmitter is powered by the loop itself. <a class="go" href="../career/c10-plc-instrumentation.html">C10</a></dd></div>
+      <div class="ge"><dt>Trend (trend log)</dt><dd>A recorded history of a BMS point's value over time, shown as a graph. The first thing to look at when diagnosing a comfort complaint. <a class="go" href="../career/c02-bms-protocols-commissioning.html">C02</a></dd></div>
+      <div class="ge"><dt>Trigger (oscilloscope)</dt><dd>The condition (e.g. "rising edge through 1.5 V") that starts each sweep, so a repeating waveform stands still on screen. <a class="go" href="../practice/p15-oscilloscope-logic-analyser.html">P15</a></dd></div>
+      <div class="ge"><dt>TVS diode</dt><dd>Transient voltage suppressor: a diode that clamps short voltage spikes (from lightning, ESD or switching) before they reach sensitive inputs. <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>Twisted pair</dt><dd>Two insulated wires twisted together so interference affects both equally and cancels in a differential receiver. The basis of Cat6 and RS-485 cable. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-u"><h3 class="letter">U</h3><dl class="gl">
+      <div class="ge"><dt>UART</dt><dd>Universal asynchronous receiver-transmitter: simple serial with TX and RX lines and no clock wire. Each byte is framed with a start bit and stop bit at an agreed baud rate. TX of one device goes to RX of the other. <a class="go" href="../practice/p14-serial-buses-modbus.html">P14</a></dd></div>
+      <div class="ge"><dt>UPS (uninterruptible power supply)</dt><dd>A unit with batteries that keeps equipment (servers, NVRs, network switches) running through a mains outage. <a class="go" href="../practice/p10-power-supplies.html">P10</a></dd></div>
+      <div class="ge"><dt>USB power</dt><dd>USB ports supply 5 V (standard ports at least 500 mA; chargers and USB-C supplies more). The usual way to power an Arduino or small project. <a class="go" href="../practice/p01-bench-kit-safety.html">P01</a></dd></div>
+      <div class="ge"><dt>UTP</dt><dd>Unshielded twisted pair: the normal Cat5e/Cat6 data cable without a foil screen. <a class="go" href="../practice/p20-cat6-termination.html">P20</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-v"><h3 class="letter">V</h3><dl class="gl">
+      <div class="ge"><dt>VAV box (variable air volume)</dt><dd>A unit in the ductwork with a damper (and sometimes a reheat coil) that varies how much air reaches one zone, under control of its own small controller. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+      <div class="ge"><dt>VFL (visual fault locator)</dt><dd>A pen-sized red laser you plug into a fibre. Breaks and tight bends glow red through the jacket, so you can find faults over short lengths. <a class="go" href="../career/c09-fibre-splicing-otdr.html">C09</a></dd></div>
+      <div class="ge"><dt>VLAN (virtual LAN)</dt><dd>A way to split one physical switch network into separate logical networks using IEEE 802.1Q tags, e.g. cameras on one VLAN and office PCs on another. <a class="go" href="../practice/p19-networking-hands-on.html">P19</a></dd></div>
+      <div class="ge"><dt>Volt (V)</dt><dd>The unit of voltage: one joule of energy per coulomb of charge. <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Voltage</dt><dd>The energy each unit of charge gains or loses between two points. Always measured between two points, never "at" one point alone (the second point is often ground). <a class="go" href="../theory/t01-charge-current-voltage.html">T01</a></dd></div>
+      <div class="ge"><dt>Voltage divider</dt><dd>Two resistors in series across a supply; the middle point gives a fixed fraction of the voltage: V<sub>out</sub> = V<sub>in</sub> × R2/(R1 + R2). Sensors and pots use it. <a class="go" href="../practice/p04-series-parallel-dividers.html">P04</a></dd></div>
+      <div class="ge"><dt>Voltage drop</dt><dd>The voltage lost across a component or along a cable because of its resistance. Long 12 V and 24 V cable runs can lose enough to make devices fail. <a class="go" href="../practice/p10-power-supplies.html">P10</a> <a class="go" href="r02-formula-sheet.html">R02</a></dd></div>
+      <div class="ge"><dt>VSD / VFD (variable speed / frequency drive)</dt><dd>An electronic drive that changes the frequency fed to an AC motor to change its speed, saving energy on fans and pumps. Often controlled by 0–10 V or Modbus from the BMS. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-w"><h3 class="letter">W</h3><dl class="gl">
+      <div class="ge"><dt>Watt (W)</dt><dd>The unit of power: one joule per second. <a class="go" href="../theory/t03-power-energy-heat.html">T03</a></dd></div>
+      <div class="ge"><dt>Wavelength (λ)</dt><dd>The distance one cycle of a wave covers: λ = c/f. 2.4 GHz Wi-Fi has a wavelength of 12.5 cm; fibre systems use light around 850, 1310 and 1550 nm. <a class="go" href="../theory/t10-em-waves-antennas-fibre.html">T10</a></dd></div>
+      <div class="ge"><dt>White Card</dt><dd>Australia's general construction induction card (unit CPCWHS1001, "Prepare to work safely in the construction industry"). You need it before working on a construction site. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+      <div class="ge"><dt>WHS</dt><dd>Work health and safety: the laws and state regulators that cover safety at work, including high risk work licences. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+      <div class="ge"><dt>Wiegand</dt><dd>An older one-way protocol from card reader to controller using two data wires (D0, D1); 26-bit is the common format. It is unencrypted and unsupervised, which is why OSDP is replacing it. <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+      <div class="ge"><dt>Wi-Fi</dt><dd>Wireless LAN (IEEE 802.11) in the 2.4, 5 and 6 GHz bands. <a class="go" href="../theory/t10-em-waves-antennas-fibre.html">T10</a> <a class="go" href="../practice/p18-esp32-iot-mqtt.html">P18</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-x"><h3 class="letter">X</h3><dl class="gl">
+      <div class="ge"><dt>X (reactance symbol)</dt><dd>The letter used for reactance: X<sub>C</sub> for a capacitor, X<sub>L</sub> for an inductor. See Reactance. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>XOR</dt><dd>Exclusive-OR logic gate: output is 1 when the two inputs are different. Used in checksums and comparisons. <a class="go" href="../theory/t15-digital-logic-microcontrollers.html">T15</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-y"><h3 class="letter">Y</h3><dl class="gl">
+      <div class="ge"><dt>Y (star) connection</dt><dd>A three-phase arrangement where each winding goes from an active to a shared neutral point. Gives both 230 V (phase to neutral) and 400 V (phase to phase). <a class="go" href="../theory/t09-mains-earthing-safety.html">T09</a></dd></div>
+      <div class="ge"><dt>Yellow Card (EWP)</dt><dd>The industry training card commonly required to operate scissor lifts and smaller boom lifts (under 11 m). It is training, not a government licence. Check site and regulator requirements. <a class="go" href="../career/c11-licences-pathways.html">C11</a></dd></div>
+    </dl></section>
+
+    <section class="gs" id="g-z"><h3 class="letter">Z</h3><dl class="gl">
+      <div class="ge"><dt>Z (impedance symbol)</dt><dd>The letter used for impedance, in ohms. See Impedance. <a class="go" href="../theory/t07-ac-fundamentals.html">T07</a></dd></div>
+      <div class="ge"><dt>Zener diode</dt><dd>A diode made to break down at a precise reverse voltage (e.g. 5.1 V) and hold it there. Used as a simple voltage reference or regulator, always with a series resistor. <a class="go" href="../theory/t11-semiconductors-diodes.html">T11</a> <a class="go" href="../practice/p06-diodes-rectifiers.html">P06</a></dd></div>
+      <div class="ge"><dt>Zone</dt><dd>An area treated as one unit: a BMS temperature zone served by one VAV or FCU, or an alarm zone covered by one detector circuit. <a class="go" href="../career/c03-hvac-for-technicians.html">C03</a> <a class="go" href="../career/c06-access-control-alarms.html">C06</a></dd></div>
+    </dl></section>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Entries that mention a licence, standard or regulator (ACMA, AS/CA S009, AS/NZS 3000, White Card, EWP, security licences) describe the rule as this course understands it. Rules change and differ by state, so confirm the current requirement with the named regulator before you rely on it for work.</p></div>
+
+    <h2>Related look-up pages</h2>
+    <a class="crosslink" href="r02-formula-sheet.html">Reference R02 · Formula sheet with worked numbers</a>
+    <a class="crosslink" href="r03-symbols-parts.html">Reference R03 · Schematic symbols and part identification</a>
+  </main>
+</div>
+<script>
+(function(){
+  var q=document.getElementById('gq'), names=document.getElementById('gnames'), info=document.getElementById('ginfo'), none=document.getElementById('gnone');
+  var entries=[].slice.call(document.querySelectorAll('.ge'));
+  var secs=[].slice.call(document.querySelectorAll('section.gs'));
+  var az=[].slice.call(document.querySelectorAll('#gaz a'));
+  function norm(s){return s.toLowerCase().replace(/²/g,'2').replace(/[–—]/g,'-').replace(/µ/g,'u').replace(/\s+/g,' ');}
+  entries.forEach(function(e){e._all=norm(e.textContent);e._name=norm(e.querySelector('dt').textContent);});
+  var total=entries.length;
+  var cnt=document.getElementById('g-count'); if(cnt) cnt.textContent=total;
+  function run(){
+    var v=norm(q.value.trim()), n=0, byName=names.checked;
+    entries.forEach(function(e){var hay=byName?e._name:e._all;var hit=!v||hay.indexOf(v)>-1;e.hidden=!hit;if(hit)n++;});
+    secs.forEach(function(s){var any=s.querySelector('.ge:not([hidden])');s.hidden=!any;});
+    az.forEach(function(a){var s=document.getElementById(a.getAttribute('href').slice(1));a.classList.toggle('off',!s||s.hidden);});
+    none.hidden=n>0;
+    info.textContent=v?('Showing '+n+' of '+total+' terms matching "'+q.value.trim()+'".'):('Showing all '+total+' terms.');
+  }
+  q.addEventListener('input',run); names.addEventListener('change',run);
+  q.addEventListener('keydown',function(e){if(e.key==='Escape'){q.value='';run();}});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/'&&document.activeElement!==q&&!/input|textarea|select/i.test((document.activeElement||{}).tagName||'')){e.preventDefault();q.focus();}
+  });
+  run();
+  /* Hover titles for chapter tags, read from the course table of contents once it has loaded. */
+  document.addEventListener('DOMContentLoaded',function(){
+    if(!window.TOC) return; var map={};
+    window.TOC.books.forEach(function(b){b.parts.forEach(function(p){p.chapters.forEach(function(c){map[c.file.split('/').pop()]=c.n+' · '+c.title;});});});
+    document.querySelectorAll('a.go').forEach(function(a){var f=a.getAttribute('href').split('/').pop();if(map[f])a.title=map[f];});
+  });
+})();
+</script>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

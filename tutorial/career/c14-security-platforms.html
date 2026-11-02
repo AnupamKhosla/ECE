@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C14 · Security platforms: how Gallagher, Genetec, Integriti and Milestone think</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part II · Security systems</div>
+    <span class="eyebrow">Career · C14</span>
+    <h1>Security platforms: how Gallagher, Genetec, Integriti and Milestone think</h1>
+    <p class="lede">Enterprise security systems look different on screen but share one mental model. Learn that model once (cardholders, access levels, schedules, doors, events, recording servers, retention) and you can walk into a job on any of the big platforms and learn its buttons in days, not months.</p>
+    <div class="meta"><span><b>Time</b> 60 min read</span><span><b>Level</b> Beginner to job-ready</span><span><b>Builds on</b> C05, C06, P19</span><span><b>Roles</b> Security tech, commissioning tech, integrator</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Why platforms matter for your job search</h2>
+    <p>In a sample of 2,764 Australian SEEK job ads captured for this course on 1–2 November 2026, 99 were security or CCTV roles. Of those, 24 mentioned Gallagher, 20 Genetec, 18 Milestone and 13 Inner Range (whose platform is Integriti). Employers name these products because their technicians spend much of the day inside the software: adding doors, enrolling cards, fixing cameras that went offline, exporting footage for police.</p>
+    <p>The products are, in plain terms:</p>
+    <ul>
+      <li><b>Gallagher Command Centre</b>: an access control and intruder alarm platform with its own controllers and readers.</li>
+      <li><b>Genetec Security Center</b>: a "unified" platform that combines video management, access control and other systems in one client.</li>
+      <li><b>Inner Range Integriti</b>: an access control and intruder alarm platform with its own controllers and expansion modules.</li>
+      <li><b>Milestone XProtect</b>: a video management system (VMS) that works with cameras from many manufacturers.</li>
+    </ul>
+    <p>This chapter does not teach any one product's menus. It teaches the shared model under all of them. Every platform uses its own words (one calls it an "access group", another an "access rule", another a "permission"), but the ideas map one to one. Learn the ideas, then learn each product's words on the job.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "I need to know Gallagher (or Genetec, or…) before anyone will hire me." <b>Right:</b> employers expect to train you on their platform, often through the vendor's certification course. What they test at interview is whether you understand doors, readers, locks, networks, cameras and the logic of access decisions. A candidate who can explain why a door shows "forced open" is more useful than one who has memorised menus.</p></div>
+
+    <h2>The big picture: architecture</h2>
+    <p>An enterprise security system has three layers: <b>servers</b> (software and databases), <b>edge devices</b> (controllers and cameras on the network) and <b>field devices</b> (readers, locks, sensors, buttons). Operators use <b>client</b> software on workstations or a browser to watch and manage it.</p>
+    <figure>
+      <svg viewBox="0 0 760 400" role="img" aria-label="Security system architecture: servers, network, controllers with field modules and doors, cameras, clients">
+        <!-- servers -->
+        <rect class="f-career-soft s-accent" x="20" y="20" width="220" height="110" rx="8"/>
+        <text class="t t-bold" x="34" y="44">Access control server</text>
+        <text class="t t-small t-muted" x="34" y="64">database: cardholders, doors,</text>
+        <text class="t t-small t-muted" x="34" y="80">access levels, schedules,</text>
+        <text class="t t-small t-muted" x="34" y="96">event and alarm history</text>
+        <rect class="f-career-soft s-accent" x="270" y="20" width="220" height="110" rx="8"/>
+        <text class="t t-bold" x="284" y="44">VMS servers</text>
+        <text class="t t-small t-muted" x="284" y="64">management server (config)</text>
+        <text class="t t-small t-muted" x="284" y="80">recording servers + storage</text>
+        <text class="t t-small t-muted" x="284" y="96">(days of video on disk)</text>
+        <rect class="f-wash s-line" x="520" y="20" width="220" height="110" rx="8"/>
+        <text class="t t-bold" x="534" y="44">Clients</text>
+        <text class="t t-small t-muted" x="534" y="64">operator workstations,</text>
+        <text class="t t-small t-muted" x="534" y="80">video wall, web and</text>
+        <text class="t t-small t-muted" x="534" y="96">mobile apps</text>
+        <!-- network -->
+        <rect class="f-wash s-line" x="20" y="160" width="720" height="30" rx="6"/>
+        <text class="t t-small t-bold" x="290" y="180">IP network (often a separate security VLAN)</text>
+        <line class="s-line" x1="130" y1="130" x2="130" y2="160"/>
+        <line class="s-line" x1="380" y1="130" x2="380" y2="160"/>
+        <line class="s-line" x1="630" y1="130" x2="630" y2="160"/>
+        <!-- controller -->
+        <line class="s-line" x1="130" y1="190" x2="130" y2="220"/>
+        <rect class="f-career-soft s-accent" x="40" y="220" width="190" height="60" rx="8"/>
+        <text class="t t-bold" x="54" y="244">Door controller</text>
+        <text class="t t-small t-muted" x="54" y="264">holds a copy of the rules</text>
+        <line class="s-amber" x1="80" y1="280" x2="80" y2="320"/>
+        <line class="s-amber" x1="190" y1="280" x2="190" y2="320"/>
+        <text class="t t-small" x="88" y="304">RS-485 field bus</text>
+        <rect class="f-wash s-line" x="20" y="320" width="120" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="342">Reader module</text>
+        <text class="t t-small t-muted" x="30" y="360">2 doors: readers,</text>
+        <text class="t t-small t-muted" x="30" y="374">REX, DPS, locks</text>
+        <rect class="f-wash s-line" x="150" y="320" width="120" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="160" y="342">I/O expander</text>
+        <text class="t t-small t-muted" x="160" y="360">alarm inputs (PIRs,</text>
+        <text class="t t-small t-muted" x="160" y="374">reeds), relay outputs</text>
+        <!-- PoE switch and cameras -->
+        <line class="s-line" x1="430" y1="190" x2="430" y2="220"/>
+        <rect class="f-wash s-line" x="340" y="220" width="180" height="40" rx="6"/>
+        <text class="t t-small t-bold" x="356" y="245">PoE switch</text>
+        <line class="s-line" x1="370" y1="260" x2="370" y2="320"/>
+        <line class="s-line" x1="430" y1="260" x2="430" y2="320"/>
+        <line class="s-line" x1="490" y1="260" x2="490" y2="320"/>
+        <rect class="f-panel s-line" x="350" y="320" width="40" height="26" rx="4"/>
+        <rect class="f-panel s-line" x="410" y="320" width="40" height="26" rx="4"/>
+        <rect class="f-panel s-line" x="470" y="320" width="40" height="26" rx="4"/>
+        <text class="t t-small t-muted" x="350" y="368">IP cameras (ONVIF or native driver)</text>
+        <!-- other systems -->
+        <line class="s-line" x1="650" y1="190" x2="650" y2="220"/>
+        <rect class="f-wash s-line s-dash" x="560" y="220" width="180" height="120" rx="6"/>
+        <text class="t t-small t-bold" x="572" y="242">Integrations</text>
+        <text class="t t-small t-muted" x="572" y="262">intercoms, lifts,</text>
+        <text class="t t-small t-muted" x="572" y="280">intruder panels, BMS,</text>
+        <text class="t t-small t-muted" x="572" y="298">HR / visitor systems,</text>
+        <text class="t t-small t-muted" x="572" y="316">fire interface (via relays)</text>
+      </svg>
+      <figcaption>Figure 1. A typical enterprise layout. The controller keeps its own copy of the rules, so doors keep working if the server or network goes down. Cameras record to recording servers, not to the access server.</figcaption>
+    </figure>
+
+    <h2>The access control model</h2>
+    <p>Every enterprise access system stores the same kinds of objects in its database. Learn these and you can read any of them.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Object</th><th>What it is</th><th>Example</th></tr>
+      <tr><td><b>Cardholder</b></td><td>A person (or vehicle) who can be given access. Has a name, photo, department, start and end dates.</td><td>Priya Sharma, IT, expires 30 June</td></tr>
+      <tr><td><b>Credential</b></td><td>The thing presented at the reader: a card or fob number, a mobile credential, a PIN, a licence plate, a fingerprint template.</td><td>Card 12345, facility code 101</td></tr>
+      <tr><td><b>Door</b> (access point)</td><td>A controlled opening with its reader(s), lock and sensors.</td><td>"L2 Comms Room"</td></tr>
+      <tr><td><b>Schedule</b></td><td>Named time windows by day of the week, plus holidays.</td><td>"Business hours: Mon–Fri 07:00–19:00"</td></tr>
+      <tr><td><b>Access level / group / rule</b></td><td>A bundle that says "these doors, during this schedule". Cardholders are given access levels, not individual doors.</td><td>"IT staff: Main entry + Comms room, 24/7"</td></tr>
+      <tr><td><b>Area / zone</b></td><td>A space bounded by doors, used for alarms, anti-passback and mustering ("who is inside?").</td><td>"Level 2", "Car park"</td></tr>
+      <tr><td><b>Event / alarm</b></td><td>Everything that happens is logged as an event. Important events become alarms that an operator must acknowledge.</td><td>"Door forced open, L2 Comms Room, 02:13"</td></tr>
+      <tr><td><b>Operator</b> and permissions</td><td>The people who use the software, and what each may see and change.</td><td>Reception can enrol cards but not edit doors</td></tr>
+      <tr><td><b>Site / division / partition</b></td><td>A hierarchy that splits one big system into parts, so a tenant's operator sees only their own doors and people.</td><td>"Tower A / Tenant B"</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Never give a person access to individual doors one by one. Always use access levels built from roles ("cleaner", "IT", "level 2 tenant"). When the cleaning contractor changes, you change one level, not 200 cardholders. Auditors and good supervisors check for this.</p></div>
+
+    <h3>The door as an object</h3>
+    <p>A "door" in the software is really a bundle of field devices, each wired to a reader module or controller. You learned the hardware in <a href="c06-access-control-alarms.html">C06</a>; here is how the software sees it.</p>
+    <figure>
+      <svg viewBox="0 0 760 330" role="img" aria-label="Door object model: reader, REX button, door position switch and lock output, with door states">
+        <!-- door frame -->
+        <rect class="f-wash s-line" x="300" y="40" width="130" height="250"/>
+        <rect class="f-panel s-line" x="310" y="50" width="110" height="240"/>
+        <circle class="f-ink" cx="405" cy="170" r="5"/>
+        <text class="t t-small t-muted" x="330" y="310">the door leaf</text>
+        <!-- reader outside -->
+        <rect class="f-career-soft s-accent" x="240" y="140" width="40" height="60" rx="5"/>
+        <text class="t t-small t-bold" x="140" y="150">Reader (in)</text>
+        <text class="t t-small t-muted" x="120" y="168">card / mobile / PIN</text>
+        <text class="t t-small t-muted" x="120" y="184">→ credential number</text>
+        <!-- REX inside -->
+        <rect class="f-career-soft s-accent" x="450" y="150" width="34" height="34" rx="17"/>
+        <text class="t t-small t-bold" x="496" y="160">REX button</text>
+        <text class="t t-small t-muted" x="496" y="176">request to exit (input)</text>
+        <!-- DPS -->
+        <rect class="f-amber" x="390" y="36" width="36" height="10"/>
+        <text class="t t-small t-bold" x="446" y="36">Door position switch (DPS)</text>
+        <text class="t t-small t-muted" x="446" y="52">reed: is the door closed? (input)</text>
+        <!-- lock -->
+        <rect class="f-red" x="420" y="210" width="12" height="40"/>
+        <text class="t t-small t-bold" x="446" y="226">Lock output (relay)</text>
+        <text class="t t-small t-muted" x="446" y="242">strike or maglock, own 12/24 V PSU</text>
+        <!-- state list -->
+        <rect class="f-panel s-line" x="20" y="210" width="260" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="230">Door states the software derives</text>
+        <text class="t t-small" x="30" y="250">Locked / unlocked (from lock output)</text>
+        <text class="t t-small" x="30" y="268">Closed / open (from DPS)</text>
+        <text class="t t-small t-red" x="30" y="286">Forced open: open with no grant or REX</text>
+        <text class="t t-small t-red" x="30" y="304">Held open: open longer than allowed</text>
+        <!-- inputs supervision -->
+        <text class="t t-small t-muted" x="446" y="290">Inputs are often supervised with EOL</text>
+        <text class="t t-small t-muted" x="446" y="306">resistors: tamper / short / open alarms</text>
+      </svg>
+      <figcaption>Figure 2. A door is a reader (credential in), a REX (exit request in), a DPS (door state in) and a lock (output). "Forced open" and "held open" are calculated by comparing the DPS with what the system expected. If the DPS is faulty or missing, those alarms are wrong.</figcaption>
+    </figure>
+    <h3>Door modes</h3>
+    <p>Each door has a <b>mode</b>, often changed automatically by a schedule:</p>
+    <ul>
+      <li><b>Card only</b>: a valid card unlocks the door for a few seconds.</li>
+      <li><b>Card + PIN</b>: two factors, common on comms rooms and after hours.</li>
+      <li><b>Free access / unlocked</b>: the lock stays released, for example the front door during business hours.</li>
+      <li><b>Locked / secure</b>: nobody except special override levels gets in.</li>
+      <li><b>Lockdown</b>: an emergency mode triggered by an operator or button.</li>
+    </ul>
+    <p>Typical timers: <b>unlock time</b> (how long the lock releases after a grant, often around 5 s) and <b>held-open time</b> (how long the door may stay open before an alarm, often 30 s or more for busy doors). Many systems extend these for people who need more time.</p>
+
+    <h3>Edge decisions: the controller decides</h3>
+    <p>When a card is presented, the decision is usually made <b>on the controller</b>, not on the server. The server downloads cardholders, credentials, access levels and schedules to each controller. The controller checks them in milliseconds and stores events until the server is reachable again. This is called <b>offline</b> or <b>edge</b> operation. It is why doors keep working during a server upgrade or network outage. It also means a change you make on the server takes effect only once it has <b>downloaded</b> to the controller; if a controller is offline, your change waits.</p>
+
+    <div class="widget" id="c14-w">
+      <span class="label">Interactive · Access decision simulator</span>
+      <p style="font-size:14.5px;margin:0 0 8px">A small site with four doors. Pick a person, a door, a day and a time, and see the decision the controller makes and the reason it would log.</p>
+      <label>Cardholder <select id="c14-ch">
+        <option value="priya">Priya: Staff level (Main entry, L2 Office; Mon–Fri 07:00–19:00)</option>
+        <option value="tom">Tom: Cleaner level (Main entry, L2 Office, Cleaner store; Mon–Sat 18:00–23:00)</option>
+        <option value="ana">Ana: IT level (all four doors, 24/7)</option>
+        <option value="sam">Sam: Contractor (Main entry only; Mon–Fri 07:00–17:00, end date passed)</option>
+      </select></label>
+      <label>Credential status <select id="c14-cs"><option value="ok">Active</option><option value="lost">Reported lost (disabled)</option><option value="unknown">Unknown card (not in database)</option></select></label>
+      <label>Door <select id="c14-door"><option value="main">Main entry (card only)</option><option value="l2">L2 Office (card only)</option><option value="comms">Comms room (card + PIN)</option><option value="store">Cleaner store (card only)</option></select></label>
+      <label>Day <select id="c14-day"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></label>
+      <label>Time <span class="out" id="c14-to">08:30</span><input type="range" id="c14-t" min="0" max="1435" step="5" value="510"></label>
+      <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="c14-pin" checked> PIN entered correctly (only matters for card + PIN doors)</label>
+      <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="c14-ld"> Site in lockdown</label>
+      <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="c14-off"> Controller cannot reach the server</label>
+      <div class="readings">
+        <div><small>Decision</small><span class="out" id="c14-res">–</span></div>
+        <div><small>Event logged</small><span class="out" id="c14-ev" style="font-size:15px">–</span></div>
+      </div>
+      <ol id="c14-chain" style="font-size:14.5px;margin:12px 0 0"></ol>
+    </div>
+    <script>
+    (function(){
+      function g(i){return document.getElementById(i);}
+      var CH={
+        priya:{name:'Priya',doors:['main','l2'],days:[1,2,3,4,5],from:420,to:1140,sched:'Mon–Fri 07:00–19:00',end:false},
+        tom:{name:'Tom',doors:['main','l2','store'],days:[1,2,3,4,5,6],from:1080,to:1380,sched:'Mon–Sat 18:00–23:00',end:false},
+        ana:{name:'Ana',doors:['main','l2','comms','store'],days:[0,1,2,3,4,5,6],from:0,to:1440,sched:'24/7',end:false},
+        sam:{name:'Sam',doors:['main'],days:[1,2,3,4,5],from:420,to:1020,sched:'Mon–Fri 07:00–17:00',end:true}
+      };
+      var DN={main:'Main entry',l2:'L2 Office',comms:'Comms room',store:'Cleaner store'};
+      function hm(m){var h=Math.floor(m/60),mm=m%60;return (h<10?'0':'')+h+':'+(mm<10?'0':'')+mm;}
+      function upd(){
+        var c=CH[g('c14-ch').value],cs=g('c14-cs').value,d=g('c14-door').value,day=+g('c14-day').value,t=+g('c14-t').value;
+        var pin=g('c14-pin').checked,ld=g('c14-ld').checked,off=g('c14-off').checked;
+        g('c14-to').textContent=hm(t);
+        var steps=[],ok=true,reason='Access granted';
+        function step(pass,text,fail){steps.push((pass?'✓ ':'✗ ')+text);if(!pass&&ok){ok=false;reason=fail;}}
+        step(cs!=='unknown','Credential found in the controller’s database','Denied: unknown credential');
+        if(ok)step(cs!=='lost','Credential is active (not lost or disabled)','Denied: credential disabled (reported lost)');
+        if(ok)step(!c.end,'Cardholder is within start/end dates','Denied: cardholder expired (end date passed)');
+        if(ok)step(!ld,'Site is not in lockdown','Denied: door in lockdown mode');
+        if(ok)step(c.doors.indexOf(d)>=0,'Access level includes '+DN[d],'Denied: no access to this door');
+        if(ok){var inT=c.days.indexOf(day)>=0&&t>=c.from&&t<c.to;step(inT,'Schedule "'+c.sched+'" is active at '+hm(t),'Denied: outside schedule');}
+        if(ok&&d==='comms')step(pin,'Correct PIN entered (card + PIN door)','Denied: wrong PIN');
+        if(ok)steps.push('→ Lock output energises for 5 s; held-open timer starts when the DPS opens');
+        if(off)steps.push('ⓘ Decision made on the controller from its cached copy. The event is buffered and sent to the server when the link returns.');
+        g('c14-res').textContent=ok?'GRANTED':'DENIED';
+        g('c14-res').style.color=ok?'var(--green)':'var(--red)';
+        g('c14-ev').textContent=c.name+' @ '+DN[d]+': '+reason;
+        var ol=g('c14-chain');ol.innerHTML='';steps.forEach(function(s){var li=document.createElement('li');li.textContent=s;ol.appendChild(li);});
+      }
+      ['c14-ch','c14-cs','c14-door','c14-day','c14-t','c14-pin','c14-ld','c14-off'].forEach(function(i){g(i).addEventListener('input',upd);g(i).addEventListener('change',upd);});upd();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Find a case for each of these log reasons: no access to this door, outside schedule, wrong PIN, credential disabled, expired cardholder. Then answer a real help-desk call: "Tom says his card stopped working on Sunday night." Which check failed? (His schedule is Mon–Sat.) Most access "faults" you will be called to are not hardware faults at all; they are rules doing what they were told.</p></div>
+
+    <h2>Commissioning a door, step by step</h2>
+    <p>This is the order most technicians follow on any platform. The software screens differ; the logic does not.</p>
+    <ol class="steps">
+      <li><p><b>Check the hardware first.</b> Controller powered, battery connected, network cable tested, IP address set per the IP schedule. Reader module addressed on the RS-485 bus and terminated correctly at the ends (see <a href="../practice/p14-serial-buses-modbus.html">P14</a>).</p></li>
+      <li><p><b>Add the controller</b> in the software by IP or serial number. Wait for it to come online and download. Check its firmware version against the project standard.</p></li>
+      <li><p><b>Add the reader module(s)</b> and confirm each shows online with no tamper.</p></li>
+      <li><p><b>Create the door.</b> Assign: reader in (and out, if any), REX input, DPS input, lock output. Set the lock type (fail-safe maglock or fail-secure strike), unlock time and held-open time. Name it exactly as on the door schedule drawing.</p></li>
+      <li><p><b>Test every state</b> and watch the event log for each: valid card → granted, unlock, relock. Invalid card → denied. REX → unlock (or just shunt the alarm, depending on design). Open without a grant → forced open alarm. Hold open → held-open alarm. Cut or short the supervised inputs → tamper alarm. Fire trip → door releases as designed.</p></li>
+      <li><p><b>Link cameras</b> if the design calls for it, and check that an alarm on this door pops up the right camera.</p></li>
+      <li><p><b>Record and hand over.</b> Fill in the test sheet, mark up drawings, back up the database, and label everything.</p></li>
+    </ol>
+    <div class="callout warn"><span class="label">Safety</span><p>Doors on escape paths must let people out in an emergency. Fail-safe locks and fire-alarm release are designed under the National Construction Code and Australian standards, and the fire interface is usually provided by the fire contractor as a dry contact. Never bypass a fire release or change a door from fail-safe to fail-secure without the design and approvals. Lock power supplies are 12/24 V DC; their mains input is connected by a licensed electrician.</p></div>
+
+    <h2>The video management system (VMS) model</h2>
+    <p>A VMS records, manages and shows video from many cameras. Its objects are just as consistent across products:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Part</th><th>What it does</th></tr>
+      <tr><td><b>Management server</b></td><td>Holds the configuration: cameras, users, rules, licences.</td></tr>
+      <tr><td><b>Recording servers</b></td><td>Pull streams from cameras and write them to storage. Big sites have many, each handling a few dozen to hundreds of cameras.</td></tr>
+      <tr><td><b>Storage</b></td><td>Disks or arrays holding days or weeks of video. Some systems move older video to a cheaper "archive" tier.</td></tr>
+      <tr><td><b>Device drivers</b></td><td>How the VMS talks to a camera: a generic <b>ONVIF</b> profile, or a <b>native driver</b> for that camera brand that unlocks more features.</td></tr>
+      <tr><td><b>Recording rules</b></td><td>Continuous recording, recording on motion, or on event (door alarm, analytics), with pre- and post-event buffers. Often a low-resolution stream for live view and a high one for recording.</td></tr>
+      <tr><td><b>Retention</b></td><td>How long video is kept before it is overwritten, often set by the client's policy (for example 30 days).</td></tr>
+      <tr><td><b>Clients</b></td><td>Live view, playback with timeline search, maps, bookmarks, video wall control.</td></tr>
+      <tr><td><b>User rights</b></td><td>Who can see which cameras, play back, export, or control PTZ cameras.</td></tr>
+      <tr><td><b>Evidence export</b></td><td>Saving a clip for police or insurers in a native format with a player, a watermark, and a digital signature or hash so anyone can prove it was not altered.</td></tr>
+    </table></div>
+    <p><b>Worked example: storage.</b> 40 cameras recording continuously at 4 Mb/s each, kept 30 days. One camera: 4 Mb/s ÷ 8 = 0.5 MB/s × 86,400 s = 43.2 GB per day. × 30 days = 1.3 TB. × 40 cameras ≈ <b>52 TB</b>, before RAID overhead. Switching to motion recording that captures about a third of the day cuts that to around 17 TB. The storage maths is in <a href="c05-cctv-ip-cameras.html">C05</a>.</p>
+    <div class="callout job"><span class="label">On the job</span><p>A very common service call: "camera 23 is offline". The VMS only knows it lost the stream. Work up the chain: is the camera's switch port up and delivering PoE? Can you ping the camera? Did its IP change (DHCP instead of static)? Did someone change its password, so the VMS cannot log in? Did a firmware update break the driver? Network skills from <a href="../practice/p19-networking-hands-on.html">P19</a> solve most of these.</p></div>
+
+    <h2>Integration: making systems talk</h2>
+    <p>The value of an enterprise platform is that events in one system drive actions in another. The most common example: an access alarm brings up the right video.</p>
+    <figure>
+      <svg viewBox="0 0 760 260" role="img" aria-label="Event to video flow: door forced, controller event, access server alarm, integration, VMS pops up camera and bookmarks">
+        <defs><marker id="c14c-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-warn-soft s-red" x="10" y="30" width="130" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="22" y="54">1. Door forced</text>
+        <text class="t t-small t-muted" x="22" y="74">DPS opens with</text>
+        <text class="t t-small t-muted" x="22" y="90">no grant or REX</text>
+        <path class="s-line" d="M140 65 H160" marker-end="url(#c14c-ar)"/>
+        <rect class="f-career-soft s-accent" x="164" y="30" width="130" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="176" y="54">2. Controller</text>
+        <text class="t t-small t-muted" x="176" y="74">logs the event with</text>
+        <text class="t t-small t-muted" x="176" y="90">its own timestamp</text>
+        <path class="s-line" d="M294 65 H314" marker-end="url(#c14c-ar)"/>
+        <rect class="f-career-soft s-accent" x="318" y="30" width="130" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="330" y="54">3. Access server</text>
+        <text class="t t-small t-muted" x="330" y="74">raises an alarm,</text>
+        <text class="t t-small t-muted" x="330" y="90">priority, instructions</text>
+        <path class="s-line" d="M448 65 H468" marker-end="url(#c14c-ar)"/>
+        <rect class="f-wash s-line" x="472" y="30" width="130" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="484" y="54">4. Integration</text>
+        <text class="t t-small t-muted" x="484" y="74">plug-in or API maps</text>
+        <text class="t t-small t-muted" x="484" y="90">door → camera(s)</text>
+        <path class="s-line" d="M602 65 H622" marker-end="url(#c14c-ar)"/>
+        <rect class="f-career-soft s-accent" x="626" y="30" width="124" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="638" y="54">5. VMS</text>
+        <text class="t t-small t-muted" x="638" y="74">pops up live and</text>
+        <text class="t t-small t-muted" x="638" y="90">pre-alarm video</text>
+        <!-- outcomes -->
+        <path class="s-line" d="M688 100 V140" marker-end="url(#c14c-ar)"/>
+        <rect class="f-panel s-line" x="420" y="146" width="330" height="96" rx="8"/>
+        <text class="t t-small t-bold" x="432" y="168">Operator sees, in one screen:</text>
+        <text class="t t-small" x="432" y="188">• the alarm with door name, time and map</text>
+        <text class="t t-small" x="432" y="206">• live video and 10 s before the event</text>
+        <text class="t t-small" x="432" y="224">• a bookmark saved for later export</text>
+        <text class="t t-small t-bold" x="20" y="168">Why clocks matter</text>
+        <text class="t t-small t-muted" x="20" y="188">If controllers, servers and cameras do not share</text>
+        <text class="t t-small t-muted" x="20" y="206">one time source (NTP), the video shown for an</text>
+        <text class="t t-small t-muted" x="20" y="224">alarm can be seconds or minutes off. Set NTP on</text>
+        <text class="t t-small t-muted" x="20" y="242">every device during commissioning.</text>
+      </svg>
+      <figcaption>Figure 3. Event-to-video integration. Some platforms do this natively because access and video are one product; others use a plug-in or API between separate products. The result for the operator should be the same.</figcaption>
+    </figure>
+    <p>Other common integrations:</p>
+    <ul>
+      <li><b>Intruder alarm panels</b>: arm and disarm areas from the access system; a valid card at the entry disarms the area.</li>
+      <li><b>Intercoms</b>: a call from the gate pops up the gate camera and lets the operator unlock the gate.</li>
+      <li><b>Lifts</b>: the card decides which floor buttons work (destination control), through a lift interface.</li>
+      <li><b>BMS</b>: occupancy from access events can switch lighting or air conditioning zones (see <a href="c01-bms-fundamentals.html">C01</a>).</li>
+      <li><b>HR and visitor systems</b>: new staff appear as cardholders automatically, and leavers are disabled the day they leave. This is one of the best security controls of all.</li>
+      <li><b>Number plate recognition</b>: a plate read becomes a credential for a car park boom gate.</li>
+    </ul>
+
+    <h2>Licensing, in general terms</h2>
+    <p>Enterprise platforms are licensed, and the licence often limits what you can add on site. Common patterns (each vendor differs; read the licence summary for the project):</p>
+    <ul>
+      <li>A <b>base server licence</b>, plus licences <b>per camera</b> (or per video channel), <b>per door or reader</b>, and sometimes per client workstation.</li>
+      <li><b>Feature licences</b> for integrations, analytics, mobile credentials or redundancy.</li>
+      <li>An <b>annual maintenance or support agreement</b> that covers software upgrades. If it lapses, the site may not be able to upgrade.</li>
+      <li>Licences tied to a specific server (activation). Moving to new hardware needs a licence transfer.</li>
+    </ul>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Before adding "just one more camera" or door on a service visit, check that a spare licence exists. Running out of licences is a common reason a new device will not come online, and it is a sales conversation, not a technical one. Tell your supervisor.</p></div>
+
+    <h2>Vendor certification and how you get trained</h2>
+    <p>Each major vendor runs its own certification program for <b>integrators</b> (the companies that sell, install and service their systems). The general pattern:</p>
+    <ul>
+      <li>Courses at more than one level: an <b>installer or technician</b> level (hardware, wiring, adding devices), then an <b>engineer or administrator</b> level (design, servers, integrations, upgrades).</li>
+      <li>Delivered online, in a classroom, or both, often with a practical assessment.</li>
+      <li>Often available only to staff of an authorised integrator or partner, and usually paid for by the employer as part of onboarding.</li>
+      <li>Certifications usually expire and need renewing when major versions change.</li>
+      <li>Some vendors publish free introductory online learning. Check each vendor's website for what is currently open to the public.</li>
+    </ul>
+    <p>So the practical route is: get hired by an integrator for your general skills, then get certified on their platform. In interviews, saying "I understand the access and VMS model and I am ready to do your vendor certification" is a strong answer.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>In most states, installing, maintaining or advising on security equipment requires a <b>state security licence</b> of the right class, issued by the state regulator (for example the NSW Police Security Licensing &amp; Enforcement Directorate, or Victoria Police Licensing &amp; Regulation Division). Cabling for these systems also needs <b>ACMA cabling registration</b> (see <a href="c07-telecom-cabling-acma.html">C07</a>). CCTV recording, and especially audio recording, is covered by state surveillance devices laws and privacy law. Rules differ between states and change over time: <b>confirm with your state's security licensing regulator</b> before applying for jobs. See <a href="c11-licences-pathways.html">C11</a>.</p></div>
+
+    <h2>Typical interview questions</h2>
+    <details class="more"><summary>"A user says their card doesn't work on one door. How do you approach it?"</summary><p>Check the event log first: what reason did the controller log? Unknown card, disabled, outside schedule, no access level for that door, wrong PIN? If there is no event at all, it is likely hardware: reader, wiring, reader module offline, or the controller offline.</p></details>
+    <details class="more"><summary>"What causes false 'door forced open' alarms?"</summary><p>A faulty or misaligned DPS, a REX that does not register, a mechanical lock that people open with a key, a door that bounces open after closing, or wrong input wiring/EOL values.</p></details>
+    <details class="more"><summary>"What happens to the doors if the server goes down?"</summary><p>The controllers keep making decisions from their downloaded database and buffer events. New changes on the server do not reach them until it returns.</p></details>
+    <details class="more"><summary>"How would you add a camera to a VMS?"</summary><p>Set a static IP and strong password on the camera, update firmware per the project standard, set the time source, add it to the VMS by ONVIF or native driver, set streams, recording rules and retention, check the licence, name it per the schedule, and test live and playback.</p></details>
+    <details class="more"><summary>"Police ask for footage. What do you do?"</summary><p>Follow the client's policy and get authorisation. Export in the native or signed format with a player, include the watermark or hash, note the time, camera and who exported it, and record the handover.</p></details>
+    <details class="more"><summary>"Which platforms have you used?"</summary><p>Be honest. Explain the concepts you understand, any hands-on experience (even a trial or demo), and that you are ready to complete their vendor certification.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why are cardholders given access levels instead of individual doors?</summary><div class="answer"><p>Levels model roles. When a role's doors or hours change, you edit one level instead of hundreds of cardholders, and audits can see who has what by role. It reduces mistakes.</p></div></details>
+    <details class="quiz"><summary>A door shows "forced open" every time someone leaves using the handle. What is the likely fault?</summary><div class="answer"><p>The REX is not being registered (faulty REX sensor, wiring, or not assigned to the door in the software). The system sees the DPS open without a grant or REX, so it calls it forced. Mechanical exit with no REX on the handle causes the same.</p></div></details>
+    <details class="quiz"><summary>You remove a leaver's access on the server but their card still works at a remote building. Why?</summary><div class="answer"><p>The decision is made on the controller from its cached database. If that controller is offline or the download has not finished, it still has the old data. Check the controller's status and force a download.</p></div></details>
+    <details class="quiz"><summary>Work out storage: 10 cameras at 6 Mb/s, continuous, 14 days.</summary><div class="answer"><p>6 ÷ 8 = 0.75 MB/s × 86,400 = 64.8 GB/day per camera. × 14 = 907 GB. × 10 ≈ 9.1 TB, plus RAID and spare space.</p></div></details>
+    <details class="quiz"><summary>Why does an exported clip include a hash or digital signature?</summary><div class="answer"><p>So anyone can check that the file has not been changed since export. Any edit changes the hash. That supports its use as evidence.</p></div></details>
+    <details class="quiz"><summary>The alarm pop-up shows video from 40 seconds after the event. What should you check?</summary><div class="answer"><p>Time synchronisation. The controller, servers and cameras should all use the same NTP source. Also check pre-event buffer settings in the recording rule.</p></div></details>
+    <details class="quiz"><summary>What is the difference between ONVIF and a native driver?</summary><div class="answer"><p>ONVIF is a common standard that lets a VMS talk to many brands with core features. A native driver is written for that brand and model and usually exposes more features (analytics events, special stream settings, I/O).</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can draw the server, controller, field module and door layers of an access system.</span></li>
+      <li><input type="checkbox"><span>I can explain cardholder, credential, access level, schedule, area, event and operator permission.</span></li>
+      <li><input type="checkbox"><span>I can explain how forced-open and held-open alarms are derived from the DPS.</span></li>
+      <li><input type="checkbox"><span>I can walk through commissioning a door and testing every state.</span></li>
+      <li><input type="checkbox"><span>I can explain edge decisions and why changes must download to controllers.</span></li>
+      <li><input type="checkbox"><span>I can describe a VMS: management server, recording servers, drivers, recording rules, retention and export.</span></li>
+      <li><input type="checkbox"><span>I can calculate VMS storage for a given bitrate, camera count and retention.</span></li>
+      <li><input type="checkbox"><span>I can explain event-to-video integration and why NTP matters.</span></li>
+      <li><input type="checkbox"><span>I know to confirm security licensing with my state regulator.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

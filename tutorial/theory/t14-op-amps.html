@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T14 · Op-amps: the golden rules</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 3</div>
+    <span class="eyebrow">Theory · T14</span>
+    <h1>Op-amps: the golden rules</h1>
+    <p class="lede">An op-amp is a cheap chip with enormous gain. On its own it is a comparator; wrapped in negative feedback it becomes a precise amplifier you can design with two simple rules. By the end you will scale a 0–10 V building signal for a 3.3 V microcontroller, read a 4–20 mA loop, and build a window alarm.</p>
+    <div class="meta"><span><b>Reading</b> 50–60 min</span><span><b>Level</b> After T04, T12</span><span><b>Practice</b> P12, P14</span><span><b>Next</b> T16 (4–20 mA loops)</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What an op-amp is</h2>
+    <p>An <strong>operational amplifier</strong> is a <strong>differential amplifier with very high gain</strong>. It has two inputs, the non-inverting input (+) and the inverting input (−), one output, and two supply pins. It amplifies only the <em>difference</em> between its inputs:</p>
+    <div class="formula">V<sub>out</sub> = A<sub>OL</sub> × (V<sub>+</sub> − V<sub>−</sub>)
+      <small>A<sub>OL</sub> is the open-loop gain: typically 10<sup>5</sup> to 10<sup>6</sup> (100–120 dB) at DC. The output can never go beyond the supply rails. The inputs draw tiny currents: nanoamps for bipolar-input parts such as the LM358, picoamps for CMOS or JFET inputs.</small></div>
+    <p>Inside are a few dozen transistors: a differential input pair (two matched transistors sharing a current, from T12/T13), a high-gain middle stage and an output stage that can source and sink current. The name comes from 1940s analogue computers, where these amplifiers performed mathematical <em>operations</em> such as adding and integrating.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Op-amp symbol and open-loop transfer curve">
+        <polygon class="f-accent-soft s-line" points="90,40 90,180 210,110"/>
+        <path class="s-line" d="M40 75 H90 M40 145 H90 M210 110 H270"/>
+        <text class="t t-bold" x="96" y="80">−</text><text class="t t-bold" x="96" y="150">+</text>
+        <text class="t t-small" x="10" y="70">V<tspan baseline-shift="sub" font-size="9">−</tspan></text>
+        <text class="t t-small" x="10" y="140">V<tspan baseline-shift="sub" font-size="9">+</tspan></text>
+        <text class="t t-small" x="240" y="100">V<tspan baseline-shift="sub" font-size="9">out</tspan></text>
+        <path class="s-line" d="M150 72 V40"/><text class="t t-small" x="156" y="40">+V supply</text>
+        <path class="s-line" d="M150 148 V180"/><text class="t t-small" x="156" y="186">−V supply (or 0 V)</text>
+        <!-- transfer curve -->
+        <path class="s-line" d="M360 120 H620 M490 30 V210"/>
+        <text class="t t-small" x="560" y="138">V<tspan baseline-shift="sub" font-size="9">+</tspan> − V<tspan baseline-shift="sub" font-size="9">−</tspan></text>
+        <text class="t t-small" x="496" y="40">V<tspan baseline-shift="sub" font-size="9">out</tspan></text>
+        <path class="s-accent" d="M370 190 H484 L496 50 H610"/>
+        <text class="t t-small t-muted" x="500" y="66">stuck at + rail</text>
+        <text class="t t-small t-muted" x="370" y="206">stuck at − rail</text>
+        <text class="t t-small" x="500" y="104">steep part only</text>
+        <text class="t t-small" x="500" y="120">about ±0.1 mV wide</text>
+      </svg>
+      <figcaption>Figure 1. Left: the symbol (supply pins are often left off schematics, but they are always there). Right: open-loop behaviour. With a gain of 10<sup>5</sup> and 12 V rails, an input difference of just 0.12 mV is enough to slam the output into a rail.</figcaption>
+    </figure>
+
+    <h2>Open loop: a comparator</h2>
+    <p>Without feedback, the gain is so large that the output is almost always pinned at one rail. If V<sub>+</sub> &gt; V<sub>−</sub> by more than a fraction of a millivolt, the output goes high; if less, it goes low. That is a <strong>comparator</strong>: a one-bit decision "is this voltage above that one?"</p>
+    <p><strong>Example: over-temperature alarm.</strong> A thermistor divider gives 2.0 V at 25 °C and 2.6 V at 60 °C. Feed it to V<sub>+</sub>, and feed a 2.5 V reference to V<sub>−</sub>. Below about 55 °C the output sits low; above it, the output swings high and can drive a buzzer through a transistor (T12).</p>
+    <ul>
+      <li><strong>Chatter.</strong> Near the threshold, noise of a few millivolts makes the output flip back and forth. The fix is <strong>hysteresis</strong>: a resistor from the output back to the <em>+</em> input (positive feedback) so the threshold moves slightly once it trips. This is a Schmitt trigger.</li>
+      <li><strong>Dedicated comparators</strong> (such as the LM393) are faster when coming out of saturation and usually have <strong>open-collector</strong> outputs: the output transistor only pulls down, and you add a pull-up resistor to whatever logic voltage you need. That makes them easy to interface to 3.3 V or 5 V logic, or to an alarm-panel input.</li>
+    </ul>
+
+    <h2>Negative feedback and the two golden rules</h2>
+    <p>Now feed part of the output back to the <strong>inverting</strong> input. If the output rises too far, it raises V<sub>−</sub>, which shrinks (V<sub>+</sub> − V<sub>−</sub>), which pulls the output back down. The output settles at the one value where everything is consistent. Let a fraction β of the output reach V<sub>−</sub>:</p>
+    <div class="formula">V<sub>out</sub> = A(V<sub>in</sub> − βV<sub>out</sub>)  ⇒  V<sub>out</sub> = V<sub>in</sub> × A/(1 + Aβ) ≈ V<sub>in</sub>/β
+      <small>With A = 10<sup>5</sup> and β = 0.1: gain = 10<sup>5</sup>/(1 + 10<sup>4</sup>) = 9.999. The result depends almost only on β, which is set by two resistors, not on the op-amp's messy, temperature-dependent A. The input difference needed is V<sub>out</sub>/A: for a 5 V output, only 50 µV.</small></div>
+    <p>That tiny difference leads to the two rules that let you design almost any op-amp circuit in your head:</p>
+    <div class="callout tip"><span class="label">The golden rules (with negative feedback, output not at a rail)</span>
+      <p><b>Rule 1.</b> The output does whatever it must to make the voltage difference between the inputs zero: <b>V<sub>−</sub> = V<sub>+</sub></b>.</p>
+      <p><b>Rule 2.</b> The inputs draw <b>no current</b>.</p></div>
+    <p>Rule 1 is a <em>consequence of feedback</em>, not a property of the chip. It only holds while the output is free to move: if the output is jammed against a rail, or there is no negative feedback, Rule 1 is false (that is exactly the comparator case). Rule 2 is a property of the chip and is always nearly true.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The two inputs are connected together inside (a 'virtual short'), so current flows between them." <b>Right:</b> no current flows between them at all (Rule 2). The output simply drives the feedback network until the inputs happen to sit at the same voltage. Think of a thermostat: it does not connect the room to the setpoint; it adjusts the heater until they match.</p></div>
+
+    <h2>The three basic amplifiers</h2>
+    <h3>Voltage follower (buffer)</h3>
+    <p>Connect the output straight to V<sub>−</sub> and the signal to V<sub>+</sub>. Rule 1: V<sub>out</sub> = V<sub>−</sub> = V<sub>+</sub> = V<sub>in</sub>. Gain is exactly 1. Why bother? Rule 2: the input draws nothing, yet the output can supply milliamps. A follower lets a weak, high-resistance source (a sensor divider, a 100 kΩ potentiometer) drive a load (an ADC input, a long cable) without being dragged down.</p>
+    <h3>Non-inverting amplifier: gain 1 + R<sub>f</sub>/R<sub>g</sub></h3>
+    <p>Signal into V<sub>+</sub>. The output feeds V<sub>−</sub> through a divider: R<sub>f</sub> from output to V<sub>−</sub>, R<sub>g</sub> from V<sub>−</sub> to ground.</p>
+    <div class="formula">Rule 2: the divider is unloaded, so V<sub>−</sub> = V<sub>out</sub> × R<sub>g</sub>/(R<sub>f</sub> + R<sub>g</sub>)
+Rule 1: V<sub>−</sub> = V<sub>in</sub>  ⇒  V<sub>out</sub> = V<sub>in</sub> × (1 + R<sub>f</sub>/R<sub>g</sub>)
+      <small>R<sub>f</sub> = 9.1 kΩ, R<sub>g</sub> = 1 kΩ: gain = 10.1. A 0.25 V sensor signal becomes 2.53 V. Input resistance is huge (the op-amp input), and the gain can never be less than 1.</small></div>
+    <h3>Inverting amplifier: gain −R<sub>f</sub>/R<sub>in</sub></h3>
+    <p>V<sub>+</sub> is grounded. The signal goes through R<sub>in</sub> into V<sub>−</sub>, and R<sub>f</sub> runs from V<sub>−</sub> to the output.</p>
+    <div class="formula">Rule 1: V<sub>−</sub> = V<sub>+</sub> = 0 V (a "virtual ground")
+Current in R<sub>in</sub>: I = V<sub>in</sub>/R<sub>in</sub>; Rule 2: all of it flows on through R<sub>f</sub>
+V<sub>out</sub> = 0 − I × R<sub>f</sub> = −(R<sub>f</sub>/R<sub>in</sub>) × V<sub>in</sub>
+      <small>R<sub>in</sub> = 10 kΩ, R<sub>f</sub> = 47 kΩ: gain −4.7. A +1 V input gives −4.7 V (needs a negative rail). The input resistance seen by the source is just R<sub>in</sub>. Gains below 1 are possible: R<sub>f</sub> = 3.3 kΩ, R<sub>in</sub> = 10 kΩ gives −0.33.</small></div>
+    <figure>
+      <svg viewBox="0 0 660 230" role="img" aria-label="Non-inverting and inverting amplifier circuits">
+        <text class="t t-bold" x="20" y="16">Non-inverting: 1 + R<tspan baseline-shift="sub" font-size="9">f</tspan>/R<tspan baseline-shift="sub" font-size="9">g</tspan></text>
+        <polygon class="f-accent-soft s-line" points="130,60 130,160 220,110"/>
+        <text class="t t-bold" x="135" y="90">−</text><text class="t t-bold" x="135" y="142">+</text>
+        <path class="s-line" d="M130 85 H90 V40 H140 M200 40 H260 V110 M220 110 H300"/>
+        <rect class="f-panel s-line" x="140" y="30" width="60" height="20"/><text class="t t-small" x="158" y="24">R<tspan baseline-shift="sub" font-size="9">f</tspan></text>
+        <path class="s-line" d="M90 85 H80"/>
+        <rect class="f-panel s-line" x="20" y="75" width="60" height="20"/><text class="t t-small" x="38" y="70">R<tspan baseline-shift="sub" font-size="9">g</tspan></text>
+        <path class="s-line" d="M20 85 H10 V100 M0 100 H20 M4 106 H16"/>
+        <path class="s-line" d="M130 135 H40"/><circle class="f-ink" cx="40" cy="135" r="3"/><text class="t t-small" x="20" y="158">V<tspan baseline-shift="sub" font-size="9">in</tspan></text>
+        <circle class="f-ink" cx="90" cy="85" r="3"/><circle class="f-ink" cx="260" cy="110" r="3"/>
+        <text class="t t-small" x="270" y="102">V<tspan baseline-shift="sub" font-size="9">out</tspan></text>
+        <text class="t t-small t-muted" x="20" y="200">V<tspan baseline-shift="sub" font-size="9">−</tspan> = V<tspan baseline-shift="sub" font-size="9">out</tspan>·R<tspan baseline-shift="sub" font-size="9">g</tspan>/(R<tspan baseline-shift="sub" font-size="9">f</tspan>+R<tspan baseline-shift="sub" font-size="9">g</tspan>) is forced to equal V<tspan baseline-shift="sub" font-size="9">in</tspan></text>
+        <!-- inverting -->
+        <text class="t t-bold" x="350" y="16">Inverting: −R<tspan baseline-shift="sub" font-size="9">f</tspan>/R<tspan baseline-shift="sub" font-size="9">in</tspan></text>
+        <polygon class="f-accent-soft s-line" points="480,60 480,160 570,110"/>
+        <text class="t t-bold" x="485" y="90">−</text><text class="t t-bold" x="485" y="142">+</text>
+        <path class="s-line" d="M350 85 H370 M430 85 H480"/>
+        <rect class="f-panel s-line" x="370" y="75" width="60" height="20"/><text class="t t-small" x="386" y="70">R<tspan baseline-shift="sub" font-size="9">in</tspan></text>
+        <circle class="f-ink" cx="350" cy="85" r="3"/><text class="t t-small" x="340" y="110">V<tspan baseline-shift="sub" font-size="9">in</tspan></text>
+        <circle class="f-ink" cx="455" cy="85" r="3"/>
+        <path class="s-line" d="M455 85 V40 H490 M550 40 H610 V110 M570 110 H640"/>
+        <rect class="f-panel s-line" x="490" y="30" width="60" height="20"/><text class="t t-small" x="510" y="24">R<tspan baseline-shift="sub" font-size="9">f</tspan></text>
+        <circle class="f-ink" cx="610" cy="110" r="3"/><text class="t t-small" x="615" y="102">V<tspan baseline-shift="sub" font-size="9">out</tspan></text>
+        <path class="s-line" d="M480 135 H460 V160 M448 160 H472 M452 166 H468 M457 172 H463"/>
+        <text class="t t-small t-muted" x="350" y="200">V<tspan baseline-shift="sub" font-size="9">−</tspan> is a virtual ground (0 V): I = V<tspan baseline-shift="sub" font-size="9">in</tspan>/R<tspan baseline-shift="sub" font-size="9">in</tspan> flows on through R<tspan baseline-shift="sub" font-size="9">f</tspan></text>
+      </svg>
+      <figcaption>Figure 2. The two workhorse amplifiers. In both, the feedback resistor R<sub>f</sub> runs from the output to the inverting input, which is what makes the feedback negative. Apply Rule 1 and Rule 2 and the gain falls out in two lines.</figcaption>
+    </figure>
+
+    <h2>The summing amplifier</h2>
+    <p>Give the inverting amplifier several input resistors, all meeting at the virtual ground. Each input pushes its own current V<sub>k</sub>/R<sub>k</sub> into the node; because the node stays at 0 V, the inputs do not disturb each other. All the currents add and flow through R<sub>f</sub>:</p>
+    <div class="formula">V<sub>out</sub> = −R<sub>f</sub> × ( V<sub>1</sub>/R<sub>1</sub> + V<sub>2</sub>/R<sub>2</sub> + V<sub>3</sub>/R<sub>3</sub> + … )
+      <small>All resistors 10 kΩ: V<sub>out</sub> = −(V<sub>1</sub> + V<sub>2</sub> + V<sub>3</sub>). Example: 1.0 V + 0.5 V − 0.2 V gives −1.3 V. With R<sub>1</sub> = 10 k, R<sub>2</sub> = 20 k, R<sub>3</sub> = 40 k and R<sub>f</sub> = 10 k you get binary weights 1, ½, ¼: a tiny digital-to-analogue converter.</small></div>
+    <p>Audio mixers work this way, and the same "add an offset" trick is used to shift a signal: sum the signal with a fixed reference voltage, then invert again if needed.</p>
+
+    <h2>Real op-amps: the limits that bite</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Limit</th><th>What it means</th><th>Typical numbers</th><th>What to do</th></tr>
+      <tr><td><b>Output swing</b></td><td>The output cannot reach the rails. Classic parts lose 1–2 V at each rail.</td><td>LM358 on 5 V: output about 0 to 3.5 V. TL072 on ±15 V: about ±13.5 V.</td><td>Use a <b>rail-to-rail output</b> op-amp (such as the MCP6002 family) on low-voltage supplies.</td></tr>
+      <tr><td><b>Input common-mode range</b></td><td>The input voltages themselves must stay in a range, or the op-amp misbehaves (some even invert their output).</td><td>LM358: from 0 V up to about V<sub>CC</sub> − 1.5 V.</td><td>Check the datasheet; choose rail-to-rail input parts for signals near the top rail.</td></tr>
+      <tr><td><b>Gain–bandwidth product (GBW)</b></td><td>Open-loop gain falls with frequency. Closed-loop bandwidth ≈ GBW ÷ noise gain (1 + R<sub>f</sub>/R<sub>g</sub>).</td><td>LM358 about 1 MHz: gain 10 → about 100 kHz; gain 100 → about 10 kHz.</td><td>Split high gain over two stages, or choose a faster op-amp.</td></tr>
+      <tr><td><b>Slew rate</b></td><td>Fastest rate the output can change.</td><td>LM358 roughly 0.3–0.6 V/µs: a 10 V step takes about 20–30 µs.</td><td>Fine for sensors and BMS signals; not for fast pulses.</td></tr>
+      <tr><td><b>Input offset voltage</b></td><td>The inputs are slightly mismatched, as if a small battery sat in series with one input. It is multiplied by the noise gain.</td><td>LM358: a few mV. With gain 100, 3 mV becomes 0.3 V of error at the output.</td><td>Use low-offset (precision) parts for high gain, or calibrate in software.</td></tr>
+      <tr><td><b>Output current</b></td><td>The output stage is small.</td><td>About 10–40 mA, with short-circuit protection on most parts.</td><td>Add a transistor to drive relays, motors or long loads.</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Every op-amp needs a 100 nF decoupling capacitor from each supply pin to ground, right at the pins. Unused op-amps in a dual or quad package should be wired as followers with their + input tied to a mid-supply or ground voltage, so they do not oscillate and draw extra current.</p></div>
+
+    <div class="widget" id="w-t14-amp">
+      <span class="label">Interactive · Op-amp amplifier calculator</span>
+      <label>Topology
+        <select id="t14-top">
+          <option value="fol">Voltage follower</option>
+          <option value="non" selected>Non-inverting (1 + Rf/Rg)</option>
+          <option value="inv">Inverting (−Rf/Rin)</option>
+          <option value="sum">Inverting summer (two inputs, equal Rin)</option>
+        </select></label>
+      <label>Supply and op-amp type
+        <select id="t14-sup">
+          <option value="0,3.5">Single 5 V, LM358-type (output ~0 to 3.5 V)</option>
+          <option value="0.02,4.98">Single 5 V, rail-to-rail output</option>
+          <option value="0.02,3.28" selected>Single 3.3 V, rail-to-rail output</option>
+          <option value="-10.5,10.5">Dual ±12 V, classic (about ±10.5 V)</option>
+          <option value="-13.5,13.5">Dual ±15 V, classic (about ±13.5 V)</option>
+        </select></label>
+      <label>R<sub>f</sub> (kΩ) <input type="number" id="t14-rf" value="10" min="0.1" step="0.1"></label>
+      <label>R<sub>g</sub> / R<sub>in</sub> (kΩ) <input type="number" id="t14-rg" value="10" min="0.1" step="0.1"></label>
+      <label>Input V<sub>in</sub> (V<sub>1</sub>) <span class="out" id="t14-vin-o"></span><input type="range" id="t14-vin" min="-10" max="10" step="0.05" value="1.2"></label>
+      <label id="t14-v2-l">Second input V<sub>2</sub> <span class="out" id="t14-v2-o"></span><input type="range" id="t14-v2" min="-5" max="5" step="0.05" value="0"></label>
+      <svg id="t14-plot" viewBox="0 0 560 300" role="img" aria-label="Output voltage against input voltage with clipping"></svg>
+      <div class="readings">
+        <div><small>Gain (ideal)</small><span class="out" id="t14-r-g"></span></div>
+        <div><small>Ideal output</small><span class="out" id="t14-r-id"></span></div>
+        <div><small>Real output</small><span class="out" id="t14-r-out"></span></div>
+        <div><small>Status</small><span class="out" id="t14-r-st"></span></div>
+        <div><small>Bandwidth (1 MHz GBW)</small><span class="out" id="t14-r-bw"></span></div>
+        <div><small>Current from V<sub>in</sub></small><span class="out" id="t14-r-iin"></span></div>
+      </div>
+      <p style="font-size:14px;margin-top:10px;color:var(--muted)">Dashed: ideal straight line. Solid: what a real op-amp on this supply can deliver. Ignores offset, input common-mode limits and output loading.</p>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var top=$('t14-top'),sup=$('t14-sup'),rf=$('t14-rf'),rg=$('t14-rg'),vin=$('t14-vin'),v2=$('t14-v2'),svg=$('t14-plot');
+      function fmtV(v){return (v>=0?'+':'−')+Math.abs(v).toFixed(2)+' V';}
+      function draw(){
+        var t=top.value,lim=sup.value.split(',').map(Number),lo=lim[0],hi=lim[1];
+        var Rf=Math.max(0.01,+rf.value||0.01)*1e3,Rg=Math.max(0.01,+rg.value||0.01)*1e3,x=+vin.value,y2=+v2.value;
+        $('t14-v2-l').style.display=t==='sum'?'block':'none';
+        var g,off=0,ng,iin;
+        if(t==='fol'){g=1;ng=1;iin=0;}
+        else if(t==='non'){g=1+Rf/Rg;ng=g;iin=0;}
+        else if(t==='inv'){g=-Rf/Rg;ng=1+Rf/Rg;iin=x/Rg;}
+        else{g=-Rf/Rg;off=-Rf/Rg*y2;ng=1+Rf/(Rg/2);iin=x/Rg;}
+        function f(v){return g*v+off;} function clip(v){return Math.min(hi,Math.max(lo,v));}
+        var X0=60,X1=545,Y0=20,Y1=262,xmin=-10,xmax=10,ymax=Math.max(Math.abs(lo),Math.abs(hi))+1.5,ymin=lo>=0?-1:-ymax;
+        if(lo>=0)ymax=hi+1;
+        function px(v){return X0+(v-xmin)/(xmax-xmin)*(X1-X0);} function py(v){return Y1-(Math.max(ymin,Math.min(ymax,v))-ymin)/(ymax-ymin)*(Y1-Y0);}
+        var s='';
+        for(var gx=-10;gx<=10;gx+=5){s+='<line class="s-thin" x1="'+px(gx)+'" y1="'+Y0+'" x2="'+px(gx)+'" y2="'+Y1+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+px(gx)+'" y="'+(Y1+16)+'" text-anchor="middle">'+gx+'</text>';}
+        var ys=ymax-ymin>12?5:1;for(var gy=Math.ceil(ymin/ys)*ys;gy<=ymax;gy+=ys){s+='<line class="s-thin" x1="'+X0+'" y1="'+py(gy)+'" x2="'+X1+'" y2="'+py(gy)+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+(X0-6)+'" y="'+(py(gy)+4)+'" text-anchor="end">'+gy+'</text>';}
+        s+='<line class="s-thin" x1="'+X0+'" y1="'+py(0)+'" x2="'+X1+'" y2="'+py(0)+'"/><line class="s-thin" x1="'+px(0)+'" y1="'+Y0+'" x2="'+px(0)+'" y2="'+Y1+'"/>';
+        s+='<line class="s-red s-dash" x1="'+X0+'" y1="'+py(hi)+'" x2="'+X1+'" y2="'+py(hi)+'" stroke-width="1"/><line class="s-red s-dash" x1="'+X0+'" y1="'+py(lo)+'" x2="'+X1+'" y2="'+py(lo)+'" stroke-width="1"/>';
+        s+='<text class="t t-small t-red" x="'+(X1-4)+'" y="'+(py(hi)-4)+'" text-anchor="end">output limit '+hi+' V</text>';
+        s+='<path class="s-line" d="M'+X0+' '+Y0+' V'+Y1+' H'+X1+'"/>';
+        s+='<text class="t t-small" x="'+(X0+6)+'" y="'+(Y0+12)+'">V<tspan baseline-shift="sub" font-size="9">out</tspan> (V)</text><text class="t t-small" x="'+(X1-4)+'" y="'+(Y1-6)+'" text-anchor="end">V<tspan baseline-shift="sub" font-size="9">in</tspan> (V)</text>';
+        var d1='',d2='';for(var j=0;j<=200;j++){var v=xmin+(xmax-xmin)*j/200;d1+=(j?' L':'M')+px(v).toFixed(1)+' '+py(f(v)).toFixed(1);d2+=(j?' L':'M')+px(v).toFixed(1)+' '+py(clip(f(v))).toFixed(1);}
+        s+='<path class="s-thin s-dash" d="'+d1+'"/><path class="s-accent" d="'+d2+'"/>';
+        var yi=f(x),yo=clip(yi);s+='<circle class="f-red" cx="'+px(x).toFixed(1)+'" cy="'+py(yo).toFixed(1)+'" r="6"/>';
+        svg.innerHTML=s;
+        $('t14-vin-o').textContent=fmtV(x);$('t14-v2-o').textContent=fmtV(y2);
+        $('t14-r-g').textContent=(g>=0?'+':'−')+Math.abs(g).toFixed(3);
+        $('t14-r-id').textContent=fmtV(yi);$('t14-r-out').textContent=fmtV(yo);
+        $('t14-r-st').textContent=yi>hi+1e-9?'Clipped at top':yi<lo-1e-9?'Clipped at bottom':'Linear (OK)';
+        var bw=1e6/ng;$('t14-r-bw').textContent=bw>=1e3?(bw/1e3).toFixed(bw>=1e5?0:1)+' kHz':bw.toFixed(0)+' Hz';
+        $('t14-r-iin').textContent=iin===0?'≈ 0 (nA)':(Math.abs(iin)*1e6).toFixed(1)+' µA';
+      }
+      [top,sup].forEach(function(e){e.onchange=draw;});[rf,rg,vin,v2].forEach(function(e){e.oninput=draw;});draw();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Choose "Inverting" on the 3.3 V single supply with any positive input: the output is stuck at the bottom, because an inverting amplifier needs a negative rail to go below 0 V. Switch to ±12 V and it works. Then pick the LM358-type 5 V option with a gain of 2 and 2 V in: the ideal answer is 4 V, but the real output stops near 3.5 V. That is the most common op-amp surprise on the bench.</p></div>
+
+    <h2>Practical job 1: scaling a 0–10 V BMS signal for a 3.3 V microcontroller</h2>
+    <p>Building controllers use <strong>0–10 V</strong> analogue signals everywhere: valve and damper positions, VSD speed references, sensor outputs. A microcontroller ADC on a 3.3 V supply reads only 0–3.3 V, and more than about 3.6 V on its pin can damage it.</p>
+    <p>A non-inverting amplifier cannot have a gain below 1, and an inverting one flips the sign. The clean solution is a <strong>resistor divider followed by a rail-to-rail follower powered from 3.3 V</strong>.</p>
+    <ol>
+      <li><strong>Divider.</strong> We want 10 V → just under 3.3 V, leaving headroom. R<sub>1</sub> = 22 kΩ (top), R<sub>2</sub> = 10 kΩ (bottom): 10 × 10/32 = <strong>3.125 V</strong> at full scale. (20 k/10 k would give 3.33 V, slightly over the ADC's range.)</li>
+      <li><strong>Load on the BMS output.</strong> 10 V across 32 kΩ = 0.31 mA. Analogue outputs typically drive at least a few kΩ, so this is a light load.</li>
+      <li><strong>Why the follower.</strong> The divider's Thevenin resistance is 22k ∥ 10k ≈ 6.9 kΩ. An ADC input briefly draws current to charge its sampling capacitor, and 6.9 kΩ can make readings sag. The follower presents nearly infinite resistance to the divider and a low resistance to the ADC.</li>
+      <li><strong>Built-in protection.</strong> Powered from 3.3 V, a rail-to-rail op-amp's output physically cannot exceed about 3.3 V, even if someone wires 24 V to the input. In that fault the divider gives 7.5 V at the op-amp input; the op-amp's internal input clamp diodes conduct, and the 6.9 kΩ source resistance limits that current to about (7.5 − 3.6)/6.9k ≈ 0.6 mA. Check the datasheet's maximum input current, and add a series resistor if needed.</li>
+      <li><strong>Firmware.</strong> V<sub>signal</sub> = V<sub>ADC</sub> × 3.2. At 12-bit (0–4095 over 3.3 V), one count = 0.806 mV at the ADC = 2.6 mV of the original signal.</li>
+    </ol>
+    <figure>
+      <svg viewBox="0 0 660 250" role="img" aria-label="0 to 10 V signal through divider and follower into a microcontroller ADC, and 4 to 20 mA loop through a shunt resistor">
+        <text class="t t-bold" x="20" y="18">0–10 V → 0–3.125 V</text>
+        <circle class="f-ink" cx="20" cy="60" r="3"/><text class="t t-small" x="6" y="48">0–10 V in</text>
+        <path class="s-line" d="M20 60 H40"/>
+        <rect class="f-panel s-line" x="40" y="50" width="60" height="20"/><text class="t t-small" x="48" y="44">22 kΩ</text>
+        <path class="s-line" d="M100 60 H160 M120 60 V80"/>
+        <rect class="f-panel s-line" x="110" y="80" width="20" height="60"/><text class="t t-small" x="136" y="115">10 kΩ</text>
+        <path class="s-line" d="M120 140 V160 M108 160 H132 M112 166 H128 M117 172 H123"/>
+        <circle class="f-ink" cx="120" cy="60" r="3"/>
+        <polygon class="f-accent-soft s-line" points="160,35 160,115 230,75"/>
+        <text class="t t-bold" x="164" y="56">+</text><text class="t t-bold" x="164" y="102">−</text>
+        <path class="s-line" d="M160 95 H150 V130 H245 V75 M230 75 H290"/>
+        <circle class="f-ink" cx="245" cy="75" r="3"/>
+        <text class="t t-small" x="170" y="28">3.3 V rail-to-rail</text>
+        <rect class="f-wash s-thin" x="290" y="55" width="50" height="40" rx="4"/><text class="t t-small" x="296" y="80">ADC</text>
+        <!-- 4-20 mA -->
+        <text class="t t-bold" x="380" y="18">4–20 mA → 0.6–3.0 V</text>
+        <rect class="f-wash s-thin" x="380" y="40" width="90" height="50" rx="4"/>
+        <text class="t t-small" x="388" y="62">24 V DC</text><text class="t t-small" x="388" y="80">supply</text>
+        <rect class="f-wash s-thin" x="380" y="150" width="90" height="50" rx="4"/>
+        <text class="t t-small" x="386" y="172">2-wire</text><text class="t t-small" x="386" y="190">transmitter</text>
+        <path class="s-line" d="M470 55 H520 V170 H470"/>
+        <path class="s-line" d="M380 70 H360 V230 H560 V170"/>
+        <path class="s-line" d="M425 90 V150"/>
+        <text class="t t-small t-muted" x="430" y="125">loop current</text>
+        <rect class="f-panel s-line" x="550" y="110" width="20" height="60"/><text class="t t-small" x="576" y="140">150 Ω</text>
+        <path class="s-line" d="M520 100 H560 V110"/>
+        <path class="s-line" d="M560 100 H620"/><circle class="f-ink" cx="560" cy="100" r="3"/>
+        <text class="t t-small" x="580" y="94">to follower</text>
+        <text class="t t-small" x="580" y="210">0 V</text>
+        <text class="t t-small t-muted" x="20" y="210">Op-amp powered from 3.3 V: its output cannot exceed the ADC's safe range.</text>
+        <text class="t t-small t-muted" x="20" y="240">V = I × R: 4 mA × 150 Ω = 0.60 V; 20 mA × 150 Ω = 3.00 V; 0 mA (broken wire) = 0 V.</text>
+      </svg>
+      <figcaption>Figure 3. Left: scale and buffer a 0–10 V signal. Right: a 4–20 mA loop. The transmitter sets the current; a shunt resistor in the return leg turns it into a voltage, which then goes to a follower and the ADC exactly as on the left.</figcaption>
+    </figure>
+
+    <h2>Practical job 2: turning a 4–20 mA loop into a voltage</h2>
+    <p>Industrial and building sensors often send their reading as a <strong>current</strong> from 4 mA (zero) to 20 mA (full scale). Current is the same at every point of a series loop, so cable resistance and long runs do not change the reading; and a broken wire gives 0 mA, which is clearly a fault, not a valid low reading. T16 goes through the physics.</p>
+    <p>To read it, put a precise resistor (a "shunt") in the loop and apply Ohm's law:</p>
+    <div class="formula">V = I × R<sub>shunt</sub>     150 Ω: 4 mA → 0.60 V, 12 mA → 1.80 V, 20 mA → 3.00 V
+      <small>The classic choice is 250 Ω (giving 1–5 V) for 5 V systems. For a 3.3 V ADC, 150 Ω keeps full scale at 3.0 V with headroom. Use a 0.1 % resistor: its tolerance is your measurement error.</small></div>
+    <ul>
+      <li><strong>Buffer it</strong> with a rail-to-rail follower, as in job 1, so the ADC sees a low source resistance.</li>
+      <li><strong>Firmware scaling.</strong> Percent = (V − 0.6)/(3.0 − 0.6) × 100. At 1.8 V: (1.2/2.4) × 100 = 50 %.</li>
+      <li><strong>Fault detection.</strong> Below about 3.6 mA (0.54 V) or above about 21 mA (3.15 V) is commonly treated as a sensor or wiring fault (the NAMUR NE 43 recommendation). A reading near 0 V means an open loop.</li>
+      <li><strong>Voltage budget.</strong> A 2-wire transmitter typically needs 10–12 V across itself to operate (check its datasheet). With a 24 V supply and 20 mA through 150 Ω (3 V), there is still about 9 V of margin for cable resistance.</li>
+      <li><strong>Shunt power.</strong> (20 mA)² × 150 Ω = 60 mW. A 0.25 W resistor is fine.</li>
+    </ul>
+    <p>To get the full 0–3.3 V range from 4–20 mA instead of 0.6–3.0 V, you can remove the 0.6 V offset with a difference amplifier (a subtractor built from an op-amp and four resistors). For most jobs the simple shunt plus software scaling is accurate enough and easier to troubleshoot.</p>
+
+    <h2>Practical job 3: a window comparator for an alarm</h2>
+    <p>Sometimes you need "alarm if the value is too low <em>or</em> too high", for example a 24 V supply that must stay between 22 V and 26 V, or a room temperature that must stay within a band. Use two comparators:</p>
+    <ul>
+      <li>Divide the 24 V supply by 10 (for example 90 kΩ over 10 kΩ, or the nearest standard values): 24 V → 2.40 V; 22 V → 2.20 V; 26 V → 2.60 V.</li>
+      <li>Comparator A ("too low") gets the signal on its <strong>+</strong> input and the 2.20 V reference on its − input. Below 2.20 V, V<sub>+</sub> &lt; V<sub>−</sub>, so its output transistor turns on and pulls low.</li>
+      <li>Comparator B ("too high") gets the signal on its <strong>−</strong> input and the 2.60 V reference on its + input. Above 2.60 V, V<sub>+</sub> &lt; V<sub>−</sub>, so it pulls low.</li>
+      <li>Make the references with a divider from a stable reference (for example a 2.5 V shunt reference such as the TL431, or a 5 V regulated rail), not from the supply you are measuring.</li>
+      <li>With an LM393 (open-collector outputs), tie the two outputs together with one pull-up resistor. The output is high only when <em>both</em> comparators are happy, and either one pulling low signals an alarm. A low = fault output also leans towards <strong>fail-safe</strong>: if the pull-up shares the comparator's supply and the receiving input has a pull-down, a lost supply or a broken signal wire reads as an alarm instead of silently looking normal.</li>
+      <li>Add a little hysteresis to each comparator so a supply sitting right at 22.0 V does not make the alarm flicker.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Window comparator: two comparators with open-collector outputs joined and one pull-up resistor">
+        <circle class="f-ink" cx="30" cy="130" r="3"/><text class="t t-small" x="6" y="118">V<tspan baseline-shift="sub" font-size="9">sig</tspan> (2.4 V)</text>
+        <path class="s-line" d="M30 130 H90 M90 60 V200 M90 85 H200 M90 175 H200"/>
+        <circle class="f-ink" cx="90" cy="130" r="3"/>
+        <!-- comparator B top: sig to + -->
+        <polygon class="f-accent-soft s-line" points="200,40 200,120 290,80"/>
+        <text class="t t-bold" x="205" y="64">+</text><text class="t t-bold" x="205" y="104">−</text>
+        <path class="s-line" d="M200 60 H150"/><text class="t t-small" x="100" y="50">2.60 V ref</text>
+        <path class="s-line" d="M90 85 V100 H200"/>
+        <text class="t t-small t-muted" x="210" y="30">B: too high?</text>
+        <!-- comparator A bottom: sig to - -->
+        <polygon class="f-accent-soft s-line" points="200,140 200,220 290,180"/>
+        <text class="t t-bold" x="205" y="164">+</text><text class="t t-bold" x="205" y="204">−</text>
+        <path class="s-line" d="M90 175 V160 H200"/>
+        <path class="s-line" d="M200 200 H150"/><text class="t t-small" x="100" y="230">2.20 V ref</text>
+        <text class="t t-small t-muted" x="210" y="245">A: too low?</text>
+        <!-- outputs joined -->
+        <path class="s-line" d="M290 80 H360 V180 H290"/>
+        <circle class="f-ink" cx="360" cy="130" r="3"/>
+        <path class="s-line" d="M360 130 H460"/>
+        <path class="s-line" d="M420 130 V100"/>
+        <rect class="f-panel s-line" x="410" y="40" width="20" height="60"/>
+        <text class="t t-small" x="436" y="75">10 kΩ pull-up</text>
+        <path class="s-line" d="M420 40 V25"/><text class="t t-small" x="404" y="20">+3.3 V</text>
+        <circle class="f-ink" cx="420" cy="130" r="3"/>
+        <text class="t t-small t-bold" x="466" y="134">OK = high</text>
+        <text class="t t-small t-bold t-red" x="466" y="152">ALARM = low</text>
+        <text class="t t-small t-muted" x="300" y="205">open-collector outputs (LM393):</text>
+        <text class="t t-small t-muted" x="300" y="221">either one can pull the line low</text>
+      </svg>
+      <figcaption>Figure 4. Window comparator. The signal goes to the − input of the "too high" comparator and the + input of the "too low" one. An open-collector output pulls low whenever its + input is below its − input. Both outputs share one pull-up. Inside the window both output transistors are off and the line sits high; outside it, one of them pulls the line low.</figcaption>
+    </figure>
+    <div class="callout job"><span class="label">On the job</span><p>BMS technicians constantly deal with 0–10 V and 4–20 mA points, and with "the reading on the front end doesn't match the sensor". Measure the actual signal at the controller terminals: volts for 0–10 V points, and for 4–20 mA either the voltage across a known shunt or the loop current with the meter in series (or a clamp meter made for milliamp loops). If the field value is right and the front end is wrong, the problem is scaling or configuration, not wiring.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Control wiring at 24 V AC/DC and signal levels of 0–10 V and 4–20 mA is extra-low voltage. In practice the controllers sit in panels that also contain mains supplies, and any work on the mains parts must be done by a licensed electrician. Follow the site's isolation procedures and confirm with your state electrical regulator what an unlicensed technician may do in a mixed panel.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Build all of these circuits on the bench from plug-pack or bench supplies at 24 V DC or less. Never connect your test circuit to a live building panel until you are trained, authorised by the site, and working only on its ELV terminals.</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>In P12 you read sensors with a microcontroller ADC and meet the loading and scaling issues this chapter solves. In P14 you connect to field devices and see analogue points next to Modbus ones.</p>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC</a>
+    <a class="crosslink" href="../practice/p14-serial-buses-modbus.html">Practice P14 · Talking to devices: UART, I²C, SPI, RS-485 and Modbus</a>
+    <a class="crosslink" href="t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>An op-amp with A<sub>OL</sub> = 200,000 runs open-loop on ±12 V. V<sub>+</sub> = 1.0001 V and V<sub>−</sub> = 1.0000 V. What is the output?</summary><div class="answer"><p>Ideal: 200,000 × 0.1 mV = 20 V, which is beyond the rail, so the output sits at its positive limit (about +10.5 V for a classic part). Open loop it is a comparator.</p></div></details>
+    <details class="quiz"><summary>Why is Rule 1 (V<sub>−</sub> = V<sub>+</sub>) not a property of the chip?</summary><div class="answer"><p>It comes from negative feedback plus huge gain: the output moves until the inputs differ by only V<sub>out</sub>/A, microvolts. Without feedback, or with the output stuck at a rail, the inputs can differ by volts.</p></div></details>
+    <details class="quiz"><summary>Design a non-inverting amplifier with a gain of 11 using a 10 kΩ R<sub>g</sub>.</summary><div class="answer"><p>1 + R<sub>f</sub>/R<sub>g</sub> = 11, so R<sub>f</sub> = 100 kΩ.</p></div></details>
+    <details class="quiz"><summary>An inverting amplifier has R<sub>in</sub> = 4.7 kΩ and R<sub>f</sub> = 47 kΩ. Input +0.5 V, ±15 V supply. Output? Current from the source?</summary><div class="answer"><p>Gain −10, output <strong>−5 V</strong>. The source sees R<sub>in</sub> to a virtual ground: 0.5/4.7k ≈ <strong>106 µA</strong>.</p></div></details>
+    <details class="quiz"><summary>An LM358 (GBW about 1 MHz) is set to a gain of 101. What bandwidth do you expect?</summary><div class="answer"><p>About 1 MHz/101 ≈ <strong>10 kHz</strong>. Fine for a temperature sensor, not for audio-grade work at that gain.</p></div></details>
+    <details class="quiz"><summary>Why can't you scale 0–10 V down to 0–3.3 V with a single non-inverting amplifier?</summary><div class="answer"><p>Its gain is 1 + R<sub>f</sub>/R<sub>g</sub>, never less than 1. Use a divider (gain 0.3125 with 22 k/10 k) then a follower. An inverting stage could attenuate but flips the sign, which a single-supply ADC cannot read.</p></div></details>
+    <details class="quiz"><summary>A 4–20 mA loop uses a 150 Ω shunt. The ADC reads 1.32 V. What percentage is the sensor reporting?</summary><div class="answer"><p>I = 1.32/150 = 8.8 mA. Percent = (8.8 − 4)/16 × 100 = <strong>30 %</strong>. Equivalently (1.32 − 0.6)/2.4 = 0.30.</p></div></details>
+    <details class="quiz"><summary>In the window comparator, why is "low = alarm" with open-collector outputs a good choice?</summary><div class="answer"><p>Either comparator can pull the shared line low on its own, so one pull-up and one wire report both faults. And with the pull-up on the comparator's supply and a pull-down at the receiving input, a lost supply or a cut signal wire also reads low, so common failures show up as an alarm instead of looking normal. With "high = alarm" those same failures would hide.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain what an op-amp amplifies and why it acts as a comparator without feedback.</span></li>
+      <li><input type="checkbox"><span>I can state the two golden rules and when Rule 1 stops being true.</span></li>
+      <li><input type="checkbox"><span>I can derive the follower, non-inverting and inverting gains from the rules.</span></li>
+      <li><input type="checkbox"><span>I can design a summing amplifier and explain the virtual ground.</span></li>
+      <li><input type="checkbox"><span>I can check output swing, common-mode range, gain–bandwidth and offset on a datasheet.</span></li>
+      <li><input type="checkbox"><span>I can scale a 0–10 V signal safely into a 3.3 V ADC.</span></li>
+      <li><input type="checkbox"><span>I can convert 4–20 mA to a voltage, scale it to percent and detect a broken loop.</span></li>
+      <li><input type="checkbox"><span>I can build a window comparator with open-collector outputs and hysteresis.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

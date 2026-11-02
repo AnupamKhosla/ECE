@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P09 · The 555 timer: blinkers and PWM</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
+    <span class="eyebrow">Practice · Lab P09</span>
+    <h1>The 555 timer: blinkers and PWM</h1>
+    <p class="lede">You will understand what is inside the 555 in plain words, build an LED flasher whose speed you can calculate before you power it, build a push-button "stay on for 10 seconds" timer like a door-release timer, and dim an LED with pulse-width modulation (PWM).</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$15</span><span><b>Theory</b> T05, T14, T15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>NE555 timer ICs ×3</b><small>~A$1 each · 8-pin DIP. A CMOS version (7555, TLC555) also works, with less output current.</small></li>
+      <li><b>Capacitors</b><small>100 µF, 10 µF, 1 µF electrolytic; 100 nF ×3, 10 nF ×3 ceramic</small></li>
+      <li><b>Resistors</b><small>1 kΩ, 10 kΩ ×2, 47 kΩ, 68 kΩ, 91 kΩ or 100 kΩ, 470 Ω ×2</small></li>
+      <li><b>100 kΩ potentiometer</b><small>~A$2 · linear ("B" taper), breadboard-friendly</small></li>
+      <li><b>1N4148 diodes ×2</b><small>For the PWM circuit</small></li>
+      <li><b>Push-button, LEDs</b><small>From your kit</small></li>
+      <li><b>Power</b><small>9 V battery, or a 5–12 V DC supply</small></li>
+      <li><b>From P08</b><small>BC547, logic-level MOSFET, 12 V relay, 1N4007 for the extensions</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>Everything runs at 5–12 V DC. The NE555 is rated to about 16 V supply (check your datasheet; CMOS versions are often lower). Its output can source or sink up to about 200 mA, enough to cook an LED with no resistor. If you drive a relay or motor from it, fit the flyback diode from P08.</p></div>
+
+    <h2>1 · What is inside the 555, in plain words</h2>
+    <p>The 555 appeared around 1971 and is still made in huge numbers because it does one job very well: it turns the slow, predictable charging of a capacitor (P07) into clean on/off timing. Inside are five simple blocks.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 380" role="img" aria-label="555 internal block diagram: three equal resistors make 2/3 and 1/3 Vcc, two comparators, a flip-flop, an output stage and a discharge transistor">
+        <rect class="f-wash s-thin" x="120" y="20" width="400" height="330" rx="10"/>
+        <!-- divider -->
+        <path class="s-line" d="M160 20 V40"/>
+        <rect class="f-panel s-line" x="150" y="40" width="20" height="44"/><text class="t t-small" x="176" y="66">R</text>
+        <path class="s-line" d="M160 84 V140"/>
+        <rect class="f-panel s-line" x="150" y="140" width="20" height="44"/><text class="t t-small" x="176" y="166">R</text>
+        <path class="s-line" d="M160 184 V240"/>
+        <rect class="f-panel s-line" x="150" y="240" width="20" height="44"/><text class="t t-small" x="176" y="266">R</text>
+        <path class="s-line" d="M160 284 V350"/>
+        <circle class="f-ink" cx="160" cy="112" r="3.5"/><circle class="f-ink" cx="160" cy="212" r="3.5"/>
+        <text class="t t-small t-accent" x="166" y="106">2/3 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text class="t t-small t-accent" x="166" y="206">1/3 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <!-- comparator A (upper) -->
+        <polygon class="f-panel s-line" points="230,80 230,144 290,112"/>
+        <text class="t t-small" x="236" y="100">+</text><text class="t t-small" x="236" y="134">−</text>
+        <path class="s-line" d="M160 112 H200 V130 H230"/>
+        <text class="t t-small t-muted" x="232" y="160">comparator A</text>
+        <!-- comparator B (lower) -->
+        <polygon class="f-panel s-line" points="230,180 230,244 290,212"/>
+        <text class="t t-small" x="236" y="200">−</text><text class="t t-small" x="236" y="234">+</text>
+        <path class="s-line" d="M160 212 H200 V230 H230"/>
+        <text class="t t-small t-muted" x="232" y="262">comparator B</text>
+        <!-- flip flop -->
+        <rect class="f-accent-soft s-accent" x="330" y="110" width="80" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="344" y="132">flip-flop</text>
+        <text class="t t-small" x="336" y="160">R (reset)</text>
+        <text class="t t-small" x="336" y="200">S (set)</text>
+        <path class="s-line" d="M290 112 H310 V156 H330"/>
+        <path class="s-line" d="M290 212 H310 V196 H330"/>
+        <!-- output stage -->
+        <polygon class="f-panel s-line" points="440,110 440,150 476,130"/>
+        <path class="s-line" d="M410 130 H440 M476 130 H520"/>
+        <text class="t t-small t-muted" x="430" y="104">output stage</text>
+        <!-- discharge transistor -->
+        <circle class="s-line f-panel" cx="470" cy="270" r="22"/>
+        <line class="s-line" x1="462" y1="258" x2="462" y2="282"/>
+        <path class="s-line" d="M462 264 L476 254 V240 H520"/>
+        <path class="s-line" d="M462 276 L476 286 V350"/>
+        <path class="s-line" d="M410 196 H430 V270 H462"/>
+        <text class="t t-small t-muted" x="400" y="316">discharge</text>
+        <text class="t t-small t-muted" x="400" y="332">transistor</text>
+        <!-- reset line -->
+        <path class="s-thin s-dash" d="M370 20 V110"/>
+        <!-- pins -->
+        <g class="t t-small">
+        <text x="140" y="14">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text x="350" y="14">4 RESET (active low)</text>
+        <text x="140" y="372">1 GND</text>
+        <text x="524" y="134">3 OUT</text>
+        <text x="524" y="244">7 DISCH</text>
+        <text x="20" y="76">6 THRESHOLD</text>
+        <text x="20" y="276">2 TRIGGER</text>
+        <text x="20" y="116">5 CONTROL</text>
+        </g>
+        <path class="s-line" d="M100 80 H215 V96 H230"/>
+        <path class="s-line" d="M90 280 H215 V196 H230"/>
+        <path class="s-thin" d="M100 112 H160"/>
+        <path class="s-thin s-dash" d="M476 350 H160"/>
+      </svg>
+      <figcaption>Figure 1. Inside the 555. Three equal resistors split the supply into 1/3 and 2/3 of V<sub>CC</sub>. Comparator A watches THRESHOLD (pin 6) against 2/3; comparator B watches TRIGGER (pin 2) against 1/3. They set and reset a flip-flop (a one-bit memory) that drives the output and the discharge transistor.</figcaption>
+    </figure>
+
+    <div class="cards">
+      <div class="card"><h4>The divider</h4><p>Three equal resistors from V<sub>CC</sub> to ground give two reference voltages: 2/3 V<sub>CC</sub> and 1/3 V<sub>CC</sub>. Pin 5 (CONTROL) is the 2/3 point, brought out so you can adjust it or steady it with 10 nF.</p></div>
+      <div class="card"><h4>Comparator A (upper)</h4><p>A comparator outputs "yes" when its + input is higher than its − input. This one says "yes" when THRESHOLD (pin 6) rises above 2/3 V<sub>CC</sub>, and that resets the flip-flop.</p></div>
+      <div class="card"><h4>Comparator B (lower)</h4><p>This one says "yes" when TRIGGER (pin 2) falls below 1/3 V<sub>CC</sub>, and that sets the flip-flop.</p></div>
+      <div class="card"><h4>The flip-flop</h4><p>A one-bit memory. Set: output HIGH. Reset: output LOW. It remembers its state between events, which is what gives the 555 its two clean levels.</p></div>
+      <div class="card"><h4>Output stage</h4><p>A buffer that drives pin 3 close to V<sub>CC</sub> or close to 0 V, and can source or sink about 200 mA (bipolar NE555).</p></div>
+      <div class="card"><h4>Discharge transistor</h4><p>When the output is LOW, this transistor turns on and shorts pin 7 to ground, emptying the timing capacitor. When the output is HIGH, it lets go.</p></div>
+    </div>
+    <p>So the whole chip follows two rules: <b>voltage on pin 2 drops below 1/3 → output HIGH, discharge released.</b> <b>Voltage on pin 6 rises above 2/3 → output LOW, discharge shorts to ground.</b> Pin 4 (RESET) forces the output LOW whenever it is pulled low, so normally you tie it to V<sub>CC</sub>.</p>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The 555 has a clock inside that sets the frequency." <b>Right:</b> there is no clock. The timing comes entirely from your resistor and capacitor. The 555 just watches the capacitor voltage and flips at 1/3 and 2/3 of the supply. Because both thresholds scale with V<sub>CC</sub>, the timing hardly changes when the battery runs down. That is the clever part.</p></div>
+
+    <h2>2 · Astable: an LED flasher you can predict</h2>
+    <p><b>Astable</b> means "no stable state": the circuit keeps flipping by itself. The capacitor charges through R1 + R2 until it reaches 2/3 V<sub>CC</sub>. The output goes LOW and pin 7 shorts, so the capacitor discharges through R2 only, until it falls to 1/3 V<sub>CC</sub>. The output goes HIGH, pin 7 lets go, and charging starts again. Pins 2 and 6 are joined so both comparators watch the same capacitor.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="555 astable circuit: R1 from Vcc to pin 7, R2 from pin 7 to pins 6 and 2, C to ground, 10 nF on pin 5, LED and 470 ohm on pin 3">
+        <rect class="f-panel s-line" x="260" y="70" width="140" height="170" rx="6"/>
+        <text class="t t-bold" x="314" y="160">555</text>
+        <text class="t t-small" x="266" y="96">7 DIS</text>
+        <text class="t t-small" x="266" y="136">6 THR</text>
+        <text class="t t-small" x="266" y="176">2 TRIG</text>
+        <text class="t t-small" x="266" y="230">1 GND</text>
+        <text class="t t-small" x="352" y="96">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text class="t t-small" x="352" y="136">4 RST</text>
+        <text class="t t-small" x="352" y="176">3 OUT</text>
+        <text class="t t-small" x="352" y="216">5 CV</text>
+        <!-- rails -->
+        <path class="s-line" d="M60 30 H560"/><text class="t t-small t-bold" x="20" y="34">+9 V</text>
+        <path class="s-line" d="M60 280 H560"/><text class="t t-small t-bold" x="20" y="284">0 V</text>
+        <!-- pins 8 and 4 to vcc -->
+        <path class="s-line" d="M400 92 H440 V30 M400 132 H440 V92"/>
+        <!-- R1 -->
+        <path class="s-line" d="M180 30 V40 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V92 H260"/>
+        <text class="t t-small" x="130" y="64">R1</text>
+        <text class="t t-small t-muted" x="120" y="80">10 kΩ</text>
+        <!-- R2 -->
+        <path class="s-line" d="M180 92 V102 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V172 H260 M180 132 V132"/>
+        <path class="s-line" d="M220 172 V132 H260"/>
+        <text class="t t-small" x="130" y="120">R2</text>
+        <text class="t t-small t-muted" x="120" y="136">68 kΩ</text>
+        <circle class="f-ink" cx="180" cy="92" r="3.5"/><circle class="f-ink" cx="180" cy="172" r="3.5"/><circle class="f-ink" cx="220" cy="172" r="3.5"/>
+        <!-- C timing -->
+        <path class="s-line" d="M180 172 V208"/>
+        <line class="s-line" x1="162" y1="208" x2="198" y2="208"/>
+        <path class="s-line" d="M162 222 Q180 212 198 222"/>
+        <path class="s-line" d="M180 218 V280"/>
+        <text class="t t-small" x="110" y="214">C 10 µF</text>
+        <text class="t t-small" x="200" y="204">+</text>
+        <!-- pin 1 -->
+        <path class="s-line" d="M260 226 H240 V280"/>
+        <!-- pin 5 cap -->
+        <path class="s-line" d="M400 212 H420 V236"/>
+        <line class="s-line" x1="406" y1="236" x2="434" y2="236"/><line class="s-line" x1="406" y1="244" x2="434" y2="244"/>
+        <path class="s-line" d="M420 244 V280"/>
+        <text class="t t-small t-muted" x="440" y="246">10 nF</text>
+        <!-- output LED -->
+        <path class="s-line" d="M400 172 H480 l6 -8 l8 16 l8 -16 l8 16 l8 -16 l6 8 H540 V196"/>
+        <text class="t t-small" x="482" y="156">470 Ω</text>
+        <polygon class="f-red" points="528,196 552,196 540,216"/>
+        <line class="s-line" x1="528" y1="216" x2="552" y2="216"/>
+        <path class="s-line" d="M540 216 V280"/>
+        <text class="t t-small" x="560" y="212">LED</text>
+        <!-- decoupling -->
+        <path class="s-line" d="M500 30 V48"/>
+        <line class="s-line" x1="486" y1="48" x2="514" y2="48"/><line class="s-line" x1="486" y1="56" x2="514" y2="56"/>
+        <path class="s-line" d="M500 56 V120"/>
+        <text class="t t-small t-muted" x="520" y="58">100 nF at pins 8–1</text>
+        <path class="s-thin s-dash" d="M500 120 V280"/>
+      </svg>
+      <figcaption>Figure 2. Astable LED flasher. With R1 = 10 kΩ, R2 = 68 kΩ and C = 10 µF it flashes about once a second. The 10 nF on pin 5 keeps the 2/3 threshold steady against noise; the 100 nF across the supply pins is the decoupling from P07.</figcaption>
+    </figure>
+
+    <h3>The timing formulas, and where 0.693 comes from</h3>
+    <p>During each half of the cycle the capacitor moves between 1/3 and 2/3 of the supply. Charging, the gap to the target (V<sub>CC</sub>) starts at 2/3 and ends at 1/3: it halves. Discharging, the voltage halves from 2/3 to 1/3. An RC curve halves its gap in ln 2 × τ = 0.693 τ. So:</p>
+    <div class="formula">t<sub>high</sub> = 0.693 × (R1 + R2) × C     t<sub>low</sub> = 0.693 × R2 × C
+      <small>t<sub>high</sub> is the time the output is HIGH (charging through R1 and R2). t<sub>low</sub> is the time it is LOW (discharging through R2 only, into pin 7).</small></div>
+    <div class="formula">f = 1 / (t<sub>high</sub> + t<sub>low</sub>) = 1.44 / ((R1 + 2·R2) × C)     duty = (R1 + R2) / (R1 + 2·R2)
+      <small>1.44 is just 1/0.693. Duty cycle is the fraction of each cycle the output is HIGH. In this basic circuit it is always above 50%, because charging goes through both resistors.</small></div>
+    <p><b>Worked example.</b> R1 = 10 kΩ, R2 = 68 kΩ, C = 10 µF.</p>
+    <ul>
+      <li>t<sub>high</sub> = 0.693 × 78 000 × 0.00001 = 0.54 s</li>
+      <li>t<sub>low</sub> = 0.693 × 68 000 × 0.00001 = 0.47 s</li>
+      <li>f = 1.44 / (146 000 × 0.00001) = 0.99 Hz, about one flash per second; duty = 78/146 = 53%</li>
+    </ul>
+
+    <div class="widget" id="p9w-ast">
+      <span class="label">Interactive · 555 astable calculator</span>
+      <label>R1 <span class="out" id="p9a-r1o">10 kΩ</span><input type="range" id="p9a-r1" min="0" max="100" step="1" value="40"></label>
+      <label>R2 <span class="out" id="p9a-r2o">68 kΩ</span><input type="range" id="p9a-r2" min="0" max="100" step="1" value="73"></label>
+      <label>C <select id="p9a-c"><option value="1e-8">10 nF</option><option value="1e-7">100 nF</option><option value="1e-6">1 µF</option><option value="1e-5" selected>10 µF</option><option value="1e-4">100 µF</option></select></label>
+      <svg viewBox="0 0 600 200" role="img" aria-label="Capacitor voltage between one third and two thirds of the supply, and the square output wave" style="margin-top:8px">
+        <line class="s-thin s-dash" x1="40" y1="30" x2="590" y2="30"/>
+        <line class="s-thin s-dash" x1="40" y1="70" x2="590" y2="70"/>
+        <text class="t t-small t-muted" x="2" y="34">⅔</text>
+        <text class="t t-small t-muted" x="2" y="74">⅓</text>
+        <path id="p9a-cap" class="s-blue" d=""/>
+        <line class="s-thin" x1="40" y1="180" x2="590" y2="180"/>
+        <path id="p9a-out" class="s-accent" d=""/>
+        <text class="t t-small t-blue" x="44" y="100">capacitor (pins 2, 6)</text>
+        <text class="t t-small t-accent" x="44" y="196">output (pin 3)</text>
+      </svg>
+      <div class="readings">
+        <div><small>Frequency</small><span class="out" id="p9a-f">—</span></div>
+        <div><small>Time HIGH</small><span class="out" id="p9a-th">—</span></div>
+        <div><small>Time LOW</small><span class="out" id="p9a-tl">—</span></div>
+        <div><small>Duty cycle</small><span class="out" id="p9a-d">—</span></div>
+      </div>
+      <p id="p9a-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var E12=[1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2],VALS=[];
+      for(var dec=2;dec<=6;dec++){for(var k=0;k<12;k++){var v=E12[k]*Math.pow(10,dec);if(v<=1e6+1)VALS.push(Math.round(v));}}
+      // VALS: 100 Ω .. 1 MΩ, map slider 0..100
+      function val(s){return VALS[Math.round(s*(VALS.length-1)/100)];}
+      function fR(r){return r>=1e6?(r/1e6)+' MΩ':r>=1000?(+(r/1000).toFixed(1))+' kΩ':r+' Ω';}
+      function fT(t){return t>=1?t.toFixed(2)+' s':t>=1e-3?(t*1000).toFixed(t<0.01?2:1)+' ms':(t*1e6).toFixed(0)+' µs';}
+      function fF(f){return f>=1000?(f/1000).toFixed(2)+' kHz':f>=1?f.toFixed(2)+' Hz':(1/f).toFixed(1)+' s period';}
+      function upd(){
+        var r1=val(+$('p9a-r1').value),r2=val(+$('p9a-r2').value),C=+$('p9a-c').value;
+        $('p9a-r1o').textContent=fR(r1);$('p9a-r2o').textContent=fR(r2);
+        var th=0.693*(r1+r2)*C,tl=0.693*r2*C,T=th+tl,f=1/T,d=th/T;
+        $('p9a-f').textContent=fF(f);$('p9a-th').textContent=fT(th);$('p9a-tl').textContent=fT(tl);$('p9a-d').textContent=(d*100).toFixed(1)+' %';
+        // draw 2.5 cycles
+        var X0=40,X1=590,span=2.5*T,t1=(r1+r2)*C,t2=r2*C,dc='',dout='',n=400;
+        function x(t){return X0+(X1-X0)*t/span;}
+        function yc(v){return 110-120*v;} // v as fraction of Vcc: 1/3 -> 70, 2/3 -> 30
+        for(var i=0;i<=n;i++){var t=span*i/n,ph=t%T,v,hi;
+          if(ph<th){v=1-(2/3)*Math.exp(-ph/t1);hi=1;}else{v=(2/3)*Math.exp(-(ph-th)/t2);hi=0;}
+          dc+=(i?' L':'M')+x(t).toFixed(1)+' '+yc(v).toFixed(1);}
+        var y1=130,y0=176,cur=0;dout='M'+X0+' '+y1;
+        for(var c=0;c<3;c++){var a=c*T,b=a+th,e=a+T;
+          if(a>span)break;dout+=' L'+x(Math.min(b,span)).toFixed(1)+' '+y1;if(b>span)break;
+          dout+=' L'+x(b).toFixed(1)+' '+y0+' L'+x(Math.min(e,span)).toFixed(1)+' '+y0;if(e>span)break;dout+=' L'+x(e).toFixed(1)+' '+y1;}
+        $('p9a-cap').setAttribute('d',dc);$('p9a-out').setAttribute('d',dout);
+        var note=[];
+        if(r1<1000)note.push('R1 below about 1 kΩ makes pin 7 sink a large current from V_CC when it discharges. Keep R1 at 1 kΩ or more.');
+        if(f>25&&f<100)note.push('Between about 25 and 100 Hz an LED looks flickery.');
+        if(f>=100)note.push('Above about 100 Hz the LED looks steadily on, at a brightness set by the duty cycle.');
+        if(f<=25&&f>=0.2)note.push('You can count these flashes by eye. Check with a phone stopwatch over 10 flashes.');
+        if(C>=1e-4&&r2>=470000)note.push('Large resistors with a big electrolytic: leakage current can make the timing long or unreliable.');
+        $('p9a-note').textContent=note.join(' ');
+      }
+      ['p9a-r1','p9a-r2'].forEach(function(k){$(k).oninput=upd;});$('p9a-c').onchange=upd;upd();
+    })();
+    </script>
+
+    <ol class="steps">
+      <li><p><b>Place the 555 across the centre channel</b> of the breadboard, notch to the left. Pin 1 is bottom-left; pins count anticlockwise, so the top row reads 8, 7, 6, 5 from left to right (Figure 3).</p></li>
+      <li><p><b>Power pins first.</b> Pin 8 and pin 4 to +, pin 1 to −. Put 100 nF right across pins 8 and 1, and 100 µF across the rails where the battery connects.</p></li>
+      <li><p><b>Timing parts.</b> R1 from + to pin 7. R2 from pin 7 to pin 6. A jumper from pin 6 to pin 2. 10 µF from pin 2 to − (stripe to −). 10 nF from pin 5 to −.</p></li>
+      <li><p><b>Output.</b> 470 Ω from pin 3 to the LED's anode; LED cathode to −.</p></li>
+      <li><p><b>Power up and time it.</b> Count 10 flashes with a phone stopwatch. Expect about 10 s (between about 8 and 12 s with a ±20% capacitor).</p></li>
+      <li><p><b>Measure.</b> Meter on V DC at pin 2/6: it swings between about 3 V and 6 V on a 9 V supply (1/3 and 2/3). Pin 3 swings between near 0 V and about 1.5 V below the supply (the bipolar output stage loses a little).</p></li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Breadboard layout of the 555 astable flasher">
+        <rect class="f-wash s-thin" x="20" y="10" width="600" height="280" rx="8"/>
+        <!-- rails -->
+        <line class="s-red" x1="40" y1="24" x2="600" y2="24"/><text class="t t-small t-red" x="26" y="28">+</text>
+        <line class="s-blue" x1="40" y1="38" x2="600" y2="38"/><text class="t t-small t-blue" x="26" y="42">−</text>
+        <line class="s-blue" x1="40" y1="262" x2="600" y2="262"/><text class="t t-small t-blue" x="26" y="266">−</text>
+        <line class="s-red" x1="40" y1="276" x2="600" y2="276"/><text class="t t-small t-red" x="26" y="280">+</text>
+        <!-- hole columns hint -->
+        <g class="s-thin">
+          <line x1="250" y1="55" x2="250" y2="125"/><line x1="280" y1="55" x2="280" y2="125"/><line x1="310" y1="55" x2="310" y2="125"/><line x1="340" y1="55" x2="340" y2="125"/><line x1="430" y1="175" x2="430" y2="245"/>
+          <line x1="250" y1="175" x2="250" y2="245"/><line x1="280" y1="175" x2="280" y2="245"/><line x1="310" y1="175" x2="310" y2="245"/><line x1="340" y1="175" x2="340" y2="245"/>
+        </g>
+        <line class="s-thin s-dash" x1="40" y1="150" x2="600" y2="150"/>
+        <text class="t t-small t-muted" x="470" y="146">centre channel</text>
+        <!-- chip -->
+        <rect class="f-ink" x="236" y="126" width="118" height="48" rx="3"/>
+        <path class="f-panel" d="M236 142 a8 8 0 0 1 0 16 z"/>
+        <text class="t t-small f-panel" x="276" y="155">NE555</text>
+        <g class="t t-small t-muted"><text x="244" y="122">8</text><text x="274" y="122">7</text><text x="304" y="122">6</text><text x="334" y="122">5</text>
+        <text x="244" y="188">1</text><text x="274" y="188">2</text><text x="304" y="188">3</text><text x="334" y="188">4</text></g>
+        <!-- pin 8 to + -->
+        <line class="s-red" x1="250" y1="24" x2="250" y2="100"/>
+        <!-- R1: + rail to pin 7 column -->
+        <line class="s-line" x1="280" y1="24" x2="280" y2="44"/><rect class="f-amber" x="273" y="44" width="14" height="30" rx="5"/><line class="s-line" x1="280" y1="74" x2="280" y2="90"/>
+        <text class="t t-small" x="200" y="66">R1</text>
+        <!-- R2: pin 7 col to pin 6 col -->
+        <line class="s-line" x1="280" y1="108" x2="284" y2="108"/><rect class="f-amber" x="284" y="102" width="22" height="12" rx="4"/><line class="s-line" x1="306" y1="108" x2="310" y2="108"/>
+        <text class="t t-small" x="288" y="96">R2</text>
+        <!-- pin6 to pin2 jumper -->
+        <path class="s-amber" d="M310 64 V58 H222 V196 H280 V210"/>
+        <text class="t t-small" x="150" y="140">jumper 6→2</text>
+        <!-- pin5 10nF to top − -->
+        <line class="s-line" x1="340" y1="38" x2="340" y2="52"/><ellipse class="f-amber" cx="340" cy="62" rx="9" ry="8"/><line class="s-line" x1="340" y1="70" x2="340" y2="90"/>
+        <text class="t t-small" x="354" y="66">10 nF</text>
+        <!-- decoupling across top rails -->
+        <line class="s-line" x1="200" y1="24" x2="200" y2="27"/><ellipse class="f-amber" cx="200" cy="31" rx="7" ry="5"/><line class="s-line" x1="200" y1="35" x2="200" y2="38"/>
+        <text class="t t-small t-muted" x="118" y="56">100 nF</text>
+        <!-- pin1 to − bottom -->
+        <line class="s-blue" x1="250" y1="200" x2="250" y2="262"/>
+        <!-- C timing pin2 col to − -->
+        <rect class="f-blue" x="270" y="214" width="20" height="30" rx="4"/><rect class="f-grey" x="283" y="214" width="7" height="30"/>
+        <line class="s-line" x1="286" y1="244" x2="286" y2="262"/>
+        <text class="t t-small" x="196" y="236">10 µF</text>
+        <!-- pin4 to + bottom -->
+        <line class="s-red" x1="340" y1="200" x2="340" y2="276"/>
+        <!-- output resistor pin3 -> col 430 -->
+        <line class="s-line" x1="310" y1="226" x2="370" y2="226"/><rect class="f-amber" x="370" y="220" width="34" height="12" rx="4"/><line class="s-line" x1="404" y1="226" x2="430" y2="226"/>
+        <text class="t t-small" x="368" y="214">470 Ω</text>
+        <!-- LED col 430 to − -->
+        <circle class="f-red" cx="440" cy="240" r="9"/><line class="s-line" x1="436" y1="249" x2="436" y2="262"/>
+        <text class="t t-small" x="456" y="244">LED (long leg left)</text>
+        <!-- battery -->
+        <text class="t t-small t-bold" x="540" y="56">9 V to</text>
+        <text class="t t-small t-bold" x="540" y="72">rails</text>
+        <rect class="f-blue" x="560" y="90" width="20" height="30" rx="4"/><rect class="f-grey" x="573" y="90" width="7" height="30"/>
+        <text class="t t-small" x="520" y="136">100 µF bulk</text>
+        <path class="s-thin" d="M566 90 V24 M576 120 V140 H590 V38"/>
+      </svg>
+      <figcaption>Figure 3. Breadboard layout for the flasher. Each vertical group of five holes is one connected strip. Top rails and bottom rails are often <i>not</i> joined on long breadboards; link them, or feed both. Keep the 100 nF close to the chip's pin 8 and pin 1.</figcaption>
+    </figure>
+
+    <div class="callout why"><span class="label">Why it works</span><p>The 555 is a capacitor timer plus a memory with hysteresis: two thresholds with a gap between them. Without the gap, the circuit would chatter at one voltage. With it, the capacitor must travel all the way from 1/3 to 2/3 and back, and each trip takes a fixed fraction of the RC time constant. The comparators are the same idea as the op-amp comparator in T14, and the flip-flop is the memory cell from T15.</p></div>
+    <a class="crosslink" href="../theory/t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors</a>
+
+    <h2>3 · Monostable: "stay on for 10 seconds"</h2>
+    <p><b>Monostable</b> means "one stable state". The output rests LOW. A short trigger pulse on pin 2 sets it HIGH for a fixed time, then it returns to LOW by itself. This is exactly a door-release timer: press the exit button, the lock releases for 10 seconds, then it locks again.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 280" role="img" aria-label="555 monostable: push button pulls trigger low through pull-up, R and C on pins 6 and 7, output LED or relay driver">
+        <rect class="f-panel s-line" x="260" y="60" width="140" height="170" rx="6"/>
+        <text class="t t-bold" x="314" y="150">555</text>
+        <text class="t t-small" x="266" y="86">7 DIS</text>
+        <text class="t t-small" x="266" y="122">6 THR</text>
+        <text class="t t-small" x="266" y="176">2 TRIG</text>
+        <text class="t t-small" x="266" y="220">1 GND</text>
+        <text class="t t-small" x="352" y="86">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text class="t t-small" x="352" y="122">4 RST</text>
+        <text class="t t-small" x="352" y="176">3 OUT</text>
+        <text class="t t-small" x="352" y="206">5 CV</text>
+        <path class="s-line" d="M60 24 H580"/><text class="t t-small t-bold" x="16" y="28">+9 V</text>
+        <path class="s-line" d="M60 266 H580"/><text class="t t-small t-bold" x="16" y="270">0 V</text>
+        <path class="s-line" d="M400 82 H430 V24 M400 118 H430 V82"/>
+        <!-- R timing -->
+        <path class="s-line" d="M200 24 V34 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V82 H260 M200 82 V118 H260"/>
+        <text class="t t-small" x="120" y="54">R 91 kΩ</text>
+        <circle class="f-ink" cx="200" cy="82" r="3.5"/><circle class="f-ink" cx="200" cy="118" r="3.5"/>
+        <path class="s-line" d="M200 118 V140"/>
+        <line class="s-line" x1="182" y1="140" x2="218" y2="140"/>
+        <path class="s-line" d="M182 154 Q200 144 218 154"/>
+        <path class="s-line" d="M200 150 V266"/>
+        <text class="t t-small" x="100" y="150">C 100 µF</text>
+        <!-- trigger pull-up + button -->
+        <path class="s-line" d="M110 24 V34 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V172 H260"/>
+        <text class="t t-small t-muted" x="40" y="60">10 kΩ</text>
+        <circle class="f-ink" cx="110" cy="172" r="3.5"/>
+        <path class="s-line" d="M110 172 V196"/>
+        <circle class="f-panel s-line" cx="110" cy="200" r="4"/><circle class="f-panel s-line" cx="110" cy="236" r="4"/>
+        <path class="s-line" d="M96 206 V230 M96 218 H84"/>
+        <path class="s-line" d="M110 240 V266"/>
+        <text class="t t-small" x="20" y="222">button</text>
+        <!-- pin 1 -->
+        <path class="s-line" d="M260 216 H240 V266"/>
+        <!-- pin 5 -->
+        <path class="s-line" d="M400 202 H420 V222"/><line class="s-line" x1="406" y1="222" x2="434" y2="222"/><line class="s-line" x1="406" y1="230" x2="434" y2="230"/><path class="s-line" d="M420 230 V266"/>
+        <text class="t t-small t-muted" x="440" y="232">10 nF</text>
+        <!-- output -->
+        <path class="s-line" d="M400 172 H470"/>
+        <rect class="f-accent-soft s-accent" x="470" y="150" width="140" height="44" rx="4"/>
+        <text class="t t-small" x="478" y="168">LED + 470 Ω, or</text>
+        <text class="t t-small" x="478" y="184">P08 relay driver</text>
+        <path class="s-line" d="M540 194 V266"/>
+      </svg>
+      <figcaption>Figure 4. Monostable timer. The 10 kΩ holds TRIGGER high. Pressing the button pulls it below 1/3 V<sub>CC</sub>: output HIGH, discharge released, C charges through R. At 2/3 V<sub>CC</sub> the output drops LOW and pin 7 empties C, ready for the next press.</figcaption>
+    </figure>
+
+    <div class="formula">t = 1.1 × R × C = 1.1 × 91 000 × 0.0001 ≈ 10 s
+      <small>Charging from 0 to 2/3 of the supply leaves a gap of 1/3, so t = τ × ln 3 = 1.0986 τ, rounded to 1.1. With R = 100 kΩ you get 11 s. Electrolytic tolerance (±20%) means your result will be somewhere between about 8 and 12 s: trim with R if you need it exact.</small></div>
+
+    <ol class="steps">
+      <li><p><b>Build Figure 4.</b> Same power wiring as before. Pins 6 and 7 are joined to the top of C; R from + to that node; 10 kΩ pull-up and button on pin 2.</p></li>
+      <li><p><b>Press and time.</b> A short press: the LED stays on for about 10 s, then goes out. Repeat three times; the times should agree within a few percent.</p></li>
+      <li><p><b>Hold the button for 15 s.</b> The LED stays on while you hold it and goes out after you release (once the time has passed). A trigger held low keeps the output HIGH.</p></li>
+      <li><p><b>Drive a relay.</b> Replace the LED with the P08 BC547 relay driver (or drive a small relay coil directly from pin 3, with the flyback diode). Now the timer switches a separate circuit: that is a door-release timer.</p></li>
+    </ol>
+
+    <div class="callout tip"><span class="label">Bench tip: edge triggering</span><p>If a held button must not stretch the time, couple the button to pin 2 through a 10 nF capacitor, with the 10 kΩ pull-up still on pin 2. Now only the moment of pressing makes a short negative pulse; holding the button does nothing more.</p></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>The "door open time" or "unlock time" on an access controller, the hold time on a PIR-controlled light, the run-on timer for an exhaust fan, and the off-the-shelf "time delay relay" modules sold for security work all do what this circuit does. Modern controllers do it in software, and DIN-rail timer relays in plant rooms do it with a microcontroller, but the behaviour is the same: a trigger, a fixed time, and a relay that drops out. When a site complains that "the door relocks too fast", you will be looking for this setting, and when an old timer module drifts long on a cold morning, you will suspect its electrolytic capacitor.</p></div>
+
+    <h2>4 · PWM: dimming an LED</h2>
+    <p><b>Pulse-width modulation</b> (PWM) controls average power by switching fully on and fully off very fast and changing the fraction of time spent on (the duty cycle). An LED switched at 1 kHz with 25% duty looks steadily lit at about a quarter of its full brightness. The switch is always either fully on or fully off, so almost no power is wasted in it. This is how LED strips, motor speed controllers and many power supplies work.</p>
+    <p>The basic astable cannot go below 50% duty, because charging goes through both resistors. Two diodes fix that by giving charge and discharge separate paths through a potentiometer.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="555 PWM circuit: 1k from Vcc to pin 7, pin 7 to potentiometer wiper, pot ends through two diodes to pins 6 and 2, 10 nF timing capacitor">
+        <defs><marker id="p9-arrW" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M40 24 H600"/><text class="t t-small t-bold" x="40" y="18">+V</text>
+        <path class="s-line" d="M40 244 H600"/><text class="t t-small t-bold" x="40" y="238">0 V</text>
+        <rect class="f-panel s-line" x="430" y="70" width="120" height="140" rx="6"/>
+        <text class="t t-bold" x="472" y="146">555</text>
+        <text class="t t-small" x="436" y="96">7 DIS</text>
+        <text class="t t-small" x="436" y="176">6 + 2</text>
+        <path class="s-line" d="M110 24 V34 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V92"/>
+        <text class="t t-small" x="124" y="58">1 kΩ</text>
+        <path class="s-line" d="M110 92 H430"/>
+        <circle class="f-ink" cx="230" cy="92" r="3.5"/>
+        <!-- pot -->
+        <path class="s-line" d="M160 132 H180 l6 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l10 -16 l10 16 l10 -16 l6 8 H300"/>
+        <path class="s-line" d="M230 92 V114" marker-end="url(#p9-arrW)"/>
+        <text class="t t-small" x="236" y="110">wiper</text>
+        <text class="t t-small t-muted" x="190" y="160">100 kΩ pot</text>
+        <text class="t t-small t-muted" x="164" y="124">R<tspan baseline-shift="sub" font-size="9">A</tspan></text>
+        <text class="t t-small t-muted" x="284" y="124">R<tspan baseline-shift="sub" font-size="9">B</tspan></text>
+        <!-- D1 charge: from left pot end to node, anode at pot -->
+        <path class="s-line" d="M160 132 V190 H220"/>
+        <polygon class="f-ink" points="220,180 220,200 238,190"/><line class="s-line" x1="238" y1="180" x2="238" y2="200"/>
+        <path class="s-line" d="M238 190 H360"/>
+        <text class="t t-small" x="200" y="216">D1 charges</text>
+        <!-- D2 discharge: from node to right pot end, anode at node -->
+        <path class="s-line" d="M300 132 V160 H320"/>
+        <polygon class="f-ink" points="338,150 338,170 320,160"/><line class="s-line" x1="320" y1="150" x2="320" y2="170"/>
+        <path class="s-line" d="M338 160 H360 V190"/>
+        <text class="t t-small" x="300" y="146">D2</text>
+        <text class="t t-small" x="344" y="146">discharges</text>
+        <path class="s-line" d="M360 190 H400 V172 H430"/>
+        <circle class="f-ink" cx="360" cy="190" r="3.5"/>
+        <path class="s-line" d="M400 190 V204"/>
+        <line class="s-line" x1="386" y1="204" x2="414" y2="204"/><line class="s-line" x1="386" y1="212" x2="414" y2="212"/>
+        <path class="s-line" d="M400 212 V244"/>
+        <text class="t t-small" x="330" y="230">10 nF</text>
+        <text class="t t-small t-muted" x="560" y="96">(pins 8, 4, 1, 5 and</text>
+        <text class="t t-small t-muted" x="560" y="112">the output wired</text>
+        <text class="t t-small t-muted" x="560" y="128">as in Figure 2)</text>
+      </svg>
+      <figcaption>Figure 5. 555 PWM. Charging current flows 1 kΩ → wiper → R<sub>A</sub> → D1 → capacitor. Discharge flows capacitor → D2 → R<sub>B</sub> → wiper → pin 7. Turning the pot moves resistance from one path to the other: duty changes from a few percent to over 95%, while the total period stays nearly constant.</figcaption>
+    </figure>
+
+    <div class="formula">t<sub>high</sub> ≈ 0.693 × (1 kΩ + R<sub>A</sub>) × C     t<sub>low</sub> ≈ 0.693 × R<sub>B</sub> × C     R<sub>A</sub> + R<sub>B</sub> = 100 kΩ
+      <small>Period ≈ 0.693 × 101 kΩ × 10 nF ≈ 0.7 ms, so about 1.4 kHz whatever the pot position. The diode drops shift the numbers a little, more so on a 5 V supply.</small></div>
+
+    <ol class="steps">
+      <li><p><b>Build Figure 5</b> on a fresh 555 (or rewire the astable). Output to LED + 470 Ω as before.</p></li>
+      <li><p><b>Turn the pot</b> from end to end. The LED goes from very dim to full, with no visible flicker (1.4 kHz is far above what eyes notice).</p></li>
+      <li><p><b>Measure pin 3 on V DC.</b> The meter averages the square wave, so it shows roughly duty × output-high voltage. At 9 V supply and ~7.5 V output-high, a 25% setting reads about 1.9 V. This is a neat way to "see" duty cycle with a meter.</p></li>
+      <li><p><b>Film the LED</b> with your phone's normal video: you may see rolling dark bands. That is the camera's line-by-line shutter catching the PWM, the same effect as the 50 Hz LED in P06.</p></li>
+      <li><p><b>Scale it up.</b> Power the 555 from 12 V and drive the P08 logic-level MOSFET gate from pin 3 (keep the 220 Ω gate resistor and 10 kΩ pull-down). Now the pot dims a 12 V LED strip. Fit the flyback diode if you use a motor instead.</p></li>
+    </ol>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "PWM at 50% gives the LED half the voltage." <b>Right:</b> the LED always sees either full voltage or none. It is the <i>time-average</i> of the current that halves. That distinction matters for motors (which feel the average because of their inertia) and for meters (which may misread PWM). A cheap "dimmer" made with a resistor instead wastes the difference as heat; PWM does not.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>LED never lights, output stuck LOW</td><td>Pin 4 (RESET) not connected to +; pin 8 or pin 1 not powered</td><td>Tie pin 4 to pin 8. Check the chip is across the channel, notch left.</td></tr>
+      <tr><td>LED always on (astable)</td><td>Frequency too high to see (C too small); pins 2 and 6 not joined; capacitor open</td><td>Check C's value and the 6–2 jumper. Measure pin 6: it should swing between 1/3 and 2/3.</td></tr>
+      <tr><td>Flashes far too slowly or stops</td><td>Electrolytic reversed or leaky; R values too large</td><td>Stripe to 0 V. Keep timing resistors below about 1 MΩ with electrolytics.</td></tr>
+      <tr><td>Timing differs from the calculation by 10–20%</td><td>Capacitor tolerance</td><td>Normal. Measure C, or use film capacitors where accuracy matters.</td></tr>
+      <tr><td>Erratic flashing or random triggering</td><td>No decoupling; pin 5 floating in noise; long jumpers near a relay or motor</td><td>100 nF across pins 8–1, 10 nF on pin 5, bulk capacitor on the rails.</td></tr>
+      <tr><td>Monostable will not end</td><td>Button still pressed, or trigger held below 1/3 V<sub>CC</sub> by a wiring error</td><td>Release; check the pull-up; use edge triggering.</td></tr>
+      <tr><td>555 gets hot</td><td>Output overloaded (LED with no resistor, relay without driver, short)</td><td>Limit output current well under 200 mA; use a transistor for bigger loads.</td></tr>
+      <tr><td>PWM pot only works over part of its range</td><td>A diode reversed, or the wiper not on pin 7</td><td>Re-check Figure 5; D1 points toward the capacitor, D2 away from it.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>What two voltages does the 555 compare against, and what happens at each?</summary><div class="answer"><p>1/3 V<sub>CC</sub> and 2/3 V<sub>CC</sub>, made by three equal internal resistors. When TRIGGER (pin 2) falls below 1/3, the flip-flop is set: output HIGH, discharge transistor off. When THRESHOLD (pin 6) rises above 2/3, it is reset: output LOW, discharge transistor on.</p></div></details>
+    <details class="quiz"><summary>Calculate f and duty for R1 = 1 kΩ, R2 = 10 kΩ, C = 100 nF.</summary><div class="answer"><p>f = 1.44 / ((1 000 + 20 000) × 100 × 10<sup>−9</sup>) = 1.44 / 0.0021 ≈ 686 Hz. Duty = (1 + 10)/(1 + 20) = 52%. Making R1 small compared with R2 brings the duty close to 50%.</p></div></details>
+    <details class="quiz"><summary>Why does the 555's timing stay almost the same when the battery voltage drops from 9 V to 7 V?</summary><div class="answer"><p>Both thresholds are fractions of the supply (1/3 and 2/3), and the capacitor charges toward the same supply. The fraction of the RC curve the capacitor must travel is the same at any voltage, so the time (0.693 RC per half-cycle) does not depend on V<sub>CC</sub>.</p></div></details>
+    <details class="quiz"><summary>Where does the 1.1 in the monostable formula come from?</summary><div class="answer"><p>The capacitor starts empty and must charge to 2/3 V<sub>CC</sub>, leaving 1/3 of the gap. That takes τ × ln(1 / (1/3)) = τ × ln 3 = 1.0986 τ ≈ 1.1 RC.</p></div></details>
+    <details class="quiz"><summary>You need a 5-second door-release time using a 47 µF capacitor. What resistor?</summary><div class="answer"><p>R = t / (1.1 × C) = 5 / (1.1 × 0.000047) ≈ 96.7 kΩ. Use 100 kΩ (about 5.2 s) or 91 kΩ (about 4.7 s), and remember the ±20% capacitor tolerance. Trim with a pot in series if it must be exact.</p></div></details>
+    <details class="quiz"><summary>Why can the basic astable not produce a duty cycle below 50%, and how does the PWM circuit get around it?</summary><div class="answer"><p>Charging goes through R1 + R2 and discharging through R2 only, so the HIGH time is always longer than the LOW time. The PWM circuit uses two diodes so charge and discharge flow through different parts of the potentiometer; either part can be the larger one.</p></div></details>
+    <details class="quiz"><summary>Your 555 flasher works on the bench but glitches when it switches a relay. Name two fixes.</summary><div class="answer"><p>Fit the flyback diode across the relay coil (band to +). Add 100 nF directly across pins 8 and 1 plus a 10–100 µF bulk capacitor on the supply, and a 10 nF on pin 5. Keep the relay's current path away from the timing parts.</p></div></details>
+    <details class="quiz"><summary>What does a DC meter on pin 3 show for a 1.4 kHz PWM at 30% duty, and why?</summary><div class="answer"><p>About 30% of the output-high voltage, for example about 2.2 V if the output swings to 7.5 V. The meter averages over many cycles, so it reports the time-average of the square wave, which is duty × high level.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain the 555's divider, comparators, flip-flop, output and discharge transistor in plain words.</span></li>
+      <li><input type="checkbox"><span>I know the 555 pin-out and place it correctly on a breadboard.</span></li>
+      <li><input type="checkbox"><span>I can calculate astable frequency and duty cycle, and I know where 0.693 and 1.44 come from.</span></li>
+      <li><input type="checkbox"><span>I have built a flasher and checked its rate with a stopwatch.</span></li>
+      <li><input type="checkbox"><span>I can design a monostable with t = 1.1 RC and drive a relay from it.</span></li>
+      <li><input type="checkbox"><span>I can build a 555 PWM dimmer and explain duty cycle and average power.</span></li>
+      <li><input type="checkbox"><span>I always fit decoupling, the pin-5 capacitor and flyback diodes on 555 circuits.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

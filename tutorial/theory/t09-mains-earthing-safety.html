@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T09 · Mains, three-phase, earthing and RCDs (Australia)</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 2 · Magnetism and AC</div>
+    <span class="eyebrow">Theory · T09</span>
+    <h1>Mains, three-phase, earthing and RCDs (Australia)</h1>
+    <p class="lede">You will work in buildings full of 230 V and 400 V wiring, even though you will never work on it. This chapter explains how Australian mains is delivered, why 400 V appears between phases, how the MEN earthing system and the RCD (safety switch) protect people, what current does to a body, and where the legal line sits between your ELV work and an electrician's LV work.</p>
+    <div class="meta"><span><b>Read</b> 55 min</span><span><b>Level</b> Understanding, not doing</span><span><b>Builds on</b> T07, T08</span><span><b>Practice</b> P01</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <div class="callout warn"><span class="label">Read this first</span><p>This is a <b>theory</b> chapter. It contains <b>no instructions</b> for working on mains, and none should be inferred. In Australia, electrical work on low-voltage (230/400 V) installations and equipment is legally restricted to licensed electricians. Never open a switchboard, remove a cover, or test mains circuits. The purpose of this chapter is to make you a safer, more useful technician beside the electricians you will work with.</p></div>
+
+    <h2>A short history: from 240 V to 230 V, and the safety switch</h2>
+    <p>Tesla's polyphase system (<a href="t07-ac-fundamentals.html">T07</a>) became the three-phase supply that almost every grid uses today. Australian cities began with a mix of DC and AC supplies at different voltages, then standardised during the twentieth century on 240 V, 50 Hz single-phase and 415 V three-phase. To align with international practice, Australian Standard AS 60038 changed the nominal voltage to <b>230 V</b> (400 V three-phase) around the year 2000. The wires did not change; the tolerance band was set so that existing 240 V supplies still complied, which is why many homes still measure about 240 V.</p>
+    <p>On the safety side, the <b>residual current device</b> (RCD) was developed in Europe in the mid twentieth century to detect small leakage currents to earth. Australia began requiring RCDs (called <b>safety switches</b> in everyday Australian English) on power circuits in new homes in the early 1990s, and later editions of the Wiring Rules widened the requirement. Electrical deaths in homes have fallen as RCDs spread. The rule details are in AS/NZS 3000 and state regulations; check the current edition and your state regulator for exact requirements.</p>
+
+    <h2>How power reaches a building</h2>
+    <p>Electricity is generated, stepped up by transformers (<a href="t08-transformers.html">T08</a>) to high voltage for long-distance transmission, stepped down at zone substations to distribution voltages, and finally stepped down near the customer to 400/230 V.</p>
+    <figure>
+      <svg viewBox="0 0 640 130" role="img" aria-label="Power supply chain from generator to building">
+        <defs><marker id="t09f0-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="4" y="30" width="92" height="58" rx="6"/>
+        <text class="t t-small" x="12" y="54">Generator</text>
+        <text class="t t-small t-muted" x="12" y="72">+ step-up</text>
+        <rect class="f-warn-soft s-line" x="112" y="30" width="110" height="58" rx="6"/>
+        <text class="t t-small" x="120" y="54">Transmission</text>
+        <text class="t t-small t-muted" x="120" y="72">132–500 kV</text>
+        <rect class="f-warn-soft s-line" x="238" y="30" width="100" height="58" rx="6"/>
+        <text class="t t-small" x="246" y="54">Zone</text>
+        <text class="t t-small t-muted" x="246" y="72">substation</text>
+        <rect class="f-warn-soft s-line" x="354" y="30" width="100" height="58" rx="6"/>
+        <text class="t t-small" x="362" y="54">Distribution</text>
+        <text class="t t-small t-muted" x="362" y="72">11 or 22 kV</text>
+        <rect class="f-practice-soft s-line" x="470" y="30" width="80" height="58" rx="6"/>
+        <text class="t t-small" x="478" y="54">Local</text>
+        <text class="t t-small t-muted" x="478" y="72">transformer</text>
+        <rect class="f-career-soft s-line" x="566" y="30" width="70" height="58" rx="6"/>
+        <text class="t t-small" x="572" y="54">400/230</text>
+        <text class="t t-small t-muted" x="572" y="72">building</text>
+        <line class="s-line" x1="96" y1="59" x2="110" y2="59" marker-end="url(#t09f0-k)"/>
+        <line class="s-line" x1="222" y1="59" x2="236" y2="59" marker-end="url(#t09f0-k)"/>
+        <line class="s-line" x1="338" y1="59" x2="352" y2="59" marker-end="url(#t09f0-k)"/>
+        <line class="s-line" x1="454" y1="59" x2="468" y2="59" marker-end="url(#t09f0-k)"/>
+        <line class="s-line" x1="550" y1="59" x2="564" y2="59" marker-end="url(#t09f0-k)"/>
+        <text class="t t-small t-muted" x="4" y="118">Typical Australian voltage levels; individual networks vary. Everything shaded red or orange is far beyond any technician's scope.</text>
+      </svg>
+      <figcaption>Figure 1. The supply chain. High voltage cuts current and therefore I²R losses over long distances (T03, T08). The final transformer in your street, on a pole or in a green pad-mount box, produces the 400/230 V low-voltage supply.</figcaption>
+    </figure>
+
+    <h2>Three-phase: why 400 V = 230 V × √3</h2>
+    <p>The local transformer has three secondary windings, one for each <b>phase</b>, connected in a <b>star</b> (also called wye). One end of each winding joins at the <b>star point</b>, which becomes the <b>neutral</b>. The other ends are the three <b>actives</b> (also called phases or lines: L1, L2, L3, or traditionally the red, white and blue phases). Each active is 230 V RMS from neutral, but the three voltages are shifted by 120° (one third of a cycle, 6.67 ms) from each other.</p>
+    <p>The voltage between two actives is the difference of two 230 V phasors 120° apart. Draw the two arrows from the same point and join their tips: the triangle has two sides of 230 and an included angle of 120°, so the third side is</p>
+    <div class="formula">V<sub>line</sub> = 2 × 230 × sin(60°) = 230 × √3 ≈ 398 V ≈ 400 V
+      <small>"Line-to-line" voltage between two actives = √3 × "line-to-neutral" voltage. The same √3 explains the old 240/415 V pair (240 × 1.732 ≈ 415).</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Three-phase phasor diagram and waveforms">
+        <line class="s-thin" x1="120" y1="130" x2="120" y2="50"/>
+        <line class="s-red" x1="120" y1="130" x2="120" y2="50" style="stroke-width:3"/>
+        <line class="s-amber" x1="120" y1="130" x2="189" y2="170" style="stroke-width:3"/>
+        <line class="s-blue" x1="120" y1="130" x2="51" y2="170" style="stroke-width:3"/>
+        <line class="s-line s-dash" x1="120" y1="50" x2="189" y2="170"/>
+        <circle class="f-ink" cx="120" cy="130" r="4"/>
+        <text class="t t-small t-red" x="128" y="48">L1</text>
+        <text class="t t-small" x="194" y="178">L2</text>
+        <text class="t t-small t-blue" x="20" y="182">L3</text>
+        <text class="t t-small t-muted" x="80" y="146">N</text>
+        <text class="t t-small" x="160" y="100">400 V</text>
+        <text class="t t-small t-muted" x="20" y="214">each arrow 230 V,</text>
+        <text class="t t-small t-muted" x="20" y="230">120° apart</text>
+        <line class="s-thin" x1="260" y1="130" x2="625" y2="130"/>
+        <path class="s-red" d="M260,130 266,113 272,97 278,83 284,71 290,61 296,54 302,50 308,50 314,54 320,61 326,71 332,83 338,97 344,113 350,130 356,147 362,163 368,177 374,189 380,199 386,206 392,210 398,210 404,206 410,199 416,189 422,177 428,163 434,147 440,130 446,113 452,97 458,83 464,71 470,61 476,54 482,50 488,50 494,54 500,61 506,71 512,83 518,97 524,113 530,130 536,147 542,163 548,177 554,189 560,199 566,206 572,210 578,210 584,206 590,199 596,189 602,177 608,163 614,147 620,130"/>
+        <path class="s-amber" d="M260,199 266,206 272,210 278,210 284,206 290,199 296,189 302,177 308,163 314,147 320,130 326,113 332,97 338,83 344,71 350,61 356,54 362,50 368,50 374,54 380,61 386,71 392,83 398,97 404,113 410,130 416,147 422,163 428,177 434,189 440,199 446,206 452,210 458,210 464,206 470,199 476,189 482,177 488,163 494,147 500,130 506,113 512,97 518,83 524,71 530,61 536,54 542,50 548,50 554,54 560,61 566,71 572,83 578,97 584,113 590,130 596,147 602,163 608,177 614,189 620,199"/>
+        <path class="s-blue" d="M260,61 266,71 272,83 278,97 284,113 290,130 296,147 302,163 308,177 314,189 320,199 326,206 332,210 338,210 344,206 350,199 356,189 362,177 368,163 374,147 380,130 386,113 392,97 398,83 404,71 410,61 416,54 422,50 428,50 434,54 440,61 446,71 452,83 458,97 464,113 470,130 476,147 482,163 488,177 494,189 500,199 506,206 512,210 518,210 524,206 530,199 536,189 542,177 548,163 554,147 560,130 566,113 572,97 578,83 584,71 590,61 596,54 602,50 608,50 614,54 620,61"/>
+        <text class="t t-small t-muted" x="262" y="40">±325 V peak each</text>
+        <text class="t t-small t-muted" x="430" y="236">20 ms</text>
+        <text class="t t-small t-muted" x="604" y="236">40 ms</text>
+        <text class="t t-small t-muted" x="262" y="252">At every instant the three voltages add to zero.</text>
+      </svg>
+      <figcaption>Figure 2. Left: the three phase voltages as phasors, 230 V each and 120° apart; the dashed line between two tips is the 400 V line-to-line voltage. Right: the same three voltages against time (drawn for understanding only). L2 is drawn in amber because the traditional "white" phase would be invisible here.</figcaption>
+    </figure>
+
+    <h3>Why bother with three phases?</h3>
+    <ul>
+      <li><b>Less copper for the same power.</b> In a balanced load the three phase currents add to zero at every instant, so the neutral carries little or no current. Three (or four) wires deliver three times the power of one single-phase pair.</li>
+      <li><b>Smooth power.</b> Single-phase power pulses at 100 Hz (<a href="t07-ac-fundamentals.html">T07</a>). Three phases together deliver constant total power, so big motors run smoothly.</li>
+      <li><b>A rotating magnetic field for free.</b> Three coils spaced 120° around a motor, fed from three phases 120° apart in time, produce a field that rotates. That is Tesla's induction motor, which drives most pumps, fans and chillers in the buildings you will service (<a href="../career/c03-hvac-for-technicians.html">C03</a>).</li>
+    </ul>
+    <p><b>Worked example.</b> A 20 kW balanced heating load, power factor 1. On three-phase 400 V: I = P / (√3 × V<sub>line</sub>) = 20 000 / (1.732 × 400) ≈ <b>28.9 A per phase</b>. The same 20 kW on single-phase 230 V would need 20 000 / 230 ≈ <b>87 A</b>, which is why commercial buildings, lifts, chillers and EV fast chargers use three-phase.</p>
+
+    <h2>Active, neutral and earth</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Conductor</th><th>Job</th><th>Normal current?</th><th>Common Australian colours</th></tr>
+      <tr><td><b>Active</b> (A, L, phase)</td><td>Carries the supply voltage, 230 V from neutral and from earth</td><td>Yes</td><td>Often red or brown (single-phase); three-phase traditionally red, white, blue</td></tr>
+      <tr><td><b>Neutral</b> (N)</td><td>Return path to the transformer's star point; held near earth potential</td><td>Yes: the full return current</td><td>Black or light blue</td></tr>
+      <tr><td><b>Protective earth</b> (E, PE)</td><td>Connects exposed metal parts to the earthing system so a fault trips the protection</td><td>No (only during a fault, or tiny leakage)</td><td>Green/yellow</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Neutral is safe to touch because it's connected to earth."</b> Neutral carries the full load current back to the transformer, and it is only near earth potential while it is intact. If a neutral is disconnected somewhere, the neutral on the load side can sit at the full active voltage through the load. Electricians treat neutral as live for exactly this reason. Also, <b>never trust colours</b>: older installations, mistakes and other countries' conventions all exist. This is one more reason mains testing belongs to licensed people with the right instruments and procedures.</p></div>
+
+    <h2>The MEN system in plain words</h2>
+    <p>Australia (and New Zealand) use the <b>MEN</b> system: <b>Multiple Earthed Neutral</b>. In plain words:</p>
+    <ol>
+      <li>The supply network's neutral is connected to earth at the distribution transformer and at many other points along the network. That is the "multiple".</li>
+      <li>At each building's main switchboard, the <b>neutral bar</b> is connected to the <b>main earth bar</b> by one link, the <b>MEN link</b>.</li>
+      <li>The main earth bar is also connected to an <b>earth electrode</b> (a metal stake driven into the ground) by the main earthing conductor.</li>
+      <li>Every circuit's <b>protective earth</b> wire runs from the earth bar to the metal case of each Class I appliance, each earth pin on a socket, and so on.</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 640 330" role="img" aria-label="MEN earthing system with a fault current path from active through an appliance case and back through the MEN link">
+        <defs>
+          <marker id="t09f2-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-warn-soft s-line" x="14" y="36" width="130" height="90" rx="6"/>
+        <text class="t t-small t-bold" x="22" y="56">Street transformer</text>
+        <text class="t t-small" x="22" y="74">400/230 V</text>
+        <text class="t t-small t-muted" x="22" y="92">star point = N</text>
+        <path class="s-line" d="M144,60 H340"/>
+        <path class="s-line" d="M144,104 H340"/>
+        <text class="t t-small" x="170" y="54">active (A)</text>
+        <text class="t t-small" x="170" y="98">neutral (N)</text>
+        <path class="s-line" d="M80,126 V278"/>
+        <line class="s-line" x1="64" y1="278" x2="96" y2="278"/><line class="s-line" x1="70" y1="285" x2="90" y2="285"/><line class="s-line" x1="76" y1="292" x2="84" y2="292"/>
+        <path class="s-line" d="M250,104 V278"/>
+        <line class="s-line" x1="234" y1="278" x2="266" y2="278"/><line class="s-line" x1="240" y1="285" x2="260" y2="285"/><line class="s-line" x1="246" y1="292" x2="254" y2="292"/>
+        <text class="t t-small t-muted" x="96" y="250">neutral earthed at the</text>
+        <text class="t t-small t-muted" x="96" y="266">transformer and along</text>
+        <text class="t t-small t-muted" x="96" y="282">the network ("multiple")</text>
+
+        <rect class="f-wash s-line" x="340" y="30" width="140" height="230" rx="6"/>
+        <text class="t t-small t-bold" x="348" y="48">Main switchboard</text>
+        <rect class="f-panel s-line" x="380" y="52" width="40" height="18" rx="3"/>
+        <text class="t t-small" x="384" y="66">CB</text>
+        <path class="s-line" d="M340,60 H380 M420,60 H560"/>
+        <rect class="f-ink" x="360" y="100" width="70" height="8"/>
+        <text class="t t-small" x="436" y="108">N bar</text>
+        <path class="s-line" d="M340,104 H360"/>
+        <rect class="f-ink" x="360" y="190" width="70" height="8"/>
+        <text class="t t-small" x="436" y="198">E bar</text>
+        <line class="s-accent" x1="395" y1="108" x2="395" y2="190" style="stroke-width:5"/>
+        <text class="t t-small t-accent t-bold" x="402" y="152">MEN</text>
+        <text class="t t-small t-accent t-bold" x="402" y="168">link</text>
+        <path class="s-line" d="M395,198 V286"/>
+        <line class="s-line" x1="379" y1="286" x2="411" y2="286"/><line class="s-line" x1="385" y1="293" x2="405" y2="293"/><line class="s-line" x1="391" y1="300" x2="399" y2="300"/>
+        <text class="t t-small t-muted" x="412" y="284">earth stake</text>
+
+        <path class="s-line" d="M430,104 H560"/>
+        <path class="s-line" d="M430,194 H560"/>
+        <rect class="f-panel s-line" x="560" y="40" width="70" height="180" rx="4"/>
+        <text class="t t-small t-bold" x="566" y="236">metal case</text>
+        <text class="t t-small t-muted" x="566" y="252">appliance</text>
+        <path class="s-red" d="M560,60 H590 L598,70 L586,80 L598,90 L590,100" />
+        <text class="t t-small t-red" x="572" y="122">fault:</text>
+        <text class="t t-small t-red" x="572" y="138">active</text>
+        <text class="t t-small t-red" x="572" y="154">touches</text>
+        <text class="t t-small t-red" x="572" y="170">case</text>
+        <path class="s-red s-dash" d="M548,186 H440" marker-end="url(#t09f2-r)"/>
+        <path class="s-red s-dash" d="M386,184 V118" marker-end="url(#t09f2-r)"/>
+        <path class="s-red s-dash" d="M352,112 H150" marker-end="url(#t09f2-r)"/>
+        <text class="t t-small t-red" x="440" y="180">fault current</text>
+        <text class="t t-small t-red" x="160" y="124">returns via neutral, not soil</text>
+        <text class="t t-small t-muted" x="430" y="320">E wire to the case</text>
+        <text class="t t-small t-muted" x="20" y="320">The earth stake holds the system near ground potential; it is not the main fault path.</text>
+      </svg>
+      <figcaption>Figure 3. The MEN system (simplified, single-phase, drawn for understanding only). An active-to-case fault drives a large current through the protective earth wire, the earth bar, the MEN link and the neutral back to the transformer. Because that loop is all copper, the current is big enough to trip the circuit breaker within a fraction of a second.</figcaption>
+    </figure>
+
+    <h2>Why earthing makes a fault trip the breaker</h2>
+    <p>Imagine a toaster with a metal case. A wire inside chafes and the active touches the case.</p>
+    <p><b>Without an earth connection,</b> nothing happens at first: there is no complete path, so no fault current flows and the breaker does not trip. The case now sits at 230 V, waiting. The next person who touches the case while also touching a tap or standing on a damp floor completes the circuit through their body.</p>
+    <p><b>With the earth connected,</b> the active is now joined to the case, the case to the earth wire, the earth bar to the neutral through the MEN link, and the neutral back to the transformer. This <b>earth-fault loop</b> is made of copper and has a low impedance, often well under an ohm to a couple of ohms. A huge current flows immediately.</p>
+    <p><b>Worked example.</b> Suppose the total fault-loop impedance is 0.8 Ω. Fault current ≈ 230 / 0.8 ≈ <b>290 A</b>. The circuit is protected by a 20 A circuit breaker with a "C" curve, which trips instantly (magnetically) for currents above about 5–10 times its rating, so 100–200 A. 290 A is above that, so it trips in a few milliseconds to tens of milliseconds, isolating the fault. During those milliseconds the case does rise in voltage, because the fault current flows through the earth wire's resistance, typically to something like a third to a half of 230 V. That is why the protection must be fast. The Wiring Rules set maximum disconnection times and maximum fault-loop impedances, and electricians test them when they verify an installation.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Earthing works by sending the fault current into the ground."</b> In the MEN system, the soil is a poor conductor compared with copper: an earth stake might have tens of ohms to the general mass of earth. Most of the fault current returns through the <b>MEN link and the neutral</b>, which is why the current is large enough to trip the breaker. The earth stake's main jobs are to hold the whole earthing system near the potential of the ground people stand on, and to provide a backup path if something else fails.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>A tingle or shock from a tap, shower, metal fence or appliance can be a sign of a broken neutral or earthing fault in the MEN system. It is treated as an emergency: stop using it, keep people away, and report it straight away to the local electricity distributor and a licensed electrician. Do not investigate it yourself.</p></div>
+
+    <h2>RCDs: the safety switch</h2>
+    <p>A circuit breaker protects the <b>cables</b>: it trips at amps or hundreds of amps. A human heart can be stopped by tens of milliamps, which a 20 A breaker will never notice. That gap is filled by the <b>RCD</b>.</p>
+    <p>The principle is beautifully simple, and you already know it from the current transformer (<a href="t08-transformers.html">T08</a>). Both the active and the neutral of a circuit pass through one small toroidal core. In a healthy circuit, every electron that goes out on the active comes back on the neutral, so the two currents are equal and opposite and their fields cancel in the core: no flux, no signal. If some current leaks to earth, for example through a person touching an active part while standing on the ground, the return current on the neutral is smaller than the active current. The difference, called the <b>residual current</b>, makes a net flux in the core, which induces a voltage in a sense winding. The sense circuit trips a mechanism that opens both active and neutral.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="RCD toroid around active and neutral with a sense coil and trip mechanism, and leakage through a person to earth">
+        <defs><marker id="t09f3-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small" x="10" y="64">A</text>
+        <text class="t t-small" x="10" y="124">N</text>
+        <path class="s-line" d="M28,60 H90"/><line class="s-line" x1="90" y1="60" x2="118" y2="48"/><path class="s-line" d="M122,60 H560"/>
+        <path class="s-line" d="M28,120 H90"/><line class="s-line" x1="90" y1="120" x2="118" y2="108"/><path class="s-line" d="M122,120 H560"/>
+        <circle class="f-ink" cx="90" cy="60" r="3"/><circle class="f-ink" cx="122" cy="60" r="3"/>
+        <circle class="f-ink" cx="90" cy="120" r="3"/><circle class="f-ink" cx="122" cy="120" r="3"/>
+        <line class="s-thin s-dash" x1="104" y1="54" x2="104" y2="200"/>
+        <text class="t t-small t-muted" x="20" y="34">contacts open both A and N</text>
+        <ellipse class="f-wash s-line" cx="220" cy="90" rx="22" ry="58"/>
+        <ellipse class="f-panel s-line" cx="220" cy="90" rx="10" ry="42"/>
+        <path class="s-accent" d="M206,128 l16,8 M206,140 l16,8"/>
+        <path class="s-line" d="M214,146 V200 H260"/>
+                <rect class="f-career-soft s-line" x="260" y="182" width="110" height="36" rx="6"/>
+        <text class="t t-small" x="268" y="204">sense + trip</text>
+        <path class="s-thin s-dash" d="M260,200 H104"/>
+        <text class="t t-small t-muted" x="150" y="194">trip</text>
+        <text class="t t-small" x="190" y="24">toroid around A and N</text>
+        <rect class="f-panel s-line" x="560" y="50" width="60" height="80" rx="4"/>
+        <text class="t t-small" x="570" y="94">load</text>
+        <circle class="s-line" cx="470" cy="86" r="9"/>
+        <path class="s-line" d="M470,95 V140 M470,140 L458,170 M470,140 L482,170 M470,108 L452,124 M470,108 L460,66"/>
+        <path class="s-red" d="M470,170 V230" marker-end="url(#t09f3-r)"/>
+        <line class="s-line" x1="454" y1="236" x2="486" y2="236"/><line class="s-line" x1="460" y1="243" x2="480" y2="243"/><line class="s-line" x1="466" y1="250" x2="474" y2="250"/>
+        <text class="t t-small t-red" x="492" y="206">leakage I<tspan dy="3" class="t-small">Δ</tspan></text>
+        <text class="t t-small t-red" x="492" y="222">through a person</text>
+        <text class="t t-small" x="300" y="50">I<tspan dy="3" class="t-small">A</tspan></text>
+        <text class="t t-small" x="300" y="112">I<tspan dy="3" class="t-small">N</tspan><tspan dy="-3"> = I</tspan><tspan dy="3" class="t-small">A</tspan><tspan dy="-3"> − I</tspan><tspan dy="3" class="t-small">Δ</tspan></text>
+        <text class="t t-small t-muted" x="300" y="150">healthy: I<tspan dy="3" class="t-small">A</tspan><tspan dy="-3"> = I</tspan><tspan dy="3" class="t-small">N</tspan><tspan dy="-3">, fields cancel</tspan></text>
+        <text class="t t-small t-muted" x="300" y="166">leak ≥ 30 mA: net flux → trip</text>
+      </svg>
+      <figcaption>Figure 4. How an RCD works (schematic idea, not a wiring diagram). Active and neutral both pass through one core. Any current that does not come back on the neutral (here, leaking through a person to earth) leaves a net flux in the core, which the sense coil detects. The mechanism then opens both conductors.</figcaption>
+    </figure>
+    <ul>
+      <li><b>30 mA</b> is the standard trip sensitivity for personal protection. It is chosen to be below the level at which a shock lasting a fraction of a second is likely to cause ventricular fibrillation for most adults.</li>
+      <li><b>Speed matters as much as sensitivity.</b> Standards require a 30 mA RCD to trip within 300 ms at its rated leakage and much faster at higher leakage; real devices typically trip in a few tens of milliseconds.</li>
+      <li>An RCD does <b>not</b> limit the current to 30 mA. You will still feel a nasty shock. It limits the <b>time</b>, which is what keeps the heart in rhythm.</li>
+    </ul>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"With an RCD, you cannot be electrocuted."</b> An RCD only detects current that leaks to earth. If someone is standing on an insulating surface and touches active with one hand and neutral with the other, the current goes out on active and back on neutral through their body: active and neutral currents are still equal, and the RCD sees nothing. The breaker sees only a normal-sized load. RCDs dramatically reduce risk; they do not remove it. And an RCD that is never tested may not work when needed, which is why the test button exists and why electricians periodically test RCDs with instruments.</p></div>
+
+    <h2>Circuit breakers and fuses</h2>
+    <p>Both are <b>overcurrent</b> devices. Their job is to protect wiring and equipment from overheating (overload) and from the huge currents of a short circuit.</p>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Fuse</th><th>Circuit breaker (MCB)</th><th>RCD</th></tr>
+      <tr><td>Detects</td><td>Overcurrent (heats and melts a wire)</td><td>Overload (bimetal strip heats and bends, slow) and short circuit (electromagnet, instant)</td><td>Imbalance between active and neutral (leakage)</td></tr>
+      <tr><td>Typical threshold</td><td>Rated amps, with a time–current curve</td><td>Rated amps; magnetic trip at about 3–5× (B curve), 5–10× (C curve) or 10–20× (D curve)</td><td>30 mA for personal protection</td></tr>
+      <tr><td>Protects</td><td>Cables, equipment</td><td>Cables, equipment</td><td><b>People</b>, and against some fires</td></tr>
+      <tr><td>After operating</td><td>Replace (one use)</td><td>Reset</td><td>Reset</td></tr>
+      <tr><td>Where you see it</td><td>Service fuses, HRC fuses in commercial boards, inside equipment, plug-packs (thermal fuse)</td><td>Every modern switchboard</td><td>Switchboards; RCBO = combined breaker + RCD per circuit</td></tr>
+    </table></div>
+    <p>Breaker curves exist because loads differ. A motor or a big switch-mode supply draws a high inrush current at switch-on, which would trip a sensitive B-curve breaker; a C or D curve rides through it. The choice of curve, rating and cable size is part of an electrician's design under the Wiring Rules.</p>
+    <div class="callout job"><span class="label">On the job</span><p>You will meet the same ideas at extra-low voltage. A 12 V or 24 V DC power supply for cameras or access control has fused outputs or electronic current limiting to protect the cables you run. A lead-acid or lithium backup battery can deliver hundreds of amps into a short, so its lead must be fused close to the battery terminal. The physics of "protect the cable from the source's fault current" is identical; only the voltages differ. See <a href="../practice/p10-power-supplies.html">P10</a>.</p></div>
+
+    <h2>What electric current does to a body</h2>
+    <p>Your nerves and heart run on tiny electrical signals. An external current through your body can override them. The effects depend on the <b>size of the current</b>, its <b>path</b> (hand-to-hand and hand-to-feet paths cross the chest and heart), its <b>duration</b>, and its <b>frequency</b> (50 Hz AC is, unluckily, close to the worst frequency for the heart; DC is less likely to cause fibrillation at the same current). The international reference is IEC 60479 (published in Australia as AS/NZS 60479). The figures below are <b>indicative</b> for 50 Hz AC, hand-to-feet, for an adult:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Current through the body</th><th>Typical effect (indicative)</th></tr>
+      <tr><td>About 0.5 mA</td><td>Threshold of feeling: a faint tingle</td></tr>
+      <tr><td>Around 5–10 mA</td><td>Painful shock; muscles start to contract</td></tr>
+      <tr><td>Around 10 mA and above</td><td>"Let-go" threshold: hand muscles can clamp onto the conductor, so the person cannot release it</td></tr>
+      <tr><td>Tens of mA for longer than a fraction of a second</td><td>Breathing difficulty; risk of ventricular fibrillation (the heart quivers instead of pumping) rises with current and time</td></tr>
+      <tr><td>Hundreds of mA and more</td><td>Fibrillation likely even for short times; burns at contact points and inside the body</td></tr>
+    </table></div>
+    <h3>"It's the current that kills": half right</h3>
+    <p>True: the physiological damage is done by current flowing through tissue, not by voltage as such. But current does not choose itself. It is set by the <b>voltage</b> divided by the body's <b>impedance</b>, and the body's impedance is not a fixed number. Dry, intact skin has a high resistance at low voltage; wet or broken skin, large contact areas and higher voltages all reduce it. Above roughly 50–100 V, the skin itself starts to break down electrically, so the impedance drops further just when the voltage is rising. Published data (IEC 60479) give typical total body impedances in the order of a few thousand ohms at 25 V and around a thousand ohms at 230 V, for a hand-to-hand path with large dry contacts.</p>
+    <p><b>Worked comparison (indicative).</b> At 230 V with about 1000 Ω: I ≈ 230 mA, deep in the dangerous zone. At 24 V with about 3000 Ω: I ≈ 8 mA, which may be felt and is unpleasant in wet conditions but is far less likely to be dangerous. That ratio is the whole idea behind the ELV limits: below them, under normal conditions, the voltage cannot push a dangerous current through a person. So the correct statement is: <b>current kills, voltage decides whether you get that current.</b></p>
+    <div class="callout warn"><span class="label">Safety</span><p>Even ELV is not harmless in every situation: wet locations, broken skin, and especially current paths inside the body need much lower limits, which is why the Wiring Rules apply stricter rules to bathrooms and pools. And a 12 V battery that cannot shock you can still deliver hundreds of amps into a dropped spanner, causing burns and fires. Respect every source.</p></div>
+
+    <div class="widget" id="t09-w">
+      <span class="label">Interactive · Shock current and fault-loop explorer (indicative)</span>
+      <p style="font-size:15px;margin:0 0 6px"><b>Part 1: current through a body.</b> Choose a touch voltage and an assumed body impedance. Wet skin and large contact: about 1 kΩ. Dry skin, low voltage: several kΩ or more.</p>
+      <label>Touch voltage <select id="t09-v">
+        <option value="12">12 V (ELV)</option><option value="24" selected>24 V (ELV)</option><option value="50">50 V AC (top of the AC ELV range)</option><option value="120">120 V</option><option value="230">230 V (LV mains)</option><option value="400">400 V (between phases)</option>
+      </select></label>
+      <label>Body impedance <span class="out" id="t09-ro">3.0 kΩ</span><input type="range" id="t09-r" min="2.7" max="5" step="0.02" value="3.48"></label>
+      <div class="readings">
+        <div><small>Body current I = V / Z</small><span class="out" id="t09-ib">–</span></div>
+        <div><small>Indicative effect (50 Hz AC)</small><span class="out" id="t09-eff" style="font-size:15px">–</span></div>
+        <div><small>Would a 30 mA RCD trip?</small><span class="out" id="t09-rcd" style="font-size:15px">–</span></div>
+      </div>
+      <p style="font-size:15px;margin:16px 0 6px"><b>Part 2: an active-to-case fault on a 230 V circuit.</b></p>
+      <label><input type="checkbox" id="t09-e" checked> Case connected to protective earth</label>
+      <label>Earth-fault loop impedance <span class="out" id="t09-zo">0.80 Ω</span><input type="range" id="t09-z" min="0.2" max="6" step="0.05" value="0.8"></label>
+      <label>Circuit breaker <select id="t09-cb">
+        <option value="16|5">16 A, B curve (instant above ~5×)</option><option value="20|10" selected>20 A, C curve (instant above ~10×)</option><option value="32|10">32 A, C curve</option>
+      </select></label>
+      <div class="readings">
+        <div><small>Fault current</small><span class="out" id="t09-if">–</span></div>
+        <div><small>Breaker response</small><span class="out" id="t09-br" style="font-size:15px">–</span></div>
+        <div><small>Case while fault lasts</small><span class="out" id="t09-cv" style="font-size:15px">–</span></div>
+      </div>
+      <p style="font-size:13.5px;color:var(--muted);margin:10px 0 0">Simplified teaching model with indicative thresholds. Real protection design and testing follow AS/NZS 3000 and are done by licensed electricians.</p>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var sv=$('t09-v'), sr=$('t09-r'), se=$('t09-e'), sz=$('t09-z'), scb=$('t09-cb');
+      function effect(mA){
+        if(mA<0.5) return 'Probably not felt';
+        if(mA<5) return 'Felt as a tingle';
+        if(mA<10) return 'Painful; muscles contract';
+        if(mA<30) return 'May not be able to let go';
+        if(mA<100) return 'Breathing difficulty; fibrillation risk rises with time';
+        return 'Fibrillation likely; burns';
+      }
+      function upd(){
+        var V=+sv.value, R=Math.pow(10,+sr.value), I=V/R*1000;
+        $('t09-ro').textContent=R>=1000?(R/1000).toFixed(R<10000?1:0)+' kΩ':Math.round(R)+' Ω';
+        $('t09-ib').textContent=I>=1000?(I/1000).toFixed(2)+' A':I.toFixed(I<10?1:0)+' mA';
+        $('t09-eff').textContent=effect(I);
+        $('t09-rcd').textContent=I>=30?'Yes, if the current goes to earth: trips in tens of ms':(I>=15?'Maybe (trips between about 15 and 30 mA)':'No: too small to trip');
+        var Z=+sz.value, cb=scb.value.split('|'), In=+cb[0], k=+cb[1];
+        $('t09-zo').textContent=Z.toFixed(2)+' Ω';
+        if(!se.checked){
+          $('t09-if').textContent='0 A (no path)';
+          $('t09-br').textContent='Nothing happens. The fault stays hidden.';
+          $('t09-cv').textContent='230 V, waiting for someone to touch it. Only an RCD can help.';
+          return;
+        }
+        var If=230/Z;
+        $('t09-if').textContent=Math.round(If)+' A';
+        if(If>=k*In) $('t09-br').textContent='Instant magnetic trip (about '+(k*In)+' A needed)';
+        else if(If>=1.5*In) $('t09-br').textContent='Thermal trip only: seconds or longer. Too slow; loop impedance too high.';
+        else $('t09-br').textContent='May not trip at all. Dangerous.';
+        $('t09-cv').textContent='Roughly 80–115 V for '+(If>=k*In?'milliseconds':'too long');
+      }
+      [sv,sr,se,sz,scb].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h2>AS/NZS 3000, ELV and LV, and the law</h2>
+    <p><b>AS/NZS 3000</b>, "Electrical installations", is known everywhere as <b>the Wiring Rules</b>. It is the joint Australian/New Zealand standard for how electrical installations are designed, built and verified, and state laws call it up, so following it is a legal requirement for electrical work. It defines the voltage bands you need to know:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Band</th><th>AC</th><th>Ripple-free DC</th><th>Examples</th></tr>
+      <tr><td><b>Extra-low voltage (ELV)</b></td><td>Not exceeding 50 V</td><td>Not exceeding 120 V</td><td>12/24 V DC security and BMS supplies, 24 V AC control transformers' secondaries, PoE (about 44–57 V DC), batteries</td></tr>
+      <tr><td><b>Low voltage (LV)</b></td><td>Above ELV, up to 1000 V</td><td>Above ELV, up to 1500 V</td><td>230 V outlets and lights, 400 V three-phase, solar arrays on the DC side of many inverters</td></tr>
+      <tr><td><b>High voltage (HV)</b></td><td>Above 1000 V</td><td>Above 1500 V</td><td>11 kV and 22 kV distribution, transmission lines</td></tr>
+    </table></div>
+    <p>Note the confusing name: in the electrical industry, "low voltage" means <b>mains</b>, up to 1000 V AC. In casual talk and in some security and AV marketing, "low voltage" is used loosely for 12–24 V cabling. On an Australian site, "LV" means 230/400 V, and "ELV" means your work.</p>
+    <h3>Who may do what</h3>
+    <ul>
+      <li><b>LV electrical work</b> (installing, altering, repairing or testing 230/400 V wiring and equipment) must be done by a <b>licensed electrician</b>, and contracting for it needs an electrical contractor licence. This applies in every state and territory, with only narrow exemptions.</li>
+      <li><b>ELV work</b> generally does not need an electrical licence, but other rules apply: telecommunications and data cabling needs <b>ACMA cabling registration</b> (<a href="../career/c07-telecom-cabling-acma.html">C07</a>), and installing security equipment needs a <b>security licence</b> in most states (<a href="../career/c11-licences-pathways.html">C11</a>).</li>
+      <li><b>Equipment that straddles both</b>, such as a power supply with a 230 V input and a 12 V output, or an access control panel with a mains-fed supply inside, needs an electrician for the mains connection. You connect the ELV side after it is installed and covered.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia: confirm with your regulator</span><p>Electrical licensing is run by each state and territory, and rules and exemptions differ and change. Examples of regulators include Energy Safe Victoria and Queensland's Electrical Safety Office; other states have their own fair trading, building or energy safety regulators. Before you rely on any rule in this chapter for real work, confirm the current requirement with the regulator in the state where you will work, and ask your employer what licences and site inductions they require.</p></div>
+
+    <h3>What an ELV technician must still know when working near switchboards</h3>
+    <p>You will often work in comms rooms, plant rooms and risers with switchboards nearby. You do not work on them, but you must work safely around them.</p>
+    <ul>
+      <li><b>Never open, remove or reach behind</b> a switchboard cover, escutcheon or cabinet panel that guards LV parts. If your task needs access, an electrician does that part.</li>
+      <li><b>Recognise LV.</b> Know what LV cables, terminals, circuit breakers and warning labels look like, and assume anything you cannot positively identify is live.</li>
+      <li><b>Segregation.</b> ELV cabling (data, security, BMS) must be kept separated from LV cabling by distance or barriers; telecommunications cabling has its own separation rules in the ACMA cabling standard (AS/CA S009). Never run your cable through a switchboard or share a conduit with power cables.</li>
+      <li><b>Isolation and lock-out are not yours to do on LV circuits.</b> If an electrician has isolated something for you, respect their locks and danger tags; never remove another person's lock or tag.</li>
+      <li><b>Report and stop.</b> If you find damaged LV cables, scorch marks, a hot smell, buzzing equipment or a missing cover, stop, keep people away and report it.</li>
+      <li><b>Know the emergency.</b> Know where the main switch and the site's emergency procedure are. Workers around LV are often required to hold current CPR and low-voltage rescue training; ask your employer which courses they need.</li>
+    </ul>
+    <div class="callout job"><span class="label">On the job</span><p>A typical CCTV or access control job: the electrician installs a 230 V outlet or a hard-wired supply in the comms cabinet; you mount the 12/24 V power supply, run the cables, terminate the ELV outputs, connect batteries with an inline fuse, and commission the system. When you meet a BMS controller sitting in a mechanical switchboard next to 400 V motor starters, the same split applies: you land the ELV sensor and comms wiring only after the LV compartment is closed or separately guarded (<a href="../career/c01-bms-fundamentals.html">C01</a>).</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>You will not touch mains in this course, but the safe ELV versions of these ideas are all on your bench.</p>
+    <a class="crosslink" href="../practice/p01-bench-kit-safety.html">Practice P01 · Your bench: the ELV safety line and why we use plug-packs</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Fusing 12 V and 24 V supplies and batteries</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery: CAT ratings and why they matter even at ELV</a>
+    <a class="crosslink" href="../career/c11-licences-pathways.html">Job track C11 · Licences, tickets and pathways in Australia</a>
+    <div class="callout try"><span class="label">Try this (no electricity needed)</span><p>Look at your home's switchboard. Open only the outer door that householders normally open, and <b>never remove any cover, panel or escutcheon</b>. Identify the main switch, the circuit breakers, and the RCDs (they have a "T" or "Test" button and are often labelled "safety switch"). Count how many circuits each RCD covers. If the property owner agrees, press each RCD's test button (that is what it is for; it is a user test designed for occupants) and note what turns off. Then reset it. If an RCD does not trip when tested, tell the owner to have it checked by an electrician.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why is the voltage between two phases 400 V and not 460 V?</summary><div class="answer"><p>The two phase voltages are 120° apart, not 180°. The difference of two 230 V phasors 120° apart is 2 × 230 × sin 60° = 230√3 ≈ 400 V. They would only give 460 V if they were exactly opposite.</p></div></details>
+    <details class="quiz"><summary>In the MEN system, where does most of the fault current flow during an active-to-case fault?</summary><div class="answer"><p>Through the protective earth wire to the main earth bar, through the MEN link to the neutral bar, and back along the neutral to the transformer. That all-metal loop has low impedance, so the current is large enough to trip the breaker quickly. Little flows through the soil.</p></div></details>
+    <details class="quiz"><summary>An appliance's case is not earthed and the active touches it. What happens, and why is this dangerous?</summary><div class="answer"><p>Nothing visible: no fault current flows, so the breaker does not trip. The case sits at 230 V until someone touches it and provides a path to earth. Only an RCD would then limit the shock duration.</p></div></details>
+    <details class="quiz"><summary>How does an RCD detect a fault, and what kind of shock can it not detect?</summary><div class="answer"><p>It passes active and neutral through one core; if their currents differ by more than about 30 mA, the net flux trips it. It cannot detect current that goes out on active and returns on neutral through a person who is insulated from earth, because then active and neutral currents are still equal.</p></div></details>
+    <details class="quiz"><summary>Why can't a 20 A circuit breaker protect a person from electric shock?</summary><div class="answer"><p>A breaker trips at amps (thermally) or many tens of amps (magnetically). A shock current of 50–200 mA can be lethal but is far below the breaker's threshold. Breakers protect cables; RCDs protect people.</p></div></details>
+    <details class="quiz"><summary>"It's the current that kills, not the voltage." What is right and wrong with this?</summary><div class="answer"><p>Right: the damage is caused by current through tissue, especially the heart. Wrong as a safety rule: the current is set by the voltage divided by body impedance, and body impedance falls at higher voltages and with wet skin. A low voltage cannot push a dangerous current through a person in normal conditions; mains can. That is why ELV is defined as at most 50 V AC or 120 V ripple-free DC.</p></div></details>
+    <details class="quiz"><summary>What are the AS/NZS 3000 limits for ELV, and which of these is ELV: 24 V AC, PoE at about 50 V DC, 230 V AC, a 100 V DC battery string?</summary><div class="answer"><p>ELV: not exceeding 50 V AC or 120 V ripple-free DC. 24 V AC: ELV. PoE around 44–57 V DC: ELV (DC limit is 120 V). 230 V AC: LV. A 100 V ripple-free DC battery string: within the DC ELV limit, but large batteries still carry serious fire and burn hazards and may have their own rules.</p></div></details>
+    <details class="quiz"><summary>You are installing an access control power supply with a 230 V input. Which parts are yours?</summary><div class="answer"><p>A licensed electrician makes the 230 V connection (or installs the outlet it plugs into, where that is permitted) and ensures the LV parts are covered. You mount and cable the ELV side: outputs, battery with fuse, lock and controller wiring, and commissioning. Confirm the exact split with your employer and state rules.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain the path of power from generator to building and why transmission uses high voltage.</span></li>
+      <li><input type="checkbox"><span>I can derive 400 V = 230 V × √3 with phasors and list three advantages of three-phase.</span></li>
+      <li><input type="checkbox"><span>I can describe the roles of active, neutral and earth, and why neutral is not "safe".</span></li>
+      <li><input type="checkbox"><span>I can explain the MEN system and trace the fault current path that trips a breaker.</span></li>
+      <li><input type="checkbox"><span>I can explain how an RCD works, why 30 mA, and what it cannot protect against.</span></li>
+      <li><input type="checkbox"><span>I can compare fuses, circuit breakers and RCDs, and say what each protects.</span></li>
+      <li><input type="checkbox"><span>I can explain body current thresholds (indicatively) and why ELV limits exist.</span></li>
+      <li><input type="checkbox"><span>I know the ELV and LV definitions, that LV work is for licensed electricians, and that I must confirm rules with my state regulator.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

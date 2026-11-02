@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T04 · Circuit laws: Kirchhoff, Thevenin and superposition</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · Chapter T04</span>
+    <h1>Circuit laws: Kirchhoff, Thevenin and superposition</h1>
+    <p class="lede">Two bookkeeping rules, one for charge and one for energy, are enough to solve any DC circuit. Add Thevenin's idea and you can replace a whole circuit with one source and one resistor, which explains sensor loading, battery sag and why industry sends signals as current.</p>
+    <div class="meta"><span><b>Reading</b> 50 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Simultaneous equations</span><span><b>Practice</b> P04, P12, P03</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How we found out</h2>
+    <p>Ohm's law (<a href="t02-resistance-ohms-law.html">T02</a>) handles one loop. Real circuits, even the telegraph networks of the 1840s, had branches and several batteries. In 1845 Gustav Kirchhoff, then a 21-year-old student at the University of Königsberg in Prussia, published two simple rules that solve any such network. He later became famous for something else entirely (discovering that each element has its own spectral lines), but every electronics student still learns his two circuit laws first.</p>
+    <p>In 1853 Hermann von Helmholtz, while studying currents in animal tissue, noticed that any network of batteries and resistors behaves, at two chosen terminals, exactly like a single battery with a single resistor. The French telegraph engineer Léon Charles Thévenin rediscovered and published the same idea in 1883, and his name stuck. In 1926 Edward Norton at Bell Labs in America and Hans Ferdinand Mayer at Siemens in Germany independently described the "current source" version. Underneath all of these is <b>linearity</b>: in circuits made of resistors and ideal sources, doubling every source doubles every current. That property also gives us the superposition principle.</p>
+
+    <h2>Words first: nodes, branches, loops</h2>
+    <ul>
+      <li>A <b>node</b> is a point where two or more parts connect. All the wire joined together without any part in between counts as one node, even if it is drawn spread out.</li>
+      <li>A <b>branch</b> is a single path between two nodes, containing one or more parts in series. The same current flows everywhere along a branch.</li>
+      <li>A <b>loop</b> is any closed path through the circuit that returns to its starting node. A <b>mesh</b> is a loop with no other loop inside it, like a window pane.</li>
+      <li>A <b>reference node</b> (ground, 0 V, common) is the node we choose to call 0 V. Every other node voltage is measured from it.</li>
+    </ul>
+
+    <h2>Kirchhoff's current law: charge is conserved</h2>
+    <div class="formula">Σ I<sub>in</sub> = Σ I<sub>out</sub>    (at every node)
+      <small>Or: the algebraic sum of currents at a node is zero, counting currents in as positive and currents out as negative.</small></div>
+    <p>Why it is true: charge cannot be created or destroyed, and in a steady circuit it cannot pile up at a node either. A node is a bit of metal; if extra charge collected there, its potential would shoot up within nanoseconds and push the charge away. (<a href="t01-charge-current-voltage.html">T01</a> showed how strongly matter resists becoming charged.) So whatever flows in each second must flow out each second.</p>
+    <figure>
+      <svg viewBox="0 0 600 230" role="img" aria-label="A node with 3 amps and 2 amps flowing in, and 1 amp and 4 amps flowing out">
+        <defs><marker id="t4f1-a" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M120 40 L300 115 M120 190 L300 115 M300 115 L480 40 M300 115 L480 190"/>
+        <path class="s-red" d="M190 69 L215 79.5" marker-end="url(#t4f1-a)"/>
+        <path class="s-red" d="M190 161 L215 150.5" marker-end="url(#t4f1-a)"/>
+        <path class="s-red" d="M385 79.5 L410 69" marker-end="url(#t4f1-a)"/>
+        <path class="s-red" d="M385 150.5 L410 161" marker-end="url(#t4f1-a)"/>
+        <circle class="f-ink" cx="300" cy="115" r="7"/>
+        <text class="t t-bold" x="120" y="30">I₁ = 3 A in</text>
+        <text class="t t-bold" x="120" y="215">I₂ = 2 A in</text>
+        <text class="t t-bold" x="410" y="30">I₃ = 1 A out</text>
+        <text class="t t-bold" x="410" y="215">I₄ = 4 A out</text>
+        <text class="t t-small t-muted" x="286" y="142">node</text>
+        <text class="t t-small" x="160" y="120">in: 3 + 2 = 5 A</text>
+        <text class="t t-small" x="345" y="120">out: 1 + 4 = 5 A</text>
+      </svg>
+      <figcaption>Figure 1. Kirchhoff's current law: what flows into a node each second equals what flows out.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Current takes the path of least resistance."</b> Current takes <i>every</i> available path, each in inverse proportion to its resistance. Put 1 kΩ and 9 kΩ in parallel across 9 V: 9 mA goes through the 1 kΩ and 1 mA goes through the 9 kΩ. The low-resistance path takes most of the current, but not all. This matters for safety: a body in parallel with a "better" path still carries some current.</p></div>
+
+    <h2>Kirchhoff's voltage law: energy is conserved</h2>
+    <div class="formula">Σ V = 0    (around any closed loop)
+      <small>Add the voltage rises and drops around any loop, taking care with signs, and the total is zero.</small></div>
+    <p>Why it is true: voltage is the energy per coulomb gained or lost between two points (<a href="t01-charge-current-voltage.html">T01</a>). If you carry a test charge round a loop and back to where you started, it must end with the same energy, or you could circle forever and create energy from nothing. In physics language, the electrostatic field is <b>conservative</b>: the work it does round any closed path is zero. It is like walking around a hill: however you go, when you return to the car park you have climbed exactly as much as you descended.</p>
+    <figure>
+      <svg viewBox="0 0 600 240" role="img" aria-label="A loop with a 12 volt battery and two resistors dropping 7 volts and 5 volts">
+        <defs><marker id="t4f2-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M100 112 V50 H230"/>
+        <path class="s-accent" d="M230 50 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M290 50 H460 V90"/>
+        <path class="s-accent" d="M460 90 l8 5 l-16 10 l16 10 l-16 10 l16 10 l-16 10 l8 5"/>
+        <path class="s-line" d="M460 150 V200 H100 V128"/>
+        <line class="s-line" x1="78" y1="112" x2="122" y2="112"/><line class="s-line" x1="88" y1="128" x2="112" y2="128" style="stroke-width:5"/>
+        <text class="t t-bold" x="30" y="125">12 V</text>
+        <text class="t t-small t-red t-bold" x="222" y="36">+</text><text class="t t-small t-red t-bold" x="292" y="36">−</text>
+        <text class="t t-small" x="238" y="80">R1: 7 V</text>
+        <text class="t t-small t-red t-bold" x="478" y="96">+</text><text class="t t-small t-red t-bold" x="478" y="152">−</text>
+        <text class="t t-small" x="490" y="125">R2: 5 V</text>
+        <path class="s-green s-dash" d="M150 150 V90 H400 V170 H150" marker-end="url(#t4f2-a)" style="stroke-width:1.8"/>
+        <text class="t t-small t-green" x="170" y="130">walk the loop clockwise:</text>
+        <text class="t t-small t-green t-bold" x="170" y="150">+12 − 7 − 5 = 0</text>
+      </svg>
+      <figcaption>Figure 2. Kirchhoff's voltage law. Going clockwise, the battery raises each coulomb by 12 V, R1 lowers it by 7 V and R2 by 5 V. The total change round the loop is zero.</figcaption>
+    </figure>
+    <div class="callout tip"><span class="label">Bench tip</span><p>KVL is how you find faults with a meter. In a working series circuit, the voltages across the parts add up to the supply. If one part has almost the whole supply voltage across it and the others have none, that part is open-circuit (a broken wire, blown fuse, open switch or failed part). The full voltage always appears across the break.</p></div>
+    <details class="more"><summary>Go deeper (optional): when KVL needs care</summary><p>KVL comes from the electrostatic field being conservative. If a changing magnetic field passes through the loop, Faraday's law adds an induced voltage, and the "sum of voltages" round the loop is no longer zero in the simple sense. Circuit theory handles this by putting all the changing magnetic flux inside the inductors and transformers and treating their induced voltage as an element voltage (<a href="t06-magnetism-inductors.html">T06</a>). At very high frequencies, or with long cables, the wires themselves have significant inductance and capacitance, and you must include those too. For DC and ordinary low-frequency circuits, KVL and KCL as stated are exact enough.</p></details>
+
+    <h2>Sign conventions that stop mistakes</h2>
+    <p>Most errors in circuit sums are sign errors. Use one fixed method:</p>
+    <ol>
+      <li><b>Guess a direction for each unknown current and draw an arrow.</b> The guess does not need to be right. If the answer comes out negative, the real current flows the other way, with that size.</li>
+      <li><b>Mark the voltage across each resistor with + where the current arrow enters.</b> Current flows "downhill" through a resistor, so the end it enters is the higher-potential end. This is the <b>passive sign convention</b>.</li>
+      <li><b>Power.</b> With the passive sign convention, P = VI is the power <i>absorbed</i> by a part. If it comes out negative, the part is <i>delivering</i> power (it is acting as a source). For a battery: current coming out of its + terminal means it is delivering energy; current being pushed into its + terminal means it is being charged.</li>
+      <li><b>Walking a loop.</b> Going from − to + across any part is a rise (+); going from + to − is a drop (−).</li>
+    </ol>
+
+    <h2>Series and parallel, derived</h2>
+    <h3>Series: same current</h3>
+    <p>Parts in one branch carry the same current I (KCL: nothing can leave along the way). KVL round the loop: V = IR₁ + IR₂ + … = I(R₁ + R₂ + …). So the series combination behaves as one resistor:</p>
+    <div class="formula">R<sub>series</sub> = R₁ + R₂ + R₃ + …</div>
+    <p>The <b>voltage divider</b> follows straight away. With V<sub>in</sub> across R₁ and R₂ in series, I = V<sub>in</sub>/(R₁ + R₂), so the voltage across R₂ is</p>
+    <div class="formula">V<sub>out</sub> = V<sub>in</sub> × R₂ / (R₁ + R₂)
+      <small>Example: 12 V with R₁ = 10 kΩ and R₂ = 4.7 kΩ gives 12 × 4.7/14.7 = 3.84 V. Dividers are how sensors such as thermistors and light-dependent resistors turn a resistance change into a voltage (<a href="../practice/p12-sensors-adc.html">P12</a>).</small></div>
+    <h3>Parallel: same voltage</h3>
+    <p>Parts connected between the same two nodes have the same voltage V across them (KVL: there is only one potential difference between two nodes). Each carries I<sub>k</sub> = V/R<sub>k</sub>, and KCL says the total is the sum:</p>
+    <div class="formula">I = V/R₁ + V/R₂ + …    ⟹    1/R<sub>parallel</sub> = 1/R₁ + 1/R₂ + …<br>For two resistors: R<sub>p</sub> = R₁R₂ / (R₁ + R₂)
+      <small>It is often easier to think in <b>conductance</b> G = 1/R (in siemens, S): conductances in parallel simply add. The parallel result is always smaller than the smallest resistor.</small></div>
+    <p>The <b>current divider</b>: two resistors in parallel share a total current I in inverse proportion to their resistance. I₁ = I × R₂/(R₁ + R₂). Note R₂ on top: the <i>other</i> resistor.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Adding a load in parallel doesn't affect the others."</b> True only for an ideal source with zero internal resistance. A real supply sags when you add load (V = ℰ − Ir), so every load on it sees a little less voltage. Turn on a big motor in a car and the headlights dim. Thevenin's theorem below makes this exact.</p></div>
+
+    <h2>Worked example: nodal analysis, step by step</h2>
+    <p>Here is a circuit that series and parallel rules cannot solve directly, because it has two sources pushing against each other.</p>
+    <figure>
+      <svg viewBox="0 0 620 260" role="img" aria-label="Two-source circuit: 12 volt source through 1 kilohm to node A, 5 volt source through 2 kilohm to node A, and 3 kilohm from A to ground">
+        <defs><marker id="t4f3-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M80 118 V60 H140"/>
+        <path class="s-accent" d="M140 60 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M200 60 H400"/>
+        <path class="s-accent" d="M400 60 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M460 60 H540 V118"/>
+        <path class="s-line" d="M300 60 V110"/>
+        <path class="s-accent" d="M300 110 l8 5 l-16 10 l16 10 l-16 10 l16 10 l-16 10 l8 5"/>
+        <path class="s-line" d="M300 170 V220"/>
+        <path class="s-line" d="M80 134 V220 H540 V134"/>
+        <line class="s-line" x1="58" y1="118" x2="102" y2="118"/><line class="s-line" x1="68" y1="134" x2="92" y2="134" style="stroke-width:5"/>
+        <line class="s-line" x1="518" y1="118" x2="562" y2="118"/><line class="s-line" x1="528" y1="134" x2="552" y2="134" style="stroke-width:5"/>
+        <text class="t t-small t-bold" x="108" y="122">+</text><text class="t t-small t-bold" x="502" y="122">+</text>
+        <text class="t t-bold" x="6" y="132">V₁ 12 V</text><text class="t t-bold" x="568" y="132">V₂</text><text class="t t-bold" x="568" y="150">5 V</text>
+        <text class="t t-small" x="146" y="40">R₁ = 1 kΩ</text><text class="t t-small" x="406" y="40">R₂ = 2 kΩ</text><text class="t t-small" x="316" y="145">R₃ = 3 kΩ</text>
+        <circle class="f-ink" cx="300" cy="60" r="5"/><text class="t t-bold" x="292" y="44">A</text>
+        <path class="s-red" d="M215 76 H270" marker-end="url(#t4f3-a)"/><text class="t t-small t-red" x="222" y="94">I₁</text>
+        <path class="s-red" d="M385 76 H330" marker-end="url(#t4f3-a)"/><text class="t t-small t-red" x="352" y="94">I₂</text>
+        <path class="s-red" d="M276 120 V160" marker-end="url(#t4f3-a)"/><text class="t t-small t-red" x="256" y="145">I₃</text>
+        <path class="s-line" d="M300 220 V232 M286 232 H314 M291 238 H309 M296 244 H304"/>
+        <text class="t t-small t-muted" x="320" y="240">reference node, 0 V</text>
+      </svg>
+      <figcaption>Figure 3. Two sources feed node A. The current arrows are guesses: I₁ and I₂ drawn flowing into A, I₃ flowing out of A to ground.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><p><b>Choose the reference node.</b> The bottom wire is 0 V. Then the + terminal of V₁ is at 12 V and the + terminal of V₂ is at 5 V. The only unknown is the voltage at node A, call it V<sub>A</sub>.</p></li>
+      <li><p><b>Write each branch current in terms of V<sub>A</sub>, using Ohm's law.</b> Current flows from high to low potential through a resistor:<br>I₁ = (12 − V<sub>A</sub>) / 1 kΩ (into A)<br>I₂ = (5 − V<sub>A</sub>) / 2 kΩ (into A)<br>I₃ = V<sub>A</sub> / 3 kΩ (out of A)</p></li>
+      <li><p><b>Apply KCL at A:</b> in = out, so I₁ + I₂ = I₃:<br>(12 − V<sub>A</sub>)/1 + (5 − V<sub>A</sub>)/2 = V<sub>A</sub>/3   (currents in mA, resistances in kΩ)</p></li>
+      <li><p><b>Clear the fractions.</b> Multiply every term by 6:<br>6(12 − V<sub>A</sub>) + 3(5 − V<sub>A</sub>) = 2V<sub>A</sub><br>72 − 6V<sub>A</sub> + 15 − 3V<sub>A</sub> = 2V<sub>A</sub><br>87 = 11V<sub>A</sub>  ⟹  <b>V<sub>A</sub> = 7.909 V</b></p></li>
+      <li><p><b>Find the currents.</b><br>I₁ = (12 − 7.909)/1 = <b>4.091 mA</b><br>I₂ = (5 − 7.909)/2 = <b>−1.455 mA</b><br>I₃ = 7.909/3 = <b>2.636 mA</b><br>I₂ is negative, so the real current flows the other way: 1.455 mA flows from A <i>into</i> the + terminal of the 5 V source. The 12 V source is charging the 5 V one.</p></li>
+      <li><p><b>Check with KCL:</b> in = 4.091, out = 2.636 + 1.455 = 4.091 mA. ✓</p></li>
+      <li><p><b>Check with energy.</b> V₁ delivers 12 × 4.091 = 49.09 mW. V₂ absorbs 5 × 1.455 = 7.27 mW. The resistors absorb 4.091² × 1 + 1.455² × 2 + 2.636² × 3 = 16.74 + 4.23 + 20.85 = 41.82 mW. Total absorbed = 7.27 + 41.82 = 49.09 mW = total delivered. ✓</p></li>
+    </ol>
+    <p>That is <b>nodal analysis</b>: pick a reference, name the unknown node voltages, write KCL at each unknown node using Ohm's law, and solve. A circuit with N unknown nodes gives N simultaneous equations. Circuit simulators such as SPICE do exactly this, with matrices, for thousands of nodes.</p>
+    <details class="more"><summary>Go deeper (optional): the same circuit by mesh analysis</summary><p>Mesh analysis uses KVL instead. Let I<sub>a</sub> circulate clockwise in the left window and I<sub>b</sub> clockwise in the right window. R₃ is shared, so it carries I<sub>a</sub> − I<sub>b</sub> downwards.</p><p>Left mesh (up through V₁, right through R₁, down through R₃): 12 − 1·I<sub>a</sub> − 3(I<sub>a</sub> − I<sub>b</sub>) = 0, so 4I<sub>a</sub> − 3I<sub>b</sub> = 12.</p><p>Right mesh (right through R₂, down through V₂ from + to −, back, up through R₃): −2I<sub>b</sub> − 5 − 3(I<sub>b</sub> − I<sub>a</sub>) = 0, so −3I<sub>a</sub> + 5I<sub>b</sub> = −5.</p><p>Solving: I<sub>b</sub> = 16/11 = 1.455 mA and I<sub>a</sub> = 4.091 mA. Then I₃ = I<sub>a</sub> − I<sub>b</sub> = 2.636 mA. Same answers. Use whichever method gives fewer equations: nodal analysis is usually easier when sources connect to ground.</p></details>
+
+    <h2>Superposition</h2>
+    <p>In a <b>linear</b> circuit (resistors and ideal sources only), each source's effect simply adds to the others. To use this:</p>
+    <ol>
+      <li>Keep one source and turn all the others off. A voltage source turned off becomes a <b>short circuit</b> (0 V across it). A current source turned off becomes an <b>open circuit</b> (0 A through it).</li>
+      <li>Solve the simple circuit.</li>
+      <li>Repeat for each source, then add the results with their signs.</li>
+    </ol>
+    <p>On our example: with only V₁ (V₂ shorted), R₂ ∥ R₃ = 2 × 3/5 = 1.2 kΩ, so V<sub>A</sub>′ = 12 × 1.2/(1 + 1.2) = 6.545 V. With only V₂ (V₁ shorted), R₁ ∥ R₃ = 0.75 kΩ, so V<sub>A</sub>″ = 5 × 0.75/(2 + 0.75) = 1.364 V. Total: 6.545 + 1.364 = <b>7.909 V</b>, the same as before.</p>
+    <p>Superposition is more than a trick for sums. It is how engineers think about a signal riding on a DC level: work out the DC bias with the signal turned off, then the signal with the DC turned off, and add. It is why an audio amplifier, a sensor input and a radio receiver can be analysed in parts.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Superposition works for power too."</b> It does not. Power goes as I² or V², and (a + b)² ≠ a² + b². Find the total current or voltage by superposition first, then calculate power from the total. Superposition also fails for non-linear parts such as diodes and LEDs.</p></div>
+
+    <h2>Thevenin and Norton equivalents</h2>
+    <p><b>Thevenin's theorem:</b> any linear circuit, seen from two terminals, behaves exactly like one voltage source V<sub>th</sub> in series with one resistor R<sub>th</sub>. <b>Norton's theorem:</b> it also behaves like one current source I<sub>N</sub> in parallel with one resistor R<sub>N</sub>. The two are linked by R<sub>N</sub> = R<sub>th</sub> and I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub>.</p>
+    <figure>
+      <svg viewBox="0 0 620 220" role="img" aria-label="A complex linear circuit is equivalent to a Thevenin voltage source with series resistor, or a Norton current source with parallel resistor">
+        <defs><marker id="t4f4-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line s-dash" x="20" y="40" width="140" height="140" rx="8"/>
+        <text class="t t-small" x="34" y="96">any linear circuit:</text><text class="t t-small" x="34" y="114">sources and</text><text class="t t-small" x="34" y="132">resistors</text>
+        <path class="s-line" d="M160 70 H185 M160 150 H185"/>
+        <circle class="s-line f-panel" cx="190" cy="70" r="5"/><circle class="s-line f-panel" cx="190" cy="150" r="5"/>
+        <text class="t t-bold" x="212" y="116">=</text>
+        <path class="s-line" d="M260 102 V60 H290"/>
+        <path class="s-accent" d="M290 60 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M350 60 H385 M260 118 V160 H385"/>
+        <line class="s-line" x1="238" y1="102" x2="282" y2="102"/><line class="s-line" x1="248" y1="118" x2="272" y2="118" style="stroke-width:5"/>
+        <circle class="s-line f-panel" cx="390" cy="60" r="5"/><circle class="s-line f-panel" cx="390" cy="160" r="5"/>
+        <text class="t t-small t-bold" x="266" y="140">V<tspan dy="3" font-size="9">th</tspan></text><text class="t t-small t-bold" x="304" y="40">R<tspan dy="3" font-size="9">th</tspan></text>
+        <text class="t t-small t-muted" x="262" y="200">Thevenin</text>
+        <text class="t t-bold" x="414" y="116">=</text>
+        <path class="s-line" d="M470 60 H600 M470 160 H600 M470 60 V90 M470 130 V160 M540 60 V80 M540 140 V160"/>
+        <circle class="s-line f-panel" cx="470" cy="110" r="20"/>
+        <path class="s-line" d="M470 124 V98" marker-end="url(#t4f4-a)"/>
+        <path class="s-accent" d="M540 80 l8 5 l-16 10 l16 10 l-16 10 l16 10 l-16 10 l8 5"/>
+        <circle class="s-line f-panel" cx="600" cy="60" r="5"/><circle class="s-line f-panel" cx="600" cy="160" r="5"/>
+        <text class="t t-small t-bold" x="436" y="190">I<tspan dy="3" font-size="9">N</tspan></text><text class="t t-small t-bold" x="556" y="114">R<tspan dy="3" font-size="9">N</tspan></text>
+        <text class="t t-small t-muted" x="500" y="200">Norton</text>
+      </svg>
+      <figcaption>Figure 4. Seen from its two terminals, any linear circuit is indistinguishable from a voltage source with a series resistance (Thevenin) or a current source with a parallel resistance (Norton). A circle with an arrow is an ideal current source.</figcaption>
+    </figure>
+    <h3>How to find V<sub>th</sub> and R<sub>th</sub></h3>
+    <ul>
+      <li><b>V<sub>th</sub></b> is the <b>open-circuit voltage</b> between the terminals, with nothing connected.</li>
+      <li><b>R<sub>th</sub></b> is the resistance between the terminals with every source turned off (voltage sources shorted, current sources opened). Or equivalently R<sub>th</sub> = V<sub>th</sub> / I<sub>sc</sub>, where I<sub>sc</sub> is the short-circuit current.</li>
+    </ul>
+    <h3>Worked example: our circuit, seen by R₃</h3>
+    <p>Remove R₃ and look into the terminals at node A and ground.</p>
+    <ol class="steps">
+      <li><p><b>Open-circuit voltage.</b> With R₃ gone, a single current flows from V₁ through R₁ and R₂ into V₂: I = (12 − 5)/(1 + 2) = 2.333 mA. Then V<sub>A</sub> = 12 − 2.333 × 1 = <b>9.667 V = V<sub>th</sub></b>.</p></li>
+      <li><p><b>Resistance.</b> Short both sources. Looking in from A, R₁ and R₂ are in parallel to ground: R<sub>th</sub> = 1 × 2/3 = <b>0.667 kΩ</b>.</p></li>
+      <li><p><b>Reconnect the load.</b> R₃ = 3 kΩ on a 9.667 V source with 0.667 kΩ in series: V<sub>A</sub> = 9.667 × 3/(3 + 0.667) = <b>7.909 V</b>. Same answer a third time.</p></li>
+      <li><p><b>Norton.</b> I<sub>N</sub> = 9.667/0.667 = 14.5 mA. Check by shorting A to ground: 12/1 + 5/2 = 12 + 2.5 = 14.5 mA. ✓</p></li>
+    </ol>
+    <p>The power of this is that once you have V<sub>th</sub> and R<sub>th</sub>, you can try any load instantly. With R₃ = 0.667 kΩ (matched), the load gets maximum power (<a href="t03-power-energy-heat.html">T03</a>). With R₃ = 10 kΩ, V<sub>A</sub> = 9.667 × 10/10.667 = 9.06 V.</p>
+
+    <div class="widget" id="t4w">
+      <span class="label">Interactive · Nodal solver and Thevenin load line</span>
+      <label>V₁ <span class="out" id="t4w-v1o">12 V</span><input type="range" id="t4w-v1" min="0" max="24" step="0.5" value="12"></label>
+      <label>R₁ <span class="out" id="t4w-r1o">1.0 kΩ</span><input type="range" id="t4w-r1" min="0.1" max="10" step="0.1" value="1"></label>
+      <label>V₂ <span class="out" id="t4w-v2o">5 V</span><input type="range" id="t4w-v2" min="0" max="24" step="0.5" value="5"></label>
+      <label>R₂ <span class="out" id="t4w-r2o">2.0 kΩ</span><input type="range" id="t4w-r2" min="0.1" max="10" step="0.1" value="2"></label>
+      <label>R₃ (the load) <span class="out" id="t4w-r3o">3.0 kΩ</span><input type="range" id="t4w-r3" min="0.1" max="20" step="0.1" value="3"></label>
+      <div class="readings">
+        <div><small>V<sub>A</sub></small><span class="out" id="t4w-va">–</span></div>
+        <div><small>I₁ (into A from V₁)</small><span class="out" id="t4w-i1">–</span></div>
+        <div><small>I₂ (into A from V₂)</small><span class="out" id="t4w-i2">–</span></div>
+        <div><small>I₃ (through the load)</small><span class="out" id="t4w-i3">–</span></div>
+        <div><small>Thevenin seen by R₃</small><span class="out" id="t4w-th">–</span></div>
+        <div><small>Power in the load</small><span class="out" id="t4w-p">–</span></div>
+      </div>
+      <p id="t4w-note" style="margin:10px 0 4px;font-size:15px">–</p>
+      <svg viewBox="0 0 560 260" role="img" aria-label="Load line plot: Thevenin source line and load resistor line crossing at the operating point">
+        <path class="s-line" d="M60 20 V220 H540"/>
+        <text class="t t-small t-muted" x="8" y="16">voltage at A</text>
+        <text class="t t-small t-muted" x="420" y="250">current into the load</text>
+        <text class="t t-small" id="t4w-ymax" x="8" y="34">–</text>
+        <text class="t t-small" id="t4w-xmax" x="490" y="236">–</text>
+        <text class="t t-small" x="48" y="236">0</text>
+        <path class="s-accent" id="t4w-src" d="M60 30 L520 220"/>
+        <path class="s-green" id="t4w-load" d="M60 220 L300 100"/>
+        <path class="s-thin s-dash" id="t4w-guide" d="M60 120 H300 V220"/>
+        <circle class="f-red" id="t4w-pt" cx="300" cy="120" r="6"/>
+        <text class="t t-small t-accent" id="t4w-srcl" x="70" y="48">source: V = V<tspan dy="3" font-size="9">th</tspan><tspan dy="-3"> − I·R</tspan><tspan dy="3" font-size="9">th</tspan></text>
+        <text class="t t-small t-green" id="t4w-loadl" x="300" y="80">load: V = I·R₃</text>
+      </svg>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      function f(x,d){return x.toFixed(d===undefined?3:d);}
+      function upd(){
+        var v1=+$('t4w-v1').value, r1=+$('t4w-r1').value, v2=+$('t4w-v2').value, r2=+$('t4w-r2').value, r3=+$('t4w-r3').value;
+        $('t4w-v1o').textContent=v1+' V'; $('t4w-v2o').textContent=v2+' V';
+        $('t4w-r1o').textContent=r1.toFixed(1)+' kΩ'; $('t4w-r2o').textContent=r2.toFixed(1)+' kΩ'; $('t4w-r3o').textContent=r3.toFixed(1)+' kΩ';
+        /* KCL at A, currents in mA with kΩ: (v1-va)/r1 + (v2-va)/r2 = va/r3 */
+        var va=(v1/r1+v2/r2)/(1/r1+1/r2+1/r3);
+        var i1=(v1-va)/r1, i2=(v2-va)/r2, i3=va/r3;
+        var vth=(v1/r1+v2/r2)/(1/r1+1/r2), rth=1/(1/r1+1/r2), isc=vth/rth;
+        $('t4w-va').textContent=f(va)+' V';
+        $('t4w-i1').textContent=f(i1)+' mA'; $('t4w-i2').textContent=f(i2)+' mA'; $('t4w-i3').textContent=f(i3)+' mA';
+        $('t4w-th').textContent=f(vth,2)+' V, '+f(rth,3)+' kΩ';
+        $('t4w-p').textContent=f(va*i3,2)+' mW';
+        var note=[];
+        if(i1<0) note.push('I₁ is negative: current is being pushed back into V₁, so V₁ is absorbing power (being charged).');
+        if(i2<0) note.push('I₂ is negative: current flows from A into the + terminal of V₂, so V₂ is absorbing power.');
+        if(Math.abs(r3-rth)/rth<0.05) note.push('R₃ ≈ R_th: this is the maximum power transfer point.');
+        note.push('KCL check: I₁ + I₂ = '+f(i1+i2)+' mA, I₃ = '+f(i3)+' mA.');
+        $('t4w-note').textContent=note.join(' ');
+        /* load-line plot */
+        var X0=60,Y0=220,W=460,H=190, imax=Math.max(isc,1e-6)*1.05, vmax=Math.max(vth,1e-6)*1.1;
+        function px(i){return X0+i/imax*W;} function py(v){return Y0-v/vmax*H;}
+        $('t4w-src').setAttribute('d','M'+px(0)+' '+py(vth)+' L'+px(isc)+' '+py(0));
+        var iEnd=Math.min(imax, vmax/r3);
+        $('t4w-load').setAttribute('d','M'+px(0)+' '+py(0)+' L'+px(iEnd)+' '+py(iEnd*r3));
+        $('t4w-pt').setAttribute('cx',px(i3)); $('t4w-pt').setAttribute('cy',py(va));
+        $('t4w-guide').setAttribute('d','M'+X0+' '+py(va)+' H'+px(i3)+' V'+Y0);
+        $('t4w-ymax').textContent=f(vmax,1)+' V'; $('t4w-xmax').textContent=f(imax,1)+' mA';
+        var lx=Math.min(px(iEnd)-90,430), ly=Math.max(py(iEnd*r3)+18,40); $('t4w-loadl').setAttribute('x',lx); $('t4w-loadl').setAttribute('y',ly);
+      }
+      ['t4w-v1','t4w-r1','t4w-v2','t4w-r2','t4w-r3'].forEach(function(id){$(id).addEventListener('input',upd);});
+      upd();
+    })();
+    </script>
+    <p>The plot is a <b>load line</b> diagram. The blue line is everything the source can do: V<sub>th</sub> at zero current, falling to zero volts at the short-circuit current. The green line is what the load demands: V = IR₃. The circuit must sit where both are true, at the red dot. The same picture is used to find the operating point of a diode or transistor, where the load "line" becomes a curve.</p>
+
+    <h3>Why Thevenin matters on the job: loading</h3>
+    <p>Every sensor output, battery, divider and signal source has a Thevenin resistance, usually called its <b>output impedance</b> or <b>source impedance</b>. Every meter, input pin and cable that you connect has an <b>input impedance</b> that acts as a load. The voltage you actually measure is</p>
+    <div class="formula">V<sub>measured</sub> = V<sub>th</sub> × R<sub>in</sub> / (R<sub>in</sub> + R<sub>th</sub>)
+      <small>If R<sub>in</sub> is much larger than R<sub>th</sub> (say 100 times or more), the error is small. If they are similar, the measurement is badly wrong.</small></div>
+    <p>Example: a 10 kΩ NTC thermistor and a 10 kΩ fixed resistor form a divider on 5 V. At 25 °C the output is 2.5 V and its Thevenin resistance is 10 ∥ 10 = 5 kΩ.</p>
+    <div class="table-wrap"><table>
+      <tr><th>What you connect</th><th>Input resistance</th><th>Voltage you see</th><th>Error</th></tr>
+      <tr><td>Digital multimeter</td><td>~10 MΩ</td><td>2.4988 V</td><td>−0.05%</td></tr>
+      <tr><td>Old analogue meter, 20 kΩ/V on the 10 V range</td><td>200 kΩ</td><td>2.439 V</td><td>−2.4%</td></tr>
+      <tr><td>A badly chosen 10 kΩ input</td><td>10 kΩ</td><td>1.667 V</td><td>−33%</td></tr>
+    </table></div>
+    <p>A microcontroller's ADC pin has a very high DC input resistance, but each time it takes a sample it briefly connects a small internal capacitor, which must charge through R<sub>th</sub>. That is why some microcontroller datasheets (the classic Arduino Uno chip among them) ask for a source impedance of about 10 kΩ or less (<a href="../practice/p12-sensors-adc.html">P12</a>).</p>
+    <div class="callout job"><span class="label">On the job</span><p>Industrial and BMS transmitters often send their reading as a current between 4 and 20 mA instead of a voltage. A 4–20 mA transmitter behaves like a Norton source with a very large parallel resistance: it forces the chosen current through the loop whatever the wire resistance, as long as the loop supply has enough voltage left over. So 200 m of thin cable, or a few ohms of corroded terminal, does not change the reading, where a 0–10 V signal would sag. See <a href="t16-signals-noise-loops.html">T16</a> and <a href="../career/c10-plc-instrumentation.html">C10</a>.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Measure a Thevenin equivalent without opening the box. Measure the open-circuit voltage V<sub>oc</sub> with a meter (that is V<sub>th</sub>). Then connect a known load resistor R<sub>L</sub> and measure V<sub>L</sub>. Then R<sub>th</sub> = R<sub>L</sub>(V<sub>oc</sub>/V<sub>L</sub> − 1). With our example, V<sub>oc</sub> = 9.667 V and V<sub>L</sub> = 7.909 V across 3 kΩ give R<sub>th</sub> = 3 × (1.2223 − 1) = 0.667 kΩ. Do not measure R<sub>th</sub> by shorting a battery or power supply: the short-circuit current can be dangerous.</p></div>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p04-series-parallel-dividers.html">Practice P04 · Series, parallel and voltage dividers: prove KCL and KVL with a meter</a>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC: divider outputs, source impedance and loading</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery: meter input resistance and burden voltage</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Power supplies: a supply's Thevenin resistance from its load regulation</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Three wires meet at a node. 250 mA flows in on one and 100 mA flows out on another. What is the third current?</summary><div class="answer"><p>KCL: in = out. 250 = 100 + I₃, so I₃ = 150 mA flowing out.</p></div></details>
+    <details class="quiz"><summary>A 24 V supply feeds three resistors in series. Two drop 8 V and 10 V. What does the third drop, and what law did you use?</summary><div class="answer"><p>KVL: 24 − 8 − 10 − V₃ = 0, so V₃ = 6 V. Energy per coulomb gained in the supply equals energy lost in the parts.</p></div></details>
+    <details class="quiz"><summary>What is 4.7 kΩ in parallel with 4.7 kΩ? And 1 kΩ in parallel with 100 kΩ?</summary><div class="answer"><p>Two equal resistors in parallel: half, 2.35 kΩ. 1 kΩ ∥ 100 kΩ = 100/101 kΩ ≈ 0.990 kΩ: the parallel combination is always slightly less than the smallest, and a much bigger resistor in parallel hardly changes it.</p></div></details>
+    <details class="quiz"><summary>In the worked example, I₂ came out as −1.455 mA. What does the minus sign mean physically?</summary><div class="answer"><p>The guessed direction (from V₂ into node A) was wrong. 1.455 mA actually flows from A into the + terminal of the 5 V source. That source is absorbing 7.27 mW: it is being charged by the 12 V source.</p></div></details>
+    <details class="quiz"><summary>When using superposition, what do you replace a turned-off voltage source with, and why?</summary><div class="answer"><p>A short circuit (a plain wire). An ideal voltage source set to 0 V keeps 0 V across itself whatever current flows, which is exactly what a wire does. A turned-off current source becomes an open circuit, because 0 A must flow through it.</p></div></details>
+    <details class="quiz"><summary>A sensor has an open-circuit output of 3.0 V and a Thevenin resistance of 47 kΩ. What will a 100 kΩ input read?</summary><div class="answer"><p>3.0 × 100/(100 + 47) = 2.04 V, a 32% error. The input needs to be at least 100 × 47 kΩ ≈ 4.7 MΩ for an error under 1%, or the sensor needs a buffer (an op-amp follower, <a href="t14-op-amps.html">T14</a>).</p></div></details>
+    <details class="quiz"><summary>A battery reads 12.6 V open circuit and 12.0 V with a 2 Ω load. Find its Thevenin equivalent.</summary><div class="answer"><p>V<sub>th</sub> = 12.6 V. R<sub>th</sub> = R<sub>L</sub>(V<sub>oc</sub>/V<sub>L</sub> − 1) = 2 × (12.6/12.0 − 1) = 2 × 0.05 = 0.1 Ω. This is the same as the internal resistance from <a href="t01-charge-current-voltage.html">T01</a>: a battery's model is a Thevenin equivalent.</p></div></details>
+    <details class="quiz"><summary>Why can a 4–20 mA signal travel hundreds of metres without error while a 0–10 V signal over the same cable might read low?</summary><div class="answer"><p>The 4–20 mA transmitter acts as a current source with a very high Norton resistance, so the series wire resistance does not change the current (KCL: the same current flows everywhere in the loop). A 0–10 V signal is read across an input resistance; any current through the wire's resistance drops some voltage before the input, and leakage or ground differences add errors.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can state KCL and KVL and explain them as conservation of charge and of energy.</span></li>
+      <li><input type="checkbox"><span>I can use the passive sign convention and interpret a negative answer.</span></li>
+      <li><input type="checkbox"><span>I can derive series, parallel, voltage-divider and current-divider formulas.</span></li>
+      <li><input type="checkbox"><span>I can solve a two-source circuit by nodal analysis and check it with an energy balance.</span></li>
+      <li><input type="checkbox"><span>I can use superposition correctly, and know it does not apply to power.</span></li>
+      <li><input type="checkbox"><span>I can find a Thevenin and Norton equivalent, on paper and with two measurements.</span></li>
+      <li><input type="checkbox"><span>I can predict the loading error when a meter or input is connected to a sensor.</span></li>
+      <li><input type="checkbox"><span>I can explain why 4–20 mA loops are immune to wire resistance.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
