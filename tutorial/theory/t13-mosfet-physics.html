@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T13 · How a MOSFET works</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 3</div>
+    <span class="eyebrow">Theory · T13</span>
+    <h1>How a MOSFET works</h1>
+    <p class="lede">A voltage on an insulated gate pulls a thin sheet of electrons to the silicon surface and joins two terminals together. You will see why that needs a threshold voltage, why "logic-level" matters for 3.3 V and 5 V drivers, what gate charge costs you, and why MOSFETs run nearly every power switch and every computer chip.</p>
+    <div class="meta"><span><b>Reading</b> 50–60 min</span><span><b>Level</b> After T11, T12</span><span><b>Practice</b> P08</span><span><b>Needs</b> capacitors (T05), depletion layers (T11)</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>The field-effect idea</h2>
+    <p>A BJT (T12) is controlled by injecting carriers through a forward-biased junction, so its input always draws some current. A <strong>field-effect transistor</strong> is controlled by an <em>electric field</em> through an insulator. No charge crosses the insulator, so in steady state the control terminal draws essentially <strong>zero current</strong>. It only needs charge to move on and off, like charging a capacitor.</p>
+    <p>The idea is old: Julius Lilienfeld patented field-effect devices in the 1920s, but nobody could make a clean enough surface for them to work. In <strong>1959</strong> Mohamed Atalla and Dawon Kahng at Bell Labs built the first working <strong>MOSFET</strong> (metal–oxide–semiconductor field-effect transistor), using thermally grown silicon dioxide as a near-perfect insulator on silicon. In 1963 Frank Wanlass at Fairchild showed <strong>CMOS</strong>, which pairs n- and p-channel MOSFETs so that logic draws almost no power when idle. Today MOSFETs are the most-manufactured device in history.</p>
+
+    <h2>The MOS capacitor</h2>
+    <p>Start with the simplest structure: a metal (or doped polysilicon) <strong>gate</strong>, a thin <strong>oxide</strong> (SiO<sub>2</sub>, an excellent insulator), on a <strong>p-type substrate</strong> (also called the body). It is a parallel-plate capacitor whose bottom "plate" is silicon. The capacitance per area is:</p>
+    <div class="formula">C<sub>ox</sub> = ε<sub>ox</sub> / t<sub>ox</sub>     ε<sub>ox</sub> = 3.9 ε<sub>0</sub>
+      <small>For a 50 nm oxide (a typical power-MOSFET gate): C<sub>ox</sub> = 3.9 × 8.85×10<sup>−12</sup> / 50×10<sup>−9</sup> ≈ 6.9×10<sup>−4</sup> F/m², or 0.69 fF per µm². Logic transistors use oxides only a few nanometres thick, so C<sub>ox</sub> is ten or more times larger.</small></div>
+    <p>Now raise the gate voltage V<sub>G</sub> (body grounded) and watch the silicon surface go through three stages.</p>
+    <figure>
+      <svg viewBox="0 0 660 300" role="img" aria-label="MOS capacitor in accumulation, depletion and inversion">
+        <defs>
+          <g id="t13-mc-acc"><rect class="f-panel s-thin" x="-6" y="-6" width="12" height="12"/><text class="t t-small t-red" x="0" y="4" text-anchor="middle">−</text></g>
+        </defs>
+        <!-- panel 1 -->
+        <text class="t t-bold" x="30" y="20">1 · Accumulation</text>
+        <text class="t t-small t-muted" x="30" y="36">V<tspan baseline-shift="sub" font-size="9">G</tspan> negative</text>
+        <rect class="f-ink" x="30" y="50" width="180" height="12"/>
+        <text class="t t-small" x="34" y="78">oxide</text>
+        <rect class="f-wash s-thin" x="30" y="62" width="180" height="22"/>
+        <text class="t t-small t-muted" x="40" y="78">oxide (insulator)</text>
+        <rect class="f-warn-soft s-thin" x="30" y="84" width="180" height="150"/>
+        <circle class="s-red" cx="50" cy="94" r="5"/><circle class="s-red" cx="75" cy="94" r="5"/><circle class="s-red" cx="100" cy="94" r="5"/><circle class="s-red" cx="125" cy="94" r="5"/><circle class="s-red" cx="150" cy="94" r="5"/><circle class="s-red" cx="175" cy="94" r="5"/><circle class="s-red" cx="198" cy="94" r="5"/>
+        <circle class="s-red" cx="70" cy="160" r="5"/><circle class="s-red" cx="140" cy="190" r="5"/><circle class="s-red" cx="180" cy="150" r="5"/>
+        <text class="t t-small" x="40" y="252">holes pulled up to</text>
+        <text class="t t-small" x="40" y="268">the surface</text>
+        <!-- panel 2 -->
+        <text class="t t-bold" x="250" y="20">2 · Depletion</text>
+        <text class="t t-small t-muted" x="250" y="36">0 &lt; V<tspan baseline-shift="sub" font-size="9">G</tspan> &lt; V<tspan baseline-shift="sub" font-size="9">th</tspan></text>
+        <rect class="f-ink" x="250" y="50" width="180" height="12"/>
+        <rect class="f-wash s-thin" x="250" y="62" width="180" height="22"/>
+        <rect class="f-warn-soft s-thin" x="250" y="84" width="180" height="150"/>
+        <rect class="f-wash" x="251" y="85" width="178" height="50"/>
+        <use href="#t13-mc-acc" x="270" y="100"/><use href="#t13-mc-acc" x="310" y="100"/><use href="#t13-mc-acc" x="350" y="100"/><use href="#t13-mc-acc" x="390" y="100"/>
+        <use href="#t13-mc-acc" x="290" y="122"/><use href="#t13-mc-acc" x="330" y="122"/><use href="#t13-mc-acc" x="370" y="122"/><use href="#t13-mc-acc" x="410" y="122"/>
+        <circle class="s-red" cx="280" cy="170" r="5"/><circle class="s-red" cx="340" cy="200" r="5"/><circle class="s-red" cx="400" cy="165" r="5"/>
+        <text class="t t-small" x="260" y="252">holes pushed away;</text>
+        <text class="t t-small" x="260" y="268">fixed − acceptor ions left</text>
+        <!-- panel 3 -->
+        <text class="t t-bold" x="470" y="20">3 · Inversion</text>
+        <text class="t t-small t-muted" x="470" y="36">V<tspan baseline-shift="sub" font-size="9">G</tspan> &gt; V<tspan baseline-shift="sub" font-size="9">th</tspan></text>
+        <rect class="f-ink" x="470" y="50" width="180" height="12"/>
+        <rect class="f-wash s-thin" x="470" y="62" width="180" height="22"/>
+        <rect class="f-warn-soft s-thin" x="470" y="84" width="180" height="150"/>
+        <rect class="f-wash" x="471" y="85" width="178" height="60"/>
+        <rect class="f-theory-soft" x="471" y="85" width="178" height="9"/>
+        <circle class="f-blue" cx="482" cy="90" r="3.5"/><circle class="f-blue" cx="497" cy="90" r="3.5"/><circle class="f-blue" cx="512" cy="90" r="3.5"/><circle class="f-blue" cx="527" cy="90" r="3.5"/><circle class="f-blue" cx="542" cy="90" r="3.5"/><circle class="f-blue" cx="557" cy="90" r="3.5"/><circle class="f-blue" cx="572" cy="90" r="3.5"/><circle class="f-blue" cx="587" cy="90" r="3.5"/><circle class="f-blue" cx="602" cy="90" r="3.5"/><circle class="f-blue" cx="617" cy="90" r="3.5"/><circle class="f-blue" cx="632" cy="90" r="3.5"/>
+        <use href="#t13-mc-acc" x="490" y="112"/><use href="#t13-mc-acc" x="530" y="112"/><use href="#t13-mc-acc" x="570" y="112"/><use href="#t13-mc-acc" x="610" y="112"/>
+        <use href="#t13-mc-acc" x="510" y="132"/><use href="#t13-mc-acc" x="550" y="132"/><use href="#t13-mc-acc" x="590" y="132"/><use href="#t13-mc-acc" x="630" y="132"/>
+        <circle class="s-red" cx="500" cy="180" r="5"/><circle class="s-red" cx="560" cy="205" r="5"/><circle class="s-red" cx="620" cy="175" r="5"/>
+        <text class="t t-small t-blue" x="480" y="252">thin sheet of electrons:</text>
+        <text class="t t-small t-blue" x="480" y="268">the surface is now n-type</text>
+        <text class="t t-small t-muted" x="30" y="292">gate (black) · oxide (grey) · p-type body (pink) · open circle = hole · square = fixed acceptor ion · blue dot = electron</text>
+      </svg>
+      <figcaption>Figure 1. As the gate goes positive, it first pushes holes away and leaves a depletion layer of fixed negative ions (just like one side of a p–n junction in T11). Push harder and electrons, the minority carriers, gather in a sheet a few nanometres thick right under the oxide. The surface has been "inverted" from p-type to n-type.</figcaption>
+    </figure>
+    <ol>
+      <li><strong>Accumulation</strong> (V<sub>G</sub> negative): the gate attracts holes, piling them against the oxide.</li>
+      <li><strong>Depletion</strong> (small positive V<sub>G</sub>): the gate repels holes, uncovering negative acceptor ions. Their charge balances the gate's positive charge. Same physics as the p side of a p–n junction.</li>
+      <li><strong>Inversion</strong> (V<sub>G</sub> above the <strong>threshold voltage V<sub>th</sub></strong>): the surface potential is now high enough that electrons collect at the surface. Extra gate charge from now on is balanced mostly by these mobile electrons, not by more ions. This electron sheet is the <strong>inversion channel</strong>.</li>
+    </ol>
+    <p><strong>Why a threshold, and how big?</strong> Recall from T11 that n·p = n<sub>i</sub>² and that each 60 mV of potential changes a carrier density 10×. In a body doped N<sub>A</sub> = 10<sup>17</sup> cm<sup>−3</sup>, electrons are only n<sub>i</sub>²/N<sub>A</sub> = 10<sup>3</sup> per cm³. To make the surface as n-type as the bulk is p-type (10<sup>17</sup> electrons/cm³), the surface potential must rise by 14 decades × 59.5 mV ≈ <strong>0.83 V</strong>. That is the textbook "strong inversion" condition. The gate voltage needed is larger than this, because some voltage also drops across the oxide (to hold the depletion charge) and because of built-in contact and oxide-charge effects. Manufacturers tune V<sub>th</sub> with doping; practical parts range from about 0.4 V (logic) to 2–4 V (standard power MOSFETs).</p>
+    <p><strong>How much charge is in the channel?</strong> Above threshold, extra charge = C<sub>ox</sub>(V<sub>GS</sub> − V<sub>th</sub>). With our 50 nm oxide and 1 V of overdrive: 6.9×10<sup>−4</sup> C/m², which is 4.3×10<sup>11</sup> electrons per cm². Squeezed into a layer a few nanometres thick, that is a local density around 10<sup>18</sup> cm<sup>−3</sup>: a genuinely conducting sheet.</p>
+    <div class="callout why"><span class="label">Where do the electrons come from?</span><p>In a bare MOS capacitor, the only supply is slow thermal generation, so the channel takes milliseconds to seconds to form. In a MOSFET the channel connects to heavily doped n<sup>+</sup> source and drain regions, which are full of electrons and supply the channel in nanoseconds. This is why a MOSFET switches fast and a plain MOS capacitor does not.</p></div>
+
+    <h2>The enhancement n-channel MOSFET</h2>
+    <p>Add two heavily doped n<sup>+</sup> regions on either side of the gate: the <strong>source</strong> (S) and the <strong>drain</strong> (D). The p-type body sits between them under the gate.</p>
+    <ul>
+      <li><strong>V<sub>GS</sub> below V<sub>th</sub></strong>: from source to drain the path is n<sup>+</sup> → p → n<sup>+</sup>, two back-to-back p–n junctions with a wide p region between them. As you saw in T12, that is not a transistor: no current flows (apart from leakage). The switch is <strong>off</strong>.</li>
+      <li><strong>V<sub>GS</sub> above V<sub>th</sub></strong>: the inversion channel forms an n-type bridge from source to drain. Electrons flow from source to drain (conventional current from drain to source). The switch is <strong>on</strong>.</li>
+    </ul>
+    <p>This is called an <strong>enhancement-mode</strong> device: the channel does not exist until you "enhance" it with gate voltage, so it is <strong>normally off</strong>. (Depletion-mode MOSFETs, which are on at V<sub>GS</sub> = 0, exist but are rare in your work.) A <strong>p-channel</strong> MOSFET is the mirror image: n body, p<sup>+</sup> source and drain, a hole channel, turned on by pulling the gate <em>below</em> the source.</p>
+    <figure>
+      <svg viewBox="0 0 660 320" role="img" aria-label="Cross-section of an n-channel MOSFET with channel and pinch-off at the drain end">
+        <defs>
+          <marker id="t13-x-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-warn-soft s-thin" x="30" y="110" width="600" height="170"/>
+        <text class="t t-small" x="290" y="265">p-type body</text>
+        <path class="s-thin" d="M30 110 H630"/>
+        <!-- source and drain -->
+        <path class="f-theory-soft s-thin" d="M60 110 H200 V150 Q200 175 175 175 H85 Q60 175 60 150 Z"/>
+        <path class="f-theory-soft s-thin" d="M460 110 H600 V150 Q600 175 575 175 H485 Q460 175 460 150 Z"/>
+        <text class="t t-bold" x="112" y="148">n⁺</text><text class="t t-bold" x="512" y="148">n⁺</text>
+        <!-- oxide and gate -->
+        <rect class="f-wash s-thin" x="200" y="96" width="260" height="14"/>
+        <rect class="f-ink" x="200" y="74" width="260" height="22"/>
+        <text class="t t-small t-bold" x="304" y="66">Gate</text>
+        <path class="s-line" d="M330 74 V40"/>
+        <text class="t t-small" x="340" y="44">V<tspan baseline-shift="sub" font-size="9">GS</tspan> &gt; V<tspan baseline-shift="sub" font-size="9">th</tspan></text>
+        <path class="s-line" d="M130 110 V40"/><text class="t t-small t-bold" x="100" y="34">Source</text>
+        <path class="s-line" d="M530 110 V40"/><text class="t t-small t-bold" x="508" y="34">Drain</text>
+        <!-- channel tapering -->
+        <path class="f-blue" d="M200 111 H420 L455 111 L420 117 H200 Z" opacity="0.85"/>
+        <path class="f-blue" d="M200 111 L200 121 Q330 119 425 113 L425 111 Z"/>
+        <rect class="f-wash" x="425" y="111" width="35" height="22" opacity="0.9"/>
+        <text class="t t-small" x="380" y="150">pinch-off</text>
+        <path class="s-thin" d="M430 140 L440 122"/>
+        <text class="t t-small t-blue" x="230" y="138">inversion channel (thicker at the source end)</text>
+        <path class="s-blue" d="M150 190 H520" marker-end="url(#t13-x-ar)"/>
+        <text class="t t-small t-blue" x="240" y="208">electrons: source → drain</text>
+        <!-- body diode note -->
+        <text class="t t-small t-muted" x="40" y="300">In a discrete power MOSFET the body is tied to the source; the body–drain p–n junction is the "body diode".</text>
+      </svg>
+      <figcaption>Figure 2. An n-channel MOSFET (not to scale). The gate voltage creates the channel. Because the drain is at a higher voltage than the source, the gate-to-channel voltage is smaller at the drain end, so the channel is thinner there. When V<sub>DS</sub> reaches V<sub>GS</sub> − V<sub>th</sub>, the channel pinches off at the drain end; electrons then cross the short depleted gap in a strong field, much like a BJT's collector junction.</figcaption>
+    </figure>
+
+    <h2>Linear and saturation regions</h2>
+    <p>Define the <strong>overdrive</strong> V<sub>ov</sub> = V<sub>GS</sub> − V<sub>th</sub>: how far above threshold the gate is. The simple "square-law" model gives:</p>
+    <div class="formula">Linear (V<sub>DS</sub> &lt; V<sub>ov</sub>):  I<sub>D</sub> = k [ V<sub>ov</sub>V<sub>DS</sub> − V<sub>DS</sub>²/2 ]
+Saturation (V<sub>DS</sub> ≥ V<sub>ov</sub>):  I<sub>D</sub> = (k/2) V<sub>ov</sub>²
+      <small>k = μ<sub>n</sub>C<sub>ox</sub>W/L: mobility × oxide capacitance × channel width ÷ channel length. Wide, short channels give big k. Power MOSFETs are thousands of tiny cells in parallel, so their k is several A/V² or more.</small></div>
+    <ul>
+      <li><strong>Linear (also "ohmic" or "triode") region.</strong> For small V<sub>DS</sub>, the channel is uniform and acts like a resistor whose value the gate sets: R<sub>DS</sub> ≈ 1/(k V<sub>ov</sub>). More gate voltage, more electrons, lower resistance. <strong>A MOSFET used as a switch should sit here</strong>, fully on, with a tiny V<sub>DS</sub>.</li>
+      <li><strong>Saturation region.</strong> Once V<sub>DS</sub> ≥ V<sub>ov</sub>, the channel is pinched off at the drain end and current hardly increases with V<sub>DS</sub>. The MOSFET is now a voltage-controlled current source: this is where it amplifies.</li>
+    </ul>
+    <div class="callout myth"><span class="label">Common misconception</span><p>The names are a trap. A <b>MOSFET in "saturation"</b> is in its flat, current-source region, which corresponds to a BJT's <b>active</b> region. A <b>BJT in "saturation"</b> is fully on, which corresponds to a MOSFET's <b>linear/ohmic</b> region. When someone says "saturate the MOSFET" for a switch, they usually mean "drive it hard into the ohmic region". Ask which they mean.</p></div>
+    <p><strong>Worked example.</strong> A power MOSFET with V<sub>th</sub> = 2 V and k = 4 A/V².</p>
+    <ul>
+      <li>V<sub>GS</sub> = 10 V: V<sub>ov</sub> = 8 V, R<sub>DS</sub> ≈ 1/(4 × 8) ≈ 31 mΩ. Saturation current limit (k/2)V<sub>ov</sub>² = 128 A, far above any load you would connect. Fully on.</li>
+      <li>V<sub>GS</sub> = 3.3 V: V<sub>ov</sub> = 1.3 V, R<sub>DS</sub> ≈ 190 mΩ, and the current cannot exceed 2 × 1.3² ≈ 3.4 A. A 5 A load would push it out of the ohmic region: it would drop several volts and overheat.</li>
+    </ul>
+    <p>The square law is a simplification. Real short-channel and power devices deviate from it, and below threshold a small "subthreshold" current still flows, falling about 10× for every 60–100 mV below V<sub>th</sub>. For design, always use the datasheet curves.</p>
+
+    <div class="widget" id="w-t13-id">
+      <span class="label">Interactive · Drain current vs V<sub>GS</sub> explorer</span>
+      <p style="font-size:15px;margin:0 0 6px">Circuit: 12 V supply → load resistor R<sub>L</sub> → MOSFET drain; source to 0 V. Slide the gate voltage and the threshold and see whether the MOSFET is really "on".</p>
+      <label>Threshold V<sub>th</sub> <span class="out" id="t13-vth-o"></span><input type="range" id="t13-vth" min="0.5" max="4" step="0.1" value="2"></label>
+      <label>Gain factor k <span class="out" id="t13-k-o"></span><input type="range" id="t13-k" min="-1" max="1.6" step="0.05" value="0.6"></label>
+      <label>Load resistor R<sub>L</sub> <span class="out" id="t13-rl-o"></span><input type="range" id="t13-rl" min="0.4" max="2.4" step="0.02" value="0.38"></label>
+      <label>Gate voltage V<sub>GS</sub> <span class="out" id="t13-vgs-o"></span><input type="range" id="t13-vgs" min="0" max="10" step="0.05" value="3.3"></label>
+      <svg id="t13-plot" viewBox="0 0 560 300" role="img" aria-label="Drain current against gate voltage"></svg>
+      <div class="readings">
+        <div><small>Region</small><span class="out" id="t13-r-reg"></span></div>
+        <div><small>Drain current I<sub>D</sub></small><span class="out" id="t13-r-id"></span></div>
+        <div><small>V<sub>DS</sub></small><span class="out" id="t13-r-vds"></span></div>
+        <div><small>Channel R<sub>DS</sub> = V<sub>DS</sub>/I<sub>D</sub></small><span class="out" id="t13-r-rds"></span></div>
+        <div><small>MOSFET heat P = V<sub>DS</sub>·I<sub>D</sub></small><span class="out" id="t13-r-p"></span></div>
+        <div><small>Load gets</small><span class="out" id="t13-r-frac"></span></div>
+      </div>
+      <p style="font-size:14px;margin-top:10px;color:var(--muted)">Blue: actual I<sub>D</sub> with the load. Dashed: the most the channel could pass in saturation, (k/2)(V<sub>GS</sub> − V<sub>th</sub>)². Vertical marks: typical 3.3 V, 5 V and 10 V gate drives. Square-law teaching model; no subthreshold current, no self-heating.</p>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var vthR=$('t13-vth'),kR=$('t13-k'),rlR=$('t13-rl'),vgsR=$('t13-vgs'),svg=$('t13-plot'),VDD=12;
+      function imos(k,vov,vds){if(vov<=0)return 0;if(vds<vov)return k*(vov*vds-vds*vds/2);return k/2*vov*vov;}
+      function solve(k,vth,rl,vgs){var vov=vgs-vth;if(vov<=0)return {id:0,vds:VDD};var lo=0,hi=VDD;for(var i=0;i<60;i++){var m=(lo+hi)/2;if(imos(k,vov,m)-(VDD-m)/rl>0)hi=m;else lo=m;}var v=(lo+hi)/2;return {id:(VDD-v)/rl,vds:v};}
+      function fmtI(i){return i>=1?i.toFixed(2)+' A':i>=1e-3?(i*1e3).toFixed(1)+' mA':i>0?(i*1e6).toFixed(1)+' µA':'0 A';}
+      function fmtR(r){return !isFinite(r)?'open':r>=1?r.toFixed(2)+' Ω':(r*1000).toFixed(0)+' mΩ';}
+      function draw(){
+        var vth=+vthR.value,k=Math.pow(10,+kR.value),rl=Math.pow(10,+rlR.value),vgs=+vgsR.value;
+        var imax=VDD/rl*1.2;
+        var X0=60,X1=545,Y0=20,Y1=262;function px(v){return X0+v/10*(X1-X0);}function py(i){return Y1-Math.min(i,imax)/imax*(Y1-Y0);}
+        var s='';var st=imax>6?2:imax>3?1:imax>1.2?0.5:imax>0.6?0.2:0.1;
+        for(var g=0;g<=imax+1e-9;g+=st){var y=py(g);s+='<line class="s-thin" x1="'+X0+'" y1="'+y+'" x2="'+X1+'" y2="'+y+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+(X0-6)+'" y="'+(y+4)+'" text-anchor="end">'+(st<1?g.toFixed(1):g.toFixed(0))+'</text>';}
+        for(var gv=0;gv<=10;gv+=2){s+='<text class="t t-small t-muted" x="'+px(gv)+'" y="'+(Y1+16)+'" text-anchor="middle">'+gv+'</text>';}
+        [3.3,5,10].forEach(function(v){s+='<line class="s-thin s-dash" x1="'+px(v)+'" y1="'+Y0+'" x2="'+px(v)+'" y2="'+Y1+'"/><text class="t t-small t-muted" x="'+(px(v)-3)+'" y="'+(Y0+26)+'" text-anchor="end">'+v+' V</text>';});
+        s+='<line class="s-amber s-dash" x1="'+px(vth)+'" y1="'+Y0+'" x2="'+px(vth)+'" y2="'+Y1+'"/><text class="t t-small" x="'+(px(vth)+4)+'" y="'+(Y1-8)+'">V<tspan baseline-shift="sub" font-size="9">th</tspan></text>';
+        s+='<path class="s-line" d="M'+X0+' '+Y0+' V'+Y1+' H'+X1+'"/>';
+        s+='<text class="t t-small" x="'+(X0+6)+'" y="'+(Y0+12)+'">I<tspan baseline-shift="sub" font-size="9">D</tspan> (A)</text><text class="t t-small" x="'+(X1-4)+'" y="'+(Y1-6)+'" text-anchor="end">V<tspan baseline-shift="sub" font-size="9">GS</tspan> (V)</text>';
+        var d1='',d2='',st2=false;
+        for(var j=0;j<=200;j++){var v=10*j/200;var r=solve(k,vth,rl,v);d1+=(j?' L':'M')+px(v).toFixed(1)+' '+py(r.id).toFixed(1);var vov=v-vth;if(vov>0){var sat=k/2*vov*vov;if(sat<=imax){d2+=(st2?' L':'M')+px(v).toFixed(1)+' '+py(sat).toFixed(1);st2=true;}}}
+        s+='<path class="s-thin s-dash" d="'+d2+'"/>';
+        s+='<path class="s-blue" d="'+d1+'"/>';
+        var q=solve(k,vth,rl,vgs);s+='<circle class="f-red" cx="'+px(vgs).toFixed(1)+'" cy="'+py(q.id).toFixed(1)+'" r="6"/>';
+        svg.innerHTML=s;
+        var vov=vgs-vth,reg=vov<=0?'Off (cut-off)':(q.vds<vov?'Ohmic: fully on':'Saturation: NOT fully on');
+        $('t13-vth-o').textContent=vth.toFixed(1)+' V';$('t13-k-o').textContent=k.toFixed(k<1?2:1)+' A/V²';$('t13-rl-o').textContent=rl.toFixed(rl<10?1:0)+' Ω ('+fmtI(VDD/rl)+' load)';$('t13-vgs-o').textContent=vgs.toFixed(2)+' V';
+        $('t13-r-reg').textContent=reg;$('t13-r-id').textContent=fmtI(q.id);$('t13-r-vds').textContent=q.vds.toFixed(q.vds<1?3:2)+' V';
+        $('t13-r-rds').textContent=q.id>0?fmtR(q.vds/q.id):'open';var p=q.vds*q.id;$('t13-r-p').textContent=p>=1?p.toFixed(2)+' W':(p*1000).toFixed(0)+' mW';
+        $('t13-r-frac').textContent=(q.id/(VDD/rl)*100).toFixed(0)+' % of full current';
+      }
+      [vthR,kR,rlR,vgsR].forEach(function(e){e.oninput=draw;});draw();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Start at the default (V<sub>th</sub> 2 V, 5 A load). At 3.3 V gate drive the MOSFET only reaches saturation and burns watts. Move V<sub>GS</sub> to 5 V and then 10 V and watch the heat collapse to a fraction of a watt. Now set V<sub>th</sub> to 1 V (a logic-level part) and go back to 3.3 V: fully on. That is the whole story of logic-level MOSFETs in one slider.</p></div>
+
+    <h2>R<sub>DS(on)</sub> and why logic-level MOSFETs matter</h2>
+    <p>Datasheets give <strong>R<sub>DS(on)</sub></strong>, the on-resistance, <em>at a stated V<sub>GS</sub></em>, usually 10 V for standard parts. They also give <strong>V<sub>GS(th)</sub></strong>, but read its definition: it is the gate voltage where the drain current just reaches a tiny test value, often 250 µA. <strong>At V<sub>GS(th)</sub> the MOSFET is barely on, not fully on.</strong></p>
+    <p>A classic example: the IRF540N, a popular 100 V power MOSFET, has V<sub>GS(th)</sub> of 2–4 V and R<sub>DS(on)</sub> of 44 mΩ specified at V<sub>GS</sub> = 10 V. Driven from a 3.3 V microcontroller pin, a sample with a 3 V threshold has almost no overdrive and passes only a small current with a large voltage drop. People wire it up, the load barely runs and the MOSFET gets hot.</p>
+    <p>A <strong>logic-level MOSFET</strong> has a lower threshold and, crucially, an R<sub>DS(on)</sub> <em>specified at 4.5 V, 2.5 V or even 1.8 V</em>. Rule: <strong>only trust a MOSFET at a gate voltage where the datasheet gives an R<sub>DS(on)</sub> figure.</strong></p>
+    <ul>
+      <li>5 V Arduino: choose a part with R<sub>DS(on)</sub> specified at 4.5 V (often marked "logic level", e.g. the IRLZ44N family).</li>
+      <li>3.3 V ESP32 or Raspberry Pi: choose a part with R<sub>DS(on)</sub> specified at 2.5 V or 2.7 V (many small SOT-23 MOSFETs such as the AO3400 type are; check the datasheet), or use a gate driver.</li>
+      <li>Otherwise: add a gate driver or a small transistor stage that switches the gate to 10–12 V from your supply rail.</li>
+    </ul>
+
+    <h2>Gate charge and gate resistors</h2>
+    <p>The gate is a capacitor, and a big one: a power MOSFET's input capacitance is often 1–5 nF. To switch it you must deliver a total <strong>gate charge Q<sub>g</sub></strong> (datasheets list it, typically 10–100 nC). The switching time is roughly:</p>
+    <div class="formula">t ≈ Q<sub>g</sub> / I<sub>gate</sub>
+      <small>Example: Q<sub>g</sub> = 40 nC driven from a 5 V pin through a 220 Ω resistor (about 10–20 mA, average ~10 mA): t ≈ 40 nC / 10 mA = 4 µs. A dedicated gate-driver chip delivering 1–2 A does it in tens of nanoseconds.</small></div>
+    <p>Why does switching time matter? During the transition the MOSFET has both voltage across it and current through it, so it heats. Energy lost per transition ≈ ½ × V × I × t.</p>
+    <ul>
+      <li>12 V, 5 A load, t = 4 µs: ½ × 12 × 5 × 4×10<sup>−6</sup> = 120 µJ per edge.</li>
+      <li>PWM at 1 kHz (2 edges per cycle): 0.24 W. Acceptable.</li>
+      <li>PWM at 20 kHz: 4.8 W. The MOSFET cooks, even though R<sub>DS(on)</sub> is tiny. Fast PWM needs a proper gate driver.</li>
+    </ul>
+    <p>Partway through each transition the gate voltage pauses on a flat step, the <strong>Miller plateau</strong>. There, the drain voltage is swinging and the gate–drain capacitance soaks up almost all the gate current. Most of Q<sub>g</sub> and most of the switching loss happen on this plateau.</p>
+    <p><strong>The two gate resistors you will see on almost every board:</strong></p>
+    <ul>
+      <li><strong>Series gate resistor (10–220 Ω)</strong>: limits the peak current a microcontroller pin must deliver into the gate capacitance, and damps ringing between the gate capacitance and the wiring inductance (which otherwise can oscillate at tens of MHz).</li>
+      <li><strong>Gate pull-down (10–100 kΩ, gate to source)</strong>: while the microcontroller boots, its pins float. A floating gate can be charged by stray coupling and leave the MOSFET half-on: high resistance, high current, smoke. The pull-down holds it firmly off.</li>
+    </ul>
+
+    <h2>The body diode</h2>
+    <p>In a discrete power MOSFET the body is connected to the source inside the package. That leaves a p–n junction between the p body (now at the source) and the n drain: the <strong>body diode</strong>, anode at the source, cathode at the drain for an n-channel part. It is drawn in the symbol.</p>
+    <ul>
+      <li>An n-channel MOSFET <strong>blocks only one direction</strong>: drain positive with respect to source. Reverse the voltage and the body diode conducts whatever the gate does.</li>
+      <li>In motor H-bridges the body diodes give the motor's inductive current somewhere to go during dead time.</li>
+      <li>To block both directions (an AC switch, or the charge/discharge switch in a lithium battery pack's protection board), use <strong>two MOSFETs back to back</strong>, sources joined.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="N-channel MOSFET symbol with body diode, and P-channel MOSFET used for reverse polarity protection">
+        <defs>
+          <marker id="t13-bd-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="40" y="22">n-channel MOSFET with body diode</text>
+        <!-- gate -->
+        <path class="s-line" d="M50 120 H100 V80 M100 80 V160"/>
+        <text class="t t-small" x="40" y="112">G</text>
+        <!-- channel segments -->
+        <path class="s-line" d="M112 78 V98 M112 110 V130 M112 142 V162"/>
+        <path class="s-line" d="M112 88 H160 V50"/><text class="t t-small" x="168" y="56">D</text>
+        <path class="s-line" d="M112 152 H160 V190"/><text class="t t-small" x="168" y="194">S</text>
+        <path class="s-line" d="M160 152 V120 H124" marker-end="url(#t13-bd-ar)"/>
+        <!-- body diode -->
+        <path class="s-line" d="M160 60 H220 V100 M220 130 V180 H160"/>
+        <polygon class="f-ink" points="208,128 232,128 220,104"/>
+        <path class="s-line" d="M206 102 H234"/>
+        <text class="t t-small" x="240" y="120">body diode</text>
+        <text class="t t-small t-muted" x="240" y="136">conducts S → D</text>
+        <!-- second: reverse polarity protection -->
+        <text class="t t-bold" x="340" y="22">Reverse-polarity "ideal diode" (P-channel)</text>
+        <path class="s-line" d="M340 80 H410"/>
+        <text class="t t-small" x="330" y="70">+12 V in</text>
+        <rect class="f-accent-soft s-accent" x="410" y="66" width="90" height="28" rx="4"/>
+        <text class="t t-small" x="420" y="85">P-MOSFET</text>
+        <text class="t t-small t-muted" x="416" y="110">D in · S out</text>
+        <path class="s-line" d="M500 80 H600"/>
+        <text class="t t-small" x="560" y="70">to load</text>
+        <path class="s-line" d="M455 94 V150"/>
+        <rect class="f-panel s-line" x="445" y="150" width="20" height="40"/>
+        <text class="t t-small" x="472" y="175">gate to 0 V via resistor</text>
+        <path class="s-line" d="M455 190 V205 M440 205 H470 M446 211 H464"/>
+        <text class="t t-small t-muted" x="340" y="225">Correct polarity: body diode conducts first, then the gate (pulled low) turns the channel fully on.</text>
+      </svg>
+      <figcaption>Figure 3. Left: the n-channel symbol. The broken vertical line says "enhancement mode, normally off"; the arrow is the body connection; the body diode is drawn from source to drain. Right: a P-channel MOSFET in the positive lead acting as a near-perfect diode. With the battery reversed, the body diode is reverse-biased and the gate sits at the source voltage, so nothing conducts. (Real designs add a Zener to keep V<sub>GS</sub> inside its rating on higher supplies.)</figcaption>
+    </figure>
+
+    <h2>Why MOSFETs dominate power switching</h2>
+    <ul>
+      <li><strong>No steady gate current.</strong> Gate leakage is nanoamps. A BJT switching 10 A needs perhaps 0.5–1 A of base current, continuously.</li>
+      <li><strong>Very low on-resistance.</strong> Milliohms in modern parts, so the on-state loss is tiny.</li>
+      <li><strong>Fast.</strong> Only majority carriers flow in the channel, so there is no stored minority charge to remove at turn-off (unlike a saturated BJT). Switching speed is set by how fast you can move the gate charge.</li>
+      <li><strong>Easy to parallel.</strong> R<sub>DS(on)</sub> rises with temperature (mobility falls as the lattice vibrates more). A hotter MOSFET takes less current, so parallel devices share fairly. A BJT does the opposite.</li>
+    </ul>
+    <div class="formula">P = I² × R<sub>DS(on)</sub>
+      <small>10 A through 10 mΩ: P = 100 × 0.01 = 1 W. At 5 A: 0.25 W. But R<sub>DS(on)</sub> often rises 1.5–2× at 100–125 °C, so design with the hot figure: 10 A × 10 A × 18 mΩ ≈ 1.8 W, which needs a heatsink or good copper area. Compare a BJT at 10 A with V<sub>CE(sat)</sub> = 0.3 V: 3 W in the collector, plus its base drive.</small></div>
+
+    <h2>The CMOS inverter</h2>
+    <p>Put a p-channel MOSFET on top (source to V<sub>DD</sub>) and an n-channel MOSFET below (source to ground). Join their gates as the input and their drains as the output. This is the <strong>CMOS inverter</strong>, the basic cell of every logic chip, microcontroller and CPU.</p>
+    <figure>
+      <svg viewBox="0 0 600 300" role="img" aria-label="CMOS inverter: PMOS on top, NMOS below, gates joined as input, drains joined as output">
+        <defs>
+          <marker id="t13-cm-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t13-cm-ar2" viewBox="0 0 8 8" refX="1" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M8,0 L0,4 L8,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="200" y="22">V<tspan baseline-shift="sub" font-size="9">DD</tspan> (3.3 V)</text>
+        <path class="s-line" d="M180 30 H300 M240 30 V60"/>
+        <!-- PMOS -->
+        <path class="s-line" d="M222 58 V78 M222 90 V110 M222 122 V142"/>
+        <path class="s-line" d="M222 68 H240 V60 M222 132 H240 V160"/>
+        <path class="s-line" d="M240 100 H226" marker-end="url(#t13-cm-ar2)"/>
+        <path class="s-line" d="M222 100 H240 M240 68 V100"/>
+        <path class="s-line" d="M210 60 V140"/>
+        <circle class="f-panel s-line" cx="202" cy="100" r="5"/>
+        <text class="t t-small" x="250" y="104">PMOS</text>
+        <!-- NMOS -->
+        <path class="s-line" d="M222 178 V198 M222 210 V230 M222 242 V262"/>
+        <path class="s-line" d="M222 188 H240 V160 M222 252 H240 V280"/>
+        <path class="s-line" d="M240 252 V220 H228" marker-end="url(#t13-cm-ar)"/>
+        <path class="s-line" d="M210 180 V260"/>
+        <text class="t t-small" x="250" y="224">NMOS</text>
+        <path class="s-line" d="M220 280 H260 M226 287 H254 M233 294 H247"/>
+        <!-- input -->
+        <path class="s-line" d="M90 160 H170 M170 100 V220 M170 100 H197 M170 220 H210"/>
+        <circle class="f-ink" cx="170" cy="160" r="3"/>
+        <text class="t t-bold" x="60" y="152">IN</text>
+        <!-- output -->
+        <path class="s-line" d="M240 160 H330"/><circle class="f-ink" cx="240" cy="160" r="3"/>
+        <text class="t t-bold" x="338" y="165">OUT</text>
+        <!-- truth table -->
+        <rect class="f-wash s-thin" x="400" y="60" width="180" height="120" rx="6"/>
+        <text class="t t-small t-bold" x="414" y="84">IN   PMOS   NMOS   OUT</text>
+        <text class="t t-small" x="414" y="112">0 V   on       off       3.3 V</text>
+        <text class="t t-small" x="414" y="140">3.3 V  off      on        0 V</text>
+        <text class="t t-small t-muted" x="414" y="166">one is always off</text>
+        <text class="t t-small t-muted" x="400" y="210">Static current ≈ 0 in both states.</text>
+        <text class="t t-small t-muted" x="400" y="228">Power is spent charging the</text>
+        <text class="t t-small t-muted" x="400" y="246">output capacitance: P = C V² f</text>
+      </svg>
+      <figcaption>Figure 4. The CMOS inverter. The small circle on the PMOS gate means "on when the gate is low". In either steady state one transistor is off, so no current flows from V<sub>DD</sub> to ground. Current flows only while the output charges or discharges.</figcaption>
+    </figure>
+    <p><strong>Why CMOS won.</strong> A gate that is idle draws essentially nothing. Power goes only into charging and discharging the wiring and gate capacitance each time a signal switches:</p>
+    <div class="formula">P ≈ C<sub>eff</sub> × V<sub>DD</sub>² × f
+      <small>Example: 100 pF of effective switched capacitance at 3.3 V and 48 MHz: 10<sup>−10</sup> × 10.9 × 4.8×10<sup>7</sup> ≈ 52 mW. Dropping the supply from 5 V to 3.3 V cuts this by (3.3/5)² ≈ 0.44, a 56 % saving. That is why chips moved from 5 V to 3.3 V and why processor cores run near 1 V.</small></div>
+    <p>It is also why a CMOS input must <strong>never be left floating</strong>: an unconnected gate drifts to around half supply, turning both transistors partly on, which wastes current and makes the output chatter. Tie unused inputs high or low (P11 covers pull-ups).</p>
+
+    <h2>ESD: the thin oxide is fragile</h2>
+    <p>The gate oxide is a superb insulator but very thin. Silicon dioxide breaks down at roughly 10 MV/cm, about <strong>1 V per nanometre</strong>. A 50 nm power-MOSFET oxide fails somewhere around 50 V; that is why datasheets rate V<sub>GS</sub> at only ±20 V or so. A logic transistor's oxide of a couple of nanometres fails at a few volts. Once punctured, the damage is permanent: the gate leaks or shorts.</p>
+    <p><strong>Electrostatic discharge (ESD)</strong> from your body easily reaches several kilovolts on a dry day. Worked: model your body as 100 pF charged to 3 kV (0.3 µC). Touch the gate of a MOSFET with 1 nF input capacitance and the charge shares: V ≈ 3000 × 100/(100 + 1000) ≈ 270 V on the gate, more than ten times the rating. You may not even feel a spark below about 3 kV.</p>
+    <ul>
+      <li>Integrated CMOS chips have built-in protection diodes on their pins, which helps but does not make them immune.</li>
+      <li>Many discrete MOSFETs have no protection at all (some include a gate Zener).</li>
+      <li>Store parts in their antistatic bags or foam, use an earthed wrist strap and mat when you can, touch an earthed metal point before handling, and fit the gate pull-down resistor early in assembly.</li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>An ESD wrist strap must connect through its built-in high-value resistor (typically 1 MΩ) to a proper earth point provided for it. Never clip it to anything connected to mains. All the circuits in this course stay at extra-low voltage (5–24 V DC); mains switching with MOSFETs belongs to licensed electricians and certified products.</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>In P08 you drive a 12 V load with a logic-level MOSFET from a microcontroller pin, compare its V<sub>DS</sub> with a BJT's V<sub>CE(sat)</sub>, and measure what happens to temperature when the gate drive is too low. Expected: with a good logic-level part at 5 V gate drive and a 1 A load, V<sub>DS</sub> of a few tens of millivolts and a cool package.</p>
+    <a class="crosslink" href="../practice/p08-transistor-switches.html">Practice P08 · Transistors as switches: BJT, MOSFET, relays</a>
+    <div class="callout job"><span class="label">On the job</span><p>MOSFETs are the switches inside PoE switches, LED drivers, electric lock controllers, 12/24 V power supplies, solar charge controllers and battery packs. A field technician rarely replaces one, but recognising the symptoms helps: a "failed short" MOSFET leaves a lock or load permanently energised; a damaged gate leaves it half-on and hot. In battery systems, "BMS" means <em>battery</em> management system, a protection board built around back-to-back MOSFETs, not the <em>building</em> management system of C01.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does a MOSFET's gate draw no steady current, while a BJT's base does?</summary><div class="answer"><p>The gate is insulated by oxide, so it is a capacitor: current flows only while its charge changes. A BJT's base–emitter is a forward-biased junction that continuously supplies holes lost to recombination and back-injection.</p></div></details>
+    <details class="quiz"><summary>What is the "inversion" in an inversion channel?</summary><div class="answer"><p>The p-type surface under the gate becomes n-type: the gate's field raises the surface potential until electrons (normally the minority carrier) outnumber holes there. That electron sheet connects the n<sup>+</sup> source and drain.</p></div></details>
+    <details class="quiz"><summary>A datasheet says V<sub>GS(th)</sub> = 2–4 V and R<sub>DS(on)</sub> = 44 mΩ at V<sub>GS</sub> = 10 V. Is it suitable to switch 3 A from a 3.3 V pin?</summary><div class="answer"><p><strong>No.</strong> V<sub>GS(th)</sub> is the barely-on point (often 250 µA). At 3.3 V, a sample with a 3–4 V threshold may be barely on or off. Only trust it at a V<sub>GS</sub> where R<sub>DS(on)</sub> is specified. Use a part specified at 2.5 V, or a gate driver.</p></div></details>
+    <details class="quiz"><summary>A MOSFET has R<sub>DS(on)</sub> = 25 mΩ (hot). How much heat at 6 A?</summary><div class="answer"><p>P = I²R = 36 × 0.025 = <strong>0.9 W</strong>. In a TO-220 package without a heatsink that is warm but usually acceptable; check the thermal resistance on the datasheet.</p></div></details>
+    <details class="quiz"><summary>Why does fast PWM need a gate driver even if R<sub>DS(on)</sub> is tiny?</summary><div class="answer"><p>Each transition takes t ≈ Q<sub>g</sub>/I<sub>gate</sub> and dissipates about ½VIt. A weak microcontroller pin gives microsecond transitions; at tens of kHz the switching loss (watts) far exceeds the conduction loss. A driver delivering amps shrinks t to nanoseconds.</p></div></details>
+    <details class="quiz"><summary>What is the gate pull-down resistor for?</summary><div class="answer"><p>To hold the gate at 0 V when the driving pin is floating (during boot, reset, or with a broken wire). A floating gate can charge from stray coupling and leave the MOSFET half-on and overheating.</p></div></details>
+    <details class="quiz"><summary>Why can't one n-channel MOSFET switch AC or block a reversed battery?</summary><div class="answer"><p>Its body diode conducts from source to drain whenever the drain goes below the source, whatever the gate does. Blocking both directions needs two MOSFETs back to back (sources joined), or a P-channel "ideal diode" arranged so the body diode blocks the wrong polarity.</p></div></details>
+    <details class="quiz"><summary>Why does a CMOS chip use less power at 3.3 V than at 5 V, at the same clock?</summary><div class="answer"><p>Dynamic power is C V² f. (3.3/5)² ≈ 0.44, so it uses about 44 % of the power, a 56 % saving.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can describe accumulation, depletion and inversion in a MOS capacitor.</span></li>
+      <li><input type="checkbox"><span>I can explain what sets the threshold voltage and where the channel electrons come from.</span></li>
+      <li><input type="checkbox"><span>I can tell linear (ohmic) from saturation, and avoid the BJT/MOSFET "saturation" naming trap.</span></li>
+      <li><input type="checkbox"><span>I can read V<sub>GS(th)</sub> and R<sub>DS(on)</sub> on a datasheet and choose a logic-level part for 3.3 V or 5 V drive.</span></li>
+      <li><input type="checkbox"><span>I can estimate switching time from gate charge and explain the series and pull-down gate resistors.</span></li>
+      <li><input type="checkbox"><span>I can find the body diode and explain what it allows and prevents.</span></li>
+      <li><input type="checkbox"><span>I can calculate conduction loss with P = I²R<sub>DS(on)</sub>, using the hot value.</span></li>
+      <li><input type="checkbox"><span>I can draw a CMOS inverter, explain why it idles at near-zero power, and handle MOSFETs ESD-safely.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -215,7 +215,54 @@
     liveReload();
   }
 
+  /* ---- full-text search on the hub: fetches each written chapter once, then searches its text ---- */
+  function setupSearch() {
+    var box = document.getElementById("search");
+    var out = document.getElementById("search-out");
+    if (!box || !out) return;
+    var cache = {}; // file -> plain text
+    function load(c) {
+      if (cache[c.file] !== undefined) return Promise.resolve();
+      return fetch(ROOT + c.file, { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (h) {
+        var doc = new DOMParser().parseFromString(h, "text/html");
+        doc.querySelectorAll("script,style,svg,nav,aside").forEach(function (n) { n.remove(); });
+        doc.querySelectorAll("td,th,li,p,h1,h2,h3,h4,div,br,summary,figcaption").forEach(function (n) { n.append(" "); });
+        var m = doc.querySelector("main");
+        cache[c.file] = m ? m.textContent.replace(/\s+/g, " ") : "";
+      }).catch(function () { cache[c.file] = ""; });
+    }
+    function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+    var timer = null;
+    function run() {
+      var q = box.value.trim().toLowerCase();
+      if (q.length < 2) { out.innerHTML = ""; return; }
+      out.innerHTML = '<div class="pill">Searching…</div>';
+      var ready = all.filter(function (c) { return meta[c.file] && meta[c.file].ok; });
+      Promise.all(ready.map(load)).then(function () {
+        var words = q.split(/\s+/);
+        var hits = [];
+        ready.forEach(function (c) {
+          var t = cache[c.file] || "", lt = t.toLowerCase(), score = 0;
+          if (!words.every(function (w) { return lt.indexOf(w) >= 0; })) return;
+          words.forEach(function (w) { var i = -1; while ((i = lt.indexOf(w, i + 1)) >= 0) score++; if ((c.title).toLowerCase().indexOf(w) >= 0) score += 50; });
+          var at = lt.indexOf(words[0]);
+          var snip = t.slice(Math.max(0, at - 70), at + 130);
+          hits.push({ c: c, score: score, snip: snip });
+        });
+        hits.sort(function (a, b) { return b.score - a.score; });
+        if (!hits.length) { out.innerHTML = '<p class="pill">No chapter mentions that yet.</p>'; return; }
+        out.innerHTML = hits.slice(0, 12).map(function (h) {
+          var s = esc(h.snip);
+          words.forEach(function (w) { s = s.replace(new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig"), "<mark>$1</mark>"); });
+          return '<a class="ch ' + h.c.book + '" href="' + ROOT + h.c.file + '"><span class="n">' + h.c.n + '</span><b>' + h.c.title + '</b><span class="d">…' + s + '…</span></a>';
+        }).join("");
+      });
+    }
+    box.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(run, 250); });
+  }
+
   buildSide();
+  setupSearch();
   var topSwitch = document.getElementById("theme-top");
   if (topSwitch) topSwitch.appendChild(themeSwitch());
   paintTheme();

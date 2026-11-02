@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P18 · ESP32 and IoT: Wi-Fi, MQTT and dashboards</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  #mq-filter{font:15px var(--mono);width:100%;max-width:none;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+  #mq-topics{width:100%;min-height:150px;font:13.5px/1.5 var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+  .mq-res td{font:13.5px var(--mono)}
+  .mq-yes{color:var(--green);font-weight:700} .mq-no{color:var(--muted)}
+  .mq-err{color:var(--warn);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chips button{font:13px var(--mono);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:4px 8px;border-radius:6px;cursor:pointer}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P18</span>
+    <h1>ESP32 and IoT: Wi-Fi, MQTT and dashboards</h1>
+    <p class="lede">You will program an ESP32 to join Wi-Fi, run an MQTT broker on your Raspberry Pi, make the ESP32 publish temperature and obey an LED command, and watch it all on a dashboard — using the same topic naming, security habits and architecture as building IoT systems.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$20–30 on top of P16/P17</span><span><b>Theory</b> T10, T15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>ESP32 development board</b><small>~A$12–25 · "ESP32-WROOM-32 DevKit" style, with USB</small></li>
+      <li><b>USB data cable</b><small>micro-USB or USB-C to match the board — a charge-only cable will not work</small></li>
+      <li><b>DS18B20 + 4.7 kΩ</b><small>the same parts as P17</small></li>
+      <li><b>LED + 330 Ω</b><small>the "commanded output"</small></li>
+      <li><b>Raspberry Pi from P16</b><small>will run the MQTT broker and dashboard</small></li>
+      <li><b>Breadboard(s)</b><small>DevKit boards are wide; straddle two boards or use one edge</small></li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>The ESP32 is a <b>3.3 V</b> chip and its pins are not 5 V tolerant, just like the Pi. The board's 5 V (VIN/5V) pin comes from USB: never connect it to a GPIO. Everything here is USB-powered ELV. Do not connect IoT relay boards to mains loads — switching 230 V is licensed electrical work in Australia.</p></div>
+
+    <h2>Meet the ESP32</h2>
+    <p>The <b>ESP32</b> from Espressif is a microcontroller (like the Arduino's chip, P11) with <b>Wi-Fi and Bluetooth built in</b>. It has two processor cores at up to 240 MHz, about 520 kB of RAM, 4 MB of flash on a typical module, and plenty of GPIO. It costs a few dollars, so it is inside a huge number of smart plugs, sensors and gateways.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Thing to know</th><th>Why it matters</th></tr>
+      <tr><td>3.3 V logic, ~12–40 mA per pin max</td><td>No 5 V signals in; drive relays through a transistor (P08)</td></tr>
+      <tr><td>Wi-Fi is 2.4 GHz only (classic ESP32)</td><td>It will not see a 5 GHz-only network; many sites run a separate 2.4 GHz IoT SSID</td></tr>
+      <tr><td>Current peaks of a few hundred mA when transmitting</td><td>Weak USB cables cause random resets ("brownout detector was triggered")</td></tr>
+      <tr><td>GPIO 34–39 are input-only, no internal pull-ups</td><td>Fine for sensors, useless for an LED</td></tr>
+      <tr><td>GPIO 6–11 connect to the flash chip</td><td>Never use them</td></tr>
+      <tr><td>GPIO 0, 2, 12, 15 are "strapping" pins read at boot</td><td>Wiring things to them can stop the board booting or flashing</td></tr>
+      <tr><td>ADC2 pins do not work while Wi-Fi is on</td><td>Use ADC1 pins (GPIO 32–39) for analogue readings</td></tr>
+    </table></div>
+
+    <h3>Arduino IDE setup</h3>
+    <ol class="steps">
+      <li><p><b>Add the board package.</b> In Arduino IDE 2: File → Preferences → "Additional boards manager URLs", add <code>https://espressif.github.io/arduino-esp32/package_esp32_index.json</code>. Then Tools → Board → Boards Manager, search "esp32", install <b>esp32 by Espressif Systems</b>.</p></li>
+      <li><p><b>Install libraries</b> (Sketch → Include Library → Manage Libraries): <b>PubSubClient</b> by Nick O'Leary, <b>OneWire</b>, and <b>DallasTemperature</b>.</p></li>
+      <li><p><b>Select the board and port.</b> Tools → Board → esp32 → <b>ESP32 Dev Module</b>; Tools → Port → the new COM port (Windows) or <code>/dev/cu.usbserial-…</code> / <code>/dev/cu.SLAB_USBtoUART</code> (macOS). No port? The board's USB-serial chip (often CP2102 or CH340) may need a driver from the chip maker, or your cable is charge-only.</p></li>
+      <li><p><b>Upload.</b> If you see "Failed to connect to ESP32: Wrong boot mode detected", hold the <b>BOOT</b> button while "Connecting…" appears, then release.</p></li>
+    </ol>
+
+    <h3>First sketch: join Wi-Fi</h3>
+<pre><code>#include &lt;WiFi.h&gt;
+
+const char* WIFI_SSID = "BenchIoT";
+const char* WIFI_PASS = "change-me";
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);                 // station = a client of an access point
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.print("IP address: "); Serial.println(WiFi.localIP());
+  Serial.print("Gateway:    "); Serial.println(WiFi.gatewayIP());
+  Serial.print("RSSI:       "); Serial.print(WiFi.RSSI()); Serial.println(" dBm");
+}
+
+void loop() {}</code></pre>
+    <p>Open the Serial Monitor at 115200 baud and press the board's EN (reset) button:</p>
+<pre><code>Connecting.....
+IP address: 192.168.1.57
+Gateway:    192.168.1.1
+RSSI:       -58 dBm</code></pre>
+    <p><b>RSSI</b> (received signal strength) is in dBm: decibels relative to 1 milliwatt, always negative here. −58 dBm is a solid link. Rule of thumb: better than −67 dBm is reliable; −70 to −80 dBm works but drops out; worse than −80 dBm is trouble. Every 3 dB is a factor of two in power, so −70 dBm is 4 times weaker than −64 dBm.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>Wi-Fi at 2.4 GHz has a wavelength of about 12.5 cm. The signal weakens with distance (spreading out) and with every wall, floor and metal cabinet it passes through. A plant room with steel switchboards and concrete is a hostile place for Wi-Fi; that is why many building sensors use wired buses or LoRaWAN instead.</p></div>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre</a>
+
+    <h2>MQTT in one picture</h2>
+    <p><b>MQTT</b> is a small messaging protocol designed for unreliable networks and tiny devices. It runs over TCP, normally on port <b>1883</b> (or <b>8883</b> with TLS encryption). The key idea is <b>publish/subscribe</b>: devices never talk to each other directly. They all connect to one central server called the <b>broker</b>.</p>
+    <ul>
+      <li>A <b>client</b> is anything that connects to the broker: your ESP32, a dashboard, a script.</li>
+      <li>To send data, a client <b>publishes</b> a message to a <b>topic</b>, a text address like <code>bench/l1/plantroom/temp</code>. The message body is called the <b>payload</b> (here, <code>23.94</code>).</li>
+      <li>To receive data, a client <b>subscribes</b> to a topic or a pattern of topics. The broker forwards every matching message to every subscriber.</li>
+      <li>The publisher does not know or care who is listening. Add a second dashboard tomorrow and nothing on the ESP32 changes.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="MQTT architecture: ESP32 nodes publish to a broker on the Pi; Node-RED and a phone subscribe; commands flow back">
+        <defs>
+          <marker id="p18-a1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="p18-a2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-panel s-line" x="16" y="30" width="150" height="64" rx="6"/>
+        <text class="t t-small t-bold" x="26" y="52">ESP32 plant room</text><text class="t t-small t-muted" x="26" y="70">temp sensor</text><text class="t t-small t-muted" x="26" y="86">+ LED output</text>
+        <rect class="f-panel s-line" x="16" y="120" width="150" height="56" rx="6"/>
+        <text class="t t-small t-bold" x="26" y="142">ESP32 level 2 office</text><text class="t t-small t-muted" x="26" y="160">temp sensor</text>
+        <rect class="f-panel s-line s-dash" x="16" y="200" width="150" height="56" rx="6"/>
+        <text class="t t-small t-bold" x="26" y="222">LoRaWAN gateway</text><text class="t t-small t-muted" x="26" y="240">(via network server)</text>
+        <rect class="f-accent-soft s-accent" x="250" y="90" width="150" height="110" rx="10"/>
+        <text class="t t-bold" x="264" y="116">Broker</text><text class="t t-small" x="264" y="136">Mosquitto on the Pi</text><text class="t t-small t-muted" x="264" y="156">port 1883 (LAN only)</text><text class="t t-small t-muted" x="264" y="176">users + ACLs</text>
+        <rect class="f-theory-soft s-blue" x="480" y="40" width="148" height="64" rx="6"/>
+        <text class="t t-small t-bold" x="490" y="62">Node-RED dashboard</text><text class="t t-small t-muted" x="490" y="80">subscribes bench/#</text><text class="t t-small t-muted" x="490" y="96">publishes led/set</text>
+        <rect class="f-panel s-line" x="480" y="130" width="148" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="490" y="152">Trend database</text><text class="t t-small t-muted" x="490" y="170">subscribes …/temp</text>
+        <rect class="f-panel s-line" x="480" y="206" width="148" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="490" y="228">mosquitto_sub</text><text class="t t-small t-muted" x="490" y="246">your debugging window</text>
+        <path class="s-accent" d="M166 58 L248 112" marker-end="url(#p18-a1)"/>
+        <path class="s-accent" d="M166 148 L248 148" marker-end="url(#p18-a1)"/>
+        <path class="s-accent s-dash" d="M166 228 L248 186" marker-end="url(#p18-a1)"/>
+        <path class="s-accent" d="M400 120 L478 80" marker-end="url(#p18-a1)"/>
+        <path class="s-accent" d="M400 150 L478 155" marker-end="url(#p18-a1)"/>
+        <path class="s-accent" d="M400 180 L478 228" marker-end="url(#p18-a1)"/>
+        <path class="s-blue" d="M480 96 C 440 110, 430 106, 402 108" marker-end="url(#p18-a2)"/>
+        <path class="s-blue" d="M250 100 C 220 84, 200 80, 168 74" marker-end="url(#p18-a2)"/>
+        <text class="t t-small t-accent" x="180" y="290">orange = data published (temp, state)</text>
+        <text class="t t-small t-blue" x="420" y="290">blue = command (led/set)</text>
+      </svg>
+      <figcaption>Figure 1. Everything talks only to the broker. Sensors publish, displays subscribe, and a command is just another publish that the ESP32 has subscribed to. Adding a consumer never touches the devices.</figcaption>
+    </figure>
+
+    <h3>QoS, retained messages and the last will</h3>
+    <p><b>QoS</b> (quality of service) is how hard MQTT tries to deliver each message:</p>
+    <ul>
+      <li><b>QoS 0 — at most once.</b> Send and forget. Cheapest. Fine for a temperature sent every 10 s: if one is lost, the next one arrives soon.</li>
+      <li><b>QoS 1 — at least once.</b> The receiver must reply with PUBACK; the sender repeats until it does. A message may arrive twice. Good for commands ("LED ON" twice does no harm).</li>
+      <li><b>QoS 2 — exactly once.</b> A four-step handshake. Slowest. For things where a duplicate would hurt (e.g. "add one to a counter").</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 210" role="img" aria-label="QoS 0, 1 and 2 message exchanges between client and broker">
+        <defs><marker id="p18-q" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="22">QoS 0</text><text class="t t-bold" x="230" y="22">QoS 1</text><text class="t t-bold" x="440" y="22">QoS 2</text>
+        <g><text class="t t-small t-muted" x="20" y="44">client</text><text class="t t-small t-muted" x="150" y="44">broker</text>
+          <path class="s-thin" d="M40 50 V200 M170 50 V200"/>
+          <path class="s-line" d="M40 70 L166 80" marker-end="url(#p18-q)"/><text class="t t-small" x="62" y="66">PUBLISH</text></g>
+        <g><text class="t t-small t-muted" x="230" y="44">client</text><text class="t t-small t-muted" x="360" y="44">broker</text>
+          <path class="s-thin" d="M250 50 V200 M380 50 V200"/>
+          <path class="s-line" d="M250 70 L376 80" marker-end="url(#p18-q)"/><text class="t t-small" x="272" y="66">PUBLISH</text>
+          <path class="s-accent" d="M380 100 L254 110" marker-end="url(#p18-q)"/><text class="t t-small t-accent" x="290" y="98">PUBACK</text></g>
+        <g><text class="t t-small t-muted" x="440" y="44">client</text><text class="t t-small t-muted" x="570" y="44">broker</text>
+          <path class="s-thin" d="M460 50 V200 M590 50 V200"/>
+          <path class="s-line" d="M460 70 L586 80" marker-end="url(#p18-q)"/><text class="t t-small" x="482" y="66">PUBLISH</text>
+          <path class="s-accent" d="M590 100 L464 110" marker-end="url(#p18-q)"/><text class="t t-small t-accent" x="500" y="98">PUBREC</text>
+          <path class="s-line" d="M460 130 L586 140" marker-end="url(#p18-q)"/><text class="t t-small" x="490" y="126">PUBREL</text>
+          <path class="s-accent" d="M590 160 L464 170" marker-end="url(#p18-q)"/><text class="t t-small t-accent" x="494" y="158">PUBCOMP</text></g>
+      </svg>
+      <figcaption>Figure 2. More QoS means more round trips. QoS applies to each hop separately: publisher → broker, and broker → each subscriber (at the lower of the two QoS levels).</figcaption>
+    </figure>
+    <ul>
+      <li><b>Retained message</b>: the broker keeps the <i>last</i> message published with the "retain" flag on a topic, and hands it to any new subscriber immediately. Without it, a dashboard opened at 9:00 shows nothing until the next reading arrives. Retain states and slow-changing values; do not retain one-off events or commands.</li>
+      <li><b>Last will and testament (LWT)</b>: when a client connects it can leave a "will" with the broker: "if I vanish without saying goodbye, publish <code>offline</code> to <code>…/status</code>". The broker notices the client is gone when its <b>keepalive</b> pings stop (PubSubClient default: 15 s, the broker waits about 1.5 × that). This is how a dashboard shows "device offline" — the IoT version of a BMS comms-fail alarm.</li>
+    </ul>
+
+    <h2>Install the Mosquitto broker on the Pi</h2>
+<pre><code>sudo apt update
+sudo apt install -y mosquitto mosquitto-clients
+sudo systemctl enable --now mosquitto
+systemctl status mosquitto          # expect: active (running)</code></pre>
+    <p>Out of the box, Mosquitto 2.x only accepts connections from the Pi itself. That is a safe default. We add a network listener <b>with passwords</b>. Create <code>/etc/mosquitto/conf.d/bench.conf</code> with <code>sudo nano</code>:</p>
+<pre><code>listener 1883
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+acl_file /etc/mosquitto/acl</code></pre>
+    <p>Create one user per client. <code>-c</code> creates a new file, so use it for the first user only — using it again wipes the others.</p>
+<pre><code>sudo mosquitto_passwd -c /etc/mosquitto/passwd tech
+sudo mosquitto_passwd /etc/mosquitto/passwd esp32-01
+sudo mosquitto_passwd /etc/mosquitto/passwd nodered</code></pre>
+    <p>The <b>ACL</b> (access control list) says which user may read or write which topics. A sensor should only write its own topics; a dashboard should not be able to impersonate a sensor. Create <code>/etc/mosquitto/acl</code>:</p>
+<pre><code># technician: everything under bench/
+user tech
+topic readwrite bench/#
+
+# dashboard: read all, but only write LED commands
+user nodered
+topic read bench/#
+topic write bench/+/+/led/set
+
+# one ESP32 node: only its own topics
+user esp32-01
+topic write bench/l1/plantroom/temp
+topic write bench/l1/plantroom/temp/fault
+topic write bench/l1/plantroom/led/state
+topic write bench/l1/plantroom/esp32-01/status
+topic read bench/l1/plantroom/led/set</code></pre>
+<pre><code>sudo chown root:mosquitto /etc/mosquitto/passwd /etc/mosquitto/acl
+sudo chmod 640 /etc/mosquitto/passwd /etc/mosquitto/acl
+sudo systemctl restart mosquitto
+sudo ss -tlnp | grep 1883          # expect 0.0.0.0:1883 ... mosquitto</code></pre>
+    <p>Test it with two SSH windows. Window 1 subscribes to everything under <code>bench/</code> (<code>-v</code> prints the topic too):</p>
+<pre><code>tech@plantpi:~ $ mosquitto_sub -h localhost -u tech -P 'your-password' -t 'bench/#' -v</code></pre>
+    <p>Window 2 publishes:</p>
+<pre><code>tech@plantpi:~ $ mosquitto_pub -h localhost -u tech -P 'your-password' -t 'bench/l1/plantroom/temp' -m 22.5</code></pre>
+    <p>Window 1 prints <code>bench/l1/plantroom/temp 22.5</code>. Try a wrong password: you get <code>Connection error: Connection Refused: not authorised.</code> That refusal is the proof your security works. (Typing a password after <code>-P</code> leaves it in your shell history; on a real site use a config file or a prompt.)</p>
+
+    <h2>The ESP32 node: publish temperature, obey the LED</h2>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="ESP32 wiring: DS18B20 on GPIO4 with pull-up to 3V3, LED with 330 ohm on GPIO26">
+        <rect class="f-wash s-line" x="20" y="20" width="160" height="210" rx="8"/>
+        <text class="t t-bold" x="34" y="44">ESP32 DevKit</text>
+        <circle class="f-amber" cx="180" cy="70" r="6"/><text class="t t-small" x="34" y="74">3V3</text>
+        <circle class="f-blue" cx="180" cy="120" r="6"/><text class="t t-small" x="34" y="124">GPIO4</text>
+        <circle class="f-green" cx="180" cy="170" r="6"/><text class="t t-small" x="34" y="174">GPIO26</text>
+        <circle class="f-ink" cx="180" cy="210" r="6"/><text class="t t-small" x="34" y="214">GND</text>
+        <path class="s-red" d="M186 70 H440"/>
+        <path class="s-blue" d="M186 120 H440"/>
+        <circle class="f-ink" cx="330" cy="70" r="4"/><circle class="f-ink" cx="330" cy="120" r="4"/>
+        <path class="s-line" d="M330 70 V80 M330 110 V120"/><rect class="f-panel s-line" x="320" y="80" width="20" height="30"/>
+        <text class="t t-small" x="346" y="100">4.7 kΩ</text>
+        <rect class="f-accent-soft s-accent" x="440" y="50" width="120" height="110" rx="10"/>
+        <text class="t t-bold" x="452" y="44">DS18B20</text>
+        <text class="t t-small" x="450" y="74">VDD</text><text class="t t-small" x="450" y="124">DQ</text><text class="t t-small" x="450" y="150">GND</text>
+        <path class="s-line" d="M440 146 H410 V210"/>
+        <path class="s-line" d="M186 170 H250"/><rect class="f-panel s-line" x="250" y="161" width="50" height="18"/><text class="t t-small" x="256" y="154">330 Ω</text>
+        <path class="s-line" d="M300 170 H330"/><polygon class="f-red" points="330,157 330,183 352,170"/><line class="s-line" x1="353" y1="157" x2="353" y2="183"/>
+        <text class="t t-small t-red" x="318" y="200">LED</text>
+        <path class="s-line" d="M353 170 H380 V210"/>
+        <path class="s-line" d="M186 210 H600"/>
+        <circle class="f-ink" cx="380" cy="210" r="4"/><circle class="f-ink" cx="410" cy="210" r="4"/>
+        <text class="t t-small t-muted" x="460" y="230">common GND</text>
+      </svg>
+      <figcaption>Figure 3. Same sensor circuit as P17, now on the ESP32. GPIO4 and GPIO26 are safe general-purpose pins on a WROOM-32 DevKit; check your board's printed labels, which differ between makers.</figcaption>
+    </figure>
+    <p>Keep passwords out of the main sketch. In the Arduino IDE, add a new tab (the "…" menu → New Tab) called <code>secrets.h</code>:</p>
+<pre><code>#pragma once
+#define WIFI_SSID  "BenchIoT"
+#define WIFI_PASS  "change-me"
+#define MQTT_HOST  "192.168.1.42"          // the Pi's IP (more reliable than .local on an ESP32)
+#define MQTT_USER  "esp32-01"
+#define MQTT_PASS  "a-long-random-password"</code></pre>
+    <p>The main sketch, <code>plantroom_node.ino</code>:</p>
+<pre><code>// ESP32 MQTT node: publishes temperature, obeys an LED command.
+#include &lt;WiFi.h&gt;
+#include &lt;PubSubClient.h&gt;
+#include &lt;OneWire.h&gt;
+#include &lt;DallasTemperature.h&gt;
+#include "secrets.h"
+
+const int ONE_WIRE_PIN = 4;     // DS18B20 data, 4.7k pull-up to 3V3
+const int LED_PIN      = 26;    // LED + 330 ohm to GND
+
+const char* NODE_ID     = "esp32-01";
+const char* T_TEMP      = "bench/l1/plantroom/temp";
+const char* T_FAULT     = "bench/l1/plantroom/temp/fault";
+const char* T_LED_SET   = "bench/l1/plantroom/led/set";
+const char* T_LED_STATE = "bench/l1/plantroom/led/state";
+const char* T_STATUS    = "bench/l1/plantroom/esp32-01/status";
+
+const unsigned long SAMPLE_MS = 10000;   // publish every 10 s
+
+WiFiClient net;
+PubSubClient mqtt(net);
+OneWire oneWire(ONE_WIRE_PIN);
+DallasTemperature sensors(&amp;oneWire);
+
+unsigned long lastSample = 0;
+unsigned long lastTry = 0;
+bool ledOn = false;
+
+void setLed(bool on) {
+  ledOn = on;
+  digitalWrite(LED_PIN, on ? HIGH : LOW);
+  mqtt.publish(T_LED_STATE, on ? "ON" : "OFF", true);      // retained state
+}
+
+// Called by mqtt.loop() for every message on a subscribed topic.
+void onMessage(char* topic, byte* payload, unsigned int length) {
+  String msg;
+  for (unsigned int i = 0; i &lt; length; i++) msg += (char)payload[i];
+  msg.trim();
+  Serial.printf("RX %s = %s\n", topic, msg.c_str());
+  if (strcmp(topic, T_LED_SET) == 0) {       // compare BEFORE publishing:
+    if (msg.equalsIgnoreCase("ON"))  setLed(true);    // publish reuses the buffer
+    else if (msg.equalsIgnoreCase("OFF")) setLed(false);
+  }
+}
+
+void connectWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.print("WiFi");
+  while (WiFi.status() != WL_CONNECTED) { delay(500); Serial.print("."); }
+  Serial.printf("\nIP %s  RSSI %d dBm\n",
+                WiFi.localIP().toString().c_str(), WiFi.RSSI());
+}
+
+bool connectMqtt() {
+  // Last will: if we drop off, the broker publishes "offline" (retained, QoS 1).
+  if (mqtt.connect(NODE_ID, MQTT_USER, MQTT_PASS, T_STATUS, 1, true, "offline")) {
+    mqtt.publish(T_STATUS, "online", true);
+    mqtt.subscribe(T_LED_SET, 1);
+    mqtt.publish(T_LED_STATE, ledOn ? "ON" : "OFF", true);
+    Serial.println("MQTT connected");
+    return true;
+  }
+  Serial.printf("MQTT failed, state=%d\n", mqtt.state());
+  return false;
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+  sensors.begin();
+  connectWiFi();
+  mqtt.setServer(MQTT_HOST, 1883);
+  mqtt.setCallback(onMessage);
+}
+
+void loop() {
+  if (WiFi.status() != WL_CONNECTED) connectWiFi();
+
+  if (!mqtt.connected()) {
+    if (millis() - lastTry &gt; 5000) {     // retry every 5 s, never hammer the broker
+      lastTry = millis();
+      connectMqtt();
+    }
+  } else {
+    mqtt.loop();                         // receive messages, send keepalive pings
+  }
+
+  if (millis() - lastSample &gt;= SAMPLE_MS) {
+    lastSample = millis();
+    sensors.requestTemperatures();       // up to 750 ms at 12-bit
+    float t = sensors.getTempCByIndex(0);
+    bool fault = (t == DEVICE_DISCONNECTED_C) || (t == 85.0f);
+    if (mqtt.connected()) {
+      mqtt.publish(T_FAULT, fault ? "1" : "0", true);
+      if (!fault) {
+        char buf[12];
+        snprintf(buf, sizeof(buf), "%.2f", t);
+        mqtt.publish(T_TEMP, buf, true);
+        Serial.printf("TX %s = %s\n", T_TEMP, buf);
+      }
+    }
+  }
+}</code></pre>
+    <p>Things worth noticing:</p>
+    <ul>
+      <li><b>No long <code>delay()</code> in <code>loop()</code>.</b> <code>mqtt.loop()</code> must run often to receive commands and send keepalives. Timing uses <code>millis()</code> (P11).</li>
+      <li><b>Reconnect logic with a 5 s back-off.</b> Wi-Fi drops, brokers restart. A device that never reconnects is a site visit.</li>
+      <li><b>Separate command and state topics.</b> The dashboard publishes to <code>led/set</code>; the ESP32 reports what it actually did on <code>led/state</code>. If the two disagree, something is wrong — exactly like a BMS "command vs status" mismatch alarm.</li>
+      <li><b>Sensor fault is published separately</b> from the value. Never publish the word "fault" on a numeric topic; it breaks every chart.</li>
+      <li>PubSubClient publishes at QoS 0 and can subscribe at QoS 0 or 1. Its default maximum packet size is 256 bytes (<code>mqtt.setBufferSize()</code> raises it) — fine for short payloads.</li>
+    </ul>
+    <p>Upload, watch the Serial Monitor, and keep the <code>mosquitto_sub</code> window open on the Pi:</p>
+<pre><code>bench/l1/plantroom/esp32-01/status online
+bench/l1/plantroom/led/state OFF
+bench/l1/plantroom/temp/fault 0
+bench/l1/plantroom/temp 23.94
+bench/l1/plantroom/temp/fault 0
+bench/l1/plantroom/temp 23.88</code></pre>
+    <p>Now send a command from the Pi and watch the LED and the state topic:</p>
+<pre><code>mosquitto_pub -h localhost -u tech -P 'your-password' -t 'bench/l1/plantroom/led/set' -m ON -q 1
+# subscriber shows:
+bench/l1/plantroom/led/set ON
+bench/l1/plantroom/led/state ON</code></pre>
+    <p>Finally pull the ESP32's USB cable. About 20 s later (keepalive timeout) the subscriber prints <code>bench/l1/plantroom/esp32-01/status offline</code>. That is the last will working.</p>
+
+    <h2>Topic names: build them like a building</h2>
+    <p>Topics are hierarchical, separated by <code>/</code>, case-sensitive, and free-form. Free-form is dangerous: a year later you have <code>Temp1</code>, <code>plantroom_temp</code> and <code>sensors/PR/t</code> on the same site. Decide a pattern on day one. A pattern that mirrors the building works well:</p>
+    <div class="formula">site / level / room / point [/ sub-point]
+      <small>Example: <code>bench/l1/plantroom/temp</code>, <code>bench/l1/plantroom/led/set</code>. Lower case, no spaces, no leading slash, nouns not sentences.</small></div>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Topic tree for a small building with site, levels, rooms and points">
+        <rect class="f-accent-soft s-accent" x="20" y="105" width="70" height="30" rx="5"/><text class="t t-small t-bold" x="32" y="125">bench</text>
+        <rect class="f-panel s-line" x="140" y="55" width="50" height="30" rx="5"/><text class="t t-small" x="154" y="75">l1</text>
+        <rect class="f-panel s-line" x="140" y="160" width="50" height="30" rx="5"/><text class="t t-small" x="154" y="180">l2</text>
+        <path class="s-thin" d="M90 120 H115 V70 H140 M115 120 V175 H140"/>
+        <rect class="f-panel s-line" x="230" y="55" width="90" height="30" rx="5"/><text class="t t-small" x="240" y="75">plantroom</text>
+        <rect class="f-panel s-line" x="230" y="160" width="90" height="30" rx="5"/><text class="t t-small" x="240" y="180">office</text>
+        <path class="s-thin" d="M190 70 H230 M190 175 H230"/>
+        <path class="s-thin" d="M320 70 H340 V20 H370 M340 70 V58 H370 M340 70 V96 H370 M340 70 V134 H370"/>
+        <text class="t t-small t-green" x="374" y="24">temp → 23.94</text>
+        <text class="t t-small t-green" x="374" y="62">temp/fault → 0</text>
+        <text class="t t-small t-blue" x="374" y="100">led/set ← ON  (command)</text>
+        <text class="t t-small t-green" x="374" y="138">led/state → ON  (status)</text>
+        <text class="t t-small" x="520" y="62">esp32-01/</text><text class="t t-small t-green" x="520" y="80">status → online</text>
+        <path class="s-thin s-dash" d="M320 70 C 420 40, 470 60, 516 58"/>
+        <path class="s-thin" d="M320 175 H340 V175 H370 M340 175 V210 H370"/>
+        <text class="t t-small t-green" x="374" y="179">temp → 22.10</text>
+        <text class="t t-small t-green" x="374" y="214">humidity → 48.2</text>
+      </svg>
+      <figcaption>Figure 4. A topic tree mirrors the building. Anyone can guess where a value lives, and wildcards select whole floors or whole kinds of point at once.</figcaption>
+    </figure>
+    <p><b>Wildcards</b> are only for subscribing (never in a published topic):</p>
+    <ul>
+      <li><code>+</code> matches exactly <b>one</b> level: <code>bench/+/+/temp</code> = every room temperature on every level.</li>
+      <li><code>#</code> matches <b>any number</b> of levels, including zero, and must be last: <code>bench/l1/#</code> = everything on level 1 (and <code>bench/l1</code> itself).</li>
+      <li>Topics starting with <code>$</code> (such as the broker's own <code>$SYS/…</code> statistics) are not matched by a filter that starts with a wildcard.</li>
+    </ul>
+
+    <div class="widget" id="w-mqtt">
+      <span class="label">Interactive · MQTT topic-filter tester</span>
+      <label>Subscription filter<input id="mq-filter" type="text" value="bench/+/+/temp" spellcheck="false" autocomplete="off"></label>
+      <div class="chips" id="mq-chips"></div>
+      <label>Published topics (one per line)<textarea id="mq-topics" spellcheck="false">bench/l1/plantroom/temp
+bench/l1/plantroom/temp/fault
+bench/l1/plantroom/led/set
+bench/l1/plantroom/led/state
+bench/l1/plantroom/esp32-01/status
+bench/l2/office/temp
+bench/l2/office/humidity
+bench/l2
+Bench/l1/plantroom/temp
+$SYS/broker/clients/connected</textarea></label>
+      <p id="mq-valid" style="font-size:15px;margin:6px 0"></p>
+      <div class="table-wrap"><table class="mq-res"><thead><tr><th>Topic</th><th>Match?</th><th>Why</th></tr></thead><tbody id="mq-body"></tbody></table></div>
+      <div class="readings"><div><small>Matches</small><span class="out" id="mq-count">–</span></div></div>
+    </div>
+    <script>
+    (function(){
+      var f=document.getElementById('mq-filter'),ta=document.getElementById('mq-topics'),body=document.getElementById('mq-body'),vmsg=document.getElementById('mq-valid');
+      function validate(s){if(!s)return 'Filter is empty.';var L=s.split('/');for(var i=0;i<L.length;i++){var l=L[i];
+        if(l.indexOf('#')>=0&&(l!=='#'||i!==L.length-1))return '"#" must be a whole level and the last level (e.g. bench/l1/#).';
+        if(l.indexOf('+')>=0&&l!=='+')return '"+" must be a whole level on its own (bench/+/office, not bench/l+).';}return '';}
+      function match(fl,t){
+        if(t.charAt(0)==='$'&&(fl.charAt(0)==='+'||fl.charAt(0)==='#'))return [false,'Topics starting with $ are not matched by a leading wildcard.'];
+        var F=fl.split('/'),T=t.split('/');
+        for(var i=0;i<F.length;i++){
+          if(F[i]==='#')return [true,'"#" at level '+(i+1)+' matches '+(T.length-i<=0?'zero more levels':'the remaining '+(T.length-i)+' level(s)')+'.'];
+          if(i>=T.length)return [false,'Topic has only '+T.length+' level(s); filter needs '+F.length+'.'];
+          if(F[i]==='+')continue;
+          if(F[i]!==T[i])return [false,'Level '+(i+1)+': "'+T[i]+'" ≠ "'+F[i]+'"'+(F[i].toLowerCase()===T[i].toLowerCase()?' (topics are case-sensitive)':'')+'.'];
+        }
+        if(T.length>F.length)return [false,'Topic has extra level(s) "'+T.slice(F.length).join('/')+'"; "+" covers one level only.'];
+        return [true,'Every level matches'+(fl.indexOf('+')>=0?' ("+" took one level each)':'')+'.'];
+      }
+      function upd(){
+        var fl=f.value.trim(),err=validate(fl);while(body.firstChild)body.removeChild(body.firstChild);
+        vmsg.textContent=err?'Invalid filter: '+err:'Valid filter.';vmsg.className=err?'mq-err':'';
+        var n=0;ta.value.split(/\r?\n/).forEach(function(t){t=t.trim();if(!t)return;var tr=document.createElement('tr'),r=err?[false,'—']:match(fl,t);if(r[0])n++;
+          var a=document.createElement('td');a.textContent=t;var b=document.createElement('td');b.textContent=r[0]?'✓ yes':'✗ no';b.className=r[0]?'mq-yes':'mq-no';var c=document.createElement('td');c.textContent=r[1];c.style.fontFamily='var(--sans)';
+          tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);body.appendChild(tr);});
+        document.getElementById('mq-count').textContent=err?'–':n;
+      }
+      ['bench/+/+/temp','bench/l1/#','bench/#','#','bench/+/plantroom/led/+','+/+/+/+','bench/l2','bench/l+/office','bench/#/temp'].forEach(function(s){var b=document.createElement('button');b.type='button';b.textContent=s;b.onclick=function(){f.value=s;upd();};document.getElementById('mq-chips').appendChild(b);});
+      f.oninput=upd;ta.oninput=upd;upd();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Predict before you click: does <code>bench/l1/#</code> match <code>bench/l1</code>? Does <code>bench/+/+/temp</code> match <code>bench/l1/plantroom/temp/fault</code>? Does <code>#</code> match <code>$SYS/broker/clients/connected</code>? Then run the same filters with <code>mosquitto_sub -t</code> on the Pi and confirm the real broker agrees.</p></div>
+
+    <h2>A dashboard with Node-RED</h2>
+    <p><b>Node-RED</b> is a free, browser-based tool where you wire "nodes" together into flows: an MQTT input node feeds a gauge node, a switch node feeds an MQTT output node. It is widely used for quick IoT dashboards and protocol glue (Modbus, BACnet and MQTT nodes all exist).</p>
+    <ol class="steps">
+      <li><p><b>Install.</b> Use the official Raspberry Pi install script from the Node-RED website (nodered.org → Docs → Getting Started → Raspberry Pi). It is one command that installs Node.js and Node-RED and asks a few setup questions — say yes to setting up a login (user security). Then <code>sudo systemctl enable --now nodered.service</code>.</p></li>
+      <li><p><b>Open the editor</b> at <code>http://plantpi.local:1880</code>. Menu (☰) → Manage palette → Install → search <b>@flowfuse/node-red-dashboard</b> (Dashboard 2.0) → install.</p></li>
+      <li><p><b>Temperature in.</b> Drag an <b>mqtt in</b> node. Add a new broker: server <code>localhost</code>, port 1883, Security tab: user <code>nodered</code> and its password. Topic <code>bench/+/+/temp</code>, QoS 0, output "auto-detect". Wire it to a <b>gauge</b> (range 0–40, units °C) and a <b>chart</b> (line, 1 hour). Dashboard nodes need a group/page: accept the defaults it offers.</p></li>
+      <li><p><b>Status.</b> Another <b>mqtt in</b> on <code>bench/+/+/+/status</code> → a <b>text</b> widget labelled "Node". It shows <code>online</code> / <code>offline</code> from the last will.</p></li>
+      <li><p><b>Command out.</b> A <b>switch</b> widget with "on payload" string <code>ON</code> and "off payload" string <code>OFF</code> → an <b>mqtt out</b> node, topic <code>bench/l1/plantroom/led/set</code>, QoS 1, retain <b>false</b>.</p></li>
+      <li><p><b>Deploy</b> (top right), then open <code>http://plantpi.local:1880/dashboard</code> on your phone. Flick the switch: the LED follows within a fraction of a second.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Never retain a command topic. If <code>led/set ON</code> is retained, the ESP32 receives "ON" again every time it reconnects — perhaps hours after someone turned it off from somewhere else. Retain <i>states</i>, not <i>commands</i>.</p></div>
+    <p><b>Home Assistant</b> is the other popular choice, aimed at homes. It has an MQTT integration that can talk to the same Mosquitto broker, and supports "MQTT discovery", where a device publishes a small JSON description of itself so it appears automatically. Either tool is fine for learning; the MQTT side does not change.</p>
+    <p>Bonus: your P17 Flask logger can be made an MQTT publisher too, with the <code>paho-mqtt</code> Python library (<code>sudo apt install python3-paho-mqtt</code>). Then the Pi's own sensor and the ESP32's appear side by side on the same dashboard.</p>
+
+    <h2>Security basics (do not skip)</h2>
+    <p>IoT devices are a favourite way into networks because they are installed once and forgotten. The basics stop almost all of it:</p>
+    <ul>
+      <li><b>No anonymous access</b>, and <b>one username and password per device</b>, with an ACL that limits each device to its own topics. A stolen sensor then exposes one sensor, not the site.</li>
+      <li><b>Never expose the broker to the internet.</b> No port-forward of 1883 on the router, ever. Internet scanners find open MQTT brokers within hours and read (or write) everything. Need remote access? Use a VPN into the site, or a properly secured cloud broker with TLS.</li>
+      <li><b>Put IoT on its own network</b>: a separate SSID and VLAN (P19) with firewall rules, so a compromised sensor cannot reach the office PCs, cameras or the BMS.</li>
+      <li><b>Use TLS (port 8883)</b> whenever traffic leaves a trusted network, so passwords and data are encrypted in transit. Plain 1883 sends passwords in clear text.</li>
+      <li><b>Keep secrets out of code repositories.</b> The <code>secrets.h</code> file never goes into Git or a forum post. Change default passwords on every device.</li>
+      <li><b>Patch</b>: update the Pi (<code>apt full-upgrade</code>), Mosquitto, Node-RED and the ESP32 firmware on a schedule.</li>
+    </ul>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"It's only a temperature sensor, nobody cares." Attackers do not want your temperature. They want a foothold <i>on the network</i>: a device with an IP address, network access and no monitoring. From there they reach the things that matter. Treat every IoT device as a computer on your network, because it is one.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia · LoRaWAN for long-range sensors</span><p>Wi-Fi reaches tens of metres. For sensors spread across a campus, a farm or a whole building, <b>LoRaWAN</b> is common: battery sensors send a few bytes every few minutes over sub-GHz radio, reaching kilometres in open country (much less in dense buildings — indicative only), and batteries can last years. Sensors talk to <b>gateways</b>, gateways forward to a <b>network server</b>, and the network server usually hands data on via — you guessed it — MQTT. In Australia buy devices for the <b>AU915</b> frequency plan (915–928 MHz), which operates under the ACMA's class licence for low-interference devices; community networks such as The Things Network use AU915 sub-band 2. Check the current ACMA rules and your network provider's settings before deploying. You will see LoRaWAN in smart-building (occupancy, air quality, water leaks) and agriculture (soil moisture, tank levels) jobs.</p></div>
+
+    <h3>Expected readings</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>ESP32 RSSI on the bench</td><td>−40 to −67 dBm</td><td>Worse than −75 dBm: move closer, check antenna end of board is clear of metal</td></tr>
+      <tr><td>Publish interval on <code>mosquitto_sub</code></td><td>Every ~10.8 s (10 s + conversion time)</td><td>Bursty or missing: Wi-Fi drops, or a blocking delay in <code>loop()</code></td></tr>
+      <tr><td>Command → LED delay on LAN</td><td>Under 0.5 s</td><td>Seconds: <code>mqtt.loop()</code> not called often enough</td></tr>
+      <tr><td>Status after USB unplugged</td><td><code>offline</code> after ~20–25 s</td><td>Never: last will not set, or ACL blocks the will topic</td></tr>
+      <tr><td>Wrong password attempt</td><td>"not authorised"</td><td>Accepted: <code>allow_anonymous</code> still true or config not loaded</td></tr>
+      <tr><td>ESP32 current (USB meter)</td><td>~50–120 mA average, peaks higher</td><td>Brownout resets: better cable, shorter cable</td></tr>
+    </table></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>Stuck on "WiFi....."</td><td>5 GHz-only network, wrong password, or SSID case wrong</td><td>Use a 2.4 GHz SSID; check spelling and case</td></tr>
+      <tr><td><code>MQTT failed, state=-2</code></td><td>Cannot reach the broker (wrong IP, port, firewall, different VLAN)</td><td><code>ping</code> the Pi from a laptop on the same Wi-Fi; check <code>ss -tlnp</code> shows <code>0.0.0.0:1883</code></td></tr>
+      <tr><td><code>state=4</code> / <code>state=5</code></td><td>4 = bad username/password; 5 = not authorised</td><td>Re-run <code>mosquitto_passwd</code>; check <code>secrets.h</code></td></tr>
+      <tr><td>Connected but nothing appears</td><td>ACL denies the topic (Mosquitto drops it silently)</td><td>Compare topic spelling with the ACL; check <code>journalctl -u mosquitto</code></td></tr>
+      <tr><td>Two devices keep kicking each other off</td><td>Same client ID — the broker allows only one connection per ID</td><td>Give every device a unique <code>NODE_ID</code></td></tr>
+      <tr><td>Mosquitto will not start after editing</td><td>Typo in config, or file permissions</td><td><code>journalctl -u mosquitto -n 30</code> names the bad line</td></tr>
+      <tr><td>Temperature <code>-127</code></td><td>DallasTemperature's "disconnected" value</td><td>Check sensor wiring and the 4.7 kΩ pull-up (fault topic shows 1)</td></tr>
+      <tr><td>"Brownout detector was triggered"</td><td>Supply voltage dips during Wi-Fi transmit</td><td>Better USB cable/port; add 100–470 µF across 3V3–GND near the board</td></tr>
+    </table></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>Building IoT projects — wireless sensors for air quality and occupancy, energy meters, lift and tank monitoring — are increasingly common next to the traditional BMS. The jobs need people who can commission a device onto Wi-Fi or LoRaWAN, confirm data reaches the broker with <code>mosquitto_sub</code>, name points consistently, and keep the devices off the corporate network. Integrators also bridge MQTT to BACnet or Modbus so IoT data appears on the BMS front end. See <a href="../career/c01-bms-fundamentals.html">C01</a> and <a href="../career/c02-bms-protocols-commissioning.html">C02</a>.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A dashboard opened at 9:00 shows nothing until 9:00:10. What MQTT feature fixes that, and on which topics?</summary><div class="answer"><p>Retained messages. Publish the temperature, LED state and status with retain = true, so the broker hands the last value to any new subscriber immediately. Do not retain commands such as <code>led/set</code>.</p></div></details>
+    <details class="quiz"><summary>Which QoS would you choose for (a) temperature every 10 s, (b) "unlock door 3", and why?</summary><div class="answer"><p>(a) QoS 0: a lost sample is replaced 10 s later. (b) At least QoS 1, so it is acknowledged and retried. Unlock is safe to repeat (idempotent), so QoS 1 is enough; real access control systems add their own confirmation (status topic) on top.</p></div></details>
+    <details class="quiz"><summary>Does <code>bench/+/temp</code> match <code>bench/l1/plantroom/temp</code>?</summary><div class="answer"><p>No. <code>+</code> matches exactly one level, so the filter has 3 levels and the topic has 4. Use <code>bench/+/+/temp</code> or <code>bench/#</code>.</p></div></details>
+    <details class="quiz"><summary>How does the dashboard learn that the ESP32 has died without saying goodbye?</summary><div class="answer"><p>The ESP32 registered a last will (<code>…/status</code> = <code>offline</code>, retained) when it connected. When its keepalive pings stop, the broker times it out and publishes the will on its behalf. The dashboard is subscribed to the status topic.</p></div></details>
+    <details class="quiz"><summary>A client tells you to port-forward 1883 so they can see the dashboard from home. What do you say?</summary><div class="answer"><p>No: an internet-facing plain MQTT port will be found and abused quickly, and it sends passwords in clear text. Offer a VPN into the site, or a properly secured cloud service with TLS and per-device credentials.</p></div></details>
+    <details class="quiz"><summary>Why publish the LED <i>state</i> separately from the LED <i>command</i>?</summary><div class="answer"><p>The command is what someone asked for; the state is what the device actually did. A mismatch reveals a fault (device offline, relay stuck, ACL blocking). BMS systems do the same with command and status points (e.g. fan start command vs fan run status).</p></div></details>
+    <details class="quiz"><summary>RSSI changes from −55 dBm to −73 dBm when the ESP32 goes into a metal cabinet. How much weaker is the signal?</summary><div class="answer"><p>18 dB weaker. Every 10 dB is ×10 and every 3 dB about ×2: 18 dB ≈ 10 × 10<sup>0.8</sup> ≈ 63 times less power. That is why metal cabinets need an external antenna or a wired connection.</p></div></details>
+    <details class="quiz"><summary>Your ESP32 is on Wi-Fi but gets <code>state=-2</code>. The Pi is on Ethernet. Name the first check.</summary><div class="answer"><p>Are they on the same network? Compare the ESP32's IP (Serial Monitor) with the Pi's (<code>ip a</code>). A guest SSID or an IoT VLAN may block traffic to the Pi. Then confirm the broker listens on <code>0.0.0.0:1883</code>, not only localhost.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can set up the ESP32 board package and upload a sketch, including the BOOT-button trick.</span></li>
+      <li><input type="checkbox"><span>I can join Wi-Fi from a sketch and judge link quality from RSSI.</span></li>
+      <li><input type="checkbox"><span>I can explain broker, client, publish, subscribe, topic, payload, QoS, retained and last will.</span></li>
+      <li><input type="checkbox"><span>I can install Mosquitto with no anonymous access, per-device users and an ACL, and test it with <code>mosquitto_sub</code>/<code>mosquitto_pub</code>.</span></li>
+      <li><input type="checkbox"><span>I can write an ESP32 node that publishes a value, reports faults, obeys a command and reconnects by itself.</span></li>
+      <li><input type="checkbox"><span>I can design a site/level/room/point topic scheme and use <code>+</code> and <code>#</code> correctly.</span></li>
+      <li><input type="checkbox"><span>I can build a Node-RED dashboard with a gauge, chart, status and switch.</span></li>
+      <li><input type="checkbox"><span>I can list the security basics and explain why a broker must never face the internet.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

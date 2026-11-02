@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T08 · Transformers</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 2 · Magnetism and AC</div>
+    <span class="eyebrow">Theory · T08</span>
+    <h1>Transformers</h1>
+    <p class="lede">Two coils share one magnetic core, and AC on one appears on the other at a different voltage, with no wire joining them. That one idea built the power grid, makes your plug-pack safe, shrinks a laptop charger into your pocket and lets an energy meter measure 100 A without touching the cable. By the end you can size a 24 V AC control transformer and explain each of its losses.</p>
+    <div class="meta"><span><b>Read</b> 50 min</span><span><b>Level</b> Class 12 refresher → practical</span><span><b>Builds on</b> T06, T07</span><span><b>Practice</b> P06, P10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <div class="callout warn"><span class="label">Your safety line</span><p>In this course you only ever use <b>sealed plug-in transformers</b> (plug-packs) and the extra-low-voltage side of equipment. Connecting, opening or testing anything on the 230 V side of a transformer is mains work, and in Australia that is legally limited to licensed electricians. When this chapter mentions 230 V, it is to explain the physics, not to invite you to touch it.</p></div>
+
+    <h2>A short history: Faraday's ring to the grid</h2>
+    <p>The first transformer was the iron ring Faraday wound in 1831 (<a href="t06-magnetism-inductors.html">T06</a>): two coils on one ring, a battery on one, a galvanometer on the other. It only gave a kick when the current changed, so it was a curiosity while electricity was DC. When AC generators appeared, that "only when it changes" property became the whole point: AC is always changing.</p>
+    <p>In the early 1880s <b>Lucien Gaulard</b> and <b>John Dixon Gibbs</b> demonstrated an open-core "secondary generator" for lighting. In 1884–85 three engineers at the Ganz works in Budapest, <b>Károly Zipernowsky, Ottó Bláthy and Miksa Déri</b>, built closed-iron-core transformers and connected loads in parallel, the basis of modern distribution. In 1886 <b>William Stanley</b>, working for George Westinghouse, lit shops in Great Barrington, Massachusetts, with an AC system that stepped voltage up and down with transformers. Together with Tesla's AC motor (<a href="t07-ac-fundamentals.html">T07</a>), this is why the world's grids are AC: transformers let you send power at high voltage and low current, then bring it down to a safe level near the user.</p>
+
+    <h2>How a transformer works: mutual induction</h2>
+    <p>A transformer is two (or more) coils wound on one closed core of magnetic steel or ferrite. The coil you drive is the <b>primary</b>; the coil you take power from is the <b>secondary</b>.</p>
+    <ol>
+      <li>An AC voltage on the primary drives a small AC current, which makes an alternating flux Φ in the core (<a href="t06-magnetism-inductors.html">T06</a>).</li>
+      <li>The core guides almost all of that flux through the secondary as well. This sharing of flux is <b>mutual induction</b>.</li>
+      <li>The changing flux induces an EMF in every turn of <i>both</i> coils, and it is the <b>same EMF per turn</b> in each, because each turn sees the same dΦ/dt.</li>
+    </ol>
+    <div class="formula">V<sub>p</sub> / N<sub>p</sub> = V<sub>s</sub> / N<sub>s</sub> = dΦ/dt   →   V<sub>s</sub> / V<sub>p</sub> = N<sub>s</sub> / N<sub>p</sub>
+      <small>N<sub>p</sub>, N<sub>s</sub> are the numbers of turns on primary and secondary. "Volts per turn" is the same on both sides. More secondary turns: step-up. Fewer: step-down.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="Transformer with primary and secondary windings on a closed core, and the shared flux path">
+        <defs>
+          <marker id="t08f1-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <path class="f-wash s-line" fill-rule="evenodd" d="M190,40 H450 V230 H190 Z M250,95 H390 V175 H250 Z"/>
+        <path class="s-blue s-dash" d="M220,68 H420 V202 H220 Z"/>
+        <line class="s-blue" x1="300" y1="68" x2="330" y2="68" marker-end="url(#t08f1-b)"/>
+        <line class="s-blue" x1="420" y1="120" x2="420" y2="150" marker-end="url(#t08f1-b)"/>
+        <line class="s-blue" x1="340" y1="202" x2="310" y2="202" marker-end="url(#t08f1-b)"/>
+        <line class="s-blue" x1="220" y1="150" x2="220" y2="120" marker-end="url(#t08f1-b)"/>
+        <text class="t t-small t-blue" x="262" y="60">shared flux Φ</text>
+        <ellipse class="s-accent" cx="220" cy="92" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="104" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="116" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="128" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="140" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="152" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="164" rx="42" ry="5"/>
+        <ellipse class="s-accent" cx="220" cy="176" rx="42" ry="5"/>
+        <ellipse class="s-red" cx="420" cy="112" rx="42" ry="5"/>
+        <ellipse class="s-red" cx="420" cy="134" rx="42" ry="5"/>
+        <ellipse class="s-red" cx="420" cy="156" rx="42" ry="5"/>
+        <path class="s-line" d="M178,92 H100"/>
+        <path class="s-line" d="M178,176 H100"/>
+        <circle class="f-panel s-line" cx="96" cy="92" r="4"/>
+        <circle class="f-panel s-line" cx="96" cy="176" r="4"/>
+        <text class="t t-small" x="30" y="128">primary</text>
+        <text class="t t-small t-muted" x="30" y="144">V<tspan dy="3" class="t-small">p</tspan><tspan dy="-3">, N</tspan><tspan dy="3" class="t-small">p</tspan><tspan dy="-3"> turns</tspan></text>
+        <path class="s-line" d="M462,112 H540 V122"/>
+        <path class="s-line" d="M462,156 H540 V146"/>
+        <rect class="f-panel s-line" x="530" y="122" width="20" height="24"/>
+        <text class="t t-small" x="560" y="130">load</text>
+        <text class="t t-small t-red" x="474" y="102">secondary</text>
+        <text class="t t-small t-muted" x="474" y="186">V<tspan dy="3" class="t-small">s</tspan><tspan dy="-3">, N</tspan><tspan dy="3" class="t-small">s</tspan><tspan dy="-3"> turns</tspan></text>
+        <text class="t t-small t-muted" x="190" y="256">laminated steel (50 Hz) or ferrite (high frequency) core</text>
+      </svg>
+      <figcaption>Figure 1. A step-down transformer. The core carries one shared flux (blue). Every turn, primary or secondary, gets the same EMF, so the voltage on each side is proportional to its number of turns. There is no electrical connection between the windings, only the magnetic coupling.</figcaption>
+    </figure>
+
+    <h3>The flux is set by the primary voltage, not by the load</h3>
+    <p>This is the key insight that most short explanations skip. For a sine wave, Faraday's law gives the peak flux the core must carry:</p>
+    <div class="formula">V<sub>rms</sub> = 4.44 · f · N · B<sub>peak</sub> · A
+      <small>A is the core's cross-section area in m², B<sub>peak</sub> the peak flux density in tesla, f the frequency. (4.44 = 2π/√2.) This "transformer equation" fixes how many turns a winding needs for a given core.</small></div>
+    <p>Because the supply voltage and frequency are fixed, the core flux is fixed too, whatever the load. So what happens when you connect a load? The secondary current makes its own flux, which (by Lenz's law) tries to <i>reduce</i> the core flux. The instant the flux starts to drop, the primary's back-EMF drops a little below the supply voltage, and the primary draws exactly enough extra current to cancel the secondary's flux. The core flux stays put; the primary current follows the secondary current. That is how power gets "pulled" across the gap.</p>
+    <p>With no load, the primary still draws a small <b>magnetising current</b> to keep the flux going. This current lags the voltage by nearly 90° (the primary is just an inductor), so it carries very little real power. That is why an unloaded transformer is only slightly warm.</p>
+
+    <h2>Turns ratio, current ratio and power conservation</h2>
+    <p>An ideal transformer has no losses, so power in equals power out. If the voltage steps down by a factor, the current must step up by the same factor:</p>
+    <div class="formula">V<sub>p</sub> I<sub>p</sub> = V<sub>s</sub> I<sub>s</sub>   →   I<sub>s</sub> / I<sub>p</sub> = N<sub>p</sub> / N<sub>s</sub>   (ampere-turns balance: N<sub>p</sub>I<sub>p</sub> = N<sub>s</sub>I<sub>s</sub>)
+      <small>The secondary of a step-down transformer uses thicker wire, because it carries more current. A side effect: an impedance on the secondary looks (N<sub>p</sub>/N<sub>s</sub>)² times bigger from the primary. Audio and RF engineers use this to "match" impedances.</small></div>
+
+    <h3>Worked example: a 230 V → 24 V AC, 40 VA plug-in transformer</h3>
+    <p>This is the kind of sealed plug-pack you will use in the labs, and the same rating as many 24 V AC control transformers in buildings.</p>
+    <ol>
+      <li><b>Turns ratio.</b> N<sub>p</sub> : N<sub>s</sub> = 230 : 24 ≈ 9.6 : 1. Real designs add a few per cent extra secondary turns, because the voltage sags under load (see "regulation" below).</li>
+      <li><b>Rated secondary current.</b> The rating "40 VA" is apparent power (<a href="t07-ac-fundamentals.html">T07</a>). I<sub>s</sub> = 40 VA / 24 V ≈ <b>1.67 A</b>.</li>
+      <li><b>Primary current at full load (ideal).</b> I<sub>p</sub> = 40 VA / 230 V ≈ <b>0.17 A</b>, or I<sub>s</sub> / 9.6. The real figure is a little higher because of losses and magnetising current.</li>
+      <li><b>Number of turns.</b> Suppose the steel core's centre limb is 2 cm × 2 cm (A = 4 × 10⁻⁴ m²) and the designer allows B<sub>peak</sub> = 1.2 T. N<sub>p</sub> = 230 / (4.44 × 50 × 1.2 × 4 × 10⁻⁴) ≈ <b>2160 turns</b>. Volts per turn = 230 / 2160 ≈ 0.107 V. N<sub>s</sub> ≈ 24 / 0.107 ≈ <b>225 turns</b>, plus a few per cent for regulation.</li>
+    </ol>
+    <p>Why VA and not watts? Because the transformer heats according to its current, whatever the phase. A 40 VA transformer feeding a load at power factor 0.7 can only deliver 28 W of real power, but it is still fully loaded.</p>
+
+    <div class="widget" id="t08-w">
+      <span class="label">Interactive · Transformer calculator</span>
+      <label>Core and frequency <select id="t08-core">
+        <option value="50|1.2|4" selected>Laminated steel, 50 Hz, peak B 1.2 T, core 4 cm²</option>
+        <option value="50|1.2|10">Laminated steel, 50 Hz, peak B 1.2 T, core 10 cm² (bigger transformer)</option>
+        <option value="100000|0.2|0.5">Ferrite, 100 kHz (switch-mode), peak B 0.2 T, core 0.5 cm²</option>
+      </select></label>
+      <label>Primary voltage (RMS) <span class="out" id="t08-vpo">230 V</span><input type="range" id="t08-vp" min="12" max="250" step="1" value="230"></label>
+      <label>Secondary voltage (RMS) <span class="out" id="t08-vso">24 V</span><input type="range" id="t08-vs" min="1" max="60" step="0.5" value="24"></label>
+      <label>VA rating <span class="out" id="t08-vao">40 VA</span><input type="range" id="t08-va" min="5" max="200" step="5" value="40"></label>
+      <label>Actual load <span class="out" id="t08-ldo">75 %</span><input type="range" id="t08-ld" min="0" max="150" step="5" value="75"></label>
+      <div class="readings">
+        <div><small>Turns ratio N<sub>p</sub> : N<sub>s</sub></small><span class="out" id="t08-ratio">–</span></div>
+        <div><small>Rated secondary current</small><span class="out" id="t08-isr">–</span></div>
+        <div><small>Secondary current now</small><span class="out" id="t08-is">–</span></div>
+        <div><small>Primary current now (ideal)</small><span class="out" id="t08-ip">–</span></div>
+        <div><small>Primary turns N<sub>p</sub></small><span class="out" id="t08-np">–</span></div>
+        <div><small>Secondary turns N<sub>s</sub></small><span class="out" id="t08-ns">–</span></div>
+      </div>
+      <p id="t08-note" style="font-size:15px;margin:12px 0 0"></p>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var core=$('t08-core'), vp=$('t08-vp'), vs=$('t08-vs'), va=$('t08-va'), ld=$('t08-ld');
+      function fA(a){ return a>=1 ? a.toFixed(2)+' A' : (a*1000).toFixed(0)+' mA'; }
+      function upd(){
+        var c=core.value.split('|'), f=+c[0], B=+c[1], A=(+c[2])*1e-4;
+        var Vp=+vp.value, Vs=+vs.value, VA=+va.value, L=(+ld.value)/100;
+        var Isr=VA/Vs, Is=Isr*L, Ip=Is*Vs/Vp;
+        var Np=Vp/(4.44*f*B*A), Ns=Vs/(4.44*f*B*A);
+        $('t08-vpo').textContent=Vp+' V'; $('t08-vso').textContent=Vs+' V'; $('t08-vao').textContent=VA+' VA'; $('t08-ldo').textContent=Math.round(L*100)+' %';
+        var r=Vp/Vs;
+        $('t08-ratio').textContent=(r>=1? r.toFixed(2)+' : 1' : '1 : '+(1/r).toFixed(2));
+        $('t08-isr').textContent=fA(Isr); $('t08-is').textContent=fA(Is); $('t08-ip').textContent=fA(Ip);
+        $('t08-np').textContent=Np>=10? Math.round(Np)+'' : Np.toFixed(1);
+        $('t08-ns').textContent=Ns>=10? Math.round(Ns)+'' : Ns.toFixed(1);
+        var n='';
+        if(L>1) n='Overloaded: the windings run hotter than designed. A plug-pack’s internal thermal fuse may open permanently. Choose a bigger VA rating with about 20–25 % spare.';
+        else if(f>1000) n='At 100 kHz the same voltage needs only a handful of turns on a tiny ferrite core. This is why switch-mode supplies are small and light. (Real switch-mode transformers see square waves, so treat this as an estimate.)';
+        else n='Volts per turn: '+(Vp/Np).toFixed(3)+' V. Regulation: the off-load secondary voltage of a small transformer is typically several per cent to 20 % above its rated voltage.';
+        $('t08-note').textContent=n;
+      }
+      [core,vp,vs,va,ld].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h2>Why DC does not work through a transformer</h2>
+    <p>A transformer only couples a <i>changing</i> flux. Apply steady DC to the primary and you get one brief kick in the secondary as the current builds up, then nothing: dΦ/dt = 0, so the secondary voltage is zero.</p>
+    <p>Worse, the primary itself is in trouble. On AC its current is limited mainly by its reactance (X<sub>L</sub> = 2πfL, typically hundreds of ohms or more for a mains winding). On DC the reactance is zero, so only the copper resistance limits the current: often a few tens of ohms or less. The current becomes many times the design value, the core saturates, and the winding overheats in seconds. That is the physics behind the rule <b>"never put DC on a transformer winding"</b>.</p>
+    <p>This blocking of DC is also a <b>feature</b>. Transformers pass AC signals while blocking DC and keeping the two sides electrically separate. Every RJ45 Ethernet port contains small signal transformers ("magnetics") for exactly this reason.</p>
+    <div class="callout job"><span class="label">On the job: PoE and the Ethernet transformer</span><p>Power over Ethernet (<a href="../practice/p19-networking-hands-on.html">P19</a>) sends DC power to a camera down the same pairs that carry data. How does DC get past the port's transformers? It is fed into the <b>centre tap</b> of each winding. On a pair, the DC splits equally between the two wires and flows in opposite directions through the two halves of the winding, so its magnetic effects cancel and the core does not saturate. The data signal, which is a voltage <i>between</i> the two wires, still couples through normally. Meanwhile the transformer isolates the camera's electronics from the cable (Ethernet ports are tested to withstand 1500 V RMS between cable and device).</p></div>
+
+    <h2>Losses, laminations and why transformers hum</h2>
+    <p>Real transformers waste some energy, which appears as heat. There are two families of loss.</p>
+    <h3>Copper loss (load loss)</h3>
+    <p>The windings have resistance, so they heat as I²R. Copper loss grows with the square of the load current: at half load it is a quarter of the full-load figure. It is also the main cause of <b>regulation</b>: the secondary voltage falls as load rises, because some voltage is lost in the winding resistance. Small transformers have relatively high winding resistance, so a 24 V plug-pack might read 27–30 V with no load and 24 V at full load. That is normal.</p>
+    <h3>Core loss (iron loss)</h3>
+    <p>Core loss happens whenever the transformer is energised, even with no load, because the flux is always cycling.</p>
+    <ul>
+      <li><b>Hysteresis loss:</b> the energy spent flipping the core's magnetic domains every cycle, equal to the area of the B–H loop (<a href="t06-magnetism-inductors.html">T06</a>). Grain-oriented silicon steel has a thin loop.</li>
+      <li><b>Eddy-current loss:</b> the core is a conductor sitting inside a changing flux, so currents circulate in it, like the magnet in the copper pipe. In a solid core these loops are large and the I²R heat is serious. The cure is to build the core from thin steel sheets (<b>laminations</b>, typically about 0.3–0.5 mm thick) insulated from each other by a coating. The flux runs along the sheets, but the eddy currents would have to cross the insulation to make big loops, so they are confined to tiny paths. Eddy loss falls roughly with the square of lamination thickness.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Eddy current loops in a solid core compared with a laminated core">
+        <text class="t t-bold" x="40" y="24">Solid core</text>
+        <rect class="f-wash s-line" x="40" y="40" width="200" height="150"/>
+        <ellipse class="s-red" cx="140" cy="115" rx="80" ry="55"/>
+        <ellipse class="s-red" cx="140" cy="115" rx="45" ry="30"/>
+        <text class="t t-small t-muted" x="130" y="120">⊗ Φ</text>
+        <text class="t t-small t-red" x="40" y="212">large eddy loops → large I²R heat</text>
+        <text class="t t-bold" x="360" y="24">Laminated core</text>
+        <rect class="f-wash s-line" x="360" y="40" width="34" height="150"/>
+        <rect class="f-wash s-line" x="400" y="40" width="34" height="150"/>
+        <rect class="f-wash s-line" x="440" y="40" width="34" height="150"/>
+        <rect class="f-wash s-line" x="480" y="40" width="34" height="150"/>
+        <rect class="f-wash s-line" x="520" y="40" width="34" height="150"/>
+        <ellipse class="s-red" cx="377" cy="115" rx="9" ry="60"/>
+        <ellipse class="s-red" cx="417" cy="115" rx="9" ry="60"/>
+        <ellipse class="s-red" cx="457" cy="115" rx="9" ry="60"/>
+        <ellipse class="s-red" cx="497" cy="115" rx="9" ry="60"/>
+        <ellipse class="s-red" cx="537" cy="115" rx="9" ry="60"/>
+        <text class="t t-small t-muted" x="566" y="70">insulating</text>
+        <text class="t t-small t-muted" x="566" y="86">coating</text>
+        <text class="t t-small t-muted" x="566" y="102">between</text>
+        <text class="t t-small t-muted" x="566" y="118">sheets</text>
+        <text class="t t-small t-red" x="360" y="212">thin, narrow loops → small loss</text>
+      </svg>
+      <figcaption>Figure 2. Cross-section of a core with flux going into the page (⊗). In a solid block the induced currents circulate in big loops. Cutting the core into insulated sheets forces the currents into thin loops with much less induced EMF each and much more resistance, so the loss drops sharply. At high frequency even thin sheets are not enough, which is why switch-mode transformers use ferrite, a ceramic with very high resistivity.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Transformer</th><th>Indicative full-load efficiency</th><th>Why</th></tr>
+      <tr><td>Large distribution transformer (street or substation)</td><td>about 98–99 % or better</td><td>Thick copper, high-grade steel, oil cooling. 1 % of 1 MVA is still 10 kW of heat.</td></tr>
+      <tr><td>Small 50 Hz plug-pack or control transformer (10–100 VA)</td><td>roughly 75–90 %</td><td>Thin wire, cheap core, poor regulation.</td></tr>
+      <tr><td>Switch-mode supply transformer</td><td>high (the whole supply is typically 85–95 %)</td><td>Ferrite core, few turns, high frequency.</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Why transformers hum at 100 Hz</span><p>Steel changes length very slightly when magnetised (<b>magnetostriction</b>). It stretches whether the flux points one way or the other, so it vibrates twice per cycle: at 100 Hz in Australia. Loose laminations add a rattle. A transformer that hums louder than usual, or buzzes, is often overloaded or has loose mounting.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A transformer with no load connected uses no power."</b> It still draws magnetising current and has core loss every cycle. An old-style iron plug-pack left plugged in with nothing attached stays warm and might waste a watt or two continuously. Modern switch-mode plug-packs have very low no-load consumption.</p></div>
+
+    <h2>Isolation: why a transformer makes things safer</h2>
+    <p>Mains in Australia is supplied with the <b>neutral</b> connected to earth (the MEN system, <a href="t09-mains-earthing-safety.html">T09</a>). The active conductor is therefore about 230 V above the ground you stand on. If you touch active, current can flow through you to earth and back to the transformer at the substation. That is how most electric shocks happen.</p>
+    <p>A transformer's secondary has <b>no conductive connection</b> to the primary. Energy crosses only as a magnetic field through insulation. If the secondary is not connected to earth anywhere, touching one secondary wire gives no complete path, because the current has no way back. Combine this with a low secondary voltage and a well-insulated construction and you get a power source that stays safe even if the mains side has a fault. Plug-packs and the power supplies for ELV equipment are built as <b>safety isolating transformers</b>, with reinforced or double insulation between the windings so that a single insulation failure cannot put mains on the low-voltage side. The relevant standards family is AS/NZS 61558 (safety of transformers); check the current edition if you ever need to specify one.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"An isolated output can never hurt you."</b> Isolation removes the path to earth, but the secondary voltage itself can still hurt you if it is high, and touching <i>both</i> secondary wires completes the circuit. Isolation transformers used by electricians for testing are tools for licensed workers, not a licence to touch mains. For you, the safety comes from the combination: isolated <b>and</b> extra-low voltage <b>and</b> sealed.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Buy plug-packs that carry the Regulatory Compliance Mark (the RCM, a tick inside a triangle), which shows the supplier claims compliance with Australian electrical safety requirements. Cheap unbranded imports from online marketplaces sometimes have poor insulation between windings. Jaycar and Altronics sell compliant 12 V, 16 V and 24 V AC plug-packs. Electrical equipment safety schemes are run by the state regulators, so details vary; check your state's regulator if you are supplying equipment to others.</p></div>
+
+    <h2>Switch-mode supplies: why the transformer got tiny</h2>
+    <p>Look at the transformer equation again: N · A = V / (4.44 · f · B<sub>peak</sub>). For a given voltage, the product of turns and core area is inversely proportional to frequency. Raise the frequency and you need fewer turns on a smaller core.</p>
+    <p><b>Worked comparison.</b> For a 24 V winding:</p>
+    <ul>
+      <li>At 50 Hz on a steel core of 4 cm² at 1.2 T: N = 24 / (4.44 × 50 × 1.2 × 4 × 10⁻⁴) ≈ <b>225 turns</b>.</li>
+      <li>At 100 kHz on a ferrite core of 0.5 cm² at 0.2 T (ferrite saturates at a lower flux, and losses rise at high frequency, so designers use a modest B): N = 24 / (4.44 × 100 000 × 0.2 × 0.5 × 10⁻⁴) ≈ <b>5.4 turns</b>.</li>
+    </ul>
+    <p>Fewer turns on a far smaller core is why a 65 W laptop charger fits in your hand while a 50 Hz transformer of the same power would weigh over a kilogram. A switch-mode power supply (SMPS) does this:</p>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="Block diagram of an isolated switch-mode power supply">
+        <defs><marker id="t08f3-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-warn-soft s-line" x="10" y="50" width="90" height="56" rx="6"/>
+        <text class="t t-small" x="18" y="74">230 V AC in</text>
+        <text class="t t-small t-muted" x="18" y="92">(mains side)</text>
+        <rect class="f-warn-soft s-line" x="122" y="50" width="100" height="56" rx="6"/>
+        <text class="t t-small" x="130" y="74">rectify +</text>
+        <text class="t t-small" x="130" y="92">smooth ≈ 325 V DC</text>
+        <rect class="f-warn-soft s-line" x="244" y="50" width="90" height="56" rx="6"/>
+        <text class="t t-small" x="252" y="74">MOSFET</text>
+        <text class="t t-small" x="252" y="92">chops 100 kHz</text>
+        <rect class="f-wash s-line" x="352" y="40" width="70" height="76" rx="6"/>
+        <text class="t t-small" x="360" y="70">ferrite</text>
+        <text class="t t-small" x="360" y="88">transformer</text>
+        <rect class="f-career-soft s-line" x="440" y="50" width="90" height="56" rx="6"/>
+        <text class="t t-small" x="448" y="74">rectify +</text>
+        <text class="t t-small" x="448" y="92">filter</text>
+        <rect class="f-career-soft s-line" x="548" y="50" width="82" height="56" rx="6"/>
+        <text class="t t-small" x="556" y="74">12 V DC</text>
+        <text class="t t-small t-muted" x="556" y="92">out (ELV)</text>
+        <line class="s-line" x1="100" y1="78" x2="120" y2="78" marker-end="url(#t08f3-k)"/>
+        <line class="s-line" x1="222" y1="78" x2="242" y2="78" marker-end="url(#t08f3-k)"/>
+        <line class="s-line" x1="334" y1="78" x2="350" y2="78" marker-end="url(#t08f3-k)"/>
+        <line class="s-line" x1="422" y1="78" x2="438" y2="78" marker-end="url(#t08f3-k)"/>
+        <line class="s-line" x1="530" y1="78" x2="546" y2="78" marker-end="url(#t08f3-k)"/>
+        <line class="s-red s-dash" x1="387" y1="20" x2="387" y2="200"/>
+        <text class="t t-small t-red" x="300" y="16">isolation barrier</text>
+        <rect class="f-wash s-line" x="352" y="150" width="70" height="40" rx="6"/>
+        <text class="t t-small" x="358" y="175">opto-coupler</text>
+        <path class="s-line" d="M589,106 V170 H424" marker-end="url(#t08f3-k)"/>
+        <path class="s-line" d="M350,170 H289 V108" marker-end="url(#t08f3-k)"/>
+        <text class="t t-small t-muted" x="450" y="164">output voltage feedback (light)</text>
+        <text class="t t-small t-muted" x="100" y="164">controller adjusts the duty cycle</text>
+      </svg>
+      <figcaption>Figure 3. An isolated switch-mode supply. The mains is rectified to DC, chopped at high frequency, passed through a small ferrite transformer, then rectified again. The output voltage is sent back across the isolation barrier as light, through an optocoupler, so the controller can hold the output steady without any wire crossing the barrier. The red-shaded blocks are mains-side and are never opened by the learner.</figcaption>
+    </figure>
+    <p>Notice that the isolation barrier is crossed only by the transformer's magnetic field and the optocoupler's light. The 12 V and 24 V DC supplies that power cameras, access control and BMS controllers are built this way. Their 230 V input is wired by an electrician; their output terminals are your side. You will compare a switch-mode supply with a linear one in <a href="../practice/p10-power-supplies.html">P10</a>.</p>
+
+    <h2>Current transformers (CTs)</h2>
+    <p>Turn the transformer idea around. Pass a single conductor through a ring-shaped core, and wind many turns (N) on the ring. The conductor is a primary of <b>one turn</b>. By ampere-turn balance, the secondary current is the primary current divided by N. This is a <b>current transformer</b>, and it measures large AC currents without any electrical connection to the conductor.</p>
+    <div class="formula">I<sub>s</sub> = I<sub>p</sub> / N      V<sub>out</sub> = I<sub>s</sub> × R<sub>burden</sub>
+      <small>The resistor across the secondary that turns the current into a measurable voltage is called the <b>burden</b>.</small></div>
+    <p><b>Worked example.</b> An energy monitor uses a 100 A : 50 mA CT (N = 2000). The load draws 40 A. I<sub>s</sub> = 40 / 2000 = 20 mA. Across a 10 Ω burden: V = 0.02 × 10 = 0.2 V RMS, a safe small signal for the meter's ADC (<a href="../practice/p12-sensors-adc.html">P12</a>).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="A current transformer clamped around one conductor with a burden resistor feeding a meter">
+        <defs><marker id="t08f4-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <line class="s-line" x1="30" y1="110" x2="330" y2="110" style="stroke-width:6"/>
+        <line class="s-red" x1="40" y1="90" x2="100" y2="90" marker-end="url(#t08f4-r)"/>
+        <text class="t t-small t-red" x="40" y="80">I<tspan dy="3" class="t-small">p</tspan><tspan dy="-3"> = 40 A (one conductor only)</tspan></text>
+        <ellipse class="f-wash s-line" cx="200" cy="110" rx="26" ry="62"/>
+        <ellipse class="f-panel s-line" cx="200" cy="110" rx="12" ry="40"/>
+        <path class="s-accent" d="M184,62 l14,6 M182,78 l16,6 M181,94 l16,6 M181,126 l16,6 M182,142 l16,6 M184,158 l14,6"/>
+        <text class="t t-small" x="150" y="194">CT, N = 2000 turns</text>
+        <path class="s-line" d="M220,60 C260,30 330,30 390,60 V90"/>
+        <path class="s-line" d="M220,160 C260,190 330,190 390,160 V130"/>
+        <rect class="f-panel s-line" x="380" y="90" width="20" height="40"/>
+        <text class="t t-small" x="408" y="106">burden 10 Ω</text>
+        <text class="t t-small t-muted" x="408" y="122">20 mA → 0.2 V</text>
+        <path class="s-line" d="M390,60 H520 V90"/>
+        <path class="s-line" d="M390,160 H520 V130"/>
+        <rect class="f-career-soft s-line" x="500" y="90" width="110" height="40" rx="6"/>
+        <text class="t t-small" x="508" y="115">meter / ADC</text>
+        <text class="t t-small t-muted" x="30" y="214">Clamp around active only. Around a whole cable, active and neutral currents cancel: reading ≈ 0.</text>
+      </svg>
+      <figcaption>Figure 4. A current transformer. The conductor through the window is a one-turn primary. The secondary current is the primary current divided by the turns, and the burden resistor converts it to a small voltage. It must enclose only one conductor of the circuit.</figcaption>
+    </figure>
+    <p>Split-core CTs open like a clothes peg and clip around an existing cable, which is why they are used for retrofit energy monitoring, building sub-metering on a BMS, and solar and home-battery systems that need to know how much power the house is importing or exporting.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>Two hard rules. <b>First:</b> fitting a CT around conductors inside a switchboard is LV work for a licensed electrician; your part is the low-voltage signal wiring afterwards. <b>Second:</b> a CT with a current output (for example a 5 A or 1 A secondary) must never be left open-circuit while its primary carries current. The CT tries to force its current through whatever is connected; with no burden, the secondary voltage rises to hundreds of volts or more, which can kill and destroys the CT's insulation. Such CTs are installed with shorting links. CTs with a built-in burden that output a small voltage (such as 333 mV) avoid this hazard, which is one reason they are popular for monitoring.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A CT can measure battery current."</b> No: a CT is a transformer, so it only works on AC. In a <b>battery</b> management system (also called a BMS, confusingly) the DC charge and discharge current is measured with a <b>shunt</b> (a precise low-value resistor, millivolts per amp) or a <b>Hall-effect</b> sensor, which measures the magnetic field directly and works on DC. The CTs in a solar-battery installation sit on the AC side, measuring grid and household current.</p></div>
+
+    <h2>24 V AC control transformers in buildings</h2>
+    <p>Walk into a plant room or the back of an access control cabinet and you will find small transformers stepping 230 V down to <b>24 V AC</b> (sometimes 12, 16 or 18 V AC). Why AC, and why 24 V?</p>
+    <ul>
+      <li><b>It is extra-low voltage</b>, so the field wiring to thermostats, valve actuators and dampers can be run by non-electricians in many situations, and a touch is not dangerous.</li>
+      <li><b>24 V is high enough</b> to drive relays, actuators and solenoid valves over long cable runs without excessive current or voltage drop.</li>
+      <li><b>A transformer is simple and tough</b>: no electronics to fail, it survives surges, and it naturally limits fault current through its winding resistance.</li>
+      <li><b>HVAC history</b>: thermostats and controls standardised on 24 V AC decades ago, and the parts ecosystem (actuators, relays, controllers) followed.</li>
+    </ul>
+    <p>Typical sizes are 20 VA to 100 VA (40 VA and 75 VA are common). Many intruder alarm panels are powered from a 16–18 V AC plug-pack and rectify it internally to run the panel and charge a 12 V backup battery.</p>
+    <h3>Worked example: a VA budget</h3>
+    <p>A small BMS panel runs one controller (10 VA), four valve actuators (6 VA each) and two damper actuators (8 VA each), all on 24 V AC. Total = 10 + 24 + 16 = <b>50 VA</b>. Add about 25 % margin: 62.5 VA. A 75 VA transformer is the right size; a 40 VA one would overheat or trip its protection. Secondary current at 50 VA = 50 / 24 ≈ 2.1 A, which also tells you the fuse and cable size on the 24 V side. Always use the actuator's VA rating from its datasheet: some actuators draw more while driving than while holding.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Two classic 24 V AC faults. <b>1. Swapped "24 V" and "common".</b> Many controllers and actuators share one transformer and use the common terminal as their signal reference. If one device is wired with 24 V and common reversed, the shared reference can short the transformer through the devices, blowing fuses or damaging boards. Keep polarity consistent and follow the manufacturer's wiring diagram, including whether the common is to be earthed. <b>2. Mixing AC and DC devices.</b> A 24 V DC-only device on 24 V AC may be destroyed, and an AC coil on DC can burn out (<a href="t07-ac-fundamentals.html">T07</a>). Read the label every time.</p></div>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · A 12–24 V AC plug-pack into half-wave and bridge rectifiers</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Linear vs switch-mode supplies, regulation and efficiency</a>
+    <a class="crosslink" href="../practice/p15-oscilloscope-logic-analyser.html">Practice P15 · Measure a plug-pack's voltage off-load and on-load on the scope</a>
+    <a class="crosslink" href="../career/c01-bms-fundamentals.html">Job track C01 · BMS fundamentals: 24 V AC field devices</a>
+    <div class="callout try"><span class="label">Try this (ELV only)</span><p>Measure a 12 V or 24 V AC plug-pack's output with no load, then with a load resistor drawing about half its rated current (for a 24 V 1 A pack, a 47 Ω 25 W wirewound resistor draws about 0.5 A; it gets hot, so mount it safely). Calculate the regulation: (V<sub>no-load</sub> − V<sub>load</sub>) / V<sub>load</sub>. Expect something like 5–20 %. Leave it plugged in with no load for ten minutes and feel the case: that warmth is core loss.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A transformer has 1150 primary turns and 120 secondary turns. With 230 V on the primary, what is the secondary voltage, and is it step-up or step-down?</summary><div class="answer"><p>V<sub>s</sub> = 230 × 120 / 1150 = 24 V. Step-down: fewer secondary turns means fewer volts, because each turn gets the same volts per turn (0.2 V here).</p></div></details>
+    <details class="quiz"><summary>A 24 V, 40 VA transformer supplies 1.5 A. What is the ideal primary current at 230 V, and is the transformer overloaded?</summary><div class="answer"><p>Load = 24 × 1.5 = 36 VA, within the 40 VA rating (90 %). Ideal primary current = 36 / 230 ≈ 0.157 A (or 1.5 / 9.58). Real primary current is slightly higher because of losses and magnetising current.</p></div></details>
+    <details class="quiz"><summary>Why does a transformer not work on DC, and why can DC damage it?</summary><div class="answer"><p>Induction needs a changing flux; steady DC gives dΦ/dt = 0, so no secondary voltage after the first instant. The primary's current is then limited only by its small copper resistance (no reactance at DC), so it draws far too much current, saturates the core and overheats.</p></div></details>
+    <details class="quiz"><summary>Why is a 50 Hz transformer core made of thin laminations rather than a solid block of steel?</summary><div class="answer"><p>The core is a conductor in a changing flux, so eddy currents circulate in it and waste power as heat. Insulated thin sheets confine those currents to narrow paths with small EMF and high resistance, cutting eddy-current loss dramatically (roughly with the square of sheet thickness).</p></div></details>
+    <details class="quiz"><summary>Why are switch-mode transformers so much smaller than 50 Hz ones of the same power?</summary><div class="answer"><p>From V = 4.44 f N B A, the turns × core area needed for a given voltage is inversely proportional to frequency. At 100 kHz instead of 50 Hz (2000 times higher), even allowing for ferrite's lower usable flux density, the transformer needs far fewer turns on a far smaller core.</p></div></details>
+    <details class="quiz"><summary>Someone clamps an energy-monitor CT around a whole two-core cable and reads almost zero. Why?</summary><div class="answer"><p>The active and neutral carry equal currents in opposite directions, so their fields cancel inside the CT and the net flux is near zero. A CT must enclose only one conductor. (An RCD deliberately uses this cancellation to detect leakage, see T09.)</p></div></details>
+    <details class="quiz"><summary>Why must a current-output CT never be open-circuited while its primary is carrying current?</summary><div class="answer"><p>The CT forces a secondary current set by the primary current. With no burden, there is nothing to carry that current, so the core is driven hard and the secondary voltage rises to very high, dangerous levels, which can shock someone and break down the insulation. Use shorting links or voltage-output CTs.</p></div></details>
+    <details class="quiz"><summary>Can you measure a home battery's DC charging current with a split-core CT?</summary><div class="answer"><p>No. A CT only responds to changing current. DC current needs a shunt resistor or a Hall-effect sensor. CTs in solar-battery systems measure the AC side.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain mutual induction and why volts per turn is the same on both windings.</span></li>
+      <li><input type="checkbox"><span>I can use V<sub>s</sub>/V<sub>p</sub> = N<sub>s</sub>/N<sub>p</sub> and power balance to find voltages and currents on both sides.</span></li>
+      <li><input type="checkbox"><span>I can explain why core flux is set by the primary voltage, and how the primary current follows the load.</span></li>
+      <li><input type="checkbox"><span>I can explain why DC does not pass through a transformer and how PoE gets DC past Ethernet magnetics.</span></li>
+      <li><input type="checkbox"><span>I can name copper loss, hysteresis loss and eddy-current loss, and explain laminations and ferrite.</span></li>
+      <li><input type="checkbox"><span>I can explain how isolation plus ELV makes a plug-pack safe, and why I only use sealed plug-packs.</span></li>
+      <li><input type="checkbox"><span>I can calculate a CT's output voltage, and I know CTs must not be open-circuited and do not work on DC.</span></li>
+      <li><input type="checkbox"><span>I can size a 24 V AC control transformer from a VA budget with margin.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
