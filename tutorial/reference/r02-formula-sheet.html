@@ -193,7 +193,7 @@
     <h2>Semiconductors</h2>
     <div class="table-wrap"><table class="fs">
       <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
-      <tr><td>I = I<sub>S</sub>(e<sup>V/(nV<sub>T</sub>)</sup> − 1)</td><td>Shockley diode equation. I<sub>S</sub> saturation current (A, tiny: ~10<sup>−14</sup> A for a small silicon diode), n ideality factor (1–2), V forward voltage (V)</td><td>I<sub>S</sub> = 10<sup>−14</sup> A, n = 1, V = 0.65 V: 10<sup>−14</sup> × e<sup>25.1</sup> ≈ <b>0.83 mA</b>. Each extra 60 mV multiplies current by 10.</td></tr>
+      <tr><td>I = I<sub>S</sub>(e<sup>V/(nV<sub>T</sub>)</sup> − 1)</td><td>Shockley diode equation. I<sub>S</sub> saturation current (A, tiny: ~10<sup>−14</sup> A for a small silicon diode), n ideality factor (1–2), V forward voltage (V)</td><td>I<sub>S</sub> = 10<sup>−14</sup> A, n = 1, V = 0.65 V: 10<sup>−14</sup> × e<sup>25.1</sup> ≈ <b>0.82 mA</b>. Each extra 60 mV multiplies current by 10.</td></tr>
       <tr><td>V<sub>T</sub> = kT/q</td><td>Thermal voltage. T absolute temperature (K)</td><td>300 K: 1.381×10<sup>−23</sup> × 300 / 1.602×10<sup>−19</sup> = <b>25.9 mV</b></td></tr>
       <tr><td>R = (V<sub>s</sub> − V<sub>f</sub>)/I</td><td>LED series resistor. V<sub>f</sub> LED forward voltage, I LED current</td><td>12 V, white LED 3.0 V at 15 mA: 9/0.015 = 600 Ω → use <b>620 Ω</b> (E24) → 14.5 mA, 0.13 W in the resistor</td></tr>
       <tr><td>R = (V<sub>in</sub> − V<sub>Z</sub>)/(I<sub>L</sub> + I<sub>Z</sub>)</td><td>Zener regulator. I<sub>L</sub> load current, I<sub>Z</sub> minimum Zener current</td><td>12 V in, 5.1 V Zener, 10 mA load, 5 mA Zener: 6.9/0.015 = 460 Ω → round down to <b>430 Ω</b>. With no load the Zener takes 16 mA × 5.1 V = 82 mW.</td></tr>

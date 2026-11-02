@@ -272,5 +272,8 @@
   chapterExtras();
   renderHub();
   tick();
-  setInterval(tick, 8000);
+  // Live updates only while the course is being written locally; the public site checks once.
+  var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
+  if (LOCAL) setInterval(tick, 8000);
+  else document.querySelectorAll(".livepill").forEach(function (el) { el.remove(); });
 })();
