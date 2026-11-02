@@ -71,7 +71,7 @@ window.TOC = {
           { n: "T16", file: "theory/t16-signals-noise-loops.html", title: "Signals: sampling, decibels, noise and 4–20 mA loops", d: "Why industry sends current not voltage, and how to read a dB figure." }
         ]},
         { title: "Part 5 · Systems theory for the field", blurb: "Networks, sensors and motors: the theory under building and security systems.", chapters: [
-          { n: "T17", planned: true, file: "theory/t17-networking-theory.html", title: "How networks really work: Ethernet, IP, TCP/UDP", d: "Layers, frames, MAC and IP addresses, ARP, switching vs routing, ports, multicast and why cameras flood networks." },
+          { n: "T17", file: "theory/t17-networking-theory.html", title: "How networks really work: Ethernet, IP, TCP/UDP", d: "Layers, frames, MAC and IP addresses, ARP, switching vs routing, ports, multicast and why cameras flood networks." },
           { n: "T18", file: "theory/t18-sensor-physics.html", title: "Sensor physics: how sensors turn the world into signals", d: "Thermistors, RTDs, thermocouples, PIR, Hall effect, pressure, humidity, CO₂ and photoelectric smoke." },
           { n: "T19", file: "theory/t19-motors-vsds.html", title: "Motors and variable speed drives", d: "DC, stepper and induction motors, slip, VSDs and the fan affinity laws behind every AHU." }
         ]}
