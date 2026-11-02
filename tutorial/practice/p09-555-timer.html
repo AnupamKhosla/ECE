@@ -81,18 +81,18 @@
         <!-- reset line -->
         <path class="s-thin s-dash" d="M370 20 V110"/>
         <!-- pins -->
-        <g class="t t-small">
-        <text x="140" y="14">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
-        <text x="350" y="14">4 RESET (active low)</text>
-        <text x="140" y="372">1 GND</text>
-        <text x="524" y="134">3 OUT</text>
-        <text x="524" y="244">7 DISCH</text>
-        <text x="20" y="76">6 THRESHOLD</text>
-        <text x="20" y="276">2 TRIGGER</text>
-        <text x="20" y="116">5 CONTROL</text>
-        </g>
-        <path class="s-line" d="M100 80 H215 V96 H230"/>
-        <path class="s-line" d="M90 280 H215 V196 H230"/>
+        <text class="t t-small t-bold" x="140" y="14">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text class="t t-small t-bold" x="350" y="14">4 RESET (active low)</text>
+        <text class="t t-small t-bold" x="140" y="372">1 GND</text>
+        <text class="t t-small t-bold" x="524" y="134">3 OUT</text>
+        <text class="t t-small t-bold" x="524" y="244">7 DISCH</text>
+        <text class="t t-small t-bold" x="14" y="88">6 THRESHOLD</text>
+        <text class="t t-small t-bold" x="14" y="296">2 TRIGGER</text>
+        <text class="t t-small t-bold" x="14" y="126">5 CONTROL</text>
+        <text class="t t-small" x="414" y="124">Q</text>
+        <text class="t t-small" x="414" y="190">Q̄</text>
+        <path class="s-line" d="M100 92 H215 V96 H230"/>
+        <path class="s-line" d="M90 300 H215 V196 H230"/>
         <path class="s-thin" d="M100 112 H160"/>
         <path class="s-thin s-dash" d="M476 350 H160"/>
       </svg>
@@ -127,8 +127,8 @@
         <text class="t t-small" x="352" y="176">3 OUT</text>
         <text class="t t-small" x="352" y="216">5 CV</text>
         <!-- rails -->
-        <path class="s-line" d="M60 30 H560"/><text class="t t-small t-bold" x="20" y="34">+9 V</text>
-        <path class="s-line" d="M60 280 H560"/><text class="t t-small t-bold" x="20" y="284">0 V</text>
+        <path class="s-line" d="M60 30 H600"/><text class="t t-small t-bold" x="20" y="34">+9 V</text>
+        <path class="s-line" d="M60 280 H600"/><text class="t t-small t-bold" x="20" y="284">0 V</text>
         <!-- pins 8 and 4 to vcc -->
         <path class="s-line" d="M400 92 H440 V30 M400 132 H440 V92"/>
         <!-- R1 -->
@@ -136,7 +136,7 @@
         <text class="t t-small" x="130" y="64">R1</text>
         <text class="t t-small t-muted" x="120" y="80">10 kΩ</text>
         <!-- R2 -->
-        <path class="s-line" d="M180 92 V102 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V172 H260 M180 132 V132"/>
+        <path class="s-line" d="M180 92 V102 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V172 H260"/>
         <path class="s-line" d="M220 172 V132 H260"/>
         <text class="t t-small" x="130" y="120">R2</text>
         <text class="t t-small t-muted" x="120" y="136">68 kΩ</text>
@@ -163,11 +163,11 @@
         <path class="s-line" d="M540 216 V280"/>
         <text class="t t-small" x="560" y="212">LED</text>
         <!-- decoupling -->
-        <path class="s-line" d="M500 30 V48"/>
-        <line class="s-line" x1="486" y1="48" x2="514" y2="48"/><line class="s-line" x1="486" y1="56" x2="514" y2="56"/>
-        <path class="s-line" d="M500 56 V120"/>
-        <text class="t t-small t-muted" x="520" y="58">100 nF at pins 8–1</text>
-        <path class="s-thin s-dash" d="M500 120 V280"/>
+        <path class="s-line" d="M600 30 V48"/>
+        <line class="s-line" x1="586" y1="48" x2="614" y2="48"/><line class="s-line" x1="586" y1="56" x2="614" y2="56"/>
+        <path class="s-line" d="M600 56 V280"/>
+        <text class="t t-small t-muted" x="462" y="56">100 nF (fit it at</text>
+        <text class="t t-small t-muted" x="462" y="72">pins 8 and 1)</text>
       </svg>
       <figcaption>Figure 2. Astable LED flasher. With R1 = 10 kΩ, R2 = 68 kΩ and C = 10 µF it flashes about once a second. The 10 nF on pin 5 keeps the 2/3 threshold steady against noise; the 100 nF across the supply pins is the decoupling from P07.</figcaption>
     </figure>
@@ -187,8 +187,8 @@
 
     <div class="widget" id="p9w-ast">
       <span class="label">Interactive · 555 astable calculator</span>
-      <label>R1 <span class="out" id="p9a-r1o">10 kΩ</span><input type="range" id="p9a-r1" min="0" max="100" step="1" value="40"></label>
-      <label>R2 <span class="out" id="p9a-r2o">68 kΩ</span><input type="range" id="p9a-r2" min="0" max="100" step="1" value="73"></label>
+      <label>R1 <span class="out" id="p9a-r1o">10 kΩ</span><input type="range" id="p9a-r1" min="0" max="100" step="1" value="50"></label>
+      <label>R2 <span class="out" id="p9a-r2o">68 kΩ</span><input type="range" id="p9a-r2" min="0" max="100" step="1" value="71"></label>
       <label>C <select id="p9a-c"><option value="1e-8">10 nF</option><option value="1e-7">100 nF</option><option value="1e-6">1 µF</option><option value="1e-5" selected>10 µF</option><option value="1e-4">100 µF</option></select></label>
       <svg viewBox="0 0 600 200" role="img" aria-label="Capacitor voltage between one third and two thirds of the supply, and the square output wave" style="margin-top:8px">
         <line class="s-thin s-dash" x1="40" y1="30" x2="590" y2="30"/>
@@ -218,7 +218,7 @@
       function val(s){return VALS[Math.round(s*(VALS.length-1)/100)];}
       function fR(r){return r>=1e6?(r/1e6)+' MΩ':r>=1000?(+(r/1000).toFixed(1))+' kΩ':r+' Ω';}
       function fT(t){return t>=1?t.toFixed(2)+' s':t>=1e-3?(t*1000).toFixed(t<0.01?2:1)+' ms':(t*1e6).toFixed(0)+' µs';}
-      function fF(f){return f>=1000?(f/1000).toFixed(2)+' kHz':f>=1?f.toFixed(2)+' Hz':(1/f).toFixed(1)+' s period';}
+      function fF(f){return f>=1000?(f/1000).toFixed(2)+' kHz':f>=1?f.toFixed(2)+' Hz':f.toFixed(2)+' Hz ('+(1/f).toFixed(1)+' s period)';}
       function upd(){
         var r1=val(+$('p9a-r1').value),r2=val(+$('p9a-r2').value),C=+$('p9a-c').value;
         $('p9a-r1o').textContent=fR(r1);$('p9a-r2o').textContent=fR(r2);
@@ -275,9 +275,9 @@
         <!-- chip -->
         <rect class="f-ink" x="236" y="126" width="118" height="48" rx="3"/>
         <path class="f-panel" d="M236 142 a8 8 0 0 1 0 16 z"/>
-        <text class="t t-small f-panel" x="276" y="155">NE555</text>
-        <g class="t t-small t-muted"><text x="244" y="122">8</text><text x="274" y="122">7</text><text x="304" y="122">6</text><text x="334" y="122">5</text>
-        <text x="244" y="188">1</text><text x="274" y="188">2</text><text x="304" y="188">3</text><text x="334" y="188">4</text></g>
+        <text class="t t-small f-panel" x="276" y="156">NE555</text>
+        <text class="t t-small f-panel" x="246" y="140">8</text><text class="t t-small f-panel" x="276" y="140">7</text><text class="t t-small f-panel" x="306" y="140">6</text><text class="t t-small f-panel" x="336" y="140">5</text>
+        <text class="t t-small f-panel" x="246" y="170">1</text><text class="t t-small f-panel" x="276" y="170">2</text><text class="t t-small f-panel" x="306" y="170">3</text><text class="t t-small f-panel" x="336" y="170">4</text>
         <!-- pin 8 to + -->
         <line class="s-red" x1="250" y1="24" x2="250" y2="100"/>
         <!-- R1: + rail to pin 7 column -->
@@ -287,7 +287,7 @@
         <line class="s-line" x1="280" y1="108" x2="284" y2="108"/><rect class="f-amber" x="284" y="102" width="22" height="12" rx="4"/><line class="s-line" x1="306" y1="108" x2="310" y2="108"/>
         <text class="t t-small" x="288" y="96">R2</text>
         <!-- pin6 to pin2 jumper -->
-        <path class="s-amber" d="M310 64 V58 H222 V196 H280 V210"/>
+        <path class="s-amber" d="M310 118 H222 V196 H280"/>
         <text class="t t-small" x="150" y="140">jumper 6→2</text>
         <!-- pin5 10nF to top − -->
         <line class="s-line" x1="340" y1="38" x2="340" y2="52"/><ellipse class="f-amber" cx="340" cy="62" rx="9" ry="8"/><line class="s-line" x1="340" y1="70" x2="340" y2="90"/>
@@ -296,24 +296,24 @@
         <line class="s-line" x1="200" y1="24" x2="200" y2="27"/><ellipse class="f-amber" cx="200" cy="31" rx="7" ry="5"/><line class="s-line" x1="200" y1="35" x2="200" y2="38"/>
         <text class="t t-small t-muted" x="118" y="56">100 nF</text>
         <!-- pin1 to − bottom -->
-        <line class="s-blue" x1="250" y1="200" x2="250" y2="262"/>
+        <line class="s-blue" x1="250" y1="236" x2="250" y2="262"/>
         <!-- C timing pin2 col to − -->
         <rect class="f-blue" x="270" y="214" width="20" height="30" rx="4"/><rect class="f-grey" x="283" y="214" width="7" height="30"/>
         <line class="s-line" x1="286" y1="244" x2="286" y2="262"/>
         <text class="t t-small" x="196" y="236">10 µF</text>
         <!-- pin4 to + bottom -->
-        <line class="s-red" x1="340" y1="200" x2="340" y2="276"/>
+        <line class="s-red" x1="340" y1="238" x2="340" y2="276"/>
         <!-- output resistor pin3 -> col 430 -->
-        <line class="s-line" x1="310" y1="226" x2="370" y2="226"/><rect class="f-amber" x="370" y="220" width="34" height="12" rx="4"/><line class="s-line" x1="404" y1="226" x2="430" y2="226"/>
-        <text class="t t-small" x="368" y="214">470 Ω</text>
+        <line class="s-line" x1="310" y1="226" x2="326" y2="226"/><rect class="f-amber" x="326" y="220" width="34" height="12" rx="4"/><line class="s-line" x1="360" y1="226" x2="430" y2="226"/>
+        <text class="t t-small" x="370" y="214">470 Ω</text>
         <!-- LED col 430 to − -->
         <circle class="f-red" cx="440" cy="240" r="9"/><line class="s-line" x1="436" y1="249" x2="436" y2="262"/>
         <text class="t t-small" x="456" y="244">LED (long leg left)</text>
         <!-- battery -->
-        <text class="t t-small t-bold" x="540" y="56">9 V to</text>
-        <text class="t t-small t-bold" x="540" y="72">rails</text>
+        <text class="t t-small t-bold" x="440" y="62">9 V battery</text>
+        <text class="t t-small t-bold" x="440" y="78">to the rails</text>
         <rect class="f-blue" x="560" y="90" width="20" height="30" rx="4"/><rect class="f-grey" x="573" y="90" width="7" height="30"/>
-        <text class="t t-small" x="520" y="136">100 µF bulk</text>
+        <text class="t t-small" x="500" y="160">100 µF bulk</text>
         <path class="s-thin" d="M566 90 V24 M576 120 V140 H590 V38"/>
       </svg>
       <figcaption>Figure 3. Breadboard layout for the flasher. Each vertical group of five holes is one connected strip. Top rails and bottom rails are often <i>not</i> joined on long breadboards; link them, or feed both. Keep the 100 nF close to the chip's pin 8 and pin 1.</figcaption>
@@ -331,7 +331,7 @@
         <text class="t t-bold" x="314" y="150">555</text>
         <text class="t t-small" x="266" y="86">7 DIS</text>
         <text class="t t-small" x="266" y="122">6 THR</text>
-        <text class="t t-small" x="266" y="176">2 TRIG</text>
+        <text class="t t-small" x="266" y="190">2 TRIG</text>
         <text class="t t-small" x="266" y="220">1 GND</text>
         <text class="t t-small" x="352" y="86">8 V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
         <text class="t t-small" x="352" y="122">4 RST</text>
@@ -347,15 +347,15 @@
         <path class="s-line" d="M200 118 V140"/>
         <line class="s-line" x1="182" y1="140" x2="218" y2="140"/>
         <path class="s-line" d="M182 154 Q200 144 218 154"/>
-        <path class="s-line" d="M200 150 V266"/>
+        <path class="s-line" d="M200 150 V158 M188 158 H212 M192 164 H208 M197 170 H203"/>
         <text class="t t-small" x="100" y="150">C 100 µF</text>
         <!-- trigger pull-up + button -->
-        <path class="s-line" d="M110 24 V34 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V172 H260"/>
+        <path class="s-line" d="M110 24 V34 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V186 H260"/>
         <text class="t t-small t-muted" x="40" y="60">10 kΩ</text>
-        <circle class="f-ink" cx="110" cy="172" r="3.5"/>
-        <path class="s-line" d="M110 172 V196"/>
-        <circle class="f-panel s-line" cx="110" cy="200" r="4"/><circle class="f-panel s-line" cx="110" cy="236" r="4"/>
-        <path class="s-line" d="M96 206 V230 M96 218 H84"/>
+        <circle class="f-ink" cx="110" cy="186" r="3.5"/>
+        <path class="s-line" d="M110 186 V200"/>
+        <circle class="f-panel s-line" cx="110" cy="204" r="4"/><circle class="f-panel s-line" cx="110" cy="236" r="4"/>
+        <path class="s-line" d="M96 208 V232 M96 220 H84"/>
         <path class="s-line" d="M110 240 V266"/>
         <text class="t t-small" x="20" y="222">button</text>
         <!-- pin 1 -->
@@ -428,9 +428,7 @@
         <line class="s-line" x1="386" y1="204" x2="414" y2="204"/><line class="s-line" x1="386" y1="212" x2="414" y2="212"/>
         <path class="s-line" d="M400 212 V244"/>
         <text class="t t-small" x="330" y="230">10 nF</text>
-        <text class="t t-small t-muted" x="560" y="96">(pins 8, 4, 1, 5 and</text>
-        <text class="t t-small t-muted" x="560" y="112">the output wired</text>
-        <text class="t t-small t-muted" x="560" y="128">as in Figure 2)</text>
+        <text class="t t-small t-muted" x="430" y="228">other pins: as in Figure 2</text>
       </svg>
       <figcaption>Figure 5. 555 PWM. Charging current flows 1 kΩ → wiper → R<sub>A</sub> → D1 → capacitor. Discharge flows capacitor → D2 → R<sub>B</sub> → wiper → pin 7. Turning the pot moves resistance from one path to the other: duty changes from a few percent to over 95%, while the total period stays nearly constant.</figcaption>
     </figure>

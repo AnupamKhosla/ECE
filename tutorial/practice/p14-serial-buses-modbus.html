@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P14 · Talking to devices: UART, I²C, SPI, RS-485 and Modbus</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P14</span>
+    <h1>Talking to devices: UART, I²C, SPI, RS-485 and Modbus</h1>
+    <p class="lede">Learn the four wiring "languages" that chips and field devices use to exchange data: UART, I²C and SPI inside gadgets, and RS-485 with Modbus inside every building plant room. By the end you will read a real Modbus device from your laptop, decode a Modbus frame byte by byte, and know the faults that cost BMS technicians hours on site.</p>
+    <div class="meta"><span><b>Time</b> 4–5 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$30–60</span><span><b>Theory</b> T15, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Arduino Uno ×2</b><small>Or one Uno and a USB–TTL serial adapter</small></li>
+      <li><b>An I²C module</b><small>~A$5–15 · e.g. a small OLED, BME280 sensor or DS3231 clock</small></li>
+      <li><b>USB to RS-485 adapter</b><small>~A$5–20 · a small dongle with A/B screw terminals</small></li>
+      <li><b>RS-485 Modbus temperature/humidity module</b><small>~A$10–25 · runs on 5–24 V DC; check its manual</small></li>
+      <li><b>12 V or 24 V DC plug-pack</b><small>To power the Modbus module</small></li>
+      <li><b>Twisted-pair cable</b><small>An offcut of Cat5e/Cat6 works on the bench</small></li>
+      <li><b>120 Ω resistors ×2</b><small>For termination</small></li>
+      <li><b>A computer</b><small>QModMaster (free) and/or Python 3</small></li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Core Electronics, Jaycar and Altronics stock USB–serial adapters and I²C modules. USB–RS-485 dongles and RS-485 Modbus sensor modules are cheapest on AliExpress; industrial versions with isolation come from electrical and automation wholesalers. The sensor modules come with a short register list: keep it, because it is the "map" you need to read the device.</p></div>
+
+    <h2>The big picture: four ways to send bits</h2>
+    <p>All these buses send <b>bits</b> as HIGH and LOW voltages over time. They differ in how many wires they use, how the receiver knows when to read each bit, how far they go, and how many devices can share the wires.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Bus</th><th>Wires (plus GND)</th><th>Clock</th><th>Typical speed</th><th>Distance</th><th>Devices</th><th>Used for</th></tr>
+      <tr><td>UART</td><td>TX, RX</td><td>None: both sides agree on a baud rate</td><td>9600–115 200 bit/s</td><td>Within a board or a short cable</td><td>2 (point to point)</td><td>Debug ports, GPS, modems, Serial Monitor</td></tr>
+      <tr><td>I²C</td><td>SDA, SCL</td><td>Shared clock line</td><td>100 or 400 kbit/s</td><td>Within a board (tens of cm)</td><td>Many, by 7-bit address</td><td>Sensors, displays, clocks</td></tr>
+      <tr><td>SPI</td><td>MOSI, MISO, SCK, CS per device</td><td>Shared clock line</td><td>1–20+ Mbit/s</td><td>Within a board</td><td>Several, one CS each</td><td>SD cards, displays, fast ADCs</td></tr>
+      <tr><td>RS-485</td><td>A, B (twisted pair) + common</td><td>None (UART framing)</td><td>9600–115 200 bit/s in buildings</td><td>Up to ~1200 m</td><td>32 unit loads per segment</td><td>Modbus RTU, BACnet MS/TP, field devices</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"RS-485 and Modbus are the same thing." No. <b>RS-485</b> is only the <b>electrical layer</b>: how voltages on two wires represent 1s and 0s. <b>Modbus RTU</b> is a <b>protocol</b>: what the bytes mean. Modbus can also run over TCP/IP on Ethernet, and RS-485 also carries BACnet MS/TP and many proprietary protocols. On site, separate the two questions: "is the wire working?" and "are we speaking the same language?"</p></div>
+
+    <h2>UART: the simplest serial link</h2>
+    <p>A <b>UART</b> (universal asynchronous receiver-transmitter) sends one byte at a time on one wire. "Asynchronous" means there is no clock wire. Instead, both ends agree in advance on the <b>baud rate</b> (bits per second), and each byte is wrapped in a <b>frame</b> that tells the receiver when to start counting.</p>
+    <ul>
+      <li>When nothing is being sent, the line rests <b>HIGH</b> (idle).</li>
+      <li>A <b>start bit</b> (LOW) says "a byte is coming". The receiver uses its falling edge to start its timer.</li>
+      <li>Then <b>8 data bits</b>, <b>least significant bit (LSB) first</b>.</li>
+      <li>An optional <b>parity bit</b> for simple error checking.</li>
+      <li>One or two <b>stop bits</b> (HIGH), which return the line to idle.</li>
+    </ul>
+    <p>The common setting "<b>9600 8N1</b>" means 9600 baud, 8 data bits, no parity, 1 stop bit: 10 bits per byte in total.</p>
+    <div class="formula">bit time = 1 / 9600 ≈ 104.2 µs &nbsp;&nbsp; byte time = 10 × 104.2 µs ≈ 1.04 ms &nbsp;&nbsp; → about 960 bytes/s
+      <small>The receiver samples each bit near its middle, timing from the start bit's edge. Its clock may be off by a few percent before the sampling point drifts out of the last bit, which is why both ends must use the same baud rate.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 210" role="img" aria-label="UART frame for the letter A at 9600 8N1">
+        <path class="s-thin" d="M88 24 V30 H136 V24"/>
+        <text class="t t-small" x="112" y="18" text-anchor="middle">104 µs</text>
+        <text class="t t-small t-muted" x="16" y="54">1</text>
+        <text class="t t-small t-muted" x="16" y="114">0</text>
+        <line class="s-thin s-dash" x1="88" y1="40" x2="88" y2="120"/>
+        <line class="s-thin s-dash" x1="568" y1="40" x2="568" y2="120"/>
+        <polyline class="s-accent" points="40,50 88,50 88,110 136,110 136,50 184,50 184,110 424,110 424,50 472,50 472,110 520,110 520,50 616,50"/>
+        <text class="t t-small t-muted" x="64" y="136" text-anchor="middle">idle</text>
+        <text class="t t-small" x="112" y="136" text-anchor="middle">start</text>
+        <text class="t t-small" x="160" y="136" text-anchor="middle">D0</text>
+        <text class="t t-small" x="208" y="136" text-anchor="middle">D1</text>
+        <text class="t t-small" x="256" y="136" text-anchor="middle">D2</text>
+        <text class="t t-small" x="304" y="136" text-anchor="middle">D3</text>
+        <text class="t t-small" x="352" y="136" text-anchor="middle">D4</text>
+        <text class="t t-small" x="400" y="136" text-anchor="middle">D5</text>
+        <text class="t t-small" x="448" y="136" text-anchor="middle">D6</text>
+        <text class="t t-small" x="496" y="136" text-anchor="middle">D7</text>
+        <text class="t t-small" x="544" y="136" text-anchor="middle">stop</text>
+        <text class="t t-small t-muted" x="592" y="136" text-anchor="middle">idle</text>
+        <text class="t t-bold" x="112" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="160" y="156" text-anchor="middle">1</text>
+        <text class="t t-bold" x="208" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="256" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="304" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="352" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="400" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="448" y="156" text-anchor="middle">1</text>
+        <text class="t t-bold" x="496" y="156" text-anchor="middle">0</text>
+        <text class="t t-bold" x="544" y="156" text-anchor="middle">1</text>
+        <text class="t t-small" x="328" y="186" text-anchor="middle">'A' = 0x41 = binary 0100 0001, sent LSB first: 1 0 0 0 0 0 1 0</text>
+        <text class="t t-small t-muted" x="328" y="204" text-anchor="middle">one frame = 10 bits = 1.04 ms at 9600 baud</text>
+      </svg>
+      <figcaption>Figure 1. The letter A on a UART line at 9600 8N1. Read the data bits right to left (D7 down to D0) to get 0100 0001 = 0x41. You will capture exactly this shape with a logic analyser in P15.</figcaption>
+    </figure>
+
+    <div class="widget" id="p14-uart">
+      <span class="label">Interactive · UART frame drawer</span>
+      <label>Characters to send (1–3) <input type="text" id="p14-ch" maxlength="3" value="A" style="font:600 18px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:110px"></label>
+      <label>Baud rate <select id="p14-baud"><option value="9600">9600</option><option value="19200">19200</option><option value="38400">38400</option><option value="115200">115200</option></select></label>
+      <label>Parity <select id="p14-par"><option value="none">None (8N1)</option><option value="even">Even (8E1)</option><option value="odd">Odd (8O1)</option></select></label>
+      <label>Stop bits <select id="p14-stop"><option value="1">1</option><option value="2">2</option></select></label>
+      <svg id="p14-usvg" viewBox="0 0 600 150" role="img" aria-label="UART waveform for the typed characters"></svg>
+      <div class="readings">
+        <div><small>Byte values</small><span class="out" id="p14-hex">0x41</span></div>
+        <div><small>Binary (MSB→LSB)</small><span class="out" id="p14-bin">01000001</span></div>
+        <div><small>Bit time</small><span class="out" id="p14-bt">104.2 µs</span></div>
+        <div><small>Total time</small><span class="out" id="p14-tt">1.04 ms</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var ch=document.getElementById('p14-ch'), bd=document.getElementById('p14-baud'), pr=document.getElementById('p14-par'), sp=document.getElementById('p14-stop'), svg=document.getElementById('p14-usvg');
+      function upd(){
+        var txt=ch.value||' ', bits=[], labs=[], hex=[], bin=[];
+        for(var c=0;c<txt.length;c++){
+          var code=txt.charCodeAt(c); if(code>255) code=63;
+          hex.push('0x'+('0'+code.toString(16).toUpperCase()).slice(-2)); bin.push(('0000000'+code.toString(2)).slice(-8));
+          bits.push(0); labs.push('S');
+          var ones=0; for(var i=0;i<8;i++){ var b=(code>>i)&1; ones+=b; bits.push(b); labs.push('D'+i); }
+          if(pr.value!=='none'){ bits.push(pr.value==='even'?ones%2:1-ones%2); labs.push('P'); }
+          bits.push(1); labs.push('Sp'); if(sp.value==='2'){ bits.push(1); labs.push('Sp'); }
+        }
+        var all=[1].concat(bits,[1]), al=['idle'].concat(labs,['idle']);
+        var w=580/all.length, x0=10, hi=30, lo=80, pts=[], s='', y;
+        for(var k=0;k<all.length;k++){ y=all[k]?hi:lo; pts.push((x0+k*w).toFixed(1)+','+y, (x0+(k+1)*w).toFixed(1)+','+y);
+          var cls=al[k]==='S'?'f-theory-soft':(al[k]==='P'?'f-warn-soft':(al[k]==='Sp'?'f-career-soft':''));
+          if(cls) s+='<rect class="'+cls+'" x="'+(x0+k*w).toFixed(1)+'" y="24" width="'+w.toFixed(1)+'" height="62"/>';
+          if(w>=16){ s+='<text class="t t-small" x="'+(x0+(k+0.5)*w).toFixed(1)+'" y="104" text-anchor="middle">'+(al[k]==='idle'?'':al[k])+'</text>'; }
+          if(w>=10 && al[k]!=='idle'){ s+='<text class="t t-small t-bold" x="'+(x0+(k+0.5)*w).toFixed(1)+'" y="122" text-anchor="middle">'+all[k]+'</text>'; }
+        }
+        s+='<polyline class="s-accent" points="'+pts.join(' ')+'"/>';
+        s+='<text class="t t-small t-muted" x="10" y="144">blue = start bit, green = stop bit, red = parity bit; data bits go LSB (D0) first</text>';
+        svg.innerHTML=s;
+        var bt=1e6/(+bd.value);
+        document.getElementById('p14-hex').textContent=hex.join(' ');
+        document.getElementById('p14-bin').textContent=bin.join(' ');
+        document.getElementById('p14-bt').textContent=bt.toFixed(1)+' µs';
+        var tt=bits.length*bt; document.getElementById('p14-tt').textContent=tt>=1000?(tt/1000).toFixed(2)+' ms':tt.toFixed(0)+' µs';
+      }
+      [ch,bd,pr,sp].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);}); upd();
+    })();
+    </script>
+
+    <h3>Wiring: TX goes to RX</h3>
+    <p>Each device <b>transmits</b> on its TX pin and <b>listens</b> on its RX pin. So you cross them: TX of one to RX of the other, and the other way round. And you must connect GND, because each receiver judges HIGH and LOW against its own ground (P13).</p>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-label="UART crossover wiring between two boards">
+        <rect class="f-wash s-line" x="40" y="20" width="160" height="130" rx="8"/>
+        <text class="t t-bold" x="120" y="44" text-anchor="middle">Board A</text>
+        <text class="t" x="190" y="74" text-anchor="end">TX (D11)</text>
+        <text class="t" x="190" y="109" text-anchor="end">RX (D10)</text>
+        <text class="t" x="190" y="139" text-anchor="end">GND</text>
+        <rect class="f-wash s-line" x="440" y="20" width="160" height="130" rx="8"/>
+        <text class="t t-bold" x="520" y="44" text-anchor="middle">Board B</text>
+        <text class="t" x="450" y="74">RX (D10)</text>
+        <text class="t" x="450" y="109">TX (D11)</text>
+        <text class="t" x="450" y="139">GND</text>
+        <path class="s-accent" d="M200 70 C300 70 340 105 440 105"/>
+        <path class="s-blue" d="M200 105 C300 105 340 70 440 70"/>
+        <line class="s-line" x1="200" y1="135" x2="440" y2="135"/>
+        <text class="t t-small t-muted" x="320" y="128" text-anchor="middle">common ground</text>
+      </svg>
+      <figcaption>Figure 2. UART crossover. A's TX drives B's RX, and B's TX drives A's RX. If nothing arrives, swapping the two signal wires is the first thing to try.</figcaption>
+    </figure>
+    <p>The Uno's hardware UART (D0/D1) is already used by USB, so for a second port we use the <b>SoftwareSerial</b> library on any two pins. Load the sender on board A and the receiver on board B, wire as Figure 2, and open B's Serial Monitor.</p>
+<pre><code>// Board A: sender
+#include &lt;SoftwareSerial.h&gt;
+SoftwareSerial link(10, 11);          // RX = D10, TX = D11 (a second UART made in software)
+
+void setup() {
+  link.begin(9600);                   // both boards MUST use the same baud rate
+}
+
+void loop() {
+  link.println("Hello from board A"); // sent out of D11 as UART frames, then CR + LF
+  delay(1000);
+}</code></pre>
+<pre><code>// Board B: receiver
+#include &lt;SoftwareSerial.h&gt;
+SoftwareSerial link(10, 11);          // RX = D10, TX = D11
+
+void setup() {
+  Serial.begin(9600);                 // USB serial to the PC's Serial Monitor
+  link.begin(9600);                   // the link to board A
+}
+
+void loop() {
+  while (link.available() &gt; 0) {     // any bytes waiting in the receive buffer?
+    char c = link.read();             // take one byte out of the buffer
+    Serial.write(c);                  // pass it straight to the Serial Monitor
+  }
+}</code></pre>
+    <div class="callout warn"><span class="label">Safety: TTL is not RS-232</span><p>Arduino UART pins are "TTL level": 0 V and 5 V (or 3.3 V on 3.3 V boards). The old <b>RS-232</b> serial port (9-pin D connector on older PCs and some plant equipment) uses roughly ±5 to ±12 V and inverted logic. Connecting RS-232 straight to an Arduino or ESP32 pin can destroy it. Use an RS-232-to-TTL converter module. Also, a 5 V Uno TX into a 3.3 V board's RX needs a divider or level shifter (P11).</p></div>
+
+    <h2>I²C: many chips on two wires</h2>
+    <p><b>I²C</b> (say "I-squared-C", also written I2C) connects many chips on the same board with just two wires: <b>SDA</b> (data) and <b>SCL</b> (clock). One device, the <b>controller</b> (traditionally called master), drives the clock and starts every conversation. Every other device, a <b>target</b> (traditionally called slave), has a <b>7-bit address</b>, so up to about 112 usable addresses share the bus.</p>
+    <p>The clever part is electrical. No device ever drives a line HIGH. Each device can only pull a line <b>LOW</b> (an "open-drain" output: a transistor to ground) or let go. <b>Pull-up resistors</b>, typically 4.7 kΩ, pull each line HIGH when nobody is pulling it low. So two devices can never fight (one HIGH, one LOW = short circuit), and any device can hold the clock low to say "wait". This is the same pull-up idea as your button in P11.</p>
+    <figure>
+      <svg viewBox="0 0 680 250" role="img" aria-label="I2C bus with pull-up resistors, a controller and three devices">
+        <text class="t t-small" x="100" y="20" text-anchor="middle">5 V or 3.3 V</text>
+        <line class="s-line" x1="70" y1="26" x2="200" y2="26"/>
+        <path class="s-accent" d="M110 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v38"/>
+        <path class="s-accent" d="M160 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v68"/>
+        <text class="t t-small t-accent" x="62" y="62" text-anchor="end">4.7 kΩ</text>
+        <text class="t t-small t-accent" x="176" y="56">4.7 kΩ</text>
+        <line class="s-blue" x1="40" y1="110" x2="650" y2="110"/>
+        <line class="s-amber" x1="40" y1="140" x2="650" y2="140"/>
+        <circle class="f-ink" cx="110" cy="110" r="3"/>
+        <circle class="f-ink" cx="160" cy="140" r="3"/>
+        <text class="t t-small t-blue" x="650" y="102" text-anchor="end">SDA (data)</text>
+        <text class="t t-small" x="650" y="160" text-anchor="end">SCL (clock)</text>
+        <rect class="f-accent-soft s-accent" x="30" y="180" width="130" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="95" y="202" text-anchor="middle">Uno (controller)</text>
+        <text class="t t-small" x="95" y="220" text-anchor="middle">A4 = SDA, A5 = SCL</text>
+        <path class="s-blue" d="M70 110 V180"/>
+        <path class="s-amber" d="M120 140 V180"/>
+        <rect class="f-wash s-line" x="240" y="180" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="295" y="202" text-anchor="middle">OLED</text>
+        <text class="t t-small" x="295" y="220" text-anchor="middle">address 0x3C</text>
+        <path class="s-blue" d="M270 110 V180"/>
+        <path class="s-amber" d="M320 140 V180"/>
+        <rect class="f-wash s-line" x="390" y="180" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="445" y="202" text-anchor="middle">BME280</text>
+        <text class="t t-small" x="445" y="220" text-anchor="middle">address 0x76</text>
+        <path class="s-blue" d="M420 110 V180"/>
+        <path class="s-amber" d="M470 140 V180"/>
+        <rect class="f-wash s-line" x="540" y="180" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="595" y="202" text-anchor="middle">DS3231 clock</text>
+        <text class="t t-small" x="595" y="220" text-anchor="middle">address 0x68</text>
+        <path class="s-blue" d="M570 110 V180"/>
+        <path class="s-amber" d="M620 140 V180"/>
+        <text class="t t-small t-muted" x="420" y="40">devices only pull LOW;</text>
+        <text class="t t-small t-muted" x="420" y="56">resistors pull HIGH</text>
+      </svg>
+      <figcaption>Figure 3. One I²C bus, one pair of pull-ups, many devices. Each device listens for its own address. Many breakout modules already include pull-ups; with several modules the pull-ups end up in parallel, which is usually fine for two or three modules.</figcaption>
+    </figure>
+    <p>A transaction looks like this: the controller sends a <b>START</b> (SDA falls while SCL is high), then the 7-bit address plus a read/write bit. The device with that address answers with an <b>ACK</b> (it pulls SDA low for one clock). Then data bytes follow, each acknowledged, and finally a <b>STOP</b>. If nobody answers, the controller sees a <b>NACK</b>, which is how the scanner below finds devices.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Common module</th><th>Usual address</th></tr>
+      <tr><td>SSD1306 OLED display</td><td>0x3C (sometimes 0x3D)</td></tr>
+      <tr><td>LCD with PCF8574 "backpack"</td><td>0x27 or 0x3F</td></tr>
+      <tr><td>BME280 / BMP280 sensor</td><td>0x76 or 0x77</td></tr>
+      <tr><td>DS3231 real-time clock</td><td>0x68</td></tr>
+      <tr><td>BH1750 light sensor</td><td>0x23 or 0x5C</td></tr>
+    </table></div>
+    <h3>The I²C scanner</h3>
+    <p>Wire your module: VCC to 5 V (or 3.3 V if the module requires it), GND to GND, SDA to A4, SCL to A5. Upload this and open the Serial Monitor. It is the first thing to run with any new I²C part.</p>
+<pre><code>#include &lt;Wire.h&gt;                         // built-in I2C library
+
+void setup() {
+  Wire.begin();                             // join the bus as controller (Uno: A4 = SDA, A5 = SCL)
+  Serial.begin(9600);
+  Serial.println("Scanning I2C bus...");
+  int found = 0;
+  for (byte addr = 1; addr &lt; 127; addr++) { // try every 7-bit address
+    Wire.beginTransmission(addr);           // queue START + address + write bit
+    byte err = Wire.endTransmission();      // send it, then STOP; returns 0 if a device ACKed
+    if (err == 0) {
+      Serial.print("Device found at 0x");
+      if (addr &lt; 16) Serial.print("0");     // print a leading zero, e.g. 0x0A
+      Serial.println(addr, HEX);
+      found++;
+    }
+  }
+  Serial.print(found);
+  Serial.println(" device(s) found");
+}
+
+void loop() {}                              // nothing to repeat</code></pre>
+    <div class="callout tip"><span class="label">Bench tip</span><p>If the scanner hangs or finds nothing: check SDA/SCL are not swapped, the module has power, and pull-ups exist (measure SDA and SCL to GND at idle: both should read the supply voltage). If it finds a device at an unexpected address, many modules have solder jumpers or an address pin that changes it.</p></div>
+
+    <h2>SPI: fast, simple, more wires</h2>
+    <p><b>SPI</b> (serial peripheral interface) uses four wires: <b>SCK</b> (clock, from the controller), <b>MOSI</b> (controller out, peripheral in; also called COPI), <b>MISO</b> (controller in, peripheral out; also called CIPO), and one <b>CS</b> (chip select, also called SS) per device. CS is <b>active LOW</b>: the controller pulls one device's CS low to talk to it, and the others ignore the bus. Data goes both ways at once, one bit in each direction per clock. Lines are actively driven both HIGH and LOW (no pull-ups), so SPI can run at many megahertz.</p>
+    <figure>
+      <svg viewBox="0 0 680 230" role="img" aria-label="SPI controller with two peripherals sharing SCK, MOSI and MISO, each with its own chip select">
+        <rect class="f-accent-soft s-accent" x="20" y="40" width="140" height="160" rx="8"/>
+        <text class="t t-bold" x="90" y="30" text-anchor="middle">Uno (controller)</text>
+        <text class="t t-small" x="150" y="74" text-anchor="end">D13 SCK</text>
+        <text class="t t-small" x="150" y="104" text-anchor="end">D11 MOSI</text>
+        <text class="t t-small" x="150" y="134" text-anchor="end">D12 MISO</text>
+        <text class="t t-small" x="150" y="164" text-anchor="end">D10 CS1</text>
+        <text class="t t-small" x="150" y="190" text-anchor="end">D9 CS2</text>
+        <line class="s-amber" x1="160" y1="70" x2="620" y2="70"/>
+        <line class="s-blue" x1="160" y1="100" x2="620" y2="100"/>
+        <line class="s-green" x1="160" y1="130" x2="620" y2="130"/>
+        <rect class="f-wash s-line" x="330" y="150" width="120" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="390" y="175" text-anchor="middle">SD card</text>
+        <text class="t t-small" x="390" y="195" text-anchor="middle">peripheral 1</text>
+        <rect class="f-wash s-line" x="500" y="150" width="120" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="560" y="175" text-anchor="middle">Display</text>
+        <text class="t t-small" x="560" y="195" text-anchor="middle">peripheral 2</text>
+        <path class="s-amber" d="M350 70 V150"/><path class="s-blue" d="M375 100 V150"/><path class="s-green" d="M400 130 V150"/>
+        <path class="s-amber" d="M520 70 V150"/><path class="s-blue" d="M545 100 V150"/><path class="s-green" d="M570 130 V150"/>
+        <path class="s-line" d="M160 160 H300 V180 H330"/>
+        <path class="s-line" d="M160 186 H290 V220 H480 V200 H500"/>
+        <text class="t t-small t-muted" x="230" y="154" text-anchor="middle">CS1 (active LOW)</text>
+        <text class="t t-small t-muted" x="390" y="232" text-anchor="middle">CS2</text>
+      </svg>
+      <figcaption>Figure 4. SPI shares the clock and the two data lines, but every peripheral needs its own chip-select wire. More devices means more pins, which is the price of speed and simplicity.</figcaption>
+    </figure>
+    <p>SPI devices also differ in <b>mode</b>: whether the clock idles low or high (CPOL) and which clock edge samples the data (CPHA). The library sets this from the device's datasheet; if a device returns garbage, the mode or clock speed is the usual suspect. You will mostly use SPI through ready-made libraries (SD cards, displays), so the skill to keep is the wiring and the CS rule.</p>
+
+    <h2>RS-485: the field bus physical layer</h2>
+    <p>UART, I²C and SPI are fine inside a box. In a building, a controller in the plant room may need to talk to an energy meter 300 m away, through cable trays full of motor cables. A 0/5 V signal would be swamped by noise and lose its shape. <b>RS-485</b> solves this with a <b>differential pair</b>.</p>
+    <h3>Differential signalling</h3>
+    <p>RS-485 sends each bit on two wires, <b>A</b> and <b>B</b>, twisted together. For one logic state the driver makes A higher than B; for the other, B higher than A. The receiver ignores the voltage of each wire relative to ground and looks only at the <b>difference</b> A − B. A difference of more than +200 mV means one state, less than −200 mV means the other. Because the two wires are twisted together, any interference couples into both equally and the difference does not change. This is called <b>common-mode rejection</b>.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="RS-485 A and B lines with common noise, and the clean difference">
+        <text class="t t-small" x="10" y="54">A</text>
+        <text class="t t-small" x="10" y="104">B</text>
+        <polyline class="s-blue" points="40,40 120,40 120,80 220,80 220,40 300,40 300,80 380,80 380,40 600,40"/>
+        <polyline class="s-amber" points="40,80 120,80 120,40 220,40 220,80 300,80 300,40 380,80 380,80 600,80"/>
+        <path class="s-red" d="M440 28 l6 20 l6 -30 l6 34 l6 -24 l6 10"/>
+        <text class="t t-small t-red" x="480" y="30">noise spike hits</text>
+        <text class="t t-small t-red" x="480" y="46">both wires equally</text>
+        <polyline class="s-blue s-dash" points="440,40 446,32 452,48 458,30 464,46 470,40"/>
+        <polyline class="s-amber s-dash" points="440,80 446,72 452,88 458,70 464,86 470,80"/>
+        <line class="s-thin" x1="40" y1="130" x2="600" y2="130"/>
+        <text class="t t-small" x="10" y="174">A−B</text>
+        <polyline class="s-accent" points="40,150 120,150 120,200 220,200 220,150 300,150 300,200 380,200 380,150 600,150"/>
+        <line class="s-thin s-dash" x1="40" y1="175" x2="600" y2="175"/>
+        <text class="t t-small t-muted" x="610" y="179" text-anchor="end">0 V</text>
+        <text class="t t-small t-muted" x="440" y="144">difference: noise cancels</text>
+        <text class="t t-small t-muted" x="320" y="236" text-anchor="middle">receiver: A − B above +200 mV = one state, below −200 mV = the other</text>
+      </svg>
+      <figcaption>Figure 5. The two wires carry opposite signals. Interference arrives on both at once (dashed), so the receiver, which subtracts one from the other, does not see it. Twisting the pair makes the coupling equal on both wires.</figcaption>
+    </figure>
+    <div class="callout why"><span class="label">Why it works</span><p>The receiver tolerates a <b>common-mode</b> voltage (both wires moving together relative to its ground) of roughly −7 V to +12 V. That covers noise and ground-potential differences between buildings or switchboards, but only if there is a reference connection keeping the devices within that window, which is why a signal common wire is recommended. Twisting matters because a magnetic field induces equal and opposite voltages in neighbouring twists, which cancel.</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h3>The rules of an RS-485 bus</h3>
+    <figure>
+      <svg viewBox="0 0 680 310" role="img" aria-label="RS-485 daisy-chain bus with termination at both ends and bias at the master">
+        <rect class="f-accent-soft s-accent" x="20" y="20" width="150" height="56" rx="6"/>
+        <text class="t t-small t-bold" x="95" y="42" text-anchor="middle">Master</text>
+        <text class="t t-small" x="95" y="62" text-anchor="middle">BMS controller / USB</text>
+        <line class="s-blue" x1="60" y1="120" x2="620" y2="120"/>
+        <line class="s-amber" x1="60" y1="140" x2="620" y2="140"/>
+        <line class="s-thin s-dash" x1="60" y1="160" x2="620" y2="160"/>
+        <text class="t t-small t-blue" x="630" y="124">A</text>
+        <text class="t t-small" x="630" y="144">B</text>
+        <text class="t t-small t-muted" x="630" y="164">0 V</text>
+        <path class="s-blue" d="M90 76 V120"/><path class="s-amber" d="M110 76 V140"/><path class="s-thin s-dash" d="M130 76 V160"/>
+        <rect class="f-panel s-red" x="52" y="117" width="16" height="26"/>
+        <text class="t t-small t-red" x="40" y="100" text-anchor="middle">120 Ω</text>
+        <rect class="f-panel s-red" x="612" y="117" width="16" height="26"/>
+        <text class="t t-small t-red" x="620" y="100" text-anchor="middle">120 Ω</text>
+        <text class="t t-small t-muted" x="180" y="40">bias: A pulled up, B pulled down</text>
+        <text class="t t-small t-muted" x="180" y="56">(once, usually at the master)</text>
+        <rect class="f-wash s-line" x="230" y="190" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="285" y="212" text-anchor="middle">Slave 1</text>
+        <text class="t t-small" x="285" y="230" text-anchor="middle">energy meter</text>
+        <path class="s-blue" d="M265 120 V190"/><path class="s-amber" d="M285 140 V190"/><path class="s-thin s-dash" d="M305 160 V190"/>
+        <rect class="f-wash s-line" x="380" y="190" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="435" y="212" text-anchor="middle">Slave 2</text>
+        <text class="t t-small" x="435" y="230" text-anchor="middle">VSD</text>
+        <path class="s-blue" d="M415 120 V190"/><path class="s-amber" d="M435 140 V190"/><path class="s-thin s-dash" d="M455 160 V190"/>
+        <rect class="f-wash s-line" x="530" y="190" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="585" y="212" text-anchor="middle">Slave 3</text>
+        <text class="t t-small" x="585" y="230" text-anchor="middle">last device</text>
+        <path class="s-blue" d="M565 120 V190"/><path class="s-amber" d="M585 140 V190"/><path class="s-thin s-dash" d="M605 160 V190"/>
+        <text class="t t-small" x="340" y="272" text-anchor="middle">Daisy chain: the cable goes IN and OUT of each device. Stubs as short as possible.</text>
+        <text class="t t-small t-red" x="340" y="294" text-anchor="middle">Not a star. Termination only at the two physical ends, never at every device.</text>
+      </svg>
+      <figcaption>Figure 6. A correct RS-485 segment. One continuous twisted pair runs from the first device to the last, with a 120 Ω terminator across A–B at each end. One bias network holds the idle line in a known state. A third conductor carries the signal common (0 V reference).</figcaption>
+    </figure>
+    <ol>
+      <li><b>Daisy chain, not star.</b> At fast edges the cable behaves as a <b>transmission line</b>. Every branch and every open end reflects part of the signal back, like an echo. A star of long branches creates many echoes that corrupt bits.</li>
+      <li><b>Terminate both ends with 120 Ω.</b> Twisted pair has a characteristic impedance of roughly 100–120 Ω. A resistor that matches it at the end absorbs the signal instead of reflecting it. Exactly two terminators per segment, at the two physical ends.</li>
+      <li><b>Bias the idle line once.</b> When no device is transmitting, all drivers are off and the line floats, just like a floating input (P11). Bias resistors (often 560 Ω–1 kΩ, one pulling A up and one pulling B down) hold the difference above 200 mV so receivers see a steady idle state. Many adapters and controllers have switchable bias; enable it in one place.</li>
+      <li><b>Use proper cable and a common.</b> Shielded twisted pair rated for RS-485 (about 120 Ω). Use a second conductor or pair for the 0 V signal common. Earth the shield at one end only, to avoid a ground loop through the shield.</li>
+      <li><b>Load and length limits.</b> The standard allows 32 "unit loads" per segment; many modern transceivers are 1/4 or 1/8 unit load, allowing more devices. Up to about 1200 m at ≤100 kbit/s. A rough rule: length (m) × bit rate (bit/s) ≤ 10<sup>8</sup>. Longer or bigger networks need repeaters.</li>
+      <li><b>A and B labels are not standard across brands.</b> Some makers call the non-inverting line A, others B, and some use + and −, D+ and D−. If a correctly addressed device never answers, swap A and B: it does no damage.</li>
+    </ol>
+    <div class="formula">Bias check: V<sub>idle</sub> = 5 V × 60 Ω / (680 + 60 + 680) Ω ≈ 0.21 V
+      <small>With two 120 Ω terminators (60 Ω in parallel) and 680 Ω bias resistors on 5 V, the idle difference is only 211 mV, just above the 200 mV threshold. That is why bias values are chosen together with termination, and why adding a third terminator (40 Ω total) would drop the idle level to about 0.14 V and cause random errors.</small></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A fast termination check: with every device powered off, measure resistance between A and B at any point on the bus. About 60 Ω means two terminators (correct). About 120 Ω means one is missing. About 40 Ω means three. A much higher reading means none (or bias resistors only).</p></div>
+
+    <h2>Modbus RTU: the language</h2>
+    <p><b>Modbus</b> was created in 1979 for PLCs, and it is still the most common "lowest common denominator" protocol in buildings and industry. It is simple: one <b>master</b> (the Modbus specification now says <b>client</b>) asks questions; <b>slaves</b> (now <b>servers</b>) only answer when asked. Each slave on an RS-485 segment has a unique address from <b>1 to 247</b>. Address 0 is broadcast (writes only, nobody replies).</p>
+    <h3>The data model: four tables</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Table</th><th>Size</th><th>Access</th><th>Classic number range</th><th>Read with</th><th>Typical content</th></tr>
+      <tr><td>Coils</td><td>1 bit</td><td>Read/write</td><td>00001–09999</td><td>01 (write 05, 15)</td><td>Run/stop commands, relay outputs</td></tr>
+      <tr><td>Discrete inputs</td><td>1 bit</td><td>Read only</td><td>10001–19999</td><td>02</td><td>Alarm and status bits</td></tr>
+      <tr><td>Input registers</td><td>16 bits</td><td>Read only</td><td>30001–39999</td><td>04</td><td>Measurements: volts, temperature</td></tr>
+      <tr><td>Holding registers</td><td>16 bits</td><td>Read/write</td><td>40001–49999</td><td>03 (write 06, 16)</td><td>Setpoints, configuration, often measurements too</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception: the 40001 numbering</span><p>"Register 40001" is not an address that goes on the wire. The leading 4 says "holding register table" (so use function 03), and the rest is a <b>1-based</b> register number. The address actually sent is <b>0-based</b>: 40001 → address 0; 40108 → address 107 (0x006B); 30001 → input register address 0 with function 04. Some manuals list the 1-based numbers, some list 0-based addresses, some list hex. If every value you read seems to belong to the neighbouring register, you have an off-by-one error. Test by reading one register whose value you can predict.</p></div>
+    <h3>Function codes you will use</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Code</th><th>Name</th><th>Request data</th></tr>
+      <tr><td>01 (0x01)</td><td>Read coils</td><td>Start address, quantity</td></tr>
+      <tr><td>02 (0x02)</td><td>Read discrete inputs</td><td>Start address, quantity</td></tr>
+      <tr><td>03 (0x03)</td><td>Read holding registers</td><td>Start address, quantity (max 125)</td></tr>
+      <tr><td>04 (0x04)</td><td>Read input registers</td><td>Start address, quantity (max 125)</td></tr>
+      <tr><td>05 (0x05)</td><td>Write single coil</td><td>Address, FF00 = on / 0000 = off</td></tr>
+      <tr><td>06 (0x06)</td><td>Write single register</td><td>Address, 16-bit value</td></tr>
+      <tr><td>16 (0x10)</td><td>Write multiple registers</td><td>Start address, quantity, byte count, values</td></tr>
+    </table></div>
+
+    <h3>The frame</h3>
+    <figure>
+      <svg viewBox="0 0 680 220" role="img" aria-label="Modbus RTU and Modbus TCP frame layouts">
+        <text class="t t-bold" x="20" y="22">Modbus RTU (on RS-485)</text>
+        <rect class="f-wash s-thin s-dash" x="20" y="34" width="70" height="44"/>
+        <text class="t t-small t-muted" x="55" y="54" text-anchor="middle">silence</text>
+        <text class="t t-small t-muted" x="55" y="70" text-anchor="middle">≥3.5 char</text>
+        <rect class="f-accent-soft s-accent" x="90" y="34" width="90" height="44"/>
+        <text class="t t-small" x="135" y="54" text-anchor="middle">Address</text>
+        <text class="t t-small t-muted" x="135" y="70" text-anchor="middle">1 byte</text>
+        <rect class="f-theory-soft s-line" x="180" y="34" width="90" height="44"/>
+        <text class="t t-small" x="225" y="54" text-anchor="middle">Function</text>
+        <text class="t t-small t-muted" x="225" y="70" text-anchor="middle">1 byte</text>
+        <rect class="f-panel s-line" x="270" y="34" width="210" height="44"/>
+        <text class="t t-small" x="375" y="54" text-anchor="middle">Data</text>
+        <text class="t t-small t-muted" x="375" y="70" text-anchor="middle">0–252 bytes</text>
+        <rect class="f-career-soft s-line" x="480" y="34" width="110" height="44"/>
+        <text class="t t-small" x="535" y="54" text-anchor="middle">CRC-16</text>
+        <text class="t t-small t-muted" x="535" y="70" text-anchor="middle">2 bytes, low first</text>
+        <rect class="f-wash s-thin s-dash" x="590" y="34" width="70" height="44"/>
+        <text class="t t-small t-muted" x="625" y="62" text-anchor="middle">silence</text>
+        <text class="t t-bold" x="20" y="122">Modbus TCP (on Ethernet, port 502)</text>
+        <rect class="f-wash s-line" x="20" y="134" width="100" height="44"/>
+        <text class="t t-small" x="70" y="154" text-anchor="middle">Transaction ID</text>
+        <text class="t t-small t-muted" x="70" y="170" text-anchor="middle">2 bytes</text>
+        <rect class="f-wash s-line" x="120" y="134" width="90" height="44"/>
+        <text class="t t-small" x="165" y="154" text-anchor="middle">Protocol 0</text>
+        <text class="t t-small t-muted" x="165" y="170" text-anchor="middle">2 bytes</text>
+        <rect class="f-wash s-line" x="210" y="134" width="80" height="44"/>
+        <text class="t t-small" x="250" y="154" text-anchor="middle">Length</text>
+        <text class="t t-small t-muted" x="250" y="170" text-anchor="middle">2 bytes</text>
+        <rect class="f-accent-soft s-accent" x="290" y="134" width="80" height="44"/>
+        <text class="t t-small" x="330" y="154" text-anchor="middle">Unit ID</text>
+        <text class="t t-small t-muted" x="330" y="170" text-anchor="middle">1 byte</text>
+        <rect class="f-theory-soft s-line" x="370" y="134" width="90" height="44"/>
+        <text class="t t-small" x="415" y="154" text-anchor="middle">Function</text>
+        <text class="t t-small t-muted" x="415" y="170" text-anchor="middle">1 byte</text>
+        <rect class="f-panel s-line" x="460" y="134" width="200" height="44"/>
+        <text class="t t-small" x="560" y="154" text-anchor="middle">Data</text>
+        <text class="t t-small t-muted" x="560" y="170" text-anchor="middle">no CRC: TCP checks it</text>
+        <text class="t t-small t-muted" x="340" y="206" text-anchor="middle">The function + data part (the "PDU") is identical in both. Only the wrapper changes.</text>
+      </svg>
+      <figcaption>Figure 7. RTU frames are separated by silence on the line: a gap of at least 3.5 character times (about 4 ms at 9600 baud) marks the end of a frame. The CRC lets the receiver detect corrupted bytes; a frame with a bad CRC is silently ignored.</figcaption>
+    </figure>
+
+    <h3>A frame decoded byte by byte</h3>
+    <p>A master asks slave 1 for two input registers starting at address 0 (30001 and 30002). On an energy meter those two registers commonly hold the voltage as a 32-bit floating-point number.</p>
+    <div class="formula">Request: &nbsp;01 04 00 00 00 02 71 CB<br>Response: 01 04 04 43 66 80 00 6F DF</div>
+    <div class="table-wrap"><table>
+      <tr><th>Request byte(s)</th><th>Field</th><th>Meaning</th></tr>
+      <tr><td><code>01</code></td><td>Slave address</td><td>Device 1</td></tr>
+      <tr><td><code>04</code></td><td>Function</td><td>Read input registers</td></tr>
+      <tr><td><code>00 00</code></td><td>Start address (high byte first)</td><td>Address 0 = register 30001</td></tr>
+      <tr><td><code>00 02</code></td><td>Quantity</td><td>Two 16-bit registers</td></tr>
+      <tr><td><code>71 CB</code></td><td>CRC-16 (low byte first)</td><td>Checksum of the 6 bytes before it</td></tr>
+    </table></div>
+    <div class="table-wrap"><table>
+      <tr><th>Response byte(s)</th><th>Field</th><th>Meaning</th></tr>
+      <tr><td><code>01</code></td><td>Slave address</td><td>Reply from device 1</td></tr>
+      <tr><td><code>04</code></td><td>Function</td><td>Echo of the function (success)</td></tr>
+      <tr><td><code>04</code></td><td>Byte count</td><td>4 data bytes follow (2 registers × 2 bytes)</td></tr>
+      <tr><td><code>43 66</code></td><td>Register 30001</td><td>0x4366</td></tr>
+      <tr><td><code>80 00</code></td><td>Register 30002</td><td>0x8000</td></tr>
+      <tr><td><code>6F DF</code></td><td>CRC-16</td><td>Checksum of the response</td></tr>
+    </table></div>
+    <p>Joined high word first, 0x43668000 is the IEEE-754 single-precision float <b>230.5</b>: the meter reads 230.5 V. If the slave cannot do what you asked, it replies with the function code plus 0x80 and an <b>exception code</b>. For example <code>01 84 02 …</code> means "function 04 failed, exception 02: illegal data address" (you asked for a register that does not exist). Exception 01 is illegal function, 03 illegal data value, 04 device failure.</p>
+
+    <div class="widget" id="p14-mb">
+      <span class="label">Interactive · Modbus RTU request builder with CRC</span>
+      <label>Slave address (1–247) <input type="number" id="p14-sa" min="0" max="247" value="1"></label>
+      <label>Function <select id="p14-fc"><option value="1">01 Read coils</option><option value="2">02 Read discrete inputs</option><option value="3">03 Read holding registers</option><option value="4" selected>04 Read input registers</option><option value="5">05 Write single coil</option><option value="6">06 Write single register</option></select></label>
+      <label>Start address (0-based, on the wire) <input type="number" id="p14-ad" min="0" max="65535" value="0"></label>
+      <label id="p14-qlab">Quantity / value <input type="number" id="p14-q" min="0" max="65535" value="2"></label>
+      <div class="readings">
+        <div style="grid-column:1/-1"><small>Request frame (hex, as sent)</small><span class="out" id="p14-frame">01 04 00 00 00 02 71 CB</span></div>
+        <div><small>CRC (low, high)</small><span class="out" id="p14-crc">71 CB</span></div>
+        <div><small>Expected reply length</small><span class="out" id="p14-rl">9 bytes</span></div>
+        <div><small>Classic register number</small><span class="out" id="p14-cn">30001</span></div>
+      </div>
+      <p style="font-size:15px;margin:14px 0 4px"><b>Convert a manual's register number</b> (e.g. 40108 or 30001):</p>
+      <label><input type="number" id="p14-rn" value="40108"></label>
+      <p id="p14-rnout" style="font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      function $(i){return document.getElementById(i);}
+      function crc16(b){ var c=0xFFFF; for(var i=0;i<b.length;i++){ c^=b[i]; for(var k=0;k<8;k++){ c=(c&1)?((c>>>1)^0xA001):(c>>>1); } } return c; }
+      function h(x){ return ('0'+(x&255).toString(16).toUpperCase()).slice(-2); }
+      function upd(){
+        var sa=Math.max(0,Math.min(247,+$('p14-sa').value||0)), fc=+$('p14-fc').value, ad=Math.max(0,Math.min(65535,+$('p14-ad').value||0)), q=Math.max(0,Math.min(65535,+$('p14-q').value||0));
+        var lab=$('p14-qlab').firstChild; lab.textContent= fc===5?'Coil state (1 = ON, 0 = OFF) ':(fc===6?'Value to write (0–65535) ':'Quantity to read ');
+        var val=q; if(fc===5) val=q?0xFF00:0x0000;
+        var b=[sa,fc,ad>>8,ad&255,val>>8,val&255], c=crc16(b); b.push(c&255,c>>8);
+        $('p14-frame').textContent=b.map(h).join(' ');
+        $('p14-crc').textContent=h(c&255)+' '+h(c>>8);
+        var rl; if(fc===3||fc===4) rl=5+2*q; else if(fc===1||fc===2) rl=5+Math.ceil(q/8); else rl=8;
+        $('p14-rl').textContent=(sa===0?'none (broadcast)':rl+' bytes'+((fc<=4&&((fc>=3&&q>125)||(fc<=2&&q>2000)))?' (too many!)':''));
+        var base={1:1,2:10001,3:40001,4:30001,5:1,6:40001}[fc];
+        $('p14-cn').textContent=(ad+base<=(base+9998))?String(ad+base):'(6-digit) '+(fc===3||fc===6?400001:(fc===4?300001:(fc===2?100001:1))+ad);
+      }
+      function conv(){
+        var n=+$('p14-rn').value, t='', six=n>99999;
+        var m=[[0,'coil','01 (read) or 05/15 (write)'],[1,'discrete input','02'],[3,'input register','04'],[4,'holding register','03 (read) or 06/16 (write)']];
+        var lead=six?Math.floor(n/100000):Math.floor(n/10000), rest=six?n%100000:n%10000;
+        var f=m.filter(function(x){return x[0]===lead;})[0];
+        if(!f||rest<1) t='Not a classic register number. Use 1–9999, 10001–19999, 30001–39999 or 40001–49999 (or the 6-digit forms).';
+        else t='Table: '+f[1]+'. Function: '+f[2]+'. Address on the wire: '+(rest-1)+' (0x'+('000'+(rest-1).toString(16).toUpperCase()).slice(-4)+').';
+        $('p14-rnout').textContent=t;
+      }
+      ['p14-sa','p14-fc','p14-ad','p14-q'].forEach(function(i){$(i).addEventListener('input',upd);$(i).addEventListener('change',upd);});
+      $('p14-rn').addEventListener('input',conv);
+      upd(); conv();
+    })();
+    </script>
+
+    <h3>Serial settings and timing</h3>
+    <p>Every device on one segment must use the same baud rate and framing. The Modbus specification's default is <b>9600 baud, 8 data bits, even parity, 1 stop bit (8E1)</b>, but many devices ship as <b>8N1</b>, so read the manual. Most devices let you change address, baud and parity from a front panel, DIP switches or software. After sending a request, the master waits for a reply (a timeout of 0.5–1 s is common), then moves on to the next device. Polling 20 devices × 5 requests each at 9600 baud takes a few seconds per cycle, which is why BMS integrators group registers into as few requests as possible.</p>
+
+    <h2>Modbus TCP</h2>
+    <p><b>Modbus TCP</b> carries the same function codes and data inside TCP/IP packets on Ethernet, on <b>TCP port 502</b>. The RTU address byte becomes the <b>Unit ID</b>, and the CRC is dropped because Ethernet and TCP already check for errors. The same request as above in Modbus TCP is:</p>
+    <div class="formula">00 01 &nbsp;00 00 &nbsp;00 06 &nbsp;01 &nbsp;04 00 00 00 02
+      <small>Transaction ID 1 (the client's tag to match the reply), protocol 0, length 6 (bytes that follow), unit ID 1, then the familiar 04 00 00 00 02.</small></div>
+    <p>A <b>Modbus gateway</b> converts between the two: it has an IP address on the building network and an RS-485 port to a string of RTU devices. The unit ID in each TCP request tells the gateway which RTU slave address to ask. "Gateway reachable but every device times out" usually means the RS-485 side is wrong, not the network.</p>
+
+    <h2>Lab: read a Modbus sensor from your laptop</h2>
+    <p>Use a cheap RS-485 Modbus temperature/humidity module. Each make differs, so your module's register list is the authority. A common example layout is: slave address 1, 9600 8N1, <b>input register 1 = temperature × 10</b>, <b>input register 2 = humidity × 10</b>.</p>
+    <ol class="steps">
+      <li><p><b>Wire it.</b> Module V+ and V− to a 12 V (or 24 V) DC plug-pack, within the module's rated range. Module A to the adapter's A (or D+ / 485+), B to B (or D− / 485−). Use a twisted pair from your Cat6 offcut. For a 1–2 m bench cable, termination is optional; fit 120 Ω across A–B at each end to practise the habit.</p></li>
+      <li><p><b>Find the port.</b> Plug the USB adapter in. Windows: Device Manager › Ports (COM5, say). macOS: <code>ls /dev/cu.*</code>. Linux: <code>ls /dev/ttyUSB*</code>.</p></li>
+      <li><p><b>Read it with QModMaster (free, Windows).</b> Set Modbus Mode = RTU. In the RTU options: your COM port, 9600 baud, 8 data bits, no parity, 1 stop bit. Then Slave Addr = 1, Function = Read Input Registers (0x04), Start Address = 1, Number of Registers = 2. Connect, then Read. Check whether your tool's start address is 0-based or 1-based: if values seem shifted by one register, change it by one.</p></li>
+      <li><p><b>Interpret.</b> Values like 235 and 600 mean 23.5 °C and 60.0 %RH. Breathe on the sensor and read again: both should rise.</p></li>
+      <li><p><b>Read it with Python.</b> Install the library once with <code>pip install minimalmodbus</code> (it brings pyserial with it), then run the script below.</p></li>
+    </ol>
+<pre><code># read_sensor.py: read a Modbus RTU temperature/humidity module
+import minimalmodbus
+import serial
+
+PORT = "/dev/ttyUSB0"                  # Windows: "COM5"; macOS: "/dev/cu.usbserial-XXXX"
+
+inst = minimalmodbus.Instrument(PORT, 1)    # port, slave address 1
+inst.mode = minimalmodbus.MODE_RTU     # binary RTU framing with CRC
+inst.serial.baudrate = 9600            # must match the device
+inst.serial.bytesize = 8
+inst.serial.parity = serial.PARITY_NONE
+inst.serial.stopbits = 1
+inst.serial.timeout = 0.5              # seconds to wait for a reply
+inst.debug = False                     # set True to print every byte sent and received
+
+# Function 04 = input registers. Address 1 here is the 0-based address on the wire.
+temp = inst.read_register(1, number_of_decimals=1, functioncode=4, signed=True)
+hum = inst.read_register(2, number_of_decimals=1, functioncode=4)
+print(f"Temperature {temp:.1f} C, humidity {hum:.1f} %RH")</code></pre>
+    <p><code>number_of_decimals=1</code> divides the raw value by 10 for you. <code>signed=True</code> treats the register as a signed 16-bit number, so a raw value of 0xFF38 (65 336) becomes −200, that is −20.0 °C. Forget <code>signed</code> and a freezer reads 6533.6 °C.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>On Linux and macOS, the free command-line tool <b>mbpoll</b> is handy for quick checks. For example <code>mbpoll -m rtu -a 1 -b 9600 -P none -t 3 -r 2 -c 2 /dev/ttyUSB0</code> reads two input registers (type 3) starting at reference 2. By default mbpoll uses 1-based references, so reference 2 is address 1. Run <code>mbpoll -h</code> to confirm the options on your version.</p></div>
+
+    <h3>Reading a Modbus TCP device</h3>
+    <p>For a device or gateway on Ethernet, <b>pymodbus</b> is a popular library (<code>pip install pymodbus</code>). Its function arguments have changed between versions; the script below is for version 3.x, and the comment shows the newer keyword.</p>
+<pre><code># read_tcp.py: read two holding registers over Modbus TCP
+from pymodbus.client import ModbusTcpClient
+
+client = ModbusTcpClient("192.168.1.50", port=502)   # example IP of the device or gateway
+if not client.connect():                            # opens the TCP connection
+    raise SystemExit("Cannot connect: check IP, cable, and that port 502 is open")
+
+# address=0 means register 40001. In recent pymodbus versions 'slave=' is named 'device_id='.
+rr = client.read_holding_registers(address=0, count=2, slave=1)
+if rr.isError():
+    print("Modbus error:", rr)                      # e.g. an exception response
+else:
+    print("Raw registers:", [hex(r) for r in rr.registers])
+client.close()</code></pre>
+
+    <h2>32-bit floats and the word-order trap</h2>
+    <p>A Modbus register holds 16 bits. Values like 230.5 V or 123 456 kWh do not fit, so devices put a <b>32-bit</b> number across <b>two consecutive registers</b>. The Modbus standard does not say which register holds the high half. Some devices send the high word first, some the low word first, and a few also swap the bytes within each word. Your software must use the same order as the device, or you get nonsense.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Order name</th><th>Registers received</th><th>Decoded value</th></tr>
+      <tr><td>ABCD (big-endian, high word first)</td><td>0x4366, 0x8000</td><td><b>230.5</b> (correct for this device)</td></tr>
+      <tr><td>CDAB (word-swapped)</td><td>read as 0x8000, 0x4366</td><td>−2.4 × 10<sup>−41</sup> (nonsense)</td></tr>
+      <tr><td>BADC (byte-swapped)</td><td>0x6643, 0x0080</td><td>2.3 × 10<sup>23</sup> (nonsense)</td></tr>
+      <tr><td>DCBA (little-endian)</td><td>0x0080, 0x6643</td><td>1.2 × 10<sup>−38</sup> (nonsense)</td></tr>
+    </table></div>
+    <p>The tell-tale sign: values that are absurdly tiny or huge, or that jump wildly while the real quantity changes slowly. Try the four orders until one gives a sensible number, then confirm against the device's own display.</p>
+<pre><code># decode_float.py: try both word orders on two raw registers
+import struct
+
+regs = [0x4366, 0x8000]                 # e.g. from inst.read_registers(0, 2, functioncode=4)
+
+abcd = struct.pack("&gt;HH", regs[0], regs[1])   # first register = high word
+cdab = struct.pack("&gt;HH", regs[1], regs[0])   # first register = low word
+print("ABCD:", struct.unpack("&gt;f", abcd)[0])  # '&gt;f' = big-endian 32-bit float -&gt; 230.5
+print("CDAB:", struct.unpack("&gt;f", cdab)[0])  # nonsense for this device</code></pre>
+    <p>minimalmodbus can also do it in one call: <code>inst.read_float(0, functioncode=4, byteorder=minimalmodbus.BYTEORDER_BIG)</code>, with <code>BYTEORDER_LITTLE_SWAP</code> for the word-swapped (CDAB) order. BMS front ends and gateways have the same setting under names like "swap words", "word order" or "big/little endian".</p>
+
+    <h2>BACnet MS/TP: the other protocol on RS-485</h2>
+    <p>Many building controllers talk <b>BACnet MS/TP</b> (master-slave/token-passing) on exactly the same RS-485 wiring. The physical rules above are identical: daisy chain, 120 Ω at both ends, bias, shielded twisted pair. The protocol differs: devices pass a "token", and only the holder may transmit, so several masters can share the bus. Each device has a <b>MAC address</b> (0–127 for masters) on the trunk and a separate, network-wide <b>device instance</b> number. Common baud rates are 38 400 and 76 800. Two devices with the same MAC address, or one at the wrong baud rate, can disrupt the whole trunk.</p>
+    <a class="crosslink" href="../career/c02-bms-protocols-commissioning.html">Job Track C02 · BMS protocols and commissioning: BACnet, Modbus, Niagara</a>
+
+    <div class="callout job"><span class="label">On the job</span><p>BMS integration is largely this lab, repeated. Chillers, boilers, variable speed drives (VSDs), energy and gas meters, generators and solar inverters expose their data as Modbus registers. You are handed a <b>register map</b> (the manufacturer's table of register numbers, data types and scaling) and a <b>points schedule</b> (what the client wants to see). You set the device's address and comms settings, wire the RS-485 trunk, then create each point in the controller or front end with the right function code, address, data type, word order and scaling, and check the values against the device's own display. Fault-finding tools: a laptop with a USB–RS-485 adapter, QModMaster or Python, a multimeter (termination and bias), and a scope or logic analyser (P15) when it gets hard.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Energy meters, VSDs and chillers live in switchboards and plant with dangerous voltages. On the bench, practise only with ELV modules like the one in this lab. On site, connect only to the communication terminals provided, follow the site's isolation and permit rules, and leave anything inside a switchboard to a licensed electrician. RS-485 ports on some equipment are not isolated from internal circuits; use an isolated USB–RS-485 adapter when connecting a laptop to plant.</p></div>
+
+    <h2>Troubleshooting serial links</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Check / fix</th></tr>
+      <tr><td>UART: garbage characters</td><td>Baud or parity mismatch</td><td>Match settings at both ends.</td></tr>
+      <tr><td>UART: nothing at all</td><td>TX/RX not crossed, no common GND</td><td>Swap the two signal wires; join GND.</td></tr>
+      <tr><td>I²C: scanner finds nothing</td><td>SDA/SCL swapped, no pull-ups, no power</td><td>Idle SDA and SCL should sit at the supply voltage.</td></tr>
+      <tr><td>Modbus: timeout from every device</td><td>Wrong COM port, baud, parity; A/B swapped</td><td>Check settings; swap A and B; enable adapter debug to see bytes.</td></tr>
+      <tr><td>Modbus: timeout from one device</td><td>Wrong slave address, duplicate address, device settings differ</td><td>Check the device's address and comms settings on its display or switches.</td></tr>
+      <tr><td>Modbus: exception 02</td><td>Register does not exist</td><td>Off-by-one (40001 vs 0), or wrong table (03 vs 04).</td></tr>
+      <tr><td>Values belong to the neighbouring register</td><td>0-based vs 1-based numbering</td><td>Shift the start address by one.</td></tr>
+      <tr><td>Values absurd (1e-41, 1e23)</td><td>Word or byte order</td><td>Try the other orders for 32-bit values.</td></tr>
+      <tr><td>Value 10× or 100× too big</td><td>Scaling not applied</td><td>Check the map for "×10", "0.01" or a scaling register.</td></tr>
+      <tr><td>Intermittent CRC errors, worse when plant runs</td><td>Missing or extra termination, star wiring, no bias, shield earthed at both ends, cable beside VSD output cables</td><td>Measure A–B resistance (aim for ~60 Ω), fix topology, separate cables.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>How long does one byte take at 19 200 baud, 8N1?</summary><div class="answer"><p>10 bits (start + 8 data + stop) × 1/19 200 s = 10 × 52.1 µs ≈ 0.52 ms.</p></div></details>
+    <details class="quiz"><summary>Why can two I²C devices never short each other, unlike two push-pull outputs?</summary><div class="answer"><p>I²C outputs are open-drain: they can only pull the line LOW or let go. Only the pull-up resistor makes the line HIGH. If two devices disagree, LOW simply wins through the resistor, and no large current flows.</p></div></details>
+    <details class="quiz"><summary>A manual lists "Frequency: 40017". What function and wire address do you use?</summary><div class="answer"><p>Holding register table, so function 03 to read. Address on the wire = 17 − 1 = 16 (0x0010).</p></div></details>
+    <details class="quiz"><summary>With all devices off, you measure 120 Ω between A and B. What does that tell you?</summary><div class="answer"><p>Only one 120 Ω terminator is fitted (two in parallel would give about 60 Ω). Find the end of the trunk that is missing its terminator.</p></div></details>
+    <details class="quiz"><summary>Why should an RS-485 trunk be a daisy chain and not a star?</summary><div class="answer"><p>At signal edges the cable acts as a transmission line. Branches and unterminated ends reflect energy back as echoes that distort bits. A single line with a matched 120 Ω at each end absorbs the signal at both ends; a star cannot be terminated properly.</p></div></details>
+    <details class="quiz"><summary>A meter's voltage reads −2.4 × 10⁻⁴¹ V. What is wrong?</summary><div class="answer"><p>The two 16-bit halves of the 32-bit float are in the wrong order (word swap). Swap the word order in the software or gateway and the value becomes sensible (230.5 V in our example).</p></div></details>
+    <details class="quiz"><summary>What does a response starting 01 83 02 mean?</summary><div class="answer"><p>Slave 1 is reporting an exception (0x83 = 0x03 + 0x80) to a "read holding registers" request, with exception code 02: illegal data address. The register you asked for does not exist on that device.</p></div></details>
+    <details class="quiz"><summary>Why does Modbus TCP not need the CRC?</summary><div class="answer"><p>Ethernet frames carry their own CRC and TCP has its own checksum and retransmission, so corrupted data is detected and resent by the network layers below Modbus.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can draw a UART frame for any byte and calculate bit and byte times.</span></li>
+      <li><input type="checkbox"><span>I can cross TX/RX correctly and know why TTL and RS-232 must not be mixed.</span></li>
+      <li><input type="checkbox"><span>I can wire an I²C module, explain the pull-ups, and run a scanner.</span></li>
+      <li><input type="checkbox"><span>I can name the SPI lines and explain chip select.</span></li>
+      <li><input type="checkbox"><span>I can wire an RS-485 trunk with correct topology, termination, bias and common, and check it with a meter.</span></li>
+      <li><input type="checkbox"><span>I can convert 30001/40001-style numbers to function codes and wire addresses.</span></li>
+      <li><input type="checkbox"><span>I can decode a Modbus RTU request and response byte by byte, including exceptions.</span></li>
+      <li><input type="checkbox"><span>I can read a Modbus device with QModMaster and Python, and fix word-order and scaling problems.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

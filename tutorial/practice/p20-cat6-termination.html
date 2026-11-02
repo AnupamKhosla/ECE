@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P20 · Cat6 termination and testing</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .wm-grid{display:grid;grid-template-columns:70px repeat(8,minmax(0,1fr));gap:4px;align-items:center;font-size:13px}
+  .wm-grid select{font:12.5px var(--mono);padding:3px 2px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);width:100%}
+  .wm-grid b{font-size:12.5px;text-align:center}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .chips button{font:13px var(--sans);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:5px 9px;border-radius:6px;cursor:pointer}
+  .wm-verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+  .wm-verdict div{background:var(--wash);border-radius:8px;padding:10px 12px;font-size:14.5px}
+  .wm-pass{color:var(--green);font-weight:700} .wm-fail{color:var(--warn);font-weight:700}
+  @media (max-width:600px){.wm-grid{grid-template-columns:44px repeat(8,minmax(0,1fr))}.wm-grid select{font-size:11px}}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part D</div>
+    <span class="eyebrow">Practice · Lab P20</span>
+    <h1>Cat6 termination and testing</h1>
+    <p class="lede">You will understand what is inside a Cat6 cable and why it is twisted, terminate RJ45 plugs, keystone jacks and a patch panel to T568A or T568B, test your work, and recognise every common fault — including the split pair that fools a cheap tester.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$80–180</span><span><b>Theory</b> T06, T10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Cat6 U/UTP solid cable, 20–30 m</b><small>~A$20–40 · a short box end or offcut is fine for practice</small></li>
+      <li><b>Cat6 RJ45 plugs for solid cable</b><small>~A$10–20 per bag · standard or pass-through</small></li>
+      <li><b>RJ45 crimp tool</b><small>~A$30–70 · must match your plugs (pass-through plugs need a pass-through crimper)</small></li>
+      <li><b>Cat6 keystone jacks ×4 + a small patch panel</b><small>~A$5–10 each / ~A$30–60</small></li>
+      <li><b>110 punch-down (impact) tool</b><small>~A$20–60 · with a cutting blade</small></li>
+      <li><b>Cable stripper and flush cutters</b><small>~A$10–25 · Bunnings, Jaycar, Altronics</small></li>
+      <li><b>Wire-map cable tester</b><small>~A$20–150 · main + remote unit</small></li>
+      <li><b>Labels / label printer</b><small>optional · a marker and tape will do on the bench</small></li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>Data cable is ELV. The hazards are physical: sharp conductor offcuts in your eyes (wear safety glasses when trimming and punching), cuts from strippers, and — on real sites — ceilings, ladders, asbestos in older buildings, and nearby <b>mains cables you must never touch or move</b>. Keep your bench practice away from mains wiring entirely.</p></div>
+
+    <h2>Inside the cable</h2>
+    <p>A Cat6 cable has <b>8 copper conductors</b> arranged as <b>4 twisted pairs</b>. Each pair has a solid-colour wire and a white wire with a stripe of the same colour: blue, orange, green and brown. Cat6 usually adds a plastic <b>spline</b> (cross-shaped separator) that keeps the pairs apart, and a <b>rip cord</b> to help open the jacket.</p>
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Cross-section of a Cat6 cable: jacket, cross spline, four twisted pairs and a rip cord">
+        <circle class="f-wash s-line" cx="140" cy="130" r="110"/>
+        <path class="s-line" d="M140 40 V220 M50 130 H230" style="stroke-width:8"/>
+        <circle class="f-panel s-blue" cx="96" cy="86" r="16"/><circle class="f-blue" cx="114" cy="108" r="16"/>
+        <circle class="f-panel s-accent" cx="184" cy="86" r="16"/><circle class="f-accent" cx="166" cy="108" r="16"/>
+        <circle class="f-panel s-green" cx="96" cy="174" r="16"/><circle class="f-green" cx="114" cy="152" r="16"/>
+        <circle class="f-panel s-line" cx="184" cy="174" r="16"/><circle class="f-grey" cx="166" cy="152" r="16"/>
+        <circle class="f-ink" cx="222" cy="168" r="5"/>
+        <text class="t t-small" x="270" y="40">jacket (PVC or LSZH)</text><path class="s-thin" d="M268 36 L236 70"/>
+        <text class="t t-small" x="270" y="70">spline / cross filler</text><path class="s-thin" d="M268 66 L146 60"/>
+        <text class="t t-small" x="270" y="100">pair 1: blue + white/blue</text>
+        <text class="t t-small" x="270" y="122">pair 2: orange + white/orange</text>
+        <text class="t t-small" x="270" y="144">pair 3: green + white/green</text>
+        <text class="t t-small" x="270" y="166">pair 4: brown + white/brown (grey here)</text>
+        <text class="t t-small" x="270" y="196">rip cord</text><path class="s-thin" d="M268 192 L228 170"/>
+        <text class="t t-small t-muted" x="270" y="230">23 AWG solid copper, ~0.57 mm; cable OD ~6 mm</text>
+      </svg>
+      <figcaption>Figure 1. Cat6 U/UTP cross-section. The spline keeps the pairs a fixed distance apart, which reduces crosstalk between them. Solid circles are the coloured wires, ringed circles the white-striped partners.</figcaption>
+    </figure>
+
+    <h3>Why twisting cancels noise</h3>
+    <p>Ethernet sends each signal as a <b>differential pair</b>: one wire carries +V while its partner carries −V, and the receiver measures only the <i>difference</i> between them. Interference from a nearby cable or motor induces a voltage — call it n — in both wires. If both wires pick up the <i>same</i> n, the difference is unchanged and the noise vanishes. Twisting is what makes the pick-up equal: each half-twist swaps which wire is closer to the noise source, so over a length of cable both wires see the same average field. Different pairs use different twist rates so they do not line up with each other and cross-couple.</p>
+    <div class="formula">(V<sub>+</sub> + n) − (V<sub>−</sub> + n) = V<sub>+</sub> − V<sub>−</sub>
+      <small>The receiver subtracts. Noise that is equal on both wires (common-mode) cancels. Untwisting, or putting the two halves of a signal on wires from different pairs, makes n unequal — and it no longer cancels.</small></div>
+    <figure>
+      <svg viewBox="0 0 640 190" role="img" aria-label="Twisted pair: noise from a nearby source is induced equally into both wires and cancels at the differential receiver">
+        <defs><marker id="p20-n" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-warn-soft s-red" x="200" y="12" width="200" height="30" rx="6"/><text class="t t-small t-red" x="214" y="32">noise source (power cable, motor)</text>
+        <path class="s-red s-dash" d="M240 42 V74" marker-end="url(#p20-n)"/><path class="s-red s-dash" d="M300 42 V74" marker-end="url(#p20-n)"/><path class="s-red s-dash" d="M360 42 V74" marker-end="url(#p20-n)"/>
+        <path class="s-accent" d="M60 100 C 90 80, 120 80, 150 110 S 210 140, 240 110 S 300 80, 330 110 S 390 140, 420 110 S 480 80, 510 100"/>
+        <path class="s-blue" d="M60 120 C 90 140, 120 140, 150 110 S 210 80, 240 110 S 300 140, 330 110 S 390 80, 420 110 S 480 140, 510 120"/>
+        <text class="t t-small t-accent" x="20" y="96">V+</text><text class="t t-small t-blue" x="20" y="128">V−</text>
+        <polygon class="f-panel s-line" points="520,80 520,140 580,110"/><text class="t t-small" x="524" y="104">+</text><text class="t t-small" x="524" y="130">−</text>
+        <path class="s-line" d="M510 100 H520 M510 120 H520 M580 110 H610"/>
+        <text class="t t-small" x="520" y="164">out = V+ − V−</text>
+        <text class="t t-small t-muted" x="60" y="176">each twist swaps which wire is nearer the noise, so both pick up the same n</text>
+      </svg>
+      <figcaption>Figure 2. A twisted pair driving a differential receiver. Equal induced noise on both wires subtracts out. This only works if the two wires of one signal really are the two wires of one twisted pair.</figcaption>
+    </figure>
+    <div class="callout why"><span class="label">Why it works</span><p>Induced noise comes from changing magnetic flux through the loop formed by the two wires (Faraday's law). A twist reverses the loop's orientation, so the voltage induced in one twist-loop is opposite to that in the next and they cancel along the cable. Tight, even twists right up to the termination keep the loops small and balanced; that is why the standard limits untwisting at the jack.</p></div>
+    <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors (Faraday and induced voltage)</a>
+
+    <h3>Solid vs stranded, and the categories</h3>
+    <p><b>Solid</b> conductors (one thick copper wire each) are for <b>installed</b> cable in walls and ceilings — lower loss, and they terminate properly in punch-down jacks. <b>Stranded</b> conductors (many fine wires) are for <b>patch cords</b> — flexible, but higher loss, so they are limited in length. Use plugs made for the conductor type: solid-wire plugs have contacts that straddle the wire; stranded plugs pierce it.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Category</th><th>Rated to</th><th>Typical use</th></tr>
+      <tr><td>Cat5e</td><td>100 MHz</td><td>1 Gb/s to 100 m. Still common in older buildings.</td></tr>
+      <tr><td>Cat6</td><td>250 MHz</td><td>1 Gb/s to 100 m with more margin; 10 Gb/s only over short runs (roughly 37–55 m, conditions apply). Today's standard for most new work, cameras and APs.</td></tr>
+      <tr><td>Cat6A</td><td>500 MHz</td><td>10 Gb/s to 100 m. Thicker and stiffer; specified for Wi-Fi 6/7 APs and high-power PoE in many new buildings.</td></tr>
+    </table></div>
+
+    <h2>T568A and T568B</h2>
+    <p>The RJ45 connector has 8 pins. Two standard colour orders exist: <b>T568A</b> and <b>T568B</b>. They differ only in that the <b>orange and green pairs swap places</b>. Electrically both are equally good. The golden rule is: <b>use the same scheme at both ends of every link, and the scheme the site specification calls for</b>. In Australia you will see both; some clients insist on one, so always check the spec.</p>
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="T568A and T568B pin colour orders, pins 1 to 8">
+        <text class="t t-bold" x="30" y="22">T568A</text>
+        <text class="t t-bold" x="350" y="22">T568B</text>
+        <rect class="f-wash s-line" x="30" y="32" width="260" height="170" rx="6"/>
+        <rect class="f-wash s-line" x="350" y="32" width="260" height="170" rx="6"/>
+        <g>
+          <text class="t t-small t-bold" x="51" y="54" text-anchor="middle">1</text><text class="t t-small t-bold" x="81" y="54" text-anchor="middle">2</text><text class="t t-small t-bold" x="111" y="54" text-anchor="middle">3</text><text class="t t-small t-bold" x="141" y="54" text-anchor="middle">4</text><text class="t t-small t-bold" x="171" y="54" text-anchor="middle">5</text><text class="t t-small t-bold" x="201" y="54" text-anchor="middle">6</text><text class="t t-small t-bold" x="231" y="54" text-anchor="middle">7</text><text class="t t-small t-bold" x="261" y="54" text-anchor="middle">8</text>
+          <rect class="f-panel s-green" x="40" y="64" width="22" height="120"/><rect class="f-green" x="48" y="64" width="6" height="120"/>
+          <rect class="f-green" x="70" y="64" width="22" height="120"/>
+          <rect class="f-panel s-accent" x="100" y="64" width="22" height="120"/><rect class="f-accent" x="108" y="64" width="6" height="120"/>
+          <rect class="f-blue" x="130" y="64" width="22" height="120"/>
+          <rect class="f-panel s-blue" x="160" y="64" width="22" height="120"/><rect class="f-blue" x="168" y="64" width="6" height="120"/>
+          <rect class="f-accent" x="190" y="64" width="22" height="120"/>
+          <rect class="f-panel s-line" x="220" y="64" width="22" height="120"/><rect class="f-grey" x="228" y="64" width="6" height="120"/>
+          <rect class="f-grey" x="250" y="64" width="22" height="120"/>
+          <text class="t t-small" x="51" y="220" text-anchor="middle">W/G</text><text class="t t-small" x="81" y="220" text-anchor="middle">G</text><text class="t t-small" x="111" y="220" text-anchor="middle">W/O</text><text class="t t-small" x="141" y="220" text-anchor="middle">Bl</text><text class="t t-small" x="171" y="220" text-anchor="middle">W/Bl</text><text class="t t-small" x="201" y="220" text-anchor="middle">O</text><text class="t t-small" x="231" y="220" text-anchor="middle">W/Br</text><text class="t t-small" x="261" y="220" text-anchor="middle">Br</text>
+          <path class="s-green" d="M51 232 V240 H81 V232"/><text class="t t-small t-green" x="40" y="256">green 1–2</text>
+          <path class="s-accent" d="M111 232 V266 H201 V232"/><text class="t t-small t-accent" x="112" y="282">orange 3 &amp; 6</text>
+        </g>
+        <g>
+          <text class="t t-small t-bold" x="371" y="54" text-anchor="middle">1</text><text class="t t-small t-bold" x="401" y="54" text-anchor="middle">2</text><text class="t t-small t-bold" x="431" y="54" text-anchor="middle">3</text><text class="t t-small t-bold" x="461" y="54" text-anchor="middle">4</text><text class="t t-small t-bold" x="491" y="54" text-anchor="middle">5</text><text class="t t-small t-bold" x="521" y="54" text-anchor="middle">6</text><text class="t t-small t-bold" x="551" y="54" text-anchor="middle">7</text><text class="t t-small t-bold" x="581" y="54" text-anchor="middle">8</text>
+          <rect class="f-panel s-accent" x="360" y="64" width="22" height="120"/><rect class="f-accent" x="368" y="64" width="6" height="120"/>
+          <rect class="f-accent" x="390" y="64" width="22" height="120"/>
+          <rect class="f-panel s-green" x="420" y="64" width="22" height="120"/><rect class="f-green" x="428" y="64" width="6" height="120"/>
+          <rect class="f-blue" x="450" y="64" width="22" height="120"/>
+          <rect class="f-panel s-blue" x="480" y="64" width="22" height="120"/><rect class="f-blue" x="488" y="64" width="6" height="120"/>
+          <rect class="f-green" x="510" y="64" width="22" height="120"/>
+          <rect class="f-panel s-line" x="540" y="64" width="22" height="120"/><rect class="f-grey" x="548" y="64" width="6" height="120"/>
+          <rect class="f-grey" x="570" y="64" width="22" height="120"/>
+          <text class="t t-small" x="371" y="220" text-anchor="middle">W/O</text><text class="t t-small" x="401" y="220" text-anchor="middle">O</text><text class="t t-small" x="431" y="220" text-anchor="middle">W/G</text><text class="t t-small" x="461" y="220" text-anchor="middle">Bl</text><text class="t t-small" x="491" y="220" text-anchor="middle">W/Bl</text><text class="t t-small" x="521" y="220" text-anchor="middle">G</text><text class="t t-small" x="551" y="220" text-anchor="middle">W/Br</text><text class="t t-small" x="581" y="220" text-anchor="middle">Br</text>
+          <path class="s-accent" d="M371 232 V240 H401 V232"/><text class="t t-small t-accent" x="360" y="256">orange 1–2</text>
+          <path class="s-green" d="M431 232 V266 H521 V232"/><text class="t t-small t-green" x="432" y="282">green 3 &amp; 6</text>
+        </g>
+      </svg>
+      <figcaption>Figure 3. Pin colour orders, viewed with the plug's gold contacts facing you, clip at the back and cable hanging down (pin 1 on the left). W/G = white with green stripe, Bl = blue, Br = brown (drawn grey). Blue is always on 4–5 and brown on 7–8. The pair on 3 &amp; 6 is split around the blue pair — that is deliberate, and it is exactly where beginners go wrong.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Pin</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+      <tr><td><b>T568A</b></td><td>white/green</td><td>green</td><td>white/orange</td><td>blue</td><td>white/blue</td><td>orange</td><td>white/brown</td><td>brown</td></tr>
+      <tr><td><b>T568B</b></td><td>white/orange</td><td>orange</td><td>white/green</td><td>blue</td><td>white/blue</td><td>green</td><td>white/brown</td><td>brown</td></tr>
+    </table></div>
+    <p>Memory trick: in both schemes the white wire always comes first in a pair (odd pins 1, 3, 5, 7), except that the blue pair sits in the middle "backwards" (blue on 4, white/blue on 5). For T568B think "<b>O</b>range first"; for T568A, "<b>G</b>reen first". The two ends of a T568A cable and the two ends of a T568B cable connect identically pin for pin (1 to 1 … 8 to 8): a <b>straight-through</b> cable. A cable with A at one end and B at the other is a <b>crossover</b>, an old way of joining two PCs directly; it fails a wire-map test in structured cabling.</p>
+    <p>Which pins carry data? 10 and 100 Mb/s Ethernet use only pins 1, 2, 3 and 6 (two pairs). Gigabit and faster use all four pairs. PoE uses two or four pairs. So a cable with one broken pair may "work" at 100 Mb/s and then fail when someone plugs in a gigabit device or a PoE+ camera — always terminate and test all eight.</p>
+
+    <h2>Terminate an RJ45 plug</h2>
+    <p>Two kinds of Cat6 plug are common. A <b>standard</b> plug often comes with a <b>load bar</b> (a small insert that holds the wires in order) and you trim the wires <i>before</i> inserting. A <b>pass-through</b> plug lets the wires come out the front so you can check the order, and the matching crimper trims them flush as it crimps. Pass-through is easier for beginners; standard plugs are preferred by some installers because no trimmed copper can be left proud at the tip.</p>
+    <ol class="steps">
+      <li><p><b>Strip</b> about 30–40 mm of jacket with a rotary stripper. Do not nick the conductor insulation: bend the cable to check — any copper showing means cut it off and start again.</p></li>
+      <li><p><b>Remove the spline and rip cord</b> flush with the jacket using flush cutters.</p></li>
+      <li><p><b>Untwist</b> each pair only as much as needed and <b>straighten</b> the wires by running them between your fingers. Arrange them in order: T568B = W/O, O, W/G, Bl, W/Bl, G, W/Br, Br. Note how green crosses over the blue pair.</p></li>
+      <li><p><b>Load bar / trim.</b> Feed the wires into the load bar in order, slide it right down to the jacket, then trim straight across leaving about 12–14 mm of conductor past the jacket (for pass-through plugs, skip the trim).</p></li>
+      <li><p><b>Insert</b> into the plug, clip facing away, contacts towards you. Push until every conductor touches the end of the plug (look through the clear tip: eight copper dots) and the <b>jacket sits under the strain-relief wedge</b>. Check the colour order again through the plastic.</p></li>
+      <li><p><b>Crimp</b> firmly in one full squeeze. For pass-through, check the trimmed ends are flush. Tug the cable gently: the plug must not move.</p></li>
+      <li><p><b>Do the other end</b> in the same scheme, then <b>test</b> (below) before you call it done.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Keep the twists right up to the plug or jack: no more than about 13 mm untwisted at a Cat5e/Cat6 termination. The most common rejected terminations are too much untwist, jacket not inside the plug (the wires then take all the strain and break), and conductors not fully home (intermittent faults that come and go with temperature). Make ten patch leads and test every one.</p></div>
+
+    <h2>Keystone jacks and patch panels (110 punch-down)</h2>
+    <p>Installed cabling does not end in plugs. It ends in <b>jacks</b>: a keystone jack in a wall plate at the user's end, and a port on a <b>patch panel</b> in the comms rack at the other. Both use <b>IDC</b> (insulation displacement contact) slots. You push each conductor into a forked metal slot with a <b>110 punch-down tool</b>; the fork slices through the insulation and grips the copper, and the tool's blade trims the waste in the same stroke.</p>
+    <ol class="steps">
+      <li><p><b>Strip</b> 25–50 mm of jacket and remove the spline. Keep pairs twisted.</p></li>
+      <li><p><b>Read the jack's colour label</b>. Each jack is printed with both A and B colour codes; follow the row for your scheme. The pin order on the jack is <i>not</i> left-to-right 1–8 — the label tells you where each colour goes, so trust the label.</p></li>
+      <li><p><b>Lay each pair</b> into its slots with the twist kept to within ~13 mm of the IDC, and the jacket close to the back of the jack.</p></li>
+      <li><p><b>Punch</b> with the tool square to the jack and the <b>cutting side facing the waste end</b> (outwards). A firm click seats and trims the wire. Check each one is level and fully down.</p></li>
+      <li><p><b>Fit the cap</b> or strain relief, then <b>label</b> the jack and the matching panel port before you forget which cable is which.</p></li>
+    </ol>
+    <p>A patch panel is the same job repeated 24 or 48 times along the back of the panel, with cables dressed neatly in from the side or rear and supported by a cable management bar. At the panel front, short <b>patch cords</b> connect each port to the switch.</p>
+
+    <h3>Permanent link and channel</h3>
+    <figure>
+      <svg viewBox="0 0 640 210" role="img" aria-label="Channel of up to 100 m: switch cord and patch cord in the rack, 90 m permanent link to wall outlet, work-area cord to device">
+        <rect class="f-wash s-line" x="20" y="40" width="130" height="110" rx="6"/><text class="t t-small t-bold" x="30" y="60">Comms rack</text>
+        <rect class="f-panel s-line" x="34" y="72" width="100" height="22" rx="3"/><text class="t t-small" x="44" y="88">switch</text>
+        <rect class="f-panel s-line" x="34" y="114" width="100" height="22" rx="3"/><text class="t t-small" x="44" y="130">patch panel</text>
+        <path class="s-amber" d="M134 83 C 150 83, 150 125, 134 125"/>
+        <path class="s-accent" d="M134 125 H480" style="stroke-width:4"/>
+        <rect class="f-panel s-line" x="480" y="105" width="40" height="40" rx="4"/><text class="t t-small" x="478" y="162">outlet</text>
+        <path class="s-amber" d="M520 125 H570"/>
+        <rect class="f-panel s-line" x="570" y="105" width="56" height="40" rx="4"/><text class="t t-small" x="576" y="130">device</text>
+        <path class="s-accent" d="M134 185 H520"/><path class="s-thin" d="M134 178 V192 M520 178 V192"/>
+        <text class="t t-small t-accent" x="230" y="204">permanent link ≤ 90 m (solid, installed)</text>
+        <path class="s-line" d="M20 20 H626"/><path class="s-thin" d="M20 14 V26 M626 14 V26"/>
+        <text class="t t-small t-bold" x="230" y="14">channel ≤ 100 m (everything between the two devices)</text>
+        <text class="t t-small t-muted" x="160" y="110">cords (amber) ≤ 10 m in total, stranded</text>
+      </svg>
+      <figcaption>Figure 4. The 100 m rule is really 90 + 10: up to 90 m of installed solid cable (the permanent link, panel to outlet) plus up to 10 m of patch and equipment cords in total. Stranded cords lose more per metre, which is why their share is limited.</figcaption>
+    </figure>
+
+    <h2>Installation practice</h2>
+    <ul>
+      <li><b>Bend radius:</b> no tighter than about 4 × the cable's outside diameter once installed (Cat6 at ~6 mm → at least ~25 mm radius), and gentler while pulling. Kinks change the pair geometry permanently.</li>
+      <li><b>Pull tension:</b> no more than about 110 N (25 lbf) on a 4-pair cable. Pull by hand, not with a vehicle or a power tool, and pull from the box/reel straight without twisting it.</li>
+      <li><b>No crushing:</b> do not staple, over-tighten cable ties or let cables be walked on. Use hook-and-loop (Velcro-type) ties in bundles and catenary/cable tray supports.</li>
+      <li><b>Keep away from power:</b> do not share a conduit, duct compartment or cable tie with low-voltage (230 V) power cables, cross them at right angles, and keep the separation and barriers required by the Australian wiring rules for customer cabling (AS/CA S009). Learn the exact distances in your cabling course.</li>
+      <li><b>Leave a service loop</b> (a little spare) at the rack and outlet so the cable can be re-terminated once.</li>
+      <li><b>Label both ends</b> with the same ID, e.g. outlet <code>L2-024</code> ↔ panel port <code>PP2-24</code>, and record it in the cable schedule. The Australian standard for cabling administration and labelling is AS/NZS 3085.1; sites often have their own scheme on top.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Cabling connected to the telecommunications network (and in practice almost every building LAN is, because it connects to the internet service) must be installed by an <b>ACMA-registered cabler</b> — registered through an ACMA-accredited registrar, with the right type of registration and endorsements (structured cabling for this work), and following AS/CA S009. Your bench patch leads are fine for learning; fixed cabling in a building, even your own home, is not DIY. Read <a href="../career/c07-telecom-cabling-acma.html">C07 Telecom cabling in Australia</a> and confirm the current requirements with the ACMA, as rules change.</p></div>
+
+    <h2>Testers: continuity vs certification</h2>
+    <div class="compare">
+      <div><h4>Wire-map / continuity tester (~A$20–150)</h4><p>A main unit and a remote. It sends a signal down each conductor in turn and lights the matching LED on the remote, 1 to 8. It finds <b>opens, shorts, reversed pairs, crossed pairs and miswires</b>. Better ones show length to a fault and detect split pairs by measuring crosstalk; basic ones <b>cannot see a split pair</b>.</p></div>
+      <div><h4>Certification tester (thousands to tens of thousands of A$, indicative)</h4><p>Measures performance across the full frequency range against the Cat6 limits of the standards: wire map, length, insertion loss, NEXT (near-end crosstalk), return loss, delay and more. Gives a PASS/FAIL report per link that the cable manufacturer needs before it will issue a long system warranty. Usually owned by the company and used by trained techs.</p></div>
+    </div>
+    <p>Between them sit <b>qualification testers</b>, which answer "will this link run 1 Gb/s (or PoE)?" without full certification — common in service work.</p>
+
+    <h2>The faults you will find</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Fault</th><th>What happened</th><th>Basic tester shows</th><th>Effect</th></tr>
+      <tr><td><b>Open</b></td><td>A conductor is broken or not seated in the IDC/plug</td><td>That LED never lights</td><td>Link drops to 100 Mb/s or fails; PoE may fail</td></tr>
+      <tr><td><b>Short</b></td><td>Two conductors touch (crushed cable, staple, stray strand)</td><td>Two LEDs light together</td><td>Usually no link; PoE port shuts down</td></tr>
+      <tr><td><b>Reversed pair</b></td><td>The two wires of one pair are swapped at one end (e.g. 1↔2)</td><td>LEDs out of order: 2, 1, 3…</td><td>Fails wire map; polarity errors</td></tr>
+      <tr><td><b>Crossed (transposed) pair</b></td><td>A whole pair lands on another pair's pins (e.g. 1/2 ↔ 3/6: A at one end, B at the other)</td><td>3, 6, 1, 4, 5, 2, 7, 8</td><td>Not compliant; auto-MDIX gear may still link</td></tr>
+      <tr><td><b>Split pair</b></td><td>Pin-to-pin continuity is correct, but the wires on one pair of pins come from two different twisted pairs</td><td><b>PASS</b> — 1 to 8 in order</td><td>High crosstalk: errors and slow or failed links at speed</td></tr>
+    </table></div>
+    <h3>Why a split pair fools a simple tester</h3>
+    <p>A continuity tester only asks "is pin 3 at this end connected to pin 3 at the other end?" With a split pair, it is. The tester cannot know which wires are twisted together inside the jacket. But Ethernet sends one signal on pins 3 and 6 as a differential pair. If pin 3 is white/green and pin 6 is blue (from the blue pair), the signal's two halves travel on wires that are <i>not twisted with each other</i>. The noise-cancelling of Figure 2 is lost, and worse, each half sits twisted tightly against a wire of <i>another</i> signal, so they couple strongly: huge near-end crosstalk. At 10 Mb/s on a short cable you may get away with it; at 1 Gb/s over 50 m you get errors, retries, and a link that "works but is slow" or drops. A certification tester fails it on NEXT straight away.</p>
+    <p>The classic way to make a split pair is to wire the plug in "neat" colour order — W/O, O, W/G, G, W/Bl, Bl, W/Br, Br — identically at both ends. Every LED lights in order, yet pins 3 and 6 now carry white/green and blue.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Wire maps of a reversed pair and a split pair">
+        <text class="t t-bold" x="30" y="22">Reversed pair (1↔2 at far end)</text>
+        <text class="t t-bold" x="350" y="22">Split pair (same order both ends)</text>
+        <g>
+          <text class="t t-small t-muted" x="34" y="44">near</text><text class="t t-small t-muted" x="244" y="44">far</text>
+          <g class="t t-small">
+            <text class="t t-small" x="44" y="66">1</text><text class="t t-small" x="44" y="88">2</text><text class="t t-small" x="44" y="110">3</text><text class="t t-small" x="44" y="132">4</text><text class="t t-small" x="44" y="154">5</text><text class="t t-small" x="44" y="176">6</text><text class="t t-small" x="44" y="198">7</text><text class="t t-small" x="44" y="220">8</text>
+            <text class="t t-small" x="248" y="66">1</text><text class="t t-small" x="248" y="88">2</text><text class="t t-small" x="248" y="110">3</text><text class="t t-small" x="248" y="132">4</text><text class="t t-small" x="248" y="154">5</text><text class="t t-small" x="248" y="176">6</text><text class="t t-small" x="248" y="198">7</text><text class="t t-small" x="248" y="220">8</text>
+          </g>
+          <path class="s-red" d="M60 62 L240 84 M60 84 L240 62"/>
+          <path class="s-green" d="M60 106 H240 M60 128 H240 M60 150 H240 M60 172 H240 M60 194 H240 M60 216 H240"/>
+          <text class="t t-small t-red" x="80" y="240">tester: FAIL — reversed 1/2</text>
+        </g>
+        <g>
+          <text class="t t-small t-muted" x="354" y="44">near</text><text class="t t-small t-muted" x="564" y="44">far</text>
+          <text class="t t-small" x="364" y="66">1 W/O</text><text class="t t-small" x="364" y="88">2 O</text><text class="t t-small t-red" x="364" y="110">3 W/G</text><text class="t t-small t-red" x="364" y="132">4 G</text><text class="t t-small t-red" x="364" y="154">5 W/Bl</text><text class="t t-small t-red" x="364" y="176">6 Bl</text><text class="t t-small" x="364" y="198">7 W/Br</text><text class="t t-small" x="364" y="220">8 Br</text>
+          <path class="s-green" d="M420 62 H560 M420 84 H560 M420 106 H560 M420 128 H560 M420 150 H560 M420 172 H560 M420 194 H560 M420 216 H560"/>
+          <path class="s-red s-dash" d="M574 106 C 610 106, 610 172, 574 172"/><text class="t t-small t-red" x="590" y="144">3+6</text>
+          <text class="t t-small t-red" x="360" y="240">basic tester: PASS · certifier: FAIL NEXT</text>
+        </g>
+      </svg>
+      <figcaption>Figure 5. Left: a reversed pair is obvious on any tester. Right: a split pair has perfect pin-to-pin continuity, but the signal pair on pins 3 &amp; 6 uses white/green and blue — wires from two different twisted pairs. Only a crosstalk measurement reveals it.</figcaption>
+    </figure>
+
+    <div class="widget" id="w-wm">
+      <span class="label">Interactive · wire-map tester simulator</span>
+      <p style="font-size:15px;margin-bottom:8px">Set the colour on each pin at each end (choosing a colour already used swaps the two pins, like re-terminating), or pick a preset. Add cable damage if you like. The simulator shows what a basic wire-map tester and a certification tester would report.</p>
+      <div class="chips" id="wm-presets"></div>
+      <div class="wm-grid" id="wm-grid"></div>
+      <label style="margin-top:10px">Cable damage <select id="wm-dmg">
+        <option value="none">none</option>
+        <option value="open:W/O">white/orange conductor broken (open)</option>
+        <option value="open:Bl">blue conductor not seated (open)</option>
+        <option value="open:Br">brown conductor nicked through (open)</option>
+        <option value="short:O,W/G">orange and white/green touching (short)</option>
+        <option value="short:W/Br,Br">brown pair crushed by a staple (short)</option>
+      </select></label>
+      <figure style="margin:10px 0"><svg id="wm-svg" viewBox="0 0 640 250" role="img" aria-label="Wire map result"></svg></figure>
+      <div class="wm-verdict">
+        <div><small>Basic wire-map tester</small><br><span id="wm-basic"></span></div>
+        <div><small>Certification tester</small><br><span id="wm-cert"></span></div>
+      </div>
+      <p id="wm-detail" style="margin-top:10px;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var COL=['W/O','O','W/G','G','W/Bl','Bl','W/Br','Br'],NAME={'W/O':'white/orange','O':'orange','W/G':'white/green','G':'green','W/Bl':'white/blue','Bl':'blue','W/Br':'white/brown','Br':'brown'};
+      var CLS={'O':'s-accent','G':'s-green','Bl':'s-blue','Br':'s-thin'};
+      var A=['W/G','G','W/O','Bl','W/Bl','O','W/Br','Br'],B=['W/O','O','W/G','Bl','W/Bl','G','W/Br','Br'];
+      var PAIRS=[[0,1],[2,5],[3,4],[6,7]];
+      var P={'Good link (B–B)':[B,B],'Good link (A–A)':[A,A],'A one end, B other':[A,B],'Reversed pair':[B,['O','W/O','W/G','Bl','W/Bl','G','W/Br','Br']],'Crossed pair 4/5↔7/8':[B,['W/O','O','W/G','W/Br','Br','G','Bl','W/Bl']],'Split pair ("neat" order)':[['W/O','O','W/G','G','W/Bl','Bl','W/Br','Br'],['W/O','O','W/G','G','W/Bl','Bl','W/Br','Br']],'Blue/brown swapped both ends':[['W/O','O','W/G','Br','W/Br','G','W/Bl','Bl'],['W/O','O','W/G','Br','W/Br','G','W/Bl','Bl']]};
+      var ends=[B.slice(),B.slice()],sels=[[],[]],grid=document.getElementById('wm-grid'),svg=document.getElementById('wm-svg'),NS='http://www.w3.org/2000/svg';
+      function base(c){return c.replace('W/','');}
+      function cell(t,b){var e=document.createElement(b?'b':'span');e.textContent=t;grid.appendChild(e);}
+      cell('Pin',true);for(var i=1;i<=8;i++)cell(String(i),true);
+      ['Near','Far'].forEach(function(lbl,e){cell(lbl,true);for(var i=0;i<8;i++){var s=document.createElement('select');s.setAttribute('aria-label',lbl+' end pin '+(i+1));COL.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;s.appendChild(o);});
+        (function(e,i,s){s.onchange=function(){var nv=s.value,old=ends[e][i],j=ends[e].indexOf(nv);ends[e][j]=old;ends[e][i]=nv;sync();};})(e,i,s);sels[e].push(s);grid.appendChild(s);}});
+      Object.keys(P).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=k;b.onclick=function(){ends=[P[k][0].slice(),P[k][1].slice()];document.getElementById('wm-dmg').value='none';sync();};document.getElementById('wm-presets').appendChild(b);});
+      document.getElementById('wm-dmg').onchange=sync;
+      function same(a,b){for(var i=0;i<8;i++)if(a[i]!==b[i])return false;return true;}
+      function mk(tag,a,txt){var e=document.createElementNS(NS,tag);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+      function sync(){
+        for(var e=0;e<2;e++)for(var i=0;i<8;i++)sels[e][i].value=ends[e][i];
+        var near=ends[0],far=ends[1],dmg=document.getElementById('wm-dmg').value,cut=null,sh=null;
+        if(dmg.indexOf('open:')===0)cut=dmg.slice(5);if(dmg.indexOf('short:')===0)sh=dmg.slice(6).split(',');
+        var map=[],opens=[],shorts=[];
+        for(var i=0;i<8;i++){if(near[i]===cut){map.push(-1);opens.push(i+1);}else map.push(far.indexOf(near[i]));}
+        if(sh)shorts=[near.indexOf(sh[0])+1,near.indexOf(sh[1])+1].sort();
+        // classify
+        var probs=[],ident=true;for(i=0;i<8;i++)if(map[i]!==i&&map[i]!==-1)ident=false;
+        var crossover=(same(near,A)&&same(far,B))||(same(near,B)&&same(far,A));
+        if(!ident){
+          if(crossover)probs.push('Crossed pairs 1/2 ↔ 3/6: T568A at one end and T568B at the other (a crossover).');
+          else PAIRS.forEach(function(p){var a=p[0],b=p[1],ma=map[a],mb=map[b];if(ma<0||mb<0)return;var setp=[ma,mb].sort().join(),own=[a,b].sort().join();
+            if(setp===own){if(ma!==a)probs.push('Reversed pair on pins '+(a+1)+'/'+(b+1)+'.');}
+            else{var other=PAIRS.filter(function(q){return [q[0],q[1]].sort().join()===setp;})[0];
+              if(other)probs.push('Crossed pair: pins '+(a+1)+'/'+(b+1)+' land on far pins '+(other[0]+1)+'/'+(other[1]+1)+'.');
+              else probs.push('Miswire: pins '+(a+1)+'/'+(b+1)+' land on far pins '+(ma+1)+'/'+(mb+1)+'.');}});
+        }
+        var splits=[];PAIRS.forEach(function(p){if(base(near[p[0]])!==base(near[p[1]])||base(far[p[0]])!==base(far[p[1]]))splits.push((p[0]+1)+'&'+(p[1]+1));});
+        var std=(same(near,A)&&same(far,A))?'T568A':(same(near,B)&&same(far,B))?'T568B':null;
+        // draw
+        while(svg.firstChild)svg.removeChild(svg.firstChild);
+        mk('text',{x:40,y:18,'class':'t t-small t-muted'},'near end');mk('text',{x:540,y:18,'class':'t t-small t-muted'},'far end');
+        for(i=0;i<8;i++){var y=36+i*27;
+          mk('text',{x:20,y:y+4,'class':'t t-small t-bold'},String(i+1));mk('text',{x:40,y:y+4,'class':'t t-small'},near[i]);
+          mk('text',{x:600,y:y+4,'class':'t t-small t-bold'},String(i+1));mk('text',{x:540,y:y+4,'class':'t t-small'},far[i]);
+          mk('circle',{cx:100,cy:y,r:5,'class':'f-panel s-line'});mk('circle',{cx:520,cy:y,r:5,'class':'f-panel s-line'});}
+        for(i=0;i<8;i++){var y1=36+i*27;
+          if(map[i]<0){mk('path',{d:'M105 '+y1+' H250','class':'s-red'});mk('text',{x:258,y:y1+4,'class':'t t-small t-red'},'✗ open');continue;}
+          var y2=36+map[i]*27,cls=(map[i]===i)?CLS[base(near[i])]:'s-red';
+          mk('path',{d:'M105 '+y1+' C 260 '+y1+', 360 '+y2+', 515 '+y2,'class':cls});}
+        if(shorts.length){var ya=36+(shorts[0]-1)*27,yb=36+(shorts[1]-1)*27;mk('path',{d:'M86 '+ya+' C 70 '+ya+', 70 '+yb+', 86 '+yb,'class':'s-red'});mk('text',{x:120,y:Math.min(ya,yb)-6,'class':'t t-small t-red'},'⚡ short '+shorts[0]+'–'+shorts[1]);}
+        splits.forEach(function(s,k){mk('text',{x:300,y:244-k*0,'class':'t t-small t-red','text-anchor':'middle'},'split pair on pins '+splits.join(', '));});
+        // verdicts
+        var basic,cert,det=[];
+        if(opens.length){basic='FAIL — open on pin '+opens.join(', ');det.push('An open conductor: the LED for that pin never lights. Re-terminate, or find the damage with a length-to-fault tester.');}
+        else if(shorts.length){basic='FAIL — short between pins '+shorts.join(' and ');det.push('Two LEDs light together. Look for a crushed cable, a staple, or a stray strand in the plug.');}
+        else if(probs.length){basic='FAIL — '+probs.join(' ');det.push('The LED sequence on the remote is out of order. Re-terminate one end to match the other.');}
+        else basic='PASS — LEDs 1 to 8 light in order';
+        if(opens.length||shorts.length||probs.length)cert='FAIL — wire map';
+        else if(splits.length){cert='FAIL — NEXT (crosstalk) on pins '+splits.join(', ');det.push('Split pair: continuity is perfect, so a basic tester passes it, but the signal pair(s) on pins '+splits.join(', ')+' use wires from different twisted pairs. Re-terminate both ends to T568A or T568B.');}
+        else if(!std){cert='PASS electrically — but not T568A/B';det.push('Every pin pairs with its own twisted pair, so it will perform, but the colour code is non-standard and fails inspection. Use the site scheme.');}
+        else{cert='PASS — '+std+' both ends';det.push('A correct straight-through '+std+' link.');}
+        var bs=document.getElementById('wm-basic'),cs=document.getElementById('wm-cert');
+        bs.textContent=basic;bs.className=/^PASS/.test(basic)?'wm-pass':'wm-fail';cs.textContent=cert;cs.className=/^PASS/.test(cert)?'wm-pass':'wm-fail';
+        document.getElementById('wm-detail').textContent=det.join(' ');
+      }
+      sync();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Click "Split pair" and note that the basic tester passes. Then make a real one on the bench: terminate a 20 m cable in "neat" colour order at both ends. Your cheap tester will pass it. Plug it between your laptop and a gigabit switch and copy a large file, then remake it as T568B and compare. Depending on length and noise you may see a lower speed, errors, or a link that falls back to 100 Mb/s.</p></div>
+
+    <h3>Expected results</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>Expected</th><th>If not</th></tr>
+      <tr><td>Wire map, patch lead you made</td><td>1–8 in order, no opens/shorts</td><td>Re-terminate the end you are least sure of</td></tr>
+      <tr><td>Untwist at each termination</td><td>≤ 13 mm</td><td>Cut off and redo</td></tr>
+      <tr><td>Jacket under plug strain relief</td><td>Yes, gripped by the wedge</td><td>Redo: too much conductor exposed</td></tr>
+      <tr><td>Link speed on a gigabit switch</td><td>1 Gb/s (switch LED or OS shows 1000 Mb/s)</td><td>100 Mb/s: a pair on 4/5 or 7/8 open or badly made</td></tr>
+      <tr><td>Conductor resistance (meter, end to end, loop of two wires)</td><td>About 0.17 Ω per metre of loop for Cat6 (≈ 3.4 Ω for 20 m)</td><td>Open or very high: bad IDC/plug contact</td></tr>
+    </table></div>
+    <p>The resistance figure comes from the copper itself: 23 AWG is about 0.57 mm diameter, area ≈ 0.26 mm². R = ρL/A = (1.7 × 10⁻⁸ × 1) / (0.26 × 10⁻⁶) ≈ <b>0.066 Ω per metre</b> per conductor; a loop of two conductors is about 0.13 Ω/m, and real Cat6 specs allow a little more (roughly up to ~0.19 Ω/m loop). Close enough to check with your meter on a known length.</p>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>One LED never lights</td><td>Conductor not fully home in the plug, or not punched down</td><td>Re-crimp (or replace the plug); re-punch</td></tr>
+      <tr><td>Intermittent: works, then drops when touched</td><td>Jacket not under strain relief; conductor half-seated</td><td>Re-terminate; check the cable is supported</td></tr>
+      <tr><td>Two LEDs together</td><td>Short: stray strand, crushed jacket, wrong plug type for solid cable</td><td>Cut back past the damage and re-terminate</td></tr>
+      <tr><td>Tester passes, but link only 100 Mb/s or errors</td><td>Split pair, too much untwist, kinked cable, or cable near a noise source</td><td>Check colour order against T568A/B; qualify or certify the link</td></tr>
+      <tr><td>PoE camera on a long run reboots</td><td>High resistance contact or undersized/CCA cable</td><td>Use pure copper Cat6 (avoid "CCA", copper-clad aluminium); re-terminate</td></tr>
+      <tr><td>Keystone punched but tester shows reversed pair</td><td>Followed the A label at one end and B at the other</td><td>Pick one scheme; re-punch</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The tester lit 1 to 8, so the cable is good." It only proves continuity and order. It does not prove the pairs are twisted correctly, the untwist is short, the cable is not kinked, or that it meets Cat6 performance. That is why commercial installs are certified, and why you should terminate to the standard every single time instead of trusting the green lights.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Terminating and testing Cat6 is a daily task for data cablers, CCTV and access-control installers, AV techs and many BMS techs. Employers test this at interview or on the first day: "make me a T568B patch lead" or "punch down this keystone". Speed comes with practice, but neatness and correct colour order are non-negotiable. Labelling and a cable schedule at handover are what separate a tradesperson from a hobbyist. See <a href="../career/c07-telecom-cabling-acma.html">C07</a> and <a href="../career/c05-cctv-ip-cameras.html">C05</a>.</p></div>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Write the T568B order from pin 1 to pin 8.</summary><div class="answer"><p>White/orange, orange, white/green, blue, white/blue, green, white/brown, brown. T568A swaps the orange and green pairs: white/green, green, white/orange, blue, white/blue, orange, white/brown, brown.</p></div></details>
+    <details class="quiz"><summary>Which pins form the pair that is "split around" the blue pair, and why does that matter when terminating?</summary><div class="answer"><p>Pins 3 and 6. In T568B that is white/green (3) and green (6). If you lay wires in "neat" pairs (3–4 green, 5–6 blue) you create a split pair. Always lay green (T568B) or orange (T568A) across the blue pair.</p></div></details>
+    <details class="quiz"><summary>Why does a split pair pass a continuity test but fail at gigabit speed?</summary><div class="answer"><p>Continuity only checks pin-to-pin connections, which are correct. But a differential signal must travel on the two wires of one twisted pair to cancel noise and limit crosstalk. With a split pair it travels on wires from two different pairs, so it couples into neighbouring signals (high NEXT) and picks up noise unequally. At high frequencies this causes errors; a certifier fails it on NEXT.</p></div></details>
+    <details class="quiz"><summary>A run from patch panel to outlet is 87 m. The equipment cord is 3 m and the work-area cord is 5 m. Is the channel within limits?</summary><div class="answer"><p>Yes: permanent link 87 m ≤ 90 m, cords 3 + 5 = 8 m ≤ 10 m, channel 95 m ≤ 100 m. A 12 m work-area cord would break the 10 m cord allowance even though the total is 102 m — fails both ways.</p></div></details>
+    <details class="quiz"><summary>You use stranded patch cable with plugs designed for solid conductors. What can go wrong?</summary><div class="answer"><p>Solid-conductor contacts straddle a single wire; on stranded wire they may not pierce reliably, giving intermittent opens. Use plugs rated for the conductor type (many Cat6 plugs are rated for both — check).</p></div></details>
+    <details class="quiz"><summary>The tester shows 2, 1, 3, 4, 5, 6, 7, 8 on the remote. Name the fault and the fix.</summary><div class="answer"><p>Reversed pair on pins 1/2: white/orange and orange are swapped at one end. Re-terminate that end in the correct order.</p></div></details>
+    <details class="quiz"><summary>Why must installed Cat6 not be bent tighter than about 4 × its diameter?</summary><div class="answer"><p>Tight bends deform the pair geometry — twists open up, the spline shifts and pair spacing changes — which raises crosstalk and return loss. The damage stays after you straighten it. For ~6 mm Cat6 keep the radius above ~25 mm.</p></div></details>
+    <details class="quiz"><summary>Can you install Cat6 in a client's office in Australia if you are not registered?</summary><div class="answer"><p>Not for fixed cabling connected to the telecommunications network — that needs an ACMA-registered cabler with the appropriate registration, working to AS/CA S009. You can work under the supervision of a registered cabler while you train; check the ACMA's current rules for what supervision allows.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can describe the inside of a Cat6 cable and explain why twisting cancels noise.</span></li>
+      <li><input type="checkbox"><span>I can recite T568A and T568B from memory and know they must match at both ends.</span></li>
+      <li><input type="checkbox"><span>I can terminate RJ45 plugs (standard or pass-through) with ≤ 13 mm untwist and the jacket under the strain relief.</span></li>
+      <li><input type="checkbox"><span>I can punch down a keystone jack and a patch panel port with a 110 tool, following the jack label.</span></li>
+      <li><input type="checkbox"><span>I can test a link and name open, short, reversed, crossed and split-pair faults.</span></li>
+      <li><input type="checkbox"><span>I can explain why a split pair passes a continuity test but fails certification.</span></li>
+      <li><input type="checkbox"><span>I know the 90 m + 10 m = 100 m rule, bend radius, pull tension and separation from power.</span></li>
+      <li><input type="checkbox"><span>I can label both ends of a link and know that fixed cabling in Australia needs ACMA registration.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C15 · Solar, batteries and EV chargers for technicians</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part IV · Industrial and the path in</div>
+    <span class="eyebrow">Career · C15</span>
+    <h1>Solar, batteries and EV chargers for technicians</h1>
+    <p class="lede">Understand how a rooftop PV system, a home battery and an EV charger work, why the DC side is dangerous and legally an electrician's job, and which solar and battery roles you can do now while you decide on the licensed path.</p>
+    <div class="meta"><span><b>Time</b> 60 min read</span><span><b>Level</b> Beginner to job-ready</span><span><b>Builds on</b> T11, P10, P14</span><span><b>Roles</b> Support tech, installer assistant, commissioning</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>The industry and where you fit</h2>
+    <p>Australia has one of the highest rates of rooftop solar in the world, and home batteries and EV chargers are growing fast. In a sample of 2,764 Australian SEEK job ads captured for this course on 1–2 November 2026, 56 were solar or battery roles, and about 20% of those mentioned an electrical licence. Read that both ways: the hands-on installation roles need a licence, but many roles (support, monitoring, commissioning help, logistics, sales and design support) do not.</p>
+    <div class="callout warn"><span class="label">Danger: read this first</span><p>A string of solar panels produces DC at <b>hundreds of volts</b>, far above the 120 V ripple-free DC limit of extra-low voltage. It <b>cannot be switched off while light falls on the panels</b>: opening the isolator stops current flowing, but the panels and the cable up to the isolator stay live. DC arcs do not go out by themselves the way AC arcs do, because DC has no zero crossing. Batteries can deliver thousands of amps into a short circuit. In Australia, installing PV, battery and EV charger systems, and any work on their DC or AC wiring, is <b>electrical work for licensed electricians</b>, with industry accreditation on top. Nothing in this chapter is an instruction to touch that wiring. Your own practice stays at ELV, with a small 12 V panel.</p></div>
+
+    <h2>A solar cell is a diode run backwards</h2>
+    <p>A silicon solar cell is a large, thin <b>p–n junction</b>. The junction has a built-in electric field in its depletion region. When a photon with enough energy (more than silicon's band gap, about 1.12 eV, which means wavelengths shorter than about 1,100 nm) is absorbed, it frees an electron and leaves a hole. The built-in field pushes the electron to the n side and the hole to the p side. If you connect a load, those separated charges flow round the circuit: the cell is a generator.</p>
+    <p>Electrically, a cell is a <b>current source</b> (current proportional to the light) in parallel with a <b>diode</b> (the junction itself). That gives two key numbers:</p>
+    <ul>
+      <li><b>Isc</b> (short-circuit current): short the output and all the light-generated current flows out. It is proportional to irradiance (sunlight intensity).</li>
+      <li><b>Voc</b> (open-circuit voltage): with no load, the current has nowhere to go but back through the internal diode, which turns on at about 0.6–0.7 V for a silicon cell. Voc changes only a little with light, but it <b>rises when the cell gets colder</b>, just as a diode's forward voltage does.</li>
+    </ul>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family (the photodiode and solar cell)</a>
+    <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Deep dive · Why a diode has polarity</a>
+    <figure>
+      <svg viewBox="0 0 560 300" role="img" aria-label="Solar cell I-V curve and power curve with Isc, Voc and the maximum power point">
+        <line class="s-line" x1="60" y1="30" x2="60" y2="250"/>
+        <line class="s-line" x1="60" y1="250" x2="480" y2="250"/>
+        <text class="t t-small" x="10" y="26">Current</text>
+        <text class="t t-small" x="420" y="272">Voltage →</text>
+        <!-- IV curve -->
+        <path class="s-accent" d="M60 70 L300 76 C340 80 370 110 400 250"/>
+        <!-- power curve -->
+        <path class="s-amber s-dash" d="M60 250 C150 200 260 110 330 100 C360 98 380 150 400 250"/>
+        <!-- MPP -->
+        <circle class="f-red" cx="330" cy="86" r="6"/>
+        <line class="s-thin s-dash" x1="330" y1="86" x2="330" y2="250"/>
+        <line class="s-thin s-dash" x1="60" y1="86" x2="330" y2="86"/>
+        <text class="t t-small t-red" x="338" y="76">MPP (Vmp, Imp)</text>
+        <text class="t t-small" x="20" y="74">Isc</text>
+        <text class="t t-small" x="392" y="268">Voc</text>
+        <text class="t t-small" x="318" y="268">Vmp</text>
+        <text class="t t-small t-accent" x="140" y="62">current (I–V curve)</text>
+        <text class="t t-small" x="170" y="190">power = V × I (amber)</text>
+        <text class="t t-small t-muted" x="70" y="290">An MPPT controller keeps the operating point at the knee, where V × I is largest.</text>
+      </svg>
+      <figcaption>Figure 1. The I–V curve of a cell or panel. At short circuit you get current but no voltage; at open circuit voltage but no current. Maximum power is at the knee. Inverters use MPPT (maximum power point tracking) to sit there as sunlight and temperature change.</figcaption>
+    </figure>
+
+    <h2>Panels and strings</h2>
+    <p>A <b>panel</b> (module) is many cells in series. Modern residential panels often have 108–144 half-cut cells and are rated somewhere around 400–450 W. Their datasheet gives values at <b>STC</b> (standard test conditions: 1000 W/m² of light at 25 °C cell temperature). Indicative values for such a panel: Voc around 38–50 V, Vmp around 32–42 V, Isc around 11–14 A. Always use the real datasheet.</p>
+    <p>Panels are joined in <b>series strings</b> to reach the voltage an inverter needs:</p>
+    <ul>
+      <li>In <b>series</b>, voltages add and the current is the same through every panel. 12 panels × 40 V = 480 V.</li>
+      <li>In <b>parallel</b>, currents add and the voltage stays the same.</li>
+    </ul>
+    <h3>Temperature: why cold mornings matter</h3>
+    <p>Voc falls as the cells heat up and rises as they cool, typically by around −0.25 to −0.30 % per °C for Voc (the datasheet's "temperature coefficient of Voc"). The highest string voltage therefore happens on the <b>coldest, brightest morning</b>, when the panels are still cold but light is already strong. The designer must check that this cold-weather voltage stays below the inverter's maximum input voltage and the limits in the Australian PV array standard, AS/NZS 5033.</p>
+    <div class="formula">Voc(cold) = Voc(STC) × [1 + (coefficient ÷ 100) × (T<sub>min</sub> − 25)]
+      <small>Coefficient in %/°C (a negative number), T<sub>min</sub> the coldest expected cell temperature in °C. Example: Voc 49.5 V, −0.27 %/°C, −5 °C → 49.5 × [1 + (−0.0027) × (−30)] = 49.5 × 1.081 = 53.5 V per panel. 12 in series → 642 V.</small></div>
+    <p>Heat works the other way for power. On a hot roof the cells can run 25–35 °C above air temperature, and output power drops by roughly 0.3–0.4 % per °C above 25 °C. That is why panels often make their best power on cool, clear spring days, not in the middle of summer.</p>
+    <h3>Shading and bypass diodes</h3>
+    <p>Because the cells are in series, one shaded cell limits the current of its whole group. Panels contain <b>bypass diodes</b> (usually three, each across a third of the panel) so that current can flow around a shaded section instead of forcing through it and overheating it. That is the diode from T11 again, used as a safety valve.</p>
+
+    <div class="widget" id="c15-w1">
+      <span class="label">Interactive · PV string voltage calculator</span>
+      <p style="font-size:14.5px;margin:0 0 8px">Enter datasheet values. This is a learning tool, not a design tool: real design uses the standard, the inverter datasheet and site temperature data.</p>
+      <label>Panel Voc at STC (V) <input type="number" id="c15-voc" value="49.5" step="0.1" min="1"></label>
+      <label>Panel Vmp at STC (V) <input type="number" id="c15-vmp" value="41.6" step="0.1" min="1"></label>
+      <label>Panel Isc (A) <input type="number" id="c15-isc" value="13.9" step="0.1" min="0"></label>
+      <label>Voc temperature coefficient (%/°C) <input type="number" id="c15-co" value="-0.27" step="0.01"></label>
+      <label>Panels in series <span class="out" id="c15-no">12</span><input type="range" id="c15-n" min="1" max="24" step="1" value="12"></label>
+      <label>Coldest cell temperature <span class="out" id="c15-to">−5 °C</span><input type="range" id="c15-t" min="-15" max="25" step="1" value="-5"></label>
+      <label>Inverter max DC input (V) <input type="number" id="c15-inv" value="600" step="10" min="0"></label>
+      <div class="readings">
+        <div><small>String Voc at STC</small><span class="out" id="c15-r1">–</span></div>
+        <div><small>String Voc when cold</small><span class="out" id="c15-r2">–</span></div>
+        <div><small>String Vmp (STC)</small><span class="out" id="c15-r3">–</span></div>
+        <div><small>× ELV DC limit (120 V)</small><span class="out" id="c15-r4">–</span></div>
+      </div>
+      <svg viewBox="0 0 560 90" role="img" aria-label="Bar comparing string voltage with the ELV limit and the inverter maximum" style="margin-top:12px">
+        <rect class="f-wash" x="10" y="20" width="540" height="26" rx="4"/>
+        <rect id="c15-bar" class="f-red" x="10" y="20" width="0" height="26" rx="4"/>
+        <line id="c15-elv" class="s-green" x1="10" y1="10" x2="10" y2="56"/>
+        <line id="c15-im" class="s-line s-dash" x1="10" y1="10" x2="10" y2="56"/>
+        <text id="c15-elvt" class="t t-small t-green" x="10" y="72">ELV 120 V</text>
+        <text id="c15-imt" class="t t-small" x="10" y="86">inverter max</text>
+      </svg>
+      <p id="c15-msg" style="font-size:14.5px;margin:8px 0 0"></p>
+    </div>
+    <script>
+    (function(){
+      function g(i){return document.getElementById(i);}
+      var ids=['c15-voc','c15-vmp','c15-isc','c15-co','c15-n','c15-t','c15-inv'];
+      function upd(){
+        var voc=+g('c15-voc').value||0,vmp=+g('c15-vmp').value||0,isc=+g('c15-isc').value||0,co=+g('c15-co').value||0,n=+g('c15-n').value,t=+g('c15-t').value,inv=+g('c15-inv').value||0;
+        g('c15-no').textContent=n;g('c15-to').textContent=(t<0?'−'+(-t):t)+' °C';
+        var f=1+(co/100)*(t-25),s1=voc*n,s2=voc*f*n,s3=vmp*n;
+        g('c15-r1').textContent=s1.toFixed(0)+' V';g('c15-r2').textContent=s2.toFixed(0)+' V';g('c15-r3').textContent=s3.toFixed(0)+' V';
+        g('c15-r4').textContent=(s2/120).toFixed(1)+' ×';
+        var mx=Math.max(s2,inv,130)*1.05,sc=540/mx;
+        g('c15-bar').setAttribute('width',Math.max(0,s2*sc));
+        var ex=10+120*sc,ix=10+inv*sc;
+        ['x1','x2'].forEach(function(a){g('c15-elv').setAttribute(a,ex);g('c15-im').setAttribute(a,ix);});
+        g('c15-elvt').setAttribute('x',Math.min(ex,470));g('c15-imt').setAttribute('x',Math.min(ix,470));
+        var m='The cold-morning string voltage is '+s2.toFixed(0)+' V DC at up to about '+isc.toFixed(1)+' A. ';
+        if(s2>120)m+='That is '+(s2/120).toFixed(1)+' times the ELV limit: lethal, live whenever there is light, and licensed electrician work only. ';
+        else m+='This small string is within ELV, like a learning kit. ';
+        if(inv>0&&s2>inv)m+='It is ABOVE the inverter maximum of '+inv+' V: on a cold morning this design could damage the inverter. A designer would use fewer panels per string.';
+        else if(inv>0)m+='It is below the inverter maximum of '+inv+' V, with '+(inv-s2).toFixed(0)+' V to spare.';
+        g('c15-msg').textContent=m;
+      }
+      ids.forEach(function(i){g(i).addEventListener('input',upd);g(i).addEventListener('change',upd);});upd();
+    })();
+    </script>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Each panel is only about 40 V, so the roof is low voltage." <b>Right:</b> panels are wired in series, so the string voltage is the sum: hundreds of volts DC. Even a single panel's Voc is near the level where DC becomes dangerous when wet, and connectors pulled apart under load can draw an arc. Treat every PV cable as live.</p></div>
+
+    <h2>Inverters</h2>
+    <p>An <b>inverter</b> converts the panels' DC into 230 V 50 Hz AC synchronised to the grid. It also does MPPT, monitors the grid, and disconnects within a short time if the grid fails, so it cannot back-feed into lines that workers think are dead (<b>anti-islanding</b>).</p>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>How it works</th><th>Notes for a tech</th></tr>
+      <tr><td><b>String inverter</b></td><td>One inverter on the wall; strings of panels run to it at high DC voltage. One or more MPPT inputs.</td><td>Most common on Australian homes. DC isolators and DC cabling on the roof and wall.</td></tr>
+      <tr><td><b>Microinverters</b></td><td>A small inverter behind each panel; AC is formed on the roof.</td><td>No high-voltage DC string. Panel-level monitoring. More units to fail on the roof.</td></tr>
+      <tr><td><b>Optimisers + string inverter</b></td><td>A DC–DC converter on each panel does per-panel MPPT and can drop to a safe low voltage when shut down.</td><td>Helps with shading; panel-level data.</td></tr>
+      <tr><td><b>Hybrid inverter</b></td><td>One unit handles PV, a battery and the grid. Can supply backup circuits during a blackout if designed for it.</td><td>The usual choice for new solar-plus-battery systems.</td></tr>
+      <tr><td><b>AC-coupled battery inverter</b></td><td>A separate battery with its own inverter, added to an existing solar system on the AC side.</td><td>Common when adding a battery to an older system.</td></tr>
+    </table></div>
+    <figure>
+      <svg viewBox="0 0 760 300" role="img" aria-label="Hybrid PV and battery system: panels in a string, DC isolator, hybrid inverter, battery with its own battery management system, switchboard, meter and grid">
+        <!-- panels -->
+        <g>
+          <rect class="f-theory-soft s-line" x="20" y="30" width="56" height="40"/>
+          <rect class="f-theory-soft s-line" x="84" y="30" width="56" height="40"/>
+          <rect class="f-theory-soft s-line" x="148" y="30" width="56" height="40"/>
+          <rect class="f-theory-soft s-line" x="212" y="30" width="56" height="40"/>
+        </g>
+        <text class="t t-small" x="20" y="22">PV string in series: ~300–600 V DC</text>
+        <path class="s-red" d="M268 50 H320 V120"/>
+        <rect class="f-warn-soft s-red" x="290" y="120" width="60" height="34" rx="4"/>
+        <text class="t t-small" x="294" y="142">DC isol.</text>
+        <path class="s-red" d="M320 154 V180 H370"/>
+        <text class="t t-small t-red" x="40" y="96">HIGH-VOLTAGE DC: live in daylight</text>
+        <!-- inverter -->
+        <rect class="f-career-soft s-accent" x="370" y="150" width="150" height="70" rx="8"/>
+        <text class="t t-bold" x="384" y="176">Hybrid inverter</text>
+        <text class="t t-small t-muted" x="384" y="196">MPPT, DC↔AC,</text>
+        <text class="t t-small t-muted" x="384" y="212">anti-islanding</text>
+        <!-- battery -->
+        <path class="s-red" d="M445 220 V250"/>
+        <rect class="f-wash s-line" x="380" y="250" width="140" height="44" rx="6"/>
+        <text class="t t-small t-bold" x="392" y="270">Battery + its BMS</text>
+        <text class="t t-small t-muted" x="392" y="286">CAN / RS-485 to inverter</text>
+        <line class="s-thin s-dash" x1="520" y1="272" x2="560" y2="272"/>
+        <text class="t t-small t-muted" x="530" y="292">data link</text>
+        <!-- AC side -->
+        <path class="s-amber" d="M520 185 H580"/>
+        <rect class="f-wash s-line" x="580" y="160" width="80" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="590" y="182">Switch-</text>
+        <text class="t t-small t-bold" x="590" y="198">board</text>
+        <path class="s-amber" d="M660 185 H690"/>
+        <rect class="f-wash s-line" x="690" y="165" width="56" height="40" rx="6"/>
+        <text class="t t-small" x="696" y="190">Meter</text>
+        <path class="s-amber" d="M718 165 V110"/>
+        <text class="t t-small" x="690" y="100">Grid</text>
+        <text class="t t-small t-muted" x="560" y="236">230 V AC (amber)</text>
+        <!-- monitoring -->
+        <rect class="f-panel s-line s-dash" x="560" y="30" width="180" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="572" y="50">Monitoring portal</text>
+        <text class="t t-small t-muted" x="572" y="68">Wi-Fi / Ethernet / 4G</text>
+        <line class="s-thin s-dash" x1="480" y1="150" x2="600" y2="80"/>
+      </svg>
+      <figcaption>Figure 2. A hybrid PV and battery system. Red is high-voltage DC, amber is mains AC: both are licensed electrician work. The dashed links (battery BMS data and monitoring) are where many non-licensed support roles spend their time.</figcaption>
+    </figure>
+    <div class="callout aus"><span class="label">In Australia</span><p>Grid-connected inverters must meet AS/NZS 4777 and, to be eligible for government incentives, be on the Clean Energy Council's approved product lists (which also cover panels and batteries). PV arrays are installed to AS/NZS 5033 and battery systems to AS/NZS 5139, alongside the wiring rules AS/NZS 3000. Your local electricity distributor (the network operator) sets connection approval and export limits. Standards are revised regularly: <b>confirm current requirements with your state electrical regulator, the network operator and the industry accreditation body</b>.</p></div>
+
+    <h2>Batteries</h2>
+    <h3>kWh versus kW</h3>
+    <p>Two different numbers describe a battery, and customers mix them up all the time:</p>
+    <ul>
+      <li><b>Energy (kWh)</b>: how much it stores, like the size of a water tank. A 13.5 kWh battery can supply 1 kW for about 13.5 hours.</li>
+      <li><b>Power (kW)</b>: how fast it can deliver, like the size of the tap. A 5 kW battery cannot run a 7 kW load, however full it is.</li>
+    </ul>
+    <p>Other terms: <b>usable capacity</b> (what you can actually use, smaller than nominal), <b>depth of discharge (DoD)</b> (the fraction of capacity used per cycle), <b>round-trip efficiency</b> (energy out ÷ energy in, often around 90% for lithium systems), and <b>cycle life</b> (how many charge–discharge cycles before capacity falls to a stated level).</p>
+    <div class="formula">Nominal capacity needed = energy to supply ÷ (DoD × round-trip efficiency)
+      <small>Example: the evening and night use 9 kWh. With 90% DoD and 90% efficiency: 9 ÷ (0.9 × 0.9) ≈ 11.1 kWh nominal. (A simplification: product datasheets often already quote usable capacity.)</small></div>
+
+    <div class="widget" id="c15-w2">
+      <span class="label">Interactive · Battery sizing (simple)</span>
+      <label>Energy to supply from the battery each day <span class="out" id="c15-eo">9.0 kWh</span><input type="range" id="c15-e" min="1" max="30" step="0.5" value="9"></label>
+      <label>Depth of discharge <span class="out" id="c15-do">90 %</span><input type="range" id="c15-d" min="50" max="100" step="5" value="90"></label>
+      <label>Round-trip efficiency <span class="out" id="c15-fo">90 %</span><input type="range" id="c15-f" min="70" max="98" step="1" value="90"></label>
+      <label>Biggest load running at once (kW) <input type="number" id="c15-p" value="5" step="0.5" min="0"></label>
+      <div class="readings">
+        <div><small>Nominal capacity</small><span class="out" id="c15-cap">–</span></div>
+        <div><small>Power rating needed</small><span class="out" id="c15-pw">–</span></div>
+        <div><small>Hours at that load (full)</small><span class="out" id="c15-hr">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      function g(i){return document.getElementById(i);}
+      function upd(){
+        var e=+g('c15-e').value,d=+g('c15-d').value/100,f=+g('c15-f').value/100,p=+g('c15-p').value||0;
+        g('c15-eo').textContent=e.toFixed(1)+' kWh';g('c15-do').textContent=Math.round(d*100)+' %';g('c15-fo').textContent=Math.round(f*100)+' %';
+        var cap=e/(d*f);g('c15-cap').textContent=cap.toFixed(1)+' kWh';
+        g('c15-pw').textContent='≥ '+p.toFixed(1)+' kW';
+        g('c15-hr').textContent=p>0?(cap*d*f/p).toFixed(1)+' h':'–';
+      }
+      ['c15-e','c15-d','c15-f','c15-p'].forEach(function(i){g(i).addEventListener('input',upd);});upd();
+    })();
+    </script>
+
+    <h3>Chemistries</h3>
+    <ul>
+      <li><b>LFP (lithium iron phosphate, LiFePO₄)</b>: about 3.2 V per cell nominal. Very common in home and commercial storage: good cycle life and better thermal stability than most other lithium types.</li>
+      <li><b>NMC (nickel manganese cobalt)</b>: about 3.6–3.7 V per cell. Higher energy density, so common in EVs and some home batteries; needs careful thermal management.</li>
+      <li><b>Lead-acid</b>: older off-grid systems. Heavy, short life if deeply discharged.</li>
+    </ul>
+    <p>Home batteries come as <b>low-voltage</b> systems (commonly a nominal 48 V class, such as 16 LFP cells at 51.2 V) or <b>high-voltage</b> stacks of a few hundred volts DC. A 48 V battery is within the ELV voltage limit, but that does not make it safe: it can deliver enormous fault currents that melt tools, cause arc burns and start fires. It is still licensed, accredited work.</p>
+    <div class="callout myth"><span class="label">Two different "BMS"</span><p>In this chapter <b>BMS</b> means <b>battery management system</b>: the electronics inside a battery that measures every cell's voltage and temperature, balances the cells, limits charge and discharge current, and opens contactors if something goes wrong. It talks to the inverter, usually over CAN bus or RS-485 (see <a href="../practice/p14-serial-buses-modbus.html">P14</a>). That is a different thing from the <b>building management system</b> of <a href="c01-bms-fundamentals.html">C01</a>. In an interview, say which one you mean.</p></div>
+
+    <h2>EV chargers</h2>
+    <p>An EV's traction battery is DC. The question is where the AC from the grid is converted to DC.</p>
+    <figure>
+      <svg viewBox="0 0 760 240" role="img" aria-label="AC charging uses the car's onboard charger; DC fast charging converts in the station and feeds DC straight to the battery">
+        <text class="t t-bold" x="20" y="24">AC charging (wallbox)</text>
+        <rect class="f-wash s-line" x="20" y="40" width="100" height="50" rx="6"/><text class="t t-small" x="30" y="70">Grid AC</text>
+        <path class="s-amber" d="M120 65 H180"/>
+        <rect class="f-career-soft s-accent" x="180" y="40" width="120" height="50" rx="6"/><text class="t t-small" x="190" y="62">Wallbox (EVSE)</text><text class="t t-small t-muted" x="190" y="80">switches AC, safety</text>
+        <path class="s-amber" d="M300 65 H360"/><text class="t t-small t-muted" x="306" y="56">AC</text>
+        <rect class="f-panel s-line" x="360" y="30" width="380" height="70" rx="10"/>
+        <text class="t t-small t-muted" x="370" y="48">the car</text>
+        <rect class="f-career-soft s-accent" x="380" y="54" width="150" height="36" rx="6"/><text class="t t-small" x="390" y="77">Onboard charger</text>
+        <path class="s-red" d="M530 72 H590"/>
+        <rect class="f-wash s-line" x="590" y="54" width="130" height="36" rx="6"/><text class="t t-small" x="600" y="77">Battery (DC)</text>
+        <text class="t t-small t-muted" x="20" y="114">Typically up to ~7 kW single-phase or ~11–22 kW three-phase, limited by the onboard charger.</text>
+
+        <text class="t t-bold" x="20" y="150">DC fast charging</text>
+        <rect class="f-wash s-line" x="20" y="166" width="100" height="50" rx="6"/><text class="t t-small" x="30" y="196">Grid AC</text>
+        <path class="s-amber" d="M120 191 H180"/>
+        <rect class="f-career-soft s-accent" x="180" y="166" width="170" height="50" rx="6"/><text class="t t-small" x="190" y="188">DC charger: AC→DC</text><text class="t t-small t-muted" x="190" y="206">in the station cabinet</text>
+        <path class="s-red" d="M350 191 H590"/><text class="t t-small t-red" x="400" y="182">high-voltage DC, straight to battery</text>
+        <rect class="f-wash s-line" x="590" y="173" width="130" height="36" rx="6"/><text class="t t-small" x="600" y="196">Battery (DC)</text>
+        <text class="t t-small t-muted" x="20" y="236">Tens to hundreds of kW. The car's battery management system tells the charger what current to give.</text>
+      </svg>
+      <figcaption>Figure 3. AC charging uses the car's own onboard charger, so its speed is limited by that charger. DC fast charging moves the converter into the station, so it can deliver far more power.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Typical power</th><th>Where</th></tr>
+      <tr><td>Portable cable on a normal outlet</td><td>~2–2.4 kW (10 A at 230 V)</td><td>Occasional home use</td></tr>
+      <tr><td>AC wallbox, single-phase 32 A</td><td>~7 kW (230 V × 32 A ≈ 7.4 kW)</td><td>Homes</td></tr>
+      <tr><td>AC wallbox, three-phase</td><td>~11 kW (16 A) to ~22 kW (32 A)</td><td>Homes with three-phase, workplaces, car parks</td></tr>
+      <tr><td>DC fast charger</td><td>~25–50 kW up to 350 kW</td><td>Highway sites, fleets, public charging</td></tr>
+    </table></div>
+    <p><b>Worked example.</b> A car with a 60 kWh battery charges from 20% to 80%: 0.6 × 60 = 36 kWh. On a 7 kW wallbox: 36 ÷ 7 ≈ 5.1 h, plus losses, so about 5.5–6 h. On a 50 kW DC charger: 36 ÷ 50 ≈ 0.72 h ≈ 43 min, a bit longer in practice because charging slows down as the battery fills.</p>
+    <p>In Australia, Type 2 is the common AC connector and CCS2 the common DC fast-charging connector, with CHAdeMO on some older vehicles. Networked chargers talk to a management back-end, commonly using <b>OCPP</b> (Open Charge Point Protocol), for user authorisation, billing, load management and remote fault-finding. Load management and "solar surplus" charging (charging the car from excess rooftop solar) link chargers to the inverter and the meter.</p>
+    <div class="callout job"><span class="label">On the job</span><p>EV charger field service and commissioning often includes non-electrical work: configuring the charger's network connection (Wi-Fi, Ethernet or 4G), registering it on the OCPP back-end, setting RFID cards, updating firmware and testing a charge session. Installation and repair of the charger's power wiring is for licensed electricians. Network and protocol skills from <a href="../practice/p19-networking-hands-on.html">P19</a> are a real advantage.</p></div>
+
+    <h2>Monitoring and remote support</h2>
+    <p>Almost every modern inverter, battery and charger reports to a cloud portal. Many also offer local data over Modbus TCP, often in the industry SunSpec register layout, for energy management systems and BMS integration. This creates a large amount of remote, desk-based technical work:</p>
+    <ul>
+      <li><b>Connectivity</b>: systems drop offline when the customer changes their Wi-Fi router or password. Walking a customer through reconnecting is a daily task.</li>
+      <li><b>Performance checks</b>: compare actual production with what the system should make. As a very rough rule of thumb, in many Australian cities a well-oriented system averages in the region of 3.5–4.5 kWh per day per kW of panels across a year; it varies with location, season, tilt and shading, so use proper estimates for real comparisons.</li>
+      <li><b>Error codes</b>: for example a grid over-voltage trip. Many Australian streets have high voltage at times of strong solar export, and inverters must disconnect or reduce output when the voltage rises too far. Reading the event log and explaining it to the customer is a support skill; fixing the cause may need the electrician or the network operator.</li>
+      <li><b>Firmware, settings and warranty claims</b>: collecting logs, photos and serial numbers, and arranging an electrician's visit.</li>
+    </ul>
+
+    <h2>Who does what: licensed and non-licensed roles</h2>
+    <div class="callout warn"><span class="label">The legal line</span><p>In Australia, installing and repairing PV, battery and EV charger systems, including DC and AC wiring, connecting isolators and inverters, and terminating batteries, is electrical work that requires a <b>state electrical licence</b>. To be eligible for government small-scale technology certificates (STCs, under the Clean Energy Regulator's small-scale renewable energy scheme), PV and battery systems must also be designed and installed by people holding the <b>industry accreditation</b>; that scheme was run for many years by the Clean Energy Council and has more recently moved to a separate body, Solar Accreditation Australia. What an unlicensed assistant may do on site differs by state. <b>Confirm the current rules with your state electrical regulator and the accreditation body</b> before you take any role.</p></div>
+    <div class="cards">
+      <div class="card"><h4>Installer assistant / solar labourer</h4><p>Carrying and lifting panels, setting out and fixing mounting rails, roof safety equipment, site clean-up, under a licensed installer's supervision. No electrical connections. Needs working-at-heights training and a White Card. Physical and hot.</p></div>
+      <div class="card"><h4>Monitoring and support technician</h4><p>Remote: portals, error codes, connectivity, performance, warranty. Good fit for an electronics and networking background. Often office-based.</p></div>
+      <div class="card"><h4>Commissioning and app set-up</h4><p>After the electrician completes the electrical work: configuring monitoring, registering devices, setting up apps, explaining the system to the customer. Check that the role does not include electrical tasks.</p></div>
+      <div class="card"><h4>Sales and design support</h4><p>System sizing, shading analysis, design software, quotes, network operator applications. Technical understanding makes you credible.</p></div>
+      <div class="card"><h4>Warehouse and logistics</h4><p>Stock, dispatch, returns and fault testing of returned units in some companies. A way into the industry.</p></div>
+      <div class="card"><h4>Licensed installer / electrician</h4><p>The core installation role, with the highest demand and pay range. Needs an electrical licence plus accreditation.</p></div>
+    </div>
+    <h3>The path to licensed work</h3>
+    <ul>
+      <li><b>Trained in Australia</b>: an electrical apprenticeship (Certificate III in Electrotechnology Electrician with supervised work and assessments), then a state licence, then accreditation courses in grid-connected PV design and installation and battery storage.</li>
+      <li><b>Overseas-qualified electricians</b>: a skills assessment, gap training and the state's licence process. See <a href="c11-licences-pathways.html">C11</a>.</li>
+      <li><b>Not an electrician</b>: build experience in support and commissioning roles; some people later start an adult apprenticeship.</li>
+    </ul>
+    <div class="callout try"><span class="label">Try this (ELV only)</span><p>Buy a small 12 V-class solar panel (around 20 W, Voc about 21–22 V, roughly A$40–60 from Jaycar, Altronics or online), a small solar charge controller and a fused 12 V LiFePO₄ battery. Measure the panel's Voc and Isc in full sun, in cloud and with one cell shaded by a card. Note how Isc follows the light while Voc barely changes, and how shading one cell drops the current. Then put the panel in a fridge for 10 minutes and measure Voc as it warms. Fuse the battery positive close to the terminal; even a small lithium battery can deliver dangerous short-circuit current. Stay with this one panel: never put several in series.</p></div>
+
+    <h2>Typical interview questions</h2>
+    <details class="more"><summary>"What is the difference between kW and kWh?"</summary><p>kW is the rate (power), kWh is the amount (energy). A 10 kWh, 5 kW battery stores 10 kWh but can supply at most 5 kW at a time.</p></details>
+    <details class="more"><summary>"Why is string voltage highest on a cold morning?"</summary><p>Voc rises as cell temperature falls; on a cold, bright morning the cells are cold but well lit, so string Voc peaks and must stay within the inverter's limit.</p></details>
+    <details class="more"><summary>"A customer's system shows zero production in the app. What do you check remotely?"</summary><p>Is the inverter offline (connectivity) or actually not producing? Check last data time, Wi-Fi status, event log for grid or isolation faults, the weather, and whether production shows on the inverter's own display (ask the customer to look, without opening anything). Book an electrician if it is a real fault.</p></details>
+    <details class="more"><summary>"What does a battery management system do?"</summary><p>Monitors cell voltages and temperatures, balances cells, limits currents, protects with contactors, and reports state of charge and faults to the inverter over CAN or RS-485.</p></details>
+    <details class="more"><summary>"What can you do without an electrical licence?"</summary><p>Be specific and honest: supervised non-electrical installation tasks, monitoring, support, commissioning of settings and apps, design support. Say you never work on DC or AC wiring and that you would confirm the state rules.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why can't you make a PV string safe by opening the DC isolator?</summary><div class="answer"><p>The isolator stops current flowing, but the panels keep generating voltage whenever light falls on them. The panels and the cable between them and the isolator remain live at the full string voltage.</p></div></details>
+    <details class="quiz"><summary>Why is Isc proportional to light but Voc almost constant?</summary><div class="answer"><p>Each absorbed photon contributes charge, so the generated current follows the light. Voc is set by the internal diode's forward voltage, which grows only logarithmically with current, so it changes little with light. It changes more with temperature.</p></div></details>
+    <details class="quiz"><summary>A panel has Voc 45 V and a coefficient of −0.28 %/°C. What is Voc at 0 °C?</summary><div class="answer"><p>45 × [1 + (−0.0028) × (0 − 25)] = 45 × 1.07 = 48.2 V.</p></div></details>
+    <details class="quiz"><summary>A 51.2 V LFP battery is "within ELV". Why is it still dangerous?</summary><div class="answer"><p>Its internal resistance is tiny, so a short can drive thousands of amps: molten metal, arc flash, burns and fire. ELV limits shock risk, not energy or fault current.</p></div></details>
+    <details class="quiz"><summary>A customer has a 13.5 kWh, 5 kW battery and wants to run a 7 kW ducted air conditioner from it at night. Will it work?</summary><div class="answer"><p>Not on the battery alone: the power limit is 5 kW, so the extra will come from the grid (or, during a blackout, the backup may trip on overload). Energy is not the problem; power is.</p></div></details>
+    <details class="quiz"><summary>Why does an AC wallbox charge more slowly than a DC fast charger?</summary><div class="answer"><p>With AC, the conversion to DC happens in the car's onboard charger, which is limited in size (often around 7–11 kW). A DC charger has a large converter in the station and feeds DC straight to the battery at tens to hundreds of kW.</p></div></details>
+    <details class="quiz"><summary>An inverter keeps tripping on "grid over-voltage" on sunny afternoons. Is that an inverter fault?</summary><div class="answer"><p>Usually not. The local grid voltage is rising too high when many systems export, and the inverter is disconnecting as required. Causes can include network voltage and the cable from the inverter to the meter; an electrician or the network operator investigates.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain a solar cell as a p–n junction with Isc, Voc and the maximum power point.</span></li>
+      <li><input type="checkbox"><span>I can calculate series string voltage, including the cold-morning Voc.</span></li>
+      <li><input type="checkbox"><span>I can explain why PV DC is lethal, always live in daylight, and licensed work only.</span></li>
+      <li><input type="checkbox"><span>I can compare string, micro, optimiser, hybrid and AC-coupled systems.</span></li>
+      <li><input type="checkbox"><span>I can explain kWh vs kW, DoD and efficiency, and size a battery roughly.</span></li>
+      <li><input type="checkbox"><span>I can explain what a battery management system does and not confuse it with a building management system.</span></li>
+      <li><input type="checkbox"><span>I can explain AC vs DC EV charging and do a charge-time estimate.</span></li>
+      <li><input type="checkbox"><span>I can list solar and battery roles open without a licence, and I know to confirm the rules with my state regulator and the accreditation body.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
