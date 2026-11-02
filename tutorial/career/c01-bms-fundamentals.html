@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C01 · BMS fundamentals: what a building management system does</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part I · Building services</div>
+    <span class="eyebrow">Job Track · C01</span>
+    <h1>BMS fundamentals: what a building management system does</h1>
+    <p class="lede">A building management system (BMS) is the computer network that runs a building's plant: air conditioning, pumps, lights, meters and more. By the end of this chapter you will know what it controls, how it is built in layers, what the four point types are, and what a BMS technician actually does on a working day in Australia.</p>
+    <div class="meta"><span><b>Reading</b> 50 min</span><span><b>Level</b> Beginner</span><span><b>Roles</b> BMS / controls technician</span><span><b>Builds on</b> P03, P12, P14</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What a BMS is (and what it is not)</h2>
+    <p>Walk into the plant room of an office tower in Sydney or Melbourne. You will see big fans, pumps, pipes and a grey steel cabinet full of small boxes with green terminal blocks. Those boxes are <b>controllers</b>. They read sensors, run control programs, and drive valves, dampers and motors. All of them talk over a network to a server, and a person can see the whole building on a screen. That whole arrangement is the <b>BMS</b>.</p>
+    <p>You will hear several names for the same thing:</p>
+    <ul>
+      <li><b>BMS</b> – building management system. The most common term in Australia.</li>
+      <li><b>BMCS</b> – building management and control system. Used in many Australian specifications.</li>
+      <li><b>BAS</b> – building automation system. Common in American documents.</li>
+      <li><b>DDC</b> – direct digital control. Strictly, this means a microcontroller runs the control loop (instead of an old pneumatic or analogue controller). People say "DDC controller" or "DDC panel".</li>
+    </ul>
+    <p>A BMS does three jobs. It <b>controls</b> (keeps a room at 22.5 °C, keeps duct pressure at 250 Pa). It <b>monitors</b> (records temperatures and energy, raises alarms). And it <b>schedules</b> (turns plant on before people arrive and off when they leave). A building can run without a BMS, but it will waste energy, and nobody will know when something breaks until a tenant complains.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A BMS is a big computer that switches the air conditioner on and off."<br><b>Right:</b> the intelligence is spread out. Each field controller runs its own control loops, even if the server is turned off. The server (front end) is mainly a window: graphics, alarms, trends and schedules. If the network fails, a well-designed building keeps running on the controllers' local programs. This is why technicians care so much about what is <i>in each controller</i>, not just what the screen shows.</p></div>
+
+    <h2>What a BMS controls</h2>
+    <p>The biggest part of almost every BMS is HVAC (heating, ventilation and air conditioning), because it uses the most energy and has the most moving parts. But a modern BMS touches nearly every service in the building.</p>
+    <div class="cards">
+      <div class="card"><h4>HVAC plant</h4><p>Chillers, cooling towers, boilers or heat pumps, air handling units (AHUs), VAV boxes, fan coil units, exhaust fans, car park fans. Chapter <a href="c03-hvac-for-technicians.html">C03</a> explains the plant itself.</p></div>
+      <div class="card"><h4>Lighting</h4><p>Time schedules for common areas, after-hours lighting requests, links to DALI or KNX lighting controllers. The BMS often just sends "on/off by zone" to a separate lighting system.</p></div>
+      <div class="card"><h4>Metering</h4><p>Electricity, gas, water and thermal (BTU) meters, usually over Modbus or pulse outputs. Energy data feeds NABERS ratings and tenant billing.</p></div>
+      <div class="card"><h4>Hydraulics and pumps</h4><p>Domestic water pumps, sump pumps and pit level alarms, hot water plant, rainwater tanks. Often "monitor only": the BMS watches run status and faults.</p></div>
+      <div class="card"><h4>Lift and fire interfaces</h4><p>The BMS does not control lifts or fire systems. It receives status signals (lift fault, fire alarm) and reacts, for example by shutting AHUs in fire mode. See <a href="c04-fire-detection-ewis.html">C04</a>.</p></div>
+      <div class="card"><h4>Generators and power</h4><p>Standby generator running/fault, fuel level, mains fail, UPS alarms, power quality from switchboard meters. Again mostly monitoring.</p></div>
+    </div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Learn the two words <b>control</b> and <b>monitor</b>. On drawings and points lists, a system marked "monitor only" means the BMS can see it but must never command it. Writing to a monitor-only point from the front end, even by mistake, is a serious error on site.</p></div>
+
+    <h2>The architecture: four levels</h2>
+    <p>Almost every BMS, whatever the brand, is built in the same layers. Learn this picture and you can walk into any plant room and find your way.</p>
+    <figure>
+      <svg viewBox="0 0 760 430" role="img" aria-label="Four-level BMS architecture from field devices up to the front-end server">
+        <defs><marker id="c1a-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <!-- bands -->
+        <rect class="f-wash" x="10" y="10" width="740" height="88" rx="8"/>
+        <rect class="f-wash" x="10" y="132" width="740" height="76" rx="8"/>
+        <rect class="f-wash" x="10" y="242" width="740" height="70" rx="8"/>
+        <rect class="f-wash" x="10" y="340" width="740" height="80" rx="8"/>
+        <text class="t t-small t-bold t-muted" x="20" y="28">4 · MANAGEMENT LEVEL</text>
+        <text class="t t-small t-bold t-muted" x="20" y="150">3 · SUPERVISORY (NETWORK) LEVEL</text>
+        <text class="t t-small t-bold t-muted" x="20" y="260">2 · FIELD CONTROLLER LEVEL</text>
+        <text class="t t-small t-bold t-muted" x="20" y="358">1 · FIELD DEVICE LEVEL</text>
+        <!-- level 4 -->
+        <rect class="f-panel s-accent" x="150" y="40" width="150" height="46" rx="6"/>
+        <text class="t t-small t-bold" x="225" y="60" text-anchor="middle">Front-end server</text>
+        <text class="t t-small t-muted" x="225" y="76" text-anchor="middle">database, trends</text>
+        <rect class="f-panel s-accent" x="330" y="40" width="150" height="46" rx="6"/>
+        <text class="t t-small t-bold" x="405" y="60" text-anchor="middle">Operator workstation</text>
+        <text class="t t-small t-muted" x="405" y="76" text-anchor="middle">graphics, alarms</text>
+        <rect class="f-panel s-accent" x="510" y="40" width="150" height="46" rx="6"/>
+        <text class="t t-small t-bold" x="585" y="60" text-anchor="middle">Remote / web browser</text>
+        <text class="t t-small t-muted" x="585" y="76" text-anchor="middle">via VPN, secured</text>
+        <!-- ethernet -->
+        <line class="s-accent" x1="120" y1="114" x2="700" y2="114"/>
+        <line class="s-accent" x1="225" y1="86" x2="225" y2="114"/>
+        <line class="s-accent" x1="405" y1="86" x2="405" y2="114"/>
+        <line class="s-accent" x1="585" y1="86" x2="585" y2="114"/>
+        <text class="t t-small t-accent" x="704" y="118">IP</text>
+        <text class="t t-small t-muted" x="430" y="128">Ethernet, BACnet/IP (BMS network or VLAN)</text>
+        <!-- level 3 -->
+        <rect class="f-panel s-line" x="110" y="160" width="190" height="40" rx="6"/>
+        <text class="t t-small t-bold" x="205" y="185" text-anchor="middle">Network controller A</text>
+        <rect class="f-panel s-line" x="380" y="160" width="190" height="40" rx="6"/>
+        <text class="t t-small t-bold" x="475" y="185" text-anchor="middle">Network controller B</text>
+        <rect class="f-panel s-line" x="600" y="160" width="140" height="40" rx="6"/>
+        <text class="t t-small" x="670" y="179" text-anchor="middle">Chiller / meters</text>
+        <text class="t t-small t-muted" x="670" y="194" text-anchor="middle">(third party)</text>
+        <line class="s-accent" x1="205" y1="114" x2="205" y2="160"/>
+        <line class="s-accent" x1="475" y1="114" x2="475" y2="160"/>
+        <line class="s-accent" x1="670" y1="114" x2="670" y2="160"/>
+        <!-- RS-485 trunks -->
+        <path class="s-line s-dash" d="M205 200 V226 H60 M205 226 H340"/>
+        <path class="s-line s-dash" d="M475 200 V226 H380 M475 226 H740"/>
+        <text class="t t-small t-muted" x="390" y="238">RS-485 trunks: BACnet MS/TP or Modbus RTU</text>
+        <!-- level 2 -->
+        <rect class="f-accent-soft s-line" x="40" y="268" width="120" height="36" rx="5"/>
+        <text class="t t-small" x="100" y="291" text-anchor="middle">AHU-01 controller</text>
+        <rect class="f-accent-soft s-line" x="200" y="268" width="120" height="36" rx="5"/>
+        <text class="t t-small" x="260" y="291" text-anchor="middle">AHU-02 controller</text>
+        <rect class="f-accent-soft s-line" x="390" y="268" width="100" height="36" rx="5"/>
+        <text class="t t-small" x="440" y="291" text-anchor="middle">VAV L3-01</text>
+        <rect class="f-accent-soft s-line" x="510" y="268" width="100" height="36" rx="5"/>
+        <text class="t t-small" x="560" y="291" text-anchor="middle">VAV L3-02</text>
+        <rect class="f-accent-soft s-line" x="630" y="268" width="100" height="36" rx="5"/>
+        <text class="t t-small" x="680" y="291" text-anchor="middle">VAV L3-03</text>
+        <path class="s-line s-dash" d="M100 226 V268 M260 226 V268 M440 226 V268 M560 226 V268 M680 226 V268"/>
+        <!-- level 1 -->
+        <circle class="f-panel s-line" cx="45" cy="388" r="16"/><text class="t t-small" x="45" y="392" text-anchor="middle">T</text>
+        <rect class="f-panel s-line" x="80" y="372" width="34" height="32" rx="4"/><text class="t t-small" x="97" y="393" text-anchor="middle">M</text>
+        <polygon class="f-panel s-line" points="140,372 172,388 140,404"/>
+        <circle class="f-panel s-line" cx="200" cy="388" r="16"/><text class="t t-small" x="200" y="392" text-anchor="middle">ΔP</text>
+        <rect class="f-panel s-line" x="228" y="372" width="44" height="32" rx="4"/><text class="t t-small" x="250" y="393" text-anchor="middle">VSD</text>
+        <path class="s-thin" d="M100 304 L45 372 M100 304 L97 372 M100 304 L150 380 M100 304 L200 372 M100 304 L250 372"/>
+        <circle class="f-panel s-line" cx="440" cy="388" r="16"/><text class="t t-small" x="440" y="392" text-anchor="middle">T</text>
+        <rect class="f-panel s-line" x="470" y="372" width="34" height="32" rx="4"/><text class="t t-small" x="487" y="393" text-anchor="middle">M</text>
+        <path class="s-thin" d="M440 304 V372 M440 304 L487 372"/>
+        <text class="t t-small t-muted" x="300" y="384">sensors, actuators, switches, drives</text>
+        <text class="t t-small t-muted" x="300" y="402">hard-wired: 10 kΩ, 0–10 V, 4–20 mA, contacts</text>
+        <text class="t t-small t-muted" x="530" y="392">room sensor + damper motor</text>
+      </svg>
+      <figcaption>Figure 1. The four levels of a BMS. Field devices are hard-wired to field controllers. Field controllers share an RS-485 trunk to a network (supervisory) controller. Network controllers and the front end share an IP network. Each layer can keep working if the layer above it fails.</figcaption>
+    </figure>
+
+    <h3>Level 1 · Field devices</h3>
+    <p>These are the physical sensors and actuators: temperature sensors, pressure switches, valve and damper actuators, variable speed drives (VSDs), current switches, meters. They are wired with copper to a controller's input/output (I/O) terminals. Most run on extra-low voltage: 24 V AC for actuator power, and 0–10 V, 4–20 mA or a resistance for signals.</p>
+    <h3>Level 2 · Field controllers (I/O and DDC)</h3>
+    <p>A field controller has a microcontroller, a set of I/O terminals and a program. A <b>plant controller</b> for an AHU might have 20–40 points. A <b>VAV controller</b> or <b>FCU controller</b> is small (often 6–12 points) and mounted on the box in the ceiling. Some systems also use <b>I/O modules</b>: a box of terminals with no program of its own, which reports to a nearby controller.</p>
+    <h3>Level 3 · Network (supervisory) controllers</h3>
+    <p>These sit between the field bus and the IP network. They collect data from many field controllers, run building-wide logic (for example "which chiller should run"), store short trend logs, and translate between protocols. You will hear brand names for them, such as a JACE (Niagara), an NAE or SNE (Metasys), or a PXC (Desigo). Chapter <a href="c02-bms-protocols-commissioning.html">C02</a> covers the protocols they speak.</p>
+    <h3>Level 4 · Front end (head end) and workstations</h3>
+    <p>The <b>front end</b> is server software that holds the graphics, the alarm database, long-term trend storage, user accounts and schedules. Operators see it on a workstation in the facility manager's office, or in a web browser. Remote access is usually through the owner's VPN, because a BMS that is reachable from the open internet is a known cyber-security risk.</p>
+    <div class="callout job"><span class="label">On the job</span><p>On your first day you will be asked "which controller is that point on?" more than any other question. Get used to tracing a point from the graphic (level 4), to the network controller (level 3), to the field controller and its terminal number (level 2), to the device and cable in the ceiling (level 1). Good technicians move up and down these levels quickly.</p></div>
+
+    <h2>Points: AI, AO, DI, DO</h2>
+    <p>A <b>point</b> is one piece of information the BMS knows about. The physical ones are wired to a terminal. There are exactly four kinds, made from two questions: <i>Does the signal come in or go out?</i> and <i>Is it a range of values or just on/off?</i></p>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Analogue (a range)</th><th>Digital / binary (two states)</th></tr>
+      <tr><td><b>Input</b> (field → controller)</td><td><b>AI</b> – analogue input<br>room temperature, duct pressure, CO₂</td><td><b>DI</b> – digital input<br>fan running, filter dirty, fire trip</td></tr>
+      <tr><td><b>Output</b> (controller → field)</td><td><b>AO</b> – analogue output<br>valve position, damper position, fan speed</td><td><b>DO</b> – digital output<br>start/stop a fan or pump, enable a chiller</td></tr>
+    </table></div>
+    <p>BACnet calls the digital ones "binary" (BI, BO). Some brands say UI ("universal input", which can be set as AI or DI in software) or UIO (universal input/output). The physics does not change.</p>
+
+    <figure>
+      <svg viewBox="0 0 760 380" role="img" aria-label="Wiring of the four point types between a controller and field devices">
+        <defs>
+          <marker id="c1b-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c1b-arrt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-accent-soft s-accent" x="30" y="20" width="200" height="340" rx="8"/>
+        <text class="t t-bold" x="45" y="42">DDC controller</text>
+        <text class="t t-small t-muted" x="45" y="58">24 V AC powered</text>
+        <!-- terminals -->
+        <g class="f-panel s-line">
+          <circle cx="230" cy="80" r="4"/><circle cx="230" cy="110" r="4"/>
+          <circle cx="230" cy="155" r="4"/><circle cx="230" cy="185" r="4"/>
+          <circle cx="230" cy="230" r="4"/><circle cx="230" cy="260" r="4"/>
+          <circle cx="230" cy="305" r="4"/><circle cx="230" cy="335" r="4"/>
+        </g>
+        <text class="t t-small" x="220" y="84" text-anchor="end">AI1</text><text class="t t-small" x="220" y="114" text-anchor="end">COM</text>
+        <text class="t t-small" x="220" y="159" text-anchor="end">AO1</text><text class="t t-small" x="220" y="189" text-anchor="end">COM</text>
+        <text class="t t-small" x="220" y="234" text-anchor="end">DI1</text><text class="t t-small" x="220" y="264" text-anchor="end">COM</text>
+        <text class="t t-small" x="220" y="309" text-anchor="end">DO1</text><text class="t t-small" x="220" y="339" text-anchor="end">DO1</text>
+        <text class="t t-small t-muted" x="45" y="99">reads Ω → °C</text>
+        <text class="t t-small t-muted" x="45" y="174">sets 0–10 V</text>
+        <text class="t t-small t-muted" x="45" y="249">senses contact</text>
+        <text class="t t-small t-muted" x="45" y="316">relay</text>
+        <text class="t t-small t-muted" x="45" y="332">contact</text>
+        <!-- DO relay contact inside controller -->
+        <path class="s-line" d="M226 305 H120 V311 M226 335 H120 V329"/>
+        <circle class="f-panel s-line" cx="120" cy="313" r="2.5"/><circle class="f-panel s-line" cx="120" cy="327" r="2.5"/>
+        <line class="s-line" x1="120" y1="327" x2="134" y2="312"/>
+        <!-- row labels and arrows -->
+        <text class="t t-bold t-accent" x="250" y="100">AI</text><path class="s-accent" d="M350 95 H290" marker-end="url(#c1b-arr)"/><text class="t t-small t-muted" x="358" y="99">in</text>
+        <text class="t t-bold t-accent" x="250" y="175">AO</text><path class="s-accent" d="M290 170 H350" marker-end="url(#c1b-arr)"/><text class="t t-small t-muted" x="358" y="174">out</text>
+        <text class="t t-bold t-accent" x="250" y="250">DI</text><path class="s-accent" d="M350 245 H290" marker-end="url(#c1b-arr)"/><text class="t t-small t-muted" x="358" y="249">in</text>
+        <text class="t t-bold t-accent" x="250" y="325">DO</text><path class="s-accent" d="M290 320 H350" marker-end="url(#c1b-arr)"/><text class="t t-small t-muted" x="358" y="324">out</text>
+        <!-- row 1: NTC -->
+        <path class="s-line" d="M234 80 H500 V85 M234 110 H500 V105"/>
+        <rect class="f-panel s-line" x="491" y="85" width="18" height="20"/>
+        <path class="s-line" d="M484 112 L516 78" marker-end="url(#c1b-arrt)"/>
+        <text class="t t-small" x="518" y="112">−t°</text>
+        <text class="t" x="560" y="92">10 kΩ NTC room sensor</text>
+        <text class="t t-small t-muted" x="560" y="110">≈ 11.4 kΩ at 22 °C</text>
+        <!-- row 2: actuator -->
+        <path class="s-line" d="M234 155 H480 M234 185 H480"/>
+        <rect class="f-panel s-line" x="480" y="148" width="50" height="44" rx="5"/>
+        <text class="t t-bold" x="505" y="175" text-anchor="middle">M</text>
+        <text class="t" x="560" y="167">Damper actuator</text>
+        <text class="t t-small t-muted" x="560" y="185">0 V = shut, 10 V = fully open</text>
+        <!-- row 3: switch -->
+        <path class="s-line" d="M234 230 H500 V234 M234 260 H500 V256"/>
+        <circle class="f-panel s-line" cx="500" cy="236" r="2.5"/><circle class="f-panel s-line" cx="500" cy="254" r="2.5"/>
+        <line class="s-line" x1="500" y1="254" x2="514" y2="239"/>
+        <text class="t" x="560" y="242">Current switch or DP switch</text>
+        <text class="t t-small t-muted" x="560" y="260">volt-free contact, closes when proven</text>
+        <!-- row 4: VSD -->
+        <path class="s-line" d="M234 305 H470 M234 335 H470"/>
+        <rect class="f-panel s-line" x="470" y="298" width="60" height="44" rx="5"/>
+        <text class="t t-small t-bold" x="500" y="324" text-anchor="middle">VSD</text>
+        <text class="t" x="560" y="317">Run input of VSD / starter</text>
+        <text class="t t-small t-muted" x="560" y="335">in the MSSB: electrician's side</text>
+      </svg>
+      <figcaption>Figure 2. One example of each point type. Inputs (AI, DI) carry information into the controller; outputs (AO, DO) carry commands out. A DO is usually a dry (volt-free) relay contact: the controller only closes a switch, and the circuit it switches belongs to the motor starter or drive.</figcaption>
+    </figure>
+
+    <h3>AI example: a 10 kΩ NTC room sensor</h3>
+    <p>The white plastic box on an office wall is often just a <b>thermistor</b>: a resistor whose resistance falls as it gets warmer. NTC means "negative temperature coefficient". "10 kΩ" means it reads 10 kΩ at 25 °C. The controller puts a small, known voltage across it (through a fixed resistor, as a voltage divider), measures the voltage with its ADC, works out the resistance, and converts that to °C with a curve stored in its firmware.</p>
+    <div class="formula">R(T) = R<sub>25</sub> · exp[ β (1/T − 1/298.15) ]
+      <small>R<sub>25</sub> = 10 kΩ, β is the thermistor's constant (about 3,900–4,000 K for common 10 kΩ types), T is in kelvin. With β = 3,950: at 22 °C (295.15 K) R ≈ 11.4 kΩ; at 18 °C R ≈ 13.8 kΩ; at 30 °C R ≈ 8.0 kΩ. So a 1 °C change is roughly a 4–5 % change in resistance: easy to measure with a meter.</small></div>
+    <p>There are several "10 kΩ" curves in the building industry (often called Type II and Type III), and other sensors such as 1 kΩ Ni or PT1000. If the controller is set to the wrong curve, it will read a few degrees wrong at the ends of the range even though it looks right near 25 °C. That is a classic commissioning fault.</p>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC (read a thermistor with an Arduino)</a>
+    <a class="crosslink" href="../practice/p04-series-parallel-dividers.html">Practice P04 · Series, parallel and voltage dividers (how the controller turns ohms into volts)</a>
+
+    <h3>AO example: a 0–10 V damper actuator</h3>
+    <p>A damper actuator is a small geared motor with a position controller inside. It is powered by 24 V AC and takes a <b>control signal</b>: 0 V means 0 % (shut), 10 V means 100 % (open), 4.5 V means 45 %. Some actuators use <b>2–10 V</b> so that 0 V can be detected as a broken wire, and some give back a 2–10 V <b>feedback</b> signal of their real position (wired to an AI). Valve actuators on chilled water and heating coils work the same way. A VSD speed reference is also an AO: 0–10 V for 0–50 Hz.</p>
+    <h3>DI example: run status from a current switch or DP switch</h3>
+    <p>A digital input is a contact that the controller sees as open or closed. The controller supplies a small wetting voltage (often 5–24 V DC, a few mA) and looks for current. Two common ways to prove a fan is really running:</p>
+    <ul>
+      <li><b>Current switch</b>: a ring (current transformer) that a motor cable passes through, with a contact that closes when the current is above a set threshold. It proves the motor is drawing current. If adjusted well, it can also catch a broken belt, because an unloaded motor draws less current.</li>
+      <li><b>Differential pressure (DP) switch</b>: two small tubes measure the pressure across the fan. When the fan moves air, the pressure difference closes the contact. It proves <i>airflow</i>, not just a spinning motor.</li>
+    </ul>
+    <h3>DO example: start/stop via a relay output</h3>
+    <p>The controller closes a small relay contact. That contact is wired into the control circuit of a motor starter or the "run" input of a VSD in the <b>mechanical services switchboard (MSSB)</b>. The MSSB has a Hand-Off-Auto switch for each motor: only in "Auto" does the BMS have control.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "If the BMS shows the fan command ON, the fan is running."<br><b>Right:</b> a command is only a request. The <i>status</i> point tells you what really happened. The MSSB switch might be in Off, the drive might have tripped, the belt might be broken. Every good BMS compares command and status and raises a <b>command fail</b> (or "status mismatch") alarm after a delay, often 30–60 seconds, if they disagree.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Controller panels and the MSSB usually also contain 230 V or 400 V: the 230/24 V transformer, motor circuits and contactor coils. In Australia only a licensed electrician may work on those parts. As a learner, you work only on the ELV (24 V and signal) side, only with your employer's isolation procedure, and never open an MSSB. If a DO contact switches a 230 V coil, that circuit is mains work even though the controller side is ELV.</p></div>
+
+    <div class="widget" id="w-c01">
+      <span class="label">Interactive · Point-type classifier</span>
+      <p id="c01-q" style="font-size:18px;font-weight:600;margin:6px 0 12px">…</p>
+      <div id="c01-btns" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <p id="c01-fb" style="margin:14px 0 6px;min-height:52px"></p>
+      <div class="readings">
+        <div><small>Score</small><span class="out" id="c01-score">0 / 0</span></div>
+        <div><small>Device</small><span class="out" id="c01-n">1 of 16</span></div>
+      </div>
+      <p style="margin-top:12px"><button id="c01-next" type="button">Next device →</button></p>
+    </div>
+    <script>
+    (function(){
+      var items=[
+        ["A 10 kΩ NTC thermistor inside a room temperature sensor","AI","Its resistance changes smoothly with temperature. The controller measures a range of values, coming in."],
+        ["A damper actuator that takes a 0–10 V control signal","AO","The controller sends a range of voltages out to set position (0 V shut, 10 V open)."],
+        ["A differential pressure switch across a supply fan (contact closes when airflow is proven)","DI","Only two states, open or closed, coming in. It is a run status."],
+        ["A relay contact that starts a pump through its motor starter","DO","The controller closes a contact: two states, going out."],
+        ["A duct static pressure transducer, 0–10 V output for 0–500 Pa","AI","A transducer gives a continuous value. 6 V would mean 300 Pa."],
+        ["A chilled water valve actuator with a 2–10 V signal","AO","A range of positions commanded by the controller. 2 V = shut, 10 V = open."],
+        ["A split-core current switch on a pump motor cable","DI","A current switch has a contact with a threshold: running or not. Do not confuse it with a current transducer."],
+        ["A current transducer with a 4–20 mA output proportional to motor amps","AI","This one reports how many amps, as a continuous 4–20 mA signal, so it is analogue."],
+        ["A volt-free 'fire trip' contact from the fire panel into the BMS","DI","Two states (normal / fire), coming in. The BMS reacts, for example by stopping AHUs."],
+        ["The speed reference to a variable speed drive","AO","0–10 V commands 0–100 % speed: a range, going out."],
+        ["A lighting contactor switched through an interposing relay","DO","On/off command going out. The interposing relay keeps the controller's small contact away from the contactor coil circuit."],
+        ["A filter 'dirty' differential pressure switch","DI","It closes when pressure drop across the filter passes a set value: one bit of information coming in."],
+        ["An energy meter's pulse output (1 pulse per kWh)","DI","Each pulse is a contact closure. The controller counts them on a DI set up as a counter (accumulator)."],
+        ["A CO₂ sensor, 0–10 V for 0–2,000 ppm","AI","Continuous value in. 4 V would mean 800 ppm."],
+        ["An on/off solenoid valve for a humidifier","DO","Open or shut, commanded by the controller: a digital output."],
+        ["One speed of a 3-speed fan coil unit (high, medium or low)","DO","Each speed is selected by its own relay, so a 3-speed FCU uses three DOs."]
+      ];
+      var bs="font:600 16px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:9px 18px;border-radius:8px;cursor:pointer";
+      var order=items.map(function(_,i){return i;});
+      for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
+      var k=0,score=0,tries=0,answered=false;
+      var q=document.getElementById('c01-q'),fb=document.getElementById('c01-fb'),box=document.getElementById('c01-btns');
+      var nx=document.getElementById('c01-next');nx.style.cssText=bs;
+      ["AI","AO","DI","DO"].forEach(function(lab){
+        var b=document.createElement('button');b.type='button';b.textContent=lab;b.style.cssText=bs;
+        b.onclick=function(){
+          if(answered)return;answered=true;tries++;
+          var it=items[order[k]];
+          if(lab===it[1]){score++;fb.innerHTML='<b style="color:var(--green)">Correct: '+it[1]+'.</b> '+it[2];}
+          else{fb.innerHTML='<b style="color:var(--red)">Not quite. It is '+it[1]+'.</b> '+it[2];}
+          document.getElementById('c01-score').textContent=score+' / '+tries;
+        };
+        box.appendChild(b);
+      });
+      function show(){
+        var it=items[order[k]];answered=false;
+        q.textContent=it[0];fb.textContent='Is this an AI, AO, DI or DO?';
+        document.getElementById('c01-n').textContent=(k+1)+' of '+items.length;
+      }
+      nx.onclick=function(){k=(k+1)%items.length;if(k===0){score=0;tries=0;document.getElementById('c01-score').textContent='0 / 0';}show();};
+      show();
+    })();
+    </script>
+
+    <h2>A real points list: one air handling unit</h2>
+    <p>Every BMS job starts and ends with the <b>points list</b> (also called an I/O schedule). It is a spreadsheet: one row per point, with name, type, device, signal and purpose. The engineer uses it to choose controllers, the electrician uses it to wire, the programmer uses it to build the database, and you use it to commission. Here is a typical list for one AHU with chilled water cooling, hot water heating and a variable speed supply fan.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Point name</th><th>Type</th><th>Field device</th><th>Signal</th><th>Purpose</th></tr>
+      <tr><td>AHU-01_SF_SS</td><td>DO</td><td>Relay to VSD run input</td><td>Volt-free contact</td><td>Start/stop supply fan</td></tr>
+      <tr><td>AHU-01_SF_ST</td><td>DI</td><td>DP switch across fan</td><td>Volt-free contact</td><td>Run status, proves airflow</td></tr>
+      <tr><td>AHU-01_SF_SPD</td><td>AO</td><td>VSD speed reference</td><td>0–10 V = 0–50 Hz</td><td>Holds duct static pressure</td></tr>
+      <tr><td>AHU-01_SF_FLT</td><td>DI</td><td>VSD fault relay</td><td>Volt-free contact</td><td>Drive trip alarm</td></tr>
+      <tr><td>AHU-01_DSP</td><td>AI</td><td>Duct pressure transducer</td><td>0–10 V = 0–500 Pa</td><td>Fan speed loop input</td></tr>
+      <tr><td>AHU-01_SAT</td><td>AI</td><td>Duct temp sensor</td><td>10 kΩ NTC</td><td>Supply air temp; cooling/heating loop</td></tr>
+      <tr><td>AHU-01_RAT</td><td>AI</td><td>Duct temp sensor</td><td>10 kΩ NTC</td><td>Return air temp; economy cycle decision</td></tr>
+      <tr><td>AHU-01_RAH</td><td>AI</td><td>Humidity sensor</td><td>0–10 V = 0–100 %RH</td><td>Monitoring, dehumidification</td></tr>
+      <tr><td>AHU-01_RACO2</td><td>AI</td><td>CO₂ sensor</td><td>0–10 V = 0–2,000 ppm</td><td>Outside air (ventilation) control</td></tr>
+      <tr><td>AHU-01_CHWV</td><td>AO</td><td>Chilled water valve</td><td>0–10 V</td><td>Cooling</td></tr>
+      <tr><td>AHU-01_HHWV</td><td>AO</td><td>Heating hot water valve</td><td>0–10 V</td><td>Heating</td></tr>
+      <tr><td>AHU-01_OAD</td><td>AO</td><td>Outside air damper</td><td>0–10 V</td><td>Minimum air and economy cycle</td></tr>
+      <tr><td>AHU-01_FILT</td><td>DI</td><td>Filter DP switch</td><td>Volt-free contact</td><td>Filter dirty alarm</td></tr>
+      <tr><td>AHU-01_FIRE</td><td>DI</td><td>Fire trip relay (via MSSB)</td><td>Volt-free contact</td><td>Fire mode shutdown</td></tr>
+    </table></div>
+    <p>Count them: <b>6 AI, 4 AO, 3 DI, 1 DO</b> = 14 hard-wired points. An engineer would choose a controller with spare capacity (usually 10–20 % spare is specified), for example one with 8 universal inputs and 6 outputs plus a few spare. On top of these, the controller holds <b>software points</b> (also called virtual or value points): the supply air setpoint, the occupancy schedule, the enable, alarm limits and calculated values. A large office building can have tens of thousands of points in total.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Point names follow a naming standard set by the project or the building owner, something like <code>Site_Building_Level_Equipment_Point</code>. Newer projects may also add semantic <b>tags</b> (for example Project Haystack or Brick tags) so analytics software can tell that a point is a "supply air temperature sensor" without reading the name. Always follow the site standard. Never invent your own names on a live site.</p></div>
+
+    <h2>What the BMS does with points</h2>
+    <h3>Setpoints and control loops</h3>
+    <p>A <b>setpoint</b> is the target value: 22.5 °C room temperature, 13 °C supply air, 250 Pa duct pressure. A control loop compares the measured value (an AI) with the setpoint and moves an output (an AO) to reduce the difference. Most loops are PI or PID loops, which <a href="c03-hvac-for-technicians.html">C03</a> lets you tune in a simulation. Setpoints are often <b>reset</b> by other logic. For example, supply air setpoint might rise from 13 °C to 16 °C when all zones are cool, which saves chiller energy.</p>
+    <h3>Schedules</h3>
+    <p>A schedule is a weekly timetable plus a calendar of holidays: "Mon–Fri 07:00–18:00 occupied". Plant can start earlier with <b>optimum start</b>, which learns how long the building takes to reach temperature. Tenants can press an <b>after-hours</b> button (or use an app) to run their floor for an extra hour or two, which is often billed back to them.</p>
+    <h3>Alarms</h3>
+    <p>An alarm is a condition the system should tell a person about. Good alarms have a <b>limit</b>, a <b>deadband</b> (hysteresis) and a <b>delay</b>, so they do not chatter on and off. Example: "Room temp high: above 26 °C for 10 minutes; return to normal below 25 °C." Alarms have priorities (critical, urgent, maintenance) and are sent to the front end, email or SMS, and sometimes to a monitoring company. Too many unimportant alarms train people to ignore all alarms; this is called <b>alarm fatigue</b>, and cleaning up alarm settings is real, valued work.</p>
+    <h3>Trend logs</h3>
+    <p>A trend log records a point's value over time, either every fixed interval (say every 15 minutes) or on change of value (COV, for example every time it moves by 0.2 °C). Trends are how you diagnose faults after the fact.</p>
+    <div class="formula">Samples per year = (60 / 15) × 24 × 365 = 35,040 per point
+      <small>Worked example: 2,000 points logged every 15 minutes is about 70 million samples per year. At roughly 10–20 bytes per sample in a database that is around 1 GB per year: small for a server, but too much for a field controller, which is why controllers keep only a short buffer and the front end keeps the history.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 760 310" role="img" aria-label="24-hour trend of space temperature with setpoint, occupied period and a high temperature alarm">
+        <rect class="f-career-soft" x="255" y="30" width="307" height="220"/>
+        <text class="t t-small t-accent" x="408" y="46" text-anchor="middle">occupied 07:00–18:00</text>
+        <!-- axes -->
+        <path class="s-line" d="M60 30 V250 H730"/>
+        <g class="s-thin s-dash"><line x1="60" y1="187" x2="730" y2="187"/><line x1="60" y1="124" x2="730" y2="124"/><line x1="60" y1="61" x2="730" y2="61"/></g>
+        <text class="t t-small t-muted" x="52" y="254" text-anchor="end">16</text>
+        <text class="t t-small t-muted" x="52" y="191" text-anchor="end">20</text>
+        <text class="t t-small t-muted" x="52" y="128" text-anchor="end">24</text>
+        <text class="t t-small t-muted" x="52" y="65" text-anchor="end">28</text>
+        <text class="t t-small t-muted" x="14" y="24">°C</text>
+        <text class="t t-small t-muted" x="60" y="270" text-anchor="middle">00:00</text>
+        <text class="t t-small t-muted" x="227" y="270" text-anchor="middle">06:00</text>
+        <text class="t t-small t-muted" x="395" y="270" text-anchor="middle">12:00</text>
+        <text class="t t-small t-muted" x="562" y="270" text-anchor="middle">18:00</text>
+        <text class="t t-small t-muted" x="730" y="270" text-anchor="middle">24:00</text>
+        <!-- setpoint -->
+        <line class="s-green s-dash" x1="255" y1="156" x2="562" y2="156"/>
+        <text class="t t-small t-green" x="570" y="160">setpoint 22 °C</text>
+        <!-- alarm limit -->
+        <line class="s-red s-dash" x1="60" y1="93" x2="730" y2="93"/>
+        <text class="t t-small t-red" x="600" y="88">high alarm 26 °C</text>
+        <!-- space temp -->
+        <polyline class="s-accent" points="60,116 144,121 228,124 242,140 255,154 311,157 367,153 423,154 437,132 451,105 465,83 472,80 486,109 500,140 521,154 562,156 618,134 674,123 730,118"/>
+        <circle class="f-red" cx="466" cy="83" r="5"/>
+        <text class="t t-small t-red" x="385" y="76">alarm raised</text>
+        <text class="t t-small t-muted" x="262" y="230">optimum start 06:00</text>
+        <text class="t t-small t-muted" x="575" y="230">plant off, room drifts</text>
+        <text class="t t-small t-muted" x="430" y="205">CHW valve stuck 13:00</text>
+        <text class="t t-small t-muted" x="430" y="221">fixed 14:45</text>
+      </svg>
+      <figcaption>Figure 3. A one-day trend of a summer office zone. Notice the optimum start bringing the room down to setpoint just before 07:00, the stuck valve sending the zone above the 26 °C alarm limit after lunch, and the drift upward once plant switches off at 18:00. Reading trends like this is a daily skill.</figcaption>
+    </figure>
+
+    <h2>Platforms you will see in Australia</h2>
+    <p>Job ads often name a platform. You do not need to know all of them; employers train you on theirs. But recognising the names helps you read ads and talk in interviews. These are all found in Australian buildings. Product names change over the years, so check the vendor's current material.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Platform</th><th>What you will hear on site</th></tr>
+      <tr><td>Siemens Desigo</td><td>Desigo CC front end, PXC automation stations, room controllers.</td></tr>
+      <tr><td>Honeywell</td><td>Several product lines, including EBI front ends and Niagara-based WEBs controllers.</td></tr>
+      <tr><td>Schneider Electric EcoStruxure Building Operation</td><td>Formerly StruxureWare; "automation servers" and field I/O. Older sites may have Andover Continuum.</td></tr>
+      <tr><td>Johnson Controls Metasys</td><td>Metasys server and network engines (NAE, SNE) with field controllers.</td></tr>
+      <tr><td>Tridium Niagara framework</td><td>JACE controllers and Niagara supervisors. Used and resold by many different integrators and manufacturers, sometimes under their own brand.</td></tr>
+      <tr><td>Delta Controls</td><td>BACnet controllers with the enteliWEB front end.</td></tr>
+      <tr><td>Automated Logic</td><td>WebCTRL front end and BACnet controllers.</td></tr>
+      <tr><td>Distech Controls</td><td>ECLYPSE IP controllers, often integrated with Niagara.</td></tr>
+      <tr><td>Reliable Controls</td><td>BACnet controllers with their own software tools.</td></tr>
+    </table></div>
+    <p>The good news: they all use the same ideas from this chapter (points, controllers, schedules, alarms, trends), and most can talk BACnet. A tech who understands the concepts can learn a new platform's tool in weeks.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Many buildings are serviced not by the manufacturer but by independent <b>systems integrators</b>, who may work across several platforms. Big facility-management companies also employ BMS techs. When you read a job ad, notice whether it is <i>installation and commissioning</i> (project work, new buildings, often on construction sites, needs a White Card) or <i>service</i> (existing buildings, a van and a run of regular sites).</p></div>
+
+    <h2>A day in the life of a BMS service technician</h2>
+    <p>Here is a realistic day for a service tech in a capital city. Details differ, but the pattern is common.</p>
+    <ol class="steps">
+      <li><p><b>07:00 · Sign in.</b> Arrive at an office building. Sign in at the loading dock or with security, collect keys or an access card, and check the site's induction and permit system. Read the logbook for notes from the last visit.</p></li>
+      <li><p><b>07:20 · Alarm review.</b> Log in to the front end. Sort the alarm list: what is new, what is repeating, what is long-standing. Note anything critical (chiller fault, pump failure, communication loss to a controller).</p></li>
+      <li><p><b>08:00 · Preventive maintenance.</b> Work through the maintenance schedule: check a sample of sensors against a calibrated reference thermometer, stroke valves and dampers from 0 to 100 % and watch them move, check that schedules and holiday calendars are right, back up controller programs.</p></li>
+      <li><p><b>10:30 · A complaint.</b> The facility manager says level 5 is "freezing". On the front end, you see the zone at 20.1 °C, setpoint 22.5 °C, VAV damper at minimum, reheat valve commanded 100 %. You go to the ceiling: the reheat valve actuator is not moving. Measure 24 V AC at its supply terminals: present. Measure the control signal: 9.8 V DC, so the controller is doing its job. The actuator has failed. You quote a replacement.</p></li>
+      <li><p><b>13:00 · Second site.</b> A cool room alarm keeps clearing itself. The trend shows the temperature crossing the limit for 30 seconds every defrost cycle. You add a delay to the alarm so it only triggers if the condition lasts 15 minutes, with the client's agreement, and record the change.</p></li>
+      <li><p><b>15:30 · Paperwork.</b> Write up each job in the company's service app or CMMS (computerised maintenance management system): what you found, what you did, parts used, recommendations. Good notes are part of the product the client pays for.</p></li>
+    </ol>
+    <div class="callout job"><span class="label">On the job</span><p>The 10:30 diagnosis is the core skill employers test: <b>check the command, check the signal, check the power, check the device</b>, in that order, with a multimeter. You learned exactly these measurements (AC volts, DC volts, resistance) in <a href="../practice/p03-multimeter-mastery.html">Practice P03</a>. To check a 10 kΩ sensor, disconnect it from the controller first (the controller's own measuring current will confuse your meter), measure its resistance, and compare with the curve: about 11.4 kΩ at 22 °C for a β ≈ 3,950 type.</p></div>
+
+    <h2>How people get into BMS work</h2>
+    <h3>Entry roles</h3>
+    <ul>
+      <li><b>BMS apprentice or trainee.</b> Often an electrical apprenticeship with a controls company, so you finish as a licensed electrician who specialises in controls. Some companies run their own trainee programs.</li>
+      <li><b>Controls technician / BMS installer.</b> Wiring field devices (ELV), terminating cables, labelling, point-to-point checks under supervision.</li>
+      <li><b>BMS service technician.</b> The role described above. Usually requires some experience, a driver's licence and a clean record for site access.</li>
+      <li><b>Commissioning technician, BMS programmer, front-end/graphics engineer.</b> Later steps. Programmers write the control logic; graphics engineers build the screens.</li>
+    </ul>
+    <p>Employers value an <b>electronics or instrumentation background</b>, because the work is about signals, sensors, networks and fault-finding, not heavy power. Many ads also ask for networking basics (IP addresses, subnets, VLANs), so <a href="../practice/p19-networking-hands-on.html">Practice P19</a> is directly useful.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Things you will see in ads: a <b>White Card</b> (general construction induction, needed on construction sites), a <b>driver's licence</b>, sometimes a <b>police check</b>, and "electrical licence preferred" or "required". Some BMS roles hire people without an electrical licence for ELV wiring, programming and commissioning, with electricians doing the mains parts; others require the licence. Electrical licensing is run by each state (for example NSW Fair Trading, Energy Safe Victoria, and the Electrical Safety Office in Queensland). Rules change and differ by state, so confirm with the regulator. Vendor courses (for example Niagara certification) are usually paid for by the employer. Chapter <a href="c11-licences-pathways.html">C11</a> covers licences in detail.</p></div>
+
+    <h3>Typical interview questions</h3>
+    <details class="more"><summary>"What are the four point types? Give an example of each."</summary><p>AI: a 10 kΩ room sensor. AO: a 0–10 V valve actuator. DI: a DP switch proving a fan. DO: a relay contact starting a pump. Then mention that BACnet calls digital points binary.</p></details>
+    <details class="more"><summary>"A fan shows command ON but status OFF. What do you check?"</summary><p>Check the Hand-Off-Auto switch on the MSSB is in Auto, check the VSD for a fault or trip, check whether the fire trip or a safety interlock is active, then check the status device: is the DP switch tube blocked or the current switch threshold set too high? Check that the DO actually closes (measure across the relay contact with the circuit isolated, or watch the relay LED). Work from the command outwards.</p></details>
+    <details class="more"><summary>"How would you check if a temperature sensor is reading correctly?"</summary><p>Compare the BMS reading with a calibrated reference thermometer at the sensor. If it differs, disconnect the sensor and measure its resistance, compare with the sensor curve for the actual temperature, and check the controller is configured for the right sensor type. Check for a loose terminal or a long cable run adding resistance.</p></details>
+    <details class="more"><summary>"What is the difference between 0–10 V and 4–20 mA?"</summary><p>0–10 V is simple and cheap but voltage drops and noise on long cables shift the reading. 4–20 mA is a current loop: the same current flows everywhere in a series loop, so cable resistance does not change the reading, and 0 mA means a broken wire. See <a href="../theory/t16-signals-noise-loops.html">Theory T16</a>.</p></details>
+    <details class="more"><summary>"What does a network controller do?"</summary><p>It connects field controllers on RS-485 trunks to the IP network, runs building-wide logic, stores trends and alarms locally, and translates protocols (for example Modbus meters into BACnet points).</p></details>
+    <details class="more"><summary>"Why would an alarm keep coming and going, and how would you fix it?"</summary><p>The value is sitting near the limit, or there is a short, normal event (defrost, start-up). Add a deadband and a time delay, or disable the alarm during known events, with the client's approval. Never just disable an alarm without recording why.</p></details>
+
+    <div class="callout try"><span class="label">Try this</span><p>Build a four-point "mini BMS" on your bench: an Arduino reads a 10 kΩ NTC (AI) and a push-button (DI), dims an LED with PWM (AO), and switches a relay module (DO) when the temperature passes a setpoint with 1 °C of hysteresis. Print the values over serial every 5 seconds: that is your trend log. Add an "alarm" if the temperature stays above a limit for 30 seconds. Keep it all on USB power or a 12 V plug-pack. Labs: <a href="../practice/p11-arduino-first-steps.html">P11</a>, <a href="../practice/p12-sensors-adc.html">P12</a>, <a href="../practice/p13-actuators-motors.html">P13</a>.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A CO₂ sensor outputs 0–10 V for 0–2,000 ppm. The BMS shows 3.6 V on the input. What is the CO₂ level, and what point type is it?</summary><div class="answer"><p>2,000 ppm / 10 V = 200 ppm per volt, so 3.6 V × 200 = <b>720 ppm</b>. It is an <b>AI</b>: a continuous value coming in.</p></div></details>
+    <details class="quiz"><summary>Why do engineers prove a supply fan with a DP switch instead of just trusting the start command?</summary><div class="answer"><p>The command only says what the BMS asked for. The DP switch proves air is actually moving. The fan could be off at the MSSB, tripped, or have a broken belt. Comparing command with status lets the BMS raise a command-fail alarm.</p></div></details>
+    <details class="quiz"><summary>The front end server is switched off for an upgrade. Do the AHUs stop?</summary><div class="answer"><p>No, not in a well-designed system. Control loops and schedules run in the field and network controllers. You lose graphics, alarm notification and long-term trends while it is off, so the facility team must be told, but the plant keeps running.</p></div></details>
+    <details class="quiz"><summary>You measure a disconnected 10 kΩ NTC room sensor and read 8.0 kΩ. The room feels warm. Is the sensor likely fine?</summary><div class="answer"><p>For a β ≈ 3,950 thermistor, 8.0 kΩ is about 30 °C. If a reference thermometer also reads about 30 °C, the sensor is fine and the room really is hot (look at the cooling). If the reference reads 22 °C, the sensor or its curve is wrong.</p></div></details>
+    <details class="quiz"><summary>How many DOs does a 3-speed fan coil unit need for its fan, and why?</summary><div class="answer"><p>Three: one relay per speed (low, medium, high), with logic so only one is on at a time. Each speed is an on/off command going out.</p></div></details>
+    <details class="quiz"><summary>An AHU points list has 6 AI, 4 AO, 3 DI and 1 DO. Why would the engineer not choose a controller with exactly 14 I/O?</summary><div class="answer"><p>Specifications usually require spare I/O (often 10–20 %) for future changes and for failed terminals. Also some inputs must be of a certain type, so the mix matters as well as the total.</p></div></details>
+    <details class="quiz"><summary>What three settings stop a high-temperature alarm from chattering on and off?</summary><div class="answer"><p>The limit itself, a deadband (it must fall some way below the limit before returning to normal) and a time delay (the condition must last for a set time before the alarm is raised).</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the services a BMS controls and the ones it only monitors.</span></li>
+      <li><input type="checkbox"><span>I can draw the four levels of a BMS from field device to front end.</span></li>
+      <li><input type="checkbox"><span>I can classify any field device as AI, AO, DI or DO and say what signal it uses.</span></li>
+      <li><input type="checkbox"><span>I can calculate a 10 kΩ NTC's resistance at room temperature and check one with a meter.</span></li>
+      <li><input type="checkbox"><span>I can read a points list and count the I/O a controller needs.</span></li>
+      <li><input type="checkbox"><span>I can explain command vs status, alarms with deadband and delay, schedules and trend logs.</span></li>
+      <li><input type="checkbox"><span>I can name several BMS platforms used in Australia and the entry roles in the industry.</span></li>
+      <li><input type="checkbox"><span>I can answer the common interview questions in my own words.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

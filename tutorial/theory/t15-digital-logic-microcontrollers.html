@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T15 · Digital logic and how a microcontroller works</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget controls. Colours come only from the shared theme variables, so dark mode works. */
+.bitrow{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;margin:6px 0 12px}
+.bitbtn{font:600 16px/1.15 var(--mono);width:36px;padding:6px 0 4px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center}
+.bitbtn small{font:11px var(--mono);color:var(--muted)}
+.bitbtn.on{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.bitbtn.on small{color:var(--panel)}
+.nibgap{width:8px}
+.wbtn{font:600 14px var(--sans);border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);padding:7px 14px;border-radius:6px;cursor:pointer;margin:4px 6px 4px 0}
+.wbtn.on{background:var(--accent);color:var(--panel)}
+.widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:260px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 14px}
+.werr{color:var(--warn);font-size:14px;min-height:1.4em;margin:4px 0}
+.wsmall{font-size:14px;color:var(--muted)}
+.widget table{font-size:14px}
+.widget td,.widget th{padding:5px 8px}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 4 · Digital, computers and signals</div>
+    <span class="eyebrow">Theory · T15</span>
+    <h1>Digital logic and how a microcontroller works</h1>
+    <p class="lede">Why electronics went digital, how two voltage levels become numbers, how transistors make gates, gates make memory, and memory plus a clock makes a computer. By the end you will know exactly what happens inside an Arduino when you type <code>digitalWrite(13, HIGH)</code> or <code>analogRead(A0)</code>.</p>
+    <div class="meta"><span><b>Reading</b> ~70 min</span><span><b>Level</b> Beginner → intermediate</span><span><b>Builds on</b> T13 MOSFETs</span><span><b>Practice</b> P11, P12</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Why digital? Two states and noise margins</h2>
+    <p>An <b>analogue</b> signal carries information in its exact value. A microphone wire at 0.437 V means something different from 0.441 V. Every wire, amplifier and connector adds a little <b>noise</b> (unwanted random voltage) and a little error. After ten stages, the small errors have added up, and you cannot remove them, because you no longer know what the "true" value was.</p>
+    <p>A <b>digital</b> signal carries information in only two states: HIGH and LOW, written 1 and 0. The receiver does not care whether HIGH is 4.6 V or 4.9 V. It only asks one question: "Is this voltage above a threshold or below it?" As long as the noise is not big enough to push the voltage across the threshold, the receiver makes the right decision, and then its own output is a <i>fresh, clean</i> HIGH or LOW. The noise is thrown away at every stage. This is called <b>regeneration</b>, and it is the single biggest reason the world went digital. A file copied a million times is still perfect. A cassette tape copied ten times is mush.</p>
+
+    <h3>Logic levels: ranges, not exact voltages</h3>
+    <p>Every logic family states four numbers in its datasheet. For a 5 V microcontroller such as the ATmega328P on an Arduino Uno, typical datasheet figures are:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Symbol</th><th>Meaning</th><th>ATmega328P at 5 V</th></tr>
+      <tr><td>V<sub>OH(min)</sub></td><td>The lowest voltage a HIGH <i>output</i> is guaranteed to give</td><td>4.2 V (even while sourcing 20 mA)</td></tr>
+      <tr><td>V<sub>OL(max)</sub></td><td>The highest voltage a LOW <i>output</i> is allowed to give</td><td>0.9 V (while sinking 20 mA)</td></tr>
+      <tr><td>V<sub>IH(min)</sub></td><td>The lowest <i>input</i> voltage that is guaranteed to read as HIGH</td><td>0.6 × V<sub>CC</sub> = 3.0 V</td></tr>
+      <tr><td>V<sub>IL(max)</sub></td><td>The highest <i>input</i> voltage that is guaranteed to read as LOW</td><td>0.3 × V<sub>CC</sub> = 1.5 V</td></tr>
+    </table></div>
+    <p>Between 1.5 V and 3.0 V the input is <b>undefined</b>: the chip may read either value, and it may change its mind from one moment to the next. The gap between what an output guarantees and what an input needs is the <b>noise margin</b>.</p>
+    <div class="formula">NM<sub>H</sub> = V<sub>OH(min)</sub> − V<sub>IH(min)</sub> = 4.2 − 3.0 = 1.2 V<br>NM<sub>L</sub> = V<sub>IL(max)</sub> − V<sub>OL(max)</sub> = 1.5 − 0.9 = 0.6 V
+      <small>NM<sub>H</sub> is how much noise can pull a HIGH <i>down</i> before it might be misread. NM<sub>L</sub> is how much noise can push a LOW <i>up</i>. These are worst-case figures at 20 mA load; with a light load the outputs sit within a few tens of millivolts of the rails, so real margins are larger.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 290" role="img" aria-label="Output voltage bands of a driver compared with input thresholds of a receiver, showing the noise margins">
+        <defs><marker id="t15nm-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="155" y="26" text-anchor="middle">Driver output</text>
+        <text class="t t-bold" x="475" y="26" text-anchor="middle">Receiver input</text>
+        <rect class="f-career-soft s-thin" x="110" y="40" width="90" height="35"/>
+        <text class="t t-small" x="155" y="62" text-anchor="middle">HIGH ≥ 4.2 V</text>
+        <rect class="f-wash s-thin" x="110" y="75" width="90" height="145"/>
+        <text class="t t-small t-muted" x="155" y="140" text-anchor="middle">a healthy</text>
+        <text class="t t-small t-muted" x="155" y="156" text-anchor="middle">output is</text>
+        <text class="t t-small t-muted" x="155" y="172" text-anchor="middle">never here</text>
+        <rect class="f-career-soft s-thin" x="110" y="220" width="90" height="40"/>
+        <text class="t t-small" x="155" y="244" text-anchor="middle">LOW ≤ 0.9 V</text>
+        <rect class="f-career-soft s-thin" x="430" y="40" width="90" height="88"/>
+        <text class="t t-small" x="475" y="80" text-anchor="middle">read as HIGH</text>
+        <text class="t t-small t-muted" x="475" y="96" text-anchor="middle">≥ 3.0 V</text>
+        <rect class="f-warn-soft s-thin" x="430" y="128" width="90" height="66"/>
+        <text class="t t-small t-red" x="475" y="158" text-anchor="middle">undefined</text>
+        <text class="t t-small t-muted" x="475" y="174" text-anchor="middle">1.5–3.0 V</text>
+        <rect class="f-career-soft s-thin" x="430" y="194" width="90" height="66"/>
+        <text class="t t-small" x="475" y="222" text-anchor="middle">read as LOW</text>
+        <text class="t t-small t-muted" x="475" y="238" text-anchor="middle">≤ 1.5 V</text>
+        <text class="t t-small t-muted" x="100" y="44" text-anchor="end">5 V</text>
+        <text class="t t-small t-muted" x="100" y="79" text-anchor="end">4.2 V</text>
+        <text class="t t-small t-muted" x="100" y="224" text-anchor="end">0.9 V</text>
+        <text class="t t-small t-muted" x="100" y="264" text-anchor="end">0 V</text>
+        <text class="t t-small t-muted" x="530" y="132">3.0 V</text>
+        <text class="t t-small t-muted" x="530" y="198">1.5 V</text>
+        <line class="s-thin s-dash" x1="200" y1="75" x2="430" y2="75"/>
+        <line class="s-thin s-dash" x1="200" y1="128" x2="430" y2="128"/>
+        <line class="s-thin s-dash" x1="200" y1="194" x2="430" y2="194"/>
+        <line class="s-thin s-dash" x1="200" y1="220" x2="430" y2="220"/>
+        <line class="s-green" x1="226" y1="78" x2="226" y2="125" marker-start="url(#t15nm-arr)" marker-end="url(#t15nm-arr)"/>
+        <text class="t t-small t-green" x="236" y="106">NM_H = 4.2 − 3.0 = 1.2 V</text>
+        <line class="s-green" x1="226" y1="197" x2="226" y2="217" marker-start="url(#t15nm-arr)" marker-end="url(#t15nm-arr)"/>
+        <text class="t t-small t-green" x="236" y="212">NM_L = 1.5 − 0.9 = 0.6 V</text>
+      </svg>
+      <figcaption>Figure 1. Same voltage scale on both sides. A guaranteed HIGH output (≥ 4.2 V) can lose up to 1.2 V to noise and still be read as HIGH. The red band is where a receiver's decision is unreliable. Good digital design keeps every signal out of it.</figcaption>
+    </figure>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Digital means exactly 0 V or exactly 5 V." <b>Right:</b> digital means the receiver sorts voltages into two <i>ranges</i>. A 3.3 V board (ESP32, Raspberry Pi) talking to a 5 V Uno shows why this matters: the 3.3 V HIGH is above the Uno's 3.0 V threshold, so it works, but with only about 0.3 V of margin. Going the other way is worse: a 5 V HIGH into a Raspberry Pi pin exceeds that pin's maximum rating and can destroy it. That is why level shifters exist.</p></div>
+
+    <h2>Binary and hexadecimal</h2>
+    <p>With only two states per wire, we count in <b>binary</b> (base 2). It works exactly like decimal, but each place is worth twice the place to its right instead of ten times.</p>
+    <div class="formula">1011 0110₂ = 1×128 + 0×64 + 1×32 + 1×16 + 0×8 + 1×4 + 1×2 + 0×1 = 182
+      <small>Each binary digit is a <b>bit</b>. Bit 0 (the rightmost, worth 1) is the <b>least significant bit</b> (LSB). Bit 7 (worth 128) is the <b>most significant bit</b> (MSB) of a byte. Eight bits make a <b>byte</b>, which can hold 2⁸ = 256 different values, 0 to 255.</small></div>
+    <p>The general rule: <b>n bits give 2ⁿ different values</b>. 10 bits give 1024 (0–1023), which is why an Arduino's <code>analogRead</code> returns 0–1023. 16 bits give 65,536. 32 bits give about 4.3 billion, which is why IPv4 ran out of addresses.</p>
+
+    <h3>Hexadecimal: binary for humans</h3>
+    <p>Long binary strings are hard to read. <b>Hexadecimal</b> (base 16, "hex") fixes this. Each hex digit stands for exactly four bits (a <b>nibble</b>). The digits are 0–9 then A=10, B=11, C=12, D=13, E=14, F=15. To convert binary to hex, split into groups of four from the right and convert each group on its own:</p>
+    <div class="formula">1011 0110₂ → 1011 = B, 0110 = 6 → 0xB6<br>0xB6 = 11 × 16 + 6 = 182
+      <small>The prefix <code>0x</code> means "this is hex" in C, Arduino and Python. <code>0b</code> means binary. No prefix means decimal.</small></div>
+    <p>You will meet hex everywhere on the job: MAC addresses (<code>3C:71:BF:2A:9E:04</code>, six bytes), Modbus register maps, memory addresses in datasheets, colour codes, and fault codes on controllers. Learning to see <code>0x20</code> and think "bit 5 set" is a real skill.</p>
+
+    <div class="widget" id="t15-conv">
+      <span class="label">Interactive · Decimal ↔ binary ↔ hex converter (16 bits)</span>
+      <p class="wsmall">Click any bit to flip it, or type in any box. Bit numbers are shown under each bit.</p>
+      <div class="bitrow" id="t15c-bits"></div>
+      <div class="wgrid">
+        <label>Decimal (0–65535)<input type="text" id="t15c-dec" value="182" inputmode="numeric"></label>
+        <label>Hex<input type="text" id="t15c-hex" value="0xB6"></label>
+        <label>Binary<input type="text" id="t15c-bin" value="0b10110110"></label>
+      </div>
+      <div class="werr" id="t15c-err"></div>
+      <div class="readings">
+        <div><small>Place values added up</small><span class="out" id="t15c-sum" style="font-size:15px">128+32+16+4+2</span></div>
+        <div><small>High byte · low byte</small><span class="out" id="t15c-bytes">0x00 · 0xB6</span></div>
+        <div><small>As a signed 16-bit number</small><span class="out" id="t15c-signed">182</span></div>
+      </div>
+      <p style="margin-top:12px"><button type="button" class="wbtn" id="t15c-clr">Clear</button><button type="button" class="wbtn" id="t15c-shl">Shift left (×2)</button><button type="button" class="wbtn" id="t15c-shr">Shift right (÷2)</button><button type="button" class="wbtn" id="t15c-not">Invert all (NOT)</button></p>
+    </div>
+    <script>
+    (function(){
+      var N=16,val=182,row=document.getElementById('t15c-bits'),btn=[];
+      var dec=document.getElementById('t15c-dec'),hex=document.getElementById('t15c-hex'),bin=document.getElementById('t15c-bin'),err=document.getElementById('t15c-err');
+      for(var i=N-1;i>=0;i--){
+        var b=document.createElement('button');b.type='button';b.className='bitbtn';
+        b.innerHTML='<span>0</span><small>'+i+'</small>';
+        b.setAttribute('aria-label','bit '+i);
+        b.onclick=(function(k){return function(){val=(val^(1<<k))&0xFFFF;render(null);};})(i);
+        row.appendChild(b);btn[i]=b;
+        if(i%4===0&&i>0){var g=document.createElement('span');g.className='nibgap';row.appendChild(g);}
+      }
+      function pad(s,n){while(s.length<n)s='0'+s;return s;}
+      function render(src){
+        err.textContent='';
+        for(var i=0;i<N;i++){var on=(val>>i)&1;btn[i].className='bitbtn'+(on?' on':'');btn[i].firstChild.textContent=on;}
+        if(src!=='dec')dec.value=String(val);
+        if(src!=='hex')hex.value='0x'+val.toString(16).toUpperCase();
+        if(src!=='bin'){var bs=val.toString(2);bs=pad(bs,bs.length<=8?8:16);bin.value='0b'+bs;}
+        var parts=[];for(var j=N-1;j>=0;j--){if((val>>j)&1)parts.push(String(1<<j));}
+        document.getElementById('t15c-sum').textContent=parts.length?(parts.join('+')+(parts.length>1?' = '+val:'')):'0';
+        document.getElementById('t15c-bytes').textContent='0x'+pad(((val>>8)&255).toString(16).toUpperCase(),2)+' · 0x'+pad((val&255).toString(16).toUpperCase(),2);
+        document.getElementById('t15c-signed').textContent=String(val>=32768?val-65536:val);
+      }
+      dec.oninput=function(){var s=dec.value.trim();if(!/^\d{1,5}$/.test(s)||+s>65535){err.textContent='Decimal must be a whole number from 0 to 65535.';return;}val=+s;render('dec');};
+      hex.oninput=function(){var s=hex.value.trim().replace(/^0x/i,'');if(!/^[0-9a-fA-F]{1,4}$/.test(s)){err.textContent='Hex uses digits 0–9 and A–F, up to 4 digits (16 bits).';return;}val=parseInt(s,16);render('hex');};
+      bin.oninput=function(){var s=bin.value.trim().replace(/^0b/i,'').replace(/[\s_]/g,'');if(!/^[01]{1,16}$/.test(s)){err.textContent='Binary uses only 0 and 1, up to 16 bits.';return;}val=parseInt(s,2);render('bin');};
+      document.getElementById('t15c-clr').onclick=function(){val=0;render(null);};
+      document.getElementById('t15c-shl').onclick=function(){val=(val<<1)&0xFFFF;render(null);};
+      document.getElementById('t15c-shr').onclick=function(){val=val>>1;render(null);};
+      document.getElementById('t15c-not').onclick=function(){val=(~val)&0xFFFF;render(null);};
+      render(null);
+    })();
+    </script>
+
+    <p>Try these in the widget: set only bit 5 and you get 32 = 0x20 = <code>0b00100000</code>. You will see that exact number again when we turn on pin 13. Shift left multiplies by two (every bit moves to a place worth double). Set every bit and the signed reading shows −1: that is <b>two's complement</b>, the way computers store negative numbers. In two's complement the top bit is worth −32,768 instead of +32,768, so 0xFFFF = −32,768 + 32,767 = −1.</p>
+    <div class="callout try"><span class="label">Try this</span><p>Count in binary on the fingers of one hand: thumb = 1, index = 2, middle = 4, ring = 8, little = 16. Raised finger = 1. You can count from 0 to 31 on one hand. Show 0x13 (= 19 = 16 + 2 + 1) to check yourself.</p></div>
+
+    <h2>Logic gates</h2>
+    <p>A <b>logic gate</b> is a small circuit whose output is a fixed function of its inputs. Six gates cover almost everything you will see. Think of them in words first:</p>
+    <ul>
+      <li><b>NOT</b> (inverter): the output is the opposite of the input.</li>
+      <li><b>AND</b>: the output is 1 only if A <i>and</i> B are both 1. Like two switches in series.</li>
+      <li><b>OR</b>: the output is 1 if A <i>or</i> B (or both) is 1. Like two switches in parallel.</li>
+      <li><b>NAND</b> = NOT-AND: 0 only when both inputs are 1.</li>
+      <li><b>NOR</b> = NOT-OR: 1 only when both inputs are 0.</li>
+      <li><b>XOR</b> (exclusive OR): 1 when the inputs are <i>different</i>. It answers "are these two bits unequal?"</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 660 265" role="img" aria-label="Circuit symbols for NOT, AND, OR, NAND, NOR and XOR gates">
+        <g transform="translate(0,0)">
+          <line class="s-line" x1="20" y1="60" x2="60" y2="60"/>
+          <path class="s-line f-accent-soft" d="M60 35 L60 85 L116 60 Z"/>
+          <circle class="s-line f-panel" cx="122" cy="60" r="6"/>
+          <line class="s-line" x1="128" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="64">A</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">NOT</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = NOT A</text>
+        </g>
+        <g transform="translate(220,0)">
+          <line class="s-line" x1="20" y1="45" x2="60" y2="45"/><line class="s-line" x1="20" y1="75" x2="60" y2="75"/>
+          <path class="s-line f-accent-soft" d="M60 30 H92 A30 30 0 0 1 92 90 H60 Z"/>
+          <line class="s-line" x1="122" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="49">A</text><text class="t t-small" x="8" y="79">B</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">AND</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = A AND B</text>
+        </g>
+        <g transform="translate(440,0)">
+          <line class="s-line" x1="20" y1="45" x2="64" y2="45"/><line class="s-line" x1="20" y1="75" x2="64" y2="75"/>
+          <path class="s-line f-accent-soft" d="M55 30 Q80 60 55 90 Q102 90 128 60 Q102 30 55 30 Z"/>
+          <line class="s-line" x1="128" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="49">A</text><text class="t t-small" x="8" y="79">B</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">OR</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = A OR B</text>
+        </g>
+        <g transform="translate(0,135)">
+          <line class="s-line" x1="20" y1="45" x2="60" y2="45"/><line class="s-line" x1="20" y1="75" x2="60" y2="75"/>
+          <path class="s-line f-accent-soft" d="M60 30 H92 A30 30 0 0 1 92 90 H60 Z"/>
+          <circle class="s-line f-panel" cx="128" cy="60" r="6"/>
+          <line class="s-line" x1="134" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="49">A</text><text class="t t-small" x="8" y="79">B</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">NAND</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = NOT (A AND B)</text>
+        </g>
+        <g transform="translate(220,135)">
+          <line class="s-line" x1="20" y1="45" x2="64" y2="45"/><line class="s-line" x1="20" y1="75" x2="64" y2="75"/>
+          <path class="s-line f-accent-soft" d="M55 30 Q80 60 55 90 Q102 90 128 60 Q102 30 55 30 Z"/>
+          <circle class="s-line f-panel" cx="134" cy="60" r="6"/>
+          <line class="s-line" x1="140" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="49">A</text><text class="t t-small" x="8" y="79">B</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">NOR</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = NOT (A OR B)</text>
+        </g>
+        <g transform="translate(440,135)">
+          <line class="s-line" x1="20" y1="45" x2="54" y2="45"/><line class="s-line" x1="20" y1="75" x2="54" y2="75"/>
+          <path class="s-line" d="M45 30 Q70 60 45 90"/>
+          <path class="s-line f-accent-soft" d="M55 30 Q80 60 55 90 Q102 90 128 60 Q102 30 55 30 Z"/>
+          <line class="s-line" x1="128" y1="60" x2="180" y2="60"/>
+          <text class="t t-small" x="8" y="49">A</text><text class="t t-small" x="8" y="79">B</text><text class="t t-small" x="186" y="64">Y</text>
+          <text class="t t-bold" x="100" y="108" text-anchor="middle">XOR</text>
+          <text class="t t-small t-muted" x="100" y="124" text-anchor="middle">Y = A XOR B</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2. The six standard gate symbols (US/IEEE shapes, the ones you will see on most datasheets). A small circle, the "bubble", always means "invert here". NAND is an AND with a bubble; NOR is an OR with a bubble.</figcaption>
+    </figure>
+
+    <h3>Truth table for all six</h3>
+    <p>A <b>truth table</b> lists every possible input combination and the output for each. Two inputs give 2² = 4 rows.</p>
+    <div class="table-wrap"><table>
+      <tr><th>A</th><th>B</th><th>NOT A</th><th>AND</th><th>OR</th><th>NAND</th><th>NOR</th><th>XOR</th></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+    </table></div>
+    <p>In equations you will see AND written as A·B, OR as A + B, and NOT as a bar over the letter (<span style="text-decoration:overline">A</span>). Two useful rules, called <b>De Morgan's laws</b>, let you swap between them: NOT(A AND B) = (NOT A) OR (NOT B), and NOT(A OR B) = (NOT A) AND (NOT B). In words: "not both" is the same as "at least one is missing".</p>
+    <p><b>NAND is universal.</b> You can build every other gate from NAND gates alone. Tie both inputs together and a NAND becomes NOT. Put a NOT after a NAND and you have AND. This matters because, as the next section shows, NAND is the cheapest and fastest gate to build in CMOS, so real chips lean on it heavily.</p>
+
+    <div class="widget" id="t15-gates">
+      <span class="label">Interactive · Gate playground</span>
+      <p class="wsmall">Toggle the inputs. Every gate's output updates, and the bottom line shows which transistors are on inside a CMOS NAND (next section).</p>
+      <p><button type="button" class="wbtn" id="t15g-a">A = 0</button><button type="button" class="wbtn" id="t15g-b">B = 0</button></p>
+      <div class="readings" id="t15g-out"></div>
+      <p class="wsmall" id="t15g-cmos" style="margin-top:12px"></p>
+    </div>
+    <script>
+    (function(){
+      var A=0,B=0,a=document.getElementById('t15g-a'),b=document.getElementById('t15g-b');
+      function r(){
+        a.textContent='A = '+A;b.textContent='B = '+B;a.className='wbtn'+(A?' on':'');b.className='wbtn'+(B?' on':'');
+        var g=[['NOT A',1-A],['AND',A&B],['OR',A|B],['NAND',1-(A&B)],['NOR',1-(A|B)],['XOR',A^B]];
+        var h='';for(var i=0;i<g.length;i++){h+='<div><small>'+g[i][0]+'</small><span class="out">'+g[i][1]+'</span></div>';}
+        document.getElementById('t15g-out').innerHTML=h;
+        var on=function(x){return x?'ON':'off';};
+        var y=1-(A&B);
+        document.getElementById('t15g-cmos').innerHTML='CMOS NAND: P1 '+on(!A)+', P2 '+on(!B)+' (pull-up, parallel) · N1 '+on(A)+', N2 '+on(B)+' (pull-down, series) → '+(y?'a PMOS connects Y to V<sub>DD</sub>, so Y = 1':'both NMOS conduct, Y is pulled to 0 V, so Y = 0');
+      }
+      a.onclick=function(){A=1-A;r();};b.onclick=function(){B=1-B;r();};r();
+    })();
+    </script>
+
+    <h2>Building a gate from transistors: CMOS</h2>
+    <p>Almost every modern chip is made with <b>CMOS</b> (complementary metal-oxide-semiconductor). It uses two kinds of MOSFET as switches (see <a href="t13-mosfet-physics.html">T13</a> for how the channel forms):</p>
+    <ul>
+      <li>An <b>n-channel MOSFET (NMOS)</b> turns ON when its gate is HIGH. It is good at connecting things to 0 V (ground).</li>
+      <li>A <b>p-channel MOSFET (PMOS)</b> turns ON when its gate is LOW. It is good at connecting things to V<sub>DD</sub> (the positive supply).</li>
+    </ul>
+    <p>The simplest CMOS circuit is the inverter: one PMOS from V<sub>DD</sub> to the output, one NMOS from the output to ground, gates tied together as the input. Input HIGH: NMOS on, PMOS off, output pulled to 0 V. Input LOW: PMOS on, NMOS off, output pulled to V<sub>DD</sub>. The key point: <b>in either steady state, one of the two transistors is off, so there is no path from V<sub>DD</sub> to ground</b>. A CMOS gate that is not switching draws almost no current, only tiny leakage. That is why a microcontroller with millions of transistors can sleep on a few microamps.</p>
+
+    <h3>The CMOS NAND gate</h3>
+    <p>For a two-input NAND we need a <b>pull-up network</b> that connects Y to V<sub>DD</sub> whenever the output should be 1, and a <b>pull-down network</b> that connects Y to ground whenever it should be 0. The two networks must never be on at the same time.</p>
+    <ul>
+      <li>Y should be 0 only when A = 1 <i>and</i> B = 1. So put two NMOS <b>in series</b> to ground. Current can only flow down if both are on.</li>
+      <li>Y should be 1 when A = 0 <i>or</i> B = 0. So put two PMOS <b>in parallel</b> to V<sub>DD</sub>. Either one being on is enough.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 600 420" role="img" aria-label="Transistor-level CMOS NAND gate: two PMOS in parallel to VDD, two NMOS in series to ground">
+        <line class="s-line" x1="140" y1="40" x2="420" y2="40"/>
+        <text class="t t-bold" x="280" y="28" text-anchor="middle">V_DD (+5 V)</text>
+        <!-- P1 -->
+        <path class="s-line" d="M200 40 V80 H180 M180 120 H200 V140"/>
+        <line class="s-line" x1="180" y1="72" x2="180" y2="128" style="stroke-width:3"/>
+        <line class="s-line" x1="170" y1="72" x2="170" y2="128"/>
+        <circle class="s-line f-panel" cx="164" cy="100" r="6"/>
+        <line class="s-line" x1="158" y1="100" x2="118" y2="100"/>
+        <text class="t t-bold" x="104" y="105">A</text>
+        <text class="t t-small t-muted" x="208" y="104">P1</text>
+        <!-- P2 -->
+        <path class="s-line" d="M360 40 V80 H340 M340 120 H360 V140"/>
+        <line class="s-line" x1="340" y1="72" x2="340" y2="128" style="stroke-width:3"/>
+        <line class="s-line" x1="330" y1="72" x2="330" y2="128"/>
+        <circle class="s-line f-panel" cx="324" cy="100" r="6"/>
+        <line class="s-line" x1="318" y1="100" x2="284" y2="100"/>
+        <text class="t t-bold" x="270" y="105">B</text>
+        <text class="t t-small t-muted" x="368" y="104">P2</text>
+        <!-- output node -->
+        <path class="s-line" d="M200 140 V170 H360 V140"/>
+        <line class="s-accent" x1="360" y1="170" x2="470" y2="170"/>
+        <circle class="f-ink" cx="280" cy="170" r="4"/><circle class="f-ink" cx="360" cy="170" r="4"/>
+        <text class="t t-bold t-accent" x="480" y="175">Y</text>
+        <!-- N1 -->
+        <path class="s-line" d="M280 170 V210 H260 M260 250 H280 V290"/>
+        <line class="s-line" x1="260" y1="202" x2="260" y2="258" style="stroke-width:3"/>
+        <line class="s-line" x1="250" y1="202" x2="250" y2="258"/>
+        <line class="s-line" x1="250" y1="230" x2="205" y2="230"/>
+        <text class="t t-bold" x="190" y="235">A</text>
+        <text class="t t-small t-muted" x="290" y="234">N1</text>
+        <!-- N2 -->
+        <path class="s-line" d="M280 290 V310 H260 M260 350 H280 V385"/>
+        <line class="s-line" x1="260" y1="302" x2="260" y2="358" style="stroke-width:3"/>
+        <line class="s-line" x1="250" y1="302" x2="250" y2="358"/>
+        <line class="s-line" x1="250" y1="330" x2="205" y2="330"/>
+        <text class="t t-bold" x="190" y="335">B</text>
+        <text class="t t-small t-muted" x="290" y="334">N2</text>
+        <!-- ground -->
+        <line class="s-line" x1="264" y1="385" x2="296" y2="385"/>
+        <line class="s-line" x1="270" y1="392" x2="290" y2="392"/>
+        <line class="s-line" x1="276" y1="399" x2="284" y2="399"/>
+        <text class="t t-small t-muted" x="306" y="398">0 V</text>
+        <!-- notes -->
+        <rect class="f-theory-soft s-thin" x="400" y="62" width="190" height="64" rx="6"/>
+        <text class="t t-small t-bold" x="410" y="82">Pull-up: PMOS in parallel</text>
+        <text class="t t-small" x="410" y="100">either input LOW → a PMOS</text>
+        <text class="t t-small" x="410" y="116">is on → Y = 1</text>
+        <rect class="f-theory-soft s-thin" x="370" y="240" width="220" height="64" rx="6"/>
+        <text class="t t-small t-bold" x="380" y="260">Pull-down: NMOS in series</text>
+        <text class="t t-small" x="380" y="278">only A = 1 AND B = 1 turns</text>
+        <text class="t t-small" x="380" y="294">both on → Y = 0</text>
+      </svg>
+      <figcaption>Figure 3. A CMOS NAND gate uses four transistors. The bubble on a gate lead marks a PMOS (on when its gate is LOW). Inputs labelled A drive both P1 and N1; inputs labelled B drive both P2 and N2. Count the transistors: NAND needs 4, AND needs 6 (a NAND plus an inverter). That is why NAND is the natural building block.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>A</th><th>B</th><th>P1</th><th>P2</th><th>N1</th><th>N2</th><th>Y</th><th>Why</th></tr>
+      <tr><td>0</td><td>0</td><td>on</td><td>on</td><td>off</td><td>off</td><td>1</td><td>Both pull-ups on, path to ground broken twice</td></tr>
+      <tr><td>0</td><td>1</td><td>on</td><td>off</td><td>off</td><td>on</td><td>1</td><td>P1 pulls up; N1 is off so the series path is broken</td></tr>
+      <tr><td>1</td><td>0</td><td>off</td><td>on</td><td>on</td><td>off</td><td>1</td><td>P2 pulls up; N2 is off</td></tr>
+      <tr><td>1</td><td>1</td><td>off</td><td>off</td><td>on</td><td>on</td><td>0</td><td>Both pull-ups off; series NMOS path connects Y to 0 V</td></tr>
+    </table></div>
+
+    <h3>Where the power goes: switching</h3>
+    <p>If a CMOS gate draws nothing when still, where does a chip's current come from? From <b>switching</b>. Every wire and every gate input is a small capacitor. Each time the output goes LOW → HIGH, the PMOS charges that capacitance from the supply; each HIGH → LOW, the NMOS dumps the charge to ground. The energy used per full cycle is C·V², so:</p>
+    <div class="formula">P ≈ C · V² · f
+      <small>Example: one output pin driving 10 pF of wiring at 5 V, toggling at 1 MHz: P = 10×10⁻¹² × 25 × 10⁶ = 250 µW. A whole chip has millions of tiny capacitances, so this term dominates. It is also why halving V saves 75 % of switching power, and why phones run their chips at about 1 V.</small></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "An unconnected input reads LOW, because nothing is connected." <b>Right:</b> a CMOS input is just the gate of two MOSFETs: a tiny capacitor with almost infinite resistance. Left floating, it picks up charge from your hand, nearby wires and mains hum, and wanders through the undefined zone. It may read HIGH, LOW, or flicker, and while it sits mid-way both transistors of the input stage are partly on, wasting current. Always pull unused or switch inputs to a defined level with a resistor (or <code>INPUT_PULLUP</code> on an Arduino, which turns on an internal resistor of roughly 20–50 kΩ).</p></div>
+
+    <h2>Combinational and sequential logic</h2>
+    <p>Digital circuits come in two kinds.</p>
+    <div class="compare">
+      <div><h4>Combinational</h4><p>The output depends <b>only on the inputs right now</b>. No memory. Change the inputs, wait a few nanoseconds for the gates to settle, and the output is a fixed function of them. Examples: gates, adders, decoders, multiplexers (data selectors).</p></div>
+      <div><h4>Sequential</h4><p>The output depends on the inputs <b>and on what happened before</b>. The circuit has memory, called its <b>state</b>. Examples: flip-flops, registers, counters, and in the end the whole microcontroller.</p></div>
+    </div>
+    <h3>Combinational example: adding two bits</h3>
+    <p>Adding two single bits gives four cases: 0+0 = 0, 0+1 = 1, 1+0 = 1, 1+1 = 10₂ (that is, "0, carry 1"). Look at the truth table: the sum bit is exactly XOR, and the carry bit is exactly AND. One XOR and one AND gate make a <b>half adder</b>. Add a second stage to handle a carry coming in and you have a <b>full adder</b>; chain 8 full adders and you can add two bytes. This chain is the heart of the <b>ALU</b> (arithmetic logic unit) inside every CPU.</p>
+    <h3>Sequential example: a gate that remembers</h3>
+    <p>Take two NOR gates and feed each one's output into the other's input. This loop has two stable states, like a light switch that stays where you leave it. Pulse one free input (S, "set") and the output latches to 1. Pulse the other (R, "reset") and it latches to 0. With both inputs at 0, it simply holds. This <b>SR latch</b> is the simplest memory cell. The feedback loop is what turns logic into memory.</p>
+
+    <h2>The clock and the D flip-flop</h2>
+    <p>Gates take time to respond, a few nanoseconds each, and different paths through a circuit have different delays. If every memory cell updated whenever its input wiggled, half-settled values would race around the chip. The fix is a <b>clock</b>: a square wave that tells every memory cell <i>when</i> to take a new value. Between clock edges the combinational logic settles; at the edge, everything updates together.</p>
+    <p>The memory cell used with a clock is the <b>D flip-flop</b> (D for "data"). Its rule is short:</p>
+    <div class="formula">On each rising edge of CLK: Q ← D. At all other times: Q holds.
+      <small>"Rising edge" means the instant CLK goes from LOW to HIGH. Changes on D between edges are ignored. A D flip-flop stores exactly one bit.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Timing diagram of a D flip-flop: clock, data and output waveforms">
+        <text class="t t-bold" x="20" y="60">CLK</text>
+        <text class="t t-bold" x="20" y="120">D</text>
+        <text class="t t-bold" x="20" y="180">Q</text>
+        <g class="s-thin s-dash">
+          <line x1="120" y1="30" x2="120" y2="200"/><line x1="200" y1="30" x2="200" y2="200"/><line x1="280" y1="30" x2="280" y2="200"/><line x1="360" y1="30" x2="360" y2="200"/><line x1="440" y1="30" x2="440" y2="200"/><line x1="520" y1="30" x2="520" y2="200"/><line x1="600" y1="30" x2="600" y2="200"/>
+        </g>
+        <path class="s-accent" d="M80 70 H120 V40 H160 V70 H200 V40 H240 V70 H280 V40 H320 V70 H360 V40 H400 V70 H440 V40 H480 V70 H520 V40 H560 V70 H600 V40 H620"/>
+        <path class="s-blue" d="M80 130 H150 V100 H250 V130 H300 V100 H330 V130 H410 V100 H620"/>
+        <path class="s-green" d="M80 190 H205 V160 H285 V190 H445 V160 H620"/>
+        <text class="t t-small t-red" x="290" y="92">pulse between edges: ignored</text>
+        <text class="t t-small t-muted" x="120" y="222" text-anchor="middle">↑1</text>
+        <text class="t t-small t-muted" x="200" y="222" text-anchor="middle">↑2</text>
+        <text class="t t-small t-muted" x="280" y="222" text-anchor="middle">↑3</text>
+        <text class="t t-small t-muted" x="360" y="222" text-anchor="middle">↑4</text>
+        <text class="t t-small t-muted" x="440" y="222" text-anchor="middle">↑5</text>
+        <text class="t t-small t-muted" x="520" y="222" text-anchor="middle">↑6</text>
+        <text class="t t-small t-muted" x="600" y="222" text-anchor="middle">↑7</text>
+      </svg>
+      <figcaption>Figure 4. Q copies D only at rising edges (dashed lines), after a small delay. At edge 2, D is HIGH so Q goes HIGH. At edge 3, D is LOW so Q goes LOW. The short D pulse between edges 3 and 4 never reaches Q, because no edge happened while it was HIGH.</figcaption>
+    </figure>
+    <p>The clock sets the speed limit. An Uno runs at 16 MHz, so one clock period is 1 / 16,000,000 = 62.5 ns. All the logic between two flip-flops must settle within 62.5 ns, minus the flip-flop's <b>setup time</b> (D must be steady a little before the edge) and <b>hold time</b> (and a little after). Make the logic slower than that and the chip computes garbage. That is what "overclocking" risks.</p>
+    <details class="more"><summary>Go deeper: metastability and button presses</summary><p>A button press is not synchronised to the clock. If D changes exactly inside the setup/hold window, the flip-flop can hang between 0 and 1 for a short, unpredictable time (it is "metastable", like a ball balanced on a hilltop). Chips handle outside signals by passing them through two flip-flops in a row, a <b>synchroniser</b>, so the second one almost always sees a settled value. The ATmega328P does this on its input pins, which is one reason a pin read is delayed by a clock cycle or so. Button <i>bounce</i> (the contacts chattering for a few milliseconds) is a separate, mechanical problem, solved by debouncing in software, as in P11.</p></details>
+
+    <h2>Registers, counters and timers</h2>
+    <h3>A register is a row of flip-flops</h3>
+    <p>Put eight D flip-flops side by side, feed them all the same clock, and you have an 8-bit <b>register</b>: it stores one byte and updates all eight bits on the same edge. The CPU's working storage, the settings of every peripheral and the state of every output pin all live in registers. When you change a register bit in software, you are setting a D input that gets clocked in.</p>
+    <p>Wire the flip-flops so each one's Q feeds the next one's D, and the register becomes a <b>shift register</b>: on every clock edge the whole pattern moves one place along. Feed bits in one at a time on one wire and read them out in parallel on eight wires. That is how a 74HC595 chip gives an Arduino eight extra outputs from three pins, and it is the basic idea behind every serial link (UART, SPI, Ethernet): turn parallel bits into a stream, send it, then turn it back.</p>
+    <h3>A counter divides the clock</h3>
+    <p>Take one D flip-flop and connect its inverted output (Q̅) back to its own D. On every rising edge, Q flips. The output is a square wave at <b>half</b> the clock frequency. Chain four of these and you get outputs at f/2, f/4, f/8, f/16, and the four Q outputs, read as a binary number, count 0, 1, 2 … 15, 0, 1 … This is a <b>binary counter</b>. A counter that counts clock edges is a <b>timer</b>.</p>
+    <div class="formula">Arduino Uno Timer0: 16 MHz ÷ 64 (prescaler) = 250 kHz → one count every 4 µs<br>8-bit counter overflows every 256 counts → 256 × 4 µs = 1.024 ms
+      <small>A <b>prescaler</b> is just a divider counter in front of the timer. The Arduino core uses this exact overflow, about once per millisecond, to keep <code>millis()</code> ticking. Your program does not count time; a piece of hardware does it in parallel.</small></div>
+    <p>Timers also make <b>PWM</b> (pulse-width modulation, which you met in P09). The hardware compares the running count with a number you choose. While count &lt; your number, the pin is HIGH; after that, LOW. With <code>analogWrite(9, 64)</code>, the pin is HIGH for 64 of every 256 counts, a 25 % duty cycle, with no CPU effort at all.</p>
+
+    <h2>Inside a microcontroller</h2>
+    <p>A <b>microcontroller</b> (MCU) is a whole small computer on one chip: processor, both kinds of memory, a clock, and a set of hardware helpers called <b>peripherals</b> that deal with the outside world. A <b>microprocessor</b>, like the one in a Raspberry Pi or a laptop, is mostly the processor; memory and many peripherals sit on separate chips, and it usually runs an operating system such as Linux. Microcontrollers are cheap, start instantly, use little power and react in microseconds, which is why they sit inside thermostats, door controllers, BMS field controllers, smoke detectors and power tools.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 380" role="img" aria-label="Block diagram of the ATmega328P microcontroller: CPU, memories, clock, interrupts, data bus and peripherals">
+        <defs><marker id="t15mcu-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="s-thin f-none" x="10" y="10" width="640" height="320" rx="12"/>
+        <text class="t t-small t-muted" x="22" y="28">ATmega328P (the chip on an Arduino Uno)</text>
+        <rect class="f-wash s-line" x="30" y="40" width="170" height="52" rx="6"/>
+        <text class="t t-bold" x="40" y="62">Flash 32 KB</text>
+        <text class="t t-small t-muted" x="40" y="80">your program (kept at power-off)</text>
+        <rect class="f-wash s-line" x="30" y="102" width="170" height="52" rx="6"/>
+        <text class="t t-bold" x="40" y="124">SRAM 2 KB</text>
+        <text class="t t-small t-muted" x="40" y="142">variables, stack (lost at power-off)</text>
+        <rect class="f-wash s-line" x="30" y="164" width="170" height="52" rx="6"/>
+        <text class="t t-bold" x="40" y="186">EEPROM 1 KB</text>
+        <text class="t t-small t-muted" x="40" y="204">settings you save</text>
+        <rect class="f-accent-soft s-accent" x="250" y="40" width="160" height="80" rx="6"/>
+        <text class="t t-bold" x="330" y="64" text-anchor="middle">CPU core</text>
+        <text class="t t-small" x="330" y="84" text-anchor="middle">8-bit AVR, ALU,</text>
+        <text class="t t-small" x="330" y="100" text-anchor="middle">32 registers, PC</text>
+        <rect class="f-wash s-line" x="460" y="40" width="170" height="52" rx="6"/>
+        <text class="t t-bold" x="470" y="62">Clock</text>
+        <text class="t t-small t-muted" x="470" y="80">16 MHz crystal on the Uno</text>
+        <rect class="f-wash s-line" x="460" y="102" width="170" height="52" rx="6"/>
+        <text class="t t-bold" x="470" y="124">Interrupt unit</text>
+        <text class="t t-small t-muted" x="470" y="142">"stop and handle this now"</text>
+        <line class="s-line" x1="200" y1="66" x2="248" y2="66" marker-end="url(#t15mcu-a)"/>
+        <text class="t t-small t-muted" x="206" y="58">fetch</text>
+        <line class="s-line" x1="460" y1="66" x2="412" y2="66" marker-end="url(#t15mcu-a)"/>
+        <line class="s-line s-dash" x1="460" y1="128" x2="412" y2="108" marker-end="url(#t15mcu-a)"/>
+        <path class="s-line" d="M200 128 H220 V228 M200 190 H220"/>
+        <line class="s-line" x1="330" y1="122" x2="330" y2="226" marker-start="url(#t15mcu-a)" marker-end="url(#t15mcu-a)"/>
+        <rect class="f-theory-soft s-thin" x="30" y="228" width="600" height="20" rx="4"/>
+        <text class="t t-small t-bold" x="420" y="243">8-bit data bus</text>
+        <g>
+          <rect class="f-panel s-line" x="30" y="268" width="92" height="50" rx="6"/>
+          <rect class="f-panel s-line" x="131" y="268" width="92" height="50" rx="6"/>
+          <rect class="f-panel s-line" x="232" y="268" width="92" height="50" rx="6"/>
+          <rect class="f-panel s-line" x="333" y="268" width="92" height="50" rx="6"/>
+          <rect class="f-panel s-line" x="434" y="268" width="92" height="50" rx="6"/>
+          <rect class="f-panel s-line" x="535" y="268" width="92" height="50" rx="6"/>
+          <path class="s-line" d="M76 248 V268 M177 248 V268 M278 248 V268 M379 248 V268 M480 248 V268 M581 248 V268"/>
+        </g>
+        <text class="t t-small t-bold" x="76" y="290" text-anchor="middle">GPIO ports</text>
+        <text class="t t-small t-muted" x="76" y="306" text-anchor="middle">B, C, D</text>
+        <text class="t t-small t-bold" x="177" y="290" text-anchor="middle">Timers 0,1,2</text>
+        <text class="t t-small t-muted" x="177" y="306" text-anchor="middle">PWM, millis</text>
+        <text class="t t-small t-bold" x="278" y="290" text-anchor="middle">ADC</text>
+        <text class="t t-small t-muted" x="278" y="306" text-anchor="middle">10-bit SAR</text>
+        <text class="t t-small t-bold" x="379" y="290" text-anchor="middle">USART</text>
+        <text class="t t-small t-muted" x="379" y="306" text-anchor="middle">serial (UART)</text>
+        <text class="t t-small t-bold" x="480" y="290" text-anchor="middle">SPI</text>
+        <text class="t t-small t-muted" x="480" y="306" text-anchor="middle">4-wire, fast</text>
+        <text class="t t-small t-bold" x="581" y="290" text-anchor="middle">TWI (I²C)</text>
+        <text class="t t-small t-muted" x="581" y="306" text-anchor="middle">2-wire bus</text>
+        <text class="t t-small t-muted" x="76" y="352" text-anchor="middle">D0–D13, A0–A5</text>
+        <text class="t t-small t-muted" x="177" y="352" text-anchor="middle">PWM pins</text>
+        <text class="t t-small t-muted" x="278" y="352" text-anchor="middle">A0–A5</text>
+        <text class="t t-small t-muted" x="379" y="352" text-anchor="middle">D0 RX, D1 TX</text>
+        <text class="t t-small t-muted" x="480" y="352" text-anchor="middle">D10–D13</text>
+        <text class="t t-small t-muted" x="581" y="352" text-anchor="middle">A4 SDA, A5 SCL</text>
+        <path class="s-thin s-dash" d="M76 318 V338 M177 318 V338 M278 318 V338 M379 318 V338 M480 318 V338 M581 318 V338"/>
+      </svg>
+      <figcaption>Figure 5. Inside the ATmega328P. The CPU fetches instructions from flash on its own path, and reads and writes everything else (SRAM, EEPROM, peripheral registers) over the data bus. Each peripheral is a block of hardware with its own registers, and its signals come out on physical pins (bottom row, Arduino pin names). Many pins are shared: D13 is both a GPIO pin and the SPI clock.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Block</th><th>What it does</th><th>Numbers for the Uno's ATmega328P</th></tr>
+      <tr><td><b>CPU core</b></td><td>Fetches instructions, decodes them, does arithmetic and logic in the ALU, moves data between registers and memory.</td><td>8-bit, most instructions take 1 clock → up to ~16 million instructions per second</td></tr>
+      <tr><td><b>Flash</b></td><td>Non-volatile program memory. Keeps your sketch without power. Written when you click Upload.</td><td>32 KB, of which 0.5 KB holds the Arduino bootloader</td></tr>
+      <tr><td><b>SRAM</b></td><td>Fast working memory for variables and the stack. Lost at power-off.</td><td>2 KB. Long text strings fill it quickly.</td></tr>
+      <tr><td><b>EEPROM</b></td><td>Small non-volatile memory for settings you want to survive a reset.</td><td>1 KB, rated for about 100,000 writes per cell</td></tr>
+      <tr><td><b>Clock</b></td><td>The square wave that steps everything forward.</td><td>16 MHz → 62.5 ns per cycle</td></tr>
+      <tr><td><b>GPIO</b></td><td>General-purpose input/output pins: each one can read or drive a digital level.</td><td>Up to 23 lines; keep each pin ≤ 20 mA (40 mA is the absolute maximum)</td></tr>
+      <tr><td><b>Timers</b></td><td>Counters clocked by the system clock: timing, PWM, measuring pulse lengths.</td><td>Two 8-bit, one 16-bit</td></tr>
+      <tr><td><b>ADC</b></td><td>Turns a voltage into a number (details below).</td><td>10-bit, about 100 µs per reading</td></tr>
+      <tr><td><b>USART / UART</b></td><td>Asynchronous serial: start bit, 8 data bits, stop bit; no shared clock, both ends agree on a speed (baud).</td><td>At 9600 baud, 10 bits per byte → ~1.04 ms per character</td></tr>
+      <tr><td><b>I²C (TWI)</b></td><td>Two wires (SDA data, SCL clock) shared by many devices, each with a 7-bit address. Needs pull-up resistors.</td><td>100 kHz standard, 400 kHz fast</td></tr>
+      <tr><td><b>SPI</b></td><td>Four wires: clock, data out, data in, chip select. One device per select line, very fast.</td><td>Several MHz</td></tr>
+      <tr><td><b>Interrupts</b></td><td>Let a peripheral or pin pause the main program to run a short handler immediately.</td><td>Pin changes, timer overflows, "ADC done", "byte received" …</td></tr>
+    </table></div>
+
+    <h3>Interrupts: the doorbell</h3>
+    <p>Imagine waiting for a parcel. You can walk to the door every ten seconds to check (this is <b>polling</b>), or you can install a doorbell and get on with your work (this is an <b>interrupt</b>). When an interrupt fires, the CPU finishes its current instruction, saves where it was (the program counter goes onto the <b>stack</b> in SRAM), jumps to a fixed address called the <b>interrupt vector</b>, runs your short handler (the <b>ISR</b>, interrupt service routine), then returns and carries on as if nothing happened. Interrupts are why a received serial byte is never lost even while your <code>loop()</code> is busy, and why <code>millis()</code> keeps counting during your code.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>A GPIO pin is a tiny CMOS output. It can light an LED through a resistor, and that is about all. To switch a relay, motor, solenoid or lock, use a transistor or driver module with a flyback diode (P08, P13). Never connect a pin to anything above the chip's supply voltage. Everything in this course stays at extra-low voltage (ELV); a microcontroller must never be wired to 230 V mains. In Australia, any work on mains wiring, including the mains side of a relay board, is legally reserved for licensed electricians.</p></div>
+
+    <h2>What digitalWrite(13, HIGH) really does</h2>
+    <p>Here is the whole chain, from the line you type to the electrons in the LED. The key idea is <b>memory-mapped I/O</b>: every peripheral register has an address, just like a variable in SRAM. Writing to that address does not store a number for later; it changes hardware <i>right now</i>.</p>
+    <p>On the ATmega328P, Arduino pins 8–13 belong to <b>port B</b>, and pin 13 is <b>PB5</b>: port B, bit 5. Port B is controlled by three 8-bit registers:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Register</th><th>Address (I/O / data space)</th><th>Each bit means</th><th>Arduino function that uses it</th></tr>
+      <tr><td><code>DDRB</code></td><td>0x04 / 0x24</td><td>Data Direction: 1 = output, 0 = input</td><td><code>pinMode(13, OUTPUT)</code></td></tr>
+      <tr><td><code>PORTB</code></td><td>0x05 / 0x25</td><td>For an output: 1 = drive HIGH, 0 = drive LOW. For an input: 1 = turn on the pull-up</td><td><code>digitalWrite(13, HIGH)</code></td></tr>
+      <tr><td><code>PINB</code></td><td>0x03 / 0x23</td><td>Reads the actual voltage level on each pin</td><td><code>digitalRead(13)</code></td></tr>
+    </table></div>
+
+    <figure>
+      <svg viewBox="0 0 620 305" role="img" aria-label="Flow from the digitalWrite line in a sketch, through the PORTB register bit 5, to the output driver and the LED on pin PB5">
+        <defs><marker id="t15dw-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="20" y="20" width="215" height="52" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="40">1 · Your sketch</text>
+        <text class="t t-small" x="30" y="60" style="font-family:var(--mono)">digitalWrite(13, HIGH);</text>
+        <rect class="f-wash s-line" x="20" y="100" width="215" height="52" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="120">2 · Arduino core looks up</text>
+        <text class="t t-small" x="30" y="140">pin 13 → port B, bit 5</text>
+        <rect class="f-wash s-line" x="20" y="180" width="215" height="52" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="200">3 · Machine instruction</text>
+        <text class="t t-small" x="30" y="220" style="font-family:var(--mono)">sbi 0x05, 5  (2 cycles)</text>
+        <line class="s-accent" x1="127" y1="72" x2="127" y2="98" marker-end="url(#t15dw-a)"/>
+        <line class="s-accent" x1="127" y1="152" x2="127" y2="178" marker-end="url(#t15dw-a)"/>
+        <text class="t t-small t-muted" x="305" y="64">bit:</text>
+        <g class="t t-small t-muted" text-anchor="middle">
+          <text x="323" y="78">7</text><text x="359" y="78">6</text><text x="395" y="78">5</text><text x="431" y="78">4</text><text x="467" y="78">3</text><text x="503" y="78">2</text><text x="539" y="78">1</text><text x="575" y="78">0</text>
+        </g>
+        <text class="t t-small t-bold" x="250" y="106">DDRB</text>
+        <text class="t t-small t-bold" x="250" y="171">PORTB</text>
+        <g class="s-thin f-panel">
+          <rect x="305" y="85" width="36" height="30"/><rect x="341" y="85" width="36" height="30"/><rect x="413" y="85" width="36" height="30"/><rect x="449" y="85" width="36" height="30"/><rect x="485" y="85" width="36" height="30"/><rect x="521" y="85" width="36" height="30"/><rect x="557" y="85" width="36" height="30"/>
+          <rect x="305" y="150" width="36" height="30"/><rect x="341" y="150" width="36" height="30"/><rect x="413" y="150" width="36" height="30"/><rect x="449" y="150" width="36" height="30"/><rect x="485" y="150" width="36" height="30"/><rect x="521" y="150" width="36" height="30"/><rect x="557" y="150" width="36" height="30"/>
+        </g>
+        <rect class="f-accent-soft s-accent" x="377" y="85" width="36" height="30"/>
+        <rect class="f-accent-soft s-accent" x="377" y="150" width="36" height="30"/>
+        <g class="t" text-anchor="middle" style="font-family:var(--mono)">
+          <text x="323" y="105">0</text><text x="359" y="105">0</text><text x="395" y="105" class="t-bold">1</text><text x="431" y="105">0</text><text x="467" y="105">0</text><text x="503" y="105">0</text><text x="539" y="105">0</text><text x="575" y="105">0</text>
+          <text x="323" y="170">0</text><text x="359" y="170">0</text><text x="395" y="170" class="t-bold">1</text><text x="431" y="170">0</text><text x="467" y="170">0</text><text x="503" y="170">0</text><text x="539" y="170">0</text><text x="575" y="170">0</text>
+        </g>
+        <text class="t t-small t-muted" x="305" y="136">set earlier by pinMode(13, OUTPUT)</text>
+        <path class="s-accent" d="M235 206 H280 V165 H300" marker-end="url(#t15dw-a)"/>
+        <line class="s-accent" x1="395" y1="180" x2="395" y2="213" marker-end="url(#t15dw-a)"/>
+        <rect class="f-theory-soft s-line" x="340" y="215" width="110" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="395" y="235" text-anchor="middle">output driver</text>
+        <text class="t t-small" x="395" y="253" text-anchor="middle">PMOS on → 5 V</text>
+        <line class="s-line" x1="450" y1="240" x2="490" y2="240"/>
+        <rect class="f-panel s-line" x="490" y="232" width="40" height="16"/>
+        <text class="t t-small" x="490" y="226">220 Ω</text>
+        <line class="s-line" x1="530" y1="240" x2="580" y2="240"/>
+        <line class="s-line" x1="580" y1="240" x2="580" y2="252"/>
+        <polygon class="f-red" points="568,252 592,252 580,268"/>
+        <line class="s-line" x1="568" y1="268" x2="592" y2="268"/>
+        <line class="s-line" x1="580" y1="268" x2="580" y2="280"/>
+        <line class="s-line" x1="566" y1="280" x2="594" y2="280"/>
+        <line class="s-line" x1="571" y1="286" x2="589" y2="286"/>
+        <line class="s-line" x1="576" y1="292" x2="584" y2="292"/>
+        <text class="t t-small t-muted" x="456" y="266">pin PB5 = D13</text>
+      </svg>
+      <figcaption>Figure 6. From code to current. The Arduino library translates "pin 13" into "port B, bit 5", the compiler turns it into a single instruction that sets bit 5 of the PORTB register (I/O address 0x05), and the flip-flop holding that bit drives the gate of the pin's CMOS output stage. The PMOS turns on and connects the pin to 5 V; current flows through the resistor and LED to ground.</figcaption>
+    </figure>
+
+    <p>In C, you can do the same thing yourself, skipping the Arduino library:</p>
+<pre><code>DDRB  |= (1 &lt;&lt; 5);    // pinMode(13, OUTPUT): set bit 5 of DDRB, leave the others alone
+PORTB |= (1 &lt;&lt; 5);    // digitalWrite(13, HIGH): set bit 5 of PORTB
+PORTB &amp;= ~(1 &lt;&lt; 5);   // digitalWrite(13, LOW): clear bit 5, leave the others alone
+PINB   =  (1 &lt;&lt; 5);   // AVR special: writing a 1 to PINB toggles that output bit</code></pre>
+    <p>Read these with your binary eyes. <code>1 &lt;&lt; 5</code> means "1 shifted left five places" = 0b00100000 = 0x20 = 32. <code>|=</code> (OR-equals) sets that bit and leaves the other seven unchanged, because x OR 0 = x. <code>&amp;= ~</code> (AND with the inverse) clears just that bit, because x AND 1 = x. These two patterns, set-a-bit and clear-a-bit, appear in every piece of embedded code ever written.</p>
+    <p><b>Why bother?</b> <code>digitalWrite</code> is friendly but slow: it looks the pin up in tables, checks whether a timer is using that pin for PWM, and protects the write from interrupts. That takes a few microseconds. The direct register write compiles to one <code>sbi</code> instruction: 2 clock cycles, 125 ns at 16 MHz, roughly 30 times faster. For blinking an LED it does not matter at all. For generating a fast signal, it matters a lot.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Every microcontroller family has the same three ideas under different names: a direction register, an output register and an input register. On an ESP32 or an STM32 the names and addresses change, but once you have understood DDRB/PORTB/PINB, the datasheet's "GPIO registers" chapter will read like a familiar story.</p></div>
+
+    <h2>How the ADC measures a voltage</h2>
+    <p>The world is analogue: a thermistor gives 1.83 V, not "HIGH". An <b>ADC</b> (analogue-to-digital converter) turns that voltage into a number. The ATmega328P uses a <b>successive-approximation</b> ADC (SAR ADC). Its idea is the "guess my number" game: "Is it 512 or more?" "Yes." "Is it 768 or more?" "No." Each answer halves the remaining range. A 10-bit result (0–1023) needs exactly 10 questions. This search is called a <b>binary search</b>.</p>
+    <p>It needs four parts:</p>
+    <ol>
+      <li><b>Sample-and-hold.</b> A switch briefly connects the input to a small capacitor (about 14 pF in the ATmega328P), then opens. The capacitor "freezes" the voltage so it cannot change during the 10 questions.</li>
+      <li><b>DAC</b> (digital-to-analogue converter). Makes a trial voltage from a trial number: V<sub>trial</sub> = code × V<sub>ref</sub> / 1024.</li>
+      <li><b>Comparator.</b> A one-bit decision: is the held voltage ≥ the trial voltage? (The comparator is an op-amp used without feedback, as in T14.)</li>
+      <li><b>SAR logic.</b> A register that sets each bit in turn, from the MSB down, and keeps or clears it depending on the comparator's answer.</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 660 240" role="img" aria-label="Block diagram of a successive-approximation ADC with sample-and-hold, comparator, SAR logic and DAC">
+        <defs><marker id="t15sar-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="14" y="75">V_in</text>
+        <line class="s-line" x1="50" y1="70" x2="82" y2="70"/>
+        <circle class="f-ink" cx="84" cy="70" r="3"/>
+        <line class="s-line" x1="84" y1="70" x2="110" y2="56"/>
+        <circle class="f-ink" cx="114" cy="70" r="3"/>
+        <text class="t t-small t-muted" x="66" y="44">sample switch</text>
+        <line class="s-line" x1="114" y1="70" x2="260" y2="70"/>
+        <circle class="f-ink" cx="150" cy="70" r="4"/>
+        <line class="s-line" x1="150" y1="70" x2="150" y2="100"/>
+        <line class="s-line" x1="134" y1="100" x2="166" y2="100"/>
+        <line class="s-line" x1="134" y1="108" x2="166" y2="108"/>
+        <line class="s-line" x1="150" y1="108" x2="150" y2="124"/>
+        <line class="s-line" x1="138" y1="124" x2="162" y2="124"/>
+        <line class="s-line" x1="143" y1="130" x2="157" y2="130"/>
+        <line class="s-line" x1="147" y1="136" x2="153" y2="136"/>
+        <text class="t t-small t-muted" x="172" y="108">C_hold</text>
+        <path class="s-line f-accent-soft" d="M260 45 L260 125 L330 85 Z"/>
+        <text class="t t-small" x="266" y="74">+</text>
+        <text class="t t-small" x="266" y="110">−</text>
+        <text class="t t-small t-muted" x="250" y="146">comparator</text>
+        <line class="s-line" x1="330" y1="85" x2="368" y2="85" marker-end="url(#t15sar-a)"/>
+        <text class="t t-small t-muted" x="334" y="78">≥ ?</text>
+        <rect class="f-theory-soft s-line" x="370" y="55" width="130" height="60" rx="6"/>
+        <text class="t t-bold" x="435" y="80" text-anchor="middle">SAR logic</text>
+        <text class="t t-small t-muted" x="435" y="98" text-anchor="middle">binary search</text>
+        <line class="s-line" x1="435" y1="20" x2="435" y2="53" marker-end="url(#t15sar-a)"/>
+        <text class="t t-small t-muted" x="442" y="34">ADC clock</text>
+        <line class="s-line" x1="500" y1="85" x2="528" y2="85" marker-end="url(#t15sar-a)"/>
+        <rect class="f-wash s-line" x="530" y="60" width="120" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="590" y="82" text-anchor="middle">result</text>
+        <text class="t t-small" x="590" y="100" text-anchor="middle">0–1023</text>
+        <line class="s-line" x1="435" y1="115" x2="435" y2="158" marker-end="url(#t15sar-a)"/>
+        <text class="t t-small t-muted" x="442" y="140">trial code</text>
+        <rect class="f-wash s-line" x="370" y="160" width="130" height="50" rx="6"/>
+        <text class="t t-bold" x="435" y="190" text-anchor="middle">10-bit DAC</text>
+        <path class="s-line" d="M370 185 H230 V105 H258" marker-end="url(#t15sar-a)"/>
+        <text class="t t-small t-muted" x="240" y="202">V_trial = code × V_ref / 1024</text>
+        <line class="s-line" x1="580" y1="185" x2="502" y2="185" marker-end="url(#t15sar-a)"/>
+        <text class="t t-small" x="540" y="178">V_ref</text>
+        <text class="t t-small t-muted" x="530" y="204">(5 V on a Uno)</text>
+      </svg>
+      <figcaption>Figure 7. A successive-approximation ADC. The held input goes to the comparator's + input; the DAC's trial voltage goes to the − input. On each ADC clock, the SAR logic tries the next bit, and the comparator's "yes/no" decides whether that bit stays.</figcaption>
+    </figure>
+
+    <h3>Worked example: 3.30 V into a 10-bit ADC with V<sub>ref</sub> = 5 V</h3>
+    <p>One step (1 LSB) is 5 V / 1024 = 4.883 mV. Follow the search:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Step</th><th>Bit tried</th><th>Trial code</th><th>Trial voltage</th><th>3.30 V ≥ trial?</th><th>Code after step</th></tr>
+      <tr><td>1</td><td>9 (512)</td><td>512</td><td>2.500 V</td><td>yes → keep</td><td>512</td></tr>
+      <tr><td>2</td><td>8 (256)</td><td>768</td><td>3.750 V</td><td>no → drop</td><td>512</td></tr>
+      <tr><td>3</td><td>7 (128)</td><td>640</td><td>3.125 V</td><td>yes → keep</td><td>640</td></tr>
+      <tr><td>4</td><td>6 (64)</td><td>704</td><td>3.438 V</td><td>no → drop</td><td>640</td></tr>
+      <tr><td>5</td><td>5 (32)</td><td>672</td><td>3.281 V</td><td>yes → keep</td><td>672</td></tr>
+      <tr><td>6</td><td>4 (16)</td><td>688</td><td>3.359 V</td><td>no → drop</td><td>672</td></tr>
+      <tr><td>7</td><td>3 (8)</td><td>680</td><td>3.320 V</td><td>no → drop</td><td>672</td></tr>
+      <tr><td>8</td><td>2 (4)</td><td>676</td><td>3.301 V</td><td>no → drop (just!)</td><td>672</td></tr>
+      <tr><td>9</td><td>1 (2)</td><td>674</td><td>3.291 V</td><td>yes → keep</td><td>674</td></tr>
+      <tr><td>10</td><td>0 (1)</td><td>675</td><td>3.296 V</td><td>yes → keep</td><td>675</td></tr>
+    </table></div>
+    <p>Result: 675 = 0b10 1010 0011 = 0x2A3. Check: floor(3.30 / 5 × 1024) = floor(675.84) = 675. To turn the number back into volts in your sketch:</p>
+    <div class="formula">V = code × V<sub>ref</sub> / 1024 = 675 × 5 / 1024 = 3.296 V
+      <small>The ADC always rounds down to the step below, so the error is between 0 and 1 LSB (here 4 mV). Notice step 8: the trial was only 0.8 mV above the input. Any noise bigger than that could flip the decision, which is why the last bit of a real ADC reading jitters. Theory chapter T16 covers resolution and noise in detail.</small></div>
+    <p><b>How long does it take?</b> The Arduino sets the ADC clock to 16 MHz ÷ 128 = 125 kHz, and a normal conversion takes 13 ADC clocks (sampling plus the 10 decisions plus overhead): 13 / 125,000 ≈ 104 µs. So <code>analogRead()</code> takes a little over 100 µs, and the Uno can manage roughly 9,000 readings per second.</p>
+    <p><b>Why the reference matters:</b> the ADC does not measure volts; it measures the <i>ratio</i> V<sub>in</sub> / V<sub>ref</sub>. If the Uno's 5 V rail is really 4.85 V (common on USB power), every reading is off by 3 %. That sounds bad, but for a sensor powered from the same 5 V (a potentiometer or a thermistor divider), the error cancels, because the sensor's output scales with the same rail. Such sensors are called <b>ratiometric</b>. For absolute voltages, use a stable reference, such as the chip's internal 1.1 V reference, with a divider in front.</p>
+
+    <div class="widget" id="t15-sar">
+      <span class="label">Interactive · Watch a SAR ADC search</span>
+      <label>Input voltage <span class="out" id="t15s-vo">3.30 V</span><input type="range" id="t15s-v" min="0" max="5" step="0.01" value="3.30"></label>
+      <label>Resolution <select id="t15s-n"><option value="4">4-bit (16 steps)</option><option value="8">8-bit (256 steps)</option><option value="10" selected>10-bit (1024 steps)</option><option value="12">12-bit (4096 steps)</option></select></label>
+      <p><button type="button" class="wbtn" id="t15s-step">Step through</button><button type="button" class="wbtn" id="t15s-all">Show all steps</button> <span class="wsmall" id="t15s-k"></span></p>
+      <svg id="t15s-svg" viewBox="0 0 600 250" role="img" aria-label="Trial voltages at each step of the successive-approximation search"></svg>
+      <div class="readings">
+        <div><small>Result code</small><span class="out" id="t15s-code">675</span></div>
+        <div><small>Binary</small><span class="out" id="t15s-bin" style="font-size:15px">1010100011</span></div>
+        <div><small>Back to volts</small><span class="out" id="t15s-back">3.296 V</span></div>
+        <div><small>1 LSB</small><span class="out" id="t15s-lsb">4.88 mV</span></div>
+      </div>
+      <div class="table-wrap"><table id="t15s-tab"></table></div>
+    </div>
+    <script>
+    (function(){
+      var vS=document.getElementById('t15s-v'),nS=document.getElementById('t15s-n'),svg=document.getElementById('t15s-svg'),k=99,VREF=5;
+      function calc(){var n=+nS.value,full=Math.pow(2,n),lsb=VREF/full,vin=+vS.value,code=0,st=[];
+        for(var b=n-1;b>=0;b--){var tr=code+Math.pow(2,b),vt=tr*lsb,keep=vin>=vt;st.push({b:b,tr:tr,vt:vt,keep:keep,after:keep?tr:code});if(keep)code=tr;}
+        return {n:n,lsb:lsb,vin:vin,code:code,st:st};}
+      function y(v){return 220-v/VREF*200;}
+      function draw(){
+        var r=calc(),n=r.n,show=Math.min(k,n),w=520/n,h='';
+        document.getElementById('t15s-vo').textContent=r.vin.toFixed(2)+' V';
+        h+='<line class="s-thin" x1="60" y1="20" x2="60" y2="220"/><line class="s-thin" x1="60" y1="220" x2="585" y2="220"/>';
+        [0,1.25,2.5,3.75,5].forEach(function(v){h+='<text class="t t-small t-muted" x="54" y="'+(y(v)+4)+'" text-anchor="end">'+v+' V</text><line class="s-thin s-dash" x1="60" y1="'+y(v)+'" x2="585" y2="'+y(v)+'"/>';});
+        h+='<line class="s-blue s-dash" x1="60" y1="'+y(r.vin)+'" x2="585" y2="'+y(r.vin)+'"/>';
+        h+='<text class="t t-small t-blue" x="582" y="'+(y(r.vin)-6)+'" text-anchor="end">V_in</text>';
+        var path='M60 '+y(0);
+        for(var i=0;i<show;i++){var s=r.st[i],x0=62+i*w,x1=60+(i+1)*w-2,cx=(x0+x1)/2;
+          h+='<line class="'+(s.keep?'s-green':'s-red')+'" x1="'+x0+'" y1="'+y(s.vt)+'" x2="'+x1+'" y2="'+y(s.vt)+'"/>';
+          path+=' H'+(60+i*w)+' V'+y(s.after*r.lsb)+' H'+(60+(i+1)*w);
+          if(n<=12)h+='<text class="t t-small t-muted" x="'+cx+'" y="238" text-anchor="middle">'+(i+1)+'</text>';}
+        if(show>0)h+='<path class="s-accent" d="'+path+'" style="stroke-width:1.5;opacity:.7"/>';
+        h+='<text class="t t-small t-muted" x="322" y="250" text-anchor="middle">step (green = keep bit, red = drop bit, line = code so far)</text>';
+        svg.innerHTML=h;
+        var done=show>=n,cur=show>0?r.st[show-1].after:0;
+        document.getElementById('t15s-k').textContent=done?'All '+n+' steps shown':'Step '+show+' of '+n;
+        var bs=cur.toString(2);while(bs.length<n)bs='0'+bs;
+        document.getElementById('t15s-code').textContent=done?r.code:cur+' (so far)';
+        document.getElementById('t15s-bin').textContent=bs;
+        document.getElementById('t15s-back').textContent=(cur*r.lsb).toFixed(n>=10?4:3)+' V';
+        document.getElementById('t15s-lsb').textContent=(r.lsb*1000).toFixed(n>=10?3:1)+' mV';
+        var t='<tr><th>Step</th><th>Bit</th><th>Trial code</th><th>Trial V</th><th>Decision</th></tr>';
+        for(var j=0;j<show;j++){var q=r.st[j];t+='<tr><td>'+(j+1)+'</td><td>'+q.b+'</td><td>'+q.tr+'</td><td>'+q.vt.toFixed(4)+'</td><td>'+(q.keep?'V_in ≥ trial → keep':'V_in &lt; trial → drop')+'</td></tr>';}
+        document.getElementById('t15s-tab').innerHTML=t;
+      }
+      vS.oninput=function(){k=99;draw();};nS.onchange=function(){k=99;draw();};
+      document.getElementById('t15s-step').onclick=function(){var n=+nS.value;k=(k>=n)?1:k+1;draw();};
+      document.getElementById('t15s-all').onclick=function(){k=99;draw();};
+      draw();
+    })();
+    </script>
+
+    <h2>Fetch, decode, execute</h2>
+    <p>Now put it all together. The CPU is a big sequential circuit. Its most important register is the <b>program counter</b> (PC), which holds the flash address of the next instruction. Every instruction runs through three phases:</p>
+    <ol class="steps">
+      <li><p><b>Fetch.</b> The CPU reads the instruction at the address in the PC from flash into the <b>instruction register</b>. On AVR most instructions are one 16-bit word. Then the PC moves on by one.</p></li>
+      <li><p><b>Decode.</b> Combinational logic (the decoder) looks at the bit pattern and works out what it means: which operation, which registers, which number. It sets up the internal control lines: "connect register r16 to the ALU", "route this constant into the register file", and so on.</p></li>
+      <li><p><b>Execute.</b> On the next clock edge, the result is clocked into its destination register (or a peripheral register, or SRAM). A jump instruction simply loads a new value into the PC.</p></li>
+    </ol>
+    <p>The AVR overlaps these phases in a <b>pipeline</b>: while one instruction executes, the next is already being fetched. That is how most instructions finish in a single 62.5 ns clock cycle. Here is a tiny program that turns on the LED, the way the compiler might write it:</p>
+<pre><code>ldi  r16, 0x20     ; load the constant 0b00100000 into CPU register r16
+out  0x04, r16     ; copy r16 to I/O address 0x04 (DDRB): PB5 becomes an output
+out  0x05, r16     ; copy r16 to I/O address 0x05 (PORTB): PB5 goes HIGH, LED on</code></pre>
+    <p>In flash, <code>ldi r16, 0x20</code> is stored as the 16-bit word 0xE200. The decoder sees the top four bits <code>1110</code> and knows "load immediate": the constant's bits are spread through the rest of the word. Three instructions, three clock cycles, 187.5 ns, and the LED is on. When the chip powers up or resets, the PC is set to 0, the first instruction jumps to the startup code (on an Arduino, first the bootloader, which waits briefly for a new upload), and eventually to your <code>setup()</code> and then <code>loop()</code> forever. There is no operating system: your code <i>is</i> the only thing running.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The microcontroller runs my Arduino sketch line by line, like reading a script." <b>Right:</b> the sketch is compiled on your PC into machine instructions before upload. The chip never sees C. It sees only 16-bit words in flash and blindly fetches, decodes and executes them, 16 million times a second. One C line may become one instruction or hundreds.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>The BMS field controller on a plant room wall, the access-control door controller, the PLC in an industrial panel and the alarm panel are all microcontroller boards running this cycle. Their "DI/DO" points are GPIO pins behind protection circuits; their "AI" points are ADC channels behind signal conditioning; their RS-485 and Ethernet ports are UART and network peripherals. Hex and bits show up daily: Modbus registers are 16-bit words where each bit can be an alarm flag, status words are often shown in hex, a Wiegand 26-bit card read is 1 parity bit + 8-bit facility code + 16-bit card number + 1 parity bit, and a /24 subnet mask is 24 binary ones. A technician who can decode 0x0024 into "bits 2 and 5 are set" can read a fault that others have to phone in.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Uno-compatible boards are sold by Jaycar, Altronics and Core Electronics (indicatively ~A$15–40 for a compatible board, more for a genuine Arduino), and much cheaper but slower to arrive from AliExpress. element14 and RS Components stock bare ATmega328P chips and datasheets if you want to go deeper. The ATmega328P datasheet is free from Microchip's website; the "I/O Ports" and "ADC" chapters match this page closely.</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>Every idea on this page shows up in the practice labs:</p>
+    <ul>
+      <li>Pull-ups, floating inputs, debouncing, <code>digitalWrite</code> and the serial monitor (UART): <b>P11</b>.</li>
+      <li><code>analogRead</code>, the 0–1023 range, converting back to volts, ratiometric sensors: <b>P12</b>.</li>
+      <li>UART, I²C and SPI on real wires: P14. Watching the actual bits with a logic analyser: P15.</li>
+    </ul>
+    <a class="crosslink" href="../practice/p11-arduino-first-steps.html">Practice P11 · Arduino first steps: blink, inputs, pull-ups and the serial monitor</a>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC: how analogue becomes a number</a>
+    <a class="crosslink" href="../practice/p14-serial-buses-modbus.html">Practice P14 · UART, I²C, SPI, RS-485 and Modbus</a>
+    <a class="crosslink" href="t16-signals-noise-loops.html">Next theory: T16 · Sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Convert 0xB6 to binary and to decimal, by hand.</summary><div class="answer"><p>Each hex digit is four bits: B = 1011, 6 = 0110, so 0xB6 = 1011 0110. In decimal, B × 16 + 6 = 11 × 16 + 6 = 176 + 6 = 182. Check with place values: 128 + 32 + 16 + 4 + 2 = 182.</p></div></details>
+    <details class="quiz"><summary>A 3.3 V ESP32 output drives an input on a 5 V Arduino Uno. Will HIGH be read reliably? What about the other direction?</summary><div class="answer"><p>The Uno needs at least 0.6 × 5 = 3.0 V for a guaranteed HIGH. The ESP32 gives about 3.3 V at light load, so it works, but the noise margin is only about 0.3 V, small on long wires or noisy sites. The other direction is the real danger: 5 V into a 3.3 V-only pin exceeds its maximum rating and can damage it. Use a level shifter or a resistor divider for 5 V → 3.3 V.</p></div></details>
+    <details class="quiz"><summary>Why does a CMOS gate use almost no power when its inputs are not changing?</summary><div class="answer"><p>The pull-up network (PMOS) and pull-down network (NMOS) are built so that in any steady input state, one of them is fully off. With no path from V<sub>DD</sub> to ground, only tiny leakage flows. Power is used when switching, to charge and discharge the capacitance of wires and gate inputs: P ≈ C·V²·f.</p></div></details>
+    <details class="quiz"><summary>In the CMOS NAND, inputs are A = 1, B = 0. Which transistors are on, and what is Y?</summary><div class="answer"><p>P1 (gate A = 1) is off. P2 (gate B = 0) is on, so it connects Y to V<sub>DD</sub>. N1 (gate A = 1) is on but N2 (gate B = 0) is off, so the series path to ground is broken. Y = 1, as the NAND truth table says.</p></div></details>
+    <details class="quiz"><summary>D goes HIGH for 20 ns between two clock edges and is LOW at both edges. What does a D flip-flop's Q do?</summary><div class="answer"><p>Nothing. Q stays LOW. A D flip-flop only samples D at the rising edge of the clock. Changes between edges are ignored. This is exactly what makes clocked logic tolerant of the short glitches gates produce while settling.</p></div></details>
+    <details class="quiz"><summary>Write one line of C that makes Arduino pin 12 (PB4) HIGH without changing any other pin on port B. What hex value is involved?</summary><div class="answer"><p><code>PORTB |= (1 &lt;&lt; 4);</code> The mask is 1 shifted left 4 places = 0b00010000 = 0x10 = 16. OR-ing with it sets bit 4 and leaves the others alone, because x OR 0 = x. (DDRB bit 4 must already be 1, set by <code>pinMode(12, OUTPUT)</code>.)</p></div></details>
+    <details class="quiz"><summary>A 10-bit ADC with V<sub>ref</sub> = 5 V returns 412. What voltage was measured? How many comparisons did the SAR make?</summary><div class="answer"><p>V = 412 × 5 / 1024 = 2.012 V (the true value lies between 2.012 V and 2.017 V, because the ADC rounds down within one 4.88 mV step). A SAR makes one comparison per bit, so 10 comparisons, not 1024. Binary search halves the range each time: 2¹⁰ = 1024.</p></div></details>
+    <details class="quiz"><summary>At 9600 baud, how long does it take to send "Hello" plus a newline over UART? Why is this not 6 × 8 bits?</summary><div class="answer"><p>Each byte is framed by a start bit and a stop bit, so 10 bits per character. 6 characters × 10 bits = 60 bits. 60 / 9600 = 6.25 ms. That is 100,000 CPU clock cycles at 16 MHz, which is why the Arduino hands serial sending to the UART hardware and its interrupt, instead of waiting.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain noise margin with numbers, and why digital signals regenerate while analogue signals degrade.</span></li>
+      <li><input type="checkbox"><span>I can convert between decimal, binary and hex for numbers up to 16 bits, by hand.</span></li>
+      <li><input type="checkbox"><span>I can write the truth table for NOT, AND, OR, NAND, NOR and XOR from memory.</span></li>
+      <li><input type="checkbox"><span>I can draw a CMOS inverter and NAND and explain why they draw almost no static current.</span></li>
+      <li><input type="checkbox"><span>I can explain what a D flip-flop does on a clock edge, and how flip-flops make registers and counters.</span></li>
+      <li><input type="checkbox"><span>I can name the main blocks of a microcontroller and what each peripheral (GPIO, timer, ADC, UART, I²C, SPI, interrupts) is for.</span></li>
+      <li><input type="checkbox"><span>I can explain how <code>digitalWrite(13, HIGH)</code> becomes a write to bit 5 of PORTB, and write the set-bit and clear-bit patterns in C.</span></li>
+      <li><input type="checkbox"><span>I can step through a successive-approximation conversion and convert an ADC code back to volts.</span></li>
+      <li><input type="checkbox"><span>I can describe fetch, decode and execute, and what the program counter does.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

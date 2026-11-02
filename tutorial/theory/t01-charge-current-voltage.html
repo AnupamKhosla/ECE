@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T01 · Charge, current and voltage</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · Chapter T01</span>
+    <h1>Charge, current and voltage</h1>
+    <p class="lede">What actually moves inside a wire, how slowly it moves, why the lamp still lights the instant you close the switch, and what a volt really measures. By the end you will be able to picture a working circuit correctly, not just name its parts.</p>
+    <div class="meta"><span><b>Reading</b> 45 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Class 12 algebra, a little calculus</span><span><b>Practice</b> P02, P03, P10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How we found out</h2>
+    <p>People knew about static electricity for more than two thousand years before anyone knew what an electron was. The Greek word for amber is <i>elektron</i>, because rubbed amber picks up straw and feathers. Around 1600 the English doctor William Gilbert separated this "electric" attraction from magnetism and gave it its name.</p>
+    <p>In the 1740s Benjamin Franklin in America decided that electricity was one kind of "fluid". A body with too much of it he called <b>positive</b> (+), and a body with too little he called <b>negative</b> (−). He had to guess which was which. He guessed wrong, as we found out 150 years later. That one guess is the reason for the "conventional current" you will meet below.</p>
+    <p>In 1785 Charles-Augustin de Coulomb used a very sensitive twisting balance to show that the force between two charges falls with the square of the distance, just like gravity. In 1800 Alessandro Volta stacked zinc and copper discs with salt-water cardboard between them. This "voltaic pile" was the first battery: the first source of a <i>steady</i> flow of electricity instead of a single spark. Within a few years, chemists used it to split water and discover new metals. In the 1820s André-Marie Ampère and Georg Ohm worked out how current behaves in wires (Ohm is the subject of <a href="t02-resistance-ohms-law.html">T02</a>).</p>
+    <p>Nobody knew <i>what</i> was flowing until 1897, when J. J. Thomson showed that cathode rays are made of tiny negative particles, far lighter than any atom. We now call them electrons. Between 1909 and 1913 Robert Millikan timed tiny charged oil drops falling between two metal plates. Every drop carried a whole-number multiple of one smallest charge. That was the charge of a single electron. So Franklin's "fluid" turned out to be a crowd of countless negative particles, and in metal wires it is the negative particles that move. Franklin's sign choice was already in every textbook, so we kept it.</p>
+
+    <h2>Charge: the thing that is counted</h2>
+    <p><b>Electric charge</b> is a property of some particles, like mass is. It comes in two kinds, which we call positive and negative. Like charges push each other away, and unlike charges pull together. A proton carries +e and an electron carries −e, where</p>
+    <div class="formula">e = 1.602 × 10⁻¹⁹ C
+      <small>C is the coulomb, the SI unit of charge. One coulomb is the charge of about 6.24 × 10¹⁸ electrons (that is 1 / 1.602 × 10⁻¹⁹).</small></div>
+    <p>Two facts about charge matter for everything that follows.</p>
+    <ol>
+      <li><b>Charge is conserved.</b> You cannot create or destroy net charge. You can only move it from one place to another. A battery does not "make" electrons, and a lamp does not "use them up".</li>
+      <li><b>Ordinary matter is almost exactly neutral.</b> A copper atom has 29 protons and 29 electrons. The electric force is so strong that even a tiny imbalance pushes back hard. Coulomb's law says F = k q₁q₂ / r², with k ≈ 9 × 10⁹ N·m²/C². Two charges of just 1 C each, 1 m apart, would push on each other with 9 × 10⁹ N. That is the weight of about a million tonnes. Real circuits move a lot of charge, but they keep the wires very close to neutral the whole time.</li>
+    </ol>
+    <p>In a metal, each atom lets go of one or more of its outer electrons. These <b>conduction electrons</b> are not tied to any one atom. They wander through the whole crystal, while the positive copper ions stay fixed in a regular grid. Copper gives about one free electron per atom. That is about 8.5 × 10²⁸ free electrons in every cubic metre. Keep that number; we use it in a moment.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A battery stores charge, and a flat battery has run out of electrons."</b> A battery is neutral when full and neutral when flat. It stores <i>chemical energy</i>. For every electron that leaves its − terminal, one electron enters its + terminal. What runs out is the chemical reaction that pushes them round, not the electrons. The same is true of a "charged" phone: charging it moves charge around inside the cell and stores energy. It does not add electrons.</p></div>
+
+    <h2>Current: charge per second</h2>
+    <p><b>Electric current</b> is the rate at which charge passes a point. Picture standing beside a wire and counting the charge that crosses an imaginary slice through it every second.</p>
+    <div class="formula">I = Q / t    (for a steady current)<br>I = dQ/dt    (in general)
+      <small>I is current in amperes (A). Q is charge in coulombs. t is time in seconds. dQ/dt just means "the charge passing in a very short time, divided by that short time". It lets us talk about a current that changes from moment to moment. 1 A = 1 C/s.</small></div>
+    <p>So 1 A means about 6.24 × 10¹⁸ electrons pass a point each second. Some everyday currents:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Situation</th><th>Current</th><th>Electrons per second</th></tr>
+      <tr><td>Signal in a 4–20 mA industrial sensor loop, at 12 mA</td><td>0.012 A</td><td>7.5 × 10¹⁶</td></tr>
+      <tr><td>A red indicator LED</td><td>10 mA</td><td>6.2 × 10¹⁶</td></tr>
+      <tr><td>A PoE CCTV camera on 48 V, using about 6 W</td><td>~0.13 A</td><td>~8 × 10¹⁷</td></tr>
+      <tr><td>Phone fast-charging at 5 V</td><td>2 A</td><td>1.25 × 10¹⁹</td></tr>
+      <tr><td>Car starter motor while cranking</td><td>~100–200 A</td><td>~10²¹</td></tr>
+    </table></div>
+    <p>If a current flows for a known time, charge = current × time. A phone battery rated 3000 mAh (milliamp-hours) can deliver 3 A for 1 hour, which is 3 × 3600 = 10,800 C of charge moved round the circuit. This is a measure of how much charge it can <i>push through</i>, not how much it "contains".</p>
+
+    <h3>Conventional current and electron flow</h3>
+    <p>Because of Franklin's guess, we draw current as if positive charge flows out of the + terminal, round the circuit, and back into the − terminal. This is <b>conventional current</b>. In a metal wire the real moving charges are electrons, and they go the opposite way: out of the − terminal and into the +. This is <b>electron flow</b>.</p>
+    <figure>
+      <svg viewBox="0 0 600 250" role="img" aria-label="Battery and lamp loop showing conventional current and electron flow in opposite directions">
+        <defs>
+          <marker id="t1f1-red" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t1f1-blue" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <path class="s-line" d="M90 112 V60 H500 V112"/>
+        <path class="s-line" d="M500 148 V200 H90 V128"/>
+        <line class="s-line" x1="66" y1="112" x2="114" y2="112"/>
+        <line class="s-line" x1="78" y1="128" x2="102" y2="128" style="stroke-width:5"/>
+        <text class="t t-bold" x="120" y="110">+</text>
+        <text class="t t-bold" x="120" y="140">−</text>
+        <text class="t" x="20" y="125">9 V</text>
+        <circle class="s-line f-panel" cx="500" cy="130" r="18"/>
+        <path class="s-line" d="M487 117 L513 143 M513 117 L487 143"/>
+        <text class="t t-small t-muted" x="526" y="134">lamp</text>
+        <path class="s-red" d="M220 44 H360" marker-end="url(#t1f1-red)"/>
+        <text class="t t-small t-red" x="200" y="32">conventional current I (out of +)</text>
+        <path class="s-blue" d="M360 80 H220" marker-end="url(#t1f1-blue)"/>
+        <text class="t t-small t-blue" x="220" y="98">electron flow (into +)</text>
+        <circle class="f-blue" cx="270" cy="60" r="4"/><circle class="f-blue" cx="310" cy="60" r="4"/><circle class="f-blue" cx="350" cy="60" r="4"/>
+        <path class="s-red" d="M360 216 H220" marker-end="url(#t1f1-red)"/>
+        <text class="t t-small t-red" x="230" y="238">conventional current back into −</text>
+        <path class="s-blue" d="M220 182 H360" marker-end="url(#t1f1-blue)"/>
+        <text class="t t-small t-blue" x="214" y="172">electrons leave − terminal</text>
+        <circle class="f-blue" cx="270" cy="200" r="4"/><circle class="f-blue" cx="310" cy="200" r="4"/><circle class="f-blue" cx="350" cy="200" r="4"/>
+        <text class="t t-small t-muted" x="150" y="128">same current at every point in the loop</text>
+      </svg>
+      <figcaption>Figure 1. The red arrows (conventional current) and blue arrows (electron flow) describe the same event. All circuit diagrams, meter leads, diode symbols and datasheets use conventional current. Electron flow matters only when you think about the physics inside a material.</figcaption>
+    </figure>
+    <p>Both descriptions give the same answers for every circuit calculation. A positive charge moving right and a negative charge moving left both carry charge to the right in the same way. So in this course, as in every datasheet and schematic, "current" means conventional current unless we say otherwise. The arrow in a diode symbol points the way conventional current can flow.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Current gets used up in the lamp, so less comes back to the battery."</b> Measure it: put a meter in series before the lamp and after it, and the two readings are the same. Charge is conserved and it cannot pile up in a wire, so every coulomb that goes in comes out. What the lamp "uses" is <i>energy</i>, which the charges carry in and lose as they pass through. Current is the flow; energy is what the flow delivers.</p></div>
+
+    <h2>How fast do the electrons move?</h2>
+    <p>Most people guess "close to the speed of light". The real answer is surprising, and it changes how you picture a circuit.</p>
+    <p>First, the free electrons in copper are already moving very fast, even with no current. Because of quantum effects, they race around at about 1.6 × 10⁶ m/s (1,600 km per second) in random directions. Random motion in all directions carries no net charge anywhere, so it is not a current. When you connect a battery, an electric field adds a tiny steady push. On top of the fast random motion, the whole crowd slowly creeps in one direction. That slow average motion is the <b>drift velocity</b>, v<sub>d</sub>.</p>
+
+    <h3>Deriving I = n A v<sub>d</sub> e</h3>
+    <p>Take a wire with cross-section area A, containing n free electrons per cubic metre, all drifting at speed v<sub>d</sub>. In a time t, each electron moves a distance v<sub>d</sub>t. So every electron in a slab of length v<sub>d</sub>t, just behind a chosen face, crosses that face in time t.</p>
+    <figure>
+      <svg viewBox="0 0 600 215" role="img" aria-label="A wire as a cylinder; electrons in a slab of length v_d times t cross the face of area A in time t">
+        <defs>
+          <marker id="t1f2-red" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t1f2-blue" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t1f2-dim" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-accent-soft" x="220" y="50" width="180" height="100"/>
+        <path class="s-line" d="M60 50 H540 M60 150 H540"/>
+        <ellipse class="s-line" cx="60" cy="100" rx="16" ry="50"/>
+        <ellipse class="s-line" cx="540" cy="100" rx="16" ry="50"/>
+        <ellipse class="s-accent" cx="220" cy="100" rx="16" ry="50"/>
+        <ellipse class="s-accent s-dash" cx="400" cy="100" rx="16" ry="50"/>
+        <g class="f-blue">
+          <circle cx="95" cy="72" r="4"/><circle cx="122" cy="122" r="4"/><circle cx="152" cy="88" r="4"/><circle cx="188" cy="132" r="4"/>
+          <circle cx="245" cy="76" r="4"/><circle cx="268" cy="118" r="4"/><circle cx="300" cy="92" r="4"/><circle cx="330" cy="130" r="4"/>
+          <circle cx="358" cy="70" r="4"/><circle cx="384" cy="112" r="4"/><circle cx="430" cy="86" r="4"/><circle cx="462" cy="126" r="4"/>
+          <circle cx="495" cy="72" r="4"/><circle cx="517" cy="112" r="4"/><circle cx="252" cy="138" r="4"/><circle cx="345" cy="100" r="4"/>
+        </g>
+        <path class="s-red" d="M70 28 H170" marker-end="url(#t1f2-red)"/>
+        <text class="t t-small t-red" x="70" y="20">current I</text>
+        <path class="s-blue" d="M530 28 H430" marker-end="url(#t1f2-blue)"/>
+        <text class="t t-small t-blue" x="410" y="20">electrons drift at v<tspan dy="3" font-size="9">d</tspan></text>
+        <path class="s-line" d="M222 178 H398" marker-start="url(#t1f2-dim)" marker-end="url(#t1f2-dim)"/>
+        <text class="t t-small" x="250" y="200">slab length = v<tspan dy="3" font-size="9">d</tspan><tspan dy="-3"> × t</tspan></text>
+        <text class="t t-small t-accent" x="136" y="176">face of area A</text>
+      </svg>
+      <figcaption>Figure 2. Every electron in the shaded slab crosses the solid face within time t. Counting them gives the current. The faster they drift, or the more of them there are, the bigger the current.</figcaption>
+    </figure>
+    <p>The slab's volume is A × v<sub>d</sub>t. The number of electrons in it is n A v<sub>d</sub>t. Each carries charge e, so the charge crossing in time t is Q = n A v<sub>d</sub> t e. Divide by t:</p>
+    <div class="formula">I = n A v<sub>d</sub> e    so    v<sub>d</sub> = I / (n A e)
+      <small>n: free electrons per m³ (8.5 × 10²⁸ for copper). A: cross-section in m² (1 mm² = 10⁻⁶ m²). e: 1.6 × 10⁻¹⁹ C.</small></div>
+    <h3>Worked example: 1 A in a 1 mm² copper wire</h3>
+    <p>n A e = 8.5 × 10²⁸ × 1 × 10⁻⁶ × 1.6 × 10⁻¹⁹ = 1.36 × 10⁴ C per metre of wire. That is the free charge in each metre: about 13,600 coulombs, a huge amount.</p>
+    <p>v<sub>d</sub> = 1 / 13,600 ≈ 7.4 × 10⁻⁵ m/s = <b>0.074 mm/s</b>.</p>
+    <p>That is slower than a snail. At this speed, an electron needs about 13,600 seconds, nearly <b>4 hours</b>, to drift 1 metre. In a 2 m lamp cord it never gets from the switch to the lamp in an evening. The current is large not because the electrons are fast, but because there are so many of them moving together.</p>
+    <p>With alternating current (AC) at 50 Hz the picture is even stranger. The direction reverses 100 times a second, so each electron only jiggles back and forth. Its whole movement is less than a micrometre. Electrons from the power station never reach your house. Yet energy clearly does. The next section explains how.</p>
+
+    <div class="widget" id="t1w">
+      <span class="label">Interactive · Drift velocity, at real speed</span>
+      <label>Current <span class="out" id="t1w-iout">1.00 A</span><input type="range" id="t1w-i" min="0" max="1000" value="600"></label>
+      <label>Conductor cross-section
+        <select id="t1w-a">
+          <option value="0.205">0.205 mm² (24 AWG, Cat5e conductor)</option>
+          <option value="0.258">0.258 mm² (23 AWG, Cat6 conductor)</option>
+          <option value="0.5">0.5 mm² (light hook-up / alarm cable)</option>
+          <option value="1" selected>1 mm²</option>
+          <option value="1.5">1.5 mm²</option>
+          <option value="2.5">2.5 mm²</option>
+          <option value="6">6 mm²</option>
+          <option value="16">16 mm²</option>
+        </select></label>
+      <label>Metal
+        <select id="t1w-m">
+          <option value="8.5e28" selected>Copper (n ≈ 8.5 × 10²⁸ m⁻³)</option>
+          <option value="18.1e28">Aluminium (n ≈ 18.1 × 10²⁸ m⁻³, 3 free electrons per atom)</option>
+          <option value="5.86e28">Silver (n ≈ 5.86 × 10²⁸ m⁻³)</option>
+        </select></label>
+      <div class="readings">
+        <div><small>Drift velocity</small><span class="out" id="t1w-v">–</span></div>
+        <div><small>Time to drift 1 metre</small><span class="out" id="t1w-t">–</span></div>
+        <div><small>Electrons past a point per second</small><span class="out" id="t1w-n">–</span></div>
+        <div><small>Current density</small><span class="out" id="t1w-j">–</span></div>
+      </div>
+      <p style="margin-top:12px;font-size:15px" id="t1w-race">–</p>
+      <svg viewBox="0 0 560 135" role="img" aria-label="A magnified 1 mm length of wire with electrons drifting at the real drift speed" id="t1w-svg">
+        <rect class="f-wash s-thin" x="20" y="12" width="520" height="92" rx="6"/>
+        <g id="t1w-ions"></g>
+        <g id="t1w-dots"></g>
+        <text class="t t-small t-muted" x="20" y="124">This strip is 1 mm of wire, magnified. Blue dots drift at the real drift speed, in real time.</text>
+      </svg>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var iS=$('t1w-i'), aS=$('t1w-a'), mS=$('t1w-m'), E=1.602e-19, vd=0;
+      var SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+      function sci(x){var p=Math.floor(Math.log10(x));var m=x/Math.pow(10,p);return m.toFixed(2)+' × 10'+String(p).split('').map(function(c){return SUP[c];}).join('');}
+      function fI(i){return i<1?(i*1000).toPrecision(3)+' mA':i.toPrecision(3)+' A';}
+      function fV(v){if(v>=1e-3)return (v*1e3).toPrecision(3)+' mm/s';if(v>=1e-6)return (v*1e6).toPrecision(3)+' µm/s';return (v*1e9).toPrecision(3)+' nm/s';}
+      function fL(m){if(m>=1e-3)return (m*1e3).toPrecision(3)+' mm';if(m>=1e-6)return (m*1e6).toPrecision(3)+' µm';return (m*1e9).toPrecision(3)+' nm';}
+      function fT(s){if(s<60)return s.toPrecision(3)+' s';if(s<3600)return (s/60).toPrecision(3)+' min';if(s<86400)return (s/3600).toPrecision(3)+' hours';if(s<31536000)return (s/86400).toPrecision(3)+' days';return (s/31536000).toPrecision(3)+' years';}
+      function cur(){return Math.pow(10,-3+5*(+iS.value)/1000);}
+      function upd(){
+        var i=cur(), A=(+aS.value)*1e-6, n=+mS.value;
+        vd=i/(n*A*E);
+        $('t1w-iout').textContent=fI(i);
+        $('t1w-v').textContent=fV(vd);
+        $('t1w-t').textContent=fT(1/vd);
+        $('t1w-n').textContent=sci(i/E);
+        $('t1w-j').textContent=(i/(+aS.value)).toPrecision(3)+' A/mm²';
+        var tSig=3.3e6/(0.7*3e8);
+        $('t1w-race').textContent='A signal travelling at about 0.7 × the speed of light crosses 3,300 km (roughly Perth to Sydney) in '+(tSig*1000).toFixed(1)+' ms. In that time these electrons drift only '+fL(vd*tSig)+'.';
+      }
+      var NS='http://www.w3.org/2000/svg', ions=$('t1w-ions'), g=$('t1w-dots'), dots=[], x, y, c;
+      for(x=40;x<540;x+=40){for(y=32;y<100;y+=26){c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',5);c.setAttribute('class','f-grey');c.setAttribute('opacity','0.35');ions.appendChild(c);}}
+      for(var k=0;k<34;k++){c=document.createElementNS(NS,'circle');c.setAttribute('r',3.5);c.setAttribute('class','f-blue');g.appendChild(c);dots.push({x:20+Math.random()*520,y:18+Math.random()*80,jx:0,jy:0,el:c});}
+      var last=null;
+      function frame(ts){
+        if(last===null)last=ts;
+        var dt=Math.min(0.1,(ts-last)/1000);last=ts;
+        var px=vd*1000*520*dt; /* 520 px = 1 mm; electrons move left (against conventional current) */
+        dots.forEach(function(d){
+          d.x-=px; if(d.x<22)d.x+=516;
+          d.jx=Math.max(-5,Math.min(5,d.jx+(Math.random()-0.5)*3));
+          d.jy=Math.max(-5,Math.min(5,d.jy+(Math.random()-0.5)*3));
+          d.el.setAttribute('cx',(d.x+d.jx).toFixed(1));
+          d.el.setAttribute('cy',Math.max(16,Math.min(100,d.y+d.jy)).toFixed(1));
+        });
+        requestAnimationFrame(frame);
+      }
+      iS.oninput=upd; aS.onchange=upd; mS.onchange=upd; upd(); requestAnimationFrame(frame);
+    })();
+    </script>
+    <p>Try 10 A in the 1 mm² wire: the dots cross the strip in about 1.4 seconds. Try 10 mA: they barely move. The jiggling is only a symbol of the random thermal motion. The real random motion is about 10¹⁰ times faster than the drift and could not be drawn.</p>
+
+    <h2>Why the lamp lights instantly</h2>
+    <p>If electrons crawl at a fraction of a millimetre per second, why does a lamp 10 m away light the moment you flip the switch? Because the lamp does not need electrons from the switch. The wire is already <i>full</i> of free electrons, including the ones inside the lamp filament. What has to travel is the <b>push</b>: the electric field that tells every electron in the circuit to start drifting.</p>
+    <p>When you close the switch, a few electrons shift very slightly near the switch. This changes the charge on the <b>surface</b> of the wires next to it, which changes the field a bit further along, and so on. This rearrangement of surface charge runs along the wire as an electromagnetic wave. In a typical cable it moves at about 60–90% of the speed of light (3 × 10⁸ m/s). Within a few nanoseconds, a thin layer of surface charge has formed along the whole circuit. Wires connected to the + side of the battery carry a slight positive surface charge, and wires connected to the − side carry a slight negative one. This surface charge shapes the field so that inside every part of the wire, even round bends, the field points along the wire. Then all the electrons everywhere start drifting at once.</p>
+    <figure>
+      <svg viewBox="0 0 600 260" role="img" aria-label="Battery and resistor circuit with positive surface charge on the top wire, negative on the bottom, field lines between them and energy flowing through the space toward the resistor">
+        <defs>
+          <marker id="t1f3-amber" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t1f3-green" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <path class="s-line" d="M80 122 V60 H520 V100"/>
+        <path class="s-line" d="M520 160 V200 H80 V138"/>
+        <path class="s-accent" d="M520 100 l8 5 l-16 10 l16 10 l-16 10 l16 10 l-16 10 l8 5"/>
+        <line class="s-line" x1="58" y1="122" x2="102" y2="122"/>
+        <line class="s-line" x1="68" y1="138" x2="92" y2="138" style="stroke-width:5"/>
+        <text class="t t-small" x="10" y="134">battery</text>
+        <g class="t t-red t-bold">
+          <text x="120" y="52">+</text><text x="170" y="52">+</text><text x="220" y="52">+</text><text x="270" y="52">+</text><text x="320" y="52">+</text><text x="370" y="52">+</text><text x="420" y="52">+</text><text x="470" y="52">+</text><text x="534" y="108">+</text>
+        </g>
+        <g class="t t-blue t-bold">
+          <text x="120" y="220">−</text><text x="170" y="220">−</text><text x="220" y="220">−</text><text x="270" y="220">−</text><text x="320" y="220">−</text><text x="370" y="220">−</text><text x="420" y="220">−</text><text x="470" y="220">−</text><text x="534" y="160">−</text>
+        </g>
+        <path class="s-amber s-dash" d="M190 68 V188" marker-end="url(#t1f3-amber)" style="stroke-width:1.5"/>
+        <path class="s-amber s-dash" d="M300 68 V188" marker-end="url(#t1f3-amber)" style="stroke-width:1.5"/>
+        <path class="s-amber s-dash" d="M410 68 V188" marker-end="url(#t1f3-amber)" style="stroke-width:1.5"/>
+        <text class="t t-small" x="196" y="86">E</text>
+        <path class="s-green" d="M130 130 H480" marker-end="url(#t1f3-green)"/>
+        <text class="t t-small t-green" x="150" y="122">energy flows through the space between the wires</text>
+        <text class="t t-small t-muted" x="420" y="246">resistor: energy becomes heat here</text>
+      </svg>
+      <figcaption>Figure 3. Tiny surface charges (red + on the wire from the + terminal, blue − on the return wire) make a field E in the space between the wires and guide the field inside each wire. J. H. Poynting showed in 1884 that the energy travels through this field in the space around the wires (green arrow), not inside the electrons.</figcaption>
+    </figure>
+    <p>This also answers "where is the energy?". It is not carried as the electrons' kinetic energy. An electron drifting at 0.074 mm/s has kinetic energy ½mv² ≈ ½ × 9.1 × 10⁻³¹ × (7.4 × 10⁻⁵)² ≈ 2.5 × 10⁻³⁹ J. Compare that with the energy each electron delivers in a 12 V lamp: 12 V × 1.6 × 10⁻¹⁹ C ≈ 1.9 × 10⁻¹⁸ J. That is about 10²¹ times more. The energy flows from the battery to the lamp through the electric and magnetic fields in and around the wires, at the speed of the wave. The electrons are the "handle" the field uses to do work inside the lamp filament. In the 1960s Oleg Jefimenko made these fields around working circuits visible, using grass seeds in oil around circuits painted with conductive ink.</p>
+    <div class="callout job"><span class="label">On the job</span><p>The speed of the signal in a cable matters every day in telecom work. A cable tester sends a pulse down a pair and times the echo from the far end, then uses the cable's <b>nominal velocity of propagation</b> (NVP), usually about 0.6–0.75 of light speed for twisted pair, to work out the length. If the NVP setting is wrong, the reported length is wrong. Fibre testers (OTDRs, see <a href="../career/c09-fibre-splicing-otdr.html">C09</a>) do the same thing with light.</p></div>
+
+    <h2>Voltage: energy per charge</h2>
+    <p><b>Voltage</b> (or <b>potential difference</b>) between two points is the energy that each coulomb of charge gains or loses in moving between them.</p>
+    <div class="formula">V = W / Q        1 V = 1 J/C
+      <small>W is energy (work) in joules. Q is the charge moved, in coulombs. A 9 V battery gives 9 J of energy to every coulomb it pushes round the circuit. When that coulomb comes back, it has delivered all 9 J to the parts of the circuit.</small></div>
+    <p>A tiny unit of energy follows from this. One <b>electronvolt</b> (eV) is the energy one electron gains in moving through 1 V: 1 eV = 1.6 × 10⁻¹⁹ J. Chemists and semiconductor physicists use it all the time. The silicon band gap of about 1.12 eV, which you meet in <a href="pn-junction-deep-dive.html">the p–n junction deep dive</a>, is in these units.</p>
+
+    <h3>Potential: voltage at a point</h3>
+    <p>It helps to give every point in a circuit a <b>potential</b>: its "electrical height". Only differences in potential have meaning, so we choose one point as 0 V and measure everything from there. In electronics that point is called <b>ground</b>, <b>common</b> or <b>0 V</b>. When someone says "this pin is at 3.3 V", they mean 3.3 V above the chosen 0 V. A multimeter always measures a difference between its two probes, so you must always know where the black probe is.</p>
+    <p>Think of a closed circuit as a loop walk on a hillside. The battery is a lift that raises each coulomb up by its voltage. The resistors are slopes where the coulomb loses height (energy) as heat. Wires are nearly flat paths. After a full loop you are back at the same height. (This "you always come back to the same height" rule is Kirchhoff's voltage law, <a href="t04-circuit-laws.html">T04</a>.)</p>
+    <figure>
+      <svg viewBox="0 0 600 280" role="img" aria-label="Potential versus position round a 9 V circuit with a 2 kilohm and a 1 kilohm resistor">
+        <g class="s-thin s-dash"><path d="M70 50 H560"/><path d="M70 110 H560"/><path d="M70 170 H560"/></g>
+        <path class="s-line" d="M70 30 V230 H565"/>
+        <text class="t t-small" x="30" y="234">0 V</text><text class="t t-small" x="30" y="174">3 V</text><text class="t t-small" x="30" y="114">6 V</text><text class="t t-small" x="30" y="54">9 V</text>
+        <text class="t t-small t-muted" x="8" y="22">potential</text>
+        <path class="s-accent" d="M70 230 H85 L105 50 H190 L310 170 H350 L430 230 H560"/>
+        <g class="t t-small">
+          <text x="68" y="252">battery</text><text x="132" y="252">wire</text><text x="215" y="252">R1 = 2 kΩ</text><text x="316" y="252">wire</text><text x="360" y="252">R2 = 1 kΩ</text><text x="478" y="252">wire</text>
+        </g>
+        <text class="t t-small t-muted" x="120" y="42">flat: tiny field in the wire</text>
+        <text class="t t-small t-muted" x="262" y="96">steep: strong field</text>
+        <text class="t t-small t-muted" x="262" y="112">inside the resistor</text>
+        <text class="t t-small t-red" x="200" y="272">position round the loop (start and end at the battery − terminal)</text>
+      </svg>
+      <figcaption>Figure 4. A 9 V battery with 2 kΩ and 1 kΩ in series (current 3 mA). The battery lifts the potential by 9 V. R1 drops 6 V and R2 drops 3 V. The slope of this graph is the electric field: almost zero in the wires, large inside the resistors.</figcaption>
+    </figure>
+
+    <h3>Voltage and the electric field in a wire</h3>
+    <p>The electric field E is how fast potential changes with distance, pointing "downhill": E = −dV/dx. For a uniform wire or resistor of length L with voltage V across it, the field inside is simply E = V / L (in volts per metre, which is the same as newtons per coulomb).</p>
+    <p>Numbers make this real. A 1 mm² copper wire carrying 1 A has about 0.017 Ω per metre (you will calculate this in <a href="t02-resistance-ohms-law.html">T02</a>). So the voltage across 1 m of it is about 17 mV, and the field inside is only <b>0.017 V/m</b>. Inside a small resistor with 5 V across a resistive track a few millimetres long, the field is hundreds or thousands of volts per metre. This is the right picture: the wires need only a tiny field to keep current flowing, and nearly all of the "voltage drop" happens across the parts that resist.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Voltage flows through the circuit."</b> Voltage is always <i>between two points</i>, like a height difference. Current flows <i>through</i> things. So the correct phrases are "the voltage <b>across</b> the resistor" and "the current <b>through</b> the resistor". You measure voltage with the meter's probes on both sides of a part (in parallel), and current by breaking the circuit and putting the meter in the path (in series). <a href="../practice/p03-multimeter-mastery.html">P03</a> practises both.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A bird on a power line survives because it is insulated."</b> Its feet are on the same wire, a few centimetres apart. The potential difference between them is tiny (like the 17 mV per metre above, scaled up for the line current), so almost no current goes through the bird. The danger comes from touching two points at very different potentials, such as a live conductor and earth. This is theory only: mains and overhead lines are never something you touch or work on without a licence.</p></div>
+
+    <h2>Batteries: chemical charge pumps</h2>
+    <p>Outside the battery, conventional current flows "downhill" from + to −. Inside the battery, the same current must go "uphill", from − back to +, against the electric field. Something non-electrical must push it. In a battery that push is a <b>chemical reaction</b>.</p>
+    <p>In an alkaline AA cell, zinc at the − terminal reacts and gives up electrons to the external wire. Manganese dioxide at the + terminal takes electrons from the wire. Inside, ions (charged atoms) move through the electrolyte paste to complete the loop. The reaction only runs when there is an outside path for the electrons, which is why a battery can sit on a shelf for years. In a lithium-ion cell, lithium ions shuttle between a graphite electrode and a metal-oxide electrode. In a lead-acid battery, lead and lead dioxide plates react with sulfuric acid.</p>
+    <p>The energy the chemistry gives to each coulomb is the <b>electromotive force</b>, written ℰ (it is a voltage, not a force; the name is historical). Typical values per cell: alkaline 1.5–1.6 V, NiMH 1.2–1.4 V, lead-acid about 2.1 V when fully charged (six cells make a 12.6 V "12 V" battery), lithium-ion 3.6–3.7 V nominal and 4.2 V full.</p>
+
+    <h3>EMF, terminal voltage and internal resistance</h3>
+    <p>A real battery is not a perfect pump. The ions inside must push through electrolyte and the plates, and that path has resistance. We model a real battery as a perfect EMF ℰ in series with a small <b>internal resistance</b> r.</p>
+    <figure>
+      <svg viewBox="0 0 620 250" role="img" aria-label="Battery model: ideal EMF in series with internal resistance r, connected to a load; and a graph of terminal voltage falling with current">
+        <defs>
+          <marker id="t1f5-ax" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="s-thin s-dash" x="30" y="40" width="200" height="170" rx="8"/>
+        <text class="t t-small t-muted" x="40" y="32">real battery (inside the case)</text>
+        <path class="s-line" d="M80 118 V70 H120"/>
+        <path class="s-accent" d="M120 70 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M180 70 H225"/>
+        <path class="s-line" d="M80 134 V180 H225"/>
+        <line class="s-line" x1="58" y1="118" x2="102" y2="118"/>
+        <line class="s-line" x1="68" y1="134" x2="92" y2="134" style="stroke-width:5"/>
+        <text class="t" x="44" y="132">ℰ</text>
+        <text class="t t-small" x="145" y="56">r</text>
+        <circle class="s-line f-panel" cx="230" cy="70" r="5"/><circle class="s-line f-panel" cx="230" cy="180" r="5"/>
+        <text class="t t-small" x="238" y="62">+</text><text class="t t-small" x="238" y="200">−</text>
+        <path class="s-line" d="M235 70 H300 V100 l8 5 l-16 10 l16 10 l-16 10 l16 10 l-16 10 l8 5 V180 H235"/>
+        <text class="t t-small" x="314" y="134">R<tspan dy="3" font-size="9">L</tspan></text>
+        <text class="t t-small t-muted" x="314" y="150">load</text>
+        <text class="t t-small t-red" x="244" y="130">V</text>
+        <path class="s-line" d="M400 220 V40" marker-end="url(#t1f5-ax)"/>
+        <path class="s-line" d="M400 220 H600" marker-end="url(#t1f5-ax)"/>
+        <text class="t t-small" x="408" y="44">terminal V</text>
+        <text class="t t-small" x="586" y="240">I</text>
+        <path class="s-accent" d="M400 70 L580 220"/>
+        <text class="t t-small" x="382" y="74">ℰ</text>
+        <circle class="f-red" cx="490" cy="145" r="5"/>
+        <path class="s-thin s-dash" d="M400 145 H490 V220"/>
+        <text class="t t-small" x="500" y="128">V = ℰ − I r</text>
+        <text class="t t-small t-muted" x="520" y="212">I<tspan dy="3" font-size="9">sc</tspan><tspan dy="-3"> = ℰ/r</tspan></text>
+      </svg>
+      <figcaption>Figure 5. Left: the model of a real battery. Right: as you draw more current, more of the EMF is "used up" inside the battery, so the terminal voltage falls in a straight line. At the right end (a dead short) the terminal voltage is zero and the current is ℰ/r.</figcaption>
+    </figure>
+    <div class="formula">V<sub>terminal</sub> = ℰ − I r
+      <small>With no current (open circuit) the meter reads ℰ. With current I flowing, the voltage I r is lost inside the battery as heat, and the terminals show less.</small></div>
+    <h3>Worked examples</h3>
+    <ul>
+      <li><b>Fresh AA alkaline</b>, ℰ = 1.55 V, r ≈ 0.2 Ω. Drawing 1 A: V = 1.55 − 1 × 0.2 = 1.35 V. Short-circuit current ≈ 1.55 / 0.2 ≈ 8 A (and the cell gets hot).</li>
+      <li><b>9 V PP3 alkaline</b>, r ≈ 1.5 Ω. A small motor drawing 0.5 A: V = 9 − 0.75 = 8.25 V. At 2 A it would collapse to 6 V. This is why a 9 V battery is a poor choice for motors.</li>
+      <li><b>12 V sealed lead-acid (SLA) alarm battery</b>, ℰ = 12.8 V, r ≈ 0.03 Ω. A short with a spanner: I ≈ 12.8 / 0.03 ≈ 400 A. That is enough to weld the spanner and spray molten metal.</li>
+      <li><b>Measuring r yourself</b>: a battery reads 12.6 V open circuit and 11.9 V while supplying 7 A. Then r = (12.6 − 11.9) / 7 = 0.1 Ω.</li>
+    </ul>
+    <p>Internal resistance rises as a battery ages, gets cold, or runs flat. An old battery can show a healthy voltage on a meter (almost no current) and then collapse the moment a real load is connected. These figures are indicative; real values depend on the cell's size, chemistry, age and temperature.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>Extra-low voltage (ELV) does not mean low danger. A 12 V battery cannot push dangerous current through dry skin, but it can deliver hundreds of amps through a metal tool, ring or watch strap. Cover terminals, take off rings, and always fit a fuse close to the battery. Lithium cells that are shorted, crushed or overcharged can catch fire. Everything in this course stays at ELV; mains (230 V) work is legally limited to licensed electricians in Australia.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Alarm panels, access control power supplies, fire panels and many BMS controllers keep a 12 V or 24 V SLA battery on standby. Technicians test those batteries <i>under load</i>, not just with a meter, because a failing battery can read 12.8 V open circuit and still drop badly when the mains fails and the system needs it. The physics is exactly V = ℰ − I r with a large r.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Measure an AA cell's open-circuit voltage. Then connect a 10 Ω, 1 W resistor across it and measure again quickly. Current ≈ V<sub>loaded</sub> / 10. Internal resistance r = (V<sub>open</sub> − V<sub>loaded</sub>) / I. Compare a new cell and a nearly flat one. The flat one may read almost the same voltage open circuit but have several times the r.</p></div>
+
+    <h2>The water analogy, and where it breaks</h2>
+    <p>The common analogy compares a circuit to water in closed pipes. Used carefully, it is a useful first picture.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Electric circuit</th><th>Water in closed pipes</th><th>Does it hold?</th></tr>
+      <tr><td>Charge (C)</td><td>Amount of water (litres)</td><td>Yes: both are conserved, and the pipe is always full</td></tr>
+      <tr><td>Current (A = C/s)</td><td>Flow rate (L/s)</td><td>Yes: same flow everywhere in a single loop</td></tr>
+      <tr><td>Voltage (V = J/C)</td><td>Pressure difference</td><td>Mostly: both are "energy per amount" between two points</td></tr>
+      <tr><td>Battery</td><td>Pump</td><td>Yes: both raise energy, neither creates the fluid</td></tr>
+      <tr><td>Resistor</td><td>Narrow pipe or a pipe full of sand</td><td>Yes: flow ∝ pressure difference (for steady, slow flow)</td></tr>
+      <tr><td>Switch open</td><td>Valve closed</td><td>Yes: no flow, full pressure across the valve</td></tr>
+    </table></div>
+    <p>Now the places it breaks. Each one is a real mistake people make.</p>
+    <ol>
+      <li><b>Cut the pipe and water pours out. Cut a wire and electrons stay put.</b> An open circuit is not a leak. Charges cannot leave the metal at normal voltages, so current simply stops, and the full voltage appears across the gap. (This is why a blown fuse has the whole supply voltage across it.)</li>
+      <li><b>Speed.</b> In a pipe, the pressure change travels at the speed of sound in water, about 1,500 m/s. In a wire, the push travels at a large fraction of the speed of light. The water picture makes the delay far too long.</li>
+      <li><b>Where the energy goes.</b> In a pipe, the energy really is carried inside the water. In a circuit, it mostly travels through the fields around the wires (Figure 3). This matters for cable design, interference, and later for antennas (<a href="t10-em-waves-antennas-fibre.html">T10</a>).</li>
+      <li><b>What does the pushing.</b> Water is pushed by the water behind it. Electrons are pushed by the field, which is shaped by surface charges along the whole wire. That is why current can follow a sharp bend with no "pile-up".</li>
+      <li><b>Magnetism.</b> Water has nothing like the magnetic field around a current, which gives us inductors, motors, transformers and relays (<a href="t06-magnetism-inductors.html">T06</a>). Water's momentum is a rough copy of inductance, but only rough.</li>
+      <li><b>Insulation is not a pipe wall.</b> At high enough voltage, "insulators" break down and current jumps through air or plastic. Water pipes do not suddenly let water through their walls at a certain pressure in the same way.</li>
+    </ol>
+    <p>Use the water picture to remember "current in a loop is the same everywhere" and "voltage is a difference between two points". Drop it as soon as you think about speed, energy flow, AC, or magnetism.</p>
+    <details class="more"><summary>Go deeper (optional): why the drift is steady, not accelerating</summary><p>A constant field puts a constant force eE on each electron, so why don't they speed up forever? Because they keep scattering off vibrating ions and impurities, roughly every 2 × 10⁻¹⁴ s in copper at room temperature. After each scattering event the electron's extra velocity is randomised and it starts again. The average extra velocity is then v<sub>d</sub> = eEτ/m, where τ is the average time between scatterings. This gives a current proportional to the field, which is Ohm's law. <a href="t02-resistance-ohms-law.html">T02</a> builds this "collision" (Drude) model properly and shows where it is right and where quantum physics corrects it.</p></details>
+
+    <h2>See it on the bench</h2>
+    <p>Each idea in this chapter turns into a measurement in the Practice Book:</p>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit: measure the same current before and after the LED</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery: volts across, amps through, and where the black probe goes</a>
+    <a class="crosslink" href="../practice/p04-series-parallel-dividers.html">Practice P04 · Series, parallel and voltage dividers: map the potential round a loop</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Power supplies and batteries: internal resistance and terminal voltage under load</a>
+    <div class="callout aus"><span class="label">In Australia</span><p>Batteries, cells, meters and resistors for these experiments are sold by Jaycar, Altronics, Core Electronics and element14. A 12 V 7 Ah SLA battery (~A$30–45) is the same type used in Australian alarm and access control panels, so it is worth learning on. Under AS/NZS 3000, extra-low voltage means not more than 50 V AC or 120 V ripple-free DC. All the work in this course stays inside that limit. Confirm current electrical safety rules with your state's electrical safety regulator, because details differ by state.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A wire carries 2 A. How many electrons pass a point each second?</summary><div class="answer"><p>2 C/s ÷ 1.6 × 10⁻¹⁹ C per electron = 1.25 × 10¹⁹ electrons per second. The number is huge because each electron carries so little charge.</p></div></details>
+    <details class="quiz"><summary>You keep the current at 1 A but change from a 1 mm² wire to a 2.5 mm² wire. What happens to the drift velocity?</summary><div class="answer"><p>v<sub>d</sub> = I/(nAe), so with 2.5 times the area the drift velocity falls to 1/2.5 of its value: from about 0.074 mm/s to about 0.03 mm/s. The same charge per second is shared across more electrons, so each one moves more slowly.</p></div></details>
+    <details class="quiz"><summary>If electrons drift at less than a millimetre per second, why does a lamp 20 m away light within microseconds?</summary><div class="answer"><p>The wire and the lamp are already full of free electrons. What travels is the change in the electric field, carried by a rearrangement of surface charge that moves at a large fraction of the speed of light. Once the field is in place, the electrons already inside the lamp start drifting immediately. The energy also arrives through the fields, not on the electrons.</p></div></details>
+    <details class="quiz"><summary>A battery reads 12.6 V with nothing connected and 11.9 V while supplying 7 A. What is its internal resistance, and what would it read at 14 A?</summary><div class="answer"><p>r = (12.6 − 11.9) / 7 = 0.1 Ω. At 14 A the loss inside is 14 × 0.1 = 1.4 V, so V = 12.6 − 1.4 = 11.2 V (assuming r stays the same).</p></div></details>
+    <details class="quiz"><summary>True or false: "A battery supplies the electrons that flow in the circuit."</summary><div class="answer"><p>False. The electrons were already in the wires and parts. The battery supplies energy: it pushes charge from its − side back up to its + side inside, using chemical energy. It stays neutral the whole time. Every electron that leaves the − terminal is matched by one entering the + terminal.</p></div></details>
+    <details class="quiz"><summary>An electron is accelerated through 5 V in a vacuum. How much energy does it gain, in eV and in joules?</summary><div class="answer"><p>5 eV, by the definition of the electronvolt. In joules: 5 × 1.6 × 10⁻¹⁹ = 8.0 × 10⁻¹⁹ J. Energy = charge × voltage.</p></div></details>
+    <details class="quiz"><summary>Your meter's black probe is on the 0 V rail. The red probe reads 5 V at point A and 3.3 V at point B. What is the voltage between A and B?</summary><div class="answer"><p>V<sub>AB</sub> = 5 − 3.3 = 1.7 V. Each reading is a potential measured from 0 V; the voltage between two points is the difference between their potentials.</p></div></details>
+    <details class="quiz"><summary>Why is "the current gets used up by the lamp" wrong, and what does get used?</summary><div class="answer"><p>Charge is conserved and cannot build up in a steady circuit, so the current going into the lamp equals the current coming out. What the lamp takes is energy: each coulomb enters the lamp at a higher potential and leaves at a lower one, and the difference (in joules per coulomb) becomes heat and light.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can state the charge of an electron and convert between coulombs and number of electrons.</span></li>
+      <li><input type="checkbox"><span>I can explain current as charge per second and convert mAh into coulombs.</span></li>
+      <li><input type="checkbox"><span>I can explain why diagrams use conventional current and how electron flow relates to it.</span></li>
+      <li><input type="checkbox"><span>I can derive I = nAv<sub>d</sub>e and calculate a drift velocity for copper.</span></li>
+      <li><input type="checkbox"><span>I can explain why a lamp lights instantly even though electrons drift slowly, and where the energy actually travels.</span></li>
+      <li><input type="checkbox"><span>I can define voltage as joules per coulomb and use "across" and "through" correctly.</span></li>
+      <li><input type="checkbox"><span>I can use V = ℰ − I r to find a battery's internal resistance from two measurements.</span></li>
+      <li><input type="checkbox"><span>I can name three places where the water analogy fails.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

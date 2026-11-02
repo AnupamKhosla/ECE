@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C05 · CCTV and IP camera installation</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part II · Security systems</div>
+    <span class="eyebrow">Job Track · C05</span>
+    <h1>CCTV and IP camera installation</h1>
+    <p class="lede">How a modern camera system works from the lens to the hard drive, how to choose the right camera and lens for each spot, how to size the recorder and the storage, and what a security technician actually does on an Australian job from site survey to handover.</p>
+    <div class="meta"><span><b>Read</b> 60 min</span><span><b>Level</b> Job-ready basics</span><span><b>Practice</b> P10, P19, P20</span><span><b>Theory</b> T03, T10, T11</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>The big picture: what a CCTV system is</h2>
+    <p><b>CCTV</b> means closed-circuit television: cameras whose video goes only to a private recorder and screens, not to public broadcast. Today almost every new commercial system is an <b>IP camera</b> system, where each camera is a small network computer. Many homes, shops and older buildings still have <b>analogue</b> or <b>HD-over-coax</b> systems, and you will service those too.</p>
+    <p>Every system, old or new, has the same four jobs:</p>
+    <ol>
+      <li><b>Capture.</b> A lens focuses light onto an image sensor.</li>
+      <li><b>Encode.</b> The picture is turned into a compressed digital stream (H.264 or H.265).</li>
+      <li><b>Transport.</b> The stream travels over coax or Ethernet cable to a recorder.</li>
+      <li><b>Record and view.</b> A recorder writes it to hard drives and shows it on screens and phone apps.</li>
+    </ol>
+    <p>The key difference between the old and new families is <em>where the encoding happens</em>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Analogue camera to DVR over coax compared with IP camera to NVR over Cat6 with PoE">
+        <defs><marker id="c05f1-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="22">Analogue / HD-over-coax</text>
+        <rect class="f-accent-soft s-accent" x="20" y="40" width="96" height="42" rx="6"/>
+        <text class="t t-small" x="30" y="58">Camera</text>
+        <text class="t t-small t-muted" x="30" y="74">sends raw video</text>
+        <path class="s-line" d="M116 60 H296" marker-end="url(#c05f1-arr)"/>
+        <text class="t t-small" x="150" y="52">RG59 coax (video only)</text>
+        <rect class="f-panel s-red" x="150" y="96" width="104" height="26" rx="4"/>
+        <text class="t t-small" x="160" y="114">12 V DC supply</text>
+        <path class="s-red" d="M150 109 H68 V82"/>
+        <rect class="f-wash s-line" x="300" y="36" width="128" height="50" rx="6"/>
+        <text class="t t-bold" x="312" y="56">DVR</text>
+        <text class="t t-small t-muted" x="312" y="74">encodes + records</text>
+        <path class="s-line" d="M428 60 H500" marker-end="url(#c05f1-arr)"/>
+        <rect class="f-panel s-line" x="504" y="40" width="110" height="40" rx="4"/>
+        <text class="t t-small" x="518" y="64">Monitor (HDMI)</text>
+
+        <line class="s-thin s-dash" x1="20" y1="140" x2="620" y2="140"/>
+
+        <text class="t t-bold" x="20" y="166">IP camera system</text>
+        <rect class="f-accent-soft s-accent" x="20" y="180" width="96" height="42" rx="6"/>
+        <text class="t t-small" x="30" y="198">IP camera</text>
+        <text class="t t-small t-muted" x="30" y="214">encodes itself</text>
+        <path class="s-blue" d="M116 201 H206" marker-end="url(#c05f1-arr)"/>
+        <text class="t t-small t-blue" x="120" y="194">Cat6: data + PoE</text>
+        <rect class="f-wash s-line" x="210" y="182" width="104" height="38" rx="4"/>
+        <text class="t t-small" x="222" y="206">PoE switch</text>
+        <path class="s-line" d="M314 201 H372" marker-end="url(#c05f1-arr)"/>
+        <rect class="f-wash s-line" x="376" y="176" width="120" height="50" rx="6"/>
+        <text class="t t-bold" x="388" y="197">NVR / VMS</text>
+        <text class="t t-small t-muted" x="388" y="214">records streams</text>
+        <path class="s-line" d="M496 201 H548" marker-end="url(#c05f1-arr)"/>
+        <rect class="f-panel s-line" x="552" y="182" width="72" height="38" rx="4"/>
+        <text class="t t-small" x="562" y="206">Screens</text>
+        <path class="s-thin s-dash" d="M262 220 V248 H436 V226"/>
+        <text class="t t-small t-muted" x="280" y="244">LAN, VPN, phone app</text>
+      </svg>
+      <figcaption>Figure 1. In an analogue system the camera sends raw video and the DVR does the encoding. Power runs on a separate pair. In an IP system the camera encodes its own video and one Cat6 cable carries both data and power (PoE). The NVR only stores and shows streams that are already compressed.</figcaption>
+    </figure>
+
+    <h3>Analogue and HD-over-coax</h3>
+    <p>Old analogue cameras sent a PAL video signal (about 720 × 576 pixels) on <b>RG59 coax</b> with BNC connectors. Power came on a separate pair of wires, often in a combined "siamese" cable (coax plus a power pair). The recorder is a <b>DVR</b> (digital video recorder): it digitises and compresses the video.</p>
+    <p><b>HD-over-coax</b> is the upgrade path. It sends high-definition video over the same coax. There are three competing formats: <b>HD-TVI</b>, <b>HD-CVI</b> and <b>AHD</b>. A camera and DVR must speak the same format, although most current DVRs (often sold as "hybrid" or "XVR" recorders) accept several formats and some IP cameras too. Its strengths are that it reuses existing coax and it reaches further than Ethernet: often a few hundred metres on good RG59, compared with 100 m for Cat6. Check the datasheet for each format and resolution.</p>
+
+    <h3>IP cameras</h3>
+    <p>An <b>IP camera</b> has a sensor, an image processor, a video encoder and a network port, all in the housing. It has an IP address, a web page for setup, and it sends one or more video streams over the network. It is usually powered by <b>PoE</b> (Power over Ethernet) from the switch or recorder. The recorder is an <b>NVR</b> (network video recorder) or, on big sites, a <b>VMS</b> (video management software) running on a server.</p>
+
+    <div class="compare">
+      <div><h4>Analogue / HD-over-coax</h4><ul><li>Coax + separate power</li><li>DVR encodes the video</li><li>Long cable runs, simple</li><li>Limited analytics and resolution</li><li>Common in older homes and shops</li></ul></div>
+      <div><h4>IP</h4><ul><li>One Cat6 for data and power</li><li>Camera encodes the video</li><li>100 m per cable run, then a switch</li><li>High resolution, analytics, scalable</li><li>Standard for new commercial work</li></ul></div>
+    </div>
+
+    <div class="callout job"><span class="label">On the job</span><p>A typical week for a junior CCTV technician: pulling Cat6 through ceilings, terminating RJ45s and patch panels, mounting cameras on ladders or an EWP (elevating work platform), setting IP addresses on a laptop, aiming and focusing cameras, and going back on service calls when "camera 7 is offline". You will also replace old DVR systems with IP. Being able to work on both families is an advantage when you look for work.</p></div>
+
+    <h2>Camera types and where each fits</h2>
+    <figure>
+      <svg viewBox="0 0 660 200" role="img" aria-label="Silhouettes of bullet, dome, turret, PTZ and fisheye cameras">
+        <line class="s-thin" x1="150" y1="48" x2="250" y2="48"/>
+        <line class="s-thin" x1="280" y1="48" x2="380" y2="48"/>
+        <line class="s-thin" x1="544" y1="48" x2="644" y2="48"/>
+        <!-- bullet -->
+        <rect class="f-wash s-line" x="16" y="44" width="10" height="50"/>
+        <path class="s-line" d="M26 70 H44 V80"/>
+        <rect class="f-wash s-line" x="40" y="54" width="76" height="28" rx="6"/>
+        <path class="s-line" d="M36 50 H120"/>
+        <rect class="f-ink" x="114" y="60" width="6" height="16"/>
+        <!-- dome -->
+        <rect class="f-wash s-line" x="166" y="48" width="68" height="12"/>
+        <path class="f-wash s-line" d="M170 60 A30 30 0 0 0 230 60 Z"/>
+        <circle class="f-ink" cx="200" cy="74" r="7"/>
+        <!-- turret -->
+        <rect class="f-wash s-line" x="298" y="48" width="64" height="12"/>
+        <circle class="f-wash s-line" cx="330" cy="80" r="22"/>
+        <circle class="f-ink" cx="338" cy="86" r="7"/>
+        <!-- PTZ -->
+        <rect class="f-wash s-line" x="414" y="36" width="10" height="56"/>
+        <path class="s-line" d="M424 46 H462 V58"/>
+        <rect class="f-wash s-line" x="440" y="58" width="44" height="18" rx="3"/>
+        <path class="f-wash s-line" d="M440 76 A22 22 0 0 0 484 76 Z"/>
+        <circle class="f-ink" cx="466" cy="86" r="6"/>
+        <!-- fisheye -->
+        <ellipse class="f-wash s-line" cx="594" cy="56" rx="42" ry="9"/>
+        <path class="f-wash s-line" d="M576 62 A18 14 0 0 0 612 62 Z"/>
+        <circle class="f-ink" cx="594" cy="68" r="5"/>
+        <text class="t t-bold" x="40" y="132">Bullet</text>
+        <text class="t t-small t-muted" x="20" y="152">driveways, perimeters,</text>
+        <text class="t t-small t-muted" x="20" y="168">visible deterrent</text>
+        <text class="t t-bold" x="180" y="132">Dome</text>
+        <text class="t t-small t-muted" x="150" y="152">indoor ceilings,</text>
+        <text class="t t-small t-muted" x="150" y="168">vandal-prone spots</text>
+        <text class="t t-bold" x="306" y="132">Turret</text>
+        <text class="t t-small t-muted" x="280" y="152">eaves, entries; no IR</text>
+        <text class="t t-small t-muted" x="280" y="168">glare from a bubble</text>
+        <text class="t t-bold" x="446" y="132">PTZ</text>
+        <text class="t t-small t-muted" x="412" y="152">car parks, yards,</text>
+        <text class="t t-small t-muted" x="412" y="168">needs an operator</text>
+        <text class="t t-bold" x="566" y="132">Fisheye</text>
+        <text class="t t-small t-muted" x="544" y="152">shop floors, rooms;</text>
+        <text class="t t-small t-muted" x="544" y="168">360° overview</text>
+      </svg>
+      <figcaption>Figure 2. The five housings you will meet. The housing changes where a camera works well. The sensor and lens inside decide what it can actually see.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Strengths</th><th>Weak points</th><th>Typical use</th></tr>
+      <tr><td><b>Bullet</b></td><td>Easy to aim; long IR range; obvious, so it deters; long-zoom lenses fit</td><td>Spiders build webs on it, which causes false motion alerts at night; easy to knock out of aim</td><td>Driveways, fences, loading docks</td></tr>
+      <tr><td><b>Dome</b></td><td>Discreet; you cannot see where it points; strong vandal-resistant housings (IK10 rating)</td><td>IR can reflect inside a dirty or scratched bubble, which fogs the night image; harder to aim</td><td>Ceilings in shops, offices, corridors, lifts</td></tr>
+      <tr><td><b>Turret</b> ("eyeball")</td><td>No bubble, so no IR reflection; easy to aim; neat</td><td>Lens is exposed to dirt and rain</td><td>Under eaves, entrances, residential</td></tr>
+      <tr><td><b>PTZ</b> (pan-tilt-zoom)</td><td>Large optical zoom; can follow a person; covers a big area over time</td><td>Only looks one way at a time; expensive; draws more power, especially with heaters</td><td>Car parks, yards, stadiums, with a control room operator</td></tr>
+      <tr><td><b>Fisheye</b></td><td>One camera sees a whole room (180° or 360°); the NVR or VMS "dewarps" it into flat views</td><td>Low detail per metre, especially at the edges</td><td>Retail floors, warehouses, meeting rooms</td></tr>
+    </table></div>
+    <p>You will also see <b>multi-sensor</b> cameras (several sensors in one housing, each looking a different way) and <b>LPR/ANPR</b> cameras (licence-plate recognition) with fast shutters and their own IR, set up for car park entries.</p>
+
+    <h2>Inside the camera: sensor, resolution, IR, low light and WDR</h2>
+    <h3>The image sensor</h3>
+    <p>The sensor is a CMOS chip with millions of tiny photodiodes, one per pixel. Each photodiode turns arriving light into a small charge, which is then read out and digitised. Sensor sizes use an old "inch" naming, such as 1/3", 1/2.8" or 1/1.8". A bigger sensor with the same pixel count has bigger pixels, and a bigger pixel collects more light, so it gives a cleaner picture at night.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>A photodiode is a reverse-biased p–n junction. Each photon with enough energy makes an electron–hole pair, and the junction's electric field sweeps them apart as a tiny current. More light gives more pairs and a bigger signal. At night only a few photons arrive per pixel, so random noise becomes visible as "grain". That grain also makes the compressed stream bigger, because the encoder thinks the scene is changing.</p></div>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family (photodiodes)</a>
+
+    <h3>Resolution and frame rate</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Name</th><th>Typical pixels</th><th>Note</th></tr>
+      <tr><td>2 MP (1080p)</td><td>1920 × 1080</td><td>Still common; good low light on small sensors</td></tr>
+      <tr><td>4 MP</td><td>2560 × 1440 (some 2688 × 1520)</td><td>Common commercial default</td></tr>
+      <tr><td>5 MP / 6 MP</td><td>e.g. 2592 × 1944, 3072 × 2048</td><td>Varies by brand</td></tr>
+      <tr><td>8 MP (4K)</td><td>3840 × 2160</td><td>More detail but more bitrate and storage, and smaller pixels</td></tr>
+    </table></div>
+    <p>Frame rate is how many pictures per second the camera sends. Australia used the PAL standard (25 frames per second), so many cameras default to 25 fps. For recording, 10–15 fps is often enough for people walking. Fewer frames means less storage. Fast scenes, like cash counting or vehicle gates, may need more. The specification usually tells you.</p>
+
+    <h3>Infrared (IR) night vision</h3>
+    <p>Most cameras have IR LEDs. Silicon sensors are sensitive to near-infrared light that our eyes cannot see. At night the camera:</p>
+    <ul>
+      <li>moves a small <b>IR-cut filter</b> out of the light path (you hear a click). In daytime this filter blocks IR so colours look right;</li>
+      <li>switches the image to black and white;</li>
+      <li>turns on its IR LEDs, usually at 850 nm (a faint red glow is visible) or 940 nm (invisible, but shorter range).</li>
+    </ul>
+    <p>The IR range on the box (for example "IR 30 m") is measured in ideal conditions. Use about half to two-thirds of it for planning. IR light reflects strongly off nearby surfaces such as eaves, walls, gutters and spider webs. This is the number one cause of washed-out, foggy night images.</p>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves (where infrared sits in the spectrum)</a>
+
+    <h3>Low light and "colour at night"</h3>
+    <p>Low-light performance is quoted in <b>lux</b> (lumens per square metre). For reference, a lit street is very roughly 10 lux and moonlight is far below 1 lux. Many brands sell "full-colour" night cameras. They combine a large-aperture lens (a low <b>F-number</b>, such as F1.0, which lets more light in), a bigger sensor, and often a small warm-white light that switches on when needed. They give colour images at night, which helps to describe clothing and vehicles. But the white light can annoy neighbours, so think about where it points.</p>
+
+    <h3>Wide dynamic range (WDR)</h3>
+    <p>Picture a camera inside a shop, looking at the glass front door on a sunny day. Outside is thousands of times brighter than inside. A normal sensor exposes for one or the other: either people at the door are black silhouettes, or the outside is pure white. <b>True WDR</b> takes two or more exposures per frame (short and long) and blends them. It is quoted in decibels:</p>
+    <div class="formula">ratio = 10<sup>dB/20</sup> &nbsp;→&nbsp; 120 dB = 10<sup>6</sup> : 1
+      <small>A camera with 120 dB WDR can show detail in areas a million times brighter than its darkest areas in the same frame. "Digital WDR" (DWDR) only brightens the shadows in software. It helps a little, but it is not the same.</small></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals and decibels</a>
+
+    <h2>Lenses: focal length, field of view and pixels per metre</h2>
+    <p>This is the most important design skill in CCTV, and a favourite interview topic. Customers ask, "Will I be able to see his face at the gate?" The honest answer depends on how many pixels land on each metre of the scene at that distance.</p>
+
+    <h3>Focal length versus angle of view</h3>
+    <p>The <b>focal length</b> (f, in mm) is the distance from the lens's optical centre to the sensor when it is focused far away. A short focal length spreads the sensor's width over a wide angle. A long focal length squeezes the same sensor onto a narrow slice of the scene, so a distant target fills more pixels.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="Short focal length gives a wide angle, long focal length gives a narrow angle">
+        <text class="t t-bold" x="20" y="20">Short f (e.g. 2.8 mm)</text>
+        <line class="s-accent" x1="40" y1="80" x2="40" y2="140"/>
+        <text class="t t-small t-muted" x="10" y="160">sensor</text>
+        <ellipse class="f-accent-soft s-line" cx="80" cy="110" rx="5" ry="28"/>
+        <line class="s-red" x1="40" y1="80" x2="213" y2="210"/>
+        <line class="s-red" x1="40" y1="140" x2="213" y2="10"/>
+        <path class="s-thin" d="M40 180 H80"/><path class="s-thin" d="M40 175 V185 M80 175 V185"/>
+        <text class="t t-small" x="54" y="198">f</text>
+        <path class="s-amber" d="M110 87 A40 40 0 0 1 110 133"/>
+        <text class="t t-small" x="124" y="114">wide angle</text>
+
+        <text class="t t-bold" x="340" y="20">Long f (e.g. 8 mm)</text>
+        <line class="s-accent" x1="350" y1="80" x2="350" y2="140"/>
+        <text class="t t-small t-muted" x="322" y="160">sensor</text>
+        <ellipse class="f-accent-soft s-line" cx="450" cy="110" rx="5" ry="28"/>
+        <line class="s-red" x1="350" y1="80" x2="630" y2="164"/>
+        <line class="s-red" x1="350" y1="140" x2="630" y2="56"/>
+        <path class="s-thin" d="M350 180 H450"/><path class="s-thin" d="M350 175 V185 M450 175 V185"/>
+        <text class="t t-small" x="396" y="198">f</text>
+        <path class="s-amber" d="M520 89 A72 72 0 0 1 520 131"/>
+        <text class="t t-small" x="530" y="114">narrow angle</text>
+      </svg>
+      <figcaption>Figure 3. The same sensor behind a short and a long lens. Rays from the two edges of the sensor cross at the lens centre and fan out. A longer f makes a narrower fan, so a far-away face covers more of the sensor's pixels.</figcaption>
+    </figure>
+
+    <div class="formula">HFOV = 2 · atan( w / 2f )
+      <small>HFOV is the horizontal field of view (angle). w is the active sensor width in mm and f is the focal length in mm. Example: a 1/2.8" sensor is about 5.6 mm wide. With an 8 mm lens: 2 · atan(5.6 / 16) = 2 · atan(0.35) ≈ 38.6°. This simple "pinhole" formula works well for longer lenses. Short lenses (2.8 mm, 4 mm) have barrel distortion and their datasheets quote wider angles than the formula gives. <b>For design, always use the angle in the camera's datasheet.</b></small></div>
+
+    <p><b>Varifocal</b> lenses let you change f during installation (2.8–12 mm is common). <b>Motorised varifocal</b> cameras let you zoom and focus from the laptop or NVR. This saves a ladder climb, and it is the norm on commercial jobs.</p>
+
+    <h3>Scene width and pixels per metre</h3>
+    <p>At distance d, the camera covers a horizontal strip of width W. The horizontal pixels are spread across that strip:</p>
+    <div class="formula">W = 2 · d · tan(HFOV / 2) &nbsp;&nbsp;&nbsp; PPM = H<sub>px</sub> / W
+      <small>PPM is pixels per metre at the target distance. H<sub>px</sub> is the horizontal resolution (2560 for a typical 4 MP camera).</small></div>
+    <p><b>Worked example 1.</b> A 4 MP camera (2560 px wide) with a 2.8 mm lens (datasheet about 100°) looks at a person 10 m away. W = 2 × 10 × tan 50° = 2 × 10 × 1.19 ≈ 23.8 m. PPM = 2560 / 23.8 ≈ 107 px/m. That is good for <em>observing</em> activity, but not for identifying a face.</p>
+    <p><b>Worked example 2.</b> The customer wants to identify people at a gate 12 m away, with a 2560 px camera. Identification needs about 250 px/m (see below). So W must be at most 2560 / 250 = 10.24 m. Then tan(HFOV/2) = 10.24 / (2 × 12) = 0.427, so HFOV/2 ≈ 23° and HFOV ≈ 46°. An 8 mm lens (about 40°) works: W = 2 × 12 × tan 20° ≈ 8.7 m, so PPM ≈ 293 px/m. The 2.8 mm lens would give only about 90 px/m.</p>
+
+    <h3>Detection levels, in plain terms</h3>
+    <p>The industry describes what an image lets an operator do at a given pixel density. The figures most people quote come from the international standard <b>IEC 62676-4</b> (video surveillance application guidelines). Australia's CCTV standard series, <b>AS 4806</b>, describes the same idea using how tall a person appears on the screen. A project specification will say which method and which level each camera must meet.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Level</th><th>About</th><th>What the image lets you do</th></tr>
+      <tr><td>Detect</td><td>25 px/m</td><td>Tell that a person or vehicle is present</td></tr>
+      <tr><td>Observe</td><td>62.5 px/m</td><td>See what people are doing, and general detail such as clothing colour</td></tr>
+      <tr><td>Recognise</td><td>125 px/m</td><td>Tell with confidence whether a person is someone already known, for example a staff member</td></tr>
+      <tr><td>Identify</td><td>250 px/m</td><td>Enough face detail to establish who a person is</td></tr>
+      <tr><td>Inspect</td><td>1000 px/m</td><td>Read fine detail, such as small text or a card</td></tr>
+    </table></div>
+    <p>These numbers assume good light, focus and compression. A dark, noisy, blurred or heavily compressed image gives less real detail than the pixel count suggests. Also think about the vertical angle. A camera mounted high and aimed steeply down sees the tops of heads and caps, not faces. Aim face cameras at the point people walk through, at a shallow angle.</p>
+
+    <div class="widget" id="w-fov">
+      <span class="label">Interactive · Field-of-view cone and pixels per metre</span>
+      <label>Lens <select id="fov-lens">
+        <option value="100">2.8 mm (typical datasheet ≈ 100°)</option>
+        <option value="85" selected>4 mm (≈ 85°)</option>
+        <option value="55">6 mm (≈ 55°)</option>
+        <option value="40">8 mm (≈ 40°)</option>
+        <option value="27">12 mm (≈ 27°)</option>
+        <option value="custom">Custom angle (use the slider)</option>
+      </select></label>
+      <label>Horizontal angle of view <span class="out" id="fov-ao">85°</span><input type="range" id="fov-ang" min="10" max="120" step="1" value="85"></label>
+      <label>Horizontal resolution <select id="fov-res">
+        <option value="1920">1920 px (2 MP)</option>
+        <option value="2560" selected>2560 px (4 MP)</option>
+        <option value="2688">2688 px (4 MP, 2688 × 1520)</option>
+        <option value="3840">3840 px (8 MP / 4K)</option>
+      </select></label>
+      <label>Distance to target <span class="out" id="fov-do">10 m</span><input type="range" id="fov-dist" min="1" max="60" step="0.5" value="10"></label>
+      <svg id="fov-svg" viewBox="0 0 600 240" role="img" aria-label="Top view of the camera field-of-view cone with coloured detection zones"></svg>
+      <p style="font-size:14px;color:var(--muted);margin:6px 0 0">Top view. Zones:
+        <svg width="12" height="12" viewBox="0 0 12 12" style="vertical-align:-1px"><rect class="f-green" width="12" height="12" opacity="0.5"/></svg> identify ≥ 250 px/m ·
+        <svg width="12" height="12" viewBox="0 0 12 12" style="vertical-align:-1px"><rect class="f-blue" width="12" height="12" opacity="0.5"/></svg> recognise ≥ 125 ·
+        <svg width="12" height="12" viewBox="0 0 12 12" style="vertical-align:-1px"><rect class="f-amber" width="12" height="12" opacity="0.5"/></svg> observe ≥ 62.5 ·
+        <svg width="12" height="12" viewBox="0 0 12 12" style="vertical-align:-1px"><rect class="f-grey" width="12" height="12" opacity="0.5"/></svg> detect ≥ 25. The red line is your target.</p>
+      <div class="readings">
+        <div><small>Scene width at target</small><span class="out" id="fov-w">–</span></div>
+        <div><small>Pixels per metre</small><span class="out" id="fov-ppm">–</span></div>
+        <div><small>Level at target</small><span class="out" id="fov-lvl">–</span></div>
+        <div><small>Identify out to</small><span class="out" id="fov-did">–</span></div>
+        <div><small>Recognise out to</small><span class="out" id="fov-drec">–</span></div>
+        <div><small>Observe out to</small><span class="out" id="fov-dobs">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var lens=$('fov-lens'),ang=$('fov-ang'),res=$('fov-res'),dist=$('fov-dist'),svg=$('fov-svg');
+      var lv=[{n:'Identify',p:250,c:'f-green'},{n:'Recognise',p:125,c:'f-blue'},{n:'Observe',p:62.5,c:'f-amber'},{n:'Detect',p:25,c:'f-grey'}];
+      function fm(x){return x<10?x.toFixed(1):Math.round(x).toString();}
+      function upd(){
+        var A=+ang.value,H=+res.value,d=+dist.value;
+        var t=Math.tan(A/2*Math.PI/180);
+        var W=2*d*t,ppm=H/W,lvl='Below detect';
+        for(var i=0;i<lv.length;i++){if(ppm>=lv[i].p){lvl=lv[i].n;break;}}
+        var dm=lv.map(function(l){return H/(2*l.p*t);});
+        $('fov-ao').textContent=A+'°';
+        $('fov-do').textContent=d+' m';
+        $('fov-w').textContent=W.toFixed(1)+' m';
+        $('fov-ppm').textContent=Math.round(ppm);
+        $('fov-lvl').textContent=lvl;
+        $('fov-did').textContent=dm[0].toFixed(1)+' m';
+        $('fov-drec').textContent=dm[1].toFixed(1)+' m';
+        $('fov-dobs').textContent=dm[2].toFixed(1)+' m';
+        var range=Math.max(d*1.35,4),x0=40,y0=120,L=545,sc=L/range,s='';
+        var start=0;
+        for(var j=0;j<lv.length;j++){
+          var end=Math.min(dm[j],range);
+          if(end>start){
+            var xa=x0+start*sc,xb=x0+end*sc,ha=start*sc*t,hb=end*sc*t;
+            s+='<polygon class="'+lv[j].c+'" opacity="0.35" points="'+xa+','+(y0-ha)+' '+xb+','+(y0-hb)+' '+xb+','+(y0+hb)+' '+xa+','+(y0+ha)+'"/>';
+            start=end;
+          }
+        }
+        var hr=range*sc*t;
+        s+='<line class="s-line" x1="'+x0+'" y1="'+y0+'" x2="'+(x0+L)+'" y2="'+(y0-hr)+'"/>';
+        s+='<line class="s-line" x1="'+x0+'" y1="'+y0+'" x2="'+(x0+L)+'" y2="'+(y0+hr)+'"/>';
+        s+='<line class="s-thin s-dash" x1="'+x0+'" y1="'+y0+'" x2="'+(x0+L)+'" y2="'+y0+'"/>';
+        var lastX=-100;
+        for(var k=0;k<3;k++){
+          if(dm[k]<range){var xk=x0+dm[k]*sc;
+            s+='<line class="s-thin" x1="'+xk+'" y1="'+(y0-5)+'" x2="'+xk+'" y2="'+(y0+5)+'"/>';
+            if(xk-lastX>58){s+='<text class="t t-small" x="'+(xk+3)+'" y="'+(y0+18)+'">'+fm(dm[k])+' m</text>';lastX=xk;}
+          }
+        }
+        var xt=x0+d*sc,ht=d*sc*t,top=Math.max(4,y0-ht),bot=Math.min(236,y0+ht);
+        s+='<line class="s-red" x1="'+xt+'" y1="'+top+'" x2="'+xt+'" y2="'+bot+'"/>';
+        s+='<circle class="f-red" cx="'+xt+'" cy="'+y0+'" r="6"/>';
+        var lx=Math.min(xt+6,470);
+        s+='<rect class="f-panel" x="'+(lx-2)+'" y="'+(Math.max(top,6)+2)+'" width="128" height="34" rx="4" opacity="0.85"/>';
+        s+='<text class="t t-small t-red" x="'+lx+'" y="'+(Math.max(top,6)+16)+'">W = '+W.toFixed(1)+' m</text>';
+        s+='<text class="t t-small t-red" x="'+lx+'" y="'+(Math.max(top,6)+31)+'">'+Math.round(ppm)+' px/m</text>';
+        s+='<rect class="f-accent-soft s-accent" x="8" y="'+(y0-10)+'" width="30" height="20" rx="3"/>';
+        s+='<text class="t t-small t-muted" x="8" y="232">0 m</text>';
+        s+='<text class="t t-small t-muted" x="540" y="232">'+fm(range)+' m</text>';
+        svg.innerHTML=s;
+      }
+      lens.onchange=function(){if(lens.value!=='custom'){ang.value=lens.value;}upd();};
+      ang.oninput=function(){lens.value='custom';upd();};
+      res.onchange=upd;dist.oninput=upd;upd();
+    })();
+    </script>
+
+    <div class="callout try"><span class="label">Try this</span><p>In the widget, set a 4 mm lens and a 4 MP camera, then drag the distance. Note where identification ends (about 5.6 m). Now switch to 12 mm: identification reaches about 21 m, but the scene at 5 m is only about 2.4 m wide. This is the trade-off you explain to every customer: one camera cannot give both a wide overview and face detail. Good designs pair a wide overview camera with a narrow "choke point" camera at the door or gate.</p></div>
+
+    <h2>Power over Ethernet and the NVR</h2>
+    <h3>PoE in one page</h3>
+    <p>PoE sends DC power on the same Cat6 cable as the data. The switch or NVR port is the <b>PSE</b> (power sourcing equipment) and the camera is the <b>PD</b> (powered device). Before it sends power, the PSE checks for a signature resistor in the PD. So it never pushes power into a laptop. The voltage is roughly 44–57 V DC, which is within extra-low voltage.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Standard</th><th>Common name</th><th>Power at the switch port</th><th>Power available at the device</th></tr>
+      <tr><td>IEEE 802.3af (Type 1)</td><td>PoE</td><td>15.4 W</td><td>12.95 W</td></tr>
+      <tr><td>IEEE 802.3at (Type 2)</td><td>PoE+</td><td>30 W</td><td>25.5 W</td></tr>
+      <tr><td>IEEE 802.3bt (Type 3)</td><td>PoE++ / 4PPoE</td><td>60 W</td><td>51 W</td></tr>
+      <tr><td>IEEE 802.3bt (Type 4)</td><td>PoE++ / 4PPoE</td><td>90 W</td><td>about 71 W</td></tr>
+    </table></div>
+    <p>The difference between the two power columns is the I²R loss in up to 100 m of thin copper. Two budgets matter: <b>per port</b> (does the port's class cover the camera?) and <b>total</b> (the switch's whole PoE budget). A fixed camera may draw 4–8 W in daytime and more at night when the IR LEDs come on. A PTZ with a heater can need PoE+ or more. Some outdoor PTZs need a separate 24 V AC supply.</p>
+    <p><b>Worked example.</b> A 16-port PoE switch has a 150 W PoE budget. You connect 14 turret cameras rated at 7 W maximum (IR on) and 2 PTZ cameras rated at 25 W. Total = 14 × 7 + 2 × 25 = 98 + 50 = 148 W. That is just under the budget, with no margin. On a cold night with the PTZ heaters on, cameras may reboot. Use a bigger switch or split the load across two.</p>
+    <a class="crosslink" href="../practice/p19-networking-hands-on.html">Practice P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</a>
+    <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat (why the cable eats some of the watts)</a>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The camera worked on the bench, so the cable is fine." A camera can link up and stream in daytime, then drop out every night. At night the IR LEDs raise the power draw. A badly terminated pair, or a cable that is too long or not pure copper, then drops too much voltage. Copper-clad aluminium (CCA) cable has higher resistance and is a common cause. Test the run with a proper tester and check the PoE draw on the switch's status page.</p></div>
+
+    <h3>What the NVR does</h3>
+    <ul>
+      <li><b>Channels.</b> The number of cameras it can record (4, 8, 16, 32, 64…).</li>
+      <li><b>Incoming bandwidth.</b> The total Mbps it can accept from all cameras, for example 160 or 256 Mbps. Exceed it and channels drop out.</li>
+      <li><b>Decoding.</b> How many streams it can display at once on its HDMI output.</li>
+      <li><b>Drive bays and RAID.</b> Surveillance-grade hard drives (designed to write all day); some models offer RAID so one drive failure does not lose footage.</li>
+      <li><b>Built-in PoE ports.</b> Many small NVRs have them. The cameras plugged in there usually go on a private internal network that the NVR manages, which makes setup "plug and play".</li>
+    </ul>
+    <h3>H.264, H.265 and the stream</h3>
+    <p>Video compression stores a full picture (an <b>I-frame</b>) every so often. In between, it stores only what changed (<b>P-frames</b>). The gap between I-frames is the <b>GOP</b> or I-frame interval. A static car park compresses very well. A tree waving in the wind, rain, or night-time sensor noise does not. <b>H.265</b> (HEVC) usually needs noticeably less bitrate than H.264 for similar quality, often quoted at roughly 30–50% less, depending on the scene. Most brands also offer "smart" codec modes that stretch the GOP when nothing moves. Cameras usually send a <b>main stream</b> (full resolution, for recording) and a <b>sub-stream</b> (low resolution, for phone apps and multi-camera views).</p>
+    <p><b>CBR</b> (constant bitrate) keeps the bitrate fixed. <b>VBR</b> (variable bitrate) lets it rise with scene complexity up to a cap. With VBR, your storage use at night can be higher than in the day.</p>
+
+    <h3>ONVIF: getting brands to talk</h3>
+    <p><b>ONVIF</b> is an industry forum that publishes interface standards called <b>profiles</b>. A camera and recorder that both support the same profile can work together even if they are different brands. Profile S covers basic video streaming and PTZ. Profile T covers newer streaming features, including H.265. Profile G covers recording and storage. Profile M covers analytics metadata. In practice, ONVIF almost always gives you live video and recording across brands. Advanced features, such as line-crossing events, people counting or smart search, often work fully only when the camera and NVR are the same brand. Every camera also offers a raw <b>RTSP</b> stream address, which is handy for testing.</p>
+
+    <div class="widget" id="w-store">
+      <span class="label">Interactive · NVR storage calculator</span>
+      <label>Number of cameras <span class="out" id="st-co">16</span><input type="range" id="st-c" min="1" max="128" step="1" value="16"></label>
+      <label>Average bitrate per camera (main stream) <span class="out" id="st-bo">4.0 Mbps</span><input type="range" id="st-b" min="0.5" max="16" step="0.5" value="4"></label>
+      <label>Recording hours per day <span class="out" id="st-ho">24 h</span><input type="range" id="st-h" min="1" max="24" step="1" value="24"></label>
+      <label>Share of that time actually recording (100% = continuous; motion-only is lower) <span class="out" id="st-po">100%</span><input type="range" id="st-p" min="5" max="100" step="5" value="100"></label>
+      <label>Retention (days kept) <span class="out" id="st-do">30 days</span><input type="range" id="st-d" min="1" max="90" step="1" value="30"></label>
+      <label>Drive size <select id="st-s"><option value="4">4 TB</option><option value="6">6 TB</option><option value="8" selected>8 TB</option><option value="10">10 TB</option><option value="12">12 TB</option><option value="16">16 TB</option></select></label>
+      <div class="readings">
+        <div><small>Incoming to the NVR</small><span class="out" id="st-in">–</span></div>
+        <div><small>Per day</small><span class="out" id="st-day">–</span></div>
+        <div><small>Total storage</small><span class="out" id="st-tot">–</span></div>
+        <div><small>With 20% headroom</small><span class="out" id="st-head">–</span></div>
+        <div><small>Drives needed (no RAID)</small><span class="out" id="st-n">–</span></div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin:10px 0 0" id="st-note"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var ids=['st-c','st-b','st-h','st-p','st-d','st-s'];
+      function upd(){
+        var c=+$('st-c').value,b=+$('st-b').value,h=+$('st-h').value,p=+$('st-p').value/100,d=+$('st-d').value,sz=+$('st-s').value;
+        var inMbps=c*b;
+        var gbDay=c*b*3600*h*p/8/1000;
+        var tb=gbDay*d/1000, tbH=tb*1.2;
+        var n=Math.ceil(tbH/sz);
+        $('st-co').textContent=c;$('st-bo').textContent=b.toFixed(1)+' Mbps';$('st-ho').textContent=h+' h';
+        $('st-po').textContent=Math.round(p*100)+'%';$('st-do').textContent=d+' days';
+        $('st-in').textContent=inMbps.toFixed(0)+' Mbps';
+        $('st-day').textContent=gbDay>=1000?(gbDay/1000).toFixed(2)+' TB':gbDay.toFixed(0)+' GB';
+        $('st-tot').textContent=tb.toFixed(1)+' TB';
+        $('st-head').textContent=tbH.toFixed(1)+' TB';
+        $('st-n').textContent=n+' × '+sz+' TB';
+        $('st-note').textContent='Check: the NVR must accept '+inMbps.toFixed(0)+' Mbps of incoming video and have at least '+n+' drive bays (more if you add RAID: RAID 5 needs one extra drive, RAID 6 two). The total uses decimal terabytes, the same unit printed on the drive label.';
+      }
+      ids.forEach(function(i){var e=$(i);e.oninput=upd;e.onchange=upd;});upd();
+    })();
+    </script>
+    <div class="formula">TB = cameras × Mbps × 3600 × hours × days ÷ 8 ÷ 1 000 000
+      <small>Mbps × seconds gives megabits. ÷ 8 gives megabytes. ÷ 1 000 000 gives terabytes. Example: 16 cameras × 4 Mbps × 3600 × 24 h ÷ 8 = 691 200 MB ≈ 691 GB per day. Over 30 days that is about 20.7 TB. Bitrates vary a lot with scene, codec and frame rate. Read the real average from the camera or NVR after a few days and recheck.</small></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>There is no single national rule for how long footage must be kept. Retention comes from the client's policy, their insurer, or the rules for their industry (for example, some licensed venues and gaming sites have specific camera and retention conditions set by the state liquor or gaming regulator). Thirty days is a common request, but always build to the written specification, not a habit.</p></div>
+
+    <h2>Network design for cameras</h2>
+    <p>On anything bigger than a home system, cameras should not share a flat network with office PCs. A <b>VLAN</b> (virtual LAN) splits one physical switch network into separate logical networks. Traffic between them must go through a router or firewall, where you control it.</p>
+    <figure>
+      <svg viewBox="0 0 640 280" role="img" aria-label="Cameras on VLAN 20 through PoE switches to a core switch and firewall, with NVR on the camera VLAN and office PCs on VLAN 10">
+        <defs><marker id="c05f4-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-career-soft s-thin" x="10" y="10" width="300" height="200" rx="8"/>
+        <text class="t t-small t-bold" x="20" y="30">VLAN 20 · cameras (e.g. 10.20.0.0/24)</text>
+        <rect class="f-accent-soft s-accent" x="24" y="50" width="56" height="28" rx="4"/><text class="t t-small" x="32" y="69">CAM-01</text>
+        <rect class="f-accent-soft s-accent" x="24" y="90" width="56" height="28" rx="4"/><text class="t t-small" x="32" y="109">CAM-02</text>
+        <rect class="f-accent-soft s-accent" x="24" y="130" width="56" height="28" rx="4"/><text class="t t-small" x="32" y="149">CAM-03</text>
+        <rect class="f-accent-soft s-accent" x="24" y="170" width="56" height="28" rx="4"/><text class="t t-small" x="32" y="189">CAM-04</text>
+        <path class="s-blue" d="M80 64 H120 V110 M80 104 H120 M80 144 H120 V110 M80 184 H120 V144"/>
+        <rect class="f-wash s-line" x="120" y="92" width="80" height="36" rx="4"/>
+        <text class="t t-small" x="128" y="108">PoE access</text><text class="t t-small" x="128" y="122">switch</text>
+        <rect class="f-wash s-line" x="216" y="150" width="84" height="44" rx="4"/>
+        <text class="t t-small t-bold" x="226" y="170">NVR / VMS</text><text class="t t-small t-muted" x="226" y="186">10.20.0.10</text>
+        <path class="s-line" d="M200 110 H360" marker-end="url(#c05f4-arr)"/>
+        <text class="t t-small t-muted" x="214" y="102">trunk / uplink (1 Gb/s)</text>
+        <path class="s-line" d="M258 150 V128 H360"/>
+        <rect class="f-wash s-line" x="362" y="90" width="120" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="372" y="110">Core switch +</text><text class="t t-small t-bold" x="372" y="128">firewall / router</text>
+        <rect class="f-theory-soft s-thin" x="500" y="10" width="130" height="110" rx="8"/>
+        <text class="t t-small t-bold" x="510" y="30">VLAN 10 · office</text>
+        <rect class="f-panel s-line" x="514" y="46" width="100" height="26" rx="4"/><text class="t t-small" x="524" y="64">Staff PCs</text>
+        <rect class="f-panel s-line" x="514" y="80" width="100" height="26" rx="4"/><text class="t t-small" x="524" y="98">Printers</text>
+        <path class="s-line" d="M482 105 H514"/>
+        <rect class="f-practice-soft s-thin" x="500" y="140" width="130" height="70" rx="8"/>
+        <text class="t t-small t-bold" x="510" y="160">VLAN 30 · security</text>
+        <rect class="f-panel s-line" x="514" y="170" width="100" height="28" rx="4"/><text class="t t-small" x="520" y="189">Operator PC</text>
+        <path class="s-line" d="M482 125 H494 V184 H514"/>
+        <path class="s-line" d="M422 140 V240"/>
+        <rect class="f-panel s-line" x="352" y="240" width="140" height="30" rx="4"/>
+        <text class="t t-small" x="362" y="260">Internet: VPN only</text>
+        <text class="t t-small t-muted" x="20" y="236">Firewall rule: VLAN 30 → NVR allowed;</text>
+        <text class="t t-small t-muted" x="20" y="254">VLAN 10 → cameras blocked; cameras → internet blocked.</text>
+      </svg>
+      <figcaption>Figure 4. A typical small commercial layout. Cameras and the recorder share a camera VLAN. Office devices cannot reach the cameras, and the cameras cannot reach the internet. The security operator's PC is allowed through to the NVR only. Remote viewing comes in through a VPN, not through ports opened on the router.</figcaption>
+    </figure>
+    <ul>
+      <li><b>IP plan first.</b> Make a spreadsheet before you arrive: camera name, location, IP, switch and port, MAC address, model, lens.</li>
+      <li><b>Uplink bandwidth.</b> 48 cameras × 6 Mbps = 288 Mbps, so the uplink from the camera switch to the NVR must be at least gigabit.</li>
+      <li><b>Time.</b> Point every camera and the NVR at the same NTP time server. Footage with the wrong time is much less useful as evidence.</li>
+      <li><b>Security basics.</b> Strong unique passwords (never the default), current firmware, UPnP off, unused services off, and cloud "P2P" access only if the client's IT policy allows it.</li>
+    </ul>
+    <a class="crosslink" href="../practice/p19-networking-hands-on.html">Practice P19 · Set static IPs, find devices, budget PoE and build a camera VLAN</a>
+
+    <h2>Mounting, weatherproofing, labelling and handover</h2>
+    <h3>Mounting</h3>
+    <ul>
+      <li>Use the junction box or back box made for that camera model. It hides the cable joint and gives a solid, sealed base.</li>
+      <li>Mount high enough to be out of easy reach (often around 2.5–3.5 m on walls), but not so high that faces are lost.</li>
+      <li>Do not aim into the rising or setting sun, or straight at bright lights.</li>
+      <li>Keep IR cameras away from close surfaces in front of them (eaves, gutters, walls), which reflect IR back into the lens.</li>
+      <li>Fix to something solid: masonry anchors in brick, proper fixings in sheet metal, never only into plasterboard for outdoor cameras.</li>
+    </ul>
+    <h3>Weatherproofing and cable entry</h3>
+    <p>Outdoor cameras carry an <b>IP rating</b> (ingress protection, AS 60529 / IEC 60529). The first digit is dust (6 = dust-tight), the second is water (6 = powerful water jets, 7 = temporary immersion). IP66 or IP67 is normal for outdoor cameras. <b>IK10</b> is the impact (vandal) rating. The camera is only as waterproof as your cable joint.</p>
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="Good cable entry through the wall behind the camera, and a drip loop when the cable must run outside">
+        <text class="t t-bold" x="20" y="20">Best: entry from behind</text>
+        <rect class="f-wash s-line" x="120" y="30" width="30" height="200"/>
+        <text class="t t-small t-muted" x="30" y="226">inside / ceiling</text>
+        <text class="t t-small t-muted" x="186" y="226">outside</text>
+        <path class="s-blue" d="M20 50 H96 V122 H160"/>
+        <rect class="f-amber" x="146" y="116" width="6" height="12"/>
+        <rect class="f-panel s-line" x="150" y="96" width="26" height="54" rx="3"/>
+        <rect class="f-wash s-line" x="176" y="114" width="18" height="10"/>
+        <circle class="f-wash s-line" cx="212" cy="120" r="18"/>
+        <circle class="f-ink" cx="224" cy="124" r="6"/>
+        <text class="t t-small" x="22" y="42">Cat6 in ceiling</text>
+        <text class="t t-small" x="160" y="86">junction box</text>
+        <text class="t t-small t-muted" x="160" y="172">sealed hole,</text>
+        <text class="t t-small t-muted" x="160" y="188">joint inside box</text>
+
+        <text class="t t-bold" x="340" y="20">If cable must run outside</text>
+        <rect class="f-wash s-line" x="330" y="30" width="20" height="200"/>
+        <rect class="f-panel s-line" x="350" y="70" width="30" height="46" rx="3"/>
+        <rect class="f-wash s-line" x="380" y="86" width="18" height="10"/>
+        <circle class="f-wash s-line" cx="416" cy="92" r="18"/>
+        <circle class="f-ink" cx="428" cy="96" r="6"/>
+        <path class="s-blue" d="M620 150 H440 C410 150 405 190 385 190 C370 190 365 175 365 150 V116"/>
+        <rect class="f-ink" x="359" y="114" width="12" height="6"/>
+        <text class="t t-small" x="450" y="142">cable along wall in conduit</text>
+        <text class="t t-small t-red" x="392" y="210">drip loop: lowest point</text>
+        <text class="t t-small t-red" x="392" y="226">below the entry gland</text>
+        <text class="t t-small" x="440" y="62">gland on the bottom,</text>
+        <text class="t t-small" x="440" y="78">never the top</text>
+      </svg>
+      <figcaption>Figure 5. Water follows a cable downhill. If the cable enters from behind through the wall, no outdoor cable is exposed and the joint stays dry inside the junction box. If a cable must run outside, enter from below and leave a drip loop so water drips off the low point instead of running into the gland.</figcaption>
+    </figure>
+    <ul>
+      <li>Use outdoor-rated (UV-stabilised) cable outside, in conduit where it can be damaged.</li>
+      <li>Fit the camera's supplied weatherproof RJ45 boot or gland on the cable tail, and tighten it properly.</li>
+      <li>Seal wall penetrations with a suitable sealant. Where cables pass through fire-rated walls or floors, they must be fire-stopped with an approved system (see C07).</li>
+    </ul>
+    <a class="crosslink" href="../practice/p20-cat6-termination.html">Practice P20 · Cat6 termination and testing</a>
+
+    <div class="callout warn"><span class="label">Safety</span><p>CCTV work is mostly at height: ladders, scaffolds and EWPs. Follow the site's working-at-heights rules; an EWP needs the right licence or training for its type. Before you drill in a building built before about 1990, ask for the <b>asbestos register</b>: asbestos was widely used in Australian buildings and was banned nationally only from the end of 2003. Cameras run on ELV PoE, but a new 230 V outlet for an NVR, PTZ power supply or rack must be installed by a licensed electrician. Never open a camera power supply or a mains-powered NVR to work inside it.</p></div>
+
+    <h3>Labelling and handover</h3>
+    <ul>
+      <li>Label both ends of every cable, the patch-panel port and the camera itself with the same ID (for example <code>CAM-07</code>).</li>
+      <li>Give each camera a clear name in the NVR, such as <code>CAM-07 Loading dock N</code>.</li>
+      <li>Hand over: as-built drawings with camera positions, the camera schedule (name, model, IP, MAC, switch port, lens, target level), retention settings, warranty details, and credentials, handed over in the secure way the client chooses.</li>
+      <li>Show the client how to search footage and <b>export a clip</b>. Then export one together and play it on another computer to prove it works.</li>
+    </ul>
+
+    <h2>A job from site survey to commissioning</h2>
+    <ol class="steps">
+      <li><p><b>Site survey.</b> Walk the site with the client and a floor plan. For each camera, write down the <em>purpose</em> (what must be seen, and at what level), the distance, the mounting point, the cable route, and the lighting at night. Find the comms room, power, ceiling access and fire-rated walls. Ask for the asbestos register. Take photos.</p></li>
+      <li><p><b>Design and quote.</b> Choose cameras and lenses using pixels per metre (the widget above). Size the NVR: channels, incoming Mbps, storage and drive bays. Check switch PoE budgets. Measure cable runs and keep each under 90 m of permanent cable. Write the IP plan.</p></li>
+      <li><p><b>Pre-configure on the bench.</b> Update firmware, set passwords, IP addresses, names, time zone and NTP, and codec settings. Label each box with its future location. An hour at the bench saves a day on ladders.</p></li>
+      <li><p><b>Rough-in.</b> Run cables, conduit and catenary, install junction boxes, fire-stop penetrations, and label both ends.</p></li>
+      <li><p><b>Fit-off.</b> Terminate and test every cable (record the test results), mount the cameras, seal and weatherproof the joints, and patch them into the switch.</p></li>
+      <li><p><b>Commission.</b> Add the cameras to the NVR. Aim and focus them. Set image settings (WDR, exposure), recording schedules, motion or line-crossing rules, and privacy masks over areas that must not be recorded. Check the bitrate and incoming bandwidth. <b>Come back at night</b> and check every IR image. Confirm the oldest recording after a few days matches the retention target.</p></li>
+      <li><p><b>Handover.</b> Documentation, training, a clip export test, and the sign-off sheet. Book the first maintenance visit if there is a service contract.</p></li>
+    </ol>
+
+    <h3>Troubleshooting on service calls</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely causes</th><th>What to check</th></tr>
+      <tr><td>Camera offline</td><td>PoE port off or over budget; damaged cable; water in the RJ45; IP conflict</td><td>Switch port link and PoE status; cable tester; ping the IP; look in the junction box</td></tr>
+      <tr><td>Fine by day, drops out at night</td><td>IR raises the power draw past what the port or cable can deliver</td><td>PoE draw per port; total budget; cable length and type (CCA?)</td></tr>
+      <tr><td>Foggy, white night image</td><td>IR reflecting off an eave, wall or spider web; dirty or scratched dome</td><td>Move or re-angle the camera; clean the dome; turn on "smart IR"</td></tr>
+      <tr><td>Silhouettes at a doorway</td><td>Bright background, WDR off</td><td>Turn on true WDR; re-aim away from the glass</td></tr>
+      <tr><td>Live view works but playback is empty</td><td>No recording schedule; drive not initialised or failed</td><td>NVR recording schedule and drive status</td></tr>
+      <tr><td>Retention shorter than promised</td><td>Bitrate higher than designed (night noise, VBR, rain, trees)</td><td>Average bitrate per channel; codec; frame rate</td></tr>
+      <tr><td>Footage has the wrong time</td><td>No NTP; wrong time zone or daylight-saving setting</td><td>NVR and camera time settings</td></tr>
+    </table></div>
+
+    <h2>Brands, licences, privacy and training in Australia</h2>
+    <h3>Brands you will see in job ads</h3>
+    <p>Job ads often name the systems an employer installs. Knowing the names helps you read an ad. You do not need experience with all of them to apply.</p>
+    <div class="cards">
+      <div class="card"><h4>Hikvision, Dahua, Uniview</h4><p>Very common in residential and small-to-medium business work. Wide ranges, value pricing, their own NVRs and apps.</p></div>
+      <div class="card"><h4>Axis</h4><p>A Swedish brand, common on enterprise and government projects, usually paired with a VMS.</p></div>
+      <div class="card"><h4>Hanwha Vision</h4><p>A Korean brand (formerly Hanwha Techwin, originally Samsung's security division), common in commercial work.</p></div>
+      <div class="card"><h4>Milestone, Genetec</h4><p>VMS software for large sites. Licensed per camera, runs on servers, and works with many camera brands.</p></div>
+    </div>
+    <p>You may also see Bosch, Avigilon, Vivotek and others. Some government and critical-infrastructure clients restrict which brands may be installed. The project specification will tell you.</p>
+
+    <h3>Security licensing</h3>
+    <div class="callout aus"><span class="label">In Australia</span><p>Installing, servicing and advising on security equipment such as CCTV, alarms and access control is licensed <b>by each state and territory</b>, not nationally. Some examples:</p>
+      <ul>
+        <li><b>NSW:</b> the Security Licensing &amp; Enforcement Directorate (SLED), part of NSW Police Force, issues security licences. Technical security work falls under its <b>Class 2</b> licences, and the business you work for needs a master licence.</li>
+        <li><b>Victoria:</b> the Licensing &amp; Regulation Division (LRD) of Victoria Police regulates private security, including security equipment installers.</li>
+        <li><b>Queensland:</b> the Office of Fair Trading licenses security providers.</li>
+      </ul>
+      <p>Expect identity and criminal-history checks and a set of required training units. The exact licence class, training units and whether a trainee can work under supervision before being licensed all differ by state and change over time. <b>Confirm the current requirements with your state's regulator before you enrol in any course.</b> C11 covers licences in more detail.</p></div>
+
+    <p>Data cable that connects to a telecommunications network is also customer cabling under the ACMA rules, so many CCTV employers ask for an <b>ACMA cabling registration</b> as well. See <a href="c07-telecom-cabling-acma.html">C07</a>.</p>
+
+    <h3>Privacy and surveillance law</h3>
+    <div class="callout aus"><span class="label">In Australia</span><p>Surveillance and privacy law differs by state and territory. For example, NSW has the <b>Workplace Surveillance Act 2005</b> and the ACT has the <b>Workplace Privacy Act 2011</b>, which require employers to notify staff about camera surveillance in advance and to display signs. Victoria's <b>Surveillance Devices Act 1999</b> bans surveillance in workplace toilets, washrooms and change rooms. Recording <b>audio</b> is regulated more strictly than video in every state, so most installers leave camera microphones off unless the client has legal advice. The federal Privacy Act 1988 also applies to many organisations. As the technician, you are not the client's lawyer: point out signage, privacy masking and audio, record what the client decided, and tell them to check the law for their state.</p></div>
+
+    <h3>Training and entry roles</h3>
+    <p>Typical entry roles are <b>trainee or apprentice security technician</b>, <b>CCTV installer</b>, <b>security installer's offsider</b>, and <b>data cabler</b> on a security team. Common requirements in ads are a driver's licence, a <b>White Card</b> (general construction induction), working-at-heights training, an ACMA cabling registration, and the state security licence or the ability to get one.</p>
+    <p>Formal training sits in the national <b>CPP (Property Services)</b> training package. The <b>Certificate II in Security Operations</b> is mainly the qualification for front-line guards and crowd controllers. The technical path is a Certificate II or III in <b>electronic or technical security</b>, which covers installing and commissioning alarms, CCTV and access control. Qualification names and codes are updated from time to time, and each state's regulator lists which qualification or units it accepts for each licence class. Check that list first, then choose a registered training organisation (RTO).</p>
+
+    <div class="callout job"><span class="label">On the job</span><p>Interviewers for junior roles mostly test whether you are safe, reliable and teachable, and whether you understand the basics in this chapter. Bring photos of your bench work: a tidy patch panel, a labelled camera VLAN, a storage calculation. That shows more than a list of courses. C12 has portfolio ideas.</p></div>
+
+    <h3>Typical interview questions</h3>
+    <ul>
+      <li>"A client wants to identify faces at a gate 12 m away. How do you pick the camera and lens?" (Pixels per metre, as in worked example 2.)</li>
+      <li>"What is the difference between PoE and PoE+? How do you check a switch can run 16 cameras?" (Per-port class and total budget, plus a margin for IR and heaters.)</li>
+      <li>"How much storage does 16 cameras at 4 Mbps for 30 days need?" (About 21 TB; show the steps.)</li>
+      <li>"Camera 5 shows a foggy image at night only. What do you check?" (IR reflection, webs, dirty dome.)</li>
+      <li>"What is ONVIF, and why might line-crossing alerts not work on a third-party NVR?"</li>
+      <li>"Why put cameras on their own VLAN?"</li>
+      <li>"What is the maximum Cat6 run, and what do you do beyond it?" (100 m channel; add a switch, or use fibre or an extender.)</li>
+      <li>"The client asks you to record audio in the staff room. What do you say?" (Raise the legal issue, do not decide it yourself, record the client's decision.)</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Where is the video encoded in an analogue system, and where in an IP system?</summary><div class="answer"><p>In an analogue or HD-over-coax system the DVR digitises and compresses the video. In an IP system the camera encodes it, and the NVR only stores and displays streams that are already compressed. This is why an IP camera's settings (codec, bitrate, frame rate) live on the camera.</p></div></details>
+    <details class="quiz"><summary>A 2 MP camera (1920 px) with a 100° lens views a doorway 6 m away. What is the pixels per metre, and what level is that?</summary><div class="answer"><p>W = 2 × 6 × tan 50° ≈ 14.3 m. PPM = 1920 / 14.3 ≈ 134 px/m. That just reaches "recognise" (125) but is well short of "identify" (250). A longer lens aimed at the doorway would be needed for identification.</p></div></details>
+    <details class="quiz"><summary>Why does a 4 mm lens give a wider view than an 8 mm lens on the same camera?</summary><div class="answer"><p>The angle is set by the sensor width and the focal length: HFOV = 2·atan(w/2f). A shorter f makes a larger angle, so the same sensor width covers a wider part of the scene. Each metre of the scene then gets fewer pixels.</p></div></details>
+    <details class="quiz"><summary>A switch has a 120 W PoE budget. Can it run 12 cameras that each draw 6.5 W by day and 9 W at night?</summary><div class="answer"><p>At night: 12 × 9 = 108 W, which is under 120 W, with only about 10% margin. It will work, but it is tight. Check each camera's maximum rating (not the typical value) and whether anything else draws from the same budget. A bigger budget would be a safer design.</p></div></details>
+    <details class="quiz"><summary>Eight cameras at 6 Mbps, continuous recording, 14 days. Roughly how much storage?</summary><div class="answer"><p>8 × 6 = 48 Mbps. 48 × 3600 × 24 ÷ 8 = 518 400 MB ≈ 518 GB per day. × 14 ≈ 7.3 TB. With 20% headroom, about 8.7 TB, so two 6 TB drives or one 10 TB drive.</p></div></details>
+    <details class="quiz"><summary>What does ONVIF guarantee, and what does it not?</summary><div class="answer"><p>If the camera and recorder share a profile (for example Profile S or T), you can expect live video, recording and basic control to work across brands. It does not guarantee that a brand's advanced analytics or smart events will work on another brand's recorder. Those often need same-brand equipment or a VMS integration.</p></div></details>
+    <details class="quiz"><summary>Why should the cable enter a camera junction box from below or behind, not from the top?</summary><div class="answer"><p>Water runs along a cable under gravity. A cable entering from the top guides rain straight into the gland and onto the RJ45 joint. Entry from behind keeps the cable inside the wall. Entry from below with a drip loop makes water drip off the lowest point before it reaches the gland.</p></div></details>
+    <details class="quiz"><summary>Who decides whether you need a security licence for CCTV work, and how do you find out?</summary><div class="answer"><p>The state or territory regulator where the work is done, for example SLED in NSW or the Licensing &amp; Regulation Division of Victoria Police. Requirements differ by state and change over time, so check the regulator's current information before you start a course or a job.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain the difference between analogue/HD-over-coax and IP camera systems.</span></li>
+      <li><input type="checkbox"><span>I can choose a camera type (bullet, dome, turret, PTZ, fisheye) for a location and say why.</span></li>
+      <li><input type="checkbox"><span>I can calculate scene width and pixels per metre, and choose a lens for a target level.</span></li>
+      <li><input type="checkbox"><span>I can explain IR, the IR-cut filter, low-light ratings and true WDR.</span></li>
+      <li><input type="checkbox"><span>I can check per-port and total PoE budgets for a camera job.</span></li>
+      <li><input type="checkbox"><span>I can size NVR storage, incoming bandwidth and drive count from bitrate and retention.</span></li>
+      <li><input type="checkbox"><span>I can sketch a camera VLAN design and list basic camera security settings.</span></li>
+      <li><input type="checkbox"><span>I can describe weatherproof cable entry, labelling and a proper handover.</span></li>
+      <li><input type="checkbox"><span>I know that security licensing and surveillance law are state-based, and where to check them.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

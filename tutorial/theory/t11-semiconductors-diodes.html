@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T11 · Semiconductors and the diode family</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 3</div>
+    <span class="eyebrow">Theory · T11</span>
+    <h1>Semiconductors and the diode family</h1>
+    <p class="lede">Bands, doping, holes and the p–n junction in one compact, correct pass, with real numbers. Then your follow-up questions from the diode sessions, and the diodes you will actually use: LED, Zener, Schottky, photodiode and solar cell.</p>
+    <div class="meta"><span><b>Reading</b> 60–75 min</span><span><b>Level</b> Class 12 physics and up</span><span><b>Practice</b> P02, P06</span><span><b>Deep dive</b> T11+</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <p>You already have a long deep dive on the p–n junction from our earlier session: <a href="pn-junction-deep-dive.html">Deep dive: why a diode has polarity</a>. This chapter is the compact version you can come back to. It uses the same numbers as the deep dive (a silicon junction with 10<sup>16</sup> dopant atoms per cm³ on each side), so the two pages agree. Where the deep dive goes further, you will see a link.</p>
+
+    <h2>Bands: why silicon is a semiconductor</h2>
+    <p>In one isolated atom, an electron can only have certain energies (the "energy levels" from Class 12). When about 5 × 10<sup>22</sup> silicon atoms per cm³ sit close together in a crystal, each level splits into an enormous number of closely spaced levels. These crowd together into <strong>bands</strong>: ranges of allowed energy. Between the bands are <strong>gaps</strong>: ranges with no allowed states in a perfect crystal.</p>
+    <ul>
+      <li><strong>Valence band</strong>: the states that hold the bonding electrons. In pure silicon at absolute zero it is completely full.</li>
+      <li><strong>Conduction band</strong>: the next band up. At absolute zero it is completely empty.</li>
+      <li><strong>Band gap E<sub>g</sub></strong>: the energy between the top of the valence band and the bottom of the conduction band. For silicon it is <strong>1.12 eV</strong> at room temperature. (1 eV is the energy an electron gains when it moves through 1 volt.)</li>
+    </ul>
+    <p>A band is a set of energies, not a place. Both bands exist everywhere in the crystal at the same time.</p>
+    <p><strong>Why a full band carries no current.</strong> Current needs a net drift of electrons one way. In a full band every state is taken, so a field cannot shift electrons into "moving right" states, because those are already occupied (Pauli exclusion). The motions cancel exactly. An <em>empty</em> band also carries nothing, because it has no electrons. Only a band that is <em>partly</em> full can conduct. The deep dive explains this slowly in <a href="pn-junction-deep-dive.html#bands">section 01</a>.</p>
+    <p><strong>Why silicon is "semi".</strong> Heat gives electrons random energy of order kT ≈ 0.026 eV at room temperature. That is far less than 1.12 eV, but a tiny fraction of electrons still get kicked across the gap. Each one leaves a vacancy in the valence band. So pure silicon conducts a little. A metal has a partly full band all the time, so it conducts very well. An insulator such as glass (SiO<sub>2</sub>) has a gap near 9 eV, so essentially nothing crosses.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 270" role="img" aria-label="Energy bands of intrinsic, n-type and p-type silicon">
+        <defs>
+          <marker id="t11-bands-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- panel 1 intrinsic -->
+        <text class="t t-bold" x="40" y="22">Pure (intrinsic) Si</text>
+        <rect class="f-theory-soft s-thin" x="30" y="35" width="170" height="50"/>
+        <text class="t t-small t-muted" x="40" y="55">conduction band</text>
+        <rect class="f-wash s-thin" x="30" y="175" width="170" height="50"/>
+        <text class="t t-small t-muted" x="40" y="215">valence band (full)</text>
+        <circle class="f-blue" cx="150" cy="75" r="4"/>
+        <circle class="s-red" cx="150" cy="185" r="5"/>
+        <path class="s-thin" d="M150 180 V82" marker-end="url(#t11-bands-ar)"/>
+        <text class="t t-small" x="158" y="135">heat</text>
+        <path class="s-thin" d="M60 88 V172" marker-end="url(#t11-bands-ar)"/>
+        <path class="s-thin" d="M60 172 V88" marker-end="url(#t11-bands-ar)"/>
+        <text class="t t-small t-bold" x="68" y="134">E<tspan baseline-shift="sub" font-size="9">g</tspan> = 1.12 eV</text>
+        <!-- panel 2 n-type -->
+        <text class="t t-bold" x="250" y="22">n-type (phosphorus)</text>
+        <rect class="f-theory-soft s-thin" x="240" y="35" width="170" height="50"/>
+        <circle class="f-blue" cx="270" cy="70" r="4"/><circle class="f-blue" cx="310" cy="62" r="4"/><circle class="f-blue" cx="350" cy="72" r="4"/><circle class="f-blue" cx="390" cy="64" r="4"/>
+        <path class="s-blue s-dash" d="M250 100 H400"/>
+        <text class="t t-small t-blue" x="262" y="118">+ + + + donor ions</text>
+        <text class="t t-small t-muted" x="262" y="134">level 0.045 eV below</text>
+        <rect class="f-wash s-thin" x="240" y="175" width="170" height="50"/>
+        <text class="t t-small t-muted" x="250" y="215">valence band (full)</text>
+        <!-- panel 3 p-type -->
+        <text class="t t-bold" x="460" y="22">p-type (boron)</text>
+        <rect class="f-theory-soft s-thin" x="450" y="35" width="170" height="50"/>
+        <text class="t t-small t-muted" x="460" y="55">conduction band</text>
+        <path class="s-red s-dash" d="M460 160 H610"/>
+        <text class="t t-small t-red" x="470" y="152">− − − − acceptor ions</text>
+        <text class="t t-small t-muted" x="470" y="136">level 0.045 eV above</text>
+        <rect class="f-wash s-thin" x="450" y="175" width="170" height="50"/>
+        <circle class="s-red" cx="480" cy="190" r="5"/><circle class="s-red" cx="520" cy="196" r="5"/><circle class="s-red" cx="560" cy="188" r="5"/><circle class="s-red" cx="598" cy="195" r="5"/>
+        <text class="t t-small t-muted" x="460" y="218">holes in valence band</text>
+        <text class="t t-small t-muted" x="30" y="255">filled dot = conduction electron · open circle = hole · dashed line = dopant level (fixed atoms)</text>
+      </svg>
+      <figcaption>Figure 1. Energy (up the page) for three kinds of silicon. Donor electrons sit only 0.045 eV below the conduction band, so room-temperature heat frees almost all of them. Acceptor states sit 0.045 eV above the valence band, so valence electrons easily drop into them and leave holes behind. The dopant atoms themselves never move.</figcaption>
+    </figure>
+
+    <h2>Doping: phosphorus donors and boron acceptors</h2>
+    <p><strong>Doping</strong> means replacing a tiny fraction of silicon atoms with atoms from the next group of the periodic table. A typical level is 10<sup>16</sup> dopant atoms per cm³. Silicon has 5 × 10<sup>22</sup> atoms per cm³, so that is <strong>one dopant atom in about five million</strong>. The crystal is still almost pure silicon, yet its conductivity changes by a factor of about a million.</p>
+    <h3>Phosphorus (group 15): the donor</h3>
+    <p>Phosphorus has five outer electrons. Four go into the four bonds with silicon neighbours. The fifth has no bond to join. It is held only weakly, with a binding energy of about <strong>0.045 eV</strong>. Room-temperature thermal energy (kT ≈ 0.026 eV, with a long tail of higher energies) frees nearly all of these electrons into the conduction band. What stays behind is a phosphorus ion with a net <strong>+1</strong> charge, locked into the lattice. Phosphorus <em>donates</em> an electron, so it is a <strong>donor</strong>, and the silicon is <strong>n-type</strong> (n for the negative mobile carriers).</p>
+    <h3>Boron (group 13): the acceptor</h3>
+    <p>Boron has three outer electrons, one short of filling four bonds. A valence electron from a neighbouring Si–Si bond can move into the boron's empty bond. That costs only about <strong>0.045 eV</strong>, so at room temperature it happens to nearly every boron atom. The boron becomes a fixed <strong>−1</strong> ion. The bond the electron came from now has a vacancy: a <strong>hole</strong>. Boron <em>accepts</em> an electron, so it is an <strong>acceptor</strong>, and the silicon is <strong>p-type</strong>.</p>
+    <p>Both kinds of doped silicon are <strong>electrically neutral overall</strong>. In n-type, each mobile electron is balanced by a fixed + donor ion. In p-type, each mobile hole is balanced by a fixed − acceptor ion. "n" and "p" name the <em>majority carrier</em>, not a net charge.</p>
+
+    <h2>Holes: how a vacancy moves</h2>
+    <p>A hole is a missing electron in an otherwise full valence band. It is not a particle you could pull out of the crystal. It moves because <strong>a neighbouring valence electron hops into the vacancy</strong>, which leaves a new vacancy where that electron used to be. Repeat, and the vacancy walks one way while the electrons each step once the other way.</p>
+    <figure>
+      <svg viewBox="0 0 620 200" role="img" aria-label="Three snapshots of a vacancy moving right as electrons step left">
+        <defs>
+          <marker id="t11-hole-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t11-hole-ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-small t-muted" x="10" y="44">time 1</text>
+        <g><circle class="f-blue" cx="100" cy="40" r="9"/><circle class="f-blue" cx="160" cy="40" r="9"/><circle class="s-red" cx="220" cy="40" r="9"/><circle class="f-blue" cx="280" cy="40" r="9"/><circle class="f-blue" cx="340" cy="40" r="9"/><circle class="f-blue" cx="400" cy="40" r="9"/></g>
+        <path class="s-blue" d="M270 22 Q250 8 232 22" marker-end="url(#t11-hole-ar)"/>
+        <text class="t t-small t-muted" x="10" y="104">time 2</text>
+        <g><circle class="f-blue" cx="100" cy="100" r="9"/><circle class="f-blue" cx="160" cy="100" r="9"/><circle class="f-blue" cx="220" cy="100" r="9"/><circle class="s-red" cx="280" cy="100" r="9"/><circle class="f-blue" cx="340" cy="100" r="9"/><circle class="f-blue" cx="400" cy="100" r="9"/></g>
+        <path class="s-blue" d="M330 82 Q310 68 292 82" marker-end="url(#t11-hole-ar)"/>
+        <text class="t t-small t-muted" x="10" y="164">time 3</text>
+        <g><circle class="f-blue" cx="100" cy="160" r="9"/><circle class="f-blue" cx="160" cy="160" r="9"/><circle class="f-blue" cx="220" cy="160" r="9"/><circle class="f-blue" cx="280" cy="160" r="9"/><circle class="s-red" cx="340" cy="160" r="9"/><circle class="f-blue" cx="400" cy="160" r="9"/></g>
+        <path class="s-red" d="M220 188 H330" marker-end="url(#t11-hole-ar2)"/>
+        <text class="t t-small t-red" x="350" y="192">hole moves right</text>
+        <text class="t t-small t-blue" x="460" y="40">each blue electron</text>
+        <text class="t t-small t-blue" x="460" y="56">steps one place left</text>
+        <text class="t t-small" x="460" y="96">field E points right</text>
+        <text class="t t-small" x="460" y="112">electrons pushed left</text>
+        <text class="t t-small" x="460" y="128">vacancy drifts right,</text>
+        <text class="t t-small" x="460" y="144">like a + charge</text>
+      </svg>
+      <figcaption>Figure 2. The empty-seat picture. Electrons in the valence band move left, one hop each; the vacancy moves right. The net effect is exactly the same as a positive charge moving right, so we track the one hole instead of the many electrons. The hole stays in the valence band the whole time; it never needs to jump to the conduction band.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A hole must climb into the conduction band before it can carry current." <b>Right:</b> a hole conducts <em>inside the valence band</em>, because its presence makes that band only partly full. The deep dive covers this in <a href="pn-junction-deep-dive.html#holes">section 04</a>.</p></div>
+
+    <h2>Counting carriers: n · p = n<sub>i</sub>²</h2>
+    <p>In pure silicon, heat creates electron–hole pairs at some rate G, and pairs meet and recombine at a rate proportional to how many of each there are, R ∝ n·p (n = electrons per cm³, p = holes per cm³). Equilibrium means creation equals destruction. Since G depends only on temperature and material, the <em>product</em> n·p is fixed at a given temperature:</p>
+    <div class="formula">n · p = n<sub>i</sub>²     n<sub>i</sub> ≈ 1 × 10<sup>10</sup> cm<sup>−3</sup> for Si at 300 K
+      <small>n<sub>i</sub> is the "intrinsic" concentration: the number of electrons (and equally holes) in pure silicon. This law holds in equilibrium, doped or not.</small></div>
+    <p><strong>Worked example: p-type silicon, N<sub>A</sub> = 10<sup>16</sup> cm<sup>−3</sup>.</strong> Almost every boron atom is ionised, so p ≈ 10<sup>16</sup> holes/cm³. Then:</p>
+    <div class="formula">n = n<sub>i</sub>² / p = (10<sup>10</sup>)² / 10<sup>16</sup> = 10<sup>20</sup> / 10<sup>16</sup> = 10<sup>4</sup> electrons/cm³</div>
+    <p>So in a cubic centimetre of this p-type silicon there are 10,000,000,000,000,000 holes and only about <strong>10,000 conduction electrons</strong>. Doping did not just add holes; it <em>removed</em> electrons. Why? With a million times more holes around, any thermally created electron finds a hole and recombines a million times sooner. The electrons that survive at any instant are few. Electrons here are the <strong>minority carrier</strong>.</p>
+    <p><strong>What doping does to resistance.</strong> Conductivity σ = q(nμ<sub>n</sub> + pμ<sub>p</sub>), where μ is mobility (drift speed per unit field; about 1350 cm²/V·s for electrons and 480 cm²/V·s for holes in lightly doped Si). Pure silicon: σ ≈ 1.6×10<sup>−19</sup> × 10<sup>10</sup> × 1830 ≈ 3×10<sup>−6</sup> S/cm, a resistivity of a few hundred thousand Ω·cm. n-type at 10<sup>16</sup>: σ ≈ 1.6×10<sup>−19</sup> × 10<sup>16</sup> × 1350 ≈ 2.2 S/cm, so ρ ≈ 0.46 Ω·cm. One atom in five million changes resistivity by nearly a million times.</p>
+    <div class="callout tip"><span class="label">Rule of thumb</span><p>n<sub>i</sub> in silicon roughly doubles every 9 °C near room temperature, so n<sub>i</sub>² (which sets diode leakage) roughly doubles every 4–5 °C. This is why semiconductor leakage and the "off" current of transistors climb steeply in a hot cabinet.</p></div>
+
+    <h2>The p–n junction and the depletion layer</h2>
+    <p>Make one crystal that is p-type on the left and n-type on the right. Near the boundary there are about 10<sup>16</sup> electrons/cm³ on the right and only 10<sup>4</sup> on the left. Random thermal motion therefore carries electrons leftward (diffusion), and holes rightward for the same reason. Near the boundary, those electrons and holes meet and recombine.</p>
+    <p>The dopant ions cannot move. So the region near the boundary is left with <strong>uncovered fixed charge</strong>: negative boron ions on the p side, positive phosphorus ions on the n side. That region has almost no mobile carriers, so it is called the <strong>depletion layer</strong> (or space-charge region). The fixed charges make an electric field pointing from n to p, which pushes electrons back to n and holes back to p. Diffusion one way, field-driven drift the other. Equilibrium arrives when they balance.</p>
+    <figure>
+      <svg viewBox="0 0 680 330" role="img" aria-label="p–n junction with fixed ions in the depletion layer and the potential step">
+        <defs>
+          <g id="t11-j-acc"><rect class="f-panel s-thin" x="-7" y="-7" width="14" height="14"/><text class="t t-small t-red" x="0" y="4" text-anchor="middle">−</text></g>
+          <g id="t11-j-don"><rect class="f-panel s-thin" x="-7" y="-7" width="14" height="14"/><text class="t t-small t-blue" x="0" y="4" text-anchor="middle">+</text></g>
+          <marker id="t11-j-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-warn-soft" x="20" y="40" width="300" height="120"/>
+        <rect class="f-theory-soft" x="320" y="40" width="340" height="120"/>
+        <rect class="f-wash s-thin s-dash" x="270" y="40" width="100" height="120"/>
+        <text class="t t-bold" x="30" y="30">p-type (boron)</text>
+        <text class="t t-bold" x="540" y="30">n-type (phosphorus)</text>
+        <text class="t t-small t-muted" x="272" y="30">depletion</text>
+        <!-- p neutral: acceptor + hole pairs -->
+        <use href="#t11-j-acc" x="50" y="70"/><circle class="s-red" cx="68" cy="70" r="5"/>
+        <use href="#t11-j-acc" x="120" y="70"/><circle class="s-red" cx="138" cy="70" r="5"/>
+        <use href="#t11-j-acc" x="190" y="70"/><circle class="s-red" cx="208" cy="70" r="5"/>
+        <use href="#t11-j-acc" x="50" y="130"/><circle class="s-red" cx="68" cy="130" r="5"/>
+        <use href="#t11-j-acc" x="120" y="130"/><circle class="s-red" cx="138" cy="130" r="5"/>
+        <use href="#t11-j-acc" x="190" y="130"/><circle class="s-red" cx="208" cy="130" r="5"/>
+        <use href="#t11-j-acc" x="85" y="100"/><circle class="s-red" cx="103" cy="100" r="5"/>
+        <use href="#t11-j-acc" x="155" y="100"/><circle class="s-red" cx="173" cy="100" r="5"/>
+        <use href="#t11-j-acc" x="225" y="100"/><circle class="s-red" cx="243" cy="100" r="5"/>
+        <!-- depletion ions only -->
+        <use href="#t11-j-acc" x="290" y="65"/><use href="#t11-j-acc" x="290" y="100"/><use href="#t11-j-acc" x="290" y="135"/>
+        <use href="#t11-j-don" x="350" y="65"/><use href="#t11-j-don" x="350" y="100"/><use href="#t11-j-don" x="350" y="135"/>
+        <!-- n neutral: donor + electron pairs -->
+        <use href="#t11-j-don" x="400" y="70"/><circle class="f-blue" cx="418" cy="70" r="4"/>
+        <use href="#t11-j-don" x="470" y="70"/><circle class="f-blue" cx="488" cy="70" r="4"/>
+        <use href="#t11-j-don" x="540" y="70"/><circle class="f-blue" cx="558" cy="70" r="4"/>
+        <use href="#t11-j-don" x="610" y="70"/><circle class="f-blue" cx="628" cy="70" r="4"/>
+        <use href="#t11-j-don" x="435" y="100"/><circle class="f-blue" cx="453" cy="100" r="4"/>
+        <use href="#t11-j-don" x="505" y="100"/><circle class="f-blue" cx="523" cy="100" r="4"/>
+        <use href="#t11-j-don" x="575" y="100"/><circle class="f-blue" cx="593" cy="100" r="4"/>
+        <use href="#t11-j-don" x="400" y="130"/><circle class="f-blue" cx="418" cy="130" r="4"/>
+        <use href="#t11-j-don" x="470" y="130"/><circle class="f-blue" cx="488" cy="130" r="4"/>
+        <use href="#t11-j-don" x="540" y="130"/><circle class="f-blue" cx="558" cy="130" r="4"/>
+        <use href="#t11-j-don" x="610" y="130"/><circle class="f-blue" cx="628" cy="130" r="4"/>
+        <path class="s-line" d="M362 180 H278" marker-end="url(#t11-j-ar)"/>
+        <text class="t t-small" x="262" y="198">built-in field E (n → p)</text>
+        <!-- potential -->
+        <path class="s-thin" d="M20 300 H660"/>
+        <text class="t t-small t-muted" x="24" y="318">position →</text>
+        <path class="s-accent" d="M20 285 H270 C320 285 320 225 370 225 H660"/>
+        <path class="s-thin s-dash" d="M380 285 H460"/>
+        <path class="s-thin" d="M440 230 V280"/>
+        <text class="t t-small" x="448" y="262">V<tspan baseline-shift="sub" font-size="9">bi</tspan> ≈ 0.71 V</text>
+        <text class="t t-small t-accent" x="24" y="270">electrostatic potential: flat in the neutral regions</text>
+      </svg>
+      <figcaption>Figure 3. Away from the junction, every fixed ion has its mobile partner (hole or electron), so those regions are neutral and the potential is flat. In the depletion layer only the fixed ions remain: − on the p side, + on the n side. Their field points from n to p and creates a potential step of about 0.71 V for 10<sup>16</sup>/10<sup>16</sup> doping.</figcaption>
+    </figure>
+    <p><strong>Numbers for our standard junction</strong> (N<sub>A</sub> = N<sub>D</sub> = 10<sup>16</sup> cm<sup>−3</sup>, 300 K), the same as the <a href="pn-junction-deep-dive.html#math">deep dive</a>:</p>
+    <div class="formula">V<sub>bi</sub> = V<sub>T</sub> ln(N<sub>A</sub>N<sub>D</sub>/n<sub>i</sub>²) = 0.02585 × ln(10<sup>12</sup>) ≈ 0.714 V
+      <small>Intuition: electrons are 10<sup>12</sup> times more concentrated on the n side (10<sup>16</sup>) than on the p side (10<sup>4</sup>). In equilibrium, each factor of 10 in concentration is balanced by about 59.5 mV of potential. Twelve factors of ten × 59.5 mV ≈ 0.714 V.</small></div>
+    <p>The depletion width is about <strong>0.43 µm</strong> at zero bias, and the peak field is about 2V<sub>bi</sub>/W ≈ 33,000 V/cm, or 3.3 V per micrometre. That is a strong field, made by a small amount of charge. The built-in voltage cannot be measured with a meter or used as a battery: the metal contacts at each end have their own contact potentials that exactly cancel it.</p>
+
+    <h2>Forward and reverse bias, with numbers</h2>
+    <div class="compare">
+      <div><h4>Forward bias (+ to p, − to n)</h4><p>The battery pushes holes into p and electrons into n, towards the junction. They neutralise some of the uncovered ions, so the depletion layer narrows (0.43 → about 0.24 µm at 0.5 V) and the barrier drops from 0.714 V to 0.714 − V. Because the number of carriers able to cross depends exponentially on barrier height, current rises <strong>10× for every ~60 mV</strong> (ideal diode). A small silicon diode passes about 1 mA at roughly 0.6–0.65 V and tens of mA at about 0.7 V.</p></div>
+      <div><h4>Reverse bias (+ to n, − to p)</h4><p>The battery pulls majority carriers away from the junction. More ions are uncovered, the depletion layer widens (0.43 → 1.22 µm at −5 V) and the barrier grows to 0.714 + 5 = 5.71 V. Majority carriers can no longer cross. Only the few minority carriers (like those 10<sup>4</sup> electrons/cm³ in p) fall down the barrier: leakage of nanoamps in a small silicon diode at room temperature, until breakdown.</p></div>
+    </div>
+    <p>The depletion width follows W ∝ √(V<sub>bi</sub> − V), where V is the applied voltage (negative for reverse). Check: 0.43 µm × √(5.714/0.714) = 0.43 × 2.83 ≈ 1.22 µm. At 50 V reverse, W ≈ 0.43 × √(50.7/0.714) ≈ 3.6 µm.</p>
+
+    <h2>The diode equation</h2>
+    <p>Put the exponential barrier idea into one formula, the <strong>Shockley diode equation</strong>:</p>
+    <div class="formula">I = I<sub>s</sub> ( e<sup>V / nV<sub>T</sub></sup> − 1 )     V<sub>T</sub> = kT/q ≈ 25.9 mV ≈ 26 mV at 300 K
+      <small>I<sub>s</sub> = saturation current, set by area, doping and n<sub>i</sub>² (femtoamps for a small ideal junction). n = ideality factor, between 1 and 2 (the deep dive writes it as η so it is not confused with electron density). V<sub>T</sub> = thermal voltage: k is Boltzmann's constant, T the absolute temperature, q the electron charge.</small></div>
+    <p><strong>Where the exponential comes from.</strong> Electrons in the n region have a spread of thermal energies, with the Boltzmann tail: the fraction having at least energy E above the average falls as e<sup>−E/kT</sup>. Only those in the tail can climb the barrier. Lower the barrier by qV and the fraction that can climb grows by e<sup>qV/kT</sup> = e<sup>V/V<sub>T</sub></sup>. The "−1" is the small reverse flow of minority carriers falling down the barrier, which does not depend on V. At zero volts they cancel and I = 0.</p>
+    <p><strong>Worked example.</strong> I<sub>s</sub> = 10 fA = 10<sup>−14</sup> A, n = 1, T = 300 K.</p>
+    <ul>
+      <li>V = 0.60 V: I = 10<sup>−14</sup> × e<sup>0.60/0.02585</sup> = 10<sup>−14</sup> × e<sup>23.2</sup> ≈ 10<sup>−14</sup> × 1.2×10<sup>10</sup> ≈ <strong>0.12 mA</strong></li>
+      <li>V = 0.66 V: 60 mV more, so 10× → <strong>1.2 mA</strong></li>
+      <li>V = 0.72 V: another 10× → <strong>12 mA</strong></li>
+      <li>V = −5 V: e<sup>−193</sup> is zero for all purposes, so I = −I<sub>s</sub> = <strong>−10 fA</strong> (ideal). Real diodes leak more, often nanoamps, from carrier generation inside the depletion layer and surface paths.</li>
+    </ul>
+    <p>This is why "0.7 V" is a useful habit, not a law. The voltage hardly changes over a huge range of current: from 1 mA to 100 mA is only 2 × 60 = 120 mV more. A silicon diode does not "switch on" at 0.7 V; it conducts more and more steeply, and at mA currents that steepness makes it look like a step.</p>
+    <p><strong>Temperature.</strong> At fixed current, the forward voltage of a silicon diode falls by about <strong>2 mV per °C</strong>, because I<sub>s</sub> grows so quickly with temperature (it follows n<sub>i</sub>²). Diode and transistor junctions are used as cheap temperature sensors for exactly this reason.</p>
+
+    <div class="widget" id="w-t11-iv">
+      <span class="label">Interactive · Diode I–V curve explorer</span>
+      <label>Diode type
+        <select id="t11-preset">
+          <option value="si" selected>Ideal small silicon junction (Is 10 fA, n 1)</option>
+          <option value="sig">Small-signal diode, 1N4148-like (Is ≈ 2.5 nA, n ≈ 1.75)</option>
+          <option value="sch">Schottky-like (Is ≈ 1 µA, n ≈ 1.05)</option>
+          <option value="led">Red LED-like (Is ≈ 1 aA, n ≈ 2)</option>
+        </select></label>
+      <label>Saturation current I<sub>s</sub> <span class="out" id="t11-is-o"></span><input type="range" id="t11-is" min="-19" max="-5" step="0.1" value="-14"></label>
+      <label>Ideality factor n <span class="out" id="t11-n-o"></span><input type="range" id="t11-n" min="1" max="2" step="0.05" value="1"></label>
+      <label>Temperature <span class="out" id="t11-t-o"></span><input type="range" id="t11-t" min="0" max="100" step="1" value="27"></label>
+      <label>Probe voltage <span class="out" id="t11-v-o"></span><input type="range" id="t11-v" min="-0.5" max="2.5" step="0.005" value="0.65"></label>
+      <label>Vertical scale
+        <select id="t11-scale"><option value="lin" selected>Linear (mA)</option><option value="log">Logarithmic (|I| in A)</option></select></label>
+      <svg id="t11-plot" viewBox="0 0 560 300" role="img" aria-label="Diode current against voltage"></svg>
+      <div class="readings">
+        <div><small>Thermal voltage V<sub>T</sub></small><span class="out" id="t11-r-vt"></span></div>
+        <div><small>Per 10× current</small><span class="out" id="t11-r-dec"></span></div>
+        <div><small>V at 1 mA</small><span class="out" id="t11-r-v1"></span></div>
+        <div><small>V at 20 mA</small><span class="out" id="t11-r-v20"></span></div>
+        <div><small>I at probe voltage</small><span class="out" id="t11-r-i"></span></div>
+      </div>
+      <p style="font-size:14px;margin-top:10px;color:var(--muted)">Model: ideal Shockley equation with I<sub>s</sub> scaled with temperature (as circuit simulators do). No series resistance and no breakdown, so real parts bend away from these lines at high current. Switch to the log scale: the forward curve becomes a straight line whose slope is the "mV per decade".</p>
+    </div>
+    <script>
+    (function(){
+      var k=8.617e-5, T0=300.15, eg=1.11;
+      var P={si:{is:-14,n:1,eg:1.11},sig:{is:Math.log10(2.5e-9),n:1.75,eg:1.11},sch:{is:-6,n:1.05,eg:0.69},led:{is:-18,n:2,eg:1.9}};
+      function $(id){return document.getElementById(id);}
+      var pre=$('t11-preset'),isR=$('t11-is'),nR=$('t11-n'),tR=$('t11-t'),vR=$('t11-v'),sc=$('t11-scale'),svg=$('t11-plot');
+      function eng(x,u){var a=Math.abs(x);if(a===0)return '0 '+u;var pf=[[1,''],[1e-3,'m'],[1e-6,'µ'],[1e-9,'n'],[1e-12,'p'],[1e-15,'f'],[1e-18,'a']];for(var i=0;i<pf.length;i++){if(a>=pf[i][0]*0.9995||i===pf.length-1){var v=x/pf[i][0];return (Math.abs(v)>=100?v.toFixed(0):Math.abs(v)>=10?v.toFixed(1):v.toFixed(2))+' '+pf[i][1]+u;}}}
+      function model(){var T=+tR.value+273.15,n=+nR.value,vt=k*T;var is=Math.pow(10,+isR.value)*Math.pow(T/T0,3/n)*Math.exp((T/T0-1)*eg/(n*vt));return {T:T,n:n,vt:vt,is:is};}
+      function I(m,v){return m.is*Math.expm1(v/(m.n*m.vt));}
+      function Vat(m,i){return m.n*m.vt*Math.log(i/m.is+1);}
+      function draw(){
+        var m=model(),log=sc.value==='log';
+        var xmax=Math.max(1.0,Math.ceil((Vat(m,0.1)+0.15)*10)/10),xmin=log?0:-0.5;
+        vR.max=xmax.toFixed(2);if(+vR.value>xmax)vR.value=xmax;
+        var X0=60,X1=545,Y0=20,Y1=262;
+        function px(v){return X0+(v-xmin)/(xmax-xmin)*(X1-X0);}
+        var ymin=log?-15:-5,ymax=log?0:50;
+        function py(y){return Y1-(y-ymin)/(ymax-ymin)*(Y1-Y0);}
+        var s='';
+        // grid
+        var step=xmax>1.6?0.5:0.2;
+        for(var gv=Math.ceil(xmin/step)*step;gv<=xmax+1e-9;gv+=step){var gx=px(gv);s+='<line class="s-thin" x1="'+gx+'" y1="'+Y0+'" x2="'+gx+'" y2="'+Y1+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+gx+'" y="'+(Y1+16)+'" text-anchor="middle">'+gv.toFixed(1)+'</text>';}
+        if(log){for(var d=-15;d<=0;d+=3){var gy=py(d);s+='<line class="s-thin" x1="'+X0+'" y1="'+gy+'" x2="'+X1+'" y2="'+gy+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+(X0-6)+'" y="'+(gy+4)+'" text-anchor="end">1e'+d+'</text>';}}
+        else{for(var g=0;g<=50;g+=10){var gy2=py(g);s+='<line class="s-thin" x1="'+X0+'" y1="'+gy2+'" x2="'+X1+'" y2="'+gy2+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+(X0-6)+'" y="'+(gy2+4)+'" text-anchor="end">'+g+'</text>';}}
+        s+='<path class="s-line" d="M'+X0+' '+Y0+' V'+Y1+' H'+X1+'"/>';
+        if(!log){s+='<line class="s-thin" x1="'+px(0)+'" y1="'+Y0+'" x2="'+px(0)+'" y2="'+Y1+'"/>';}
+        s+='<text class="t t-small" x="'+(X1-4)+'" y="'+(Y1-6)+'" text-anchor="end">V (volts)</text>';
+        s+='<text class="t t-small" x="'+(X0+6)+'" y="'+(Y0+12)+'">'+(log?'|I| (A), log scale':'I (mA)')+'</text>';
+        // curve
+        var d1='',started=false;
+        for(var j=0;j<=400;j++){var v=xmin+(xmax-xmin)*j/400;var i=I(m,v);var y;
+          if(log){if(i<=0)continue;y=Math.log10(i);if(y<ymin){continue;}if(y>ymax){if(started)break;continue;}}
+          else{y=i*1e3;if(y>ymax){if(started){d1+=' L'+px(v).toFixed(1)+' '+py(ymax).toFixed(1);}break;}}
+          d1+=(started?' L':'M')+px(v).toFixed(1)+' '+py(y).toFixed(1);started=true;}
+        s+='<path class="s-accent" d="'+d1+'"/>';
+        // probe
+        var vp=+vR.value,ip=I(m,vp),yp=log?(ip>0?Math.log10(ip):null):ip*1e3;
+        if(yp!==null&&yp>=ymin&&yp<=ymax){s+='<circle class="f-red" cx="'+px(vp).toFixed(1)+'" cy="'+py(yp).toFixed(1)+'" r="5"/>';}
+        else if(vp>=xmin){s+='<line class="s-red s-dash" x1="'+px(vp).toFixed(1)+'" y1="'+Y0+'" x2="'+px(vp).toFixed(1)+'" y2="'+Y1+'"/>';}
+        svg.innerHTML=s;
+        $('t11-is-o').textContent=eng(Math.pow(10,+isR.value),'A');
+        $('t11-n-o').textContent=(+nR.value).toFixed(2);
+        $('t11-t-o').textContent=tR.value+' °C';
+        $('t11-v-o').textContent=vp.toFixed(3)+' V';
+        $('t11-r-vt').textContent=(m.vt*1000).toFixed(1)+' mV';
+        $('t11-r-dec').textContent=(m.n*m.vt*Math.LN10*1000).toFixed(0)+' mV';
+        $('t11-r-v1').textContent=Vat(m,1e-3).toFixed(3)+' V';
+        $('t11-r-v20').textContent=Vat(m,20e-3).toFixed(3)+' V';
+        $('t11-r-i').textContent=eng(ip,'A');
+      }
+      pre.onchange=function(){var p=P[pre.value];isR.value=p.is;nR.value=p.n;eg=p.eg;vR.value=(pre.value==='led'?1.8:pre.value==='sch'?0.25:pre.value==='sig'?0.6:0.65);draw();};
+      [isR,nR,tR,vR].forEach(function(e){e.oninput=draw;});sc.onchange=draw;draw();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Pick the ideal junction and the log scale. Move the temperature from 27 °C to 77 °C and watch "V at 1 mA" fall by roughly 100 mV (about 2 mV/°C). Then pick the LED: same exponential shape, but shifted to about 1.8 V because its band gap is bigger.</p></div>
+
+    <h2>Your follow-up questions from the diode sessions</h2>
+    <p>These are the questions you asked after the deep dive. Each answer gives the intuition, then numbers.</p>
+
+    <h3>(a) Why does the battery voltage appear across the depletion layer, not along the whole diode?</h3>
+    <p>Think of the diode as three pieces in series: p neutral region, depletion layer, n neutral region. In a series circuit, voltage divides in proportion to resistance. The neutral regions are full of mobile carriers (10<sup>16</sup>/cm³), so they are good conductors. The depletion layer has almost none, so it is the only "hard" part. Nearly all the voltage drops there.</p>
+    <p><strong>Numbers.</strong> Imagine a diode chip 1 mm² in area (0.01 cm²), with 200 µm (0.02 cm) of each neutral region. Using the resistivities above (p-type at 10<sup>16</sup>: about 1.4 Ω·cm; n-type: about 0.46 Ω·cm):</p>
+    <div class="formula">R<sub>p</sub> = ρL/A = 1.4 × 0.02 / 0.01 ≈ 2.8 Ω     R<sub>n</sub> ≈ 0.46 × 0.02 / 0.01 ≈ 0.9 Ω
+      <small>Forward, 1 mA: about 3.7 mV across both neutral regions, against about 0.6 V across the junction. 99 % of the voltage is at the junction. Reverse, −5 V with 1 nA of leakage: about 4 nV across the neutral regions. Essentially 100 % is across the depletion layer.</small></div>
+    <p><strong>The deeper reason: conductors push fields out of themselves.</strong> Suppose 1 V were spread evenly over that 400 µm. The field in the n region would be 25 V/cm, and with σ ≈ 2.2 S/cm that would drive J = σE ≈ 54 A/cm², or about 0.5 A through our chip. Under reverse bias nothing can supply that current, so the carriers rearrange until the field in the neutral region nearly vanishes. How fast? The "dielectric relaxation time" ε/σ = (1.04×10<sup>−12</sup> F/cm)/(2.2 S/cm) ≈ 0.5 picoseconds. A region with plenty of mobile charge screens out a field almost instantly. The depletion layer cannot, because it has no mobile charge to move, so the field (and the voltage) ends up there.</p>
+    <p>By Gauss's law, the field only changes where there is net charge. The neutral regions have zero net charge, so the field there stays near zero; the depletion layer holds the fixed ion charge, so the field builds up across it. Changing the applied voltage changes <em>how much</em> ion charge is uncovered, which changes the width.</p>
+    <div class="callout tip"><span class="label">Where this breaks</span><p>At high forward current the neutral regions do matter. At 100 mA our example chip drops 0.37 V in its 3.7 Ω, so the I–V curve stops being exponential and becomes a straight, resistor-like line. Datasheets call this series resistance; real power diodes use heavily doped substrates to make it small.</p></div>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Potential across a reverse-biased diode: flat in neutral regions, steep in the depletion layer">
+        <rect class="f-warn-soft" x="40" y="30" width="230" height="40"/>
+        <rect class="f-wash s-thin s-dash" x="270" y="30" width="110" height="40"/>
+        <rect class="f-theory-soft" x="380" y="30" width="220" height="40"/>
+        <text class="t t-small" x="110" y="55">p neutral · 2.8 Ω</text>
+        <text class="t t-small" x="282" y="55">depletion</text>
+        <text class="t t-small" x="430" y="55">n neutral · 0.9 Ω</text>
+        <path class="s-thin" d="M40 200 H600"/>
+        <path class="s-thin" d="M40 200 V80"/>
+        <text class="t t-small t-muted" x="46" y="94">potential</text>
+        <path class="s-accent" d="M40 190 L270 189 C320 189 330 100 380 100 L600 99"/>
+        <path class="s-thin s-dash" d="M390 190 H560"/>
+        <path class="s-thin" d="M540 104 V186"/>
+        <text class="t t-small" x="455" y="150">5.71 V step</text>
+        <text class="t t-small t-muted" x="455" y="166">(0.71 built-in + 5 applied)</text>
+        <text class="t t-small t-muted" x="60" y="182">slope ≈ nanovolts</text>
+        <text class="t t-small t-muted" x="430" y="94">slope ≈ nanovolts</text>
+        <text class="t t-small t-muted" x="40" y="222">Reverse bias 5 V: the neutral regions are almost equipotential wires; the depletion layer takes everything.</text>
+      </svg>
+      <figcaption>Figure 4. Potential along a reverse-biased diode. The neutral regions behave like short pieces of wire. The whole applied voltage, plus the built-in step, sits across the thin depletion layer.</figcaption>
+    </figure>
+
+    <h3>(b) Under reverse bias, why does the depletion layer get wider?</h3>
+    <p>Follow the carriers that are already there. The battery's positive terminal is on the n side. It attracts the n region's mobile electrons <em>towards the n contact</em>, away from the junction. The negative terminal is on the p side: electrons flow in through the p contact and fill holes near that contact, which is the same as holes moving <em>towards the p contact</em>, away from the junction. Both majority populations retreat from the boundary. The fixed ions they leave behind are now uncovered. More uncovered ions = wider depletion layer.</p>
+    <p>Nothing piles up at the junction. The p side cannot collect a crowd of electrons: it has 10<sup>16</sup> holes per cm³ waiting, so any extra electron recombines almost at once. The "extra negative charge" on the p side is the boron ions you uncovered, not a heap of electrons.</p>
+    <p><strong>How much charge moves?</strong> For our junction (symmetrical, so half the width on each side), uncovered donor charge per cm² is qN<sub>D</sub>(W/2). At 0 V: 1.6×10<sup>−19</sup> × 10<sup>16</sup> × 0.215×10<sup>−4</sup> ≈ 3.4×10<sup>−8</sup> C/cm². At −5 V: ≈ 9.8×10<sup>−8</sup> C/cm². For a 1 mm² chip, the difference is about 0.63 nC, roughly <strong>4 × 10<sup>9</sup> electrons</strong> that flow out of the n terminal (and the same number into the p terminal) during the switch-on of the reverse voltage. That is a brief charging current. Afterwards only leakage flows.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Reverse bias pushes electrons into the p side, where they pile up against the junction like a wall." <b>Right:</b> reverse bias pulls each side's majority carriers <em>back</em> towards its own terminal. The depletion layer grows because more fixed ions are left uncovered, and its growth stops when the uncovered charge produces a voltage step equal to V<sub>bi</sub> + V<sub>R</sub>.</p></div>
+
+    <h3>(c) Is a reverse-biased diode a capacitor?</h3>
+    <p>Partly, and the analogy is useful. The two neutral regions are conductors (the "plates"). The depletion layer is a thin slab with no mobile carriers (the "dielectric", silicon with ε<sub>r</sub> ≈ 11.7). Changing the voltage moves charge on and off, like charging a capacitor. The formula even has the parallel-plate form:</p>
+    <div class="formula">C<sub>j</sub> = ε<sub>Si</sub> A / W
+      <small>For 1 mm²: at 0 V, W = 0.43 µm, C ≈ (1.04×10<sup>−12</sup> F/cm × 0.01 cm²) / 0.43×10<sup>−4</sup> cm ≈ 240 pF. At −5 V, W = 1.22 µm, C ≈ 85 pF.</small></div>
+    <p><strong>Where the analogy is right.</strong> The junction stores charge, a changing voltage drives a charging current, and DC is blocked apart from leakage. Real circuits care about this capacitance: it limits how fast a photodiode can respond and how fast a diode can switch. A small-signal diode such as a 1N4148 has only a few pF, because its chip is tiny.</p>
+    <p><strong>Where it is wrong.</strong></p>
+    <ul>
+      <li><strong>The plate spacing changes with voltage.</strong> W grows as √(V<sub>bi</sub> + V<sub>R</sub>), so C falls as 1/√(V<sub>bi</sub> + V<sub>R</sub>) for this kind of junction. A normal capacitor has fixed C. This "flaw" is useful: a <strong>varactor</strong> (varicap) diode is a junction designed to be a voltage-controlled capacitor, used to tune radio receivers and oscillators with a DC voltage.</li>
+      <li><strong>The charge is not on plate surfaces.</strong> It is spread through a volume of fixed ions inside the silicon.</li>
+      <li><strong>The "dielectric" is not an insulator.</strong> Forward-bias it and it conducts heavily. Then a different, larger effect called <em>diffusion capacitance</em> takes over: the injected minority carriers stored in the neutral regions. That stored charge must be removed before the diode can block again, which is the "reverse recovery time" of a rectifier.</li>
+      <li><strong>No usable energy at zero bias.</strong> The built-in 0.71 V is not a charged capacitor you can discharge into a load. See the deep dive, <a href="pn-junction-deep-dive.html#shorting">section 13</a>.</li>
+    </ul>
+
+    <h3>(d) Why do electrons that enter the p region recombine, and where does the energy go?</h3>
+    <p>Under forward bias, electrons are injected into p, where they are minority carriers surrounded by 10<sup>16</sup> holes/cm³. Their concentration is now far above the equilibrium 10<sup>4</sup>/cm³, so n·p is far above n<sub>i</sub>². Recombination then outruns thermal generation until the excess is gone. Each electron wanders randomly (diffusion) for an average time τ, the <strong>minority-carrier lifetime</strong>, before it drops into a hole.</p>
+    <p>In silicon τ ranges from nanoseconds (fast-switching diodes are deliberately given recombination centres) to microseconds or more in clean material. How far does an electron get? The <strong>diffusion length</strong> is L = √(Dτ), where D is the diffusion coefficient (D = μV<sub>T</sub> ≈ 1300 × 0.026 ≈ 34 cm²/s for electrons in lightly doped p-Si):</p>
+    <div class="formula">L = √(34 cm²/s × 1 µs) = √(3.4×10<sup>−5</sup> cm²) ≈ 5.8×10<sup>−3</sup> cm ≈ 60 µm
+      <small>With τ = 0.1 µs, L ≈ 18 µm. So: microseconds, and tens of micrometres. Remember this number: in a transistor (T12) the base must be much thinner than this.</small></div>
+    <p><strong>Where the ~1.1 eV goes.</strong> When an electron falls from the conduction band into a hole, about one band gap of energy (≈ 1.12 eV in silicon) must go somewhere. There are two routes: emit a photon (light), or hand the energy to the lattice as vibrations (phonons, which means heat).</p>
+    <p>Silicon has an <strong>indirect band gap</strong>. Electron states carry crystal momentum as well as energy. In silicon, the lowest conduction-band states and the highest valence-band states sit at <em>different</em> crystal momenta. A photon carries energy but almost no momentum, so an electron cannot drop straight across by emitting only a photon; it would also need a phonon to carry off the momentum at the same instant. That is rare. Long before it happens, the electron usually falls in steps through a defect or impurity level in the gap, giving its energy to lattice vibrations. Result: heat. (Silicon does emit a very faint infrared glow near 1100 nm, but with tiny efficiency.)</p>
+    <p>LED materials such as gallium arsenide, AlGaInP (red) and InGaN (blue, green) have a <strong>direct band gap</strong>: the bottom of the conduction band sits right above the top of the valence band in momentum. The electron can drop straight down and emit a photon, quickly (nanoseconds), so light wins over the slower heat route. The photon energy is close to the band gap.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Direct and indirect band gaps: energy against crystal momentum">
+        <defs>
+          <marker id="t11-ek-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t11-ek-ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="40" y="22">Direct gap (GaAs, InGaN): LEDs</text>
+        <path class="s-line" d="M40 220 V40 M40 220 H290"/>
+        <text class="t t-small t-muted" x="44" y="52">energy</text>
+        <text class="t t-small t-muted" x="200" y="238">crystal momentum</text>
+        <path class="s-blue" d="M90 50 Q165 160 240 50"/>
+        <path class="s-red" d="M90 230 Q165 120 240 230" transform="translate(0,-20)"/>
+        <circle class="f-blue" cx="165" cy="105" r="5"/>
+        <path class="s-amber" d="M165 112 V150" marker-end="url(#t11-ek-ar)"/>
+        <path class="s-amber" d="M175 130 q8 -6 16 0 q8 6 16 0 q8 -6 16 0" marker-end="url(#t11-ek-ar)"/>
+        <text class="t t-small" x="196" y="122">photon</text>
+        <text class="t t-small t-muted" x="60" y="200">straight down: light</text>
+        <text class="t t-bold" x="350" y="22">Indirect gap (Si, Ge): heat</text>
+        <path class="s-line" d="M350 220 V40 M350 220 H600"/>
+        <path class="s-blue" d="M450 60 Q525 150 600 60"/>
+        <path class="s-red" d="M370 210 Q430 110 490 210" transform="translate(0,-20)"/>
+        <circle class="f-blue" cx="525" cy="105" r="5"/>
+        <circle class="s-red" cx="430" cy="145" r="5"/>
+        <path class="s-red s-dash" d="M520 112 L438 140" marker-end="url(#t11-ek-ar2)"/>
+        <text class="t t-small" x="455" y="160">needs a phonon too</text>
+        <text class="t t-small t-muted" x="370" y="208">so it usually goes via a defect level → heat</text>
+      </svg>
+      <figcaption>Figure 5. Energy against crystal momentum. In a direct-gap material the electron can drop straight down and emit a photon. In silicon the conduction-band minimum is shifted sideways, so a photon alone cannot carry the momentum change; recombination mostly happens through defects and the energy becomes heat.</figcaption>
+    </figure>
+    <details class="more"><summary>Go deeper: is the heat exactly 1.12 eV per electron?</summary><p>Not exactly. The total power a diode turns into heat (plus light, in an LED) is always V × I from the circuit. A forward-biased silicon diode at 0.65 V gives the circuit only 0.65 eV per electron, yet each recombination releases about 1.12 eV. The difference is borrowed from the lattice: carriers that climb the remaining barrier take thermal energy from the crystal to do it, and give it back when they recombine. Overall the books balance at V × I. In some LEDs at very low current the photon energy is even slightly larger than qV, with the difference taken from heat. That is real physics, not a free lunch.</p></details>
+
+    <h3>(e) Why does the p side stop filling with electrons?</h3>
+    <p>The question: "The p side has 10<sup>16</sup> holes per cm³ that 'want' electrons. Why do only a few near the junction get filled?" The answer is <strong>electrostatics, not chemistry</strong>. In p-type silicon at room temperature, every boron atom has <em>already</em> taken its extra electron; that is what made the hole. Boron is not hungry for more. A hole is just a vacancy that random motion carries around.</p>
+    <p>What drives the filling is diffusion: random motion carrying electrons from where they are many (n side) to where they are few (p side). Each electron that crosses and fills a hole leaves a + donor ion uncovered behind it and a − acceptor ion uncovered in front. That charge builds a field that pushes the next electron back. The process stops when the field's push equals diffusion's push, at the 0.714 V step.</p>
+    <p><strong>How little charge it takes.</strong> At equilibrium the uncovered charge is about 3.4×10<sup>−8</sup> C/cm², which is about 2×10<sup>11</sup> ions per cm² of junction. A single layer of silicon atoms has about 7×10<sup>14</sup> atoms per cm². So the junction is "stopped" by charge equal to about 1/3000 of one atomic layer, spread over 0.2 µm on each side. Yet that small charge makes a 33,000 V/cm field. Electric forces are enormously strong compared with the statistical push of diffusion, which is why the transfer stops after so little has happened.</p>
+
+    <h2>The diode family</h2>
+    <figure>
+      <svg viewBox="0 0 660 160" role="img" aria-label="Circuit symbols for diode, LED, Zener, Schottky and photodiode">
+        <defs>
+          <marker id="t11-sym-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- diode -->
+        <path class="s-line" d="M20 70 H50 M80 70 H110"/><polygon class="f-ink" points="50,55 50,85 78,70"/><path class="s-line" d="M80 54 V86"/>
+        <text class="t t-small" x="30" y="120">Rectifier</text><text class="t t-small t-muted" x="22" y="138">A → K</text>
+        <!-- LED -->
+        <path class="s-line" d="M150 70 H180 M210 70 H240"/><polygon class="f-ink" points="180,55 180,85 208,70"/><path class="s-line" d="M210 54 V86"/>
+        <path class="s-amber" d="M196 50 l12 -14" marker-end="url(#t11-sym-ar)"/><path class="s-amber" d="M206 54 l12 -14" marker-end="url(#t11-sym-ar)"/>
+        <text class="t t-small" x="170" y="120">LED</text><text class="t t-small t-muted" x="150" y="138">light out</text>
+        <!-- zener -->
+        <path class="s-line" d="M280 70 H310 M340 70 H370"/><polygon class="f-ink" points="310,55 310,85 338,70"/><path class="s-line" d="M332 50 L340 54 V86 L348 90"/>
+        <text class="t t-small" x="292" y="120">Zener</text><text class="t t-small t-muted" x="280" y="138">bent bar</text>
+        <!-- schottky -->
+        <path class="s-line" d="M410 70 H440 M470 70 H500"/><polygon class="f-ink" points="440,55 440,85 468,70"/><path class="s-line" d="M462 50 H458 V54 H470 V86 H482 V90 H478"/>
+        <text class="t t-small" x="418" y="120">Schottky</text><text class="t t-small t-muted" x="414" y="138">S-shaped bar</text>
+        <!-- photodiode -->
+        <path class="s-line" d="M540 70 H570 M600 70 H630"/><polygon class="f-ink" points="570,55 570,85 598,70"/><path class="s-line" d="M600 54 V86"/>
+        <path class="s-amber" d="M612 30 l-12 14" marker-end="url(#t11-sym-ar)"/><path class="s-amber" d="M624 34 l-12 14" marker-end="url(#t11-sym-ar)"/>
+        <text class="t t-small" x="545" y="120">Photodiode</text><text class="t t-small t-muted" x="548" y="138">light in</text>
+      </svg>
+      <figcaption>Figure 6. The symbols. In every one the triangle points in the direction of conventional forward current, from anode (A) to cathode (K). The bar is the cathode, which is the banded end of a real diode and the shorter leg (flat side) of an LED.</figcaption>
+    </figure>
+
+    <h3>LED: the band gap sets the colour</h3>
+    <p>An LED is a p–n junction in a direct-gap material. Each recombination emits one photon with energy close to the band gap. Photon energy and wavelength are linked by E = hc/λ. A handy form: <strong>E (eV) ≈ 1240 / λ (nm)</strong>.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Colour</th><th>Wavelength</th><th>Photon energy 1240/λ</th><th>Typical material</th><th>Typical forward voltage at 10–20 mA</th></tr>
+      <tr><td>Infrared (CCTV illuminator)</td><td>850 nm / 940 nm</td><td>1.46 eV / 1.32 eV</td><td>AlGaAs, GaAs</td><td>~1.2–1.6 V</td></tr>
+      <tr><td>Red</td><td>630 nm</td><td>1.97 eV</td><td>AlGaInP</td><td>~1.8–2.2 V</td></tr>
+      <tr><td>Green</td><td>525 nm</td><td>2.36 eV</td><td>InGaN</td><td>~2.8–3.3 V</td></tr>
+      <tr><td>Blue</td><td>465 nm</td><td>2.67 eV</td><td>InGaN</td><td>~2.8–3.3 V</td></tr>
+      <tr><td>White</td><td>blue + yellow phosphor</td><td>—</td><td>InGaN + phosphor</td><td>~2.8–3.3 V</td></tr>
+    </table></div>
+    <p>Worked: red at 630 nm. E = hc/λ = (6.63×10<sup>−34</sup> × 3.00×10<sup>8</sup>) / (630×10<sup>−9</sup>) = 3.16×10<sup>−19</sup> J. Divide by 1.60×10<sup>−19</sup> J/eV: <strong>1.97 eV</strong>. So the forward voltage must be at least about 2 V; the measured 1.8–2.2 V fits. Green InGaN LEDs need more voltage than their photon energy suggests, because of extra losses in that material. The forward voltage table is why you can never put LEDs of different colours in parallel on one resistor: the red one takes all the current.</p>
+    <div class="callout job"><span class="label">On the job</span><p>CCTV cameras use infrared LEDs for night vision. 850 nm LEDs give a faint red glow you can see on the camera; 940 nm ones are invisible ("covert") but the image is dimmer because camera sensors are less sensitive there. When a site complains "the cameras glow at night", now you know why.</p></div>
+
+    <h3>Zener and avalanche breakdown</h3>
+    <p>Every diode conducts heavily in reverse once the field in the depletion layer gets strong enough. Two mechanisms (both explained in the <a href="pn-junction-deep-dive.html#breakdown">deep dive, section 12</a>):</p>
+    <ul>
+      <li><strong>Zener (tunnelling) breakdown.</strong> Heavy doping on both sides makes the depletion layer extremely thin, maybe tens of nanometres. Electrons on the p side can tunnel straight through to empty states on the n side. Dominant below about 5 V. As temperature rises, the gap shrinks a little and tunnelling gets easier, so the breakdown voltage falls (negative temperature coefficient).</li>
+      <li><strong>Avalanche breakdown.</strong> In a wider depletion layer, a stray carrier gains enough energy between collisions to knock a new electron–hole pair loose; those do the same, and the current multiplies. Dominant above about 6–7 V. As temperature rises, lattice vibrations scatter carriers more often, so they need a stronger field to gain enough energy: breakdown voltage rises (positive temperature coefficient).</li>
+    </ul>
+    <p>Near 5.6 V the two effects roughly cancel, which is why 5.6 V references are popular. All of these parts are sold as "Zener diodes" whatever the mechanism. <strong>TVS diodes</strong> (transient voltage suppressors) are avalanche diodes built with large junctions to absorb short surges.</p>
+    <p><strong>Worked Zener regulator.</strong> 12 V supply, 5.1 V Zener, 330 Ω series resistor, 10 mA load. Resistor current = (12 − 5.1)/330 = 20.9 mA. Zener takes 20.9 − 10 = 10.9 mA. Zener power = 5.1 × 0.0109 ≈ 56 mW; resistor power = 6.9²/330 ≈ 0.14 W. Without the load, the Zener takes all 20.9 mA (107 mW), well inside a 500 mW part. With 1 kΩ and no load you get the deep dive's numbers: 6.9 mA and 35 mW.</p>
+    <div class="callout job"><span class="label">On the job</span><p>TVS diodes sit on RS-485 lines between BMS controllers, on camera PoE inputs and on 24 V field wiring, where long cables pick up surges from lightning and switching. A failed TVS usually fails short, which looks like a dead bus or a supply that keeps tripping.</p></div>
+
+    <h3>Schottky diode: metal against semiconductor</h3>
+    <p>A Schottky diode is a junction between a metal and (usually) n-type silicon. It also has a barrier, but current is carried by <strong>majority carriers</strong> (electrons) passing over it into the metal. That has two consequences:</p>
+    <ul>
+      <li><strong>Lower forward voltage.</strong> I<sub>s</sub> is thousands to millions of times larger than in a p–n junction, so a given current needs less voltage: roughly 0.15–0.45 V at modest currents, against 0.6–0.7 V for silicon p–n.</li>
+      <li><strong>Very fast.</strong> No minority carriers are stored, so there is no reverse-recovery delay. Ideal in switch-mode power supplies.</li>
+    </ul>
+    <p>The costs: much higher reverse leakage (microamps to milliamps, rising fast with temperature) and lower reverse voltage ratings (commonly 20–100 V). Common parts: the 1N5817–1N5819 family (20–40 V, 1 A).</p>
+    <p><strong>Worked: reverse-polarity protection for a 12 V, 2 A load.</strong> A 1N4007-class silicon rectifier drops about 0.9–1.0 V at this current: about 2 W of heat. A Schottky drops about 0.45 V: about 0.9 W. A MOSFET used as an "ideal diode" with 20 mΩ on-resistance drops 0.04 V: 0.08 W (see <a href="t13-mosfet-physics.html">T13</a>).</p>
+
+    <h3>Photodiode and solar cell: the junction run backwards</h3>
+    <p>An LED turns recombination into light. A photodiode does the reverse: a photon with energy above the band gap is absorbed and <strong>creates</strong> an electron–hole pair. If this happens in or near the depletion layer, the built-in field separates them: the electron is swept to the n side, the hole to the p side. That is a current in the <em>reverse</em> direction, proportional to the light.</p>
+    <div class="formula">I = I<sub>s</sub>( e<sup>V/nV<sub>T</sub></sup> − 1 ) − I<sub>ph</sub>
+      <small>The photocurrent I<sub>ph</sub> simply shifts the whole I–V curve down. Silicon absorbs photons with λ shorter than 1240/1.12 ≈ 1100 nm; it is blind beyond that.</small></div>
+    <ul>
+      <li><strong>Photodiode mode (reverse-biased).</strong> V is negative, so the exponential term is negligible and I ≈ −I<sub>ph</sub>: a clean current proportional to light. Reverse bias also widens the depletion layer, which lowers capacitance and makes it faster. Sensitivity (responsivity) is roughly 0.5 A/W for silicon in the near infrared. Example: 10 µW of 850 nm light gives about 5 µA; a transimpedance amplifier with 100 kΩ (see <a href="t14-op-amps.html">T14</a>) turns that into 0.5 V.</li>
+      <li><strong>Solar cell mode (no bias, drives a load).</strong> The photocurrent flows out through a load and forward-biases the junction itself. Open-circuit voltage is where the forward diode current cancels the photocurrent: about 0.6–0.7 V for a silicon cell. A full-size cell gives several amps in full sun. A 60-cell panel in series gives roughly 36–40 V open circuit (indicative; read the panel label).</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Fibre receivers in NBN equipment work at 1310 nm and 1490/1550 nm, beyond silicon's 1100 nm limit, so they use InGaAs photodiodes instead. Rooftop solar strings run at hundreds of volts DC, far above the ELV limit of this course. Installing or working on PV arrays requires an electrical licence and solar installer accreditation (formerly administered by the Clean Energy Council), and the installation standard is AS/NZS 5033. Confirm current requirements with your state electrical regulator and the accrediting body, because rules change.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Everything you build in this course stays at extra-low voltage: at most 50 V AC or 120 V ripple-free DC. Bench experiments with a single small solar cell or a 12 V panel are fine. Never open, wire or measure mains equipment or a rooftop PV string; that is licensed electrical work in Australia.</p></div>
+
+    <h2>Which diode when</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Job</th><th>Use</th><th>Why</th><th>Watch out for</th></tr>
+      <tr><td>Rectify a 9–24 V AC plug-pack, general polarity protection</td><td>Silicon rectifier (1N400x family, 1 A)</td><td>Cheap, high reverse voltage (1N4007: 1000 V)</td><td>~1 V drop at 1 A; slow (µs recovery), not for switch-mode supplies</td></tr>
+      <tr><td>Signal clamping, logic, flyback on small relays</td><td>Small-signal silicon (1N4148)</td><td>Fast (ns), a few pF</td><td>Only ~150–300 mA continuous</td></tr>
+      <tr><td>Low-loss polarity protection, solar bypass, buck converter freewheel</td><td>Schottky (1N5817–1N5819, larger power types)</td><td>~0.3–0.45 V drop, no reverse recovery</td><td>Leakage rises with heat; lower reverse rating</td></tr>
+      <tr><td>Simple voltage reference or low-current regulator</td><td>Zener</td><td>Holds a set reverse voltage</td><td>Needs a series resistor; check power</td></tr>
+      <tr><td>Surge protection on data and field wiring</td><td>TVS (avalanche) diode</td><td>Absorbs short, high-current spikes</td><td>Pick standoff voltage above normal working voltage</td></tr>
+      <tr><td>Indicator, lighting, IR illuminator, opto-isolator</td><td>LED</td><td>Light out; colour set by band gap</td><td>Always limit current; low reverse rating (~5 V)</td></tr>
+      <tr><td>Light sensing, fibre receivers, smoke detectors' optics</td><td>Photodiode (reverse-biased)</td><td>Fast, linear current proportional to light</td><td>Tiny currents need an amplifier</td></tr>
+      <tr><td>Power from light</td><td>Solar cell (large-area photodiode)</td><td>Run unbiased into a load</td><td>Series strings reach dangerous voltages</td></tr>
+      <tr><td>Tune a frequency with a DC voltage</td><td>Varactor</td><td>Junction capacitance changes with reverse voltage</td><td>Keep it reverse-biased</td></tr>
+    </table></div>
+
+    <h2>See it on the bench</h2>
+    <p>Two labs put this chapter in your hands. In P02 you measure an LED's forward voltage and see that red and blue LEDs drop different voltages, exactly as the band-gap table predicts. In P06 you measure diode drops, build rectifiers from an AC plug-pack and use a Zener as a regulator.</p>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit</a>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · Diodes on the bench: rectifiers and protection</a>
+    <a class="crosslink" href="pn-junction-deep-dive.html">T11+ · Deep dive: why a diode has polarity</a>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Your multimeter's diode-test mode pushes about 1 mA through the part and shows the voltage. Expect about 0.5–0.7 V for silicon, 0.15–0.35 V for a Schottky, about 1.6–2.0 V for a red LED (it may glow faintly), and "OL" in reverse. A reading near 0 V both ways means the diode is shorted.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>An n-type sample has N<sub>D</sub> = 10<sup>17</sup> cm<sup>−3</sup>. How many holes per cm³ are there at 300 K?</summary><div class="answer"><p>n ≈ 10<sup>17</sup>, so p = n<sub>i</sub>²/n = 10<sup>20</sup>/10<sup>17</sup> = <strong>10<sup>3</sup> holes/cm³</strong>. More electrons make holes recombine faster, so fewer survive.</p></div></details>
+    <details class="quiz"><summary>Why does a hole not need to jump into the conduction band to carry current?</summary><div class="answer"><p>Because its presence makes the valence band only partly full. Neighbouring valence electrons can now shift into the vacancy, and the net motion of those valence electrons is current. We describe it as a + hole moving the other way. A full band cannot conduct; a band with vacancies can.</p></div></details>
+    <details class="quiz"><summary>An ideal diode passes 1 mA at 0.65 V. Roughly what voltage gives 100 mA, ignoring series resistance?</summary><div class="answer"><p>100× is two decades. At about 60 mV per decade (n = 1): 0.65 + 0.12 = <strong>0.77 V</strong>. A real diode will read a bit more because of its series resistance at 100 mA.</p></div></details>
+    <details class="quiz"><summary>In a forward-biased diode carrying 1 mA, where is the voltage dropped, and why?</summary><div class="answer"><p>Almost all across the depletion layer. The neutral regions have about 10<sup>16</sup> mobile carriers per cm³ and a few ohms of resistance, so 1 mA drops only millivolts there. Any larger field in them would drive a huge current, so their carriers rearrange in picoseconds to cancel it. The depletion layer has no mobile carriers to do that.</p></div></details>
+    <details class="quiz"><summary>A reverse-biased junction is 85 pF at 5 V. Estimate its capacitance at 20 V reverse (V<sub>bi</sub> ≈ 0.71 V).</summary><div class="answer"><p>C ∝ 1/√(V<sub>bi</sub> + V<sub>R</sub>). Ratio = √(5.71/20.71) = √0.276 ≈ 0.525. C ≈ 85 × 0.525 ≈ <strong>45 pF</strong>. The depletion layer is wider, so the "plates" are further apart.</p></div></details>
+    <details class="quiz"><summary>Why does a silicon diode get warm but not glow, while an LED glows?</summary><div class="answer"><p>Silicon has an indirect band gap: a photon alone cannot carry away the crystal-momentum change, so electrons recombine mainly via defect levels and the energy goes to lattice vibrations (heat). LED materials have a direct gap, so radiative recombination is fast and wins.</p></div></details>
+    <details class="quiz"><summary>What wavelength would a material with a 1.9 eV band gap emit? What colour is that?</summary><div class="answer"><p>λ ≈ 1240/1.9 ≈ <strong>650 nm</strong>: deep red.</p></div></details>
+    <details class="quiz"><summary>Why does electron diffusion from n to p stop after so little charge has moved?</summary><div class="answer"><p>Each electron that leaves uncovers a fixed + ion on the n side and a fixed − ion on the p side. That charge builds a field opposing further flow. Electric forces are so strong that charge equal to about 1/3000 of one atomic layer per cm² is enough to make a 0.71 V step and a 33 kV/cm field. It is electrostatics, not a chemical preference of boron.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain valence band, conduction band and band gap, and why a full band carries no current.</span></li>
+      <li><input type="checkbox"><span>I can say what phosphorus and boron do in silicon, and which charges are fixed and which move.</span></li>
+      <li><input type="checkbox"><span>I can use n·p = n<sub>i</sub>² to find the minority-carrier density.</span></li>
+      <li><input type="checkbox"><span>I can explain how a depletion layer forms and why it stops growing.</span></li>
+      <li><input type="checkbox"><span>I can use the diode equation and the 60 mV per decade rule.</span></li>
+      <li><input type="checkbox"><span>I can explain why reverse bias widens the depletion layer and why the applied voltage sits across it.</span></li>
+      <li><input type="checkbox"><span>I can turn an LED wavelength into a photon energy with E ≈ 1240/λ.</span></li>
+      <li><input type="checkbox"><span>I can choose between rectifier, small-signal, Schottky, Zener, TVS, LED and photodiode for a job.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P02 · Breadboard and your first LED circuit</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part A · Your bench</div>
+    <span class="eyebrow">Practice · Lab P02</span>
+    <h1>Breadboard and your first LED circuit</h1>
+    <p class="lede">You will learn how a breadboard is wired inside, read resistor colour codes, find which leg of an LED is which, and build and measure a battery–resistor–LED circuit until Ohm's law is something you have seen with your own meter.</p>
+    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$15 (from the starter tier)</span><span><b>Theory</b> T02, T11, diode deep dive</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Breadboard, 830 holes</b><small>~A$8–12 · full size</small></li>
+      <li><b>3×AA battery holder + 3 AA cells</b><small>4.5 V nominal, ~4.7 V fresh</small></li>
+      <li><b>Red LEDs ×3, green LED ×1</b><small>5 mm, diffused is easiest to see</small></li>
+      <li><b>Resistors</b><small>220 Ω, 330 Ω ×2, 1 kΩ, 10 kΩ (¼ W)</small></li>
+      <li><b>Jumper wires</b><small>a few short pre-cut ones</small></li>
+      <li><b>Multimeter</b><small>DC volts and DC mA ranges</small></li>
+      <li><b>Safety glasses</b><small>for cutting legs</small></li>
+    </ul>
+
+    <h2>Inside a breadboard</h2>
+    <p>A breadboard looks like a field of identical holes, but underneath it is a set of <b>metal spring clips</b>. Each clip grips several holes and joins them electrically. Once you know which holes share a clip, the breadboard stops being mysterious. Two words first:</p>
+    <ul>
+      <li>A <b>node</b> is any set of points joined by wire (or a clip) so they are all at the same voltage.</li>
+      <li>A <b>terminal strip</b> is one clip. On a standard board each terminal strip joins <b>5 holes</b> in one numbered column: a–e, or f–j.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 780 340" role="img" aria-label="Breadboard internals showing five-hole terminal strips, the centre channel and the power rails, including a split rail">
+        <defs>
+          <pattern id="p02-holes-a" width="20" height="16" patternUnits="userSpaceOnUse"><rect class="f-grey" x="7" y="5" width="6" height="6" rx="1"/></pattern>
+        </defs>
+        <rect class="f-wash s-thin" x="40" y="18" width="590" height="310" rx="8"/>
+        <rect x="60" y="32" width="560" height="32" fill="url(#p02-holes-a)"/>
+        <rect x="60" y="80" width="560" height="80" fill="url(#p02-holes-a)"/>
+        <rect class="f-panel s-thin" x="50" y="166" width="570" height="20" rx="3"/>
+        <rect x="60" y="192" width="560" height="80" fill="url(#p02-holes-a)"/>
+        <rect x="60" y="288" width="560" height="32" fill="url(#p02-holes-a)"/>
+        <!-- rails: split in the middle -->
+        <line class="s-red" x1="62" y1="40" x2="318" y2="40"/><line class="s-red" x1="362" y1="40" x2="618" y2="40"/>
+        <line class="s-blue" x1="62" y1="56" x2="318" y2="56"/><line class="s-blue" x1="362" y1="56" x2="618" y2="56"/>
+        <line class="s-red" x1="62" y1="296" x2="618" y2="296"/>
+        <line class="s-blue" x1="62" y1="312" x2="618" y2="312"/>
+        <text class="t t-small t-red t-bold" x="340" y="38" text-anchor="middle">gap?</text>
+        <!-- highlighted strips -->
+        <rect class="s-accent" x="102" y="81" width="16" height="78" rx="5"/>
+        <rect class="s-accent" x="102" y="193" width="16" height="78" rx="5"/>
+        <rect class="s-green" x="242" y="81" width="16" height="78" rx="5"/>
+        <rect class="s-green" x="262" y="81" width="16" height="78" rx="5"/>
+        <!-- row letters -->
+        <g class="t-small">
+          <text class="t t-small t-muted" x="48" y="92">a</text><text class="t t-small t-muted" x="48" y="108">b</text><text class="t t-small t-muted" x="48" y="124">c</text><text class="t t-small t-muted" x="48" y="140">d</text><text class="t t-small t-muted" x="48" y="156">e</text>
+          <text class="t t-small t-muted" x="48" y="204">f</text><text class="t t-small t-muted" x="48" y="220">g</text><text class="t t-small t-muted" x="48" y="236">h</text><text class="t t-small t-muted" x="48" y="252">i</text><text class="t t-small t-muted" x="48" y="268">j</text>
+          <text class="t t-small t-muted" x="70" y="77" text-anchor="middle">1</text><text class="t t-small t-muted" x="110" y="77" text-anchor="middle">3</text><text class="t t-small t-muted" x="250" y="77" text-anchor="middle">10</text><text class="t t-small t-muted" x="270" y="77" text-anchor="middle">11</text>
+        </g>
+        <text class="t t-small" x="335" y="181" text-anchor="middle">centre channel: no connection across it</text>
+        <!-- labels on the right -->
+        <text class="t t-small t-red" x="640" y="44">+ rail (red line)</text>
+        <text class="t t-small t-blue" x="640" y="60">− rail (blue line)</text>
+        <text class="t t-small" x="640" y="110">Column 3, a–e:</text>
+        <text class="t t-small" x="640" y="126">one 5-hole strip</text>
+        <text class="t t-small" x="640" y="226">Column 3, f–j: a</text>
+        <text class="t t-small" x="640" y="242">different strip</text>
+        <text class="t t-small t-muted" x="640" y="300">rails run the</text>
+        <text class="t t-small t-muted" x="640" y="316">full length</text>
+        <text class="t t-small t-green" x="190" y="76" text-anchor="end">10 and 11: separate</text>
+      </svg>
+      <figcaption>Figure 1. Top view with the hidden clips drawn on. Orange outlines: column 3 is two separate 5-hole strips, one above and one below the centre channel. Green: neighbouring columns 10 and 11 are not connected. The power rails run along the length. On some long boards the top rails are split in the middle (marked "gap?").</figcaption>
+    </figure>
+    <h3>The rules, in words</h3>
+    <ol>
+      <li>In the main area, the 5 holes <b>a–e</b> of one numbered column are joined. Holes <b>f–j</b> of the same column are a separate strip.</li>
+      <li>Neighbouring columns are <b>not</b> joined. That is how you put a part's two legs into two different nodes: one leg per column.</li>
+      <li>The <b>centre channel</b> separates the two halves. A chip (IC) straddles it so each of its pins gets its own strip.</li>
+      <li>The <b>power rails</b> along each long edge run horizontally. Each rail pair is marked with a red line (use for +) and a blue or black line (use for −). The markings are only a suggestion; the plastic does not know which is which.</li>
+      <li>On some full-length boards, each rail is <b>split in the middle</b>: the left half and right half are not connected. A gap in the printed red/blue line, or a wider gap between hole groups, is the clue. Never assume: check.</li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Test a new breadboard with your meter's continuity beeper before you trust it. Push a jumper into one end of a rail and another into the far end, and touch the meter probes to the jumpers. Beep = joined. No beep = split rail; bridge the halves with a short jumper and leave it there for good. Do the same with two holes in one column (should beep) and two neighbouring columns (should not).</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Holes in the same horizontal row (all the a's) are connected."<br><b>Right:</b> In the main area, connection runs across the short direction (a–e of one column). Only the power rails run along the long direction. Most beginner faults are two legs accidentally in the same strip, which shorts the part out.</p></div>
+
+    <h2>Reading resistor colour codes</h2>
+    <p>A resistor is too small to print a number on, so its value is painted as coloured bands. Hold it with the <b>tolerance band</b> (usually gold, silver or brown, slightly separated from the others) on the right, and read left to right.</p>
+    <ul>
+      <li><b>4-band</b> resistors: digit, digit, multiplier, tolerance. Common on carbon-film ±5% parts.</li>
+      <li><b>5-band</b> resistors: digit, digit, digit, multiplier, tolerance. Common on metal-film ±1% parts, which have a pale blue body.</li>
+    </ul>
+    <div class="table-wrap"><table>
+      <tr><th>Colour</th><th>Digit</th><th>Multiplier</th><th>Tolerance</th></tr>
+      <tr><td>Black</td><td>0</td><td>×1</td><td>–</td></tr>
+      <tr><td>Brown</td><td>1</td><td>×10</td><td>±1%</td></tr>
+      <tr><td>Red</td><td>2</td><td>×100</td><td>±2%</td></tr>
+      <tr><td>Orange</td><td>3</td><td>×1 k</td><td>–</td></tr>
+      <tr><td>Yellow</td><td>4</td><td>×10 k</td><td>–</td></tr>
+      <tr><td>Green</td><td>5</td><td>×100 k</td><td>±0.5%</td></tr>
+      <tr><td>Blue</td><td>6</td><td>×1 M</td><td>±0.25%</td></tr>
+      <tr><td>Violet</td><td>7</td><td>×10 M</td><td>±0.1%</td></tr>
+      <tr><td>Grey</td><td>8</td><td>–</td><td>±0.05%</td></tr>
+      <tr><td>White</td><td>9</td><td>–</td><td>–</td></tr>
+      <tr><td>Gold</td><td>–</td><td>×0.1</td><td>±5%</td></tr>
+      <tr><td>Silver</td><td>–</td><td>×0.01</td><td>±10%</td></tr>
+    </table></div>
+    <p><b>Worked example.</b> Bands orange, orange, brown, gold. Digits 3 and 3 give 33. Brown multiplier is ×10. Value = 33 × 10 = <b>330 Ω, ±5%</b>, so anywhere from 313.5 Ω to 346.5 Ω is in spec. The same 330 Ω as a 5-band ±1% part is orange, orange, black, black, brown: 330 × 1 = 330 Ω ±1%.</p>
+    <p>Resistor values come in standard series. The <b>E12</b> series has 12 values per decade: 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 (then ×10, ×100 ...). Each is about 21% above the last, so with ±10% tolerance the ranges just touch. E24 adds values in between for ±5% parts. If you decode a value that is not in the series, you have probably read the resistor backwards.</p>
+
+    <div class="widget" id="p02-cc">
+      <span class="label">Interactive · Resistor colour-code decoder</span>
+      <label>Number of bands
+        <select id="p02-nb"><option value="4">4 bands (±5% carbon film)</option><option value="5">5 bands (±1% metal film)</option></select>
+      </label>
+      <div id="p02-res" style="display:flex;align-items:center;justify-content:center;margin:14px 0;gap:0">
+        <span style="display:block;width:46px;height:3px;background:var(--muted)"></span>
+        <span id="p02-body" style="display:flex;align-items:stretch;gap:9px;height:38px;padding:0 16px;border-radius:16px;background:var(--wash);border:1px solid var(--line)"></span>
+        <span style="display:block;width:46px;height:3px;background:var(--muted)"></span>
+      </div>
+      <div id="p02-sels" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px"></div>
+      <div class="readings">
+        <div><small>Value</small><span class="out" id="p02-val">–</span></div>
+        <div><small>Tolerance range</small><span class="out" id="p02-rng" style="font-size:16px">–</span></div>
+        <div><small>Standard value?</small><span class="out" id="p02-std" style="font-size:16px">–</span></div>
+      </div>
+      <hr style="margin:18px 0 10px">
+      <label>Or type a value to get its bands (e.g. 330, 4k7, 10k, 2.2M)
+        <input type="text" id="p02-in" value="4k7" style="font:15px var(--sans);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);max-width:220px;width:100%">
+      </label>
+      <p id="p02-bands" style="margin:6px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var C=[
+        {n:'Black',d:0,m:1,t:null,c:'#111111'},{n:'Brown',d:1,m:10,t:1,c:'#7a4a1e'},{n:'Red',d:2,m:100,t:2,c:'#d62828'},
+        {n:'Orange',d:3,m:1e3,t:null,c:'#f07f13'},{n:'Yellow',d:4,m:1e4,t:null,c:'#f5d000'},{n:'Green',d:5,m:1e5,t:0.5,c:'#2e9e44'},
+        {n:'Blue',d:6,m:1e6,t:0.25,c:'#1f5fd1'},{n:'Violet',d:7,m:1e7,t:0.1,c:'#8a3fc7'},{n:'Grey',d:8,m:null,t:0.05,c:'#8f8f8f'},
+        {n:'White',d:9,m:null,t:null,c:'#f4f4f4'},{n:'Gold',d:null,m:0.1,t:5,c:'#c9a227'},{n:'Silver',d:null,m:0.01,t:10,c:'#b8bcc2'}
+      ];
+      var E12=[10,12,15,18,22,27,33,39,47,56,68,82],E24=E12.concat([11,13,16,20,24,30,36,43,51,62,75,91]);
+      var nb=document.getElementById('p02-nb'),sels=document.getElementById('p02-sels'),body=document.getElementById('p02-body');
+      var state={4:[6,8,1,10],5:[3,3,0,0,1]};
+      function fmt(v){
+        if(v>=1e6)return +(v/1e6).toPrecision(3)+' MΩ';
+        if(v>=1e3)return +(v/1e3).toPrecision(3)+' kΩ';
+        return +v.toPrecision(3)+' Ω';
+      }
+      function opts(kind){return C.map(function(c,i){return {i:i,c:c};}).filter(function(o){return o.c[kind]!==null;});}
+      function build(){
+        var n=+nb.value,roles=n===4?['d','d','m','t']:['d','d','d','m','t'];
+        var names=n===4?['1st digit','2nd digit','Multiplier','Tolerance']:['1st digit','2nd digit','3rd digit','Multiplier','Tolerance'];
+        sels.innerHTML='';
+        roles.forEach(function(r,k){
+          var lab=document.createElement('label');lab.textContent=names[k];
+          var s=document.createElement('select');s.style.display='block';
+          opts(r).forEach(function(o){var op=document.createElement('option');op.value=o.i;
+            op.textContent=o.c.n+(r==='d'?' ('+o.c.d+')':r==='m'?' (×'+(o.c.m>=1e3?fmt(o.c.m).replace(' Ω','').replace('Ω',''):o.c.m)+')':' (±'+o.c.t+'%)');s.appendChild(op);});
+          s.value=state[n][k];
+          s.addEventListener('change',function(){state[n][k]=+s.value;calc();});
+          lab.appendChild(s);sels.appendChild(lab);
+        });
+        calc();
+      }
+      function calc(){
+        var n=+nb.value,b=state[n],digits=0;
+        for(var k=0;k<n-2;k++)digits=digits*10+C[b[k]].d;
+        var v=digits*C[b[n-2]].m,tol=C[b[n-1]].t;
+        body.innerHTML='';
+        b.forEach(function(ci,k){var s=document.createElement('span');
+          s.style.cssText='display:block;width:9px;background:'+C[ci].c+';outline:1px solid var(--line)'+(k===n-1?';margin-left:12px':'');
+          s.title=C[ci].n;body.appendChild(s);});
+        document.getElementById('p02-val').textContent=(v===0?'0 Ω':fmt(v))+' ±'+tol+'%';
+        document.getElementById('p02-rng').textContent=v===0?'–':fmt(v*(1-tol/100))+' to '+fmt(v*(1+tol/100));
+        var std='–';
+        if(v>0){var e=Math.floor(Math.log10(v)+1e-9),m=Math.round(v/Math.pow(10,e-1));
+          var exact=Math.abs(m*Math.pow(10,e-1)-v)/v<1e-6;
+          if(n===4)std=(exact&&E12.indexOf(m)>=0)?'Yes, E12':(exact&&E24.indexOf(m)>=0)?'Yes, E24':'No: read it backwards?';
+          else std='E96 series (check list)';}
+        document.getElementById('p02-std').textContent=std;
+      }
+      function parse(s){
+        s=String(s).trim().replace(/\s|Ω|ohms?/gi,'');
+        var m=s.match(/^(\d*)\.?(\d*)?([rRkKmM]?)(\d*)$/);
+        if(!m)return NaN;
+        var mul={'':1,r:1,R:1,k:1e3,K:1e3,m:1e6,M:1e6}[m[3]];
+        var txt;
+        if(m[3]&&m[4]!==''&&!/\./.test(s))txt=m[1]+'.'+m[4];else txt=s.replace(/[rRkKmM]/,'');
+        var v=parseFloat(txt);return isNaN(v)?NaN:v*mul;
+      }
+      function bandsFor(v,sig){
+        var e=Math.floor(Math.log10(v)+1e-9)-(sig-1),mant=Math.round(v/Math.pow(10,e));
+        if(mant>=Math.pow(10,sig)){mant=Math.round(mant/10);e++;}
+        if(Math.abs(mant*Math.pow(10,e)-v)/v>1e-6)return null;
+        var multIdx={'-2':11,'-1':10,'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7}[String(e)];
+        if(multIdx===undefined)return null;
+        var ds=String(mant).split('').map(function(d){return C[+d].n;});
+        return ds.concat([C[multIdx].n]);
+      }
+      var inp=document.getElementById('p02-in'),out=document.getElementById('p02-bands');
+      function find(){
+        var v=parse(inp.value);
+        if(!(v>0)){out.textContent='Type a value such as 330, 4k7 or 2.2M.';return;}
+        var b4=bandsFor(v,2),b5=bandsFor(v,3),t='';
+        t+='<b>'+fmt(v)+'</b>: ';
+        t+=b4?'4-band: '+b4.join(', ')+', Gold (±5%). ':'needs 3 significant digits, so no 4-band code. ';
+        t+=b5?'5-band: '+b5.join(', ')+', Brown (±1%).':'';
+        out.innerHTML=t;
+      }
+      nb.addEventListener('change',build);inp.addEventListener('input',find);
+      build();find();
+    })();
+    </script>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Colour codes are hard to read under warm light, and brown, red and orange look alike. Do not trust your eyes alone: <b>measure every resistor with the ohms range before it goes in</b>, at least until you are fluent. Keep the paper tape strips from the assortment; they are labelled.</p></div>
+
+    <h2>LED polarity</h2>
+    <p>An LED (light-emitting diode) is a diode: it lets current flow one way only. Current must enter the <b>anode</b> (+) and leave by the <b>cathode</b> (−). Put it in backwards and nothing happens (no damage at these voltages, just no light). There are three clues:</p>
+    <figure>
+      <svg viewBox="0 0 620 250" role="img" aria-label="LED side view showing long anode leg and flat edge on the cathode side, next to the LED schematic symbol">
+        <defs><marker id="p02-led-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="f-red s-line" d="M90 110 V60 A40 40 0 0 1 170 60 V110 Z" opacity="0.85"/>
+        <rect class="f-red s-line" x="84" y="110" width="88" height="10" opacity="0.85"/>
+        <line class="s-line" x1="172" y1="110" x2="172" y2="120"/>
+        <line class="s-line" x1="112" y1="120" x2="112" y2="232"/>
+        <line class="s-line" x1="148" y1="120" x2="148" y2="205"/>
+        <path class="f-ink" d="M136 100 h22 v-26 l-8 -6 h-14 z" opacity="0.7"/>
+        <rect class="f-ink" x="108" y="72" width="7" height="38" opacity="0.7"/>
+        <text class="t t-small" x="20" y="226">long leg</text>
+        <text class="t t-small t-bold" x="20" y="242">anode (+)</text>
+        <text class="t t-small" x="160" y="200">short leg</text>
+        <text class="t t-small t-bold" x="160" y="216">cathode (−)</text>
+        <text class="t t-small" x="180" y="116">flat edge on rim</text>
+        <text class="t t-small" x="180" y="132">= cathode side</text>
+        <text class="t t-small t-muted" x="168" y="80">larger "anvil" inside</text>
+        <text class="t t-small t-muted" x="168" y="96">is usually the cathode</text>
+        <!-- symbol -->
+        <line class="s-line" x1="360" y1="140" x2="430" y2="140"/>
+        <polygon class="f-accent-soft s-line" points="430,115 430,165 472,140"/>
+        <line class="s-line" x1="472" y1="113" x2="472" y2="167"/>
+        <line class="s-line" x1="472" y1="140" x2="560" y2="140"/>
+        <path class="s-amber" d="M452 110 l18 -22" marker-end="url(#p02-led-arr)"/>
+        <path class="s-amber" d="M466 118 l18 -22" marker-end="url(#p02-led-arr)"/>
+        <text class="t t-small" x="360" y="130">anode (+)</text>
+        <text class="t t-small" x="492" y="130">cathode (−)</text>
+        <text class="t t-small t-muted" x="360" y="196">Triangle points the way conventional</text>
+        <text class="t t-small t-muted" x="360" y="212">current flows. Bar = cathode.</text>
+        <text class="t t-small t-muted" x="360" y="228">Arrows out = it emits light.</text>
+      </svg>
+      <figcaption>Figure 2. Finding the LED's legs. Long leg = anode. Flat edge on the rim = cathode. The internal shapes are a usual pattern but not guaranteed, so trust the legs, the flat and, best of all, the meter's diode test (P03).</figcaption>
+    </figure>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Once you cut the legs, the "long leg" clue is gone. Bend the anode leg slightly before cutting, or test it: your meter's diode-test range lights a red LED dimly and reads about 1.6–1.9 V when the red probe is on the anode.</p></div>
+
+    <h2>Build it: battery, resistor and LED</h2>
+    <p>The circuit is a loop: battery + → 330 Ω resistor → LED anode → LED cathode → battery −. The resistor's job is to <b>limit the current</b>. An LED has almost no resistance once it starts conducting, so without a resistor the current is limited only by the battery's internal resistance, and the LED overheats.</p>
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Breadboard layout: battery pack to rails, resistor from plus rail to column 10, LED from column 10 to column 11, jumper from column 11 to minus rail">
+        <defs>
+          <pattern id="p02-holes-b" width="20" height="18" patternUnits="userSpaceOnUse"><rect class="f-grey" x="7" y="6" width="6" height="6" rx="1"/></pattern>
+          <marker id="p02-flow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-wash s-thin" x="150" y="8" width="440" height="180" rx="6"/>
+        <rect x="160" y="18" width="420" height="36" fill="url(#p02-holes-b)"/>
+        <rect x="160" y="72" width="420" height="90" fill="url(#p02-holes-b)"/>
+        <rect class="f-panel s-thin" x="155" y="166" width="430" height="14" rx="3"/>
+        <line class="s-red" x1="162" y1="16" x2="578" y2="16"/>
+        <line class="s-blue" x1="162" y1="56" x2="578" y2="56"/>
+        <text class="t t-small t-muted" x="596" y="31">+</text><text class="t t-small t-muted" x="596" y="49">−</text>
+        <g><text class="t t-small t-muted" x="140" y="85">a</text><text class="t t-small t-muted" x="140" y="103">b</text><text class="t t-small t-muted" x="140" y="121">c</text><text class="t t-small t-muted" x="140" y="139">d</text><text class="t t-small t-muted" x="140" y="157">e</text></g>
+        <text class="t t-small t-muted" x="350" y="206" text-anchor="middle">col 10</text><text class="t t-small t-muted" x="392" y="206" text-anchor="middle">11</text>
+        <!-- strip highlights -->
+        <rect class="s-thin s-dash" x="341" y="73" width="18" height="88" rx="4"/>
+        <rect class="s-thin s-dash" x="361" y="73" width="18" height="88" rx="4"/>
+        <!-- battery -->
+        <rect class="f-panel s-line" x="16" y="80" width="96" height="120" rx="6"/>
+        <rect class="f-wash s-thin" x="26" y="92" width="22" height="96" rx="4"/><rect class="f-wash s-thin" x="53" y="92" width="22" height="96" rx="4"/><rect class="f-wash s-thin" x="80" y="92" width="22" height="96" rx="4"/>
+        <text class="t t-small" x="64" y="218" text-anchor="middle">3×AA ≈ 4.5 V</text>
+        <path class="s-red" d="M92 80 V27 H170"/>
+        <path class="s-line" d="M36 80 V45 H190"/>
+        <circle class="f-red" cx="170" cy="27" r="3.5"/><circle class="f-ink" cx="190" cy="45" r="3.5"/>
+        <text class="t t-small t-red" x="96" y="66">red +</text><text class="t t-small" x="6" y="66">black −</text>
+        <!-- resistor from + rail col10 to a10 -->
+        <line class="s-line" x1="350" y1="27" x2="350" y2="36"/>
+        <rect class="f-accent-soft s-accent" x="343" y="36" width="14" height="34" rx="5"/>
+        <line class="s-line" x1="350" y1="70" x2="350" y2="81"/>
+        <circle class="f-ink" cx="350" cy="27" r="3.5"/><circle class="f-ink" cx="350" cy="81" r="3.5"/>
+        <text class="t t-small t-bold" x="300" y="58" text-anchor="end">330 Ω</text>
+        <text class="t t-small t-muted" x="300" y="72" text-anchor="end">+ rail → a10</text>
+        <!-- LED c10 (anode) to c11 (cathode) -->
+        <circle class="f-red" cx="360" cy="108" r="13" opacity="0.85"/>
+        <line class="s-line" x1="371" y1="98" x2="371" y2="118"/>
+        <line class="s-line" x1="350" y1="108" x2="350" y2="117"/><line class="s-line" x1="370" y1="118" x2="370" y2="117"/>
+        <circle class="f-ink" cx="350" cy="117" r="3.5"/><circle class="f-ink" cx="370" cy="117" r="3.5"/>
+        <text class="t t-small t-bold" x="420" y="112">LED: anode in c10,</text>
+        <text class="t t-small t-bold" x="420" y="128">cathode (flat) in c11</text>
+        <!-- jumper a11 to - rail -->
+        <path class="s-line" d="M370 81 V45" stroke-width="3"/>
+        <circle class="f-ink" cx="370" cy="81" r="3.5"/><circle class="f-ink" cx="370" cy="45" r="3.5"/>
+        <text class="t t-small" x="420" y="84">jumper a11 → − rail</text>
+        <path class="s-accent" d="M200 236 H460" marker-end="url(#p02-flow)"/>
+        <text class="t t-small t-accent" x="330" y="230" text-anchor="middle">+ rail → resistor → strip 10 → LED → strip 11 → jumper → − rail</text>
+      </svg>
+      <figcaption>Figure 3. Breadboard layout (top half only). The resistor leaps from the + rail to hole a10, passing over the − rail. Strip 10 (a–e) joins the resistor to the LED anode; strip 11 joins the LED cathode to the black jumper. Every part has its two legs in two different nodes.</figcaption>
+    </figure>
+    <figure>
+      <svg viewBox="0 0 520 220" role="img" aria-label="Schematic of a 4.5 volt battery, 330 ohm resistor and red LED in series">
+        <defs><marker id="p02-sch-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M80 40 H200 M290 40 H440 V96 M440 136 V180 H80 V128 M80 92 V40"/>
+        <line class="s-line" x1="56" y1="98" x2="104" y2="98"/>
+        <line class="s-line" x1="68" y1="108" x2="92" y2="108"/>
+        <line class="s-line" x1="56" y1="118" x2="104" y2="118"/>
+        <line class="s-line" x1="68" y1="128" x2="92" y2="128"/>
+        <text class="t t-bold" x="44" y="96">+</text>
+        <text class="t" x="112" y="112">4.5 V</text>
+        <path class="s-accent" d="M200 40 l7 -10 l14 20 l14 -20 l14 20 l14 -20 l14 20 l14 -20 l9 10"/>
+        <text class="t" x="222" y="74">R = 330 Ω</text>
+        <polygon class="f-accent-soft s-line" points="420,96 460,96 440,136"/>
+        <line class="s-line" x1="418" y1="136" x2="462" y2="136"/>
+        <path class="s-amber" d="M466 110 l20 -10 M466 124 l20 -10"/>
+        <text class="t" x="474" y="148">red</text><text class="t" x="474" y="164">LED</text>
+        <path class="s-red" d="M300 196 H200" marker-end="url(#p02-sch-arr)"/>
+        <text class="t t-small t-red" x="200" y="212">conventional current, clockwise in the loop</text>
+        <path class="s-red" d="M330 24 H400" marker-end="url(#p02-sch-arr)"/>
+      </svg>
+      <figcaption>Figure 4. The same circuit as a schematic. Schematics show connections, not physical layout: the resistor could equally sit on the cathode side, because the same current flows everywhere in a series loop.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><p><b>Check the battery.</b> Switch the holder off. With the meter on DC volts, measure across the battery leads. Expect 4.6–4.8 V with fresh alkaline cells (each cell is about 1.55–1.6 V new).</p></li>
+      <li><p><b>Check the resistor.</b> Read the bands (orange, orange, brown, gold) and confirm with the ohms range: 314–346 Ω.</p></li>
+      <li><p><b>Place the parts</b> as in Figure 3: resistor from + rail to a10, LED anode (long leg) in c10 and cathode in c11, jumper from a11 to the − rail.</p></li>
+      <li><p><b>Connect the battery</b>: red lead to the + rail, black to the − rail. Switch on. The LED should glow a clear red.</p></li>
+      <li><p><b>Measure voltages</b> (meter on DC volts, power on, probes across each part): battery, resistor, LED. Write them down.</p></li>
+      <li><p><b>Measure current.</b> Switch off. Pull out the black jumper. Move the meter's red lead to the <b>mA</b> socket and set the dial to DC mA. Touch the red probe to strip 11 (a11) and the black probe to the − rail. The meter is now <i>part of the loop</i>. Switch on and read. Afterwards, move the red lead back to the V socket (P03 explains why this matters).</p></li>
+    </ol>
+
+    <h2>Measure it: expected readings</h2>
+    <div class="formula">I = (V<sub>battery</sub> − V<sub>LED</sub>) / R = (4.7 V − 1.9 V) / 330 Ω ≈ 8.5 mA
+      <small>The battery provides 4.7 V. The LED "uses" about 1.9 V (its forward voltage, set by the physics of its junction). Whatever is left, 2.8 V, sits across the resistor, and Ohm's law on the resistor sets the current. With a nominal 4.5 V the same sum gives about 7.9 mA.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Battery (under load)</td><td>4.6–4.8 V</td><td>Below 4.2 V: tired cells. Reading 0: switch off or bad holder contact.</td></tr>
+      <tr><td>Across the resistor</td><td>2.7–2.9 V</td><td>0 V with LED dark: open circuit somewhere (LED reversed, wrong strip).</td></tr>
+      <tr><td>Across the LED</td><td>1.8–2.0 V (red)</td><td>~4.6 V: LED reversed or open. ~0 V: LED legs in the same strip (shorted).</td></tr>
+      <tr><td>Current</td><td>7.5–9 mA</td><td>0: meter fuse blown or red lead not in mA socket. Over 20 mA: resistor missing or wrong value.</td></tr>
+    </table></div>
+    <p>Now do two checks that turn readings into understanding:</p>
+    <ul>
+      <li><b>Kirchhoff's voltage law:</b> V<sub>R</sub> + V<sub>LED</sub> should equal V<sub>battery</sub>. Example: 2.80 + 1.90 = 4.70 V. The voltages round a loop always add up. (P04 proves this properly.)</li>
+      <li><b>Ohm's law on the resistor:</b> I = V<sub>R</sub>/R = 2.80 / 330 = 8.48 mA. Compare with the current you measured. They should agree within a few percent; the difference is resistor tolerance and meter accuracy.</li>
+    </ul>
+    <div class="callout why"><span class="label">Why it works</span><p>The resistor obeys Ohm's law: its current is proportional to its voltage. The LED does not: its current rises <b>exponentially</b> with voltage, so its voltage hardly changes (about 1.8–2.0 V) over a huge range of currents. That is why we treat the LED as a fixed "voltage drop" and let the resistor set the current. Without the resistor, the battery would try to push the LED well past 2 V, and the exponential would demand a current far beyond the LED's 20–30 mA rating.</p></div>
+    <a class="crosslink" href="../theory/t02-resistance-ohms-law.html">Theory T02 · Resistance and Ohm's law, physically</a>
+    <div class="callout warn"><span class="label">Safety</span><p>Never connect an LED straight across a battery or supply without a resistor. On 3×AA it will get hot and may fail; on a 12 V supply it fails instantly and the case can crack. Wear glasses when testing anything new.</p></div>
+
+    <h2>Change the resistor</h2>
+    <p>Swap the 330 Ω for each resistor in turn (power off while you swap). For each one, measure V<sub>LED</sub>, V<sub>R</sub> and current, and judge the brightness. Typical results with a fresh 4.7 V pack:</p>
+    <div class="table-wrap"><table>
+      <tr><th>R</th><th>V<sub>LED</sub></th><th>V<sub>R</sub></th><th>Current (V<sub>R</sub>/R)</th><th>Brightness</th></tr>
+      <tr><td>220 Ω</td><td>~1.95 V</td><td>~2.75 V</td><td>~12.5 mA</td><td>Bright</td></tr>
+      <tr><td>330 Ω</td><td>~1.90 V</td><td>~2.80 V</td><td>~8.5 mA</td><td>Bright, only slightly less</td></tr>
+      <tr><td>1 kΩ</td><td>~1.80 V</td><td>~2.90 V</td><td>~2.9 mA</td><td>Clearly dimmer, fine indoors</td></tr>
+      <tr><td>10 kΩ</td><td>~1.65 V</td><td>~3.05 V</td><td>~0.3 mA</td><td>Faint glow; easy to see in a dim room</td></tr>
+    </table></div>
+    <p>Three lessons hide in this table:</p>
+    <ol>
+      <li><b>The LED voltage barely moves.</b> Current changed by a factor of 40, but V<sub>LED</sub> changed by only about 0.3 V. This is the exponential diode curve in action.</li>
+      <li><b>Your eye is logarithmic.</b> 12.5 mA looks only a little brighter than 8.5 mA, but 0.3 mA is still visible. Modern LEDs are efficient: indicator LEDs on equipment often run at 1–5 mA.</li>
+      <li><b>Resistor power is small.</b> For 220 Ω: P = V<sub>R</sub> × I = 2.75 × 0.0125 ≈ 34 mW, far below the ¼ W (250 mW) rating. You only need to worry about resistor power at higher voltages and currents.</li>
+    </ol>
+    <div class="callout try"><span class="label">Try this</span><p>Choose a resistor for a target current. For 5 mA from 4.7 V: R = (4.7 − 1.85) / 0.005 = 570 Ω. The nearest E12 values are 560 Ω and 680 Ω. Use 560 Ω and measure. Did you get 5 mA within 10%? Later, for a 12 V supply and 10 mA: R = (12 − 2)/0.01 = 1 kΩ, and P = 10 V × 0.01 A = 0.1 W. Still fine for ¼ W.</p></div>
+
+    <h2>Reverse the LED</h2>
+    <p>Turn the LED around (cathode in c10, anode in c11) and measure again:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Reading</th><th>Meaning</th></tr>
+      <tr><td>LED</td><td>Dark</td><td>Reverse biased: the junction blocks current.</td></tr>
+      <tr><td>Across the LED</td><td>≈ 4.7 V (the full battery)</td><td>An open switch has the full supply across it.</td></tr>
+      <tr><td>Across the resistor</td><td>≈ 0 V</td><td>No current, so no voltage drop: V = I × R = 0 × 330.</td></tr>
+      <tr><td>Current</td><td>0.00 mA</td><td>Reverse leakage is far below a microamp.</td></tr>
+    </table></div>
+    <p>This pattern, "the whole supply voltage appears across the part that is open", is the most useful fault-finding fact you will ever learn. On a job, if 24 V appears across a switch, a fuse or a relay contact, that is the open point in the circuit.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>Most LED datasheets give a maximum <b>reverse</b> voltage of about 5 V. On 4.5 V a reversed LED is safe. On 9 V or 12 V, a reversed LED can break down and fail. In P06 you will add a protecting diode when running LEDs from AC.</p></div>
+
+    <h2>Two LEDs: series and parallel</h2>
+    <figure>
+      <svg viewBox="0 0 680 250" role="img" aria-label="Three circuits: two LEDs in series with one resistor, two LEDs in parallel sharing one resistor (wrong), and two LEDs each with their own resistor (right)">
+        <!-- A: series -->
+        <text class="t t-bold" x="20" y="22">A · Series</text>
+        <path class="s-line" d="M40 50 H70 M126 50 H160 V70 M160 100 V122 M160 152 V200 H40 V140 M40 112 V50"/>
+        <line class="s-line" x1="22" y1="116" x2="58" y2="116"/><line class="s-line" x1="30" y1="124" x2="50" y2="124"/><line class="s-line" x1="22" y1="132" x2="58" y2="132"/><line class="s-line" x1="30" y1="140" x2="50" y2="140"/>
+        <path class="s-accent" d="M70 50 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l6 8"/>
+        <polygon class="f-accent-soft s-line" points="146,70 174,70 160,100"/><line class="s-line" x1="144" y1="100" x2="176" y2="100"/>
+        <polygon class="f-accent-soft s-line" points="146,122 174,122 160,152"/><line class="s-line" x1="144" y1="152" x2="176" y2="152"/>
+        <text class="t t-small" x="74" y="36">330 Ω</text>
+        <text class="t t-small t-muted" x="20" y="222">Same current through both.</text>
+        <text class="t t-small t-muted" x="20" y="238">Needs ≥ 2 × 1.9 V + headroom.</text>
+        <!-- B: parallel, one resistor -->
+        <text class="t t-bold t-red" x="250" y="22">B · Parallel, one R ✗</text>
+        <path class="s-line" d="M270 50 H300 M356 50 H420 M380 50 V80 M450 50 H420 M450 50 V80 M380 110 V200 M450 110 V200 M450 200 H270 V140 M270 112 V50"/>
+        <line class="s-line" x1="252" y1="116" x2="288" y2="116"/><line class="s-line" x1="260" y1="124" x2="280" y2="124"/><line class="s-line" x1="252" y1="132" x2="288" y2="132"/><line class="s-line" x1="260" y1="140" x2="280" y2="140"/>
+        <path class="s-accent" d="M300 50 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l6 8"/>
+        <polygon class="f-red s-line" points="366,80 394,80 380,110" opacity="0.8"/><line class="s-line" x1="364" y1="110" x2="396" y2="110"/>
+        <polygon class="f-panel s-line" points="436,80 464,80 450,110"/><line class="s-line" x1="434" y1="110" x2="466" y2="110"/>
+        <text class="t t-small" x="340" y="134" text-anchor="end">red 1.9 V</text>
+        <text class="t t-small" x="470" y="134">green 2.1+ V</text>
+        <text class="t t-small t-muted" x="250" y="222">Lowest-voltage LED takes</text>
+        <text class="t t-small t-muted" x="250" y="238">nearly all the current.</text>
+        <!-- C: parallel, own resistors -->
+        <text class="t t-bold t-green" x="500" y="22">C · Own resistors ✓</text>
+        <path class="s-line" d="M520 50 H660 M560 50 V60 M640 50 V60 M560 104 V120 M640 104 V120 M560 150 V200 M640 150 V200 M660 200 H520 V140 M520 112 V50 M640 200 H660"/>
+        <line class="s-line" x1="502" y1="116" x2="538" y2="116"/><line class="s-line" x1="510" y1="124" x2="530" y2="124"/><line class="s-line" x1="502" y1="132" x2="538" y2="132"/><line class="s-line" x1="510" y1="140" x2="530" y2="140"/>
+        <path class="s-accent" d="M560 60 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l16 6 l-16 6 l8 4"/>
+        <path class="s-accent" d="M640 60 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l16 6 l-16 6 l8 4"/>
+        <polygon class="f-red s-line" points="546,120 574,120 560,150" opacity="0.8"/><line class="s-line" x1="544" y1="150" x2="576" y2="150"/>
+        <polygon class="f-green s-line" points="626,120 654,120 640,150" opacity="0.8"/><line class="s-line" x1="624" y1="150" x2="656" y2="150"/>
+        <text class="t t-small t-muted" x="500" y="222">Each resistor sets its</text>
+        <text class="t t-small t-muted" x="500" y="238">own LED's current.</text>
+      </svg>
+      <figcaption>Figure 5. Series (A): one current, the voltages add. Parallel with one shared resistor (B): the LEDs are forced to the same voltage, and the one with the lower forward voltage hogs the current. Correct parallel (C): one resistor per LED.</figcaption>
+    </figure>
+    <h3>Series</h3>
+    <p>Put two red LEDs in series with the 330 Ω (anode of the second to the cathode of the first). Both glow, but dimmer. The LEDs now need about 2 × 1.85 = 3.7 V, leaving only 4.7 − 3.7 = 1.0 V for the resistor: I = 1.0 / 330 ≈ 3 mA. Add a third red LED and they need about 5.5 V, more than the battery has: they stay dark (perhaps a faint glow in a dark room). On a 9 V battery, two red LEDs and 470 Ω give (9 − 3.8) / 470 ≈ 11 mA.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Cut a common 12 V LED strip open and you will see this exactly: groups of three LEDs in series with one small resistor, repeated along the strip (the cut marks are between groups). Three LEDs use about 9 V and the resistor drops the rest. That is why a 12 V strip glows dimly or not at all on a sagging 9 V supply at the end of a long run, a fault you will meet on site.</p></div>
+    <h3>Parallel, and why each LED needs its own resistor</h3>
+    <p>Now put a red and a green LED side by side, both fed from the one 330 Ω (Figure 5B). Usually the red lights and the green stays dark or very dim. Both LEDs are forced to the same voltage. The red one starts conducting strongly at about 1.9 V, which pins the node there, and that is not enough for the green one (2.1 V for old yellow-green types, nearer 3 V for modern true-green).</p>
+    <p>Even two "identical" red LEDs do not share fairly. Their forward voltages differ by tens of millivolts from the factory. Because LED current rises by about 10 times for every ~0.1 V, a 50 mV difference gives roughly a <b>2–3 times</b> difference in current. Worse, the hotter LED's forward voltage drops (about 2 mV per °C), so it takes even more current and gets hotter. Fix: one resistor per LED (Figure 5C). Try it: each LED now has its own current, set by its own resistor.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Parallel parts share current equally, like water pipes of the same size."<br><b>Right:</b> Parallel parts share the same <b>voltage</b>. How the current splits depends on each part's own I–V curve. For resistors the split is gentle and predictable. For diodes and LEDs the curve is exponential, so tiny voltage differences give big current differences.</p></div>
+
+    <h2>The physics in your hand</h2>
+    <h3>Why a red LED drops about 1.9 V</h3>
+    <p>An LED is a p–n junction made from a semiconductor such as gallium arsenide phosphide. When it conducts, electrons cross the junction and fall into "holes" on the other side. Each fall releases a fixed parcel of energy, equal to the material's <b>band gap</b>, as one photon of light. Energy and wavelength are linked: λ (nm) ≈ 1240 / E (eV). Red light at about 630 nm means E ≈ 1240/630 ≈ 1.97 eV. To give each electron about 2 eV of energy you need about 2 V across the junction. That is the forward voltage. Blue (≈ 470 nm, ≈ 2.6 eV) needs about 3 V, which is why a blue or white LED will not light from two AA cells.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>The diode's one-way behaviour comes from the depletion region and the built-in field at the junction. The light colour comes from the band gap. Both stories are told from Class 12 physics upward in the theory chapters.</p></div>
+    <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Deep dive · Why a diode has polarity (bands, depletion region, the numerical model)</a>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family (LED, Zener, Schottky, photodiode)</a>
+
+    <h3>LED vs filament bulb</h3>
+    <div class="compare">
+      <div><h4>Filament bulb</h4><p>A thin tungsten wire heated to about 2500–2800 °C glows because it is hot (black-body glow). Most of the energy comes out as infrared heat, not light. It is a <b>resistor</b>: no polarity, works either way round. Its cold resistance is roughly a tenth of its hot resistance, so it takes a surge of current when switched on.</p></div>
+      <div><h4>LED</h4><p>Light comes directly from electrons crossing a junction, at one colour set by the band gap. Little heat, so far more light per watt. It is a <b>diode</b>: polarity matters, and it needs a series resistor (or a constant-current driver) because its current rises exponentially with voltage.</p></div>
+    </div>
+    <h3>On AC: flicker at 50 Hz</h3>
+    <p>Australian mains is a 50 Hz sine wave, and so is the output of your AC plug-pack. The voltage passes through zero 100 times a second. A filament bulb hardly notices: the hot wire cannot cool down in 10 ms, so its light only ripples slightly. An LED reacts in nanoseconds. On AC, with its resistor and a protecting diode, it lights only on the positive half-cycles: 50 flashes per second with dark gaps between. It looks steady when still, but wave it quickly and you see a dotted trail. You will see this for yourself in P06, with a safe 12 V AC plug-pack.</p>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · Diodes on the bench: rectifiers and protection</a>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr>
+      <tr><td>LED dark, full battery voltage across LED</td><td>LED reversed, or LED open</td><td>Flip it. Test it on the meter's diode range.</td></tr>
+      <tr><td>LED dark, ~0 V across LED and ~0 V across resistor</td><td>Circuit open elsewhere: rail split, battery switch off, jumper in wrong hole</td><td>Measure battery at the rails. Follow the loop with the meter.</td></tr>
+      <tr><td>LED dark, ~0 V across LED, full voltage across resistor</td><td>Both LED legs in the same strip (shorted)</td><td>Move one leg to the next column.</td></tr>
+      <tr><td>LED very bright, then dim or dead</td><td>Resistor missing or bypassed (both legs in one strip)</td><td>Replace the LED; check resistor placement.</td></tr>
+      <tr><td>LED flickers when touched</td><td>Loose contact; thin legs in a worn breadboard hole</td><td>Use a different area of the board; press parts fully home.</td></tr>
+      <tr><td>Current reads 0.00 but LED is lit</td><td>Meter not in series, or measuring on the A range with tiny current</td><td>Meter must replace a wire. Use the mA range.</td></tr>
+      <tr><td>Meter reads 0 on current and the LED goes out</td><td>Meter fuse blown (often from an earlier mistake)</td><td>Test the fuse with continuity (see P03).</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>You put a resistor in holes a12 and d12. What does the resistor do in your circuit?</summary><div class="answer"><p>Nothing: both legs are in the same 5-hole strip, so the strip shorts the resistor out. A part must have its legs in different strips (different nodes) to be in the circuit.</p></div></details>
+    <details class="quiz"><summary>Decode yellow, violet, red, gold. Then brown, black, black, red, brown.</summary><div class="answer"><p>Yellow (4), violet (7), red (×100) = 4700 Ω = 4.7 kΩ (often written 4k7), ±5%. The 5-band: brown (1), black (0), black (0), red (×100) = 100 × 100 = 10 000 Ω = 10 kΩ, ±1% (brown).</p></div></details>
+    <details class="quiz"><summary>Calculate the resistor for a red LED at 10 mA from a 9 V battery. What power does it dissipate?</summary><div class="answer"><p>R = (9 − 1.9) / 0.010 = 710 Ω. Nearest E12: 680 Ω (gives 10.4 mA) or 820 Ω (8.7 mA). With 680 Ω: P = 7.1 V × 0.0104 A ≈ 74 mW, well under ¼ W.</p></div></details>
+    <details class="quiz"><summary>The LED is reversed. Why is the full battery voltage across the LED and none across the resistor?</summary><div class="answer"><p>No current flows, so the resistor's drop is I × R = 0. The voltages round the loop must still add up to the battery voltage (KVL), so all of it appears across the only part that is blocking: the LED. On a job, "full supply across a part" means "this part is open".</p></div></details>
+    <details class="quiz"><summary>Three red LEDs in series with 330 Ω on 4.5 V stay dark. Why, and what supply would work?</summary><div class="answer"><p>Three red LEDs need about 3 × 1.85 ≈ 5.5 V before significant current flows, more than 4.5 V. A 9 V battery would work: (9 − 5.6)/330 ≈ 10 mA.</p></div></details>
+    <details class="quiz"><summary>Why does the LED's voltage change only from about 1.95 V to 1.65 V when the current changes 40 times?</summary><div class="answer"><p>LED current rises exponentially with voltage: roughly 10 times more current for each extra ~0.1 V. A 40× change is about 1.6 decades, so about 0.16 × 2 ≈ 0.2–0.3 V. The resistor, being linear, takes the rest of the voltage change.</p></div></details>
+    <details class="quiz"><summary>Why does a filament bulb not visibly flicker on 50 Hz AC, while an LED on AC does?</summary><div class="answer"><p>The filament's light depends on its temperature, and its thermal mass cannot cool noticeably in the 10 ms between voltage peaks. The LED's light follows its current almost instantly, and as a diode it conducts only on one half of each cycle, so it flashes 50 times a second with dark gaps.</p></div></details>
+    <details class="quiz"><summary>How do you test whether the power rails on your breadboard are split?</summary><div class="answer"><p>Push a jumper into each end of one rail and test between them with the meter's continuity beeper. A beep means the rail is continuous. No beep means it is split; bridge the halves with a short jumper. Check a gap in the printed red/blue line as a clue, but always confirm with the meter.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain which breadboard holes are connected, and I have checked my board's rails for a split.</span></li>
+      <li><input type="checkbox"><span>I can read 4-band and 5-band resistor colour codes and confirm the value with a meter.</span></li>
+      <li><input type="checkbox"><span>I can identify an LED's anode and cathode by leg length and the flat edge.</span></li>
+      <li><input type="checkbox"><span>I can calculate the series resistor for an LED: R = (V<sub>supply</sub> − V<sub>LED</sub>) / I.</span></li>
+      <li><input type="checkbox"><span>I measured battery, resistor and LED voltages and checked they add up to the supply.</span></li>
+      <li><input type="checkbox"><span>I measured current with the meter in series and returned the red lead to the V socket afterwards.</span></li>
+      <li><input type="checkbox"><span>I can explain why a reversed (open) part has the full supply voltage across it.</span></li>
+      <li><input type="checkbox"><span>I can explain why parallel LEDs each need their own resistor.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

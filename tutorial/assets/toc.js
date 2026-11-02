@@ -91,6 +91,17 @@ window.TOC = {
           { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." }
         ]}
       ]
+    },
+    {
+      id: "reference", title: "Reference Shelf", short: "Reference",
+      blurb: "Look-up pages to keep open on the bench: words, formulas, symbols and part markings.",
+      parts: [
+        { title: "Look-up pages", blurb: "Quick answers while you build.", chapters: [
+          { n: "R01", file: "reference/r01-glossary.html", title: "Glossary: every term in plain English", d: "From ampere to Zener, BACnet to VLAN, with a link to where each one is taught." },
+          { n: "R02", file: "reference/r02-formula-sheet.html", title: "Formula sheet with worked numbers", d: "Every formula in the course, what each symbol means, and a typical-value example." },
+          { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, and decode resistor, capacitor and SMD markings." }
+        ]}
+      ]
     }
   ]
 };

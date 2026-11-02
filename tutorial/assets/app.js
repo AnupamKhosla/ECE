@@ -3,7 +3,7 @@
   "use strict";
   var TOC = window.TOC || { books: [] };
   var path = location.pathname;
-  var inSub = /\/(practice|theory|career)\/[^\/]*$/.test(path);
+  var inSub = /\/(practice|theory|career|reference)\/[^\/]*$/.test(path);
   var ROOT = inSub ? "../" : "";
   var here = inSub ? path.split("/").slice(-2).join("/") : "index.html";
 
@@ -103,6 +103,7 @@
     if (!main || !current) return;
     var h2s = main.querySelectorAll("h2");
     h2s.forEach(function (h) { if (!h.id) h.id = slug(h.textContent); });
+    if (location.hash) { var target = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (target) setTimeout(function () { target.scrollIntoView(); }, 0); }
     var otp = main.querySelector(".otp[data-auto]");
     if (otp && h2s.length) {
       var ol = el("ol");
