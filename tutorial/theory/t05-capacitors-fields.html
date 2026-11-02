@@ -41,7 +41,7 @@
     <h2>Dielectrics and polarisation</h2>
     <p>Put an insulator (a <b>dielectric</b>) between the plates and the capacitance goes up by the factor ε<sub>r</sub>. Why? Inside an insulator the electrons cannot leave their atoms, but the field can stretch each atom or molecule slightly: the electron cloud shifts towards the + plate, and the nucleus towards the − plate. Some molecules (such as water) are already lopsided and they rotate to line up with the field. Either way, the material becomes full of tiny aligned dipoles. This is <b>polarisation</b>.</p>
     <figure>
-      <svg viewBox="0 0 620 260" role="img" aria-label="Parallel plates in air with a strong field, and with a dielectric whose aligned dipoles create bound surface charges that reduce the field">
+      <svg viewBox="0 0 620 270" role="img" aria-label="Parallel plates in air with a strong field, and with a dielectric whose aligned dipoles create bound surface charges that reduce the field">
         <defs><marker id="t5f1-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
           <marker id="t5f1-d" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
         <text class="t t-small t-bold" x="40" y="22">Air (or vacuum)</text>
@@ -70,7 +70,7 @@
         <g class="s-amber" style="stroke-width:1.6">
           <path d="M395 58 V184" marker-end="url(#t5f1-a)"/><path d="M475 58 V184" marker-end="url(#t5f1-a)"/><path d="M555 58 V184" marker-end="url(#t5f1-a)"/>
         </g>
-        <text class="t t-small t-muted" x="340" y="240">bound charges cancel part of the field: E = σ/(ε<tspan dy="3" font-size="9">r</tspan><tspan dy="-3">ε₀)</tspan></text>
+        <text class="t t-small t-muted" x="340" y="240">bound charges cancel part of the field:</text><text class="t t-small t-muted" x="340" y="258">E = σ/(ε<tspan dy="3" font-size="9">r</tspan><tspan dy="-3">ε₀)</tspan></text>
       </svg>
       <figcaption>Figure 1. Same charge on the plates in both cases. Right: each molecule stretches into a small dipole (electron side towards +). Inside the material the dipoles cancel each other, but a thin layer of "bound" − charge appears next to the + plate and bound + next to the − plate. These partly cancel the plate charge, so the field (fewer amber lines) and the voltage are smaller for the same Q. Smaller V for the same Q means larger C.</figcaption>
     </figure>
@@ -105,9 +105,9 @@
     <div class="widget" id="t5p">
       <span class="label">Interactive · Parallel-plate capacitor</span>
       <label>Plate area <span class="out" id="t5p-ao">100 cm²</span><input type="range" id="t5p-a" min="1" max="1000" value="100"></label>
-      <label>Gap d <span class="out" id="t5p-do">1.00 mm</span><input type="range" id="t5p-d" min="0" max="100" value="60"></label>
+      <label>Gap d <span class="out" id="t5p-do">1.00 mm</span><input type="range" id="t5p-d" min="0" max="100" value="75"></label>
       <label>Dielectric
-        <select id="t5p-e"><option value="1">Air (ε<sub>r</sub> ≈ 1)</option><option value="2.1">PTFE (2.1)</option><option value="2.2">Polypropylene (2.2)</option><option value="3.3">Polyester (3.3)</option><option value="9">Aluminium oxide (≈ 9)</option><option value="26">Tantalum pentoxide (≈ 26)</option><option value="3000">X7R ceramic (≈ 3,000)</option></select></label>
+        <select id="t5p-e"><option value="1">Air (εr ≈ 1)</option><option value="2.1">PTFE (2.1)</option><option value="2.2">Polypropylene (2.2)</option><option value="3.3">Polyester (3.3)</option><option value="9">Aluminium oxide (≈ 9)</option><option value="26">Tantalum pentoxide (≈ 26)</option><option value="3000">X7R ceramic (≈ 3,000)</option></select></label>
       <div class="readings">
         <div><small>Capacitance</small><span class="out" id="t5p-c">–</span></div>
         <div><small>Plate area for 1 µF at this gap</small><span class="out" id="t5p-a1">–</span></div>
@@ -120,7 +120,7 @@
       function fC(c){var u=[[1,'F'],[1e-3,'mF'],[1e-6,'µF'],[1e-9,'nF'],[1e-12,'pF'],[1e-15,'fF']];for(var k=0;k<u.length;k++){if(c>=u[k][0]*0.9995)return (c/u[k][0]).toPrecision(3)+' '+u[k][1];}return c.toExponential(2)+' F';}
       function fA(a){if(a>=1)return a.toPrecision(3)+' m²';if(a>=1e-4)return (a*1e4).toPrecision(3)+' cm²';return (a*1e6).toPrecision(3)+' mm²';}
       function upd(){
-        var Acm=+$('t5p-a').value, d=Math.pow(10,-6+3*(+$('t5p-d').value)/60)*1; /* metres: slider 0 -> 1 µm, 60 -> 1 mm, 100 -> 10 mm */
+        var Acm=+$('t5p-a').value, d=Math.pow(10,-6+4*(+$('t5p-d').value)/100); /* metres: slider 0 -> 1 µm, 75 -> 1 mm, 100 -> 10 mm */
         var er=+$('t5p-e').value, A=Acm*1e-4, C=er*E0*A/d;
         $('t5p-ao').textContent=Acm+' cm²';
         $('t5p-do').textContent=d>=1e-3?(d*1e3).toPrecision(3)+' mm':(d*1e6).toPrecision(3)+' µm';
@@ -320,7 +320,7 @@
         <text class="t t-small t-accent t-bold" x="414" y="92">oxide layer: the dielectric,</text><text class="t t-small t-accent" x="414" y="108">nanometres thick</text>
         <text class="t t-small t-bold" x="414" y="134">paper soaked in electrolyte:</text><text class="t t-small" x="414" y="150">the real "− plate"</text>
         <text class="t t-small t-bold" x="414" y="178">cathode foil (−)</text>
-        <text class="t t-small t-muted" x="40" y="214">The oxide is grown electrochemically on the + foil. Reverse voltage drives that chemistry backwards.</text>
+        <text class="t t-small t-muted" x="40" y="206">The oxide is grown electrochemically on the + foil.</text><text class="t t-small t-muted" x="40" y="222">Reverse voltage drives that chemistry backwards.</text>
       </svg>
       <figcaption>Figure 4. Inside an aluminium electrolytic (not to scale). The dielectric is an oxide only nanometres thick (roughly 1–1.5 nm per volt of rating), on a foil etched to multiply its surface area. Thin d and huge A give a large C in a small can.</figcaption>
     </figure>

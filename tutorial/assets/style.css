@@ -8,7 +8,7 @@
   --warn:#b91c1c; --warn-soft:#fde8e8;
   --tip:#7c5e00; --tip-soft:#fbf3d5;
   --accent:var(--practice); --accent-soft:var(--practice-soft);
-  --red:#dc2626; --blue:#2563eb; --green:#16a34a; --amber:#d97706; --violet:#7c3aed; --grey:#6b7280;
+  --brown:#8b5a2b; --red:#dc2626; --blue:#2563eb; --green:#16a34a; --amber:#d97706; --violet:#7c3aed; --grey:#6b7280;
   --code:#f1efe9;
   --radius:10px;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -22,7 +22,7 @@
     --theory:#7aa2ff; --theory-soft:#1b2540;
     --career:#34d399; --career-soft:#123227; --ref:#b69cff; --ref-soft:#261d3d;
     --warn:#f87171; --warn-soft:#3a1c1c; --tip:#facc15; --tip-soft:#332b0f;
-    --red:#f87171; --blue:#60a5fa; --green:#4ade80; --amber:#fbbf24; --violet:#a78bfa; --grey:#9ca3af;
+    --brown:#c08a5a; --red:#f87171; --blue:#60a5fa; --green:#4ade80; --amber:#fbbf24; --violet:#a78bfa; --grey:#9ca3af;
     --code:#22262d;
   }
 }
@@ -32,7 +32,7 @@
   --theory:#7aa2ff; --theory-soft:#1b2540;
   --career:#34d399; --career-soft:#123227; --ref:#b69cff; --ref-soft:#261d3d;
   --warn:#f87171; --warn-soft:#3a1c1c; --tip:#facc15; --tip-soft:#332b0f;
-  --red:#f87171; --blue:#60a5fa; --green:#4ade80; --amber:#fbbf24; --violet:#a78bfa; --grey:#9ca3af;
+  --brown:#c08a5a; --red:#f87171; --blue:#60a5fa; --green:#4ade80; --amber:#fbbf24; --violet:#a78bfa; --grey:#9ca3af;
   --code:#22262d;
 }
 body.book-theory{--accent:var(--theory);--accent-soft:var(--theory-soft)}
@@ -182,6 +182,7 @@ svg text,.t{fill:var(--ink);font-family:var(--sans);font-size:14px}
 .f-red{fill:var(--red)} .f-blue{fill:var(--blue)} .f-green{fill:var(--green)} .f-amber{fill:var(--amber)} .f-violet{fill:var(--violet)} .f-grey{fill:var(--grey)}
 .f-theory-soft{fill:var(--theory-soft)} .f-practice-soft{fill:var(--practice-soft)} .f-career-soft{fill:var(--career-soft)} .f-warn-soft{fill:var(--warn-soft)}
 .f-none{fill:none}
+.f-brown{fill:var(--brown)} .s-brown{stroke:var(--brown);fill:none;stroke-width:2.5} .t-brown{fill:var(--brown)}
 
 /* chapter footer */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:56px}
