@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P03 · Multimeter mastery</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part A · Your bench</div>
+    <span class="eyebrow">Practice · Lab P03</span>
+    <h1>Multimeter mastery</h1>
+    <p class="lede">The multimeter is the tool you will use most on any technical job. By the end of this lab you will measure DC and AC volts, current, resistance, continuity and diodes with confidence, choose the right setting and lead sockets every time, and avoid the classic mistakes that blow fuses.</p>
+    <div class="meta"><span><b>Time</b> 90 min</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> meter + P02 parts</span><span><b>Theory</b> T01, T02, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Digital multimeter</b><small>with continuity beeper and diode test</small></li>
+      <li><b>P02 LED circuit</b><small>3×AA, 330 Ω, red LED, breadboard</small></li>
+      <li><b>Spare batteries</b><small>an AA, a 9 V; one flat cell if you have it</small></li>
+      <li><b>AC plug-pack</b><small>9–12 V AC (optional for now)</small></li>
+      <li><b>Silicon diode</b><small>a 1N4148 or 1N4007 from your kit, if any</small></li>
+      <li><b>2 m of two-core cable</b><small>any old figure-8 or alarm cable</small></li>
+    </ul>
+
+    <h2>Know your meter</h2>
+    <p>Every digital multimeter has the same four parts: a <b>display</b>, a <b>rotary dial</b> that chooses what to measure, <b>sockets</b> (jacks) for the test leads, and a few buttons (HOLD, RANGE, REL, SELECT). The jacks matter most, because the wrong jack is how meters get damaged.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Jack</th><th>Used for</th><th>Inside the meter</th></tr>
+      <tr><td><b>COM</b></td><td>The black lead, <b>always</b></td><td>The meter's reference (0 V)</td></tr>
+      <tr><td><b>VΩ</b> (often also diode, continuity, Hz)</td><td>Red lead for volts, ohms, continuity, diode test</td><td>Very high resistance input, about 10 MΩ on volts</td></tr>
+      <tr><td><b>mA µA</b></td><td>Red lead for small currents (up to a few hundred mA)</td><td>A small shunt resistor and a fuse</td></tr>
+      <tr><td><b>A</b> (10 A or 20 A)</td><td>Red lead for big currents</td><td>A tiny shunt (~0.01 Ω) and a bigger fuse</td></tr>
+    </table></div>
+    <p>Dial symbols you will see: <b>V⎓</b> (or V with a straight and dashed line) = DC volts. <b>V~</b> = AC volts. <b>mV</b> = millivolts. <b>Ω</b> = resistance. A diode symbol (▷|) = diode test. A sound-wave symbol = continuity beeper. <b>A, mA, µA</b> = current (often with a SELECT button to switch between DC and AC).</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The meter measures whatever the dial says, wherever the leads are."<br><b>Right:</b> The <b>jack</b> decides what is connected inside the meter. In the A or mA jack, the red lead is joined to COM through a fraction of an ohm. That is perfect in series with a load and a dead short across a supply. Think "jack first, then dial".</p></div>
+
+    <h2>Voltage: measure across</h2>
+    <p>Voltage is a <b>difference</b> between two points, like the height difference between two steps. So you always measure voltage <b>across</b> something: one probe on each side, in parallel with it. The circuit stays exactly as it is.</p>
+    <figure>
+      <svg viewBox="0 0 660 240" role="img" aria-label="Left: voltmeter connected across a resistor. Right: ammeter connected in series by breaking the loop">
+        <defs><marker id="p03-va-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="30" y="24">Voltage: across (parallel)</text>
+        <path class="s-line" d="M60 60 H130 M210 60 H270 V180 H60 V136 M60 108 V60"/>
+        <line class="s-line" x1="40" y1="112" x2="80" y2="112"/><line class="s-line" x1="50" y1="120" x2="70" y2="120"/><line class="s-line" x1="40" y1="128" x2="80" y2="128"/><line class="s-line" x1="50" y1="136" x2="70" y2="136"/>
+        <path class="s-accent" d="M130 60 l6 -9 l12 18 l12 -18 l12 18 l12 -18 l12 18 l14 -9"/>
+        <text class="t t-small" x="150" y="40">R</text>
+        <circle class="f-ink" cx="130" cy="60" r="3"/><circle class="f-ink" cx="210" cy="60" r="3"/>
+        <path class="s-red" d="M130 60 V110 H150"/><path class="s-line" d="M210 60 V110 H190"/>
+        <circle class="f-panel s-line" cx="170" cy="118" r="20"/><text class="t t-bold" x="170" y="123" text-anchor="middle">V</text>
+        <text class="t t-small t-muted" x="80" y="210">Meter: ~10 MΩ, draws almost nothing.</text>
+        <text class="t t-small t-muted" x="80" y="226">Circuit unchanged.</text>
+        <text class="t t-bold" x="370" y="24">Current: in series (break the loop)</text>
+        <path class="s-line" d="M400 60 H470 M550 60 H580 M640 60 H640 V180 H400 V136 M400 108 V60"/>
+        <line class="s-line" x1="380" y1="112" x2="420" y2="112"/><line class="s-line" x1="390" y1="120" x2="410" y2="120"/><line class="s-line" x1="380" y1="128" x2="420" y2="128"/><line class="s-line" x1="390" y1="136" x2="410" y2="136"/>
+        <path class="s-accent" d="M470 60 l6 -9 l12 18 l12 -18 l12 18 l12 -18 l12 18 l14 -9"/>
+        <text class="t t-small" x="490" y="40">R</text>
+        <path class="s-red" d="M580 60 H590"/><path class="s-line" d="M630 60 H640"/>
+        <circle class="f-panel s-line" cx="610" cy="60" r="20"/><text class="t t-bold" x="610" y="65" text-anchor="middle">A</text>
+        <path class="s-red" d="M470 204 H540" marker-end="url(#p03-va-arr)"/>
+        <text class="t t-small t-muted" x="400" y="226">All the current must flow through the meter.</text>
+        <text class="t t-small t-muted" x="548" y="208">~0.1–10 Ω inside</text>
+      </svg>
+      <figcaption>Figure 1. The two ways to connect a meter. A voltmeter goes across a part and has a very high resistance, so it barely disturbs the circuit. An ammeter replaces a piece of wire and has a very low resistance, so the circuit current flows through it.</figcaption>
+    </figure>
+    <h3>Lab: DC volts</h3>
+    <ol class="steps">
+      <li><p><b>Set up.</b> Black lead in COM, red lead in VΩ. Dial to V⎓ (DC volts). On a manual meter choose the 20 V range.</p></li>
+      <li><p><b>Measure an AA cell.</b> Red on +, black on −. A new alkaline cell reads 1.55–1.62 V. A "flat" one reads under about 1.2 V (but see the tip below).</p></li>
+      <li><p><b>Swap the probes.</b> The reading becomes −1.58 V. Nothing is wrong: the minus sign tells you the red probe is on the lower voltage. On a job this is how you find which wire is positive.</p></li>
+      <li><p><b>Measure the 9 V battery</b> (new: 9.3–9.6 V) and the 3×AA pack (4.6–4.8 V).</p></li>
+      <li><p><b>Measure across each part of your P02 circuit</b>: resistor ≈ 2.8 V, LED ≈ 1.9 V, total ≈ 4.7 V.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A battery with nothing connected can read almost full voltage and still be nearly dead. Its internal resistance has risen, so the voltage collapses as soon as current flows. Always test a battery <b>under load</b>: measure the AA pack while it lights the LED, or test a 12 V supply while the camera is running. "Measure under load" is a field rule you will use for life.</p></div>
+    <h3>Lab: AC volts</h3>
+    <p>Set the dial to V~ and measure the output of your AC plug-pack (leads only, never the pack's mains pins). A 12 V AC pack typically reads 13–15 V AC with no load, because transformers are rated at full load. On the DC range the same output reads close to 0 V or jumps around: the DC range averages the waveform, and a sine wave averages to zero. On V~ the meter shows the <b>RMS</b> value, the AC voltage that would give the same heating as that DC voltage. The peak is √2 times higher: 12 V RMS has a peak of about 17 V.</p>
+    <a class="crosslink" href="../theory/t07-ac-fundamentals.html">Theory T07 · AC: sine waves, RMS, phase and impedance</a>
+
+    <h3>Input impedance: why the voltmeter barely changes the circuit</h3>
+    <p>A typical digital meter has an input resistance of about <b>10 MΩ</b> on the volts ranges. Put it across a part and it adds a 10 MΩ path in parallel. For most circuits that is nothing. But in high-resistance circuits it matters:</p>
+    <div class="formula">1 MΩ ∥ 10 MΩ = (1 × 10) / (1 + 10) = 0.909 MΩ
+      <small>Measure the middle of a 1 MΩ / 1 MΩ divider on 9 V. You expect 4.50 V. The meter turns the bottom resistor into 0.909 MΩ, so it reads 9 × 0.909 / 1.909 ≈ 4.29 V, 5% low. On a 10 kΩ / 10 kΩ divider the same meter makes an error of only 0.05%. P04 explores this "loading effect".</small></div>
+    <div class="callout job"><span class="label">On the job</span><p>On site you may measure a disconnected cable core that runs beside mains cables in a tray and read several volts, even tens of volts, AC. That is a "ghost" or phantom voltage, coupled in through cable capacitance; the 10 MΩ meter is too light a load to drain it. Many field meters have a <b>LoZ</b> (low impedance) mode that loads the line so ghost voltages collapse. Never assume a ghost; treat unknown voltages near mains as real, and leave that cabinet to the electrician.</p></div>
+
+    <h2>Current: measure in series</h2>
+    <p>Current is a <b>flow</b>: charge per second past a point. To measure it, the current has to flow <b>through</b> the meter. You must open the circuit and make the meter part of the loop (Figure 1, right).</p>
+    <ol class="steps">
+      <li><p><b>Power off.</b> Always open the circuit with the power off.</p></li>
+      <li><p><b>Move the red lead</b> to the <b>mA</b> jack (or the 10 A jack if you expect more than about 200–400 mA, or have no idea). Dial to mA or A, and DC.</p></li>
+      <li><p><b>Break the loop</b> and bridge the gap with the meter. On the P02 board: pull the black jumper and put the probes where its two ends were. Red towards the + side of the gap.</p></li>
+      <li><p><b>Power on and read.</b> Expect about 8 mA. A minus sign means the current flows into COM: swap the probes or just note it.</p></li>
+      <li><p><b>Power off, put the jumper back, and move the red lead back to VΩ.</b> Make it a reflex.</p></li>
+    </ol>
+    <p>Inside, the meter measures current by measuring the tiny voltage across a known <b>shunt</b> resistor (Ohm's law again). That voltage is lost from your circuit and is called the <b>burden voltage</b>. On the mA range it might be a few ohms, which drops about 8 mA × 10 Ω = 0.08 V: small but not zero, so the LED current reads slightly lower than without the meter.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>The current jacks are protected by fuses. A good field meter uses ceramic <b>HRC</b> fuses, designed to break a very large fault current without exploding. Replace a blown fuse only with the exact type and rating printed on the meter. The 10 A range is often rated for short periods only (for example 10 A for 30 seconds, then a rest); check your manual.</p></div>
+    <h3>Check your fuse</h3>
+    <p>If the current ranges read 0 and the circuit dies when the meter is inserted, the fuse is probably blown. Test it: dial to Ω, red lead in VΩ, and touch the red probe tip into the mA jack. A good fuse and shunt read a few ohms or less. "OL" means the fuse is open. Repeat for the A jack (should read close to 0 Ω).</p>
+
+    <h2>Resistance, continuity and diode test</h2>
+    <h3>Resistance: power off, part isolated</h3>
+    <p>On Ω, the meter pushes a small known current from its own battery through the part and measures the voltage. That only works if <b>no other source</b> is pushing current. Two rules:</p>
+    <ol>
+      <li><b>Power off.</b> An external voltage gives a meaningless reading and can damage the meter on cheap models.</li>
+      <li><b>Isolate the part.</b> In a circuit, other parts sit in parallel with it, and the meter measures the combination. Measure resistors out of the board, or lift one leg.</li>
+    </ol>
+    <p>Other habits: short the probes together and note the lead resistance (0.1–0.5 Ω); subtract it from low readings, or use REL (relative) mode to zero it. Do not hold both probe tips with your fingers on values above about 100 kΩ, because your body (roughly 100 kΩ to 1 MΩ hand to hand) adds a parallel path. "OL" means over limit: above the range, or open circuit.</p>
+    <h3>Continuity: the beeper</h3>
+    <p>Continuity mode beeps when the resistance is below a threshold (often somewhere around 20–50 Ω, depending on the meter). You do not look at the meter, you listen, so your eyes stay on the probes. Use it for: wires and cable cores, fuses, switch contacts, breadboard rails, PCB tracks, and the "is this the same wire?" question. Power must be off.</p>
+    <h3>Diode test</h3>
+    <p>On the diode setting, the meter pushes about 1 mA through the part and shows the <b>voltage</b> across it. That is exactly the forward voltage at about 1 mA.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Part</th><th>Red on anode (forward)</th><th>Red on cathode (reverse)</th></tr>
+      <tr><td>Silicon diode (1N4148, 1N4007)</td><td>0.5–0.7 V (shown as 0.550–0.700)</td><td>OL</td></tr>
+      <tr><td>Schottky diode</td><td>0.15–0.45 V</td><td>OL</td></tr>
+      <tr><td>Red LED</td><td>1.6–2.0 V, may glow faintly</td><td>OL</td></tr>
+      <tr><td>Blue or white LED</td><td>2.6–3.0 V, or OL if the meter's test voltage is too low</td><td>OL</td></tr>
+      <tr><td>Shorted diode</td><td>~0.000</td><td>~0.000</td></tr>
+      <tr><td>Open diode</td><td>OL</td><td>OL</td></tr>
+      <tr><td>Transistor base–emitter (NPN)</td><td>0.6–0.7 V (red on base)</td><td>OL</td></tr>
+    </table></div>
+    <div class="callout why"><span class="label">Why it works</span><p>The forward voltage at about 1 mA is set by the semiconductor: about 0.6 V for silicon, about 0.3 V for a Schottky metal–semiconductor junction, and about 1.8–2 V for a red LED whose wider band gap makes red photons. Reverse bias widens the depletion region and only a tiny leakage flows, so the meter shows OL.</p></div>
+    <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Deep dive · Why a diode has polarity</a>
+
+    <h2>Auto-ranging, resolution and accuracy</h2>
+    <p>A meter's display has a fixed number of <b>counts</b>. A "2000-count" meter shows at most 1999. On a manual 2 V range a 1.534 V cell shows 1.534; on the 20 V range it shows 1.53; on the 200 V range only 1.5. Choose the <b>lowest range that is above</b> your reading. If you do not know what to expect, start on the highest range and work down. "OL" or "1" at the left means the value is above the range.</p>
+    <p>An <b>auto-ranging</b> meter does this for you: it starts high and steps down. It is slower (half a second to settle) and sometimes hunts between ranges on a changing signal; press RANGE to lock it. Always look at the units on the display: mV vs V and kΩ vs MΩ are the most common reading errors.</p>
+    <p><b>Accuracy</b> is written like "±(0.5% + 2 counts)". On a 20.00 V range reading 12.00 V: 0.5% of 12 = 0.06 V, plus 2 counts of 0.01 V = 0.02 V, total ±0.08 V. So 11.92 to 12.08 V are all "correct". Do not worry about the last digit.</p>
+    <p><b>True RMS</b>: a cheap meter calculates AC volts assuming a pure sine wave. Distorted waveforms (from dimmers, variable-speed drives or switch-mode supplies) can read 10–40% wrong. A true-RMS meter computes the real heating value. Buy true RMS for field work.</p>
+
+    <h2>Which setting, which jack?</h2>
+    <p>Pick a task. The meter shows where the dial goes, which jacks to use, how to connect, and what to expect. Try them all, and especially the last one.</p>
+    <div class="widget" id="p03-pick">
+      <span class="label">Interactive · Setting and lead picker</span>
+      <label>Measurement task
+        <select id="p03-task" style="max-width:100%"></select>
+      </label>
+      <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;margin-top:10px">
+        <svg viewBox="0 0 300 340" style="width:260px;max-width:100%;flex:none" role="img" aria-label="Multimeter with dial and jacks highlighted for the selected task">
+          <rect class="f-wash s-line" x="14" y="6" width="272" height="328" rx="20"/>
+          <rect class="f-panel s-line" x="52" y="18" width="196" height="54" rx="6"/>
+          <text id="p03-disp" class="t t-bold" x="150" y="54" text-anchor="middle" style="font-family:var(--mono);font-size:22px">-.--</text>
+          <circle class="f-panel s-line" cx="150" cy="190" r="56"/>
+          <circle class="f-wash s-thin" cx="150" cy="190" r="40"/>
+          <line id="p03-ptr" class="s-accent" x1="150" y1="190" x2="150" y2="140" style="stroke-width:6;stroke-linecap:round"/>
+          <g id="p03-dial">
+            <text class="t t-small" x="85" y="259" text-anchor="middle" data-k="off">OFF</text>
+            <text class="t t-small" x="58" y="218" text-anchor="middle" data-k="vdc">V⎓</text>
+            <text class="t t-small" x="58" y="170" text-anchor="middle" data-k="vac">V~</text>
+            <text class="t t-small" x="85" y="129" text-anchor="middle" data-k="mv">mV</text>
+            <text class="t t-small" x="126" y="104" text-anchor="middle" data-k="ohm">Ω</text>
+            <text class="t t-small" x="174" y="104" text-anchor="middle" data-k="cont">·)))</text>
+            <text class="t t-small" x="215" y="129" text-anchor="middle" data-k="diode">▷|</text>
+            <text class="t t-small" x="242" y="170" text-anchor="middle" data-k="ua">µA</text>
+            <text class="t t-small" x="242" y="218" text-anchor="middle" data-k="ma">mA</text>
+            <text class="t t-small" x="215" y="259" text-anchor="middle" data-k="a">A</text>
+          </g>
+          <circle id="p03-j-a" class="f-panel s-line" cx="60" cy="296" r="13"/>
+          <circle id="p03-j-ma" class="f-panel s-line" cx="120" cy="296" r="13"/>
+          <circle id="p03-j-com" class="f-panel s-line" cx="180" cy="296" r="13"/>
+          <circle id="p03-j-v" class="f-panel s-line" cx="240" cy="296" r="13"/>
+          <text class="t t-small" x="60" y="326" text-anchor="middle">10A</text>
+          <text class="t t-small" x="120" y="326" text-anchor="middle">mA µA</text>
+          <text class="t t-small" x="180" y="326" text-anchor="middle">COM</text>
+          <text class="t t-small" x="240" y="326" text-anchor="middle">VΩ▷</text>
+        </svg>
+        <div style="flex:1;min-width:220px;font-size:15.5px" id="p03-info"></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var ang={off:-135,vdc:-105,vac:-75,mv:-45,ohm:-15,cont:15,diode:45,ua:75,ma:105,a:135};
+      var T=[
+        {t:'Voltage of an AA cell',d:'vdc',r:'v',disp:'1.58 V',c:'Across the cell: red on +, black on −.',p:'Power: the cell is the source.',e:'1.55–1.62 V new; under ~1.2 V flat (test under load).',w:'A minus sign just means the probes are swapped.'},
+        {t:'Output of a 12 V AC plug-pack',d:'vac',r:'v',disp:'13.9 V~',c:'Across the two output wires of the lead. Never near the mains pins.',p:'Plugged in, output lead only.',e:'13–15 V AC unloaded (label is at full load).',w:'On V⎓ it reads near 0 or jumps: wrong setting.'},
+        {t:'24 V AC at a BMS controller supply terminals',d:'vac',r:'v',disp:'26.4 V~',c:'Across the 24 V AC terminal and its 0 V/common terminal on the controller.',p:'Powered (live ELV), with the controller running.',e:'About 24–28 V AC; well under ~21.5 V suggests overload or a long thin feed.',w:'Use a CAT III meter: the transformer\'s 230 V side is often in the same cabinet. Do not touch or open the mains side.'},
+        {t:'24 V DC supply on an access-control panel',d:'vdc',r:'v',disp:'27.3 V',c:'Red on +24 V, black on 0 V (−).',p:'Powered.',e:'About 24–27.6 V (battery-backed supplies float above 24 V).',w:'A negative reading means red is on 0 V: note which terminal is which.'},
+        {t:'12 V at a CCTV camera with IR on (under load)',d:'vdc',r:'v',disp:'11.4 V',c:'Across the camera\'s power terminals at the camera end, not at the supply.',p:'Powered and loaded: force night mode (cover the light sensor) so the IR LEDs draw full current.',e:'≥ about 11 V is healthy for most 12 V cameras; check the datasheet.',w:'Measuring at the supply end or in daylight hides the voltage drop in the cable.'},
+        {t:'LED current on the breadboard',d:'ma',r:'ma',disp:'8.42 mA',c:'In series: remove one jumper and bridge the gap with the probes.',p:'Power off to rearrange, then on to read.',e:'7.5–9 mA for 330 Ω on 4.7 V.',w:'Move the red lead back to VΩ afterwards.'},
+        {t:'4–20 mA loop from a pressure transmitter',d:'ma',r:'ma',disp:'12.00 mA',c:'In series: open the loop at a terminal (or use the transmitter\'s TEST terminals if it has them) and bridge with the meter.',p:'Loop powered (24 V DC). Warn the operator and put the point in manual first.',e:'4 mA = 0%, 20 mA = 100%. 12 mA = 50%.',w:'Breaking the loop makes the controller see 0 mA: it may alarm or move a valve.'},
+        {t:'Current of a 12 V DC motor (1–5 A)',d:'a',r:'a',disp:'2.31 A',c:'In series with one motor wire.',p:'Power off to connect, on to read; short readings only.',e:'Depends on load; start-up surge is several times the running current.',w:'The 10 A range is often time-limited (e.g. 30 s). Never use the mA jack for amps.'},
+        {t:'Value of a resistor on the bench',d:'ohm',r:'v',disp:'0.329 kΩ',c:'Across the resistor, out of circuit (or one leg lifted).',p:'Power OFF. Always.',e:'Within the tolerance band, e.g. 314–346 Ω for 330 Ω ±5%.',w:'Do not hold both tips with your fingers on high values.'},
+        {t:'Find a broken core in a cable',d:'cont',r:'v',disp:'0.8 Ω ·)))',c:'Short two cores together at the far end; test between them at the near end. Swap pairs to find the bad core.',p:'Power OFF and disconnected at both ends.',e:'Beep and a few ohms for a good loop; OL for a broken core.',w:'A cable still connected to equipment gives false beeps through the equipment.'},
+        {t:'Which LED leg is the anode?',d:'diode',r:'v',disp:'1.82 V',c:'Red on one leg, black on the other; then swap.',p:'Out of circuit, no power.',e:'1.6–2.0 V when red is on the anode (it may glow); OL the other way.',w:'Some meters cannot light blue/white LEDs; OL both ways does not always mean dead.'},
+        {t:'Is this glass fuse blown?',d:'cont',r:'v',disp:'0.1 Ω ·)))',c:'Across the fuse\'s two end caps, fuse removed from its holder.',p:'Power OFF, fuse removed.',e:'Beep, near 0 Ω = good. OL = blown.',w:'Find out why it blew before you replace it.'},
+        {t:'"How much current can my supply give?" (probes across the terminals)',d:'a',r:'a',disp:'FUSE!',c:'DON\'T. Putting an ammeter across a supply is a dead short.',p:'Never do this.',e:'The meter\'s shunt (~0.01 Ω) shorts the supply: a huge current flows until the fuse blows, or worse.',w:'Current is measured in series with a load. A supply\'s capability is read from its label.'}
+      ];
+      var sel=document.getElementById('p03-task');
+      T.forEach(function(x,i){var o=document.createElement('option');o.value=i;o.textContent=x.t;sel.appendChild(o);});
+      function jack(id,cls){document.getElementById(id).setAttribute('class',cls);}
+      function show(){
+        var x=T[+sel.value];
+        document.getElementById('p03-ptr').setAttribute('transform','rotate('+ang[x.d]+' 150 190)');
+        document.querySelectorAll('#p03-dial text').forEach(function(t){
+          t.setAttribute('class',t.getAttribute('data-k')===x.d?'t t-bold t-accent':'t t-small t-muted');});
+        jack('p03-j-a','f-panel s-line');jack('p03-j-ma','f-panel s-line');jack('p03-j-v','f-panel s-line');
+        jack('p03-j-com','f-ink s-line');
+        jack(x.r==='a'?'p03-j-a':x.r==='ma'?'p03-j-ma':'p03-j-v','f-red s-line');
+        var d=document.getElementById('p03-disp');d.textContent=x.disp;
+        d.setAttribute('class',x.disp==='FUSE!'?'t t-bold t-red':'t t-bold');
+        var jr=x.r==='a'?'10 A jack':x.r==='ma'?'mA µA jack':'VΩ jack';
+        var mode={vdc:'V⎓ (DC volts)',vac:'V~ (AC volts)',ohm:'Ω (resistance)',cont:'continuity (beeper)',diode:'diode test',ma:'mA, DC',a:'A, DC',ua:'µA',mv:'mV',off:'OFF'}[x.d];
+        document.getElementById('p03-info').innerHTML=
+          '<p style="margin:0 0 6px"><b>Dial:</b> '+mode+'</p>'+
+          '<p style="margin:0 0 6px"><b>Leads:</b> black in COM, red in the '+jr+'</p>'+
+          '<p style="margin:0 0 6px"><b>Connect:</b> '+x.c+'</p>'+
+          '<p style="margin:0 0 6px"><b>Power:</b> '+x.p+'</p>'+
+          '<p style="margin:0 0 6px"><b>Expect:</b> '+x.e+'</p>'+
+          '<p style="margin:0;color:var(--warn)"><b>Watch out:</b> '+x.w+'</p>';
+      }
+      sel.addEventListener('change',show);show();
+    })();
+    </script>
+
+    <h2>Field uses</h2>
+    <p>These are the measurements you will make in the first months of a BMS, security or telecom job. All of them are on ELV circuits, usually inside a cabinet that may also contain mains equipment, which is why the CAT rating and your probe discipline matter.</p>
+
+    <h3>24 V AC and 24 V DC on controllers</h3>
+    <p>Many BMS controllers, valve actuators and damper actuators run on <b>24 V AC</b> from a small control transformer. Access-control and alarm panels mostly use <b>12 V or 24 V DC</b> from a power supply with a backup battery. First job on a "dead controller" call: measure the supply at the controller's own terminals.</p>
+    <ul>
+      <li>24 V AC on V~: expect roughly 24–28 V AC. A lightly loaded transformer reads high. A reading well below about 21–22 V suggests an overloaded transformer or a long, thin feed. Check the device's datasheet for its allowed range.</li>
+      <li>24 V DC on V⎓: battery-backed supplies "float" the battery at about 27 V, so 27.0–27.6 V on a 24 V system is normal. For 12 V systems, 13.6–13.8 V is normal float.</li>
+      <li>If the controller is dead but its supply terminals read correctly, the problem is the controller (or its fuse). If the terminals read 0 V, work back towards the supply, measuring at each joint, until you find where the voltage disappears.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>You may measure the 24 V output of a control transformer, but the transformer's 230 V side is mains: wiring it, replacing it or measuring it is work for a licensed electrician. On site, follow your employer's isolation and test-before-touch procedures. Confirm current requirements with your state's electrical safety regulator.</p></div>
+
+    <h3>A 12 V camera supply under load</h3>
+    <p>A very common call-out: "the camera reboots at night." At night the camera switches on its infrared (IR) LEDs and its current might rise from 0.4 A to 0.9 A. On a long thin cable, the voltage drop rises with it.</p>
+    <div class="formula">R<sub>loop</sub> = 2 × 40 m × 0.034 Ω/m = 2.7 Ω  →  V<sub>drop</sub> = 0.9 A × 2.7 Ω ≈ 2.5 V
+      <small>A 40 m run of 0.5 mm² copper figure-8 cable (about 0.034 Ω per metre per core; current goes out on one core and back on the other, hence 2 ×). The supply reads 12.0 V, but the camera gets about 9.5 V at night and browns out. In daylight (0.4 A) it gets about 10.9 V and seems fine.</small></div>
+    <p>So: measure at the <b>camera end</b>, with the camera <b>under its worst load</b> (cover the light sensor with tape to force night mode). Fixes: thicker cable (P05 has a voltage-drop calculator), a supply closer to the camera, or PoE.</p>
+
+    <h3>Measuring a 4–20 mA loop</h3>
+    <p>Industrial and building sensors (pressure, flow, humidity transmitters) often send their reading as a current between 4 mA and 20 mA. The current is the same everywhere in a series loop, so long cables and connection resistance do not change the value. 4 mA means 0% of range, 20 mA means 100%, and 0 mA means the loop is broken: a "live zero" that lets the controller detect faults.</p>
+    <figure>
+      <svg viewBox="0 0 620 230" role="img" aria-label="A 4 to 20 milliamp loop: 24 volt DC supply, two-wire transmitter, controller input resistor, with the meter inserted in series at a terminal">
+        <defs><marker id="p03-loop-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <line class="s-line" x1="60" y1="96" x2="100" y2="96"/><line class="s-line" x1="70" y1="104" x2="90" y2="104"/><line class="s-line" x1="60" y1="112" x2="100" y2="112"/><line class="s-line" x1="70" y1="120" x2="90" y2="120"/>
+        <text class="t t-small" x="10" y="88">24 V DC</text><text class="t t-bold" x="48" y="94">+</text>
+        <path class="s-line" d="M80 96 V40 H240 M280 40 H390 V70 M390 140 V190 H260 M190 190 H80 V120"/>
+        <circle class="f-panel s-line" cx="260" cy="40" r="20"/><text class="t t-small t-bold" x="260" y="45" text-anchor="middle">mA</text>
+        <text class="t t-small t-red" x="222" y="76">meter in series</text>
+        <text class="t t-small t-muted" x="214" y="92">(loop opened here)</text>
+        <rect class="f-practice-soft s-line" x="350" y="70" width="80" height="70" rx="6"/>
+        <text class="t t-small t-bold" x="390" y="100" text-anchor="middle">2-wire</text><text class="t t-small t-bold" x="390" y="116" text-anchor="middle">transmitter</text>
+        <text class="t t-small t-muted" x="440" y="96">0–10 bar</text><text class="t t-small t-muted" x="440" y="112">→ 4–20 mA</text>
+        <rect class="f-theory-soft s-thin" x="150" y="150" width="150" height="70" rx="6"/>
+        <path class="s-accent" d="M190 190 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <text class="t t-small" x="225" y="168" text-anchor="middle">controller input</text>
+        <text class="t t-small" x="225" y="214" text-anchor="middle">250 Ω → 1–5 V</text>
+        <path class="s-red" d="M130 30 H190" marker-end="url(#p03-loop-arr)"/>
+        <text class="t t-small t-red" x="96" y="26">I (same everywhere)</text>
+      </svg>
+      <figcaption>Figure 2. A 4–20 mA loop. The supply, the transmitter and the controller's input resistor are in series, so one current flows through all of them. The controller reads it as a voltage across its input resistor: 4 mA × 250 Ω = 1 V, 20 mA × 250 Ω = 5 V. Your meter goes in series, on the mA range.</figcaption>
+    </figure>
+    <div class="formula">value = 0 + (I − 4) / 16 × (10 − 0) bar = (12 − 4) / 16 × 10 = 5.0 bar
+      <small>Worked example: a 0–10 bar transmitter reading 12.00 mA means 50% of range, 5.0 bar. If the controller shows 4.2 bar but your meter reads 12.00 mA, the transmitter is fine and the controller's scaling is wrong. If the meter also says 10.7 mA, the transmitter (or the actual pressure) is the issue. A reading below about 3.6 mA or above about 21 mA is commonly used as a "sensor failed" signal (the NAMUR NE 43 convention).</small></div>
+    <div class="callout job"><span class="label">On the job</span><p>Before opening a live loop, tell the operator or put the point into manual/override on the BMS. The moment you break the loop, the controller sees 0 mA, and its program may raise an alarm or drive a valve or fan to a safe position. Some transmitters have <b>TEST</b> terminals so you can measure loop current without breaking it. Clamp meters for milliamps exist too and are common with instrument technicians.</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h3>Finding a broken wire with continuity</h3>
+    <p>A cable run is in the ceiling and you cannot reach both ends with your probes at once. Use the <b>loop-back</b> method:</p>
+    <figure>
+      <svg viewBox="0 0 620 200" role="img" aria-label="Loop-back continuity test: two cores shorted at the far end, meter testing between them at the near end">
+        <rect class="f-wash s-thin" x="150" y="40" width="320" height="100" rx="8"/>
+        <text class="t t-small t-muted" x="310" y="32" text-anchor="middle">cable run in the ceiling, 30 m</text>
+        <line class="s-red" x1="120" y1="64" x2="500" y2="64"/>
+        <line class="s-line" x1="120" y1="90" x2="500" y2="90"/>
+        <line class="s-blue" x1="120" y1="116" x2="320" y2="116"/><line class="s-blue" x1="336" y1="116" x2="500" y2="116"/>
+        <text class="t t-small t-red t-bold" x="328" y="134" text-anchor="middle">break</text>
+        <path class="s-accent" d="M500 64 H540 V90 H500"/>
+        <text class="t t-small" x="548" y="70">short two</text><text class="t t-small" x="548" y="86">cores here</text>
+        <circle class="f-panel s-line" cx="60" cy="77" r="22"/><text class="t t-small t-bold" x="60" y="81" text-anchor="middle">·)))</text>
+        <path class="s-red" d="M82 70 H100 V64 H120"/><path class="s-line" d="M82 84 H100 V90 H120"/>
+        <text class="t t-small" x="20" y="130">Red + black core: beep (good)</text>
+        <text class="t t-small" x="20" y="148">Move the short to black + blue: OL → blue is broken</text>
+        <text class="t t-small t-muted" x="20" y="176">Power off and both ends disconnected from equipment.</text>
+      </svg>
+      <figcaption>Figure 3. Loop-back testing. Short a pair of cores together at the far end and test the pair from the near end. A beep proves both cores. Then short a different pair; the core that is in every failing pair is the broken one.</figcaption>
+    </figure>
+    <p>Note the resistance too. Two cores of 30 m of 0.5 mm² should read about 2 × 30 × 0.034 ≈ 2 Ω. If a pair beeps but reads 30 Ω, there is a bad joint or a corroded terminal somewhere: "continuity" is not the same as "a good connection". A long tail lead (a reel of wire to bring the far end back to you) also works.</p>
+
+    <h2>CAT ratings and probe care</h2>
+    <p>P01 explained measurement categories. For daily use: your meter's rating is only as good as its <b>leads</b>. The leads have their own CAT rating printed on them; the system is rated at the lower of the two.</p>
+    <ul>
+      <li><b>Inspect before use</b>: cracked insulation, exposed metal near the plug, loose tips. Replace damaged leads; do not tape them.</li>
+      <li><b>Fingers behind the finger guards</b> on the probes, always.</li>
+      <li><b>Tip caps</b>: many CAT III/IV probe sets come with caps that leave only a few millimetres of metal exposed, to prevent a probe slipping and bridging two terminals. Many sites require them.</li>
+      <li><b>Connect black first, remove it last.</b> Then the red, "live" probe is the only one you move.</li>
+      <li><b>Keep the meter's battery fresh.</b> A low battery can make readings wrong without warning on cheap meters.</li>
+      <li><b>Store the meter switched off</b>, with the red lead in VΩ, so your next measurement starts safe.</li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>Your multimeter work in this course is on ELV only. A meter rating gives you no permission to measure mains. If a reading surprises you with an unexpected high voltage, step back, do not touch anything, and report it.</p></div>
+
+    <h2>The classic mistakes</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mistake</th><th>What happens</th><th>Habit that prevents it</th></tr>
+      <tr><td><b>Measuring "current" across a supply or battery</b> (leads in A/mA jack, probes across the terminals)</td><td>The meter's shunt (a fraction of an ohm) is a dead short. A 12 V supply drives tens of amps; the fuse blows. With a cheap glass fuse or a big battery: arc, melted probe tips, burns.</td><td>Current is always measured in series with a load. Red lead back to VΩ straight after every current measurement.</td></tr>
+      <tr><td>Leaving the red lead in mA, then measuring volts</td><td>Same short as above, a few minutes later when you have forgotten.</td><td>Store with the red lead in VΩ. Many good meters beep a warning if a lead is in the A jack and the dial is on volts.</td></tr>
+      <tr><td>Measuring resistance with power on</td><td>Wrong reading; possible meter damage.</td><td>Power off, then measure.</td></tr>
+      <tr><td>Measuring a resistor in circuit</td><td>Reads lower (parallel paths).</td><td>Lift one leg.</td></tr>
+      <tr><td>DC range on an AC supply (or AC on DC)</td><td>Near zero or nonsense.</td><td>Read the label first: ~ or ⎓.</td></tr>
+      <tr><td>Reading the wrong unit (mV vs V, kΩ vs MΩ)</td><td>A factor of 1000 error in your report.</td><td>Say the unit out loud when you write the reading.</td></tr>
+      <tr><td>Testing a supply with no load</td><td>"It reads 12 V, so it's fine," but it collapses under load.</td><td>Measure under real load, at the far end.</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "To see how many amps a power supply has, put the meter on amps across it."<br><b>Right:</b> A supply does not "contain" a current. It provides a voltage, and the <b>load</b> decides the current (I = V/R). The maximum current it can safely provide is printed on its label. An ammeter across it is a load of almost 0 Ω, which asks for an almost unlimited current.</p></div>
+    <a class="crosslink" href="../theory/t01-charge-current-voltage.html">Theory T01 · Charge, current and voltage</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does a voltmeter need a very high resistance and an ammeter a very low one?</summary><div class="answer"><p>A voltmeter goes in parallel, so any current it draws is stolen from the circuit; 10 MΩ draws almost nothing. An ammeter goes in series, so its resistance adds to the loop and drops voltage; a fraction of an ohm drops almost nothing. Each design disturbs the circuit as little as possible in its own connection.</p></div></details>
+    <details class="quiz"><summary>Your meter reads −11.9 V on a 12 V DC supply. Is the supply faulty?</summary><div class="answer"><p>No. The minus sign means your red probe is on the negative terminal. Swap the probes or just note which terminal is positive. A digital meter on DC shows polarity; it does not get damaged by it.</p></div></details>
+    <details class="quiz"><summary>A 0–100% humidity transmitter is 4–20 mA. Your meter reads 15.2 mA. What humidity is that?</summary><div class="answer"><p>(15.2 − 4)/16 × 100 = 11.2/16 × 100 = 70% RH.</p></div></details>
+    <details class="quiz"><summary>You measure a 1 kΩ resistor still soldered on a board and get 680 Ω. Why?</summary><div class="answer"><p>Another path on the board is in parallel with it. 1 kΩ ∥ R<sub>other</sub> = 680 Ω means R<sub>other</sub> ≈ 2.1 kΩ. Lift one leg (or power off and isolate the part) to measure the resistor alone.</p></div></details>
+    <details class="quiz"><summary>On the diode test, a part reads 0.62 V one way and OL the other. A second part reads 0.003 both ways. What are they?</summary><div class="answer"><p>The first is a healthy silicon diode (or a transistor junction): about 0.6 V forward, blocking in reverse. The second is shorted: it conducts both ways with almost no voltage drop.</p></div></details>
+    <details class="quiz"><summary>A camera supply reads 12.1 V at the power supply. The camera at the end of a 50 m cable reboots every night. What do you measure, where, and when?</summary><div class="answer"><p>DC volts at the camera's own terminals, with the camera in night mode (IR on, cover the light sensor). You will probably find the voltage well below the camera's minimum, because the IR current makes the cable drop several volts. Measuring at the supply end, or in daytime, hides the problem.</p></div></details>
+    <details class="quiz"><summary>You put the probes across a 12 V supply with the red lead still in the 10 A jack. What happens, and why?</summary><div class="answer"><p>The 10 A jack connects the probes through a shunt of about 0.01 Ω. I = 12 / 0.01 = 1200 A in theory; in practice the supply's limit or the fuse acts. The fuse blows (if it is a proper one) or the leads, meter or supply are damaged. You have measured nothing, because an ammeter must be in series with a load.</p></div></details>
+    <details class="quiz"><summary>A continuity test on a pair of 30 m cable cores beeps but reads 25 Ω. Is the cable fine?</summary><div class="answer"><p>Not necessarily. 30 m of 0.5 mm² should read about 2 Ω for the pair. 25 Ω suggests a high-resistance joint, a corroded or loose terminal, or a damaged core. Under load that resistance will drop voltage and heat up. Continuity is not the same as a good connection; read the number, not just the beep.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I always put the black lead in COM and choose the red jack before turning the dial.</span></li>
+      <li><input type="checkbox"><span>I can measure DC and AC voltage across a part and explain a negative reading.</span></li>
+      <li><input type="checkbox"><span>I can measure current in series, and I move the red lead back to VΩ afterwards.</span></li>
+      <li><input type="checkbox"><span>I can check my meter's fuses with the ohms range.</span></li>
+      <li><input type="checkbox"><span>I measure resistance only with power off and the part isolated.</span></li>
+      <li><input type="checkbox"><span>I can use continuity and loop-back testing to find a broken core.</span></li>
+      <li><input type="checkbox"><span>I can identify a diode's or LED's anode with the diode test and know the typical readings.</span></li>
+      <li><input type="checkbox"><span>I can convert a 4–20 mA reading into a percentage and an engineering value.</span></li>
+      <li><input type="checkbox"><span>I measure supplies under load, at the far end of the cable.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

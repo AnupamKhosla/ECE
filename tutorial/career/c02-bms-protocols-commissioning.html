@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C02 · BMS protocols and commissioning: BACnet, Modbus, Niagara</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part I · Building services</div>
+    <span class="eyebrow">Job Track · C02</span>
+    <h1>BMS protocols and commissioning: BACnet, Modbus, Niagara</h1>
+    <p class="lede">Controllers from different makers have to share data, and every new system has to be proven before handover. This chapter teaches the protocols you will meet (BACnet, Modbus, Niagara, plus LonWorks, KNX and DALI in brief), how to map a raw register to a real value, and the commissioning steps a technician signs off. It ends with a free home lab you can build to practise.</p>
+    <div class="meta"><span><b>Reading</b> 60 min</span><span><b>Level</b> Beginner–Intermediate</span><span><b>Lab cost</b> ~A$0–150</span><span><b>Builds on</b> C01, P14, P19</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Why protocols matter</h2>
+    <p>A <b>protocol</b> is an agreed language: what the bytes on the wire mean. In a building, the chiller comes from one maker, the energy meters from another, the VSDs from a third and the BMS from a fourth. Without a shared protocol, each needs a custom interface. With an <b>open protocol</b>, the BMS can read the chiller's leaving water temperature as easily as its own sensor.</p>
+    <p>Two open protocols dominate building work: <b>BACnet</b>, designed for buildings, and <b>Modbus</b>, a simple industrial protocol found in meters, drives and plant. On top of these, many integrators use a software framework (often <b>Niagara</b>) to bring everything into one database. As a technician, most of your protocol work is <b>integration</b>: finding devices, mapping points, checking values are scaled right, and fixing communication faults.</p>
+    <a class="crosslink" href="../practice/p14-serial-buses-modbus.html">Practice P14 · Talking to devices: UART, I²C, SPI, RS-485 and Modbus (build the bus on your bench)</a>
+
+    <h2>BACnet: objects and properties</h2>
+    <p>BACnet is the "Building Automation and Control networks" protocol, published as ASHRAE Standard 135 and also as ISO 16484-5. Its key idea is simple: <b>every device describes itself as a collection of standard objects, and every object has standard properties</b>. You do not need the maker's manual to know that an Analog Input object has a Present_Value. That is what makes BACnet "interoperable".</p>
+    <figure>
+      <svg viewBox="0 0 760 350" role="img" aria-label="BACnet device containing objects, each with properties">
+        <rect class="f-accent-soft s-accent" x="10" y="10" width="740" height="330" rx="10"/>
+        <text class="t t-bold" x="26" y="34">Device 30101 · "AHU-01 controller"</text>
+        <text class="t t-small t-muted" x="26" y="52">every device has exactly one Device object; its instance number must be unique on the whole BACnet internetwork</text>
+        <!-- device object -->
+        <rect class="f-panel s-line" x="26" y="66" width="220" height="130" rx="6"/>
+        <text class="t t-small t-bold" x="38" y="86">device, 30101</text>
+        <text class="t t-small" x="38" y="106">Object_Name: AHU01-DDC</text>
+        <text class="t t-small" x="38" y="124">Vendor_Name: (maker)</text>
+        <text class="t t-small" x="38" y="142">Object_List: [ … ]</text>
+        <text class="t t-small" x="38" y="160">Max_APDU_Length: 480</text>
+        <text class="t t-small" x="38" y="178">System_Status: operational</text>
+        <!-- AI -->
+        <rect class="f-panel s-line" x="266" y="66" width="230" height="130" rx="6"/>
+        <text class="t t-small t-bold" x="278" y="86">analog-input, 1</text>
+        <text class="t t-small" x="278" y="106">Object_Name: AHU-01_SAT</text>
+        <text class="t t-small t-accent t-bold" x="278" y="124">Present_Value: 13.2</text>
+        <text class="t t-small" x="278" y="142">Units: degrees-Celsius</text>
+        <text class="t t-small" x="278" y="160">Status_Flags: {F, F, F, F}</text>
+        <text class="t t-small" x="278" y="178">Out_Of_Service: FALSE</text>
+        <!-- BO -->
+        <rect class="f-panel s-line" x="516" y="66" width="220" height="150" rx="6"/>
+        <text class="t t-small t-bold" x="528" y="86">binary-output, 1</text>
+        <text class="t t-small" x="528" y="106">Object_Name: AHU-01_SF_SS</text>
+        <text class="t t-small t-accent t-bold" x="528" y="124">Present_Value: active</text>
+        <text class="t t-small" x="528" y="142">Priority_Array:</text>
+        <text class="t t-small t-muted" x="540" y="160">[8] active (operator)</text>
+        <text class="t t-small t-muted" x="540" y="178">[16] inactive (program)</text>
+        <text class="t t-small" x="528" y="198">Relinquish_Default: inactive</text>
+        <!-- AV and others -->
+        <rect class="f-panel s-line" x="26" y="214" width="220" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="38" y="234">analog-value, 3</text>
+        <text class="t t-small" x="38" y="254">Object_Name: AHU-01_SAT_SP</text>
+        <text class="t t-small t-accent t-bold" x="38" y="272">Present_Value: 13.0</text>
+        <text class="t t-small" x="38" y="290">Units: degrees-Celsius</text>
+        <text class="t t-small t-muted" x="38" y="308">a software point (setpoint)</text>
+        <rect class="f-panel s-line" x="266" y="214" width="230" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="278" y="234">binary-input, 1</text>
+        <text class="t t-small" x="278" y="254">Object_Name: AHU-01_SF_ST</text>
+        <text class="t t-small t-accent t-bold" x="278" y="272">Present_Value: inactive</text>
+        <text class="t t-small t-red" x="278" y="290">Status_Flags: {T, F, F, F}</text>
+        <text class="t t-small t-muted" x="278" y="308">IN_ALARM: command fail!</text>
+        <text class="t t-small t-muted" x="528" y="246">Also common:</text>
+        <text class="t t-small" x="528" y="266">schedule, calendar,</text>
+        <text class="t t-small" x="528" y="284">trend-log, notification-class,</text>
+        <text class="t t-small" x="528" y="302">multi-state-value, loop</text>
+      </svg>
+      <figcaption>Figure 1. A BACnet device is a box of objects. Each object is named by <i>type + instance</i> (for example analog-input,1) and holds properties. The fan here is commanded active but its status input is inactive, so the BI's Status_Flags show IN_ALARM.</figcaption>
+    </figure>
+    <h3>Object types you will use every day</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Object</th><th>Short</th><th>Typical use</th></tr>
+      <tr><td>Analog Input</td><td>AI</td><td>A physical analogue input: temperature, pressure, CO₂</td></tr>
+      <tr><td>Analog Output</td><td>AO</td><td>A physical analogue output: valve, damper, VSD speed</td></tr>
+      <tr><td>Analog Value</td><td>AV</td><td>A software number: setpoint, calculated value, a value mapped from Modbus</td></tr>
+      <tr><td>Binary Input / Output / Value</td><td>BI / BO / BV</td><td>Run status / start-stop / enable flags</td></tr>
+      <tr><td>Multi-state Input / Output / Value</td><td>MSI / MSO / MSV</td><td>A few named states: Off / Low / Medium / High, or occupancy modes</td></tr>
+      <tr><td>Schedule, Calendar</td><td></td><td>Weekly times and holiday lists</td></tr>
+      <tr><td>Trend Log</td><td></td><td>Stored history of one property</td></tr>
+      <tr><td>Notification Class</td><td></td><td>Who receives which alarms, at what priority</td></tr>
+    </table></div>
+    <h3>Properties that matter on site</h3>
+    <ul>
+      <li><b>Present_Value</b> – the current value. This is what graphics display.</li>
+      <li><b>Status_Flags</b> – four true/false flags: IN_ALARM, FAULT, OVERRIDDEN, OUT_OF_SERVICE. Look here first when something looks wrong.</li>
+      <li><b>Out_Of_Service</b> – when TRUE, the Present_Value is disconnected from the physical input and can be written by hand. Useful for testing, dangerous if forgotten.</li>
+      <li><b>Reliability</b> – tells you why a FAULT is set, for example open-loop or shorted-loop on a sensor.</li>
+      <li><b>Units</b> – engineering units. A wrong unit (°F instead of °C) is a common integration error.</li>
+      <li><b>Priority_Array</b> and <b>Relinquish_Default</b> – on commandable objects (AO, BO, AV, BV…). See below.</li>
+    </ul>
+    <h3>The priority array: why your command "doesn't work"</h3>
+    <p>A commandable object has 16 priority slots. Several sources can write to it at different priorities, and the <b>lowest-numbered (highest-priority) non-empty slot wins</b>. If every slot is empty (NULL), the Present_Value takes the Relinquish_Default. Common conventions: priority 1 and 2 are life-safety, 5 is critical equipment control, 8 is manual operator, and control programs often write at a low priority such as 16.</p>
+    <p>Worked example: a supply fan BO has the program writing <i>inactive</i> at priority 16 (after-hours), and an operator wrote <i>active</i> at priority 8 last week to test it and forgot. Result: the fan runs all night, every night, until someone writes NULL at priority 8 ("relinquishes" the override). Finding forgotten overrides is one of the most valuable things a service tech does for energy use.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "I wrote the value, so it changed."<br><b>Right:</b> in BACnet you write a <i>request at a priority</i>. If something is holding a higher priority, your write is stored but ignored. Always read back the Priority_Array, and always release your overrides before leaving site.</p></div>
+
+    <h2>BACnet networks: IP, MS/TP, routers and BBMDs</h2>
+    <p>BACnet can run over several "data links". In Australian buildings two matter:</p>
+    <ul>
+      <li><b>BACnet/IP</b>: BACnet messages inside UDP packets on Ethernet. The standard port is <b>UDP 47808</b> (hex BAC0, an easy way to remember it). Used by network controllers, front ends and newer IP field controllers.</li>
+      <li><b>BACnet MS/TP</b> (master-slave/token-passing): BACnet over an <b>RS-485</b> twisted pair. Cheap and still very common for VAV and FCU controllers. Typical speeds are 38,400 or 76,800 bit/s (9,600 and 19,200 also exist). Each device has a <b>MAC address</b> from 0 to 127 for masters. Masters pass a <b>token</b>: only the device holding the token may talk.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 760 400" role="img" aria-label="BACnet internetwork with two IP subnets, BBMDs, a router to an MS/TP trunk">
+        <defs><marker id="c2n-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash" x="10" y="14" width="350" height="190" rx="8"/>
+        <rect class="f-wash" x="400" y="14" width="350" height="190" rx="8"/>
+        <text class="t t-small t-bold t-muted" x="22" y="198">IP subnet 192.168.10.0/24 · BACnet net 1</text>
+        <text class="t t-small t-bold t-muted" x="440" y="198">IP subnet 192.168.20.0/24 · BACnet net 2</text>
+        <!-- subnet 1 -->
+        <line class="s-accent" x1="30" y1="110" x2="345" y2="110"/>
+        <rect class="f-panel s-line" x="40" y="50" width="120" height="40" rx="5"/><text class="t t-small" x="100" y="75" text-anchor="middle">Front end</text>
+        <rect class="f-panel s-accent" x="190" y="50" width="140" height="40" rx="5"/><text class="t t-small t-bold" x="260" y="68" text-anchor="middle">BBMD</text><text class="t t-small t-muted" x="260" y="84" text-anchor="middle">(often a controller)</text>
+        <line class="s-accent" x1="100" y1="90" x2="100" y2="110"/><line class="s-accent" x1="260" y1="90" x2="260" y2="110"/>
+        <rect class="f-panel s-line" x="40" y="130" width="140" height="44" rx="5"/><text class="t t-small t-bold" x="110" y="149" text-anchor="middle">Router controller</text><text class="t t-small t-muted" x="110" y="166" text-anchor="middle">IP ⇄ MS/TP</text>
+        <line class="s-accent" x1="110" y1="110" x2="110" y2="130"/>
+        <rect class="f-panel s-line" x="210" y="130" width="120" height="44" rx="5"/><text class="t t-small" x="270" y="149" text-anchor="middle">Laptop + YABE</text><text class="t t-small t-muted" x="270" y="166" text-anchor="middle">sends Who-Is</text>
+        <line class="s-accent" x1="270" y1="110" x2="270" y2="130"/>
+        <!-- subnet 2 -->
+        <line class="s-accent" x1="415" y1="110" x2="735" y2="110"/>
+        <rect class="f-panel s-accent" x="420" y="50" width="140" height="40" rx="5"/><text class="t t-small t-bold" x="490" y="75" text-anchor="middle">BBMD</text>
+        <rect class="f-panel s-line" x="590" y="50" width="140" height="40" rx="5"/><text class="t t-small" x="660" y="75" text-anchor="middle">IP controller 20001</text>
+        <line class="s-accent" x1="490" y1="90" x2="490" y2="110"/><line class="s-accent" x1="660" y1="90" x2="660" y2="110"/>
+        <rect class="f-panel s-line" x="590" y="130" width="140" height="44" rx="5"/><text class="t t-small" x="660" y="157" text-anchor="middle">Chiller gateway 20002</text>
+        <line class="s-accent" x1="660" y1="110" x2="660" y2="130"/>
+        <!-- IP router between -->
+        <rect class="f-panel s-line" x="335" y="150" width="90" height="36" rx="5"/><text class="t t-small" x="380" y="173" text-anchor="middle">IP router</text>
+        <path class="s-thin" d="M345 110 V150 M415 110 V150"/>
+        <path class="s-red s-dash" d="M260 50 C 300 0, 450 0, 490 48" marker-end="url(#c2n-arr)"/>
+        <text class="t t-small t-red" x="375" y="44" text-anchor="middle">broadcasts forwarded</text>
+        <!-- MS/TP trunk -->
+        <path class="s-line s-dash" d="M110 174 V240"/>
+        <line class="s-line" x1="40" y1="300" x2="720" y2="300"/>
+        <path class="s-line" d="M110 240 V300"/>
+        <text class="t t-small t-muted" x="120" y="232">MS/TP trunk · BACnet net 1001 · 38,400 bit/s · RS-485</text>
+        <g class="f-accent-soft s-line">
+          <rect x="70" y="320" width="80" height="44" rx="5"/><rect x="200" y="320" width="80" height="44" rx="5"/><rect x="330" y="320" width="80" height="44" rx="5"/><rect x="460" y="320" width="80" height="44" rx="5"/><rect x="590" y="320" width="80" height="44" rx="5"/>
+        </g>
+        <path class="s-line" d="M110 300 V320 M240 300 V320 M370 300 V320 M500 300 V320 M630 300 V320"/>
+        <text class="t t-small" x="110" y="340" text-anchor="middle">MAC 0</text><text class="t t-small t-muted" x="110" y="356" text-anchor="middle">router</text>
+        <text class="t t-small" x="240" y="340" text-anchor="middle">MAC 1</text><text class="t t-small t-muted" x="240" y="356" text-anchor="middle">dev 100101</text>
+        <text class="t t-small" x="370" y="340" text-anchor="middle">MAC 2</text><text class="t t-small t-muted" x="370" y="356" text-anchor="middle">dev 100102</text>
+        <text class="t t-small" x="500" y="340" text-anchor="middle">MAC 3</text><text class="t t-small t-muted" x="500" y="356" text-anchor="middle">dev 100103</text>
+        <text class="t t-small" x="630" y="340" text-anchor="middle">MAC 4</text><text class="t t-small t-muted" x="630" y="356" text-anchor="middle">dev 100104</text>
+        <!-- terminators -->
+        <rect class="f-panel s-red" x="26" y="290" width="14" height="20"/><text class="t t-small t-red" x="16" y="285">120 Ω</text>
+        <rect class="f-panel s-red" x="720" y="290" width="14" height="20"/><text class="t t-small t-red" x="690" y="285">120 Ω</text>
+        <text class="t t-small t-muted" x="40" y="390">daisy chain, no stubs or stars · terminate both ends only · shield earthed at one point</text>
+      </svg>
+      <figcaption>Figure 2. A small BACnet internetwork. Each IP subnet and each MS/TP trunk is a separate BACnet network with its own network number. Routers join them. Broadcasts (like Who-Is) do not cross an IP router, so a BBMD on each subnet forwards them. Every device instance (100101, 20001…) is unique across the whole site; MAC addresses only need to be unique on their own trunk.</figcaption>
+    </figure>
+    <h3>Addresses: device instance vs MAC</h3>
+    <p>There are two different numbers, and mixing them up is a classic beginner mistake:</p>
+    <ul>
+      <li>The <b>device instance</b> (0 to 4,194,302) is the device's name on the whole BACnet internetwork. It must be unique across the whole site, including every building on a campus that shares a network. Sites use a numbering plan, for example building + level + device number.</li>
+      <li>The <b>MAC address</b> is the local address on one link: the IP address and port for BACnet/IP, or 0–127 on an MS/TP trunk. Two trunks can both have a MAC 5.</li>
+    </ul>
+    <p>Each separate link also has a <b>network number</b> (1 to 65,534) so routers can deliver messages between them. Duplicate network numbers or duplicate device instances cause strange, intermittent faults that are hard to trace.</p>
+    <h3>Discovery: Who-Is and I-Am</h3>
+    <p>To find devices, a tool broadcasts <b>Who-Is</b> (optionally limited to a range of instances). Each device replies with <b>I-Am</b>, giving its instance, max message size and vendor ID. The tool then uses <b>ReadProperty</b> or <b>ReadPropertyMultiple</b> to read the Object_List and each object's properties. Values can update by polling, or by <b>COV</b> (change-of-value) subscriptions, where the device sends a message only when a value changes by more than its COV increment.</p>
+    <h3>BBMD: crossing subnets</h3>
+    <p>Who-Is is a broadcast, and IP routers do not forward broadcasts. A <b>BBMD</b> (BACnet Broadcast Management Device) on each subnet holds a table of the other BBMDs and forwards broadcasts to them as normal unicast packets. A laptop on a different subnet can register with a BBMD as a <b>foreign device</b> to join in. Rule: one BBMD per subnet, and all BBMD tables must match. Two BBMDs on the same subnet cause broadcast storms.</p>
+    <div class="callout warn"><span class="label">Safety and security</span><p>Classic BACnet/IP has no passwords or encryption: anyone who can send a UDP packet to port 47808 can write to a BO and start a fan. Never connect a BMS network to the internet or to a guest network. Keep it on its own VLAN behind the owner's firewall, with remote access by VPN. A newer option, <b>BACnet Secure Connect (BACnet/SC)</b>, adds encrypted TLS connections through a hub; you will see it on newer projects. Never scan or write to a building network you are not authorised to work on.</p></div>
+    <h3>MS/TP wiring and faults</h3>
+    <p>MS/TP is RS-485, so all the rules from <a href="../practice/p14-serial-buses-modbus.html">Practice P14</a> apply: twisted pair, daisy-chained (no star or long stubs), 120 Ω termination at the two physical ends only, bias resistors at one point, shield earthed at one end. A rule of thumb from the RS-485 standard is about 32 standard unit loads and about 1,200 m per segment; check the controller maker's limits.</p>
+    <div class="formula">Two 120 Ω terminators in parallel = 120 × 120 / (120 + 120) = 60 Ω
+      <small>Worked check: with the trunk powered down, measure resistance between the A(+) and B(−) conductors. About 60 Ω means two terminators (correct). About 120 Ω means one is missing. About 40 Ω means three are fitted, one too many.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely causes</th><th>What to check</th></tr>
+      <tr><td>Whole trunk offline</td><td>Router controller down, wrong baud rate, A/B swapped at the router</td><td>Router LEDs, its port settings, polarity at the first device</td></tr>
+      <tr><td>One device offline</td><td>Duplicate MAC, wrong baud on that device, MAC above Max_Master, broken cable</td><td>DIP switches or settings, continuity from the last good device</td></tr>
+      <tr><td>Devices drop in and out</td><td>Missing or extra termination, no bias, star wiring, cable beside VSD motor cables, shield earthed at both ends</td><td>The 60 Ω test, cable route, oscilloscope view of the signal (see <a href="../practice/p15-oscilloscope-logic-analyser.html">P15</a>)</td></tr>
+      <tr><td>Slow updates</td><td>Low baud, too many devices, Max_Master left at 127 on a small trunk, too many polled points</td><td>Trunk settings and the token-passing load</td></tr>
+    </table></div>
+
+    <h2>Modbus: registers, scaling and word order</h2>
+    <p>Modbus is older and much simpler than BACnet. There are no objects, names or units: just numbered 16-bit <b>registers</b> and single-bit <b>coils</b>. A master (client) asks a slave (server) for a block of registers, and gets back numbers. What those numbers mean is written only in the device's <b>register map</b> (in the manual). That is why Modbus integration is mostly careful reading and arithmetic.</p>
+    <ul>
+      <li><b>Modbus RTU</b>: binary frames over RS-485, slave addresses 1–247, settings like 9600 8N1 or 19200 8E1, a CRC at the end of each frame.</li>
+      <li><b>Modbus TCP</b>: the same requests inside TCP on <b>port 502</b>, with a "unit ID" to reach devices behind a gateway.</li>
+    </ul>
+    <div class="table-wrap"><table>
+      <tr><th>Function code</th><th>What it does</th><th>Old-style numbering</th></tr>
+      <tr><td>01 / 05</td><td>Read coils / write single coil (1-bit outputs)</td><td>0xxxx</td></tr>
+      <tr><td>02</td><td>Read discrete inputs (1-bit, read-only)</td><td>1xxxx</td></tr>
+      <tr><td>04</td><td>Read input registers (16-bit, read-only)</td><td>3xxxx</td></tr>
+      <tr><td>03 / 06 / 16</td><td>Read holding registers / write single / write multiple</td><td>4xxxx</td></tr>
+    </table></div>
+    <h3>The off-by-one trap</h3>
+    <p>Manuals often say "register 40001". On the wire, that is <b>holding register address 0</b>. Some tools want the 40001 form, some want 0, some want 1. If every value you read looks like it belongs to the next point in the map, you are one register out.</p>
+    <h3>Scaling</h3>
+    <p>A register holds a whole number from 0 to 65,535 (or −32,768 to 32,767 if signed). Decimals are carried by a <b>scale factor</b>. Example: a meter's map says "Voltage L1-N, register 40101, unsigned 16-bit, × 0.1 V". You read 2315, so the voltage is 231.5 V. A temperature of −5.0 °C stored as signed × 0.1 is −50, which as a raw unsigned register is 65,536 − 50 = 65,486. Read it as unsigned by mistake and you see 6,548.6 °C.</p>
+    <h3>32-bit values and word order</h3>
+    <p>Bigger numbers (energy totals) and floating-point numbers need two registers. Modbus never standardised which register holds the "high" half, so makers differ. This is called <b>word order</b> (or "word swap").</p>
+    <figure>
+      <svg viewBox="0 0 760 250" role="img" aria-label="Two 16-bit registers combined into a 32-bit float in two word orders">
+        <defs><marker id="c2w-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-panel s-line" x="30" y="30" width="150" height="50" rx="6"/>
+        <text class="t t-small t-muted" x="105" y="22" text-anchor="middle">register 40201 (addr 200)</text>
+        <text class="t t-bold" x="105" y="61" text-anchor="middle">0x4366 = 17254</text>
+        <rect class="f-panel s-line" x="200" y="30" width="150" height="50" rx="6"/>
+        <text class="t t-small t-muted" x="275" y="22" text-anchor="middle">register 40202 (addr 201)</text>
+        <text class="t t-bold" x="275" y="61" text-anchor="middle">0x8000 = 32768</text>
+        <path class="s-accent" d="M190 82 C 190 120, 300 110, 420 110" marker-end="url(#c2w-arr)"/>
+        <path class="s-accent" d="M190 82 C 190 190, 300 190, 420 190" marker-end="url(#c2w-arr)"/>
+        <rect class="f-career-soft s-green" x="425" y="88" width="320" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="440" y="108">High word first (ABCD): 0x43668000</text>
+        <text class="t t-small t-green t-bold" x="440" y="127">IEEE-754 float = 230.5  ✓ sensible volts</text>
+        <rect class="f-warn-soft s-red" x="425" y="168" width="320" height="50" rx="6"/>
+        <text class="t t-small t-bold" x="440" y="188">Swapped (CDAB): 0x80004366</text>
+        <text class="t t-small t-red t-bold" x="440" y="207">float ≈ −2.4 × 10⁻⁴¹  ✗ garbage</text>
+        <text class="t t-small t-muted" x="30" y="120">The same two registers,</text>
+        <text class="t t-small t-muted" x="30" y="138">read in two orders, give</text>
+        <text class="t t-small t-muted" x="30" y="156">completely different numbers.</text>
+        <text class="t t-small t-muted" x="30" y="190">Rule: if a float looks absurd,</text>
+        <text class="t t-small t-muted" x="30" y="208">try the other word order first.</text>
+      </svg>
+      <figcaption>Figure 3. A float32 voltage of 230.5 V is stored as 0x43668000 across two registers. Read in the wrong word order, it becomes a tiny negative number. With 32-bit integers the error is just as obvious: 123,456 kWh read swapped becomes 3,795,845,121.</figcaption>
+    </figure>
+
+    <div class="widget" id="w-c02reg">
+      <span class="label">Interactive · Modbus register decoder</span>
+      <p style="margin:0 0 8px">Enter the raw values you read from two consecutive registers, choose the data type and word order from the register map, and apply the scale. Try the presets first.</p>
+      <div id="c02-pre" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 16px">
+        <label>First register (lower address)<input type="number" id="c02-a" min="0" max="65535" value="2315"></label>
+        <label>Second register<input type="number" id="c02-b" min="0" max="65535" value="0"></label>
+        <label>Data type<select id="c02-t"><option value="u16">uint16 (first register only)</option><option value="s16">int16 signed (first only)</option><option value="u32">uint32</option><option value="s32">int32 signed</option><option value="f32">float32 (IEEE-754)</option></select></label>
+        <label>Word order<select id="c02-o"><option value="be">First register = high word (ABCD)</option><option value="sw">First register = low word (CDAB)</option></select></label>
+        <label>Scale (multiply by)<input type="number" id="c02-s" step="any" value="0.1"></label>
+        <label>Offset (add)<input type="number" id="c02-off" step="any" value="0"></label>
+      </div>
+      <div class="readings">
+        <div><small>Registers in hex</small><span class="out" id="c02-hex">–</span></div>
+        <div><small>Raw decoded value</small><span class="out" id="c02-raw">–</span></div>
+        <div><small>Engineering value</small><span class="out" id="c02-eng">–</span></div>
+      </div>
+      <p id="c02-note" style="margin-top:10px;font-size:15px;color:var(--muted)"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var bs="font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer";
+      var presets=[
+        ["Voltage ×0.1 (uint16)",2315,0,"u16","be",0.1,0,"Map says uint16 × 0.1 V. 2315 × 0.1 = 231.5 V."],
+        ["Outdoor temp −5 °C (int16)",65486,0,"s16","be",0.1,0,"As signed: 65486 − 65536 = −50, × 0.1 = −5.0 °C. Switch to uint16 to see the classic 6548.6 mistake."],
+        ["Energy 123,456 kWh (uint32)",1,57920,"u32","be",1,0,"1 × 65536 + 57920 = 123,456 kWh. Switch word order to see 3.8 billion."],
+        ["Float 230.5 V",17254,32768,"f32","be",1,0,"0x43668000 is 230.5 as an IEEE-754 float. Switch word order to see garbage."],
+        ["Same float, wrong order",32768,17254,"f32","be",1,0,"This device sends the low word first. Change word order to CDAB to fix it."]
+      ];
+      var box=$('c02-pre');
+      presets.forEach(function(p){var b=document.createElement('button');b.type='button';b.textContent=p[0];b.style.cssText=bs;
+        b.onclick=function(){$('c02-a').value=p[1];$('c02-b').value=p[2];$('c02-t').value=p[3];$('c02-o').value=p[4];$('c02-s').value=p[5];$('c02-off').value=p[6];upd(p[7]);};box.appendChild(b);});
+      function clamp(v){v=Math.round(+v||0);return Math.max(0,Math.min(65535,v));}
+      function hx(v){return '0x'+('0000'+v.toString(16).toUpperCase()).slice(-4);}
+      function fmt(v){if(!isFinite(v))return String(v);var a=Math.abs(v);if(a!==0&&(a<1e-4||a>=1e9))return v.toExponential(4);return (Math.round(v*10000)/10000).toLocaleString('en-AU',{maximumFractionDigits:4});}
+      function upd(note){
+        var a=clamp($('c02-a').value),b=clamp($('c02-b').value),t=$('c02-t').value,o=$('c02-o').value;
+        var s=parseFloat($('c02-s').value);if(isNaN(s))s=1;var off=parseFloat($('c02-off').value);if(isNaN(off))off=0;
+        var hi=o==='be'?a:b,lo=o==='be'?b:a;
+        var dv=new DataView(new ArrayBuffer(4));dv.setUint16(0,hi);dv.setUint16(2,lo);
+        var raw,hexs;
+        if(t==='u16'){raw=a;hexs=hx(a);}
+        else if(t==='s16'){raw=a>32767?a-65536:a;hexs=hx(a);}
+        else{hexs=hx(hi)+' '+hx(lo).slice(2)+'  (combined)';
+          raw=t==='u32'?dv.getUint32(0):t==='s32'?dv.getInt32(0):dv.getFloat32(0);}
+        $('c02-hex').textContent=hexs;
+        $('c02-raw').textContent=fmt(raw);
+        $('c02-eng').textContent=fmt(raw*s+off);
+        $('c02-note').textContent=typeof note==='string'?note:'Engineering value = raw × scale + offset.';
+      }
+      ['c02-a','c02-b','c02-t','c02-o','c02-s','c02-off'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h3>Analogue scaling works the same way</h3>
+    <p>Hard-wired analogue inputs use straight-line scaling too. A duct pressure transmitter sends 4–20 mA for 0–500 Pa. At 12 mA:</p>
+    <div class="formula">value = (12 − 4) / (20 − 4) × (500 − 0) + 0 = 0.5 × 500 = 250 Pa
+      <small>General form: value = (signal − signal_low) / (signal_high − signal_low) × (eng_high − eng_low) + eng_low. If the controller is set for 0–1,000 Pa but the transmitter is ranged 0–500 Pa, every reading is exactly double: a common commissioning find.</small></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Niagara: the integration framework</h2>
+    <p>Niagara (by Tridium) is a software framework rather than a protocol. Many integrators and manufacturers build systems on it, so you will meet it under different badges. The concepts, in neutral terms:</p>
+    <ul>
+      <li><b>Station</b>: one running Niagara application with its own database of components. It runs on an embedded controller or on a server.</li>
+      <li><b>JACE</b>: the embedded network controller that runs a station in a panel on site. A <b>Supervisor</b> is a station on a server that gathers data from many JACEs and serves graphics to users.</li>
+      <li><b>Workbench</b>: the engineering tool on your laptop used to connect to stations and configure them.</li>
+      <li><b>Drivers</b>: each protocol (BACnet, Modbus, LonWorks, others) is a driver. Under a driver network you discover <b>devices</b>, and under each device you create <b>proxy points</b> that mirror the remote values.</li>
+      <li><b>Wire sheets</b>: graphical logic. You drag function blocks (math, logic, PID loops, timers) onto a sheet and wire them together.</li>
+      <li><b>Histories</b> and <b>alarms</b>: extensions added to points to log trends and generate alarms, routed to consoles, email or other stations.</li>
+      <li><b>Graphics</b> (often called Px pages or HTML5 views) and <b>tagging</b>, which attaches semantic tags so points can be searched and analysed.</li>
+    </ul>
+    <p>Niagara software is licensed, and certification courses are paid; in practice your employer arranges them. You can still learn every concept above for free with BACnet and Modbus tools, because Niagara only organises those same devices and points.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>"Niagara 4 experience" and "BACnet integration" appear often in Australian BMS job ads, along with platform names from <a href="c01-bms-fundamentals.html">C01</a>. If you have not used Niagara yet, say honestly that you understand drivers, devices, proxy points and histories conceptually, and show your home-lab BACnet/Modbus project. Employers hire for the concepts and train the tool.</p></div>
+
+    <h2>Other protocols in brief</h2>
+    <div class="cards">
+      <div class="card"><h4>LonWorks (legacy)</h4><p>A protocol from the 1990s built around the Neuron chip, using a free-topology twisted pair and "network variables" with standard types. Still found in older buildings. Today you mostly meet it when <b>migrating</b> a site to BACnet.</p></div>
+      <div class="card"><h4>KNX</h4><p>A European bus for lighting, blinds and room control, common in high-end homes and some commercial fit-outs. A low-voltage twisted-pair bus, configured with the ETS software. Devices have an individual address like 1.1.12 and talk via group addresses like 1/0/5. Integrated to the BMS through a gateway.</p></div>
+      <div class="card"><h4>DALI</h4><p>Digital Addressable Lighting Interface (IEC 62386). A two-wire bus to LED drivers: up to 64 addresses per line, 16 groups and 16 scenes. DALI-2 adds sensors and push-buttons. Used for dimming, scheduling and often emergency lighting monitoring.</p></div>
+    </div>
+    <div class="callout warn"><span class="label">Safety</span><p>Do not treat a DALI bus as harmless low voltage. In most installations the DALI pair runs in the same cable as the 230 V lighting supply, and the standard does not class the bus as SELV. Treat DALI terminals as mains-adjacent and leave the work to the electrician.</p></div>
+
+    <h2>Commissioning: proving the system works</h2>
+    <p><b>Commissioning</b> is the process of proving that every point, every sequence and every interface works as designed, and recording the proof. A building cannot be handed over until it is done. For a technician, commissioning is where you learn fastest: you touch every device in the building.</p>
+    <figure>
+      <svg viewBox="0 0 760 210" role="img" aria-label="Commissioning stages from installation checks to handover">
+        <defs><marker id="c2c-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <g class="f-accent-soft s-accent">
+          <rect x="10" y="20" width="160" height="60" rx="8"/><rect x="200" y="20" width="160" height="60" rx="8"/><rect x="390" y="20" width="160" height="60" rx="8"/><rect x="580" y="20" width="170" height="60" rx="8"/>
+          <rect x="105" y="120" width="170" height="60" rx="8"/><rect x="305" y="120" width="170" height="60" rx="8"/><rect x="505" y="120" width="170" height="60" rx="8"/>
+        </g>
+        <text class="t t-small t-bold" x="90" y="46" text-anchor="middle">1 · Pre-commissioning</text><text class="t t-small t-muted" x="90" y="64" text-anchor="middle">install, terminations, power</text>
+        <text class="t t-small t-bold" x="280" y="46" text-anchor="middle">2 · Point-to-point</text><text class="t t-small t-muted" x="280" y="64" text-anchor="middle">every I/O, field to screen</text>
+        <text class="t t-small t-bold" x="470" y="46" text-anchor="middle">3 · Equipment tests</text><text class="t t-small t-muted" x="470" y="64" text-anchor="middle">each AHU, VAV, pump</text>
+        <text class="t t-small t-bold" x="665" y="46" text-anchor="middle">4 · Integration</text><text class="t t-small t-muted" x="665" y="64" text-anchor="middle">BACnet/Modbus, fire, meters</text>
+        <text class="t t-small t-bold" x="190" y="146" text-anchor="middle">5 · Functional tests</text><text class="t t-small t-muted" x="190" y="164" text-anchor="middle">sequences, witnessed</text>
+        <text class="t t-small t-bold" x="390" y="146" text-anchor="middle">6 · Tuning + trends</text><text class="t t-small t-muted" x="390" y="164" text-anchor="middle">loops, 1–2 week review</text>
+        <text class="t t-small t-bold" x="590" y="146" text-anchor="middle">7 · Handover</text><text class="t t-small t-muted" x="590" y="164" text-anchor="middle">as-builts, backups, training</text>
+        <path class="s-accent" d="M170 50 H196 M360 50 H386 M550 50 H576" marker-end="url(#c2c-arr)"/>
+        <path class="s-accent" d="M665 80 V100 H190 V116" marker-end="url(#c2c-arr)"/>
+        <path class="s-accent" d="M275 150 H301 M475 150 H501" marker-end="url(#c2c-arr)"/>
+        <text class="t t-small t-muted" x="10" y="204">Each stage produces signed records (ITC sheets) before the next starts.</text>
+      </svg>
+      <figcaption>Figure 4. The usual order of BMS commissioning. Skipping point-to-point checks to "save time" always costs more later, because sequence tests then fail for reasons hidden at the I/O level.</figcaption>
+    </figure>
+    <h3>Point-to-point (I/O) checks</h3>
+    <p>A point-to-point check proves the whole chain for one point: the right device, in the right place, wired to the right terminal, configured with the right type and range, named correctly, and shown correctly on the graphic.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Point</th><th>How to test</th><th>Pass when</th><th>Common faults found</th></tr>
+      <tr><td>AI temperature</td><td>Compare with a calibrated reference at the sensor</td><td>Within the project tolerance (often around ±0.5 °C)</td><td>Wrong sensor curve, supply and return sensors swapped, sensor in a sunny spot</td></tr>
+      <tr><td>AI 0–10 V / 4–20 mA</td><td>Compare with a handheld instrument (manometer, CO₂ meter)</td><td>Readings agree over the range</td><td>Range mismatch (0–500 vs 0–1,000 Pa), signal type set wrong</td></tr>
+      <tr><td>AO</td><td>Command 0, 50, 100 % and watch the device (and feedback)</td><td>Moves the right way to the right position</td><td>Reverse acting, 0–10 vs 2–10 V mismatch, slipping linkage</td></tr>
+      <tr><td>DI</td><td>Operate the real device (or simulate at the device end)</td><td>Front end changes state with the right text</td><td>Inverted sense (normally open vs closed), wrong terminal</td></tr>
+      <tr><td>DO</td><td>Command on and off, with the MSSB in Auto and the trades informed</td><td>The correct equipment starts and stops</td><td>Wrong motor wired, interlock missing</td></tr>
+      <tr><td>Network point</td><td>Compare with the third-party device's own display</td><td>Values and units agree</td><td>Scaling, word order, off-by-one register</td></tr>
+    </table></div>
+    <p>Results go on <b>ITC sheets</b> (inspection and test certificates) or commissioning sheets: one row per point with the value at the field, the value on the BMS, pass/fail, your initials and the date. Often a consultant or the builder's representative <b>witnesses</b> a sample, and their signature goes on the sheet too.</p>
+    <h3>Functional performance tests</h3>
+    <p>A functional performance test (FPT) proves a <b>sequence of operations</b>, the written description of how plant should behave. Example sequence: "When the AHU is in cooling and outside air is at least 2 K cooler than return air, open the outside air damper to hold supply air setpoint before opening the chilled water valve." To test it, you often override a value (for example put the outside air temperature AI out of service and write a test value), watch the response, record it, and then <b>release the override</b>. Other common FPTs: fire mode (with the fire contractor, see <a href="c04-fire-detection-ewis.html">C04</a>), power-fail restart, duty/standby pump changeover, and after-hours requests.</p>
+    <h3>Loop tuning and trend review</h3>
+    <p>Each PID loop is tuned so it settles without hunting (oscillating). <a href="c03-hvac-for-technicians.html">C03</a> lets you practise in a simulator. After handover, trends of key points are kept for one or two weeks and reviewed for hunting loops, plant short-cycling, heating and cooling fighting each other, and wrong schedules.</p>
+    <h3>As-built documentation and handover</h3>
+    <ul>
+      <li>Final points list, schematics and wiring diagrams marked up to match what was actually built ("as-built").</li>
+      <li>A network riser diagram with every device instance, MAC and IP address.</li>
+      <li>Backups of every controller program and the front-end database, in a known location.</li>
+      <li>O&amp;M (operation and maintenance) manuals, operator training, and passwords handed over securely, not in an email.</li>
+      <li>A defects period follows handover (often 12 months by contract), during which the installer fixes problems.</li>
+    </ul>
+    <div class="callout job"><span class="label">On the job</span><p>New techs often start on commissioning crews doing point-to-point checks with a laptop, a multimeter, a reference thermometer and a radio. One person in the ceiling or plant room, one at the front end, working down the ITC sheet. It is repetitive, but it teaches you every device type and every common fault, and a tech who keeps neat, honest sheets is trusted quickly.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Keep an <b>override log</b>: every point you put out of service or write at priority 8, with the time. Before leaving site, go down the list and release each one, then check the Priority_Array is clear. Many front ends also have a report of all overridden points; run it.</p></div>
+
+    <h2>Free tools and a home lab</h2>
+    <p>You can practise almost everything in this chapter at home for little money. Everything here is ELV: a laptop, a Raspberry Pi on its USB power supply, and a 5 V Arduino.</p>
+    <ul class="kit">
+      <li><b>YABE</b><small>Free "Yet Another BACnet Explorer" for Windows: Who-Is, browse objects, read and write properties.</small></li>
+      <li><b>Wireshark</b><small>Free packet capture. Filters: <code>bvlc</code>, <code>bacnet</code>, <code>bacapp</code> for BACnet; <code>mbtcp</code>, <code>modbus</code> for Modbus TCP.</small></li>
+      <li><b>QModMaster</b><small>Free Modbus master (poller) for RTU and TCP. Similar free tools exist.</small></li>
+      <li><b>Python libraries</b><small>pymodbus for a Modbus server or client; BAC0 or bacpypes3 for a simulated BACnet device. Check their current docs; APIs change.</small></li>
+      <li><b>Raspberry Pi 4 or 5</b><small>~A$90–150 with power supply. Or use any spare PC.</small></li>
+      <li><b>USB to RS-485 adapter</b><small>~A$10–30 (Core Electronics, Jaycar, element14, AliExpress).</small></li>
+      <li><b>RS-485 modules for Arduino</b><small>~A$3–8 each; MAX485-type TTL modules.</small></li>
+      <li><b>Twisted pair + 120 Ω resistors</b><small>An offcut of Cat6 works for a bench trunk.</small></li>
+    </ul>
+    <ol class="steps">
+      <li><p><b>Modbus TCP server on the Pi.</b> Write a small pymodbus server with a register map you design: register 0 = room temperature × 10 (int16), registers 10–11 = an energy total (uint32), registers 20–21 = a float voltage. Use port 5020, because ports below 1024 need root on Linux. Write the map in a table, exactly like a maker's manual.</p></li>
+      <li><p><b>Poll it from the PC.</b> In QModMaster, read holding registers from the Pi's IP. Decode them with the widget above. Deliberately set the wrong word order and the wrong start address, and write down what the errors look like.</p></li>
+      <li><p><b>Modbus RTU on a real bus.</b> Make an Arduino with an RS-485 module into a slave (ID 1, 9600 8N1) that reports a thermistor reading. Poll it with the USB adapter. Fit 120 Ω at both ends, then remove one and watch the error count. Look at the frames with a logic analyser (<a href="../practice/p15-oscilloscope-logic-analyser.html">P15</a>).</p></li>
+      <li><p><b>A simulated BACnet device.</b> On the Pi, run a Python BACnet device with an Analog Input "Room temp", a Binary Output "Fan" and an Analog Value "Setpoint", with a device instance from your own numbering plan.</p></li>
+      <li><p><b>Discover and command it.</b> In YABE on a PC on the same subnet, send Who-Is, find your device, read Present_Value, write the BO at priority 8, read the Priority_Array, then write NULL to relinquish. Capture it all in Wireshark and find the Who-Is, I-Am, ReadProperty and WriteProperty packets.</p></li>
+      <li><p><b>Document it.</b> Make a points list, a riser diagram and an ITC sheet for your lab, and tick each point off. This is a portfolio piece (see <a href="c12-portfolio-study-plan.html">C12</a>).</p></li>
+    </ol>
+    <div class="callout warn"><span class="label">Safety and ethics</span><p>Run these tools only on your own home network. Do not scan, discover or write to building networks at work or anywhere else unless you are authorised and following the site's procedures. A careless Who-Is flood or a stray write can disrupt real plant.</p></div>
+
+    <h3>Commissioning checklist (practice)</h3>
+    <div class="widget" id="w-c02chk">
+      <span class="label">Interactive · AHU commissioning sheet</span>
+      <p style="margin:0 0 8px">Tick each item as you would on site. The sheet cannot be "signed" until everything is ticked.</p>
+      <div id="c02-list"></div>
+      <div class="readings"><div><small>Progress</small><span class="out" id="c02-prog">0 / 0</span></div><div><small>Status</small><span class="out" id="c02-stat">Open</span></div></div>
+    </div>
+    <script>
+    (function(){
+      var items=["Controller powered, 24 V AC measured at terminals","Device instance and MAC set to the numbering plan","Supply air temp AI matches reference within tolerance","Return air temp AI matches reference within tolerance","Duct pressure AI matches manometer, range configured correctly","CHW valve AO strokes 0/50/100 %, correct direction","OA damper AO strokes, closes fully at 0 %","Supply fan DO starts the right fan with MSSB in Auto","Fan status DI follows the fan (DP switch adjusted)","Command-fail alarm tested by stopping the fan at the MSSB","Filter DI tested by operating the switch","Fire trip DI tested with fire contractor: AHU stops","Chiller Modbus/BACnet points match chiller display","Trends set up on key points","All overrides released and Priority_Arrays checked","Program backed up and as-built points list updated"];
+      var box=document.getElementById('c02-list');
+      items.forEach(function(t,i){var l=document.createElement('label');l.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:6px 0;font-size:15px';
+        var c=document.createElement('input');c.type='checkbox';c.id='c02-i'+i;c.style.cssText='margin-top:4px;width:18px;height:18px;accent-color:var(--accent);flex:none';c.onchange=upd;
+        var s=document.createElement('span');s.textContent=t;l.appendChild(c);l.appendChild(s);box.appendChild(l);});
+      function upd(){var n=0;items.forEach(function(_,i){if(document.getElementById('c02-i'+i).checked)n++;});
+        document.getElementById('c02-prog').textContent=n+' / '+items.length;
+        var st=document.getElementById('c02-stat');st.textContent=n===items.length?'Ready to sign':(n===0?'Open':'In progress');}
+      upd();
+    })();
+    </script>
+
+    <h2>Interview questions</h2>
+    <details class="more"><summary>"What port does BACnet/IP use, and what transport?"</summary><p>UDP port 47808 (0xBAC0) by default. Modbus TCP uses TCP port 502.</p></details>
+    <details class="more"><summary>"What is a BBMD and when do you need one?"</summary><p>A BACnet Broadcast Management Device forwards BACnet broadcasts such as Who-Is between IP subnets, because IP routers do not pass broadcasts. You need one per subnet when BACnet devices are spread over more than one subnet.</p></details>
+    <details class="more"><summary>"What is the difference between a device instance and a MAC address?"</summary><p>The device instance is unique across the whole BACnet internetwork and identifies the device. The MAC is its local address on one link (an IP address, or 0–127 on MS/TP) and only needs to be unique on that link.</p></details>
+    <details class="more"><summary>"Half the VAVs on a trunk keep dropping offline. Where do you start?"</summary><p>Check the trunk physically: termination (measure about 60 Ω across A and B with power off), daisy-chain topology, shield earthed at one point, cable not beside VSD cables. Then check for duplicate MACs, baud mismatches and the Max_Master setting. Watch the signal on a scope if available.</p></details>
+    <details class="more"><summary>"A meter reads 3.8 billion kWh on the BMS. What's wrong?"</summary><p>Almost certainly the word order of a 32-bit value is swapped (or the register offset is one out). Compare with the meter's display, check the register map, and swap word order in the driver.</p></details>
+    <details class="more"><summary>"You command a fan off and it keeps running. Why?"</summary><p>Something holds a higher priority in the Priority_Array (an old operator override at 8, or a life-safety command), or the MSSB switch is in Hand, or a fire mode is active. Read the Priority_Array, then check the switchboard and interlocks.</p></details>
+    <details class="more"><summary>"What is a point-to-point check?"</summary><p>Proving each I/O point end to end: the correct device, wiring, terminal, configuration, name and graphic, by comparing a real field condition with the BMS reading or by commanding an output and watching the device. Recorded on an ITC sheet.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>An AV setpoint has priority 8 = 24.0 and priority 16 = 22.5, and Relinquish_Default = 21.0. What is its Present_Value? What happens if someone writes NULL at priority 8?</summary><div class="answer"><p>Present_Value is 24.0, because 8 is the highest-priority (lowest-numbered) slot in use. After NULL at 8, the value becomes 22.5 from priority 16. Only if 16 is also cleared does it fall to 21.0.</p></div></details>
+    <details class="quiz"><summary>Your laptop on subnet 192.168.20.0/24 sends Who-Is but only sees devices on its own subnet. Why, and what are two fixes?</summary><div class="answer"><p>The broadcast does not cross the IP router. Fixes: register your tool as a foreign device with the site's BBMD, or plug into the subnet where the devices are (with permission). If no BBMD exists, the site needs one per subnet.</p></div></details>
+    <details class="quiz"><summary>You measure 120 Ω between A and B on a powered-down MS/TP trunk. What does that tell you?</summary><div class="answer"><p>Only one 120 Ω terminator is in circuit; the far end is missing its terminator (or there is a break between the ends). A correct trunk reads about 60 Ω.</p></div></details>
+    <details class="quiz"><summary>A meter's map says "Current, register 40015, uint16, ×0.01 A". Your tool reads 1,234 at address 14. What is the current?</summary><div class="answer"><p>40015 corresponds to address 14 (zero-based), so you are reading the right register. 1,234 × 0.01 = <b>12.34 A</b>.</p></div></details>
+    <details class="quiz"><summary>An outside air temperature arrives over Modbus as 65,476 with a scale of ×0.1. What is the temperature?</summary><div class="answer"><p>As a signed 16-bit value: 65,476 − 65,536 = −60, × 0.1 = <b>−6.0 °C</b>. If you see 6,547.6 °C, the point is set as unsigned.</p></div></details>
+    <details class="quiz"><summary>A 4–20 mA transmitter is ranged 0–1,000 Pa but the controller is configured for 0–500 Pa. The real pressure is 400 Pa. What does the BMS show?</summary><div class="answer"><p>400 Pa on a 0–1,000 Pa range gives 4 + 0.4 × 16 = 10.4 mA. The controller maps 10.4 mA onto 0–500 Pa: (10.4 − 4)/16 × 500 = <b>200 Pa</b>. It reads half the real value.</p></div></details>
+    <details class="quiz"><summary>Why should you never leave an AI "out of service" after a functional test?</summary><div class="answer"><p>While out of service, its Present_Value is frozen at whatever you wrote, so the control loop keeps acting on a fake value. Plant may overcool, overheat or run all night. Always release overrides and check Status_Flags.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain BACnet objects, properties, Status_Flags and the priority array.</span></li>
+      <li><input type="checkbox"><span>I know the difference between a device instance, a MAC address and a network number.</span></li>
+      <li><input type="checkbox"><span>I can explain BACnet/IP (UDP 47808), MS/TP on RS-485, Who-Is/I-Am and BBMDs.</span></li>
+      <li><input type="checkbox"><span>I can check an RS-485 trunk's termination with a meter.</span></li>
+      <li><input type="checkbox"><span>I can decode Modbus registers: offsets, signed values, scaling and word order.</span></li>
+      <li><input type="checkbox"><span>I can describe Niagara stations, drivers, proxy points, wire sheets and histories.</span></li>
+      <li><input type="checkbox"><span>I can name what LonWorks, KNX and DALI are used for.</span></li>
+      <li><input type="checkbox"><span>I can run a point-to-point check and fill in an ITC sheet.</span></li>
+      <li><input type="checkbox"><span>I have built (or planned) a home lab with a simulated BACnet and Modbus device.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

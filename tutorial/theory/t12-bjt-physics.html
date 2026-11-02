@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T12 · How a bipolar transistor really works</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 3</div>
+    <span class="eyebrow">Theory · T12</span>
+    <h1>How a bipolar transistor really works</h1>
+    <p class="lede">Two junctions and a very thin base. By the end you will know why a tiny base current controls a collector current a hundred times bigger, why two diodes glued together cannot do it, and how to bias a transistor as a switch or an amplifier with real numbers.</p>
+    <div class="meta"><span><b>Reading</b> 50–60 min</span><span><b>Level</b> After T11</span><span><b>Practice</b> P08</span><span><b>Needs</b> diode equation, minority carriers</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>A short history</h2>
+    <p>Before transistors, amplification meant vacuum tubes: hot, fragile, power-hungry glass bulbs. Bell Labs wanted a solid-state replacement for telephone networks. In <strong>December 1947</strong>, <strong>John Bardeen</strong> and <strong>Walter Brattain</strong> pressed two gold contacts, very close together, onto a slab of germanium. A small current into one contact changed a larger current at the other. That was the <strong>point-contact transistor</strong>. It worked, but it was delicate and hard to make consistently, and nobody fully understood it.</p>
+    <p>Their group leader, <strong>William Shockley</strong>, worked out a cleaner idea in early 1948: a sandwich of three doped layers with two p–n junctions, the <strong>junction transistor</strong>. Its theory could be calculated with the same diffusion and drift physics as the diode. Working junction transistors followed around 1950–51, the first silicon transistors arrived in 1954, and the three men shared the 1956 Nobel Prize in Physics. The word "transistor" comes from "transfer resistor". Every BJT you buy today is Shockley's junction transistor; the point-contact device is history.</p>
+
+    <h2>The structure of an NPN transistor</h2>
+    <p>A <strong>bipolar junction transistor (BJT)</strong> has three regions. "Bipolar" means both electrons and holes take part. In an <strong>NPN</strong> device:</p>
+    <ul>
+      <li><strong>Emitter (E)</strong>, n-type, <strong>very heavily doped</strong> (around 10<sup>19</sup>–10<sup>20</sup> cm<sup>−3</sup>). Its job is to inject electrons.</li>
+      <li><strong>Base (B)</strong>, p-type, <strong>very thin</strong> (well under a micrometre to a few micrometres in modern parts) and <strong>much more lightly doped than the emitter</strong> (around 10<sup>17</sup> cm<sup>−3</sup>).</li>
+      <li><strong>Collector (C)</strong>, n-type, <strong>lightly doped</strong> (around 10<sup>15</sup>–10<sup>16</sup> cm<sup>−3</sup>) and thick. Its job is to collect electrons and to stand off a high voltage.</li>
+    </ul>
+    <p>So the device is <em>not</em> symmetrical. Swap emitter and collector and it still works a little, but with a gain of maybe 1–10 instead of 100–300. Each region's doping and size is chosen for its job.</p>
+    <figure>
+      <svg viewBox="0 0 660 270" role="img" aria-label="NPN transistor layers with electron flow from emitter through thin base to collector">
+        <defs>
+          <marker id="t12-st-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t12-st-ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-theory-soft s-thin" x="40" y="50" width="200" height="130"/>
+        <rect class="f-warn-soft s-thin" x="240" y="50" width="40" height="130"/>
+        <rect class="f-theory-soft s-thin" x="280" y="50" width="340" height="130"/>
+        <text class="t t-bold" x="70" y="40">Emitter n⁺⁺</text>
+        <text class="t t-bold" x="236" y="40">Base p</text>
+        <text class="t t-bold" x="400" y="40">Collector n (lightly doped)</text>
+        <text class="t t-small t-muted" x="70" y="200">~10¹⁹–10²⁰ cm⁻³</text>
+        <text class="t t-small t-muted" x="226" y="200">~10¹⁷, thin</text>
+        <text class="t t-small t-muted" x="400" y="200">~10¹⁵–10¹⁶ cm⁻³, thick</text>
+        <!-- electron flow -->
+        <path class="s-blue" d="M90 90 H440" marker-end="url(#t12-st-ar)"/>
+        <path class="s-blue" d="M90 115 H440" marker-end="url(#t12-st-ar)"/>
+        <path class="s-blue" d="M90 140 H440" marker-end="url(#t12-st-ar)"/>
+        <path class="s-blue s-dash" d="M150 160 H255 V230" marker-end="url(#t12-st-ar)"/>
+        <text class="t t-small t-blue" x="450" y="120">~99.6 % of injected</text>
+        <text class="t t-small t-blue" x="450" y="136">electrons collected</text>
+        <path class="s-red" d="M268 230 V190 M268 175 V160 H200" marker-end="url(#t12-st-ar2)"/>
+        <text class="t t-small t-red" x="282" y="236">base current I<tspan baseline-shift="sub" font-size="9">B</tspan>: holes in, to</text>
+        <text class="t t-small t-red" x="282" y="252">recombine and to feed the emitter</text>
+        <text class="t t-small t-muted" x="40" y="252">E–B forward (~0.65 V)</text>
+        <text class="t t-small t-muted" x="520" y="252">C–B reverse</text>
+      </svg>
+      <figcaption>Figure 1. An NPN transistor, not to scale (the real base is far thinner). Electrons (blue) are injected from the heavily doped emitter, cross the thin base by diffusion and are swept into the collector. The base current (red) is only the small supply of holes that the base loses to recombination and to back-injection into the emitter.</figcaption>
+    </figure>
+
+    <h2>How it works, step by step</h2>
+    <p>Bias it the normal way, called <strong>forward-active</strong>: base–emitter junction forward-biased (base about 0.65 V above emitter) and collector–base junction reverse-biased (collector several volts above base).</p>
+    <ol>
+      <li><strong>The emitter injects electrons into the base.</strong> The B–E junction is an ordinary forward-biased diode (T11). Its barrier is lowered, so electrons pour from emitter into base, exponentially more with V<sub>BE</sub>. Holes also go the other way, from base into emitter, but the emitter has about 100× more dopant than the base, so electron injection dominates by about 100× or more. (Remember: injected current from each side scales with that side's majority density.)</li>
+      <li><strong>In the base, the electrons are minority carriers.</strong> There is little field in the neutral base, so they move by diffusion: many electrons near the emitter edge, almost none at the collector edge, so they spread towards the collector.</li>
+      <li><strong>Most cross before they recombine.</strong> In T11 you saw that an electron in p-type silicon survives for a diffusion length L of tens of micrometres. A modern base is under a micrometre to a few micrometres wide. So only a small fraction meet a hole and recombine on the way.</li>
+      <li><strong>The collector junction sweeps them up.</strong> At the far edge of the base, the electron meets the reverse-biased C–B depletion layer. For a majority electron in the collector that is a barrier, but for a minority electron arriving from the base it is a downhill slide: the field throws it straight into the collector. The reverse bias does not stop these electrons; it collects them.</li>
+      <li><strong>The base current is small.</strong> The base terminal only has to replace the holes lost to recombination in the base and the holes injected back into the emitter. That is a fraction of a percent of the electron flow.</li>
+    </ol>
+    <div class="formula">I<sub>E</sub> = I<sub>C</sub> + I<sub>B</sub>     I<sub>C</sub> = α I<sub>E</sub>     I<sub>C</sub> = β I<sub>B</sub>     β = α / (1 − α)
+      <small>α (alpha) is the fraction of emitter current that reaches the collector, typically 0.99–0.997. β (beta, also written h<sub>FE</sub> on datasheets) is the current gain. α = 0.99 gives β = 99; α = 0.996 gives β = 249.</small></div>
+    <p><strong>Illustrative numbers.</strong> Take base width W<sub>B</sub> = 1 µm and electron diffusion length in the base L<sub>n</sub> = 20 µm. The fraction lost to recombination while crossing is roughly W<sub>B</sub>²/(2L<sub>n</sub>²) = 1/800 ≈ 0.13 %. Back-injection of holes into an emitter with 100× more doping costs very roughly another 0.3 %. Total loss about 0.4 %, so α ≈ 0.996 and β ≈ 250. These are teaching estimates; real β comes from the datasheet and varies a lot between parts of the same type (for example a BC547 is sold in gain groups, and a 2N2222's datasheet gives a wide minimum-to-maximum range).</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The base current is amplified: the transistor takes the base current and multiplies it." <b>Right:</b> V<sub>BE</sub> sets how many electrons the emitter injects. The base current is just the small "tax" that comes with that injection. Because the tax is a near-fixed fraction, I<sub>C</sub> ≈ β I<sub>B</sub> is true and useful, but the physical control is the base–emitter voltage through the exponential diode law. The energy for the big current comes from the collector supply, not from the base.</p></div>
+
+    <h2>The band picture</h2>
+    <p>The same story drawn as electron energy. Electrons roll downhill on this diagram, like water. The forward-biased B–E junction is a small step the emitter's electrons can hop over; the reverse-biased C–B junction is a waterfall.</p>
+    <figure>
+      <svg viewBox="0 0 660 320" role="img" aria-label="Band diagram of an NPN transistor in active mode">
+        <defs>
+          <marker id="t12-bd-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t12-bd-ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-small t-muted" x="70" y="24">Emitter (n⁺⁺)</text>
+        <text class="t t-small t-muted" x="250" y="24">Base (p)</text>
+        <text class="t t-small t-muted" x="460" y="24">Collector (n)</text>
+        <path class="s-thin s-dash" d="M200 30 V300 M320 30 V300"/>
+        <!-- conduction band -->
+        <path class="s-blue" d="M30 110 H170 C190 110 195 80 215 80 H300 C330 80 345 210 380 210 H640"/>
+        <!-- valence band -->
+        <path class="s-red" d="M30 170 H170 C190 170 195 140 215 140 H300 C330 140 345 270 380 270 H640"/>
+        <text class="t t-small t-blue" x="34" y="102">conduction band edge</text>
+        <text class="t t-small t-red" x="34" y="190">valence band edge</text>
+        <!-- electrons in emitter -->
+        <circle class="f-blue" cx="80" cy="118" r="4"/><circle class="f-blue" cx="110" cy="118" r="4"/><circle class="f-blue" cx="140" cy="118" r="4"/><circle class="f-blue" cx="95" cy="128" r="4"/><circle class="f-blue" cx="125" cy="128" r="4"/>
+        <path class="s-blue" d="M150 100 Q185 55 225 70" marker-end="url(#t12-bd-ar)"/>
+        <text class="t t-small" x="120" y="56">hop over the lowered step</text>
+        <path class="s-blue s-dash" d="M230 72 H295" marker-end="url(#t12-bd-ar)"/>
+        <text class="t t-small" x="222" y="62">diffuse across</text>
+        <path class="s-blue" d="M310 76 Q345 120 360 196" marker-end="url(#t12-bd-ar)"/>
+        <text class="t t-small" x="360" y="140">fall down the</text>
+        <text class="t t-small" x="360" y="156">C–B "waterfall"</text>
+        <circle class="f-blue" cx="420" cy="202" r="4"/><circle class="f-blue" cx="460" cy="202" r="4"/>
+        <!-- holes in base -->
+        <circle class="s-red" cx="240" cy="148" r="5"/><circle class="s-red" cx="270" cy="148" r="5"/>
+        <path class="s-red s-dash" d="M232 150 Q205 165 180 172" marker-end="url(#t12-bd-ar2)"/>
+        <text class="t t-small t-red" x="40" y="230">a few holes leak back into the emitter</text>
+        <path class="s-amber" d="M262 82 V140"/>
+        <text class="t t-small" x="210" y="125">recombine</text>
+        <text class="t t-small t-muted" x="250" y="300">Holes would have to climb DOWN on this diagram to move, so</text>
+        <text class="t t-small t-muted" x="250" y="316">the base's holes are trapped in their own little "valley".</text>
+      </svg>
+      <figcaption>Figure 2. Electron energy across an NPN in active mode (energy up, position across). Forward bias lowers the emitter–base step so electrons from the emitter's huge supply can hop into the base. They diffuse across the thin, flat base, and the reverse-biased collector junction drops them down a large step. A few recombine in the base (amber); a few holes leak back into the emitter. Those two losses are the base current.</figcaption>
+    </figure>
+
+    <h2>Why two diodes back to back do not make a transistor</h2>
+    <p>Look at a transistor with a multimeter's diode test and it behaves like two diodes sharing the base: B→E reads about 0.65 V, B→C reads about 0.65 V, and C↔E reads open both ways. That is a useful field test. So why can't you solder two 1N4148s anode-to-anode and get gain?</p>
+    <p>Because the trick depends on electrons <em>crossing the base as minority carriers</em> before they recombine. In two separate diodes, the "base" is: the p region of diode 1, a metal wire, and the p region of diode 2. That path is millimetres long.</p>
+    <ul>
+      <li>Electrons injected into diode 1's p region all recombine within a few diffusion lengths (tens of µm). None survive to the wire.</li>
+      <li>In the metal wire there are no minority carriers to deliver. Current in the wire is just the base current flowing out to the base terminal.</li>
+      <li>Diode 2's reverse-biased junction only ever sees the tiny equilibrium minority population of its own p region. It passes its normal leakage, nothing more.</li>
+    </ul>
+    <div class="formula">fraction surviving ≈ e<sup>−W/L</sup>     2 diodes: W ≈ 1 mm, L ≈ 20 µm → e<sup>−50</sup> ≈ 2×10<sup>−22</sup>
+      <small>One transistor: W ≈ 1 µm, L ≈ 20 µm → about 99.9 % cross. The base must be thin compared with the diffusion length; that single geometric fact is the whole difference.</small></div>
+    <p>So with two diodes, all the emitter current comes out of the "base" terminal, and β ≈ 0. Shockley's insight was that the two junctions must share <em>one</em> continuous, thin piece of crystal so that the carriers injected by one junction are collected by the other.</p>
+    <div class="callout why"><span class="label">Why this matters for history</span><p>This is also why the first transistors needed the point contacts to be <em>very</em> close together (tens of micrometres). Bardeen and Brattain had to get the collector within reach of the minority carriers injected by the emitter contact.</p></div>
+
+    <h2>V<sub>BE</sub> ≈ 0.65 V and the exponential law</h2>
+    <p>Because I<sub>C</sub> is set by the B–E diode's injection, it follows the diode equation:</p>
+    <div class="formula">I<sub>C</sub> ≈ I<sub>S</sub> e<sup>V<sub>BE</sub>/V<sub>T</sub></sup>     V<sub>T</sub> ≈ 26 mV
+      <small>Worked: I<sub>S</sub> = 10<sup>−14</sup> A, I<sub>C</sub> = 1 mA → V<sub>BE</sub> = 0.026 × ln(10<sup>−3</sup>/10<sup>−14</sup>) = 0.026 × 25.3 ≈ 0.66 V. At 10 mA: +60 mV, 0.72 V. At 100 µA: 0.60 V.</small></div>
+    <p>That is why "V<sub>BE</sub> ≈ 0.6–0.7 V" works as a design number. Two consequences you will meet:</p>
+    <ul>
+      <li><strong>Never drive the base straight from a voltage source.</strong> Every extra 18 mV doubles I<sub>C</sub>. A 3.3 V pin straight on a base would try to push enormous current. Always use a base resistor, which turns the voltage into a defined base current.</li>
+      <li><strong>Temperature.</strong> At fixed I<sub>C</sub>, V<sub>BE</sub> falls about 2 mV/°C. A transistor biased with fixed V<sub>BE</sub> heats up, conducts more, heats more: <strong>thermal runaway</strong>. The emitter resistor in the amplifier below prevents that.</li>
+      <li><strong>Transconductance.</strong> The slope dI<sub>C</sub>/dV<sub>BE</sub> = I<sub>C</sub>/V<sub>T</sub>. At 1 mA that is 1/26 Ω ≈ 38 mA per volt. A 1 mV wiggle on the base changes I<sub>C</sub> by 38 µA. This steep slope is why BJTs make good amplifiers.</li>
+    </ul>
+
+    <h2>Cut-off, active and saturation</h2>
+    <p>The <strong>output characteristics</strong> plot I<sub>C</sub> against V<sub>CE</sub> for several fixed base currents. Each curve rises steeply, then goes almost flat: once V<sub>CE</sub> is more than a few tenths of a volt, the collector collects everything the emitter sends, and more voltage hardly adds current. (The slight upward tilt is the <strong>Early effect</strong>: more C–B reverse voltage widens that depletion layer, which makes the neutral base slightly thinner, which loses fewer electrons.)</p>
+    <figure>
+      <svg viewBox="0 0 640 330" role="img" aria-label="BJT output characteristic curves with cut-off, active and saturation regions and a load line">
+        <path class="s-line" d="M70 20 V280 H610"/>
+        <text class="t t-small" x="20" y="30">I<tspan baseline-shift="sub" font-size="9">C</tspan> (mA)</text>
+        <text class="t t-small" x="540" y="305">V<tspan baseline-shift="sub" font-size="9">CE</tspan> (V)</text>
+        <!-- y ticks: 0..8 mA => 280..40 (30 px per mA) -->
+        <text class="t t-small t-muted" x="50" y="284">0</text><text class="t t-small t-muted" x="50" y="194">3</text><text class="t t-small t-muted" x="50" y="104">6</text>
+        <path class="s-thin s-dash" d="M70 190 H610 M70 100 H610"/>
+        <!-- x ticks 0..12 V => 70..610 (45 px per V) -->
+        <text class="t t-small t-muted" x="66" y="298">0</text><text class="t t-small t-muted" x="335" y="298">6</text><text class="t t-small t-muted" x="600" y="298">12</text>
+        <rect class="f-warn-soft" x="70" y="20" width="16" height="260"/>
+        <text class="t t-small t-red" x="90" y="34">saturation</text>
+        <text class="t t-small t-muted" x="90" y="50">V<tspan baseline-shift="sub" font-size="9">CE</tspan> &lt; ~0.3 V</text>
+        <!-- curves: beta 150, Ib 10,20,30,40 uA -> 1.5,3,4.5,6 mA -> y=235,190,145,100 -->
+        <path class="s-accent" d="M70 280 C76 240 80 236 92 235 L610 229"/>
+        <path class="s-accent" d="M70 280 C78 200 84 191 96 190 L610 180"/>
+        <path class="s-accent" d="M70 280 C80 160 88 146 100 145 L610 130"/>
+        <path class="s-accent" d="M70 280 C82 120 90 101 104 100 L610 80"/>
+        <text class="t t-small" x="560" y="224">10 µA</text><text class="t t-small" x="560" y="175">20 µA</text><text class="t t-small" x="560" y="125">30 µA</text><text class="t t-small" x="560" y="75">I<tspan baseline-shift="sub" font-size="9">B</tspan> = 40 µA</text>
+        <path class="s-thin" d="M70 278 H610"/>
+        <text class="t t-small t-muted" x="400" y="272">cut-off: I<tspan baseline-shift="sub" font-size="9">B</tspan> = 0, I<tspan baseline-shift="sub" font-size="9">C</tspan> ≈ leakage</text>
+        <!-- load line Vcc 12 V, Rc 2k -> Isat 6 mA: (70,100) to (610,280) -->
+        <path class="s-red s-dash" d="M70 100 L610 280"/>
+        <text class="t t-small t-red" x="380" y="170">load line: V<tspan baseline-shift="sub" font-size="9">CC</tspan> = 12 V, R<tspan baseline-shift="sub" font-size="9">C</tspan> = 2 kΩ</text>
+        <circle class="f-red" cx="340" cy="190" r="6"/>
+        <text class="t t-small t-bold" x="300" y="214">Q (active)</text>
+        <text class="t t-small t-muted" x="200" y="60">active region: I<tspan baseline-shift="sub" font-size="9">C</tspan> ≈ β I<tspan baseline-shift="sub" font-size="9">B</tspan>, flat curves</text>
+      </svg>
+      <figcaption>Figure 3. Output characteristics of an NPN with β = 150. The dashed red load line is every (V<sub>CE</sub>, I<sub>C</sub>) the collector resistor allows: from 12 V at zero current to 6 mA at zero volts. Where it crosses the curve for the chosen I<sub>B</sub> is the operating point. With I<sub>B</sub> = 20 µA, Q sits mid-way: about 3 mA and 6 V. With I<sub>B</sub> ≥ 40 µA the line meets the curves only in the saturation strip.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Region</th><th>B–E junction</th><th>C–B junction</th><th>What you measure</th><th>Used for</th></tr>
+      <tr><td><b>Cut-off</b></td><td>Off (V<sub>BE</sub> &lt; ~0.5 V)</td><td>Reverse</td><td>I<sub>C</sub> ≈ 0, V<sub>CE</sub> ≈ V<sub>CC</sub></td><td>Switch OFF</td></tr>
+      <tr><td><b>Active</b></td><td>Forward (~0.65 V)</td><td>Reverse</td><td>I<sub>C</sub> = β I<sub>B</sub>, V<sub>CE</sub> anywhere from ~0.3 V to V<sub>CC</sub></td><td>Amplifiers</td></tr>
+      <tr><td><b>Saturation</b></td><td>Forward (~0.7–0.8 V)</td><td>Forward too</td><td>V<sub>CE</sub> ≈ 0.05–0.3 V, I<sub>C</sub> &lt; β I<sub>B</sub> (set by the load)</td><td>Switch ON</td></tr>
+    </table></div>
+    <p><strong>What saturation really means.</strong> The transistor can only pass what the load allows. If β I<sub>B</sub> asks for more than (V<sub>CC</sub> − V<sub>CE(sat)</sub>)/R<sub>C</sub>, the collector voltage falls until the C–B junction becomes forward-biased too. Then the collector also injects into the base, I<sub>C</sub> stops following β I<sub>B</sub>, and the transistor sits at a low V<sub>CE</sub>. "Saturated" does not mean "full of current"; it means "the transistor is no longer the thing limiting the current". The extra charge stored in the base in saturation is why a saturated BJT takes some time (often hundreds of ns to µs) to turn off.</p>
+
+    <h2>Worked example 1: a BJT as a switch</h2>
+    <p>A 3.3 V microcontroller pin must switch a 12 V relay with a 400 Ω coil. A small NPN (BC547 or 2N2222 class) switches the low side.</p>
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="NPN low-side switch driving a relay coil with a flyback diode">
+        <defs>
+          <marker id="t12-sw-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="300" y="22">+12 V</text>
+        <path class="s-line" d="M320 30 V60"/>
+        <!-- relay coil as box -->
+        <rect class="f-accent-soft s-accent" x="300" y="60" width="40" height="70" rx="3"/>
+        <text class="t t-small" x="350" y="90">relay coil</text>
+        <text class="t t-small t-muted" x="350" y="106">400 Ω, 30 mA</text>
+        <!-- flyback diode, cathode at top -->
+        <path class="s-line" d="M320 45 H260 V80 M260 110 V145 H320"/>
+        <polygon class="f-ink" points="248,110 272,110 260,86"/>
+        <path class="s-line" d="M246 84 H274"/>
+        <text class="t t-small" x="160" y="90">flyback</text>
+        <text class="t t-small" x="160" y="106">1N4148/1N4007</text>
+        <path class="s-line" d="M320 130 V170"/>
+        <!-- NPN -->
+        <circle class="s-thin" cx="315" cy="200" r="32"/>
+        <path class="s-line" d="M300 180 V220"/>
+        <path class="s-line" d="M300 192 L320 172 V170"/>
+        <path class="s-line" d="M300 208 L318 226" marker-end="url(#t12-sw-ar)"/>
+        <path class="s-line" d="M320 228 V260"/>
+        <text class="t t-small" x="352" y="176">C</text><text class="t t-small" x="352" y="236">E</text><text class="t t-small" x="276" y="196">B</text>
+        <!-- ground -->
+        <path class="s-line" d="M300 260 H340 M306 267 H334 M313 274 H327"/>
+        <!-- base resistor -->
+        <path class="s-line" d="M120 200 H160"/>
+        <rect class="f-panel s-line" x="160" y="190" width="70" height="20"/>
+        <path class="s-line" d="M230 200 H300"/>
+        <text class="t t-small" x="170" y="182">R<tspan baseline-shift="sub" font-size="9">B</tspan> 1 kΩ</text>
+        <text class="t t-small" x="40" y="205">GPIO 3.3 V</text>
+        <text class="t t-small t-muted" x="400" y="200">I<tspan baseline-shift="sub" font-size="9">C</tspan> = 30 mA</text>
+        <text class="t t-small t-muted" x="400" y="218">V<tspan baseline-shift="sub" font-size="9">CE(sat)</tspan> ≈ 0.1–0.2 V</text>
+        <text class="t t-small t-muted" x="120" y="236">I<tspan baseline-shift="sub" font-size="9">B</tspan> = (3.3 − 0.7)/1 k = 2.6 mA</text>
+      </svg>
+      <figcaption>Figure 4. Low-side NPN switch for a relay. The resistor sets the base current; the diode across the coil catches the coil's inductive kick when the transistor turns off (P08 shows why this saves the transistor).</figcaption>
+    </figure>
+    <ol>
+      <li><strong>Load current.</strong> I<sub>C</sub> = 12 V / 400 Ω = 30 mA (ignoring the 0.2 V V<sub>CE(sat)</sub>).</li>
+      <li><strong>Base current.</strong> For a switch, do not design for the typical β. Use a <strong>forced β of about 10–20</strong> so the transistor saturates hard even if this one has a low gain or is cold. With forced β = 10: I<sub>B</sub> = 3 mA.</li>
+      <li><strong>Base resistor.</strong> R<sub>B</sub> = (3.3 − 0.7)/3 mA ≈ 870 Ω. Choose 1 kΩ: I<sub>B</sub> = 2.6 mA, forced β ≈ 11.5. A 3.3 V GPIO can source 2.6 mA comfortably.</li>
+      <li><strong>Check power.</strong> P = V<sub>CE(sat)</sub> × I<sub>C</sub> ≈ 0.2 × 0.03 = 6 mW. Tiny. A switch is either fully off (no current) or fully on (almost no voltage), so it wastes little power.</li>
+      <li><strong>Flyback diode.</strong> Across the coil, cathode to +12 V. Without it, the coil's stored energy drives the collector to tens or hundreds of volts at turn-off.</li>
+    </ol>
+
+    <h2>Worked example 2: biasing a small amplifier</h2>
+    <p>Goal: a common-emitter amplifier on 12 V with I<sub>C</sub> ≈ 1 mA and the collector sitting near half supply, so the output can swing both ways. The trick that makes it reliable is the emitter resistor R<sub>E</sub>.</p>
+    <ol>
+      <li><strong>Pick R<sub>E</sub> = 1 kΩ.</strong> At 1 mA, V<sub>E</sub> ≈ 1 V. So V<sub>B</sub> ≈ 1 + 0.65 = 1.65 V.</li>
+      <li><strong>Pick R<sub>C</sub> = 5.6 kΩ.</strong> V<sub>C</sub> = 12 − 1 mA × 5.6 kΩ = 6.4 V. Roughly mid-way between V<sub>E</sub> and 12 V.</li>
+      <li><strong>Base divider.</strong> I<sub>B</sub> ≈ 1 mA/150 ≈ 7 µA. Make the divider current about 10× that so I<sub>B</sub> barely loads it: R1 = 100 kΩ (top), R2 = 18 kΩ (bottom).</li>
+      <li><strong>Check properly.</strong> Thevenin: V<sub>TH</sub> = 12 × 18/118 = 1.83 V, R<sub>TH</sub> = 100k ∥ 18k = 15.3 kΩ. Then I<sub>B</sub> = (1.83 − 0.65)/(15.3k + 151 × 1k) = 1.18/166k ≈ 7.1 µA, I<sub>C</sub> = 150 × 7.1 µA ≈ <strong>1.07 mA</strong>, V<sub>C</sub> = 12 − 1.07 × 5.6 ≈ <strong>6.0 V</strong>, V<sub>CE</sub> ≈ 6.0 − 1.07 ≈ 4.9 V. Active region.</li>
+      <li><strong>Swap in a transistor with β = 300.</strong> I<sub>B</sub> = 1.18/(15.3k + 301k) ≈ 3.7 µA, I<sub>C</sub> ≈ 1.12 mA. β doubled, I<sub>C</sub> moved 5 %. That is the point of R<sub>E</sub>: it is negative feedback. If I<sub>C</sub> tries to rise, V<sub>E</sub> rises, V<sub>BE</sub> shrinks, and I<sub>C</sub> is pulled back.</li>
+      <li><strong>Gain.</strong> A small input wiggle on the base appears on the emitter (it follows the base), so the emitter current changes by Δv/(R<sub>E</sub> + r<sub>e</sub>), where r<sub>e</sub> = V<sub>T</sub>/I<sub>C</sub> ≈ 26 Ω. The same change flows through R<sub>C</sub>. Voltage gain ≈ −R<sub>C</sub>/(R<sub>E</sub> + r<sub>e</sub>) = −5600/1026 ≈ <strong>−5.5</strong> (inverted). Bypassing R<sub>E</sub> with a capacitor raises the AC gain a lot, at the cost of distortion and predictability; op-amps (T14) usually do this job better today.</li>
+    </ol>
+
+    <div class="widget" id="w-t12-op">
+      <span class="label">Interactive · Transistor operating-point explorer</span>
+      <label>Supply V<sub>CC</sub> <span class="out" id="t12-vcc-o"></span><input type="range" id="t12-vcc" min="3" max="24" step="0.5" value="12"></label>
+      <label>Collector resistor R<sub>C</sub> <span class="out" id="t12-rc-o"></span><input type="range" id="t12-rc" min="2" max="4.3" step="0.01" value="3.30"></label>
+      <label>Base current I<sub>B</sub> <span class="out" id="t12-ib-o"></span><input type="range" id="t12-ib" min="0" max="200" step="1" value="20"></label>
+      <label>Current gain β <span class="out" id="t12-b-o"></span><input type="range" id="t12-b" min="50" max="400" step="10" value="150"></label>
+      <svg id="t12-plot" viewBox="0 0 560 300" role="img" aria-label="Output characteristics with load line and operating point"></svg>
+      <div class="readings">
+        <div><small>Region</small><span class="out" id="t12-r-reg"></span></div>
+        <div><small>Collector current I<sub>C</sub></small><span class="out" id="t12-r-ic"></span></div>
+        <div><small>V<sub>CE</sub></small><span class="out" id="t12-r-vce"></span></div>
+        <div><small>Transistor power</small><span class="out" id="t12-r-p"></span></div>
+        <div><small>β·I<sub>B</sub> asked for</small><span class="out" id="t12-r-ask"></span></div>
+        <div><small>Forced β = I<sub>C</sub>/I<sub>B</sub></small><span class="out" id="t12-r-fb"></span></div>
+      </div>
+      <p style="font-size:14px;margin-top:10px;color:var(--muted)">Model: I<sub>C</sub> = βI<sub>B</sub>(1 − e<sup>−V<sub>CE</sub>/0.08</sup>)(1 + V<sub>CE</sub>/100), solved against the load line I<sub>C</sub> = (V<sub>CC</sub> − V<sub>CE</sub>)/R<sub>C</sub>. Real transistors also have maximum ratings: keep I<sub>C</sub>, V<sub>CE</sub> and power inside the datasheet limits.</p>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var vccR=$('t12-vcc'),rcR=$('t12-rc'),ibR=$('t12-ib'),bR=$('t12-b'),svg=$('t12-plot');
+      function fmtR(r){return r>=1000?(r/1000).toFixed(r>=10000?0:2)+' kΩ':Math.round(r)+' Ω';}
+      function fmtI(i){return i>=1e-3?(i*1e3).toFixed(2)+' mA':(i*1e6).toFixed(1)+' µA';}
+      function ic(beta,ib,v){return beta*ib*(1-Math.exp(-v/0.08))*(1+v/100);}
+      function draw(){
+        var vcc=+vccR.value,rc=Math.pow(10,+rcR.value),ib=+ibR.value*1e-6,beta=+bR.value;
+        var isat=vcc/rc;
+        // solve ic(v)=(vcc-v)/rc by bisection
+        var lo=0,hi=vcc;for(var k=0;k<60;k++){var m=(lo+hi)/2;if(ic(beta,ib,m)-(vcc-m)/rc>0)hi=m;else lo=m;}
+        var vce=(lo+hi)/2,icq=(vcc-vce)/rc;if(ib===0){vce=vcc;icq=0;}
+        var reg=ib===0?'Cut-off':(vce<0.3?'Saturation':'Active');
+        // axes
+        var X0=60,X1=545,Y0=20,Y1=262;
+        var imax=Math.max(isat,beta*200e-6*0.25)*1.15; imax=Math.max(imax,1e-3);
+        var istep=imax>0.25?0.05:imax>0.1?0.02:imax>0.05?0.01:imax>0.02?0.005:imax>0.005?0.002:0.0005;
+        function px(v){return X0+v/vcc*(X1-X0);} function py(i){return Y1-i/imax*(Y1-Y0);}
+        var s='';
+        for(var g=0;g<=imax+1e-12;g+=istep){var y=py(g);s+='<line class="s-thin" x1="'+X0+'" y1="'+y+'" x2="'+X1+'" y2="'+y+'" stroke-dasharray="2 4"/><text class="t t-small t-muted" x="'+(X0-6)+'" y="'+(y+4)+'" text-anchor="end">'+(g*1e3).toFixed(g*1e3<10?1:0)+'</text>';}
+        var vstep=vcc>12?4:2;for(var gv=0;gv<=vcc+1e-9;gv+=vstep){var x=px(gv);s+='<text class="t t-small t-muted" x="'+x+'" y="'+(Y1+16)+'" text-anchor="middle">'+gv+'</text>';}
+        s+='<path class="s-line" d="M'+X0+' '+Y0+' V'+Y1+' H'+X1+'"/>';
+        s+='<text class="t t-small" x="'+(X0+6)+'" y="'+(Y0+12)+'">I<tspan baseline-shift="sub" font-size="9">C</tspan> (mA)</text><text class="t t-small" x="'+(X1-4)+'" y="'+(Y1-6)+'" text-anchor="end">V<tspan baseline-shift="sub" font-size="9">CE</tspan> (V)</text>';
+        // family curves
+        [25,50,100,150,200].forEach(function(u){var d='';for(var j=0;j<=120;j++){var v=vcc*j/120;var c=ic(beta,u*1e-6,v);if(c>imax)c=imax;d+=(j?' L':'M')+px(v).toFixed(1)+' '+py(c).toFixed(1);}s+='<path class="s-thin" d="'+d+'"/>';var ce=ic(beta,u*1e-6,vcc);if(ce<imax)s+='<text class="t t-small t-muted" x="'+(X1-2)+'" y="'+(py(ce)-4)+'" text-anchor="end">'+u+' µA</text>';});
+        // current curve
+        if(ib>0){var d2='';for(var j2=0;j2<=160;j2++){var v2=vcc*j2/160;var c2=ic(beta,ib,v2);if(c2>imax)c2=imax;d2+=(j2?' L':'M')+px(v2).toFixed(1)+' '+py(c2).toFixed(1);}s+='<path class="s-accent" d="'+d2+'"/>';}
+        // load line
+        var x0=isat>imax?vcc-imax*rc:0,i0=Math.min(isat,imax);
+        s+='<line class="s-red s-dash" x1="'+px(x0).toFixed(1)+'" y1="'+py(i0).toFixed(1)+'" x2="'+px(vcc).toFixed(1)+'" y2="'+py(0).toFixed(1)+'"/>';
+        s+='<rect class="f-warn-soft" x="'+X0+'" y="'+Y0+'" width="'+Math.max(2,px(0.3)-X0).toFixed(1)+'" height="'+(Y1-Y0)+'" opacity="0.6"/>';
+        s+='<circle class="f-red" cx="'+px(vce).toFixed(1)+'" cy="'+py(Math.min(icq,imax)).toFixed(1)+'" r="6"/>';
+        svg.innerHTML=s;
+        $('t12-vcc-o').textContent=vcc.toFixed(1)+' V';$('t12-rc-o').textContent=fmtR(rc);$('t12-ib-o').textContent=ibR.value+' µA';$('t12-b-o').textContent=beta;
+        $('t12-r-reg').textContent=reg;$('t12-r-ic').textContent=fmtI(icq);$('t12-r-vce').textContent=vce.toFixed(2)+' V';
+        var p=vce*icq;$('t12-r-p').textContent=p>=1?p.toFixed(2)+' W':(p*1e3).toFixed(1)+' mW';
+        $('t12-r-ask').textContent=fmtI(beta*ib);$('t12-r-fb').textContent=ib>0?(icq/ib).toFixed(0):'—';
+      }
+      [vccR,rcR,ibR,bR].forEach(function(e){e.oninput=draw;});draw();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Set V<sub>CC</sub> = 12 V, R<sub>C</sub> ≈ 2 kΩ, β = 150. Slide I<sub>B</sub> from 0 up. Watch the dot travel along the load line from cut-off (bottom right) through active to saturation (top left). Note where the transistor's power peaks: in the middle, at V<sub>CE</sub> ≈ V<sub>CC</sub>/2. That is why switches should pass through the active region quickly and never sit there.</p></div>
+
+    <h2>PNP: the mirror image</h2>
+    <p>A <strong>PNP</strong> transistor swaps every doping type: p<sup>++</sup> emitter, thin n base, p collector. Now <strong>holes</strong> are injected from the emitter, cross the base and are collected. Every voltage and current reverses:</p>
+    <ul>
+      <li>The emitter sits at the most positive point (often the supply rail).</li>
+      <li>The base must be pulled about 0.65 V <em>below</em> the emitter to turn it on (V<sub>EB</sub> ≈ 0.65 V).</li>
+      <li>Current flows out of the base and out of the collector. In the symbol, the emitter arrow points <em>in</em> ("PNP: Pointing iN Proudly" is one memory aid).</li>
+    </ul>
+    <p>PNPs are used as <strong>high-side switches</strong>: between the positive supply and the load, so the load's other end can stay on ground. Holes have lower mobility than electrons (about 480 against 1350 cm²/V·s in lightly doped silicon), so a PNP is a bit slower and has a bit less gain than a matching NPN, which is one reason NPN parts are more common.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A PNP high-side switch on a 12 V rail cannot be turned off by a 3.3 V microcontroller pin: 3.3 V on the base is still 8.7 V below the emitter, so it stays on. The usual fix is a small NPN that pulls the PNP's base down when the pin goes high, plus a resistor from the PNP's base to its emitter to hold it off. You will build exactly this kind of driver in P08.</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>In P08 you drive a relay and a small motor from a microcontroller pin with an NPN, measure V<sub>BE</sub> and V<sub>CE(sat)</sub>, and fit a flyback diode. Expected readings: V<sub>BE</sub> ≈ 0.65–0.8 V when switched on, V<sub>CE</sub> ≈ 0.05–0.3 V in saturation, and the full supply across C–E when off.</p>
+    <a class="crosslink" href="../practice/p08-transistor-switches.html">Practice P08 · Transistors as switches: BJT, MOSFET, relays</a>
+    <div class="callout job"><span class="label">On the job</span><p>Small BJT and Darlington (two BJTs in one package, β in the thousands) stages are inside PLC and BMS controller digital outputs, relay driver boards, and the "open collector" outputs of alarm panels, smoke detectors and access-control readers. "Open collector" means the transistor's collector is the terminal: it can pull a line down to 0 V, but you supply the pull-up. Knowing that saves hours when an alarm input "doesn't see" a device.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>Keep your transistor experiments at extra-low voltage (5, 12 or 24 V DC). The relay you switch on the bench should switch another ELV circuit, never mains.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why must the base be thin compared with the diffusion length?</summary><div class="answer"><p>Electrons injected into the base are minority carriers that cross by diffusion. They survive a typical distance L (tens of µm). If the base is much thinner than L (around 1 µm), nearly all reach the collector junction. If it is many L wide (as in two separate diodes), they all recombine and the base current equals the emitter current: no gain.</p></div></details>
+    <details class="quiz"><summary>α = 0.995. What is β? If I<sub>B</sub> = 20 µA, what is I<sub>C</sub>?</summary><div class="answer"><p>β = α/(1 − α) = 0.995/0.005 = <strong>199</strong>. I<sub>C</sub> = 199 × 20 µA ≈ <strong>4 mA</strong>, and I<sub>E</sub> = 4.02 mA.</p></div></details>
+    <details class="quiz"><summary>Why does a reverse-biased collector junction pass a large current in a transistor, when a reverse-biased diode passes almost none?</summary><div class="answer"><p>A reverse-biased junction blocks majority carriers but sweeps across any minority carriers that reach its edge. In a lone diode there are very few. In a transistor the emitter floods the base with minority electrons, so the collector junction has a large supply to sweep across. The current is set by the emitter injection, not by the collector voltage.</p></div></details>
+    <details class="quiz"><summary>V<sub>CC</sub> = 12 V, R<sub>C</sub> = 1 kΩ, β = 100, I<sub>B</sub> = 200 µA. Which region, and what is I<sub>C</sub>?</summary><div class="answer"><p>β I<sub>B</sub> = 20 mA, but the load only allows (12 − 0.2)/1 k ≈ 11.8 mA. So the transistor is <strong>saturated</strong>, I<sub>C</sub> ≈ 11.8 mA, V<sub>CE</sub> ≈ 0.2 V, forced β ≈ 59.</p></div></details>
+    <details class="quiz"><summary>Why do we design switches with a forced β of 10–20 instead of the datasheet's typical 200?</summary><div class="answer"><p>β varies widely between parts, falls at low temperature and at high current. Designing for 10–20 guarantees deep saturation in the worst case, so V<sub>CE</sub> stays low and the transistor stays cool.</p></div></details>
+    <details class="quiz"><summary>In the amplifier example, why did doubling β change I<sub>C</sub> by only 5 %?</summary><div class="answer"><p>The emitter resistor makes I<sub>C</sub> depend mainly on V<sub>B</sub>, V<sub>BE</sub> and R<sub>E</sub>: I<sub>C</sub> ≈ (V<sub>B</sub> − 0.65)/R<sub>E</sub>. Any rise in I<sub>C</sub> raises V<sub>E</sub>, which reduces V<sub>BE</sub> and pulls I<sub>C</sub> back. That is negative feedback.</p></div></details>
+    <details class="quiz"><summary>V<sub>BE</sub> rises from 0.65 V to 0.71 V at the same temperature. What happens to I<sub>C</sub>?</summary><div class="answer"><p>60 mV ≈ one decade, so I<sub>C</sub> rises about <strong>10×</strong>. This is why you set base current with a resistor rather than forcing V<sub>BE</sub>.</p></div></details>
+    <details class="quiz"><summary>Your multimeter shows 0.66 V from base to emitter, 0.65 V from base to collector, and OL from collector to emitter both ways, with the red lead on the base. NPN or PNP, and is it healthy?</summary><div class="answer"><p>Red (positive) on the base gives forward readings to both other legs, so the base is p-type: <strong>NPN</strong>. Both junctions read normal and C–E is open, so it is probably healthy. A shorted transistor shows near 0 V on C–E.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can describe the doping and thickness of emitter, base and collector, and why each is chosen.</span></li>
+      <li><input type="checkbox"><span>I can explain injection, diffusion across the base and collection in four sentences.</span></li>
+      <li><input type="checkbox"><span>I can convert between α and β and use I<sub>C</sub> = β I<sub>B</sub>.</span></li>
+      <li><input type="checkbox"><span>I can explain why two diodes back to back are not a transistor.</span></li>
+      <li><input type="checkbox"><span>I can identify cut-off, active and saturation on the output curves and with a load line.</span></li>
+      <li><input type="checkbox"><span>I can design a saturated NPN switch with a forced β and a flyback diode.</span></li>
+      <li><input type="checkbox"><span>I can bias a common-emitter stage with a divider and an emitter resistor and estimate its gain.</span></li>
+      <li><input type="checkbox"><span>I can explain how a PNP differs and why it suits high-side switching.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

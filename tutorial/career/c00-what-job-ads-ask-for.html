@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C00 · What Australian job ads actually ask for</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.heat td.h{text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+.heat th.v{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-size:12.5px;padding:8px 4px;text-align:left}
+.adlist{list-style:none;padding:0;margin:8px 0}
+.adlist li{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;background:var(--bg);font-size:14.5px}
+.adlist small{color:var(--muted)}
+.reqbar{display:flex;align-items:center;gap:10px;margin:4px 0;font-size:14px}
+.reqbar span.l{min-width:190px}
+.reqbar span.b{flex:1;height:12px;background:var(--wash);border-radius:99px;overflow:hidden}
+.reqbar span.b i{display:block;height:100%;background:var(--career)}
+.reqbar b{min-width:38px;text-align:right}
+</style>
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part 0</div>
+    <span class="eyebrow">Career · C00</span>
+    <h1>What Australian job ads actually ask for</h1>
+    <p class="lede">Before learning BMS or CCTV in depth, look at the evidence. Your own job research captured 2,764 live SEEK adverts on 1–2 November 2026. This chapter pulls out the technician roles this course targets: how many ads there are, how crowded they are, which tickets and tools they mention, and what they pay.</p>
+    <div class="meta"><span><b>Read</b> 20 min</span><span><b>Data</b> 2,764 SEEK ads, captured 1–2 Nov 2026</span><span><b>Source</b> your Opportunity Radar research</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <div class="callout warn"><span class="label">How to read these numbers</span>
+      <p>The ads come from your <code>seek_flutter</code> research project ("Opportunity Radar"). Each ad has the <b>applicant count SEEK showed</b> on the day it was captured. That counts applications to that one ad, not unique people, and it says nothing about who was hired. Role families and requirements below were found by <b>keyword matching</b> on each ad's title and text, so an ad can appear in two families and some matches are noisy. Small groups (fewer than about 30 ads) can swing a lot. Treat this as a well-informed snapshot of one fortnight, not a law of the market.</p>
+    </div>
+
+    <h2>How crowded is each role family?</h2>
+    <p>The median ad across all 2,764 had <b>38 applicants</b>. Lower numbers mean less competition per advert. Most of the families in this job track sit well below that, which is the main reason this course is built around them.</p>
+    <figure>
+      <svg viewBox="0 0 720 380" role="img" aria-label="Bar chart of median applicants per ad by role family, compared with the all-ads median of 38">
+        <text class="t t-small t-muted" x="230" y="22">Median applicants per ad (fewer = less competition)</text>
+        <g>
+          <text class="t" x="220" y="52" text-anchor="end">Fire detection (39)</text><rect class="f-green" x="230" y="38" width="105" height="20" rx="3"/><text class="t t-small" x="341" y="53">15</text>
+          <text class="t" x="220" y="86" text-anchor="end">BMS / controls (51)</text><rect class="f-green" x="230" y="72" width="133" height="20" rx="3"/><text class="t t-small" x="369" y="87">19</text>
+          <text class="t" x="220" y="120" text-anchor="end">Data / telecom cabling (50)</text><rect class="f-green" x="230" y="106" width="171" height="20" rx="3"/><text class="t t-small" x="407" y="121">24.5</text>
+          <text class="t" x="220" y="154" text-anchor="end">CCTV / security (99)</text><rect class="f-green" x="230" y="140" width="182" height="20" rx="3"/><text class="t t-small" x="418" y="155">26</text>
+          <text class="t" x="220" y="188" text-anchor="end">Instrumentation / PLC (218)</text><rect class="f-amber" x="230" y="174" width="196" height="20" rx="3"/><text class="t t-small" x="432" y="189">28</text>
+          <text class="t" x="220" y="222" text-anchor="end">Solar / battery (56)</text><rect class="f-amber" x="230" y="208" width="217" height="20" rx="3"/><text class="t t-small" x="453" y="223">31</text>
+          <text class="t" x="220" y="256" text-anchor="end">AV / IT field service (63)</text><rect class="f-amber" x="230" y="242" width="217" height="20" rx="3"/><text class="t t-small" x="453" y="257">31</text>
+          <text class="t" x="220" y="290" text-anchor="end">Electronics technician (52)</text><rect class="f-amber" x="230" y="276" width="249" height="20" rx="3"/><text class="t t-small" x="485" y="291">35.5</text>
+          <text class="t" x="220" y="324" text-anchor="end">NBN / fibre (19)</text><rect class="f-red" x="230" y="310" width="440" height="20" rx="3"/><path class="s-line" d="M664 306 l6 8 l-6 8"/><text class="t t-small" x="540" y="304">88 (bar cut off) · small sample</text>
+        </g>
+        <path class="s-line s-dash" d="M496 32 V340"/>
+        <text class="t t-small t-bold" x="500" y="356">all ads: 38</text>
+        <text class="t t-small t-muted" x="230" y="374">(number of ads in brackets) · scale: 7 px per applicant</text>
+      </svg>
+      <figcaption>Figure 1. Fire, BMS, cabling and security ads drew far fewer applicants than a typical ad. The NBN/fibre group is small (19 ads) and includes labouring roles (pit and pipe, cable hauling) that attract many applicants, so read it with care.</figcaption>
+    </figure>
+    <div class="callout tip"><span class="label">What this means</span>
+      <p>Less crowded does not mean easy; these ads often want specific tickets. But an ad with 15–25 applicants, where many applicants lack the licence it asks for, is a much better bet than a software role with 65 or more. That trade (tickets and hands-on skill in exchange for less competition) is the whole strategy of this job track.</p>
+    </div>
+
+    <h2>Which tickets and qualifications do the ads mention?</h2>
+    <p>Percent of ads in each family whose text mentions each requirement. A mention can be "required", "preferred" or just "an advantage"; the matching cannot tell these apart.</p>
+    <div class="table-wrap"><table class="heat" id="heat"></table></div>
+    <script>
+    (function(){
+      var cols=["Electrical licence","White Card","Driver's licence","ACMA / cabling reg.","Security licence","Police check","Heights / EWP","Cert III/IV","Diploma / degree","Work rights / PR"];
+      var rows=[
+        ["BMS / controls",51,[20,10,25,0,4,4,0,18,16,18]],
+        ["CCTV / security",99,[1,25,30,27,29,8,16,9,13,21]],
+        ["Fire detection",39,[26,23,36,0,0,10,5,21,3,5]],
+        ["Data / telecom cabling",50,[8,44,26,60,22,6,26,22,4,20]],
+        ["NBN / fibre",19,[0,32,42,21,0,26,11,11,11,11]],
+        ["Instrumentation / PLC",218,[22,8,20,0,0,6,9,17,41,17]],
+        ["Electronics technician",52,[4,4,12,0,0,0,0,21,33,17]],
+        ["Solar / battery",56,[20,25,36,4,0,2,20,12,23,20]]];
+      var t=document.getElementById('heat'),h='<tr><th>Family (ads)</th>';
+      cols.forEach(function(c){h+='<th class="v">'+c+'</th>';});h+='</tr>';
+      rows.forEach(function(r){h+='<tr><td>'+r[0]+' <small style="color:var(--muted)">('+r[1]+')</small></td>';
+        r[2].forEach(function(v){var a=Math.min(85,Math.round(v*1.4));h+='<td class="h" style="background:color-mix(in srgb, var(--career) '+a+'%, transparent);color:'+(a>45?'var(--bg)':'var(--ink)')+'">'+v+'%</td>';});h+='</tr>';});
+      t.innerHTML=h;
+    })();
+    </script>
+    <p>Patterns worth noticing:</p>
+    <ul>
+      <li><b>Security ads almost never mention an electrical licence (1%)</b>, but often mention a security licence (29%), ACMA cabling registration (27%), a White Card (25%) and a driver's licence (30%). This is the clearest no-electrical-licence entry door.</li>
+      <li><b>Cabling ads are ticket-driven:</b> ACMA registration in 60% and White Card in 44%. Cheap tickets, quick to get (see <a href="c11-licences-pathways.html">C11</a>).</li>
+      <li><b>BMS and fire ads split:</b> about a fifth to a quarter mention an electrical licence ("dry fire" technician roles are often written for electricians), the rest are open to ELV technicians. Read each ad: many say "licence preferred", not "required".</li>
+      <li><b>Instrumentation is the biggest family (218 ads)</b> but leans toward qualifications: diploma or degree mentioned in 41%, electrical licence in 22%. Your old ECE diploma is most relevant here and in electronics technician roles (33%).</li>
+      <li><b>Work rights</b> come up in roughly a fifth of ads in most families, and some government and defence-related sites ask for citizenship or a security clearance.</li>
+    </ul>
+
+    <h2>Which tools and brands come up?</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Family</th><th>Most-mentioned tools and platforms (number of ads)</th><th>Where this course teaches it</th></tr>
+      <tr><td>BMS / controls (51)</td><td>Drawings/schematics 16 · IP networking 12 · BACnet 11 · Modbus 11 · Niagara/Tridium 10 · Honeywell 8 · Schneider 8 · Siemens 8 · PLC 7 · SCADA 7</td><td><a href="c01-bms-fundamentals.html">C01</a>, <a href="c02-bms-protocols-commissioning.html">C02</a>, <a href="../practice/p14-serial-buses-modbus.html">P14</a>, <a href="../practice/p22-reading-drawings.html">P22</a></td></tr>
+      <tr><td>CCTV / security (99)</td><td>IP networking 33 · Gallagher 24 · Genetec 20 · Milestone 18 · Inner Range 13 · drawings 12 · Bosch 7 · Axis 6</td><td><a href="c05-cctv-ip-cameras.html">C05</a>, <a href="c06-access-control-alarms.html">C06</a>, <a href="../practice/p19-networking-hands-on.html">P19</a></td></tr>
+      <tr><td>Data / telecom cabling (50)</td><td>IP networking 14 · fibre splicing 11 · drawings 8 · security platforms (Genetec, Gallagher, Inner Range, Milestone) 5–6 each · OTDR 3</td><td><a href="../practice/p20-cat6-termination.html">P20</a>, <a href="c07-telecom-cabling-acma.html">C07</a>, <a href="c09-fibre-splicing-otdr.html">C09</a></td></tr>
+      <tr><td>Instrumentation / PLC (218)</td><td>PLC 135 · SCADA 104 · drawings 69 · Siemens 51 · Schneider 32 · IP networking 29 · Modbus 13</td><td><a href="c10-plc-instrumentation.html">C10</a>, <a href="../theory/t16-signals-noise-loops.html">T16</a></td></tr>
+      <tr><td>Electronics technician (52)</td><td>Drawings/schematics 25 · microcontrollers/embedded 12 · soldering 11 · oscilloscope 8 · multimeter 7</td><td><a href="../practice/p05-soldering-wiring.html">P05</a>, <a href="../practice/p15-oscilloscope-logic-analyser.html">P15</a>, <a href="../practice/p11-arduino-first-steps.html">P11</a></td></tr>
+    </table></div>
+    <div class="callout job"><span class="label">On the job</span><p>"Reads drawings" shows up in every family. It is the single most transferable skill on this list, which is why the Practice Book has a whole lab on it (<a href="../practice/p22-reading-drawings.html">P22</a>). In security, cabling and BMS, "IP networking" is next: every camera, controller and reader is now a network device (<a href="../practice/p19-networking-hands-on.html">P19</a>).</p></div>
+
+    <h2>What the ads say about pay</h2>
+    <p>Only some ads state pay. The table uses ads with "technician", "installer", "cabler" or "splicer" in the title that gave a number, and shows the median of each ad's mid-point. Senior and junior roles are mixed together, the samples are small, and "per hour" ads are often contractor or casual rates. Use this to calibrate expectations, then check the legal minimums with the Fair Work Ombudsman (<a href="c11-licences-pathways.html">C11</a>).</p>
+    <div class="table-wrap"><table>
+      <tr><th>Family</th><th>Hourly ads: median (range)</th><th>Annual ads: median (range)</th></tr>
+      <tr><td>CCTV / security</td><td>~A$47.50/h (A$37.50–53) · 7 ads</td><td>~A$105k (A$55k–146k) · 23 ads</td></tr>
+      <tr><td>Data / telecom cabling</td><td>~A$46.50/h (A$35–56.50) · 11 ads</td><td>~A$105k (A$70k–146k) · 9 ads</td></tr>
+      <tr><td>Fire detection</td><td>~A$60/h (A$50–65) · 5 ads</td><td>~A$91k (A$55k–125k) · 8 ads</td></tr>
+      <tr><td>BMS / controls</td><td>~A$57.50/h (A$55–67.50) · 3 ads</td><td>2 ads (A$80k and A$130k)</td></tr>
+      <tr><td>Instrumentation / PLC</td><td>~A$61.50/h (A$42.50–95) · 8 ads</td><td>~A$125k (A$82.5k–150k) · 10 ads</td></tr>
+      <tr><td>Electronics technician</td><td>~A$42.50/h (A$36.80–45) · 5 ads</td><td>~A$80k (A$70k–105k) · 7 ads</td></tr>
+      <tr><td>NBN / fibre</td><td>~A$42.50/h (A$38–55) · 3 ads</td><td>none stated</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span>
+      <p><b>"The median salary is what I'll get."</b> These medians are pulled up by experienced technicians, leading hands and roles that need an electrical licence. A trainee or first-year installer usually starts lower, and pay rises quickly with tickets, platform certifications (for example a Genetec or Gallagher course) and a year of site experience. Many ads also add a vehicle, overtime or allowances, which the base figure leaves out.</p>
+    </div>
+
+    <h2>Explore one family</h2>
+    <div class="widget" id="w-explore">
+      <span class="label">Interactive · Role family explorer</span>
+      <label>Role family <select id="ex-fam"></select></label>
+      <div id="ex-out"></div>
+      <p style="font-size:13px;color:var(--muted);margin:8px 0 0">Example ads were captured on 1–2 Nov 2026 with the applicant count shown then; most will have closed by the time you read this. Use them as models of what employers write.</p>
+    </div>
+    <script>
+    (function(){
+      var D={
+        "CCTV / electronic security":{n:99,med:26,req:{"Driver's licence":30,"Security licence":29,"ACMA / cabling registration":27,"White Card":25,"Work rights / PR":21,"Heights / EWP":16,"Electrical licence":1},
+          tip:"Best no-electrical-licence entry. Learn IP networking and one access-control platform. Fortis even advertised a trainee role for people with an IT background.",
+          ads:[["Security Technician – Electronic Security","Fortis Security P/L","Seven Hills, Sydney NSW",3,"https://au.seek.com/job/95603136"],["Security Technician, Electronic Security","Fortis Security P/L","Mount Waverley, Melbourne VIC",4,"https://au.seek.com/job/95603529"],["Senior Security Technician | Electronic Security Systems","Indigo People","Brisbane QLD",2,"https://au.seek.com/job/95606729"],["Security Service Technician","Motion Recruitment","Sydney NSW",2,"https://au.seek.com/job/95574742"]]},
+        "Data / telecom cabling":{n:50,med:24.5,req:{"ACMA / cabling registration":60,"White Card":44,"Driver's licence":26,"Heights / EWP":26,"Security licence":22,"Cert III/IV":22,"Electrical licence":8},
+          tip:"Ticket-driven and quick to enter: ACMA open registration plus a White Card. Many cabling firms also do security, so the two families overlap.",
+          ads:[["Data Cablers","Pronet Data","Sydney NSW",7,"https://au.seek.com/job/95626712"],["Electronic Security Technicians – Installation & Service","Austcorp Executive","Sydney NSW",3,"https://au.seek.com/job/95626893"],["Security Technician – Installs","Core Talent","Sutherland, Sydney NSW",5,"https://au.seek.com/job/95614204"]]},
+        "BMS / building controls":{n:51,med:19,req:{"Driver's licence":25,"Electrical licence":20,"Cert III/IV":18,"Work rights / PR":18,"Diploma / degree":16,"White Card":10},
+          tip:"Low competition. Ads name BACnet, Modbus and Niagara, plus reading drawings. Some want an electrician; many don't. Your software background helps with front ends and integration.",
+          ads:[["BMS Service Technician","Airmaster Australia","Brisbane QLD",4,"https://au.seek.com/job/95420814"],["BMS Service Technician","Austcorp Executive","Sydney NSW",4,"https://au.seek.com/job/95563308"],["Control System Engineer, Automation Technician","Renko Group Pty Ltd","Darwin NT",1,"https://au.seek.com/job/95641702"]]},
+        "Fire detection":{n:39,med:15,req:{"Driver's licence":36,"Electrical licence":26,"White Card":23,"Cert III/IV":21,"Police check":10},
+          tip:"The least crowded family in the sample. 'Dry fire' (detection and alarms) suits electronics people; check state fire licensing (C04).",
+          ads:[["Dry Fire Technician","Metro Fire Systems","Chermside, Brisbane QLD",3,"https://au.seek.com/job/95509871"],["Fire Alarm Programmer Sydney","Bishop Consulting","Sydney NSW",1,"https://au.seek.com/job/95614881"],["Dry Fire Electrician/Technician","Marble","Sydney NSW",1,"https://au.seek.com/job/95627308"]]},
+        "Instrumentation / PLC":{n:218,med:28,req:{"Diploma / degree":41,"Electrical licence":22,"Driver's licence":20,"Cert III/IV":17,"Work rights / PR":17,"Heights / EWP":9},
+          tip:"The largest family. PLC and SCADA dominate. Diplomas count here more than anywhere else; an electrical licence opens the E&I roles.",
+          ads:[["Industrial Electrician / Instrument Technician","Willyung Electrical & Controls Engineering","Albany WA",1,"https://au.seek.com/job/95621405"],["Automation Technician","Embedded Expertise","Milsons Point, Sydney NSW",1,"https://au.seek.com/job/95635057"],["Control System Engineer, Automation Technician","Renko Group Pty Ltd","Darwin NT",1,"https://au.seek.com/job/95641702"]]},
+        "Electronics technician":{n:52,med:35.5,req:{"Diploma / degree":33,"Cert III/IV":21,"Work rights / PR":17,"Driver's licence":12,"Electrical licence":4},
+          tip:"Bench and repair work: schematics, soldering, oscilloscopes, microcontrollers. Closest to your diploma, more applicants per ad.",
+          ads:[["Electronic Technician","Hays | Manufacturing & Operations","Balcatta, Perth WA",1,"https://au.seek.com/job/95640328"],["Electronics Technician (Field Service)","Brook Racing and Sporting Technology","Gosford NSW",3,"https://au.seek.com/job/95624299"],["Electrical Technician","Australian Target Systems P/L","Darwin NT",3,"https://au.seek.com/job/95627194"]]},
+        "NBN / fibre":{n:19,med:88,req:{"Driver's licence":42,"White Card":32,"Police check":26,"First aid":26,"ACMA / cabling registration":21,"Heights / EWP":11},
+          tip:"Small sample mixing skilled splicers with labouring roles. Skilled splicing and OTDR roles are much less crowded than pit-and-pipe labour.",
+          ads:[["Fibre & Civils Technician","Pulse Infrastructure Pty Ltd","Perth WA",1,"https://au.seek.com/job/95630871"],["Fibre Splicers & Splicing Technicians","Pulse Infrastructure Pty Ltd","Perth WA",2,"https://au.seek.com/job/95631182"],["Senior Field Technician","Hays | Trades & Labour","Wagga Wagga NSW",13,"https://au.seek.com/job/95494107"]]}
+      };
+      var sel=document.getElementById('ex-fam'),out=document.getElementById('ex-out');
+      Object.keys(D).forEach(function(k){var o=document.createElement('option');o.textContent=k;sel.appendChild(o);});
+      function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+      function draw(){var d=D[sel.value],h='<div class="readings"><div><small>Ads in sample</small><span class="out">'+d.n+'</span></div><div><small>Median applicants</small><span class="out">'+d.med+'</span></div><div><small>All-ads median</small><span class="out">38</span></div></div><h4>Requirements mentioned</h4>';
+        Object.keys(d.req).forEach(function(k){h+='<div class="reqbar"><span class="l">'+esc(k)+'</span><span class="b"><i style="width:'+d.req[k]+'%"></i></span><b>'+d.req[k]+'%</b></div>';});
+        h+='<p style="margin-top:12px"><b>Reading:</b> '+esc(d.tip)+'</p><h4>Example ads (applicants when captured)</h4><ul class="adlist">';
+        d.ads.forEach(function(a){h+='<li><a href="'+a[4]+'" target="_blank" rel="noopener">'+esc(a[0])+'</a><br><small>'+esc(a[1])+' · '+esc(a[2])+' · '+a[3]+' applicant'+(a[3]==1?'':'s')+'</small></li>';});
+        out.innerHTML=h+'</ul>';}
+      sel.onchange=draw;draw();
+    })();
+    </script>
+
+    <h2>Case study: one real ad, mapped to this course</h2>
+    <p>Your research saved a lead in detail: <b>Fortis Security, Security Technician (Electronic Security), Mount Waverley VIC</b>, which had <b>4 applicants</b> when captured on 1 November 2026. Here is what it asked for and where each item is covered.</p>
+    <div class="table-wrap"><table>
+      <tr><th>The ad asks for</th><th>What it means</th><th>Course chapter</th></tr>
+      <tr><td>Victorian Private Security Individual Operator Licence with the Security Equipment Installer endorsement (current, or eligible to obtain before licensed duties)</td><td>The state security licence for installers in Victoria. "Eligible to obtain" means a trainee can be hired before holding it.</td><td><a href="c11-licences-pathways.html">C11</a></td></tr>
+      <tr><td>Australian driver's licence, full work rights</td><td>Non-negotiable for a field role.</td><td><a href="c11-licences-pathways.html">C11</a></td></tr>
+      <tr><td>Install, service and commission CCTV, access control and integrated systems</td><td>The core job.</td><td><a href="c05-cctv-ip-cameras.html">C05</a>, <a href="c06-access-control-alarms.html">C06</a></td></tr>
+      <tr><td>Genetec, Gallagher, Integriti, Milestone, Geutebruck "highly regarded"</td><td>Enterprise access-control and video platforms. Integriti is Inner Range's access platform. Vendors run their own certification courses, and this ad offers that training.</td><td><a href="c05-cctv-ip-cameras.html">C05</a>, <a href="c06-access-control-alarms.html">C06</a></td></tr>
+      <tr><td>Interpret plans, wiring diagrams, technical documentation</td><td>Reading drawings.</td><td><a href="../practice/p22-reading-drawings.html">P22</a></td></tr>
+      <tr><td>Fault diagnosis, preventative and reactive maintenance</td><td>A method, not guessing.</td><td><a href="../practice/p21-fault-finding.html">P21</a>, <a href="../practice/p03-multimeter-mastery.html">P03</a></td></tr>
+      <tr><td>Safety and workmanship</td><td>Site safety, neat terminations, labelling.</td><td><a href="c13-first-day-on-site.html">C13</a>, <a href="../practice/p05-soldering-wiring.html">P05</a></td></tr>
+    </table></div>
+    <p>The same employer's other listings in your research included a <b>"Trainee Electronic Security Technician — IT Background"</b> role in Mount Waverley. That title says the quiet part out loud: some security integrators actively want people who already understand networks and software, and will teach the installation side. If you have that background, this is the family to aim at first.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>The Victorian licence wording above is quoted from the advert, not legal advice. Licence names and endorsements differ by state and change over time; confirm with the state regulator before applying (Victoria Police Licensing &amp; Regulation Division in Victoria).</p></div>
+
+    <h2>Strategy, in one paragraph</h2>
+    <p>The evidence points to a clear first move: <b>electronic security, with data cabling as its partner skill</b>. These ads are among the least crowded, almost never need an electrical licence, ask for tickets you can get in weeks (White Card, ACMA open registration, the state security licence), and value networking skills you may already have. <b>BMS</b> is the natural second step (also uncrowded, and it values the same networking plus BACnet/Modbus), and <b>fire detection</b> is worth a look in your state. <b>Instrumentation</b> has the most ads and the best pay, but it leans toward diplomas and electrical licences, so it is a medium-term target. The 12-week plan in <a href="c12-portfolio-study-plan.html">C12</a> is ordered to match this.</p>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does a low applicant count not mean an ad is easy to get?</summary><div class="answer"><p>Because the ad may require tickets (security licence, ACMA registration, driver's licence, work rights) that most applicants lack. Low competition helps only if you meet the hard requirements, which is why the course pairs skills with tickets.</p></div></details>
+    <details class="quiz"><summary>In this sample, which family almost never mentioned an electrical licence, and what did it mention instead?</summary><div class="answer"><p>CCTV / electronic security: 1% mentioned an electrical licence, while about 29% mentioned a security licence, 27% ACMA cabling registration, 25% a White Card and 30% a driver's licence.</p></div></details>
+    <details class="quiz"><summary>Why is the NBN/fibre median (88 applicants) not a fair picture of fibre splicing jobs?</summary><div class="answer"><p>The group has only 19 ads and includes labouring roles such as pit-and-pipe and cable hauling, which attract many applicants. The two skilled splicing ads in it had 1 and 2 applicants when captured.</p></div></details>
+    <details class="quiz"><summary>Which skill appears across every family's tool list?</summary><div class="answer"><p>Reading drawings (plans, schematics, wiring diagrams). IP networking comes a close second in security, cabling and BMS.</p></div></details>
+    <details class="quiz"><summary>A BMS ad says "electrical licence highly regarded". Should you apply without one?</summary><div class="answer"><p>Yes, if you meet the other requirements. "Highly regarded" or "preferred" is not "required". In the sample, about 20% of BMS ads mentioned an electrical licence at all, and many BMS teams split work so electricians do the mains parts and technicians do controls, networks and commissioning.</p></div></details>
+    <details class="quiz"><summary>What does "eligible to obtain before licensed duties" mean in the Fortis ad?</summary><div class="answer"><p>The employer will consider someone who doesn't yet hold the security licence, as long as they can get it (meet the training and probity requirements) before doing work that legally requires it. It is an opening for trainees.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the three least crowded role families in this sample and what tickets each mentions.</span></li>
+      <li><input type="checkbox"><span>I have picked a first target family and a second one.</span></li>
+      <li><input type="checkbox"><span>I have read three real ads in my target family and listed every requirement.</span></li>
+      <li><input type="checkbox"><span>I know which requirements I already meet and which I need to get.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

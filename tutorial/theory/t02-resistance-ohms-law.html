@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T02 · Resistance and Ohm's law, physically</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · Chapter T02</span>
+    <h1>Resistance and Ohm's law, physically</h1>
+    <p class="lede">Why a wire resists current at all, how to calculate the resistance of a real cable run, why heat makes copper worse but makes a thermistor better, and why Ohm's law is a property of some materials, not a law of nature.</p>
+    <div class="meta"><span><b>Reading</b> 45 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Class 12 algebra, exponentials</span><span><b>Practice</b> P02, P03, P04, P12</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How Ohm found his law</h2>
+    <p>In the 1820s Georg Simon Ohm was a mathematics and physics teacher in Cologne, Germany. He wanted to know how the current in a wire depends on the wire. His first problem was the source. The voltaic piles of the time gave a current that faded within minutes, so every measurement drifted.</p>
+    <p>On a suggestion from a colleague, Ohm switched to a <b>thermocouple</b>: a junction of copper and bismuth with one end in boiling water and the other in ice. The temperature difference made a small, very steady voltage (Thomas Seebeck had discovered this effect in 1821). Ohm measured current with a magnetic needle hanging from a thin twisting wire: the more current, the further the needle turned. He then connected wires of different lengths and thicknesses and recorded the result.</p>
+    <p>He found that the current was proportional to the driving "tension" (what we call voltage) and inversely proportional to the total length of wire in the circuit, including a fixed amount for the source itself. In 1827 he published this as a mathematical theory in his book <i>Die galvanische Kette, mathematisch bearbeitet</i> ("The galvanic circuit investigated mathematically"). German physicists of the time were not impressed, and Ohm struggled for years. Recognition came from abroad: the Royal Society in London gave him the Copley Medal in 1841. The unit of resistance was later named after him.</p>
+    <p>Ohm described <i>what</i> happens. <i>Why</i> it happens had to wait for the electron (1897). In 1900 Paul Drude used the new particle to build the first model of conduction in metals, the "collision" picture below. Quantum mechanics corrected it in the late 1920s, and in 1911 Heike Kamerlingh Onnes found materials where resistance vanishes completely.</p>
+
+    <h2>The collision picture of resistance</h2>
+    <p>From <a href="t01-charge-current-voltage.html">T01</a>: a metal has a huge number of free electrons moving randomly at high speed. Apply a voltage across a wire and there is an electric field E inside it. The field pushes on every free electron with a force eE, so between collisions each electron accelerates (opposite to the field, because it is negative).</p>
+    <p>If nothing stopped them, the electrons would speed up forever and the current would grow without limit. That does not happen, because electrons keep <b>scattering</b>: they bounce off the vibrating metal ions and off any defects or impurity atoms. Each scattering event throws the electron off in a random direction and wipes out the extra velocity the field gave it. Then the field starts again.</p>
+    <figure>
+      <svg viewBox="0 0 600 225" role="img" aria-label="Electron paths among ions: random with no field; bent into a slow drift with a field">
+        <defs>
+          <marker id="t2f1-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t2f1-bl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-wash s-thin" x="40" y="40" width="230" height="130" rx="6"/>
+        <rect class="f-wash s-thin" x="320" y="40" width="250" height="130" rx="6"/>
+        <g class="f-grey" opacity="0.45">
+          <circle cx="60" cy="60" r="4"/><circle cx="90" cy="60" r="4"/><circle cx="120" cy="60" r="4"/><circle cx="150" cy="60" r="4"/><circle cx="180" cy="60" r="4"/><circle cx="210" cy="60" r="4"/><circle cx="240" cy="60" r="4"/>
+          <circle cx="60" cy="90" r="4"/><circle cx="90" cy="90" r="4"/><circle cx="120" cy="90" r="4"/><circle cx="150" cy="90" r="4"/><circle cx="180" cy="90" r="4"/><circle cx="210" cy="90" r="4"/><circle cx="240" cy="90" r="4"/>
+          <circle cx="60" cy="120" r="4"/><circle cx="90" cy="120" r="4"/><circle cx="120" cy="120" r="4"/><circle cx="150" cy="120" r="4"/><circle cx="180" cy="120" r="4"/><circle cx="210" cy="120" r="4"/><circle cx="240" cy="120" r="4"/>
+          <circle cx="60" cy="150" r="4"/><circle cx="90" cy="150" r="4"/><circle cx="120" cy="150" r="4"/><circle cx="150" cy="150" r="4"/><circle cx="180" cy="150" r="4"/><circle cx="210" cy="150" r="4"/><circle cx="240" cy="150" r="4"/>
+          <circle cx="340" cy="60" r="4"/><circle cx="370" cy="60" r="4"/><circle cx="400" cy="60" r="4"/><circle cx="430" cy="60" r="4"/><circle cx="460" cy="60" r="4"/><circle cx="490" cy="60" r="4"/><circle cx="520" cy="60" r="4"/><circle cx="550" cy="60" r="4"/>
+          <circle cx="340" cy="90" r="4"/><circle cx="370" cy="90" r="4"/><circle cx="400" cy="90" r="4"/><circle cx="430" cy="90" r="4"/><circle cx="460" cy="90" r="4"/><circle cx="490" cy="90" r="4"/><circle cx="520" cy="90" r="4"/><circle cx="550" cy="90" r="4"/>
+          <circle cx="340" cy="120" r="4"/><circle cx="370" cy="120" r="4"/><circle cx="400" cy="120" r="4"/><circle cx="430" cy="120" r="4"/><circle cx="460" cy="120" r="4"/><circle cx="490" cy="120" r="4"/><circle cx="520" cy="120" r="4"/><circle cx="550" cy="120" r="4"/>
+          <circle cx="340" cy="150" r="4"/><circle cx="370" cy="150" r="4"/><circle cx="400" cy="150" r="4"/><circle cx="430" cy="150" r="4"/><circle cx="460" cy="150" r="4"/><circle cx="490" cy="150" r="4"/><circle cx="520" cy="150" r="4"/><circle cx="550" cy="150" r="4"/>
+        </g>
+        <path class="s-blue" style="stroke-width:1.6" d="M150.0 105.0 Q143.5 118.0 137.0 131.0 Q129.0 119.8 121.0 108.6 Q104.8 104.9 88.5 101.2 Q105.4 107.6 122.3 114.1 Q139.2 118.1 156.0 122.2 Q168.6 128.1 181.2 134.0 Q162.3 143.7 143.4 153.4 Q154.2 142.7 165.1 132.0 Q149.4 115.9 133.8 99.8 Q118.8 91.9 103.7 84.0 Q117.1 82.0 130.4 80.0 Q140.4 67.6 150.4 55.3 Q159.1 66.4 167.9 77.6 Q160.3 97.4 152.7 117.1"/>
+        <circle class="f-green" cx="150" cy="105" r="5"/><circle class="f-red" cx="152.7" cy="117.1" r="5"/>
+        <path class="s-blue" style="stroke-width:1.6" d="M330.0 105.0 Q331.4 123.4 343.8 141.8 Q330.8 155.7 328.7 169.5 Q319.1 159.8 320.5 150.1 Q341.8 151.9 374.1 153.7 Q373.2 138.4 383.3 123.0 Q401.0 122.6 429.7 122.1 Q438.9 106.9 459.1 91.7 Q449.7 80.5 451.4 69.4 Q437.1 85.7 433.7 101.9 Q413.5 99.0 404.3 96.0 Q397.9 84.0 402.4 72.0 Q403.4 90.9 415.4 109.7 Q411.2 122.4 417.9 135.0 Q429.7 121.7 452.5 108.5 Q448.2 87.1 455.0 65.7 Q450.0 87.4 456.1 109.0 Q439.5 121.9 433.9 134.8 Q412.9 142.4 402.8 150.0 Q413.0 140.4 434.1 130.8 Q444.0 142.2 465.0 153.6 Q482.0 149.9 509.9 146.2 Q498.7 134.7 498.5 123.3 Q481.7 122.5 475.8 121.8 Q464.7 136.9 464.5 152.1 Q445.5 141.0 437.4 129.9 Q428.2 109.6 430.0 89.3 Q444.2 71.3 469.4 53.3 Q462.4 66.2 466.5 79.1 Q481.0 61.7 506.5 44.3 Q521.9 54.9 548.4 65.4 Q545.0 80.1 552.5 94.8"/>
+        <circle class="f-green" cx="330" cy="105" r="5"/><circle class="f-red" cx="552.5" cy="94.8" r="5"/>
+        <text class="t t-small t-bold" x="40" y="28">No field</text>
+        <text class="t t-small t-bold" x="320" y="28">With a field</text>
+        <path class="s-amber" d="M560 26 H460" marker-end="url(#t2f1-ar)"/>
+        <text class="t t-small" x="420" y="30">E</text>
+        <path class="s-blue" d="M380 192 H520" marker-end="url(#t2f1-bl)"/>
+        <text class="t t-small t-blue" x="390" y="212">slow net drift of the electron</text>
+        <text class="t t-small t-muted" x="40" y="194">random walk: ends where it started,</text>
+        <text class="t t-small t-muted" x="40" y="210">on average; no current</text>
+      </svg>
+      <figcaption>Figure 1. One electron's path, green dot to red dot, drawn hugely slowed down. Left: with no field, it wanders and goes nowhere on average. Right: a field (pointing left) bends every free flight slightly to the right, so the electron creeps right. Real drift is far smaller than drawn here compared with the random motion.</figcaption>
+    </figure>
+    <h3>From collisions to Ohm's law</h3>
+    <p>Let τ (tau) be the average time between scattering events. Between collisions the electron's acceleration is a = eE/m, where m is the electron mass. On average it gains an extra velocity of aτ before being reset. So the drift velocity is</p>
+    <div class="formula">v<sub>d</sub> = eEτ / m
+      <small>The drift is proportional to the field. Double the field, double the drift. This proportionality is the heart of Ohm's law.</small></div>
+    <p>Now use I = nAv<sub>d</sub>e from <a href="t01-charge-current-voltage.html">T01</a>. Write the current per unit area as the <b>current density</b> J = I/A:</p>
+    <div class="formula">J = n e v<sub>d</sub> = (n e² τ / m) E = σ E
+      <small>σ (sigma) = ne²τ/m is the <b>conductivity</b> of the material, in siemens per metre (S/m). Its inverse is the <b>resistivity</b> ρ (rho) = 1/σ = m / (ne²τ), in ohm-metres (Ω·m).</small></div>
+    <p>This is Ohm's law in its "local" form: at each point in the material, the current density is proportional to the field. It says a material conducts well if it has many free carriers (large n) that travel a long time between collisions (large τ).</p>
+    <h3>Numbers for copper</h3>
+    <p>We can run this backwards. Copper's measured resistivity at 20 °C is 1.72 × 10⁻⁸ Ω·m and n = 8.5 × 10²⁸ m⁻³. So</p>
+    <p>τ = m / (n e² ρ) = 9.11 × 10⁻³¹ / (8.5 × 10²⁸ × (1.6 × 10⁻¹⁹)² × 1.72 × 10⁻⁸) ≈ <b>2.5 × 10⁻¹⁴ s</b>.</p>
+    <p>An electron is scattered about 40 million million times a second. Between scatterings it travels at about 1.6 × 10⁶ m/s, so it covers roughly 1.6 × 10⁶ × 2.5 × 10⁻¹⁴ ≈ 4 × 10⁻⁸ m = <b>40 nm</b>. Copper atoms are only about 0.26 nm apart. So the electron passes well over a hundred atoms between collisions.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Resistance is electrons crashing into every atom like a pinball."</b> If that were true, the free path would be about one atom spacing, not 150. Quantum mechanics explains why: an electron is a wave, and a wave passes through a <i>perfectly regular</i> crystal without scattering at all (Felix Bloch showed this in 1928). Electrons only scatter where the regular pattern is broken: atoms shaken out of place by heat, impurity atoms, missing atoms, and grain boundaries. Drude's formula ρ = m/(ne²τ) survives, but τ means "time between meetings with imperfections", not "time between hitting atoms". This is the key to understanding temperature effects below.</p></div>
+    <p>A useful related quantity is the <b>mobility</b> μ = eτ/m, so that v<sub>d</sub> = μE. For copper μ ≈ 0.0044 m²/(V·s). Electrons in pure silicon have a mobility about 30 times larger, yet silicon conducts far worse. The reason is n: pure silicon at room temperature has only about 10¹⁶ free electrons per m³, ten million million times fewer than copper. Semiconductors are poor conductors because they have few carriers, not because the carriers are slow. Doping changes n, which is why we can control them (<a href="t11-semiconductors-diodes.html">T11</a>).</p>
+
+    <h2>Resistivity and R = ρL/A</h2>
+    <p>Resistivity belongs to a material. Resistance belongs to an object: a particular wire, track or part. To connect them, take a uniform conductor of length L and cross-section area A with voltage V across it. The field inside is E = V/L, and the current density is J = I/A. Put these into J = σE:</p>
+    <div class="formula">I / A = V / (ρL)    ⟹    V = I × (ρL / A)    ⟹    R = ρ L / A
+      <small>R in ohms, ρ in Ω·m, L in metres, A in m². Remember 1 mm² = 10⁻⁶ m².</small></div>
+    <figure>
+      <svg viewBox="0 0 600 215" role="img" aria-label="A rectangular conductor of length L and cross-section area A, with current entering and leaving">
+        <defs>
+          <marker id="t2f2-red" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t2f2-dim" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <polygon class="f-wash s-line" points="120,70 150,45 470,45 440,70"/>
+        <rect class="f-accent-soft s-line" x="120" y="70" width="320" height="60"/>
+        <polygon class="f-accent s-line" opacity="0.55" points="440,70 470,45 470,105 440,130"/>
+        <text class="t t-small t-accent t-bold" x="482" y="84">area A</text>
+        <path class="s-red" d="M40 100 H112" marker-end="url(#t2f2-red)"/>
+        <path class="s-red" d="M478 118 H560" marker-end="url(#t2f2-red)"/>
+        <text class="t t-small t-red" x="50" y="92">I</text>
+        <path class="s-line" d="M122 152 H438" marker-start="url(#t2f2-dim)" marker-end="url(#t2f2-dim)"/>
+        <text class="t t-small" x="250" y="170">length L</text>
+        <text class="t t-bold" x="230" y="106">R = ρ L / A</text>
+        <text class="t t-small t-muted" x="40" y="194">Longer: more distance to push through, the same field needs more volts (R ∝ L).</text>
+        <text class="t t-small t-muted" x="40" y="210">Fatter: more parallel lanes share the current (R ∝ 1/A).</text>
+      </svg>
+      <figcaption>Figure 2. Resistance depends on the material (ρ) and the shape. Double the length and you double R. Double the cross-section and you halve R.</figcaption>
+    </figure>
+    <h3>Resistivity of common materials</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Material</th><th>Resistivity ρ at 20 °C (Ω·m)</th><th>Temperature coefficient α (per °C)</th><th>Where you meet it</th></tr>
+      <tr><td>Silver</td><td>1.59 × 10⁻⁸</td><td>+0.0038</td><td>Contacts, some solders</td></tr>
+      <tr><td>Copper (annealed)</td><td>1.72 × 10⁻⁸</td><td>+0.0039</td><td>Almost all wire, PCB tracks, Cat6</td></tr>
+      <tr><td>Aluminium</td><td>2.82 × 10⁻⁸</td><td>+0.0040</td><td>Overhead power lines, large mains feeders</td></tr>
+      <tr><td>Tungsten</td><td>5.6 × 10⁻⁸</td><td>+0.0045</td><td>Incandescent lamp filaments</td></tr>
+      <tr><td>Iron / mild steel</td><td>~1 × 10⁻⁷</td><td>~+0.005</td><td>Cable trays, enclosures, some earth paths</td></tr>
+      <tr><td>Constantan (copper–nickel)</td><td>~4.9 × 10⁻⁷</td><td>almost 0</td><td>Precision resistors, strain gauges, thermocouples</td></tr>
+      <tr><td>Nichrome (nickel–chromium)</td><td>~1.1 × 10⁻⁶</td><td>~+0.0004</td><td>Heater elements, power resistors</td></tr>
+      <tr><td>Sea water</td><td>~0.2</td><td>negative</td><td>Corrosion and marine earthing</td></tr>
+      <tr><td>Doped silicon (typical)</td><td>~10⁻⁵ to 10⁻¹</td><td>depends on doping</td><td>Inside every diode, transistor and chip</td></tr>
+      <tr><td>Pure silicon</td><td>~2.3 × 10³</td><td>strongly negative</td><td>Starting material before doping</td></tr>
+      <tr><td>Ultra-pure water</td><td>~1.8 × 10⁵</td><td>negative</td><td>Ordinary water conducts far better because of dissolved salts</td></tr>
+      <tr><td>Glass</td><td>~10¹⁰ to 10¹⁴</td><td>negative</td><td>Insulators, optical fibre</td></tr>
+      <tr><td>PVC</td><td>~10¹² to 10¹⁴</td><td>negative</td><td>Cable insulation and sheaths</td></tr>
+      <tr><td>PTFE (Teflon)</td><td>&gt; 10²²</td><td>—</td><td>High-quality coax and RF insulation</td></tr>
+    </table></div>
+    <p>Values are typical; alloys, grades and purity change them. Look at the range: from silver to PTFE is more than 10³⁰. Few physical properties vary over such an enormous range. That is why "conductor" and "insulator" are such clean categories in practice.</p>
+
+    <h2>Worked example: a 2.5 mm² cable run</h2>
+    <p>A 24 V DC power supply in a comms cabinet feeds a device 40 m away that draws 3 A. The installer uses 2.5 mm² two-core copper cable. What is the voltage at the device?</p>
+    <ol class="steps">
+      <li><p><b>Total conductor length.</b> Current goes out on one core and comes back on the other, so L = 2 × 40 = 80 m. Forgetting the return path is the most common mistake in voltage-drop sums.</p></li>
+      <li><p><b>Resistance.</b> R = ρL/A = 1.72 × 10⁻⁸ × 80 / (2.5 × 10⁻⁶) = <b>0.55 Ω</b>. (Per metre of single core: 1.72 × 10⁻⁸ / 2.5 × 10⁻⁶ ≈ 6.9 mΩ/m. Manufacturers' tables give slightly more, about 7.4 mΩ/m, because stranded cable has a little less copper and longer twisted strands.)</p></li>
+      <li><p><b>Voltage drop.</b> V = IR = 3 × 0.55 = <b>1.65 V</b>. The device sees 24 − 1.65 = 22.35 V, which is 6.9% low.</p></li>
+      <li><p><b>Hot cable.</b> If the cable runs through a hot ceiling at 50 °C, R rises by α × ΔT = 0.0039 × 30 ≈ 12%, to about 0.62 Ω, and the drop becomes 1.85 V.</p></li>
+      <li><p><b>Maximum length for a 5% drop.</b> 5% of 24 V is 1.2 V, so R must be at most 1.2 / 3 = 0.4 Ω. Then L = RA/ρ = 0.4 × 2.5 × 10⁻⁶ / 1.72 × 10⁻⁸ ≈ 58 m of conductor, which is a run of only about 29 m.</p></li>
+      <li><p><b>Thin cable disaster.</b> With 0.5 mm² alarm cable over the same 40 m run, R = 1.72 × 10⁻⁸ × 80 / 0.5 × 10⁻⁶ = 2.75 Ω. The drop would be 8.3 V, leaving under 16 V. Many 24 V devices would reset or fail to start.</p></li>
+    </ol>
+    <div class="callout aus"><span class="label">In Australia</span><p>2.5 mm² copper is the cable size commonly used for general power outlet circuits in Australian houses; that is mains work for licensed electricians only. In mains installations AS/NZS 3000 limits the total voltage drop from the point of supply to any point in the installation (5% of nominal is the usual figure), and AS/NZS 3008.1.1 gives the tables for cable selection. For ELV runs, follow the equipment maker's minimum input voltage. Confirm current requirements with the standards and your state regulator before relying on them.</p></div>
+    <div class="widget" id="t2w">
+      <span class="label">Interactive · Cable resistance and voltage-drop calculator</span>
+      <label>Conductor material
+        <select id="t2w-mat">
+          <option value="cu" selected>Copper (ρ = 1.72 × 10⁻⁸ Ω·m, α = 0.0039)</option>
+          <option value="al">Aluminium (ρ = 2.82 × 10⁻⁸ Ω·m, α = 0.0040)</option>
+          <option value="ni">Nichrome (ρ = 1.1 × 10⁻⁶ Ω·m, α = 0.0004)</option>
+        </select></label>
+      <label>Cross-section of each core
+        <select id="t2w-a">
+          <option value="0.205">0.205 mm² (24 AWG, Cat5e)</option>
+          <option value="0.258">0.258 mm² (23 AWG, Cat6)</option>
+          <option value="0.5">0.5 mm² (alarm / light hook-up)</option>
+          <option value="0.75">0.75 mm²</option>
+          <option value="1">1.0 mm²</option>
+          <option value="1.5">1.5 mm²</option>
+          <option value="2.5" selected>2.5 mm²</option>
+          <option value="4">4 mm²</option>
+          <option value="6">6 mm²</option>
+          <option value="10">10 mm²</option>
+        </select></label>
+      <label>Run length, one way <span class="out" id="t2w-lout">40 m</span><input type="range" id="t2w-l" min="1" max="200" value="40"></label>
+      <label><input type="checkbox" id="t2w-loop" checked> Count the return conductor too (two-core cable, out and back)</label>
+      <label>Cable temperature <span class="out" id="t2w-tout">20 °C</span><input type="range" id="t2w-t" min="-10" max="90" value="20"></label>
+      <label>Supply voltage
+        <select id="t2w-v"><option value="5">5 V</option><option value="12">12 V</option><option value="24" selected>24 V</option><option value="48">48 V</option></select></label>
+      <label>Load current <span class="out" id="t2w-iout">3.0 A</span><input type="range" id="t2w-i" min="0.1" max="20" step="0.1" value="3"></label>
+      <div class="readings">
+        <div><small>Cable resistance</small><span class="out" id="t2w-r">–</span></div>
+        <div><small>Voltage drop</small><span class="out" id="t2w-dv">–</span></div>
+        <div><small>Voltage at the load</small><span class="out" id="t2w-vl">–</span></div>
+        <div><small>Power lost as heat in the cable</small><span class="out" id="t2w-p">–</span></div>
+      </div>
+      <div style="margin-top:12px;background:var(--wash);border-radius:8px;height:16px;position:relative;overflow:hidden">
+        <div id="t2w-bar" style="height:100%;width:0;background:var(--green)"></div>
+        <div style="position:absolute;top:0;bottom:0;left:50%;border-left:2px dashed var(--ink)"></div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin:4px 0 0">Bar: drop as % of supply, full width = 10%. Dashed line = 5%.</p>
+      <p id="t2w-verdict" style="margin:8px 0 0;font-weight:600">–</p>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var M={cu:[1.72e-8,0.0039],al:[2.82e-8,0.0040],ni:[1.1e-6,0.0004]};
+      function fR(r){return r<1?(r*1000).toPrecision(3)+' mΩ':r.toPrecision(3)+' Ω';}
+      function upd(){
+        var m=M[$('t2w-mat').value], A=(+$('t2w-a').value)*1e-6, L=+$('t2w-l').value, T=+$('t2w-t').value, V=+$('t2w-v').value, I=+$('t2w-i').value;
+        var Lt=$('t2w-loop').checked?2*L:L;
+        var rho=m[0]*(1+m[1]*(T-20)), R=rho*Lt/A, dv=I*R, pct=dv/V*100;
+        $('t2w-lout').textContent=L+' m'; $('t2w-tout').textContent=T+' °C'; $('t2w-iout').textContent=I.toFixed(1)+' A';
+        $('t2w-r').textContent=fR(R);
+        $('t2w-dv').textContent=dv.toPrecision(3)+' V ('+pct.toFixed(1)+'%)';
+        $('t2w-vl').textContent=Math.max(0,V-dv).toPrecision(3)+' V';
+        $('t2w-p').textContent=(I*I*R).toPrecision(3)+' W';
+        var bar=$('t2w-bar'); bar.style.width=Math.min(100,pct*10)+'%';
+        var vt=$('t2w-verdict');
+        if(pct<=3){bar.style.background='var(--green)';vt.textContent='Comfortable: under 3% drop.';}
+        else if(pct<=5){bar.style.background='var(--amber)';vt.textContent='Acceptable for most loads, but close to the common 5% design limit.';}
+        else if(pct<=10){bar.style.background='var(--red)';vt.textContent='Too much drop: use thicker cable, a shorter run, or a higher supply voltage.';}
+        else {bar.style.background='var(--red)';vt.textContent='Far too much: the load may not start at all. Rethink the design.';}
+      }
+      ['t2w-mat','t2w-a','t2w-l','t2w-loop','t2w-t','t2w-v','t2w-i'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <p>Try this in the calculator: keep 3 A over 40 m, then change the supply from 24 V to 48 V. The drop in volts is the same, but as a percentage it halves. This is one reason PoE uses about 48–57 V and why building systems prefer 24 V over 12 V for long runs. <a href="t03-power-energy-heat.html">T03</a> shows the power version of the same idea.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Voltage drop is behind a large share of "mystery" faults in security and BMS work: an electric strike that buzzes but will not release, a camera that reboots at night when its infrared LEDs turn on, a controller that resets when a relay pulls in. Each one is a load that draws more current at certain moments over a cable that is too long or too thin. The fix starts with measuring voltage <i>at the device, under load</i>, not at the power supply.</p></div>
+
+    <h2>Temperature changes resistance</h2>
+    <h3>Metals: hotter means higher resistance</h3>
+    <p>In a metal the number of free electrons n hardly changes with temperature. What changes is τ. A hotter crystal has its atoms vibrating harder, so the regular pattern is disturbed more often, and electrons scatter more often. Over normal temperatures the resistance rises almost in a straight line:</p>
+    <div class="formula">R(T) = R₀ [1 + α (T − T₀)]
+      <small>R₀ is the resistance at a reference temperature T₀ (usually 20 °C or 0 °C). α is the temperature coefficient of resistance: for copper about 0.0039 per °C, which means about +0.39% per degree.</small></div>
+    <p>Example: a copper winding has 10.0 Ω at 20 °C. At 70 °C, R = 10.0 × (1 + 0.0039 × 50) = 11.95 Ω, almost 20% more. Motor and transformer makers use exactly this to measure how hot a winding gets inside: measure resistance cold, then hot, and solve for T.</p>
+    <p><b>Alloys</b> such as nichrome and constantan behave differently. Their atoms are a random mix of two kinds, so the crystal is already very irregular. Electrons scatter off this disorder all the time, which gives a high resistivity, and extra heat adds only a small further amount. (Physicists call this Matthiessen's rule: the scattering from vibrations and the scattering from disorder add up.) That is exactly what you want in a heater wire or a precision resistor: high resistance that hardly changes with temperature.</p>
+    <h3>Semiconductors and NTC thermistors: hotter means lower resistance</h3>
+    <p>In a semiconductor, the number of carriers n is small and depends strongly on temperature. Heat gives more electrons enough energy to jump across the band gap. In pure silicon near room temperature, n roughly doubles for every 8–10 °C rise. This growth in n beats the small loss in τ, so resistance <i>falls</i> as temperature rises.</p>
+    <p>An <b>NTC thermistor</b> (negative temperature coefficient) is a small bead of semiconducting metal oxide designed to show this effect strongly. Its resistance follows, to a good approximation,</p>
+    <div class="formula">R(T) = R₂₅ × exp[ B × (1/T − 1/298.15) ]
+      <small>T in kelvin (°C + 273.15). R₂₅ is the resistance at 25 °C, for example 10 kΩ. B is a constant from the datasheet, often around 3,400–4,000 K.</small></div>
+    <p>For a 10 kΩ, B = 3950 thermistor: at 0 °C, R = 10 kΩ × e<sup>1.21</sup> ≈ 33.6 kΩ; at 50 °C, R = 10 kΩ × e<sup>−1.02</sup> ≈ 3.6 kΩ; at 100 °C, about 0.7 kΩ. That is about a 4% change per degree near room temperature, ten times more sensitive than copper.</p>
+    <figure>
+      <svg viewBox="0 0 600 285" role="img" aria-label="Resistance relative to its 25 degree value versus temperature for copper, nichrome and an NTC thermistor">
+        <g class="s-thin s-dash"><path d="M70 182.9 H560"/><path d="M70 125.7 H560"/><path d="M70 68.6 H560"/></g>
+        <path class="s-line" d="M70 30 V240 H565"/>
+        <g class="t t-small">
+          <text x="44" y="244">0</text><text x="44" y="187">1</text><text x="44" y="130">2</text><text x="44" y="73">3</text>
+          <text x="64" y="258">0</text><text x="184" y="258">25</text><text x="306" y="258">50</text><text x="428" y="258">75</text><text x="546" y="258">100</text>
+        </g>
+        <text class="t t-small t-muted" x="8" y="22">R ÷ (R at 25 °C)</text>
+        <text class="t t-small t-muted" x="250" y="278">temperature (°C)</text>
+        <path class="s-red" d="M70.0 47.9 L79.8 67.1 L89.6 84.1 L99.4 99.2 L109.2 112.7 L119.0 124.7 L128.8 135.5 L138.6 145.1 L148.4 153.7 L158.2 161.4 L168.0 168.4 L177.8 174.6 L187.6 180.3 L197.4 185.3 L207.2 189.9 L217.0 194.1 L226.8 197.8 L236.6 201.2 L246.4 204.3 L256.2 207.1 L266.0 209.7 L275.8 212.0 L285.6 214.2 L295.4 216.1 L305.2 217.9 L315.0 219.5 L324.8 221.0 L334.6 222.3 L344.4 223.6 L354.2 224.7 L364.0 225.8 L373.8 226.8 L383.6 227.7 L393.4 228.5 L403.2 229.2 L413.0 229.9 L422.8 230.6 L432.6 231.2 L442.4 231.7 L452.2 232.3 L462.0 232.7 L471.8 233.2 L481.6 233.6 L491.4 234.0 L501.2 234.3 L511.0 234.7 L520.8 235.0 L530.6 235.3 L540.4 235.5 L550.2 235.8 L560.0 236.0"/>
+        <path class="s-blue" d="M70 188.5 L560 166"/>
+        <path class="s-green" d="M70 183.4 L560 181.1"/>
+        <text class="t t-small t-red" x="120" y="74">10 kΩ NTC thermistor (B = 3950):</text>
+        <text class="t t-small t-red" x="120" y="90">falls about 4% per °C near 25 °C</text>
+        <text class="t t-small t-blue" x="360" y="158">copper (and PT100/PT1000): +0.39% per °C</text>
+        <text class="t t-small t-green" x="360" y="200">nichrome: almost flat</text>
+      </svg>
+      <figcaption>Figure 3. Each curve is scaled so that it equals 1 at 25 °C. Copper rises gently and in a straight line. A heater alloy hardly changes. An NTC thermistor falls steeply, which makes it a sensitive, cheap temperature sensor.</figcaption>
+    </figure>
+    <div class="callout job"><span class="label">On the job</span><p>Many BMS temperature sensors are simply resistors whose resistance follows temperature. You will meet 10 kΩ NTC thermistors (controllers list curves such as "10K Type 2" or "10K Type 3", and the curve must match the sensor) and platinum <b>RTDs</b>: a PT100 is 100 Ω at 0 °C and a PT1000 is 1000 Ω at 0 °C, both rising by 0.385% per °C (138.5 Ω and 1385 Ω at 100 °C). A useful trick when a sensor reads wrong: disconnect it, measure its resistance with a meter, and compare it with the table for the room temperature.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Cable resistance adds to a sensor's resistance. A 2-wire PT100 on 10 m of 0.5 mm² cable has 20 m of copper in the loop, about 0.69 Ω. The PT100 changes 0.385 Ω per °C, so the controller reads about 1.8 °C too hot. That is why PT100s are wired with 3 or 4 wires (the controller measures and subtracts the lead resistance) and why PT1000s, with ten times the sensitivity, suffer ten times less from the same cable.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Measure a 12 V, 21 W car tail-light or indicator bulb with your meter on ohms. You will read well under 1 Ω. Now calculate its hot resistance from its rating: R = V²/P = 144/21 ≈ 6.9 Ω. The tungsten filament runs at well over 2,000 °C, so its resistance when hot is roughly 10 times its cold value. At switch-on, the cold filament draws a big surge of current for a fraction of a second, which is why bulbs usually fail at the moment you turn them on.</p></div>
+
+    <h2>Ohm's law is a material property</h2>
+    <p>We can always define resistance as a ratio: R = V/I at a given point. <b>Ohm's law</b> is the stronger claim that this ratio stays <i>constant</i> when you change the voltage (at a fixed temperature). Materials and parts that obey it are called <b>ohmic</b>. Metal wires, carbon and metal-film resistors are ohmic over a huge range. Many very useful parts are not.</p>
+    <p>The way to see the difference is an <b>I–V curve</b>: plot the current against the voltage across the part. An ohmic part gives a straight line through the origin, with slope 1/R.</p>
+    <figure>
+      <svg viewBox="0 0 620 280" role="img" aria-label="I-V curves: straight line for a resistor and a bending curve for a lamp; exponential curves for a silicon diode and a red LED">
+        <g class="s-thin s-dash">
+          <path d="M60 194 H290 M60 158 H290 M60 122 H290 M60 86 H290 M60 50 H290"/>
+          <path d="M360 185 H590 M360 140 H590 M360 95 H590 M360 50 H590"/>
+        </g>
+        <path class="s-line" d="M60 36 V230 H292"/>
+        <path class="s-line" d="M360 36 V230 H592"/>
+        <g class="t t-small">
+          <text x="56" y="248">0</text><text x="111" y="248">3</text><text x="166" y="248">6</text><text x="221" y="248">9</text><text x="272" y="248">12</text>
+          <text x="30" y="198">0.5</text><text x="30" y="162">1.0</text><text x="30" y="126">1.5</text><text x="30" y="90">2.0</text><text x="30" y="54">2.5</text>
+          <text x="356" y="248">0</text><text x="394" y="248">0.5</text><text x="438" y="248">1.0</text><text x="482" y="248">1.5</text><text x="526" y="248">2.0</text><text x="570" y="248">2.5</text>
+          <text x="338" y="189">5</text><text x="332" y="144">10</text><text x="332" y="99">15</text><text x="332" y="54">20</text>
+        </g>
+        <text class="t t-small t-muted" x="120" y="270">voltage (V)</text>
+        <text class="t t-small t-muted" x="430" y="270">voltage (V)</text>
+        <text class="t t-small t-bold" x="4" y="22">current (A) · ohmic and nearly ohmic</text>
+        <text class="t t-small t-bold" x="330" y="22">current (mA) · non-ohmic</text>
+        <path class="s-blue" d="M60 230 L280 104"/>
+        <path class="s-amber" d="M60.0 230.0 L61.8 220.2 L63.7 212.8 L65.5 206.7 L67.3 201.5 L69.2 197.0 L71.0 193.1 L72.8 189.5 L74.7 186.3 L76.5 183.3 L78.3 180.6 L80.2 178.1 L82.0 175.7 L85.7 171.5 L89.3 167.7 L93.0 164.3 L96.7 161.2 L100.3 158.3 L104.0 155.7 L107.7 153.3 L111.3 151.0 L115.0 148.9 L120.5 146.0 L126.0 143.3 L131.5 140.7 L137.0 138.4 L142.5 136.2 L148.0 134.2 L155.3 131.6 L162.7 129.2 L170.0 127.0 L177.3 124.9 L184.7 122.9 L192.0 121.0 L201.2 118.8 L210.3 116.8 L219.5 114.8 L228.7 112.9 L237.8 111.2 L247.0 109.5 L256.2 107.9 L265.3 106.3 L272.7 105.1 L280.0 104.0"/>
+        <text class="t t-small t-blue" x="170" y="196">6.9 Ω resistor: straight line</text>
+        <text class="t t-small" x="96" y="104">12 V 21 W lamp: bends over</text>
+        <text class="t t-small t-muted" x="96" y="120">(filament heats, R rises)</text>
+        <path class="s-red" d="M360.0 230.0 L397.0 229.9 L397.8 229.8 L398.7 229.8 L399.6 229.7 L400.5 229.7 L401.4 229.6 L402.2 229.5 L403.1 229.4 L404.0 229.2 L404.9 229.0 L405.8 228.8 L406.6 228.5 L407.5 228.2 L408.4 227.7 L409.3 227.2 L410.2 226.5 L411.0 225.7 L411.9 224.6 L412.8 223.3 L413.7 221.8 L414.6 219.8 L415.4 217.4 L416.3 214.4 L417.2 210.6 L418.1 206.0 L419.0 200.3 L419.8 193.2 L420.7 184.5 L421.6 173.6 L422.5 160.2 L423.4 143.6 L424.2 123.0 L425.1 97.5 L426.0 65.9"/>
+        <path class="s-accent" d="M360.0 230.0 L493.8 230.0 L494.6 229.9 L496.4 229.9 L498.2 229.9 L499.9 229.8 L501.7 229.7 L503.4 229.6 L505.2 229.4 L507.0 229.2 L508.7 228.8 L509.6 228.5 L510.5 228.2 L511.4 227.8 L512.2 227.3 L513.1 226.7 L514.0 226.0 L514.9 225.2 L515.8 224.2 L516.6 222.9 L517.5 221.4 L518.4 219.6 L519.3 217.4 L520.2 214.7 L521.0 211.5 L521.9 207.6 L522.8 202.8 L523.7 197.0 L524.6 190.0 L525.4 181.5 L526.3 171.2 L527.2 158.7 L528.1 143.5 L529.0 125.1 L529.8 102.9 L530.7 75.8"/>
+        <circle class="f-red" cx="423.5" cy="140" r="4"/><circle class="f-accent" cx="528.3" cy="140" r="4"/>
+        <text class="t t-small t-red" x="372" y="74">silicon</text><text class="t t-small t-red" x="372" y="90">diode</text>
+        <text class="t t-small t-red" x="432" y="136">0.72 V</text>
+        <text class="t t-small t-accent" x="538" y="80">red</text><text class="t t-small t-accent" x="538" y="96">LED</text>
+        <text class="t t-small t-accent" x="478" y="160">1.9 V</text>
+      </svg>
+      <figcaption>Figure 4. Left: a resistor is a straight line (ohmic). A lamp filament is a curve because it heats up and its resistance rises; at any fixed temperature the tungsten itself is ohmic. Right: a silicon diode and a red LED pass almost nothing until a "knee" voltage, then current rises exponentially. No single resistance value describes them.</figcaption>
+    </figure>
+    <h3>Two kinds of "resistance" for a non-ohmic part</h3>
+    <p>For a part with a curved I–V graph, there are two useful numbers at any operating point:</p>
+    <ul>
+      <li><b>Static resistance</b> R = V/I. For the diode at 0.72 V and 10 mA, R = 72 Ω.</li>
+      <li><b>Dynamic (small-signal) resistance</b> r = dV/dI, the inverse slope of the curve at that point. It tells you how much the voltage changes for a small change in current. For a silicon diode it is about n × 26 mV / I, where n is between 1 and 2. At 10 mA that is roughly 2.6–5 Ω.</li>
+    </ul>
+    <p>The huge gap between 72 Ω and a few ohms is the practical lesson. Near the knee, a tiny increase in voltage across a diode or LED causes a large increase in current. Connect an LED straight across a 5 V supply and the current is limited only by the LED's tiny dynamic resistance and the supply's internal resistance: it can reach hundreds of milliamps and destroy the LED in a moment. A series resistor turns the circuit back into something nearly ohmic. With 5 V, a red LED at 1.9 V and 330 Ω, I = (5 − 1.9) / 330 ≈ 9.4 mA, and small changes in the LED's voltage barely change it. The physics of the exponential is in <a href="pn-junction-deep-dive.html">the p–n junction deep dive</a> and <a href="t11-semiconductors-diodes.html">T11</a>.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"V = IR is a universal law, so every part has a resistance."</b> V = IR is a definition of R as a ratio, and it is a <i>law</i> only for ohmic materials at a steady temperature. Diodes, LEDs, transistors, gas discharge tubes, varistors (MOVs) and arcs are all non-ohmic. Kirchhoff's laws (<a href="t04-circuit-laws.html">T04</a>) still apply to them, because they are about conservation of charge and energy, not about Ohm.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A meter on the ohms range tells you a diode's resistance."</b> The ohms range pushes a small fixed current and reports V/I at that one point. On a non-ohmic part you get a different "resistance" with every meter and every range. Use the meter's diode-test range instead: it reports the forward voltage at a small current, which is the meaningful number (<a href="../practice/p03-multimeter-mastery.html">P03</a>).</p></div>
+
+    <h2>Superconductors: zero resistance</h2>
+    <p>In 1911 Heike Kamerlingh Onnes in Leiden had just learned how to liquefy helium, reaching about 4 K (−269 °C). He measured the resistance of frozen mercury as it cooled. Near 4.2 K, it did not just get small; it dropped suddenly to <b>zero</b>, as far as any instrument could measure. Later experiments set up currents in superconducting rings that kept flowing for years with no battery and no measurable decay.</p>
+    <p>A superconductor is not just a very good conductor. Below its critical temperature, electrons pair up (Bardeen, Cooper and Schrieffer explained this in 1957) and move together in a single quantum state that cannot be scattered by small imperfections. A superconductor also pushes magnetic fields out of itself (the Meissner effect, 1933), which is why a magnet can float above one.</p>
+    <p>In 1986 Georg Bednorz and Alex Müller found ceramic copper oxides that superconduct at much higher temperatures, and in 1987 a compound of yttrium, barium, copper and oxygen ("YBCO") was found to superconduct at about 92 K, above the 77 K boiling point of cheap liquid nitrogen. Hospital MRI scanners use superconducting niobium–titanium coils cooled with liquid helium. Claims of superconductors at room temperature appear from time to time; so far none has been confirmed. You will not meet superconductors on an installation job, but they show that resistance is about imperfections in a crystal, which is the main idea of this chapter.</p>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit: Ohm's law you can measure, and why the LED needs its resistor</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery: measure resistance, cold lamps, and diode test</a>
+    <a class="crosslink" href="../practice/p04-series-parallel-dividers.html">Practice P04 · Series, parallel and voltage dividers: resistors combined</a>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC: read an NTC thermistor with a divider</a>
+    <div class="callout aus"><span class="label">In Australia</span><p>Resistor packs (E12 or E24 series, 1% metal film) cost ~A$10–20 from Jaycar, Altronics or Core Electronics. A 10 kΩ NTC thermistor costs a few dollars. A roll of 0.5 mm² two-core and a short length of 2.5 mm² cable from an electrical wholesaler let you measure real milliohm-level cable resistance with a bench supply and the voltage-drop method.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Calculate the resistance of 100 m of 1.5 mm² copper cable at 20 °C.</summary><div class="answer"><p>R = ρL/A = 1.72 × 10⁻⁸ × 100 / 1.5 × 10⁻⁶ ≈ 1.15 Ω. (If this is one way of a two-core run, the loop is 200 m and 2.3 Ω.)</p></div></details>
+    <details class="quiz"><summary>Why does copper's resistance rise with temperature, while an NTC thermistor's falls?</summary><div class="answer"><p>In copper the number of free electrons is fixed; heat makes the lattice vibrate more, electrons scatter more often (τ falls), so ρ rises. In a semiconductor the number of free carriers rises steeply with temperature as more electrons are lifted across the band gap. That increase in n is much larger than the drop in τ, so ρ falls.</p></div></details>
+    <details class="quiz"><summary>Pure silicon has higher electron mobility than copper. Why is it still a far worse conductor?</summary><div class="answer"><p>Conductivity σ = neμ. Silicon's mobility is about 30 times higher, but its free-carrier density at room temperature is about 10¹³ times lower. The tiny n wins by a huge margin.</p></div></details>
+    <details class="quiz"><summary>A 24 V supply feeds a 2 A load 25 m away over 1.0 mm² two-core copper cable. What voltage reaches the load?</summary><div class="answer"><p>Loop length 50 m. R = 1.72 × 10⁻⁸ × 50 / 1 × 10⁻⁶ = 0.86 Ω. Drop = 2 × 0.86 = 1.72 V (7.2%). The load sees about 22.3 V. That is more than the common 5% target, so a thicker cable would be better.</p></div></details>
+    <details class="quiz"><summary>Is a tungsten lamp filament ohmic?</summary><div class="answer"><p>The tungsten itself is ohmic at any fixed temperature. The lamp's I–V curve bends because the current heats the filament and its resistance rises about tenfold from cold to hot. The non-linearity comes from temperature, not from the material breaking Ohm's law.</p></div></details>
+    <details class="quiz"><summary>Why are heater elements and precision resistors made of alloys like nichrome and constantan, not pure metals?</summary><div class="answer"><p>The random mix of atoms in an alloy scatters electrons strongly all the time. This gives high resistivity (useful for making heat or a compact resistor) and makes the resistance change only a little with temperature, because the extra scattering from heat is small compared with the scattering from the disorder that is already there.</p></div></details>
+    <details class="quiz"><summary>A silicon diode carries 10 mA at 0.72 V. What is its static resistance, and why can't you use that number to predict the current at 1.0 V?</summary><div class="answer"><p>Static R = 0.72 / 0.010 = 72 Ω. But the diode is non-ohmic: its current rises roughly exponentially with voltage. At 1.0 V the current would be enormous (limited mainly by the supply and the diode's internal bulk resistance), not 1.0/72 ≈ 14 mA. Only a series resistor makes the current predictable.</p></div></details>
+    <details class="quiz"><summary>A PT1000 sensor reads 1,077 Ω. Roughly what temperature is it?</summary><div class="answer"><p>PT1000 rises 3.85 Ω per °C from 1,000 Ω at 0 °C. (1,077 − 1,000) / 3.85 ≈ 20 °C.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain resistance using the collision (Drude) picture and say what quantum physics corrects about it.</span></li>
+      <li><input type="checkbox"><span>I can derive R = ρL/A from J = σE.</span></li>
+      <li><input type="checkbox"><span>I can calculate the resistance and voltage drop of a two-core cable run, remembering the return conductor.</span></li>
+      <li><input type="checkbox"><span>I can correct a resistance for temperature using α.</span></li>
+      <li><input type="checkbox"><span>I can explain why metals and NTC thermistors respond to heat in opposite ways.</span></li>
+      <li><input type="checkbox"><span>I can recognise ohmic and non-ohmic parts from their I–V curves.</span></li>
+      <li><input type="checkbox"><span>I can explain why an LED needs a series resistor using dynamic resistance.</span></li>
+      <li><input type="checkbox"><span>I can check a PT100, PT1000 or 10 kΩ NTC sensor with a meter against its table.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

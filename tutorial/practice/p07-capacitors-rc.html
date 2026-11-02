@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P07 · Capacitors: timing, smoothing and decoupling</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
+    <span class="eyebrow">Practice · Lab P07</span>
+    <h1>Capacitors: timing, smoothing and decoupling</h1>
+    <p class="lede">You will identify and read capacitors, time an RC circuit charging with a phone stopwatch and check it against the 63% rule, smooth the bridge rectifier from P06 and predict its ripple, and understand why every chip on every board has a small 100 nF capacitor right next to it.</p>
+    <div class="meta"><span><b>Time</b> 2 h</span><span><b>Level</b> Beginner+</span><span><b>Kit cost</b> ~A$20</span><span><b>Theory</b> T05</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Electrolytic capacitors</b><small>~A$5 · 1000 µF 25 V ×2, 2200 µF 25 V, 470 µF 25 V, 100 µF 25 V, 10 µF 25 V</small></li>
+      <li><b>Ceramic capacitors</b><small>~A$4 · assorted, including 100 nF (marked 104) ×10, 10 nF (103), 1 nF (102)</small></li>
+      <li><b>A film (box) capacitor or two</b><small>~A$2 · for example 100 nF or 1 µF, 63 V or 100 V</small></li>
+      <li><b>Resistors</b><small>10 kΩ ×2, 1 kΩ (0.5 W), 470 Ω (1 W), 100 Ω</small></li>
+      <li><b>9 V battery and snap</b><small>~A$6 · fresh is best</small></li>
+      <li><b>The bridge rectifier and AC plug-pack from P06</b><small>Already in your kit</small></li>
+      <li><b>Multimeter</b><small>Plus your phone's stopwatch (or a second phone to film the meter)</small></li>
+      <li><b>Safety glasses</b><small>~A$5 · Bunnings · for the moment you first power an electrolytic</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>Everything here is extra-low voltage: a 9 V battery and the low-voltage side of a sealed AC plug-pack. Electrolytic capacitors connected backwards, or above their voltage rating, heat up, vent and can burst with a bang and a spray of hot electrolyte. Wear safety glasses, check the stripe every time, and keep your face away the first time you power a new circuit. Never open mains equipment to look at its capacitors: large capacitors inside power supplies can stay charged to hundreds of volts after unplugging, and that work belongs to licensed people.</p></div>
+
+    <h2>1 · Know your capacitors</h2>
+    <p>A <b>capacitor</b> is two conductors separated by a thin insulator (the <b>dielectric</b>). Push charge onto one plate and the same amount leaves the other; a voltage builds up between them. Capacitance C tells you how much charge it stores per volt: Q = C × V. One farad is huge, so real parts are in microfarads (µF, 10<sup>−6</sup>), nanofarads (nF, 10<sup>−9</sup>) and picofarads (pF, 10<sup>−12</sup>).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 290" role="img" aria-label="Capacitor types: ceramic disc marked 104, MLCC chip, film box, radial electrolytic with negative stripe, and the two schematic symbols">
+        <!-- ceramic disc -->
+        <ellipse class="f-amber" cx="70" cy="70" rx="34" ry="30"/>
+        <text class="t t-bold" x="55" y="76">104</text>
+        <line class="s-line" x1="58" y1="99" x2="58" y2="140"/><line class="s-line" x1="82" y1="99" x2="82" y2="140"/>
+        <text class="t t-small" x="30" y="162">Ceramic disc</text>
+        <text class="t t-small t-muted" x="30" y="178">pF to ~1 µF</text>
+        <text class="t t-small t-muted" x="30" y="194">no polarity</text>
+        <!-- MLCC -->
+        <rect class="f-wash s-thin" x="150" y="58" width="50" height="26" rx="2"/>
+        <rect class="f-grey" x="150" y="58" width="10" height="26"/><rect class="f-grey" x="190" y="58" width="10" height="26"/>
+        <text class="t t-small" x="140" y="162">MLCC chip</text>
+        <text class="t t-small t-muted" x="140" y="178">usually unmarked</text>
+        <text class="t t-small t-muted" x="140" y="194">no polarity</text>
+        <!-- film box -->
+        <rect class="f-accent-soft s-accent" x="250" y="44" width="70" height="52" rx="4"/>
+        <text class="t t-small" x="258" y="66">104J</text>
+        <text class="t t-small" x="258" y="84">100V</text>
+        <line class="s-line" x1="270" y1="96" x2="270" y2="140"/><line class="s-line" x1="300" y1="96" x2="300" y2="140"/>
+        <text class="t t-small" x="250" y="162">Film (box)</text>
+        <text class="t t-small t-muted" x="250" y="178">stable, low loss</text>
+        <text class="t t-small t-muted" x="250" y="194">no polarity</text>
+        <!-- electrolytic -->
+        <rect class="f-blue" x="380" y="20" width="60" height="100" rx="8"/>
+        <rect class="f-grey" x="420" y="20" width="14" height="100"/>
+        <text class="t t-bold f-panel" x="423" y="48">−</text>
+        <text class="t t-bold f-panel" x="423" y="78">−</text>
+        <text class="t t-bold f-panel" x="423" y="108">−</text>
+        <line class="s-line" x1="398" y1="120" x2="398" y2="160"/>
+        <line class="s-line" x1="426" y1="120" x2="426" y2="146"/>
+        <text class="t t-small" x="380" y="180">+ long leg</text>
+        <text class="t t-small" x="430" y="160">− short leg</text>
+        <text class="t t-small" x="376" y="210">Aluminium electrolytic</text>
+        <text class="t t-small t-muted" x="376" y="226">µF to tens of mF</text>
+        <text class="t t-small t-red" x="376" y="242">POLARISED: stripe = −</text>
+        <!-- symbols -->
+        <text class="t t-small t-bold" x="540" y="34">Symbols</text>
+        <line class="s-line" x1="560" y1="44" x2="560" y2="66"/>
+        <line class="s-line" x1="542" y1="66" x2="578" y2="66"/>
+        <line class="s-line" x1="542" y1="76" x2="578" y2="76"/>
+        <line class="s-line" x1="560" y1="76" x2="560" y2="98"/>
+        <text class="t t-small t-muted" x="526" y="116">non-polar</text>
+        <line class="s-line" x1="560" y1="140" x2="560" y2="162"/>
+        <line class="s-line" x1="542" y1="162" x2="578" y2="162"/>
+        <path class="s-line" d="M542 178 Q560 166 578 178"/>
+        <line class="s-line" x1="560" y1="172" x2="560" y2="194"/>
+        <text class="t t-small" x="584" y="160">+</text>
+        <text class="t t-small t-muted" x="526" y="212">polarised</text>
+        <text class="t t-small t-muted" x="526" y="228">(curved = −)</text>
+        <text class="t t-small t-muted" x="30" y="272">Sizes are not to scale. A 1000 µF 25 V electrolytic is about 10 mm across and 20 mm tall.</text>
+      </svg>
+      <figcaption>Figure 1. The common families. On an aluminium electrolytic, the printed stripe with minus signs marks the <b>negative</b> lead, which is also the shorter leg on a new part. In the polarised symbol, the curved (or hollow) plate is negative.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Typical range</th><th>Polarity</th><th>Used for</th><th>Watch out</th></tr>
+      <tr><td>Ceramic (disc, MLCC)</td><td>1 pF – 22 µF</td><td>None</td><td>Decoupling, filters, timing at high frequency</td><td>High-value types (X5R, X7R) lose much of their capacitance as DC voltage rises. Y5V/Z5U types drift a lot with temperature.</td></tr>
+      <tr><td>Film (polyester, polypropylene)</td><td>1 nF – 10 µF</td><td>None</td><td>Accurate timing, audio, snubbers</td><td>Bigger than ceramic for the same value</td></tr>
+      <tr><td>Aluminium electrolytic</td><td>1 µF – 100 mF</td><td>Yes</td><td>Smoothing, bulk storage, slow timing</td><td>±20% tolerance, leakage, dries out with heat and age, bursts if reversed</td></tr>
+      <tr><td>Tantalum</td><td>0.1 µF – 1000 µF</td><td>Yes</td><td>Compact bulk capacitance</td><td>The band marks the <b>positive</b> end, opposite to aluminium. Can fail short and burn.</td></tr>
+      <tr><td>Supercapacitor</td><td>0.1 F – 3000 F</td><td>Yes</td><td>Clock and memory backup, short bursts</td><td>Very low voltage rating per cell (about 2.5–2.7 V)</td></tr>
+    </table></div>
+
+    <h3>Reading the codes</h3>
+    <p>Small capacitors use a three-digit code in <b>picofarads</b>: the first two digits are the value, the third is how many zeros to add.</p>
+    <div class="formula">104 → 10 followed by 4 zeros = 100 000 pF = 100 nF = 0.1 µF
+      <small>103 = 10 nF. 102 = 1 nF. 473 = 47 nF. 222 = 2.2 nF. 105 = 1 µF. A two-digit number like "22" is just 22 pF. A code like "4n7" puts the decimal point where the unit letter is: 4.7 nF.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Marking</th><th>Meaning</th></tr>
+      <tr><td>Letter after the code: J / K / M</td><td>Tolerance ±5% / ±10% / ±20%. "104K" = 100 nF ±10%.</td></tr>
+      <tr><td>Z</td><td>+80% / −20%: a cheap ceramic, fine for decoupling, poor for timing</td></tr>
+      <tr><td>"50V", "100V" or a code like 1H, 2A</td><td>Voltage rating. Common EIA codes: 1C = 16 V, 1E = 25 V, 1V = 35 V, 1H = 50 V, 2A = 100 V.</td></tr>
+      <tr><td>Electrolytic: "1000µF 25V 105°C"</td><td>Value, maximum voltage, and the maximum rated temperature. 105 °C parts last longer than 85 °C parts.</td></tr>
+      <tr><td>X7R, X5R, C0G (NP0)</td><td>Ceramic dielectric class. C0G/NP0 is stable and accurate; X7R is general purpose.</td></tr>
+    </table></div>
+
+    <h3>Voltage ratings: leave margin</h3>
+    <p>The voltage rating is the maximum the capacitor may see, including peaks and ripple. Exceed it and the dielectric can break down. A good habit is to choose a rating of at least 1.5 times the highest voltage the capacitor will see. For the P06 bridge on a 12 V AC plug-pack, the capacitor sees about 16 V, and up to about 20 V with no load on a pack that reads high. So use 25 V or, better, 35 V parts there.</p>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Most multimeters have a capacitance range (marked F or with the capacitor symbol). Discharge the capacitor first, then measure. It takes a few seconds for big values. Expect electrolytics to read anywhere within ±20% of the marking. Your measured value of the 1000 µF is the number to use in the timing lab.</p></div>
+
+    <h2>2 · The RC charging lab: τ = 10 seconds</h2>
+    <p>A resistor in series with a capacitor makes the simplest timer in electronics. The resistor limits how fast charge can flow in. As the capacitor fills, its voltage rises, the voltage left across the resistor falls, so the current falls, so it fills more slowly. That "the fuller it gets, the slower it fills" gives the famous exponential curve.</p>
+    <div class="formula">τ = R × C = 10 000 Ω × 0.001 F = 10 s
+      <small>τ (tau) is the <b>time constant</b>, in seconds when R is in ohms and C is in farads. After one τ the capacitor has charged 63% of the way. After 5τ it is effectively full (over 99%).</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="RC lab: 9 V battery, flying lead to charge or discharge, 10 kilohm resistor, 1000 microfarad capacitor, meter across the capacitor">
+        <!-- battery -->
+        <line class="s-line" x1="64" y1="100" x2="96" y2="100"/>
+        <line class="s-line" x1="72" y1="112" x2="88" y2="112"/>
+        <line class="s-line" x1="64" y1="124" x2="96" y2="124"/>
+        <line class="s-line" x1="72" y1="136" x2="88" y2="136"/>
+        <text class="t t-small" x="102" y="104">+</text>
+        <text class="t t-small" x="16" y="160">9 V</text>
+        <path class="s-line" d="M80 100 V50 H170"/>
+        <path class="s-line" d="M80 136 V210 H560"/>
+        <!-- switch contacts -->
+        <circle class="f-panel s-line" cx="174" cy="50" r="5"/>
+        <circle class="f-panel s-line" cx="174" cy="170" r="5"/>
+        <path class="s-line" d="M174 175 V210"/>
+        <circle class="f-panel s-line" cx="240" cy="110" r="5"/>
+        <path class="s-accent" d="M236 106 L178 54"/>
+        <path class="s-thin s-dash" d="M236 114 L178 166"/>
+        <text class="t t-small t-accent" x="108" y="38">CHARGE</text>
+        <text class="t t-small t-muted" x="96" y="190">DISCHARGE</text>
+        <text class="t t-small t-muted" x="186" y="140">flying lead</text>
+        <!-- resistor -->
+        <path class="s-line" d="M245 110 H290 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H420 V138"/>
+        <text class="t t-small" x="296" y="92">R = 10 kΩ</text>
+        <!-- capacitor polarised -->
+        <line class="s-line" x1="400" y1="138" x2="440" y2="138"/>
+        <path class="s-line" d="M400 156 Q420 144 440 156"/>
+        <path class="s-line" d="M420 150 V210"/>
+        <text class="t t-small" x="404" y="130">+</text>
+        <text class="t t-small" x="450" y="146">C = 1000 µF 25 V</text>
+        <text class="t t-small t-muted" x="450" y="162">stripe to 0 V</text>
+        <!-- meter -->
+        <path class="s-line" d="M420 110 H560 V125"/>
+        <circle class="s-line f-panel" cx="560" cy="150" r="24"/>
+        <text class="t t-bold" x="552" y="156">V</text>
+        <path class="s-line" d="M560 174 V210"/>
+        <circle class="f-ink" cx="420" cy="110" r="3.5"/><circle class="f-ink" cx="420" cy="210" r="3.5"/>
+        <text class="t t-small" x="592" y="146">V DC</text>
+        <text class="t t-small t-muted" x="80" y="244">Both positions go through the same 10 kΩ, so charge and discharge have the same τ.</text>
+      </svg>
+      <figcaption>Figure 2. The RC lab. A single flying wire (a jumper lead) acts as the switch: touch it to battery + to charge, move it to 0 V to discharge through the same resistor. The meter watches the capacitor voltage.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><p><b>Measure first.</b> Battery voltage (a fresh "9 V" often reads 9.3–9.6 V), the resistor (expect 9.9–10.1 kΩ), and the capacitor on the meter's capacitance range if it has one. Calculate your own τ = R × C.</p></li>
+      <li><p><b>Start empty.</b> Short the capacitor through the 100 Ω resistor for a few seconds (not with a bare wire). The meter should read close to 0 V.</p></li>
+      <li><p><b>Get the stopwatch ready.</b> Easiest method: film the meter and a running phone stopwatch together with a second phone, then read the values off the video. Otherwise, one person calls out times while the other reads the meter.</p></li>
+      <li><p><b>Charge.</b> Move the flying lead to battery + and start timing at the same moment. Record the voltage at 10, 20, 30, 40 and 50 seconds.</p></li>
+      <li><p><b>Discharge.</b> At about 60 s, move the lead to 0 V and restart timing. Record again at 10, 20, 30, 40 and 50 s.</p></li>
+      <li><p><b>Compare</b> with the table and the curve. Work out your real τ: the time at which the voltage reached 63% of the battery voltage.</p></li>
+    </ol>
+
+    <h3>Expected readings (9.0 V battery, τ = 10 s)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Time</th><th>In τ</th><th>Charging: % of supply</th><th>Charging: expected V</th><th>Discharging: % left</th><th>Discharging: expected V</th></tr>
+      <tr><td>10 s</td><td>1τ</td><td>63%</td><td>5.7 V</td><td>37%</td><td>3.3 V</td></tr>
+      <tr><td>20 s</td><td>2τ</td><td>86%</td><td>7.8 V</td><td>14%</td><td>1.2 V</td></tr>
+      <tr><td>30 s</td><td>3τ</td><td>95%</td><td>8.6 V</td><td>5%</td><td>0.45 V</td></tr>
+      <tr><td>40 s</td><td>4τ</td><td>98%</td><td>8.8 V</td><td>2%</td><td>0.16 V</td></tr>
+      <tr><td>50 s</td><td>5τ</td><td>99%</td><td>8.9 V</td><td>1%</td><td>0.06 V</td></tr>
+    </table></div>
+    <div class="formula">Charging: V(t) = V<sub>s</sub> × (1 − e<sup>−t/τ</sup>)     Discharging: V(t) = V<sub>0</sub> × e<sup>−t/τ</sup>
+      <small>e ≈ 2.718. At t = τ, e<sup>−1</sup> = 0.368, so a discharging capacitor keeps 36.8% and a charging one has gained 63.2%. Every further τ takes away another 63% of whatever gap is left.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="Charging curve of a 1000 microfarad capacitor through 10 kilohm from 9 V, with time constant markers">
+        <line class="s-thin" x1="70" y1="220" x2="590" y2="220"/>
+        <line class="s-thin" x1="70" y1="30" x2="70" y2="220"/>
+        <line class="s-thin s-dash" x1="70" y1="40" x2="590" y2="40"/>
+        <text class="t t-small t-muted" x="20" y="44">9.0 V</text>
+        <text class="t t-small t-muted" x="34" y="224">0 V</text>
+        <path class="s-accent" d="M70.0 220.0 L75.0 211.2 L80.0 202.9 L85.0 194.9 L90.0 187.4 L95.0 180.2 L100.0 173.3 L105.0 166.8 L110.0 160.7 L115.0 154.8 L120.0 149.2 L125.0 143.9 L130.0 138.8 L135.0 134.0 L140.0 129.4 L145.0 125.0 L150.0 120.9 L155.0 116.9 L160.0 113.2 L165.0 109.6 L170.0 106.2 L175.0 103.0 L180.0 99.9 L185.0 97.0 L190.0 94.2 L195.0 91.6 L200.0 89.1 L205.0 86.7 L210.0 84.4 L215.0 82.2 L220.0 80.2 L225.0 78.2 L230.0 76.3 L235.0 74.6 L240.0 72.9 L245.0 71.3 L250.0 69.8 L255.0 68.3 L260.0 66.9 L265.0 65.6 L270.0 64.4 L275.0 63.2 L280.0 62.0 L285.0 61.0 L290.0 59.9 L295.0 59.0 L300.0 58.0 L305.0 57.2 L310.0 56.3 L315.0 55.5 L320.0 54.8 L325.0 54.1 L330.0 53.4 L335.0 52.7 L340.0 52.1 L345.0 51.5 L350.0 50.9 L355.0 50.4 L360.0 49.9 L365.0 49.4 L370.0 49.0 L375.0 48.5 L380.0 48.1 L385.0 47.7 L390.0 47.3 L395.0 47.0 L400.0 46.6 L405.0 46.3 L410.0 46.0 L415.0 45.7 L420.0 45.4 L425.0 45.2 L430.0 44.9 L435.0 44.7 L440.0 44.5 L445.0 44.2 L450.0 44.0 L455.0 43.8 L460.0 43.6 L465.0 43.5 L470.0 43.3 L475.0 43.1 L480.0 43.0 L485.0 42.8 L490.0 42.7 L495.0 42.6 L500.0 42.4 L505.0 42.3 L510.0 42.2 L515.0 42.1 L520.0 42.0 L525.0 41.9 L530.0 41.8 L535.0 41.7 L540.0 41.6 L545.0 41.6 L550.0 41.5 L555.0 41.4 L560.0 41.3 L565.0 41.3 L570.0 41.2"/>
+        <path class="s-blue s-dash" d="M70 220 L170 40"/>
+        <line class="s-thin s-dash" x1="170" y1="106" x2="170" y2="220"/>
+        <line class="s-thin s-dash" x1="70" y1="106" x2="170" y2="106"/>
+        <circle class="f-red" cx="170" cy="106" r="5"/>
+        <circle class="f-red" cx="270" cy="64" r="5"/>
+        <circle class="f-red" cx="370" cy="49" r="5"/>
+        <circle class="f-red" cx="470" cy="43" r="5"/>
+        <circle class="f-red" cx="570" cy="41" r="5"/>
+        <text class="t t-small" x="176" y="124">63% (5.7 V)</text>
+        <text class="t t-small" x="276" y="82">86%</text>
+        <text class="t t-small" x="376" y="68">95%</text>
+        <text class="t t-small" x="476" y="62">98%</text>
+        <text class="t t-small" x="540" y="62">99%</text>
+        <text class="t t-small t-muted" x="20" y="110">5.7 V</text>
+        <text class="t t-small t-muted" x="62" y="240">0</text>
+        <text class="t t-small t-muted" x="150" y="240">10 s (1τ)</text>
+        <text class="t t-small t-muted" x="250" y="240">20 s</text>
+        <text class="t t-small t-muted" x="350" y="240">30 s</text>
+        <text class="t t-small t-muted" x="450" y="240">40 s</text>
+        <text class="t t-small t-muted" x="550" y="240">50 s</text>
+        <text class="t t-small t-blue" x="100" y="70">starting slope</text>
+        <text class="t t-small t-blue" x="100" y="86">hits 9 V at 1τ</text>
+      </svg>
+      <figcaption>Figure 3. The charging curve. The dashed blue line is the starting slope: if the current stayed at its first value (9 V / 10 kΩ = 0.9 mA), the capacitor would be full in exactly one τ. It does not stay, because the current falls as the capacitor fills.</figcaption>
+    </figure>
+
+    <div class="widget" id="p7w-rc">
+      <span class="label">Interactive · RC charge and discharge plotter</span>
+      <label>Resistor <select id="p7r-r"><option value="1000">1 kΩ</option><option value="4700">4.7 kΩ</option><option value="10000" selected>10 kΩ</option><option value="47000">47 kΩ</option><option value="100000">100 kΩ</option></select></label>
+      <label>Capacitor <select id="p7r-c"><option value="0.0001">100 µF</option><option value="0.00047">470 µF</option><option value="0.001" selected>1000 µF</option><option value="0.0022">2200 µF</option></select></label>
+      <label>Supply voltage <span class="out" id="p7r-vo">9.0 V</span><input type="range" id="p7r-v" min="1" max="24" step="0.5" value="9"></label>
+      <label>Read the curve at time <span class="out" id="p7r-to">10.0 s</span><input type="range" id="p7r-t" min="0" max="1000" step="1" value="100"></label>
+      <svg viewBox="0 0 600 250" role="img" aria-label="Plot of capacitor voltage against time: charging then discharging" style="margin-top:8px">
+        <line class="s-thin" x1="50" y1="210" x2="580" y2="210"/>
+        <line class="s-thin" x1="50" y1="20" x2="50" y2="210"/>
+        <line class="s-thin s-dash" x1="50" y1="30" x2="580" y2="30"/>
+        <line class="s-thin s-dash" x1="315" y1="20" x2="315" y2="210"/>
+        <g id="p7r-grid"></g>
+        <path id="p7r-path" class="s-accent" d=""/>
+        <line id="p7r-cur" class="s-red s-dash" x1="0" y1="20" x2="0" y2="210"/>
+        <circle id="p7r-dot" class="f-red" cx="0" cy="0" r="6"/>
+        <text class="t t-small t-muted" x="6" y="34" id="p7r-vmax">9 V</text>
+        <text class="t t-small t-muted" x="20" y="214">0</text>
+        <text class="t t-small t-accent" x="120" y="246">charging (lead on +)</text>
+        <text class="t t-small t-accent" x="380" y="246">discharging (lead on 0 V)</text>
+      </svg>
+      <div class="readings">
+        <div><small>Time constant τ = RC</small><span class="out" id="p7r-tau">—</span></div>
+        <div><small>Capacitor voltage now</small><span class="out" id="p7r-vc">—</span></div>
+        <div><small>Current now</small><span class="out" id="p7r-i">—</span></div>
+        <div><small>Practically full (5τ)</small><span class="out" id="p7r-5t">—</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var X0=50,X1=580,Y0=210,Y1=30,NS='http://www.w3.org/2000/svg';
+      function fT(s){return s<1?(s*1000).toFixed(0)+' ms':s<100?s.toFixed(1)+' s':s.toFixed(0)+' s';}
+      function fI(a){a=Math.abs(a);return a<0.001?(a*1e6).toFixed(0)+' µA':(a*1000).toFixed(2)+' mA';}
+      function upd(){
+        var R=+$('p7r-r').value,C=+$('p7r-c').value,V=+$('p7r-v').value,tau=R*C,span=10*tau;
+        $('p7r-vo').textContent=V.toFixed(1)+' V';$('p7r-vmax').textContent=V.toFixed(1)+' V';
+        function vAt(t){return t<=5*tau?V*(1-Math.exp(-t/tau)):V*(1-Math.exp(-5))*Math.exp(-(t-5*tau)/tau);}
+        function x(t){return X0+(X1-X0)*t/span;} function y(v){return Y0-(Y0-Y1)*v/V;}
+        var d='';for(var i=0;i<=300;i++){var t=span*i/300;d+=(i?' L':'M')+x(t).toFixed(1)+' '+y(vAt(t)).toFixed(1);}
+        $('p7r-path').setAttribute('d',d);
+        var g=$('p7r-grid');while(g.firstChild)g.removeChild(g.firstChild);
+        for(var k=1;k<=10;k++){var tx=document.createElementNS(NS,'text');tx.setAttribute('x',(x(k*tau)-(k==10?30:12)).toFixed(0));tx.setAttribute('y','228');tx.setAttribute('class','t t-small t-muted');tx.textContent=(k%2?'':fT(k*tau));g.appendChild(tx);
+          var ln=document.createElementNS(NS,'line');ln.setAttribute('x1',x(k*tau));ln.setAttribute('x2',x(k*tau));ln.setAttribute('y1','206');ln.setAttribute('y2','214');ln.setAttribute('class','s-thin');g.appendChild(ln);}
+        var t=span*(+$('p7r-t').value)/1000,vc=vAt(t),cur=t<=5*tau?(V-vc)/R:-vc/R;
+        $('p7r-to').textContent=fT(t)+' ('+(t/tau).toFixed(2)+'τ)';
+        $('p7r-cur').setAttribute('x1',x(t));$('p7r-cur').setAttribute('x2',x(t));
+        $('p7r-dot').setAttribute('cx',x(t));$('p7r-dot').setAttribute('cy',y(vc));
+        $('p7r-tau').textContent=fT(tau);$('p7r-vc').textContent=vc.toFixed(2)+' V ('+(100*vc/V).toFixed(0)+'%)';
+        $('p7r-i').textContent=fI(cur)+(t<=5*tau?' in':' out');$('p7r-5t').textContent=fT(5*tau);
+      }
+      ['p7r-v','p7r-t'].forEach(function(k){$(k).oninput=upd;});['p7r-r','p7r-c'].forEach(function(k){$(k).onchange=upd;});upd();
+    })();
+    </script>
+
+    <div class="callout why"><span class="label">Why it works</span><p>Current is charge per second, and the capacitor's voltage is its stored charge divided by C. At the start the capacitor is empty, so the whole 9 V sits across the resistor and the current is 9 V / 10 kΩ = 0.9 mA. As charge builds, the capacitor voltage pushes back against the battery, leaving less voltage across the resistor, so less current. The rate of filling is always proportional to the gap still left, which is exactly what produces an exponential. The energy ends up split: half stored in the capacitor (½CV²), half turned to heat in the resistor, whatever the resistor value.</p></div>
+    <a class="crosslink" href="../theory/t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors</a>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A capacitor stores charge, like a battery stores charge." <b>Right:</b> a capacitor stores <i>energy</i> in the electric field between its plates. The total charge on it is zero: +Q on one plate, −Q on the other. Charging moves electrons from one plate, round the circuit, to the other. And unlike a battery, its voltage falls steadily as you use the energy, which is why capacitors are poor for running things for long but excellent at handling fast changes.</p></div>
+
+    <h3>Why your numbers may differ</h3>
+    <ul>
+      <li><b>Tolerance.</b> Electrolytics are often ±20%, so a "1000 µF" part gives τ anywhere from 8 to 12 s. Your measured τ tells you the real capacitance: C = τ / R.</li>
+      <li><b>Leakage.</b> Electrolytics leak a little current through the dielectric. With a 10 kΩ series resistor, a leakage of 20 µA costs 0.2 V, so the final voltage may stop a few tenths below the battery. A capacitor that has sat unused for years leaks more at first and improves after some time powered ("reforming").</li>
+      <li><b>The meter.</b> A digital meter's input is about 10 MΩ, a thousand times bigger than 10 kΩ, so it barely loads the circuit here. With 1 MΩ resistors it would matter.</li>
+      <li><b>Reaction time.</b> Half a second of stopwatch error is 5% of τ. Filming the meter and stopwatch together removes most of it.</li>
+    </ul>
+
+    <div class="callout job"><span class="label">On the job</span><p>RC timing is everywhere you look once you know it: the delay on a security light, the debounce on a door contact input, the soft start in a power supply, the "hold-up time" that lets a controller ride through a short power dip. When a BMS or alarm input "misses" short pulses, an RC filter on that input is often the reason. The same maths sets how fast a temperature sensor responds inside its pocket.</p></div>
+
+    <h2>3 · Smoothing the bridge rectifier from P06</h2>
+    <p>The bridge gave you pulses: 100 humps per second, from 0 V up to about 15.6 V. A big capacitor across the output fills up at each peak and then supplies the load between peaks. The output becomes nearly flat DC with a small sawtooth <b>ripple</b>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Full-wave rectified pulses with a smoothing capacitor: the output follows the peaks and sags linearly between them">
+        <line class="s-thin" x1="90" y1="170" x2="580" y2="170"/>
+        <path class="s-thin s-dash" d="M90.0 170.0 L94.8 162.5 L99.6 155.1 L104.4 147.9 L109.2 141.1 L114.0 134.7 L118.8 128.9 L123.6 123.8 L128.4 119.3 L133.2 115.7 L138.0 112.9 L142.8 111.1 L147.6 110.1 L152.4 110.1 L157.2 111.1 L162.0 112.9 L166.8 115.7 L171.6 119.3 L176.4 123.8 L181.2 128.9 L186.0 134.7 L190.8 141.1 L195.6 147.9 L200.4 155.1 L205.2 162.5 L210.0 170.0 L214.8 162.5 L219.6 155.1 L224.4 147.9 L229.2 141.1 L234.0 134.7 L238.8 128.9 L243.6 123.8 L248.4 119.3 L253.2 115.7 L258.0 112.9 L262.8 111.1 L267.6 110.1 L272.4 110.1 L277.2 111.1 L282.0 112.9 L286.8 115.7 L291.6 119.3 L296.4 123.8 L301.2 128.9 L306.0 134.7 L310.8 141.1 L315.6 147.9 L320.4 155.1 L325.2 162.5 L330.0 170.0 L334.8 162.5 L339.6 155.1 L344.4 147.9 L349.2 141.1 L354.0 134.7 L358.8 128.9 L363.6 123.8 L368.4 119.3 L373.2 115.7 L378.0 112.9 L382.8 111.1 L387.6 110.1 L392.4 110.1 L397.2 111.1 L402.0 112.9 L406.8 115.7 L411.6 119.3 L416.4 123.8 L421.2 128.9 L426.0 134.7 L430.8 141.1 L435.6 147.9 L440.4 155.1 L445.2 162.5 L450.0 170.0 L454.8 162.5 L459.6 155.1 L464.4 147.9 L469.2 141.1 L474.0 134.7 L478.8 128.9 L483.6 123.8 L488.4 119.3 L493.2 115.7 L498.0 112.9 L502.8 111.1 L507.6 110.1 L512.4 110.1 L517.2 111.1 L522.0 112.9 L526.8 115.7 L531.6 119.3 L536.4 123.8 L541.2 128.9 L546.0 134.7 L550.8 141.1 L555.6 147.9 L560.4 155.1 L565.2 162.5 L570.0 170.0"/>
+        <path class="s-accent" d="M90.0 170.0 L94.8 162.5 L99.6 155.1 L104.4 147.9 L109.2 141.1 L114.0 134.7 L118.8 128.9 L123.6 123.8 L128.4 119.3 L133.2 115.7 L138.0 112.9 L142.8 111.1 L147.6 110.1 L150 110 L248.4 118.8 L250.8 117.4 L253.2 115.7 L255.6 114.2 L258.0 112.9 L262.8 111.1 L267.6 110.1 L270 110 L368.4 118.8 L370.8 117.4 L373.2 115.7 L375.6 114.2 L378.0 112.9 L382.8 111.1 L387.6 110.1 L390 110 L488.4 118.8 L490.8 117.4 L493.2 115.7 L495.6 114.2 L498.0 112.9 L502.8 111.1 L507.6 110.1 L510 110 L570 115.3"/>
+        <rect class="f-amber" x="248" y="178" width="22" height="8"/>
+        <rect class="f-amber" x="368" y="178" width="22" height="8"/>
+        <rect class="f-amber" x="488" y="178" width="22" height="8"/>
+        <text class="t t-small" x="250" y="206">diodes conduct only in these short windows</text>
+        <line class="s-red" x1="236" y1="110" x2="236" y2="119"/>
+        <line class="s-thin" x1="226" y1="110" x2="246" y2="110"/>
+        <line class="s-thin" x1="226" y1="119" x2="246" y2="119"/>
+        <text class="t t-small t-red" x="180" y="96">ripple ΔV</text>
+        <text class="t t-small t-muted" x="20" y="114">≈ 15.6 V</text>
+        <text class="t t-small t-muted" x="44" y="174">0 V</text>
+        <text class="t t-small t-muted" x="150" y="226">←  10 ms  →</text>
+        <text class="t t-small t-accent" x="420" y="96">output with capacitor</text>
+        <text class="t t-small t-muted" x="420" y="150">raw bridge output (dashed)</text>
+      </svg>
+      <figcaption>Figure 4. With a smoothing capacitor the output (solid) charges up to each peak, then sags almost in a straight line while the capacitor alone feeds the load. The diodes only conduct for the short time when the incoming wave is higher than the capacitor, so they carry big current pulses.</figcaption>
+    </figure>
+
+    <p>Between peaks, the capacitor alone supplies the load current I for about one ripple period (10 ms for full-wave). Charge lost = I × t, and the voltage drop is that charge divided by C.</p>
+    <div class="formula">ΔV ≈ I / (f × C)
+      <small>ΔV is the peak-to-peak ripple. I is the load current. f is the ripple frequency: <b>100 Hz for a full-wave bridge on Australia's 50 Hz</b>, 50 Hz for half-wave. C is in farads. It slightly overestimates the ripple, which is the safe direction.</small></div>
+
+    <h3>Worked examples</h3>
+    <ul>
+      <li>Bridge, 1000 µF, 1 kΩ load at about 15 V (15 mA): ΔV = 0.015 / (100 × 0.001) = <b>0.15 V</b>.</li>
+      <li>Same, 470 Ω load (32 mA): ΔV = 0.032 / 0.1 = <b>0.32 V</b>.</li>
+      <li>Half-wave, 1000 µF, 32 mA: f = 50 Hz, ΔV = 0.032 / 0.05 = <b>0.64 V</b> (double the bridge).</li>
+      <li>Design: a 12 V camera supply needs 0.5 A with at most 1 V ripple from a bridge. C = I / (f × ΔV) = 0.5 / (100 × 1) = 0.005 F = 5000 µF, so use 4700 µF if you accept slightly over 1 V, or 6800 µF for margin.</li>
+    </ul>
+
+    <ol class="steps">
+      <li><p><b>Rebuild the P06 bridge</b> with the 1 kΩ load. Measure V DC: about 10 V (average of the pulses).</p></li>
+      <li><p><b>Power off. Add 1000 µF 25 V</b> across the bridge output: + leg to the bridge +, stripe to the bridge −. Check the stripe twice. Glasses on.</p></li>
+      <li><p><b>Power on.</b> V DC jumps to about 15–16 V: the capacitor holds the peaks.</p></li>
+      <li><p><b>Read the ripple.</b> Switch the meter to V AC across the capacitor. Many meters ignore the DC part on this range and show the RMS of the ripple, about 0.3 × the peak-to-peak value. Expect around 0.04–0.06 V for 0.15 V peak-to-peak. Not every meter behaves this way, so treat it as a rough check; a scope (P15) shows the real sawtooth.</p></li>
+      <li><p><b>Change the load to 470 Ω (1 W).</b> DC drops slightly, ripple roughly doubles.</p></li>
+      <li><p><b>Swap the capacitor for 100 µF.</b> The ripple is about ten times bigger, and the DC reading falls because the average is now well below the peak.</p></li>
+      <li><p><b>Power off and discharge</b> the capacitor through 100 Ω before you pull it out.</p></li>
+    </ol>
+
+    <h3>Expected readings (12 V AC plug-pack, bridge, 1 kΩ load unless stated)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Setup</th><th>V DC (expected)</th><th>Ripple p-p (calculated)</th><th>V AC reading (rough)</th></tr>
+      <tr><td>No capacitor</td><td>≈ 10 V</td><td>full 15.6 V pulses</td><td>meter-dependent, ignore</td></tr>
+      <tr><td>1000 µF</td><td>≈ 15–16 V</td><td>≈ 0.15 V</td><td>≈ 0.04 V</td></tr>
+      <tr><td>1000 µF, 470 Ω load</td><td>≈ 14.5–15.5 V</td><td>≈ 0.3 V</td><td>≈ 0.1 V</td></tr>
+      <tr><td>100 µF</td><td>≈ 14–15 V</td><td>≈ 1.5 V</td><td>≈ 0.4 V</td></tr>
+      <tr><td>2200 µF</td><td>≈ 15–16 V</td><td>≈ 0.07 V</td><td>≈ 0.02 V</td></tr>
+    </table></div>
+
+    <div class="widget" id="p7w-rip">
+      <span class="label">Interactive · Ripple and capacitor sizing</span>
+      <label>Load current <span class="out" id="p7p-io">500 mA</span><input type="range" id="p7p-i" min="5" max="3000" step="5" value="500"></label>
+      <label>Capacitor <select id="p7p-c"><option value="100">100 µF</option><option value="470">470 µF</option><option value="1000">1000 µF</option><option value="2200">2200 µF</option><option value="4700" selected>4700 µF</option><option value="10000">10 000 µF</option></select></label>
+      <label>Rectifier <select id="p7p-r"><option value="100" selected>Full-wave bridge (100 Hz ripple)</option><option value="50">Half-wave (50 Hz ripple)</option></select></label>
+      <label>Ripple you can accept <span class="out" id="p7p-to">1.0 V</span><input type="range" id="p7p-t" min="0.1" max="3" step="0.1" value="1"></label>
+      <div class="readings">
+        <div><small>Ripple with this capacitor</small><span class="out" id="p7p-dv">—</span></div>
+        <div><small>Capacitance needed</small><span class="out" id="p7p-cn">—</span></div>
+        <div><small>Next standard size up</small><span class="out" id="p7p-cs">—</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var STD=[100,220,330,470,680,1000,1500,2200,3300,4700,6800,10000,15000,22000,33000,47000];
+      function upd(){
+        var I=+$('p7p-i').value/1000,C=+$('p7p-c').value*1e-6,f=+$('p7p-r').value,t=+$('p7p-t').value;
+        $('p7p-io').textContent=I>=1?I.toFixed(2)+' A':Math.round(I*1000)+' mA';$('p7p-to').textContent=t.toFixed(1)+' V';
+        $('p7p-dv').textContent=(I/(f*C)).toFixed(2)+' V p-p';
+        var need=I/(f*t)*1e6;$('p7p-cn').textContent=need>=1000?(need/1000).toFixed(1)+' mF':Math.round(need)+' µF';
+        var s=null;for(var k=0;k<STD.length;k++){if(STD[k]>=need){s=STD[k];break;}}
+        $('p7p-cs').textContent=s?(s>=10000?(s/1000)+' 000 µF':s+' µF'):'use several in parallel';
+      }
+      ['p7p-i','p7p-t'].forEach(function(k){$(k).oninput=upd;});['p7p-c','p7p-r'].forEach(function(k){$(k).onchange=upd;});upd();
+    })();
+    </script>
+
+    <div class="callout tip"><span class="label">Bench tip: the hidden cost of smoothing</span><p>Because the diodes conduct only in short windows near each peak, they carry pulses several times bigger than the average load current. That makes the transformer's RMS current higher than the DC current you draw, roughly 1.5–2 times for this kind of circuit. So a "1 A" AC plug-pack feeding a bridge and capacitor should only be asked for about 0.5–0.6 A DC. A big capacitor also draws a large inrush current at switch-on, which is one reason fuses for these supplies are "slow-blow".</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Mains here is nominally 230 V at 50 Hz (AS 60038), so full-wave ripple is at 100 Hz. Equipment designed for North America (60 Hz mains, 120 Hz ripple) has slightly smaller smoothing capacitors for the same ripple. That rarely matters for low-voltage plug-packs sold locally, which are designed for 50 Hz, but it is one reason imported transformers can run hotter here. Confirm supply details for a specific site with the network operator or the electrician.</p></div>
+
+    <h2>4 · Decoupling: the 100 nF next to every chip</h2>
+    <p>Open any circuit board and you will see small capacitors sitting right beside every integrated circuit (IC), from the power pin to ground. They are almost always 100 nF ceramics. They are called <b>decoupling</b> or <b>bypass</b> capacitors. Here is why they are there.</p>
+    <p>A digital chip does not draw a smooth current. Every time its internal transistors switch (millions of times per second), it gulps a short spike of current, lasting a few nanoseconds. The supply is far away along wires and copper tracks. Those have <b>inductance</b>: they resist <i>changes</i> in current. The voltage lost across an inductance is V = L × (ΔI / Δt).</p>
+    <div class="formula">V = L × ΔI / Δt = 100 nH × 0.05 A / 5 ns = 1 V
+      <small>A 10 cm jumper wire has roughly 100 nH of inductance (about 1 nH per millimetre is a useful rule). A 50 mA spike lasting 5 ns makes the chip's supply dip by about 1 V. On a 5 V or 3.3 V chip, that can corrupt data, reset a microcontroller, or make a 555 timer trigger at random.</small></div>
+    <p>A 100 nF capacitor a few millimetres from the pins acts as a tiny local tank. The spike draws its charge from the capacitor instead of from the distant supply. How much does the capacitor's voltage dip?</p>
+    <div class="formula">Q = I × t = 0.05 A × 5 ns = 0.25 nC     ΔV = Q / C = 0.25 nC / 100 nF = 2.5 mV
+      <small>2.5 mV instead of 1 V. The supply then refills the capacitor slowly, between spikes, which the long wires can manage.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Decoupling: a capacitor right at the chip pins makes a tiny current loop; a capacitor far away makes a large loop with more inductance">
+        <defs><marker id="p7-arrD" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="24">Good: capacitor at the pins</text>
+        <rect class="f-wash s-line" x="60" y="60" width="120" height="110" rx="6"/>
+        <text class="t t-bold" x="104" y="120">IC</text>
+        <text class="t t-small" x="186" y="76">V<tspan baseline-shift="sub" font-size="9">CC</tspan></text>
+        <text class="t t-small" x="186" y="164">GND</text>
+        <path class="s-line" d="M180 72 H250 M180 160 H250"/>
+        <line class="s-line" x1="210" y1="72" x2="210" y2="108"/>
+        <line class="s-line" x1="194" y1="108" x2="226" y2="108"/>
+        <line class="s-line" x1="194" y1="120" x2="226" y2="120"/>
+        <line class="s-line" x1="210" y1="120" x2="210" y2="160"/>
+        <text class="t t-small" x="230" y="118">100 nF</text>
+        <path class="s-red" d="M196 84 V148" marker-end="url(#p7-arrD)"/>
+        <text class="t t-small t-red" x="60" y="198">tiny loop: little inductance,</text>
+        <text class="t t-small t-red" x="60" y="214">spike comes from the capacitor</text>
+        <text class="t t-small t-muted" x="250" y="66">to supply</text>
+
+        <text class="t t-bold" x="340" y="24">Poor: capacitor far away</text>
+        <rect class="f-wash s-line" x="360" y="60" width="120" height="110" rx="6"/>
+        <text class="t t-bold" x="404" y="120">IC</text>
+        <path class="s-line" d="M480 72 H600 V100"/>
+        <path class="s-line" d="M480 160 H600 V132"/>
+        <line class="s-line" x1="584" y1="100" x2="616" y2="100"/>
+        <line class="s-line" x1="584" y1="112" x2="616" y2="112"/>
+        <path class="s-line" d="M600 112 V132"/>
+        <text class="t t-small" x="540" y="56">long track</text>
+        <path class="s-red s-dash" d="M490 82 H590 M590 150 H490"/>
+        <text class="t t-small t-red" x="360" y="198">big loop: the track's inductance</text>
+        <text class="t t-small t-red" x="360" y="214">blocks the spike, supply pin dips</text>
+      </svg>
+      <figcaption>Figure 5. What matters is the size of the loop the spike current travels: from the capacitor, into the power pin, out of the ground pin and back. Small loop, small inductance, small dip. Put the capacitor within a few millimetres of the pins, with short leads.</figcaption>
+    </figure>
+
+    <h3>The rules that work</h3>
+    <ul>
+      <li><b>One 100 nF ceramic per IC power pin</b>, as close to the pin as possible, straight to ground. On a breadboard, put it across the chip's own power and ground pins, not at the end of the rail.</li>
+      <li><b>One bulk capacitor per board or breadboard</b>, 10–100 µF electrolytic, where power comes in. It covers slower changes, like a motor starting or a relay clicking.</li>
+      <li><b>Why 100 nF and not bigger?</b> A small ceramic has very low internal inductance, so it still behaves like a capacitor at tens of megahertz. A big electrolytic has more internal inductance and resistance, so at those speeds it stops helping. That is why boards use both: each covers a different speed range. 100 nF is also cheap, tiny and has become the habit that works for most logic.</li>
+      <li><b>Datasheets win.</b> Some chips (radios, fast processors, regulators) specify their own values and placement. Follow them.</li>
+    </ul>
+
+    <div class="callout try"><span class="label">Try this (in P09)</span><p>When you build the 555 timer, first leave out the 100 nF across its power pins and run a relay or a motor from the same supply. You may see the timer glitch or restart when the load switches. Add the 100 nF right at pins 8 and 1, and add 100 µF where the supply enters the breadboard. The glitches usually stop. That is decoupling you can see.</p></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>The capacitor that most often fails in the field is the electrolytic in power supplies: plug-packs, DVR and NVR power boards, PoE switches and controller PSUs. Heat dries out the electrolyte, capacitance falls and internal resistance rises, ripple grows, and the equipment starts rebooting, or the camera picture shows rolling bars. A failed electrolytic often has a domed or split top, or brown crust at the base. On site you replace the power supply, not the capacitor. But recognising the symptom ("reboots when warm, fine when cold") saves hours.</p></div>
+
+    <h2>5 · Capacitor safety</h2>
+    <p>Capacitors are the one component that can hurt you after the power is off. The energy stored is:</p>
+    <div class="formula">E = ½ × C × V²
+      <small>1000 µF at 16 V: ½ × 0.001 × 16² = 0.13 J. Harmless, but shorting it with a screwdriver still makes a spark and pits the tip. 10 000 µF at 50 V: 12.5 J. That is a loud bang, a hot wire and a possible burn. The 400 V capacitors inside mains power supplies can hold tens of joules at a lethal voltage, which is one reason you do not open mains equipment.</small></div>
+    <ul>
+      <li><b>Discharge before touching.</b> Use a resistor, not a bare wire: 100 Ω to 1 kΩ for the ELV capacitors in this course. Hold it across the terminals for a few τ (100 Ω × 1000 µF = 0.1 s, so a second is plenty). Then confirm with the meter that it reads close to 0 V.</li>
+      <li><b>Polarity, every time.</b> Reversed electrolytics conduct, heat, build gas pressure and vent. The scored cross on the top is a pressure vent designed to split before the can explodes. It is still violent.</li>
+      <li><b>Voltage rating, every time.</b> A 16 V capacitor on a "12 V AC" bridge (about 17–20 V) is over-voltage and will fail, sometimes slowly, sometimes loudly.</li>
+      <li><b>Bulging or leaking parts:</b> replace, do not reuse. The electrolyte is corrosive; wash hands.</li>
+      <li><b>Stored charge in "off" equipment:</b> some devices keep a charge for a long time, and big capacitors can "recover" some voltage after being discharged (dielectric absorption). Measure before touching, even if you discharged earlier.</li>
+    </ul>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>RC charge is much faster than expected</td><td>Wrong resistor (1 kΩ instead of 10 kΩ), or capacitor value far lower than marked</td><td>Measure R and C. Remember τ scales with both.</td></tr>
+      <tr><td>Voltage stops well below the battery</td><td>Capacitor leakage (old or cheap electrolytic), or a tired battery sagging</td><td>Measure the battery during the test. Try a newer capacitor.</td></tr>
+      <tr><td>Meter reading is jumpy during discharge</td><td>Poor breadboard contact on the flying lead</td><td>Use a firm jumper, or a small slide switch.</td></tr>
+      <tr><td>Capacitor gets warm on the bridge</td><td>Reversed, or voltage rating too low, or huge ripple current</td><td>Power off immediately. Check stripe and rating.</td></tr>
+      <tr><td>Smoothed output still about 10 V</td><td>Capacitor not connected (wrong breadboard row) or open</td><td>Measure directly on the capacitor legs.</td></tr>
+      <tr><td>Smoothed output higher than a 12 V device allows</td><td>Smoothing holds the peak, about 1.4 × the AC rating minus diode drops</td><td>Add a regulator (P10).</td></tr>
+      <tr><td>Circuit resets or glitches when a load switches</td><td>Missing decoupling or bulk capacitance</td><td>100 nF at each IC, 10–100 µF at the power entry.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>What is the value of a ceramic capacitor marked 473K?</summary><div class="answer"><p>47 followed by 3 zeros = 47 000 pF = 47 nF = 0.047 µF. K means ±10% tolerance.</p></div></details>
+    <details class="quiz"><summary>With 1000 µF and 10 kΩ from 9 V, what will the meter show after 20 seconds of charging, and why?</summary><div class="answer"><p>τ = 10 s, so 20 s is 2τ. After 2τ the capacitor has charged 1 − e<sup>−2</sup> = 86% of the way: about 7.8 V. Each τ closes 63% of the remaining gap: 63% after the first, then 63% of the remaining 37% after the second.</p></div></details>
+    <details class="quiz"><summary>You measure 63% of the supply after 12.5 s with a 10 kΩ resistor. What is the real capacitance?</summary><div class="answer"><p>τ = 12.5 s, so C = τ / R = 12.5 / 10 000 = 1.25 mF = 1250 µF. That is within the +20% tolerance of a 1000 µF electrolytic, or the resistor is a little high. Measure R to separate the two.</p></div></details>
+    <details class="quiz"><summary>Why is the ripple frequency 100 Hz for a bridge rectifier in Australia, and what happens to the ripple with a half-wave rectifier?</summary><div class="answer"><p>Australian mains is 50 Hz. A bridge produces two humps per cycle, so the capacitor is topped up 100 times a second and only has to carry the load for about 10 ms. A half-wave rectifier tops it up 50 times a second, so the capacitor must carry the load for 20 ms and the ripple doubles for the same C and I (ΔV = I / (f × C)).</p></div></details>
+    <details class="quiz"><summary>A bridge must supply 2 A with no more than 2 V of ripple. What capacitor do you need?</summary><div class="answer"><p>C = I / (f × ΔV) = 2 / (100 × 2) = 0.01 F = 10 000 µF. Choose a voltage rating with margin above the peak, and a type rated for high ripple current. Also remember the transformer must be rated well above 2 A because the charging pulses are large.</p></div></details>
+    <details class="quiz"><summary>Why does a 100 nF capacitor need to be within a few millimetres of the chip, and not just "somewhere on the board"?</summary><div class="answer"><p>The capacitor only helps if the spike current can reach it through a low-inductance path. Every millimetre of track adds roughly 1 nH. A long path means V = L × ΔI/Δt is large, so the supply pin still dips. Close placement keeps the current loop (capacitor → V<sub>CC</sub> pin → chip → GND pin → capacitor) small.</p></div></details>
+    <details class="quiz"><summary>On an SMD tantalum capacitor, the band is at one end. Which lead is it?</summary><div class="answer"><p>The <b>positive</b> lead. This is the opposite of an aluminium electrolytic, where the stripe marks the negative. Reversing a tantalum can make it fail short and burn. Always check the datasheet or the + marking.</p></div></details>
+    <details class="quiz"><summary>Why is shorting a charged capacitor with a screwdriver a bad habit, even at 16 V?</summary><div class="answer"><p>With almost no resistance, the current is huge for a very short time. That damages the capacitor internally, pits the tool, and makes a spark. With larger capacitors or higher voltages the energy (½CV²) becomes dangerous. A resistor limits the current and turns the energy into gentle heat over a few time constants.</p></div></details>
+
+    <details class="more"><summary>Go deeper (optional): why exactly 63%?</summary><p>While charging, the current is i = (V<sub>s</sub> − v) / R, and the capacitor voltage rises at dv/dt = i / C. Combine them: dv/dt = (V<sub>s</sub> − v) / (RC). The rate is proportional to the remaining gap. The function whose rate of change is proportional to itself is the exponential, so the gap shrinks as e<sup>−t/RC</sup>. At t = RC the gap is e<sup>−1</sup> = 0.368 of the start, so the capacitor has covered 1 − 0.368 = 0.632 of the way. Nothing about 63% is special to electronics: a cup of tea cooling, a tank filling through a pipe, and a sensor warming up in its pocket all follow the same curve.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the main capacitor types and say which are polarised.</span></li>
+      <li><input type="checkbox"><span>I can find the negative lead of an aluminium electrolytic, and I know the tantalum band means positive.</span></li>
+      <li><input type="checkbox"><span>I can read three-digit codes (104 = 100 nF), tolerance letters and voltage ratings.</span></li>
+      <li><input type="checkbox"><span>I can calculate τ = RC and predict the voltage at 1τ to 5τ while charging and discharging.</span></li>
+      <li><input type="checkbox"><span>I have timed an RC circuit and worked out the real capacitance from my measurement.</span></li>
+      <li><input type="checkbox"><span>I can smooth a bridge rectifier and predict the ripple with ΔV ≈ I / (f × C), using 100 Hz for full-wave in Australia.</span></li>
+      <li><input type="checkbox"><span>I can size a smoothing capacitor and choose a safe voltage rating.</span></li>
+      <li><input type="checkbox"><span>I can explain why every IC gets a 100 nF capacitor right at its power pins.</span></li>
+      <li><input type="checkbox"><span>I discharge capacitors through a resistor and check with a meter before touching.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

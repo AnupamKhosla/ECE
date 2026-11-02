@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P17 · Raspberry Pi GPIO with Python: a data logger</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  #tl-csv{width:100%;min-height:120px;font:13px/1.45 var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+  .wbtn{font:600 14px var(--sans);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:6px 12px;border-radius:6px;cursor:pointer;margin:6px 6px 0 0}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P17</span>
+    <h1>Raspberry Pi GPIO with Python: a data logger</h1>
+    <p class="lede">You will switch an LED and read a button from Python, read a real temperature sensor, write a timestamped trend log to CSV, show the latest value and an alarm on a web page, and make the whole thing start by itself at boot — a tiny building management system for one plant room.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$25 on top of P16</span><span><b>Theory</b> T15, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Raspberry Pi set up in P16</b><small>SSH working, user <code>tech</code>, hostname <code>plantpi</code></small></li>
+      <li><b>DS18B20 temperature sensor</b><small>~A$8–15 · the waterproof stainless probe version on a lead is best</small></li>
+      <li><b>4.7 kΩ resistor</b><small>pull-up for the 1-Wire bus</small></li>
+      <li><b>Red LED + 330 Ω resistor</b><small>the "alarm lamp"</small></li>
+      <li><b>Tactile push button</b><small>the "acknowledge" button</small></li>
+      <li><b>Breadboard + female-to-male jumper leads</b><small>~A$10 · to reach the header pins</small></li>
+      <li><b>Optional: BME280 breakout</b><small>~A$15–25 · temperature, humidity, pressure over I²C</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>Everything here runs at 3.3 V from the Pi. Shut the Pi down (<code>sudo shutdown -h now</code>) and unplug it before you change wiring: a jumper that brushes the 5 V pin onto a GPIO can kill the Pi. The GPIO pins are <b>not 5 V tolerant</b> (P16). If you put the probe in a real plant room later, only place it — never open switchboards or mains equipment to mount it.</p></div>
+
+    <h2>The Python setup</h2>
+    <p>Raspberry Pi OS ships with Python 3 and the <b>gpiozero</b> library. gpiozero gives you objects like <code>LED</code> and <code>Button</code> so you think about devices, not registers. It works on every model including the Pi 5 (the older <code>RPi.GPIO</code> library does not work on a Pi 5, so do not copy old tutorials that use it).</p>
+    <p>On current Raspberry Pi OS, <code>pip install</code> into the system Python is blocked with an "externally-managed-environment" error. That is deliberate: it stops pip breaking packages the OS depends on. You have two good choices: install the Debian package with <code>apt</code> (simplest), or make a <b>virtual environment</b> (a private Python folder) for anything apt does not have.</p>
+<pre><code>sudo apt update
+sudo apt install -y python3-gpiozero python3-flask
+mkdir -p ~/logger/data &amp;&amp; cd ~/logger
+
+# only if you need a pip-only package later (e.g. the BME280 library):
+python3 -m venv --system-site-packages ~/logger/venv
+~/logger/venv/bin/pip install RPi.bme280</code></pre>
+    <p><code>--system-site-packages</code> lets the venv still see apt's gpiozero and Flask, so you get both worlds.</p>
+
+    <h2>Part 1 · LED and button with gpiozero</h2>
+    <p>Wire the LED and button as in Figure 1: GPIO17 (physical pin 11) → 330 Ω → LED anode (long leg); LED cathode → GND. Button between GPIO27 (pin 13) and GND (pin 14). There is no resistor on the button because gpiozero turns on the chip's internal <b>pull-up</b> resistor (about 50 kΩ to 3.3 V). The pin reads high (1) when the button is open and low (0) when pressed, because pressing connects it to ground. gpiozero hides that inversion: <code>is_pressed</code> is True when you press.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 400" role="img" aria-label="Wiring: DS18B20 with 4.7 kilohm pull-up on GPIO4, LED with 330 ohm on GPIO17, button on GPIO27 to ground">
+        <rect class="f-wash s-line" x="20" y="30" width="150" height="300" rx="8"/>
+        <text class="t t-bold" x="34" y="24">Pi header</text>
+        <circle class="f-amber" cx="160" cy="60" r="6"/><text class="t t-small" x="32" y="64">pin 1 · 3V3</text>
+        <circle class="f-blue" cx="160" cy="120" r="6"/><text class="t t-small" x="32" y="124">pin 7 · GPIO4</text>
+        <circle class="f-ink" cx="160" cy="170" r="6"/><text class="t t-small" x="32" y="174">pin 9 · GND</text>
+        <circle class="f-green" cx="160" cy="230" r="6"/><text class="t t-small" x="32" y="234">pin 11 · GPIO17</text>
+        <circle class="f-green" cx="160" cy="300" r="6"/><text class="t t-small" x="32" y="304">pin 13 · GPIO27</text>
+        <!-- 3V3 rail -->
+        <path class="s-red" d="M166 60 H420"/>
+        <!-- DQ -->
+        <path class="s-blue" d="M166 120 H420"/>
+        <!-- pull-up -->
+        <circle class="f-ink" cx="330" cy="60" r="4"/><circle class="f-ink" cx="330" cy="120" r="4"/>
+        <path class="s-line" d="M330 60 V72 M330 108 V120"/>
+        <rect class="f-panel s-line" x="320" y="72" width="20" height="36"/>
+        <text class="t t-small" x="346" y="94">4.7 kΩ pull-up</text>
+        <!-- DS18B20 -->
+        <rect class="f-accent-soft s-accent" x="420" y="40" width="110" height="130" rx="10"/>
+        <text class="t t-bold" x="432" y="36">DS18B20</text>
+        <text class="t t-small" x="430" y="64">VDD (red)</text>
+        <text class="t t-small" x="430" y="124">DQ (yellow)</text>
+        <text class="t t-small" x="430" y="154">GND (black)</text>
+        <path class="s-line" d="M420 150 H390 V370"/>
+        <!-- GND bus -->
+        <path class="s-line" d="M166 170 H200 V370 M200 370 H560"/>
+        <path class="s-line" d="M560 370 V378 M548 378 H572 M552 384 H568 M557 390 H563"/>
+        <text class="t t-small t-muted" x="210" y="364">GND bus</text>
+        <!-- LED branch -->
+        <path class="s-line" d="M166 230 H250"/>
+        <rect class="f-panel s-line" x="250" y="221" width="56" height="18"/>
+        <text class="t t-small" x="256" y="214">330 Ω</text>
+        <path class="s-line" d="M306 230 H350"/>
+        <polygon class="f-red" points="350,216 350,244 376,230"/>
+        <line class="s-line" x1="377" y1="216" x2="377" y2="244"/>
+        <text class="t t-small t-red" x="336" y="264">alarm LED</text>
+        <path class="s-line" d="M377 230 H460 V370"/>
+        <!-- button branch -->
+        <path class="s-line" d="M166 300 H300"/>
+        <circle class="f-panel s-line" cx="304" cy="300" r="4"/><circle class="f-panel s-line" cx="352" cy="300" r="4"/>
+        <path class="s-line" d="M306 297 L346 280"/>
+        <path class="s-line" d="M326 289 V276 M316 276 H336"/>
+        <text class="t t-small" x="292" y="326">ack button</text>
+        <path class="s-line" d="M356 300 H520 V370"/>
+        <text class="t t-small t-muted" x="430" y="292">internal pull-up on</text>
+        <circle class="f-ink" cx="390" cy="370" r="4"/><circle class="f-ink" cx="460" cy="370" r="4"/><circle class="f-ink" cx="520" cy="370" r="4"/>
+      </svg>
+      <figcaption>Figure 1. The whole lab on one schematic. The 1-Wire data line (blue) needs the 4.7 kΩ pull-up to 3.3 V. The LED branch and the button branch both return to the GND bus. Probe lead colours are the usual ones; check your seller's sheet. The bare TO-92 sensor, flat face towards you and legs down, is GND · DQ · VDD from left to right.</figcaption>
+    </figure>
+
+    <p>Save this as <code>~/logger/blink.py</code> (use <code>nano blink.py</code>):</p>
+<pre><code>from gpiozero import LED, Button
+from signal import pause
+
+led = LED(17)                       # GPIO17 = physical pin 11
+button = Button(27, bounce_time=0.05)   # GPIO27 = pin 13, to GND; 50 ms debounce
+
+def pressed():
+    print("pressed")
+    led.toggle()
+
+button.when_pressed = pressed       # gpiozero calls this in a background thread
+led.blink(on_time=0.2, off_time=0.8, n=3)   # three quick flashes to say "I'm alive"
+pause()                             # keep the program running; Ctrl+C to stop</code></pre>
+<pre><code>tech@plantpi:~/logger $ python3 blink.py
+pressed
+pressed</code></pre>
+    <p>The LED flashes three times, then each press toggles it. <code>bounce_time</code> ignores the burst of on/off contacts that every mechanical switch makes for a few milliseconds when pressed (you met bouncing in P11).</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>If you get <code>GPIO busy</code>, another program (an earlier copy you left running, or a service) already owns that pin. Find it with <code>ps aux | grep python</code> and stop it, or stop the service with <code>sudo systemctl stop NAME</code>.</p></div>
+
+    <h2>Part 2 · Read the DS18B20 temperature sensor</h2>
+    <p>The <b>DS18B20</b> is a digital thermometer chip. It measures temperature itself (−55 to +125 °C, about ±0.5 °C accuracy from −10 to +85 °C) and sends the result as a number over a single data wire, the <b>1-Wire bus</b>. Each sensor has a unique 64-bit serial number burned in at the factory, so you can put many on one wire. It is the cheap sensor you will see in DIY loggers, cool rooms and aquariums.</p>
+    <h3>Enable 1-Wire and find the sensor</h3>
+<pre><code># option A: menu
+sudo raspi-config        # Interface Options → 1-Wire → Yes → Finish → reboot
+
+# option B: edit the boot config directly, then reboot
+echo "dtoverlay=w1-gpio" | sudo tee -a /boot/firmware/config.txt
+sudo reboot</code></pre>
+    <p>The overlay tells the Linux kernel "GPIO4 is a 1-Wire bus". After the reboot the kernel creates a folder for each sensor it finds. DS18B20 serial numbers start with family code <code>28</code>:</p>
+<pre><code>tech@plantpi:~ $ ls /sys/bus/w1/devices/
+28-3c01d607e1a2  w1_bus_master1
+tech@plantpi:~ $ cat /sys/bus/w1/devices/28-*/w1_slave
+72 01 4b 46 7f ff 0e 10 57 : crc=57 YES
+72 01 4b 46 7f ff 0e 10 57 t=23125</code></pre>
+    <p>How to read it: the first line ends in <b>YES</b>, which means the checksum (CRC) matched — the data arrived uncorrupted. The second line ends in <code>t=23125</code>, the temperature in thousandths of a degree: <b>23.125 °C</b>. You can check the maths yourself: the first two bytes are the raw reading, low byte first: <code>0x0172</code> = 370. The sensor counts in steps of 1/16 °C at its default 12-bit resolution, so 370 / 16 = 23.125 °C.</p>
+    <div class="formula">T = raw / 16 = 0x0172 / 16 = 370 / 16 = 23.125 °C
+      <small>12-bit resolution gives steps of 0.0625 °C. One conversion takes up to 750 ms, so reading the file takes most of a second — fine for a logger that samples every minute.</small></div>
+    <p>A reading of exactly <b>85.000 °C</b> is a famous fault, not a hot room: 85 °C is the value the chip holds after power-up, before it has done a conversion. It usually means the sensor is browning out — a missing or wrong pull-up, a long lead, or "parasite power" wiring. Treat it as a sensor fault.</p>
+
+    <div class="callout why"><span class="label">Why it works</span><p>The 1-Wire bus is <b>open-drain</b>: the Pi and the sensor can only pull the line <i>down</i> to 0 V. The 4.7 kΩ resistor pulls it back up to 3.3 V when nobody is pulling down. Bits are sent as timed low pulses: a short low is a 1, a long low is a 0. Without the pull-up the line never returns high, so the kernel finds no devices. The resistor value is a trade: smaller resistors give faster, sharper rising edges on long cables but cost more current every time a device pulls low (3.3 V / 4.7 kΩ ≈ 0.7 mA).</p></div>
+    <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic and how a microcontroller works</a>
+
+    <h3>A minimal Python reader</h3>
+<pre><code>import glob, time
+
+def read_ds18b20():
+    path = glob.glob("/sys/bus/w1/devices/28-*/w1_slave")[0]
+    with open(path) as f:
+        lines = f.read().splitlines()
+    if not lines[0].endswith("YES"):
+        raise OSError("CRC failed")
+    return int(lines[1].split("t=")[1]) / 1000.0
+
+while True:
+    print(f"{read_ds18b20():.2f} °C")
+    time.sleep(2)</code></pre>
+    <p>Hold the probe in your hand: the number should rise from room temperature towards 30–33 °C over about a minute. That slow rise is the probe's <b>thermal time constant</b> — the steel tube and potting must warm up too. A bare TO-92 sensor responds faster.</p>
+
+    <details class="more"><summary>Alternative: BME280 over I²C (temperature, humidity, pressure)</summary>
+      <p>The BME280 is a small Bosch sensor on a breakout board. It talks <b>I²C</b>: two wires, SDA (data, GPIO2, pin 3) and SCL (clock, GPIO3, pin 5), plus 3.3 V (pin 1) and GND (pin 6). Buy a breakout that runs at 3.3 V, and power it from 3.3 V, not 5 V. Enable I²C in <code>raspi-config</code> → Interface Options → I2C, then scan the bus:</p>
+<pre><code>tech@plantpi:~ $ sudo apt install -y i2c-tools
+tech@plantpi:~ $ i2cdetect -y 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- --
+...
+70: -- -- -- -- -- -- 76 --</code></pre>
+      <p><code>76</code> means a device answered at address 0x76 (some boards use 0x77). If the grid is all dashes, check wiring and power. Then read it from the venv you made earlier:</p>
+<pre><code>import smbus2, bme280
+
+bus = smbus2.SMBus(1)
+cal = bme280.load_calibration_params(bus, 0x76)
+d = bme280.sample(bus, 0x76, cal)
+print(f"{d.temperature:.2f} °C  {d.humidity:.1f} %RH  {d.pressure:.1f} hPa")</code></pre>
+      <p>Run it with <code>~/logger/venv/bin/python3 bme.py</code>. Expect roughly 1000–1025 hPa at sea level (lower in Canberra or the Blue Mountains). Note that the BME280 reads a degree or two high if it sits close to the warm Pi; keep it on a lead.</p>
+    </details>
+
+    <h2>Part 3 · A trend log in CSV</h2>
+    <p>A <b>trend log</b> is a list of samples of one value over time. In a BMS every important point has one: supply air temperature every 5 minutes, chilled water temperature every 1 minute, and so on. We will write one row per sample to a <b>CSV</b> file (comma-separated values): plain text that Excel, LibreOffice and every script can open.</p>
+<pre><code>timestamp,point,value_c,alarm
+2026-11-02T09:00:00+11:00,BLD1-L1-PLANT-TEMP,24.31,0
+2026-11-02T09:01:00+11:00,BLD1-L1-PLANT-TEMP,24.37,0
+2026-11-02T09:02:00+11:00,BLD1-L1-PLANT-TEMP,24.44,0</code></pre>
+    <p>Three design choices that make a log useful a year later:</p>
+    <ul>
+      <li><b>ISO 8601 timestamps with the UTC offset</b> (<code>+11:00</code>). Most of eastern Australia changes between +10:00 and +11:00 for daylight saving, and Queensland, the NT and WA (+08:00) do not. Without the offset, one hour in autumn appears twice and you cannot tell which is which.</li>
+      <li><b>One file per day</b> (<code>data/2026-11-02.csv</code>). Small files open quickly and old ones are easy to archive or delete.</li>
+      <li><b>The point name in every row</b>. When logs from several devices are merged, every row still says what it is.</li>
+    </ul>
+    <p>Disk space check: one row is about 50 bytes. At one sample a minute that is 1440 rows × 50 B ≈ 72 kB a day, about 26 MB a year. A 32 GB card would last centuries; storage is not your problem, card <i>reliability</i> is (keep backups).</p>
+
+    <h2>Part 4 · Alarms the BMS way</h2>
+    <p>An alarm must be <b>useful</b>, not noisy. Three ideas from real building systems:</p>
+    <ul>
+      <li><b>Limit</b>: the value that starts the alarm (here 30 °C, a typical "plant room getting too hot" warning).</li>
+      <li><b>Deadband</b> (hysteresis): the alarm only clears once the value is a little <i>below</i> the limit (here 29 °C). Without it, a temperature hovering at 30.0 ± 0.1 °C would flip in and out of alarm every minute and flood the operator — called alarm "chatter".</li>
+      <li><b>Acknowledge</b>: a person presses a button to say "I have seen this". The lamp flashes while unacknowledged and goes steady after acknowledgement, until the condition clears. A <b>sensor fault</b> (no reading, bad CRC, 85 °C) is an alarm of its own — a dead sensor reading "normal" is the worst failure of all.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="Temperature crossing a 30 degree limit with a 1 degree deadband; alarm turns on at 30 and off only below 29">
+        <path class="s-thin" d="M50 20 V190 H620"/>
+        <text class="t t-small t-muted" x="560" y="208">time →</text>
+        <path class="s-red s-dash" d="M50 60 H620"/><text class="t t-small t-red" x="54" y="54">limit 30 °C</text>
+        <path class="s-blue s-dash" d="M50 100 H620"/><text class="t t-small t-blue" x="54" y="116">clear below 29 °C</text>
+        <path class="s-accent" d="M50 160 C 120 150, 160 100, 200 62 S 240 70, 260 58 S 300 74, 320 62 S 360 76, 380 64 S 430 80, 460 110 S 540 150, 620 150"/>
+        <circle class="f-red" cx="200" cy="60" r="5"/>
+        <circle class="f-blue" cx="447" cy="100" r="5"/>
+        <rect class="f-warn-soft s-red" x="200" y="214" width="247" height="18" rx="3"/>
+        <text class="t t-small t-red t-bold" x="270" y="227">ALARM (one event)</text>
+        <text class="t t-small t-muted" x="290" y="46">wobbles across 30 °C</text>
+        <text class="t t-small t-muted" x="50" y="227">alarm state:</text>
+      </svg>
+      <figcaption>Figure 2. With a deadband, the wobbles around 30 °C produce one alarm event, not five. The alarm starts at the red dot (≥ 30 °C) and ends at the blue dot (&lt; 29 °C).</figcaption>
+    </figure>
+
+    <h2>Part 5 · The full plant-room logger</h2>
+    <p>Here is the whole program: one Python process with two jobs. A background <b>thread</b> (a second line of execution inside the same program) samples the sensor every minute, writes the CSV row and drives the alarm LED. The main thread runs <b>Flask</b>, a small web framework, which answers browser requests with the latest reading. A <b>lock</b> stops the two threads reading and writing the shared <code>state</code> at the same moment.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Software architecture: sensor via kernel to logger thread, which writes CSV and shared state; Flask serves state to a browser; systemd supervises the process">
+        <defs><marker id="p17-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-panel s-line" x="10" y="90" width="100" height="56" rx="6"/>
+        <text class="t t-small t-bold" x="22" y="112">DS18B20</text><text class="t t-small t-muted" x="22" y="130">GPIO4 1-Wire</text>
+        <rect class="f-wash s-thin" x="130" y="90" width="90" height="56" rx="6"/>
+        <text class="t t-small" x="140" y="112">kernel</text><text class="t t-small t-muted" x="140" y="130">w1_slave file</text>
+        <rect class="f-career-soft s-green s-dash" x="240" y="16" width="250" height="200" rx="10"/>
+        <text class="t t-small t-bold t-green" x="250" y="34">systemd: plantroom.service</text>
+        <rect class="f-accent-soft s-accent" x="256" y="50" width="218" height="46" rx="6"/>
+        <text class="t t-small t-bold" x="266" y="70">logger thread (every 60 s)</text><text class="t t-small t-muted" x="266" y="88">read · alarm logic · log</text>
+        <rect class="f-panel s-line" x="256" y="110" width="218" height="34" rx="6"/>
+        <text class="t t-small" x="266" y="132">shared state + lock</text>
+        <rect class="f-theory-soft s-blue" x="256" y="158" width="218" height="46" rx="6"/>
+        <text class="t t-small t-bold" x="266" y="178">Flask web (port 8080)</text><text class="t t-small t-muted" x="266" y="196">/  and  /api/latest</text>
+        <rect class="f-panel s-line" x="520" y="40" width="110" height="48" rx="6"/>
+        <text class="t t-small" x="530" y="60">data/*.csv</text><text class="t t-small t-muted" x="530" y="78">trend log</text>
+        <rect class="f-panel s-red" x="520" y="104" width="110" height="48" rx="6"/>
+        <text class="t t-small" x="530" y="124">LED GPIO17</text><text class="t t-small t-muted" x="530" y="142">button GPIO27</text>
+        <rect class="f-panel s-line" x="520" y="170" width="110" height="48" rx="6"/>
+        <text class="t t-small" x="530" y="190">browser</text><text class="t t-small t-muted" x="530" y="208">phone / laptop</text>
+        <path class="s-accent" d="M110 118 H128" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M220 118 H236 V74 H254" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M474 66 H518" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M474 84 L518 120" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M365 96 V108" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M365 144 V156" marker-end="url(#p17-arr)"/>
+        <path class="s-accent" d="M474 186 H518" marker-end="url(#p17-arr)"/>
+      </svg>
+      <figcaption>Figure 3. One process, two threads. The logger thread is the only writer of the state; Flask only reads it. systemd starts the process at boot and restarts it if it crashes.</figcaption>
+    </figure>
+    <p>Save as <code>~/logger/plantroom.py</code>:</p>
+<pre><code>#!/usr/bin/env python3
+"""plantroom.py - a tiny BMS-style temperature point.
+
+Every 60 s: read a DS18B20, append a row to a daily CSV trend log,
+run high-limit alarm logic with a deadband, and drive an alarm LED.
+A push button acknowledges the alarm. Flask serves the latest value.
+"""
+import csv
+import glob
+import os
+import threading
+import time
+from datetime import datetime
+
+from flask import Flask, render_template_string
+from gpiozero import LED, Button
+
+# ---- point configuration ----
+POINT = "BLD1-L1-PLANT-TEMP"   # site - level - room - measurement
+HIGH_LIMIT = 30.0              # deg C: alarm at or above this
+DEADBAND = 1.0                 # deg C: alarm clears below 29.0
+INTERVAL_S = 60                # trend interval, seconds
+BASE = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE, "data")
+SENSOR_GLOB = "/sys/bus/w1/devices/28-*/w1_slave"
+
+alarm_led = LED(17)                        # GPIO17, physical pin 11
+ack_button = Button(27, bounce_time=0.05)  # GPIO27, pin 13, to GND
+
+lock = threading.Lock()
+state = {"time": None, "temp": None, "alarm": False,
+         "acked": False, "fault": None}
+
+
+def read_ds18b20():
+    """Return deg C, or raise OSError for any sensor problem."""
+    paths = glob.glob(SENSOR_GLOB)
+    if not paths:
+        raise OSError("no DS18B20 found on the 1-Wire bus")
+    with open(paths[0]) as f:
+        lines = f.read().splitlines()
+    if len(lines) &lt; 2 or not lines[0].endswith("YES"):
+        raise OSError("CRC check failed (wiring or noise)")
+    millideg = int(lines[1].split("t=")[1])
+    if millideg == 85000:
+        raise OSError("85.0 C power-on value: sensor did not convert")
+    return millideg / 1000.0
+
+
+def log_row(ts, temp, alarm):
+    os.makedirs(LOG_DIR, exist_ok=True)
+    path = os.path.join(LOG_DIR, ts.strftime("%Y-%m-%d") + ".csv")
+    new_file = not os.path.exists(path)
+    with open(path, "a", newline="") as f:
+        w = csv.writer(f)
+        if new_file:
+            w.writerow(["timestamp", "point", "value_c", "alarm"])
+        w.writerow([ts.isoformat(timespec="seconds"), POINT,
+                    f"{temp:.2f}", int(alarm)])
+
+
+def update_led():
+    with lock:
+        fault, alarm, acked = state["fault"], state["alarm"], state["acked"]
+    if fault or (alarm and not acked):
+        alarm_led.blink(on_time=0.3, off_time=0.3)  # needs attention: flash
+    elif alarm:
+        alarm_led.on()                              # acknowledged: steady
+    else:
+        alarm_led.off()
+
+
+def acknowledge():
+    with lock:
+        if state["alarm"]:
+            state["acked"] = True
+    update_led()
+
+
+def logger_loop():
+    while True:
+        ts = datetime.now().astimezone()        # local time with UTC offset
+        try:
+            temp = read_ds18b20()
+        except (OSError, ValueError, IndexError) as e:
+            with lock:
+                state["fault"] = str(e)
+            print(f"SENSOR FAULT: {e}", flush=True)
+        else:
+            with lock:
+                if temp &gt;= HIGH_LIMIT and not state["alarm"]:
+                    state["alarm"], state["acked"] = True, False
+                    print(f"ALARM: {temp:.1f} C", flush=True)
+                elif temp &lt; HIGH_LIMIT - DEADBAND and state["alarm"]:
+                    state["alarm"], state["acked"] = False, False
+                    print(f"Return to normal: {temp:.1f} C", flush=True)
+                state.update(time=ts, temp=temp, fault=None)
+                alarm = state["alarm"]
+            try:
+                log_row(ts, temp, alarm)
+            except OSError as e:
+                print(f"LOG WRITE FAILED: {e}", flush=True)  # e.g. disk full
+        update_led()
+        time.sleep(INTERVAL_S)
+
+
+app = Flask(__name__)
+
+PAGE = """&lt;!doctype html&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;meta http-equiv="refresh" content="30"&gt;
+&lt;title&gt;{{ point }}&lt;/title&gt;
+&lt;style&gt;
+ body{font-family:sans-serif;margin:2em;max-width:32em}
+ .big{font-size:3.5em;margin:.2em 0}
+ .ok{background:#15803d;color:#fff;padding:.6em 1em}
+ .alarm{background:#b91c1c;color:#fff;padding:.6em 1em}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
+&lt;h1&gt;{{ point }}&lt;/h1&gt;
+{% if fault %}
+  &lt;p class="alarm"&gt;SENSOR FAULT: {{ fault }}&lt;/p&gt;
+{% elif temp is none %}
+  &lt;p&gt;Waiting for the first reading...&lt;/p&gt;
+{% else %}
+  &lt;p class="big"&gt;{{ "%.1f"|format(temp) }} &amp;deg;C&lt;/p&gt;
+  &lt;p class="{{ 'alarm' if alarm else 'ok' }}"&gt;
+    {{ 'HIGH TEMPERATURE ALARM' if alarm else 'Normal' }}
+    {% if alarm and acked %}(acknowledged){% endif %}&lt;/p&gt;
+  &lt;p&gt;Limit {{ limit }} &amp;deg;C, deadband {{ deadband }} &amp;deg;C&lt;br&gt;
+     Last sample {{ time.strftime("%d/%m/%Y %H:%M:%S") }}&lt;/p&gt;
+{% endif %}
+&lt;/body&gt;&lt;/html&gt;"""
+
+
+@app.route("/")
+def index():
+    with lock:
+        s = dict(state)
+    return render_template_string(PAGE, point=POINT, limit=HIGH_LIMIT,
+                                  deadband=DEADBAND, **s)
+
+
+@app.route("/api/latest")
+def api_latest():
+    with lock:
+        s = dict(state)
+    s["time"] = s["time"].isoformat(timespec="seconds") if s["time"] else None
+    s["point"] = POINT
+    return s                  # Flask sends a dict as JSON
+
+
+if __name__ == "__main__":
+    ack_button.when_pressed = acknowledge
+    threading.Thread(target=logger_loop, daemon=True).start()
+    app.run(host="0.0.0.0", port=8080)</code></pre>
+
+    <h3>How the pieces fit</h3>
+    <ul>
+      <li><code>read_ds18b20()</code> refuses bad data: no sensor, CRC failure or the 85 °C power-on value all raise an error, which the loop turns into a <b>sensor fault</b>.</li>
+      <li>The alarm logic only changes state at the edges: it enters alarm at ≥ 30.0 °C and leaves below 29.0 °C. Between the two, it keeps whatever state it had. That is the deadband.</li>
+      <li><code>datetime.now().astimezone()</code> gives local time <i>with</i> the offset, so the CSV gets <code>2026-11-02T14:05:00+11:00</code>.</li>
+      <li><code>print(..., flush=True)</code> sends messages straight to the systemd journal, so <code>journalctl -u plantroom</code> becomes your alarm history.</li>
+      <li><code>host="0.0.0.0"</code> makes Flask listen on all network interfaces. With the default <code>127.0.0.1</code> only the Pi itself could see the page.</li>
+    </ul>
+    <p>Test it by hand first:</p>
+<pre><code>tech@plantpi:~/logger $ python3 plantroom.py
+ * Serving Flask app 'plantroom'
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.42:8080
+Press CTRL+C to quit</code></pre>
+    <p>Open <code>http://plantpi.local:8080</code> on your laptop or phone (same network). For a quick alarm test without a heat gun, temporarily set <code>HIGH_LIMIT = 25.0</code> and <code>INTERVAL_S = 5</code>, then hold the probe in your hand. The LED flashes; press the button and it goes steady; let go of the probe and it clears below 24.0 °C. Put the real values back afterwards. In another SSH window watch the log grow with <code>tail -f data/$(date +%F).csv</code>. Flask warns that its built-in server is "a development server"; that is fine for one bench page on a private network.</p>
+    <p>And the JSON endpoint, which is what another system (or your ESP32 dashboard in P18) would read:</p>
+<pre><code>tech@plantpi:~ $ curl -s http://localhost:8080/api/latest
+{"acked":false,"alarm":false,"fault":null,"point":"BLD1-L1-PLANT-TEMP","temp":24.437,"time":"2026-11-02T14:05:00+11:00"}</code></pre>
+
+    <h2>Part 6 · Start it at boot with systemd</h2>
+    <p>A logger that stops when you close your SSH window is useless. We make it a <b>systemd service</b>: systemd starts it at boot, restarts it if it crashes, and collects its output in the journal. Create the unit file:</p>
+<pre><code>sudo nano /etc/systemd/system/plantroom.service</code></pre>
+<pre><code>[Unit]
+Description=Plant-room temperature logger and web page
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tech
+Group=tech
+WorkingDirectory=/home/tech/logger
+ExecStart=/usr/bin/python3 /home/tech/logger/plantroom.py
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+    <p>Line by line: <b>[Unit]</b> describes it and says "start after the network is up". <b>[Service]</b> runs it as user <code>tech</code> (never root — <code>tech</code> is already in the <code>gpio</code> group), from the logger folder, with the full path to Python (systemd does not use your shell's PATH). <code>Restart=on-failure</code> with <code>RestartSec=5</code> restarts it 5 s after any crash. If you used the venv, change ExecStart to <code>/home/tech/logger/venv/bin/python3 …</code>. <b>[Install]</b> says "start this in normal multi-user boot".</p>
+<pre><code>sudo systemctl daemon-reload              # make systemd read the new file
+sudo systemctl enable --now plantroom     # enable at boot AND start now
+systemctl status plantroom                # expect: active (running)
+journalctl -u plantroom -f                # watch its output live
+sudo reboot                               # the real test: does it come back by itself?</code></pre>
+    <p>After the reboot, wait a minute and load the page again without logging in. If it works, you have built a real, unattended monitoring device.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The Pi has no battery-backed clock (the Pi 5 has a connector for one). At boot it gets the time from the internet using NTP. Check with <code>timedatectl</code>: "System clock synchronized: yes". A Pi on an isolated site network with no time source will log the wrong time — on real sites the BMS network usually provides an NTP server for this reason.</p></div>
+
+    <h2>Mini project · plant-room logger as a tiny BMS</h2>
+    <p>Put it together the way a building controls company would hand it over. Your deliverable is not "a Python script"; it is a <b>point</b> with a name, a trend, an alarm and documentation.</p>
+    <div class="table-wrap"><table>
+      <tr><th>BMS concept</th><th>Your logger</th><th>Real BMS equivalent</th></tr>
+      <tr><td>Point name</td><td><code>BLD1-L1-PLANT-TEMP</code></td><td>e.g. <code>L01-PLANT-RM-T</code> following the site's naming standard</td></tr>
+      <tr><td>Point type</td><td>Analogue input, °C</td><td>AI (analogue input) — see C01</td></tr>
+      <tr><td>Trend log</td><td>CSV, 60 s interval, daily files</td><td>Trend object in the controller or supervisor</td></tr>
+      <tr><td>High alarm</td><td>30 °C, 1 °C deadband</td><td>Alarm extension with limit, deadband and delay</td></tr>
+      <tr><td>Acknowledge</td><td>Button on GPIO27</td><td>Operator acknowledges on the front end</td></tr>
+      <tr><td>Fault alarm</td><td>No sensor / CRC / 85 °C</td><td>"Sensor fault" or "out of range" status flag</td></tr>
+      <tr><td>Graphics</td><td>Flask page</td><td>Plant-room graphic on the front-end</td></tr>
+      <tr><td>Watchdog</td><td>systemd <code>Restart=on-failure</code></td><td>Controller watchdog, comms-loss alarm</td></tr>
+    </table></div>
+    <ol class="steps">
+      <li><p><b>Calibrate.</b> Put the probe in a glass of iced water (well stirred, mostly ice). It should read 0.0 ± 0.5 °C. Record the offset in your notes.</p></li>
+      <li><p><b>Commission the alarm.</b> Test it as above, and record: time of alarm, time acknowledged, time cleared. Commissioning means proving every function works and writing down that you proved it.</p></li>
+      <li><p><b>Test the fault.</b> With the service running, unplug the sensor's data wire. Within a minute the page should show SENSOR FAULT and the LED should flash. Reconnect and confirm it recovers by itself.</p></li>
+      <li><p><b>Test the power cut.</b> Do a clean <code>sudo shutdown -h now</code>, remove power, restore power. The page must come back with no one logging in, and the CSV must show the gap.</p></li>
+      <li><p><b>Write the handover sheet.</b> One page: point name, sensor type and location, limit, deadband, interval, IP/hostname, how to view the trend, how to restart the service.</p></li>
+    </ol>
+
+    <div class="widget" id="w-trend">
+      <span class="label">Interactive · trend-log viewer with alarm limit</span>
+      <p style="font-size:15px;margin-bottom:8px">A sample day from the plant room (15-minute samples). A chiller fault in the early afternoon warms the room. Move the limit and deadband and watch the alarm events change. You can also paste your own CSV (same four columns) and press "Plot".</p>
+      <label>High limit <span class="out" id="tl-limv">30.0 °C</span><input type="range" id="tl-lim" min="24" max="34" step="0.5" value="30"></label>
+      <label>Deadband <span class="out" id="tl-dbv">1.0 °C</span><input type="range" id="tl-db" min="0" max="3" step="0.1" value="1"></label>
+      <figure style="margin:10px 0">
+        <svg id="tl-svg" viewBox="0 0 640 280" role="img" aria-label="Trend plot of temperature with alarm limit"></svg>
+      </figure>
+      <div class="readings">
+        <div><small>Samples</small><span class="out" id="tl-n">–</span></div>
+        <div><small>Min / max</small><span class="out" id="tl-mm">–</span></div>
+        <div><small>Mean</small><span class="out" id="tl-mean">–</span></div>
+        <div><small>Alarm events</small><span class="out" id="tl-ev">–</span></div>
+        <div><small>Time in alarm</small><span class="out" id="tl-ta">–</span></div>
+      </div>
+      <details class="more" style="margin-top:12px"><summary>Show / edit the CSV</summary>
+        <textarea id="tl-csv" spellcheck="false"></textarea>
+        <button class="wbtn" type="button" id="tl-plot">Plot</button><button class="wbtn" type="button" id="tl-reset">Reset sample data</button>
+        <p id="tl-msg" style="font-size:14px;margin-top:6px"></p>
+      </details>
+    </div>
+    <script>
+    (function(){
+      var svg=document.getElementById('tl-svg'),ta=document.getElementById('tl-csv'),NS='http://www.w3.org/2000/svg';
+      var lim=document.getElementById('tl-lim'),db=document.getElementById('tl-db'),rows=[];
+      function sample(){var s=12345;function rnd(){s=(s*1103515245+12345)%2147483648;return s/2147483648;}
+        var out=['timestamp,point,value_c,alarm'];
+        for(var i=0;i<96;i++){var h=i/4,v=24+2.5*Math.sin((h-9)/24*2*Math.PI);if(h>=12.5&&h<=16.5)v+=5.2*Math.sin(Math.PI*(h-12.5)/4);v+=(rnd()-0.5)*0.6;
+          var hh=('0'+Math.floor(h)).slice(-2),mm=('0'+(i%4)*15).slice(-2);out.push('2026-11-02T'+hh+':'+mm+':00+11:00,BLD1-L1-PLANT-TEMP,'+v.toFixed(2)+',0');}
+        return out.join('\n');}
+      function parse(txt){var L=txt.trim().split(/\r?\n/),r=[];for(var i=0;i<L.length;i++){var c=L[i].split(',');if(c.length<3)continue;var v=parseFloat(c[2]),t=Date.parse(c[0]);if(isNaN(v))continue;r.push({t:isNaN(t)?r.length*60000:t,label:c[0],v:v});}return r;}
+      function el(tag,a,txt){var e=document.createElementNS(NS,tag);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+      function draw(){
+        var L=+lim.value,D=+db.value;document.getElementById('tl-limv').textContent=L.toFixed(1)+' °C';document.getElementById('tl-dbv').textContent=D.toFixed(1)+' °C';
+        while(svg.firstChild)svg.removeChild(svg.firstChild);
+        if(rows.length<2){el('text',{x:60,y:140,'class':'t t-muted'},'Need at least two valid rows.');return;}
+        var x0=50,x1=625,y0=20,y1=240,t0=rows[0].t,t1=rows[rows.length-1].t,mn=Infinity,mx=-Infinity,sum=0;
+        rows.forEach(function(r){mn=Math.min(mn,r.v);mx=Math.max(mx,r.v);sum+=r.v;});
+        var lo=Math.floor(Math.min(mn,L-D)-1),hi=Math.ceil(Math.max(mx,L)+1);
+        function X(t){return x0+(t-t0)/(t1-t0||1)*(x1-x0);}function Y(v){return y1-(v-lo)/(hi-lo)*(y1-y0);}
+        // alarm logic
+        var al=false,ev=0,ms=0,spans=[],st=null;
+        rows.forEach(function(r,i){if(!al&&r.v>=L){al=true;ev++;st=r.t;}else if(al&&r.v<L-D){al=false;spans.push([st,r.t]);}
+          r.al=al;if(al&&i<rows.length-1)ms+=rows[i+1].t-r.t;});
+        if(al)spans.push([st,t1]);
+        spans.forEach(function(s){el('rect',{x:X(s[0]),y:y0,width:Math.max(2,X(s[1])-X(s[0])),height:y1-y0,'class':'f-warn-soft'});});
+        // grid
+        for(var g=lo;g<=hi;g++){if((hi-lo)>12&&g%2)continue;el('path',{d:'M'+x0+' '+Y(g)+' H'+x1,'class':'s-thin','stroke-opacity':'0.35'});el('text',{x:x0-6,y:Y(g)+4,'text-anchor':'end','class':'t t-small t-muted'},g);}
+        el('path',{d:'M'+x0+' '+y0+' V'+y1+' H'+x1,'class':'s-thin'});
+        var every=Math.max(1,Math.ceil(rows.length/8));
+        rows.forEach(function(r,i){if(i%every)return;var lab=(r.label.length>=16&&r.label.charAt(10)==='T')?r.label.substr(11,5):String(i);el('text',{x:X(r.t),y:y1+16,'text-anchor':'middle','class':'t t-small t-muted'},lab);});
+        el('path',{d:'M'+x0+' '+Y(L)+' H'+x1,'class':'s-red s-dash'});el('text',{x:x1-4,y:Y(L)-5,'text-anchor':'end','class':'t t-small t-red'},'limit '+L.toFixed(1)+' °C');
+        if(D>0){el('path',{d:'M'+x0+' '+Y(L-D)+' H'+x1,'class':'s-blue s-dash'});el('text',{x:x1-4,y:Y(L-D)+14,'text-anchor':'end','class':'t t-small t-blue'},'clear < '+(L-D).toFixed(1)+' °C');}
+        var d='';rows.forEach(function(r,i){d+=(i?'L':'M')+X(r.t).toFixed(1)+' '+Y(r.v).toFixed(1)+' ';});el('path',{d:d,'class':'s-accent'});
+        rows.forEach(function(r){if(r.al)el('circle',{cx:X(r.t),cy:Y(r.v),r:2.6,'class':'f-red'});});
+        el('text',{x:x0+4,y:y0+12,'class':'t t-small t-muted'},'°C   (shaded = in alarm)');
+        document.getElementById('tl-n').textContent=rows.length;document.getElementById('tl-mm').textContent=mn.toFixed(1)+' / '+mx.toFixed(1);
+        document.getElementById('tl-mean').textContent=(sum/rows.length).toFixed(2)+' °C';document.getElementById('tl-ev').textContent=ev;
+        var m=Math.round(ms/60000);document.getElementById('tl-ta').textContent=Math.floor(m/60)+' h '+(m%60)+' min';
+      }
+      function load(txt){rows=parse(txt);document.getElementById('tl-msg').textContent=rows.length+' valid rows read.';draw();}
+      lim.oninput=draw;db.oninput=draw;
+      document.getElementById('tl-plot').onclick=function(){load(ta.value);};
+      document.getElementById('tl-reset').onclick=function(){ta.value=sample();load(ta.value);};
+      ta.value=sample();load(ta.value);
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Set the deadband to 0 and drag the limit to just under the afternoon peak: count how many separate alarm events the noise creates. Now raise the deadband to 0.5 °C. This is exactly the conversation you will have with a facility manager who complains about "nuisance alarms". Then copy a day of your own CSV from the Pi (<code>cat data/2026-11-02.csv</code>, select, copy) and paste it in.</p></div>
+
+    <h3>Expected readings</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Test</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>DS18B20 at room temperature</td><td>18–28 °C, steady within ±0.1 °C</td><td>85.000: power-on value (pull-up/wiring); jumps: noise on a long lead</td></tr>
+      <tr><td>Probe in stirred ice water</td><td>0.0 ± 0.5 °C</td><td>More than 0.5 °C off: not enough ice, or sensor out of spec</td></tr>
+      <tr><td>Probe held in hand</td><td>Rises to 30–34 °C over ~60 s</td><td>No change: wrong sensor folder, or reading a cached value</td></tr>
+      <tr><td>1-Wire data line idle (meter to GND)</td><td>~3.3 V</td><td>0 V: missing pull-up or short; 5 V: wrong supply pin (stop now)</td></tr>
+      <tr><td>CSV growth</td><td>1 row per minute, ~72 kB per day</td><td>No new rows: service stopped or disk full</td></tr>
+      <tr><td>Page load on LAN</td><td>Under 1 s</td><td>Timeout: Flask on 127.0.0.1, wrong port, or different network</td></tr>
+    </table></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>No <code>28-…</code> folder</td><td>1-Wire not enabled, wrong pin, no pull-up, sensor reversed</td><td>Check <code>config.txt</code> has <code>dtoverlay=w1-gpio</code>; data on GPIO4 (pin 7); 4.7 kΩ to 3.3 V. A reversed DS18B20 gets hot — unplug it fast.</td></tr>
+      <tr><td><code>crc=… NO</code> now and then</td><td>Noise, long or unshielded lead, weak pull-up</td><td>Shorter lead; try 2.2–3.3 kΩ pull-up on long runs; the code already rejects these</td></tr>
+      <tr><td><code>externally-managed-environment</code></td><td>pip into system Python</td><td>Use <code>apt install python3-…</code> or a venv</td></tr>
+      <tr><td><code>ModuleNotFoundError: flask</code> in the service only</td><td>Service uses a different Python than your shell</td><td>Match ExecStart to the Python where Flask is installed</td></tr>
+      <tr><td><code>status=203/EXEC</code> in <code>systemctl status</code></td><td>Wrong path in ExecStart</td><td>Use full absolute paths; check with <code>ls</code></td></tr>
+      <tr><td>Page works on the Pi but not from the laptop</td><td>Flask on 127.0.0.1, or laptop on guest Wi-Fi</td><td><code>host="0.0.0.0"</code>; check with <code>sudo ss -tlnp</code></td></tr>
+      <tr><td>Timestamps an hour out</td><td>Wrong time zone</td><td><code>sudo timedatectl set-timezone Australia/Sydney</code> (or your city)</td></tr>
+      <tr><td>LED never lights</td><td>LED backwards, or physical/GPIO number mix-up</td><td>Long leg towards the resistor/GPIO; GPIO17 is pin 11</td></tr>
+    </table></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>A BMS technician's day is full of exactly these ideas: a <b>point list</b> with names that follow a site standard, <b>trend logs</b> used to prove a fault ("the plant room hit 34 °C at 2:15 pm every day last week"), <b>alarm limits and deadbands</b> tuned so operators are not flooded, and <b>sensor-fault</b> handling. Commissioning sheets ask you to test each alarm and record the result, exactly as in the mini project. Bring this logger, its CSV and a one-page handover sheet to an interview — see <a href="../career/c01-bms-fundamentals.html">C01</a>, <a href="../career/c02-bms-protocols-commissioning.html">C02</a> and <a href="../career/c12-portfolio-study-plan.html">C12</a>.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Real BMS temperature sensors in commercial buildings are usually 10 kΩ thermistors or platinum RTDs (PT100/PT1000) wired to a controller, or 4–20 mA transmitters (Theory T16) — not DS18B20s. The <i>software ideas</i> (point names, trends, alarms) are the same. Mounting sensors in occupied buildings is ELV work, but anything involving switchboards or mains wiring is for licensed electricians only.</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does the button need no external resistor, and why does pressing it make the pin read 0?</summary><div class="answer"><p>gpiozero's <code>Button</code> enables the chip's internal pull-up (~50 kΩ to 3.3 V), so the open button leaves the pin at 3.3 V (1). Pressing connects the pin straight to GND, which wins over the weak pull-up, so it reads 0. gpiozero inverts this so <code>is_pressed</code> is True.</p></div></details>
+    <details class="quiz"><summary>The sensor file says <code>t=85000</code>. What do you tell the client?</summary><div class="answer"><p>Not that the room is 85 °C. 85.000 °C is the DS18B20's power-on register value; the sensor reset or did not complete a conversion, usually due to power or pull-up problems. Treat it as a sensor fault and check wiring, the pull-up and the lead length.</p></div></details>
+    <details class="quiz"><summary>Raw bytes <code>90 01</code> come from a DS18B20 at 12-bit resolution. What is the temperature?</summary><div class="answer"><p>Low byte first, so raw = 0x0190 = 400. 400 / 16 = <b>25.0 °C</b>.</p></div></details>
+    <details class="quiz"><summary>With a 30 °C limit and 1 °C deadband, the room reads 30.2, 29.6, 30.1, 29.4, 28.8 °C. How many alarm events, and when does it clear?</summary><div class="answer"><p>One event. It enters alarm at 30.2. 29.6, 30.1 and 29.4 are all at or above 29.0, so it stays in alarm. It clears at 28.8, the first value below 29.0. Without the deadband it would have been two events (30.2 and 30.1).</p></div></details>
+    <details class="quiz"><summary>Why log <code>2026-04-05T02:30:00+11:00</code> rather than <code>05/04/2026 2:30</code>?</summary><div class="answer"><p>On the morning daylight saving ends in NSW/Victoria (first Sunday in April), 2:00–3:00 am happens twice: once at +11:00 and again at +10:00. The offset makes each timestamp unique. ISO order (year-month-day) also sorts correctly as text, and avoids the day/month confusion between Australian and US formats.</p></div></details>
+    <details class="quiz"><summary>The service shows <code>active (running)</code>, but the page cannot be reached from your laptop. Name two checks.</summary><div class="answer"><p>1) <code>sudo ss -tlnp | grep 8080</code>: is it listening on <code>0.0.0.0:8080</code> or only <code>127.0.0.1:8080</code>? 2) Is the laptop on the same network/subnet (<code>ping plantpi.local</code>, compare IPs)? Guest Wi-Fi and separate VLANs often block it.</p></div></details>
+    <details class="quiz"><summary>Why should the service run as <code>tech</code> and not as root?</summary><div class="answer"><p>Least privilege. A bug or an attack through the web page can only damage what that user can touch. <code>tech</code> already has GPIO access through the <code>gpio</code> group, so root is not needed.</p></div></details>
+    <details class="quiz"><summary>The sensor wire is cut overnight. What does a good logger show, and why does that matter?</summary><div class="answer"><p>A sensor-fault alarm (flashing LED, "SENSOR FAULT" on the page), and gaps in the CSV, not stale "normal" values. A failed sensor that silently reports the last good value is dangerous: the room can overheat while the screen says 24 °C.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can drive an LED and read a button with gpiozero, using GPIO numbers correctly.</span></li>
+      <li><input type="checkbox"><span>I can enable 1-Wire (or I²C), find the sensor, and decode its raw reading by hand.</span></li>
+      <li><input type="checkbox"><span>I can install Python packages the right way on Raspberry Pi OS (apt or venv).</span></li>
+      <li><input type="checkbox"><span>I can write a daily CSV trend log with ISO 8601 timestamps that include the UTC offset.</span></li>
+      <li><input type="checkbox"><span>I can explain limit, deadband, acknowledge and sensor-fault alarms.</span></li>
+      <li><input type="checkbox"><span>I can serve a live reading and a JSON endpoint with Flask on the LAN.</span></li>
+      <li><input type="checkbox"><span>I can write a systemd unit, enable it at boot, and read its journal.</span></li>
+      <li><input type="checkbox"><span>I can commission the logger: calibrate, test alarm, test fault, test power loss, and write a handover sheet.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

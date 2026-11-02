@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C09 · Fibre optics in the field: splicing, connectors and OTDR</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part III · Telecommunications</div>
+    <span class="eyebrow">Career · C09</span>
+    <h1>Fibre optics in the field: splicing, connectors and OTDR</h1>
+    <p class="lede">By the end you will know single-mode from multimode at a glance, never mate the wrong connectors, understand every step of a fusion splice, work out a loss budget, and read an OTDR trace well enough to answer an interviewer's "what is this event?"</p>
+    <div class="meta"><span><b>Time</b> 75 min read</span><span><b>Level</b> Beginner to job-ready</span><span><b>Builds on</b> T10, C07, C08</span><span><b>Roles</b> Splicer, fibre tech, data centre tech</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Fibre in one minute</h2>
+    <p>An optical fibre is a thread of very pure glass. It has a <b>core</b> in the centre and a <b>cladding</b> around it. The core's glass has a slightly higher refractive index than the cladding's. Light hitting the boundary at a shallow angle is reflected back in by <b>total internal reflection</b>, so it stays trapped in the core for kilometres. Outside the cladding is a soft plastic <b>coating</b> (usually 250 µm across) that protects the glass. Inside a building you often see a thicker 900 µm <b>tight buffer</b> over that.</p>
+    <p>The cladding is always 125 µm, about the thickness of a hair. What changes is the core:</p>
+    <ul>
+      <li><b>Single-mode (SM)</b>: core about 9 µm. So small that light can only travel one way down it (one "mode"). No smearing between paths, so it carries huge bandwidth over tens of kilometres. Every carrier and NBN network uses it.</li>
+      <li><b>Multimode (MM)</b>: core 50 µm (modern) or 62.5 µm (old). Light travels many paths of slightly different length, so pulses smear out. Good for short links inside buildings and data centres, with cheaper light sources.</li>
+    </ul>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre (total internal reflection, modes, attenuation)</a>
+
+    <figure>
+      <svg viewBox="0 0 760 300" role="img" aria-label="Cross-sections of single-mode and multimode fibre, and UPC versus APC connector end-faces">
+        <!-- SM cross-section -->
+        <circle class="f-wash s-line" cx="90" cy="110" r="70"/>
+        <circle class="f-panel s-thin" cx="90" cy="110" r="44"/>
+        <circle class="f-amber" cx="90" cy="110" r="4"/>
+        <text class="t t-bold" x="30" y="205">Single-mode</text>
+        <text class="t t-small t-muted" x="20" y="222">9 µm core, 125 µm cladding,</text>
+        <text class="t t-small t-muted" x="20" y="238">250 µm coating</text>
+        <!-- MM cross-section -->
+        <circle class="f-wash s-line" cx="270" cy="110" r="70"/>
+        <circle class="f-panel s-thin" cx="270" cy="110" r="44"/>
+        <circle class="f-amber" cx="270" cy="110" r="18"/>
+        <text class="t t-bold" x="222" y="205">Multimode</text>
+        <text class="t t-small t-muted" x="200" y="222">50 µm core (OM3/OM4),</text>
+        <text class="t t-small t-muted" x="200" y="238">same 125 µm cladding</text>
+        <!-- UPC -->
+        <text class="t t-bold" x="420" y="30">UPC end-face (blue)</text>
+        <rect class="f-wash s-line" x="420" y="50" width="120" height="40"/>
+        <path class="s-blue" d="M540 50 Q550 70 540 90"/>
+        <line class="s-red" x1="440" y1="70" x2="536" y2="70"/>
+        <path class="s-red s-dash" d="M536 70 L470 70"/>
+        <text class="t t-small t-muted" x="420" y="110">flat (slightly domed) face:</text>
+        <text class="t t-small t-muted" x="420" y="126">a reflection goes straight back</text>
+        <!-- APC -->
+        <text class="t t-bold" x="420" y="170">APC end-face (green)</text>
+        <polygon class="f-wash s-line" points="420,190 540,190 546,230 420,230"/>
+        <line class="s-green" x1="540" y1="190" x2="546" y2="230"/>
+        <line class="s-red" x1="440" y1="210" x2="543" y2="210"/>
+        <path class="s-red s-dash" d="M543 210 L480 240"/>
+        <text class="t t-small t-muted" x="420" y="256">8° angle: a reflection leaves</text>
+        <text class="t t-small t-muted" x="420" y="272">the core and is lost in the cladding</text>
+        <!-- mismatch -->
+        <text class="t t-bold t-red" x="600" y="170">UPC + APC</text>
+        <rect class="f-wash s-line" x="590" y="190" width="70" height="40"/>
+        <polygon class="f-wash s-line" points="674,190 744,190 744,230 680,230"/>
+        <text class="t t-small t-red" x="600" y="256">air gap + angle:</text>
+        <text class="t t-small t-red" x="600" y="272">high loss, damaged faces</text>
+      </svg>
+      <figcaption>Figure 1. Left: the core is the only difference you cannot see; the jacket colour tells you. Right: a UPC face sends reflections straight back; an APC face is polished at 8°, so reflected light leaves the core. Mating one with the other leaves a wedge of air between the cores.</figcaption>
+    </figure>
+
+    <h2>Fibre types, wavelengths and colours</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Core</th><th>Typical jacket colour</th><th>Wavelengths</th><th>Where you meet it</th></tr>
+      <tr><td><b>OS2</b> single-mode</td><td>~9 µm</td><td>Yellow (patch leads, indoor)</td><td>1310 nm and 1550 nm</td><td>NBN, carriers, campus backbones, long links, CCTV over fibre</td></tr>
+      <tr><td><b>OM3</b> multimode</td><td>50 µm</td><td>Aqua</td><td>850 nm (also 1300 nm)</td><td>Data centres, building risers, short 10G links</td></tr>
+      <tr><td><b>OM4</b> multimode</td><td>50 µm</td><td>Aqua (sometimes violet)</td><td>850 nm</td><td>Higher-bandwidth data centre links</td></tr>
+      <tr><td>OM1/OM2 multimode</td><td>62.5 / 50 µm</td><td>Orange</td><td>850 / 1300 nm</td><td>Older buildings. Do not mix with OM3/OM4.</td></tr>
+    </table></div>
+    <p>Outdoor cables are usually black whatever the fibre type, so read the print on the jacket. Inside a cable, individual fibres follow a <b>colour code</b> (blue, orange, green, brown, slate, white, red, black, yellow, violet, rose, aqua is the common 12-colour order). Splicers learn it by heart, because "fibre 7 in tube 3" is how jobs are written.</p>
+    <p>Why those wavelengths? Glass absorbs and scatters less light at some wavelengths than others. Around 1310 nm and 1550 nm, single-mode glass is very clear (roughly 0.35 and 0.25 dB per km). Around 850 nm, cheap fast light sources (VCSELs) exist, which suits short multimode links. Scattering (Rayleigh scattering) falls steeply with longer wavelength, which is one reason 1550 nm loses less than 1310 nm.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Multimode is better because it carries more modes." <b>Right:</b> more modes means more pulse smearing (modal dispersion), so multimode is limited to short distances. Single-mode cable is not dearer than multimode; the multimode advantage is cheaper transceivers for short runs. For anything outside a building, expect single-mode.</p></div>
+
+    <h2>Connectors and the APC/UPC rule</h2>
+    <p>A fibre connector holds the fibre in a precise ceramic <b>ferrule</b> and presses two ferrules end to end in an <b>adaptor</b> (a coupler, often called a bulkhead or through adaptor). Two you will use every day:</p>
+    <div class="compare">
+      <div><h4>LC</h4><p>Small, 1.25 mm ferrule, a latch like an RJ45. Used in patch panels, switches and SFP transceivers. Often in duplex pairs (transmit and receive).</p></div>
+      <div><h4>SC</h4><p>Square push-pull body, 2.5 mm ferrule. Common in PON networks and older panels. Easy to handle with gloves.</p></div>
+    </div>
+    <p>The <b>polish</b> matters as much as the shape:</p>
+    <ul>
+      <li><b>UPC</b> (ultra physical contact): face polished nearly flat. Body usually <b>blue</b> (single-mode). Multimode connectors are usually beige or aqua.</li>
+      <li><b>APC</b> (angled physical contact): face polished at <b>8°</b>. Body always <b>green</b>. Very low back-reflection, because any reflected light hits the angled face and leaves the core. PON networks commonly use APC because reflections upset the shared optics.</li>
+    </ul>
+    <div class="callout warn"><span class="label">Never do this</span><p><b>Never mate APC (green) with UPC (blue).</b> They fit in the same adaptor, which is the trap. The angled face meets a flat face, so the cores touch at the edge only and leave a wedge of air. Loss jumps to several dB, reflections are high, and you can chip both ferrules, ruining two expensive connectors. Green goes to green, blue goes to blue.</p></div>
+
+    <h3>Inspect, clean, inspect</h3>
+    <p>The single most common cause of fibre faults is a dirty connector. A 9 µm core is smaller than a speck of dust, and one particle on the core can block a big share of the light. Worse, mating a dirty connector presses the dirt into the other face and can pit the glass permanently.</p>
+    <ol class="steps">
+      <li><p><b>Inspect.</b> Look at the end-face with a fibre inspection scope (a probe microscope on a screen or phone). Many scopes give an automatic pass/fail against IEC 61300-3-35, the common end-face standard.</p></li>
+      <li><p><b>Clean.</b> Use a one-click pen cleaner for connectors in adaptors, or a cassette cleaner for loose plugs. For stubborn dirt: a lint-free wipe dampened with fibre-grade IPA (isopropyl alcohol), then immediately a dry wipe, so no film is left.</p></li>
+      <li><p><b>Inspect again.</b> Only mate it when the core zone is clean. If it still fails after two cleans, look for scratches or pits: the connector may need replacing.</p></li>
+      <li><p><b>Cap it.</b> Keep dust caps on every unused connector and port. Caps get dirty too, so do not assume a capped connector is clean.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Clean <i>both</i> sides every time: the plug and the port it goes into. Technicians who do this every time, even when "it's brand new", fix more faults on the first visit. Interviewers love hearing "inspect, clean, inspect".</p></div>
+
+    <h2>Fusion splicing, step by step</h2>
+    <p>A <b>fusion splice</b> welds two fibres into one continuous piece of glass using an electric arc. A good one loses only a few hundredths of a dB and lasts for decades. A <b>fusion splicer</b> is a precision machine with cameras that look at the fibres from two directions, motors that line them up to within a fraction of a micrometre, and two electrodes that strike the arc.</p>
+
+    <figure>
+      <svg viewBox="0 0 760 330" role="img" aria-label="Fusion splicing workflow: sleeve, strip, clean, cleave, align, arc, protect, tray">
+        <defs><marker id="c09a-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <!-- Row 1 -->
+        <rect class="f-career-soft s-accent" x="10" y="20" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="22" y="42">1. Sleeve on</text>
+        <rect class="f-wash s-line" x="40" y="70" width="100" height="16" rx="4"/>
+        <line class="s-amber" x1="20" y1="78" x2="170" y2="78"/>
+        <text class="t t-small t-muted" x="22" y="112">Slide the heat-shrink</text>
+        <text class="t t-small t-muted" x="22" y="128">sleeve on FIRST</text>
+        <path class="s-line" d="M182 80 H196" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="200" y="20" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="212" y="42">2. Strip</text>
+        <rect class="f-wash s-line" x="212" y="70" width="70" height="14"/>
+        <line class="s-amber" x1="282" y1="77" x2="355" y2="77"/>
+        <text class="t t-small t-muted" x="212" y="112">Remove the coating,</text>
+        <text class="t t-small t-muted" x="212" y="128">bare glass ~30–40 mm</text>
+        <path class="s-line" d="M372 80 H386" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="390" y="20" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="402" y="42">3. Clean</text>
+        <line class="s-amber" x1="402" y1="77" x2="545" y2="77"/>
+        <rect class="f-blue" x="450" y="66" width="30" height="22" rx="4" opacity="0.5"/>
+        <text class="t t-small t-muted" x="402" y="112">Wipe once with IPA</text>
+        <text class="t t-small t-muted" x="402" y="128">on a lint-free tissue</text>
+        <path class="s-line" d="M562 80 H576" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="580" y="20" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="592" y="42">4. Cleave</text>
+        <line class="s-amber" x1="592" y1="77" x2="690" y2="77"/>
+        <line class="s-red" x1="692" y1="62" x2="692" y2="92"/>
+        <text class="t t-small t-muted" x="592" y="112">Flat, square end:</text>
+        <text class="t t-small t-muted" x="592" y="128">angle under ~1°</text>
+
+        <!-- Row 2 -->
+        <rect class="f-career-soft s-accent" x="580" y="190" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="592" y="212">5. Load + align</text>
+        <line class="s-amber" x1="592" y1="247" x2="660" y2="247"/>
+        <line class="s-amber" x1="670" y1="247" x2="738" y2="247"/>
+        <text class="t t-small t-muted" x="592" y="282">Cameras line up the</text>
+        <text class="t t-small t-muted" x="592" y="298">cores; check the image</text>
+        <path class="s-line" d="M578 250 H564" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="390" y="190" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="402" y="212">6. Arc</text>
+        <line class="s-amber" x1="402" y1="247" x2="545" y2="247"/>
+        <path class="s-red" d="M470 225 l6 10 l-6 6 l6 10"/>
+        <path class="s-red" d="M478 270 l-6 -10 l6 -6 l-6 -10"/>
+        <text class="t t-small t-muted" x="402" y="282">Arc melts and fuses;</text>
+        <text class="t t-small t-muted" x="402" y="298">read the loss estimate</text>
+        <path class="s-line" d="M388 250 H374" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="200" y="190" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="212" y="212">7. Protect</text>
+        <rect class="f-wash s-line" x="240" y="238" width="90" height="18" rx="4"/>
+        <line class="s-amber" x1="212" y1="247" x2="355" y2="247"/>
+        <text class="t t-small t-muted" x="212" y="282">Slide sleeve over,</text>
+        <text class="t t-small t-muted" x="212" y="298">shrink in the oven</text>
+        <path class="s-line" d="M198 250 H184" marker-end="url(#c09a-ar)"/>
+
+        <rect class="f-career-soft s-accent" x="10" y="190" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="22" y="212">8. Tray + record</text>
+        <path class="s-amber" d="M30 260 q40 -30 80 0 t50 0"/>
+        <text class="t t-small t-muted" x="22" y="282">Coil in splice tray,</text>
+        <text class="t t-small t-muted" x="22" y="298">label, record, test</text>
+      </svg>
+      <figcaption>Figure 2. The fusion splicing workflow. Step 1 is the one beginners forget: once the fibres are joined you cannot get the protection sleeve on.</figcaption>
+    </figure>
+
+    <h3>What each step is really protecting against</h3>
+    <ul>
+      <li><b>Strip</b>: the stripper must remove the coating without scratching the glass. A scratch becomes a crack later.</li>
+      <li><b>Clean</b>: coating residue on the glass lands in the V-grooves and pushes the fibre out of line. Wipe once, from the coating towards the tip, then <i>do not touch the glass</i>.</li>
+      <li><b>Cleave</b>: a cleaver scores the glass with a diamond or carbide blade and snaps it under tension, giving a mirror-flat face. A chipped or angled cleave makes a bubble or a lossy joint. The splicer shows the cleave angle; re-cleave anything above the limit you have set.</li>
+      <li><b>Align</b>: <b>core alignment</b> splicers line up the cores using the camera images; <b>cladding alignment</b> splicers line up the outside and trust the core is centred. Core alignment is usual for carrier single-mode work.</li>
+      <li><b>Arc</b>: a short pre-arc cleans and softens the ends, then the fibres are pushed together and fused. The machine estimates the loss from the image.</li>
+      <li><b>Proof test and protect</b>: many machines pull gently on the joint to prove its strength. The heat-shrink sleeve contains a steel rod that keeps the joint straight for life.</li>
+    </ul>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The splicer's estimated loss is a guess from an image. The real check is an OTDR or loss test afterwards. An image that looks perfect can still hide a problem, and an occasional "high" estimate can measure fine. Run arc checks (calibration) when you change site, altitude or weather, as the machine's instructions say.</p></div>
+    <p><b>Mechanical splices</b> (fibres held end to end in a small gel-filled clamp) and <b>splice-on or field-installable connectors</b> also exist. They need less equipment but have higher loss and are used for repairs and some drop installs. Fusion is the standard for carrier joints.</p>
+
+    <h2>Typical losses and the loss budget</h2>
+    <p>Every part of a link takes away some light, measured in decibels (dB). Losses in dB simply add. The light that leaves the transmitter, minus all the losses, must still be above what the receiver needs. That difference is the <b>loss budget</b>.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Item</th><th>Typical loss (planning value)</th></tr>
+      <tr><td>Single-mode fibre at 1310 nm</td><td>~0.35 dB per km</td></tr>
+      <tr><td>Single-mode fibre at 1550 nm</td><td>~0.25 dB per km</td></tr>
+      <tr><td>Multimode fibre at 850 nm</td><td>~3 dB per km (links are short)</td></tr>
+      <tr><td>Fusion splice</td><td>~0.05–0.1 dB</td></tr>
+      <tr><td>Mated connector pair (clean)</td><td>~0.3–0.5 dB</td></tr>
+      <tr><td>1:2 / 1:8 / 1:32 splitter</td><td>~3.5 / ~10.5 / ~17 dB</td></tr>
+    </table></div>
+    <p>These are typical planning figures. Design documents and standards set the exact values a project uses, and real components vary.</p>
+    <div class="formula">Total loss = (km × dB/km) + (connector pairs × loss) + (splices × loss) + splitter
+      <small>Margin = budget − total loss. Budget = transmitter power − receiver sensitivity, both in dBm. Keep a few dB of spare margin for ageing, repairs and dirt.</small></div>
+    <h3>Worked example: a PON drop</h3>
+    <p>A GPON link: 6 km of single-mode at 1310 nm (the upstream wavelength, the worse case), 4 mated connector pairs, 8 fusion splices, one 1:32 splitter. Budget 28 dB (a common GPON optics class).</p>
+    <ul>
+      <li>Fibre: 6 × 0.35 = 2.1 dB</li>
+      <li>Connectors: 4 × 0.5 = 2.0 dB</li>
+      <li>Splices: 8 × 0.1 = 0.8 dB</li>
+      <li>Splitter: 17 dB</li>
+      <li><b>Total: 21.9 dB.</b> Margin: 28 − 21.9 = <b>6.1 dB</b>. Pass, with room for a few repair splices later.</li>
+    </ul>
+    <p>Notice that the splitter is three-quarters of the loss. That is why PON techs are fussy about every connector: the splitter leaves little room for dirt.</p>
+
+    <div class="widget" id="c09-w1">
+      <span class="label">Interactive · Fibre loss budget calculator</span>
+      <label>Length <span class="out" id="c09-lo">6.0 km</span><input type="range" id="c09-len" min="0" max="40" step="0.5" value="6"></label>
+      <label>Wavelength / fibre <select id="c09-wl"><option value="0.35">Single-mode 1310 nm (~0.35 dB/km)</option><option value="0.25">Single-mode 1550 nm (~0.25 dB/km)</option><option value="3.0">Multimode 850 nm (~3 dB/km)</option></select></label>
+      <label>Mated connector pairs <span class="out" id="c09-co">4</span><input type="range" id="c09-con" min="0" max="12" step="1" value="4"></label>
+      <label>Loss per connector pair (dB) <input type="number" id="c09-cl" value="0.5" step="0.05" min="0" max="2"></label>
+      <label>Fusion splices <span class="out" id="c09-so">8</span><input type="range" id="c09-spl" min="0" max="40" step="1" value="8"></label>
+      <label>Loss per splice (dB) <input type="number" id="c09-sl" value="0.1" step="0.01" min="0" max="1"></label>
+      <label>Splitter <select id="c09-sp"><option value="0">None</option><option value="3.5">1:2 (~3.5 dB)</option><option value="7">1:4 (~7 dB)</option><option value="10.5">1:8 (~10.5 dB)</option><option value="13.5">1:16 (~13.5 dB)</option><option value="17" selected>1:32 (~17 dB)</option><option value="20.5">1:64 (~20.5 dB)</option></select></label>
+      <label>Available budget (dB) <input type="number" id="c09-bud" value="28" step="0.5" min="0" max="50"></label>
+      <div class="readings">
+        <div><small>Total loss</small><span class="out" id="c09-tot">–</span></div>
+        <div><small>Margin</small><span class="out" id="c09-mar">–</span></div>
+        <div><small>Verdict</small><span class="out" id="c09-ver">–</span></div>
+      </div>
+      <svg viewBox="0 0 560 70" role="img" aria-label="Stacked bar of loss contributions against the budget" style="margin-top:12px">
+        <rect class="f-wash" x="10" y="14" width="540" height="28" rx="4"/>
+        <rect id="c09-bf" class="f-green" x="10" y="14" width="0" height="28"/>
+        <rect id="c09-bc" class="f-blue" x="10" y="14" width="0" height="28"/>
+        <rect id="c09-bs" class="f-violet" x="10" y="14" width="0" height="28"/>
+        <rect id="c09-bx" class="f-amber" x="10" y="14" width="0" height="28"/>
+        <line id="c09-bl" class="s-red" x1="10" y1="6" x2="10" y2="50"/>
+        <text class="t t-small t-green" x="10" y="64">fibre</text><text class="t t-small t-blue" x="60" y="64">connectors</text><text class="t t-small" x="150" y="64">splices (violet)</text><text class="t t-small" x="270" y="64">splitter (amber)</text><text class="t t-small t-red" x="390" y="64">red line = budget</text>
+      </svg>
+      <p id="c09-msg" style="font-size:14.5px;margin:8px 0 0"></p>
+    </div>
+    <script>
+    (function(){
+      function g(i){return document.getElementById(i);}
+      var ids=['c09-len','c09-wl','c09-con','c09-cl','c09-spl','c09-sl','c09-sp','c09-bud'];
+      function upd(){
+        var L=+g('c09-len').value,a=+g('c09-wl').value,nc=+g('c09-con').value,cl=+g('c09-cl').value||0,ns=+g('c09-spl').value,sl=+g('c09-sl').value||0,sp=+g('c09-sp').value,b=+g('c09-bud').value||0;
+        g('c09-lo').textContent=L.toFixed(1)+' km';g('c09-co').textContent=nc;g('c09-so').textContent=ns;
+        var f=L*a,c=nc*cl,s=ns*sl,t=f+c+s+sp,m=b-t;
+        g('c09-tot').textContent=t.toFixed(2)+' dB';g('c09-mar').textContent=(m>=0?'+':'')+m.toFixed(2)+' dB';
+        var v=m<0?'FAIL':(m<3?'Tight':'Pass');g('c09-ver').textContent=v;
+        var scale=540/Math.max(b,t,1),x=10;
+        [['c09-bf',f],['c09-bc',c],['c09-bs',s],['c09-bx',sp]].forEach(function(p){var w=p[1]*scale;g(p[0]).setAttribute('x',x);g(p[0]).setAttribute('width',Math.max(0,w));x+=w;});
+        var bx=10+b*scale;g('c09-bl').setAttribute('x1',bx);g('c09-bl').setAttribute('x2',bx);
+        var big=[['fibre',f],['connectors',c],['splices',s],['the splitter',sp]].sort(function(p,q){return q[1]-p[1];})[0];
+        g('c09-msg').textContent=(v==='FAIL'?'Over budget by '+(-m).toFixed(2)+' dB. ':v==='Tight'?'Under 3 dB of spare margin: one dirty connector or repair splice could break it. ':'Healthy margin. ')+'Biggest contributor: '+big[0]+' ('+big[1].toFixed(2)+' dB).';
+      }
+      ids.forEach(function(i){g(i).addEventListener('input',upd);g(i).addEventListener('change',upd);});upd();
+    })();
+    </script>
+
+    <h2>Test tools: VFL, power meter, OTDR</h2>
+    <div class="cards">
+      <div class="card"><h4>Visual fault locator (VFL)</h4><p>A bright red (visible, about 650 nm) laser you plug into a fibre. Where the glass is broken or bent too tightly, red light leaks out and glows through the jacket. Great for finding a break in a patch lead or tray, and for identifying which fibre is which. Range is only a few km.</p></div>
+      <div class="card"><h4>Light source + power meter</h4><p>The source sends a known, steady light; the meter at the far end reads dBm. Subtract to get the end-to-end loss (an "OLTS" or Tier 1 test). This is the number that decides pass or fail on many jobs. A meter alone also reads live network light, such as at a PON connection box.</p></div>
+      <div class="card"><h4>OTDR</h4><p>Optical time-domain reflectometer. Tests from one end only and draws a map of the fibre: where every connector, splice, bend and break is, and how much each loses. The splicer's main tool (Tier 2 test).</p></div>
+    </div>
+    <div class="callout warn"><span class="label">Safety</span><p><b>Never look into a fibre, a connector or a port</b>, and never point a fibre at anyone. Telecom lasers at 1310 and 1550 nm are invisible: you will not blink or feel anything while they damage your retina. Assume every fibre is live until a power meter says otherwise. Look at end-faces only through an inspection scope, which shows you a camera image. A VFL is visible red, but it is still a laser: do not stare into it. Some OTDRs use an out-of-band wavelength (such as 1625 or 1650 nm) for testing live PON fibres with filters; follow your employer's rules on testing live fibres, because a normal OTDR pulse can disrupt live customers.</p></div>
+    <div class="callout warn"><span class="label">Glass shards</span><p>Bare fibre offcuts are tiny, sharp and nearly invisible. They go into skin and eyes and are hard to remove. Put every offcut straight into a labelled scrap container (many cleavers have a built-in bin). Work on a dark mat so you can see them, wear safety glasses, do not eat or drink at the splicing bench, and never brush offcuts off the bench with your hand. IPA is flammable: keep it capped and away from the splicer's arc and the heat oven.</p></div>
+
+    <h2>Reading an OTDR trace</h2>
+    <p>An OTDR fires a short, strong pulse of light into the fibre and listens to what comes back. Two things come back:</p>
+    <ul>
+      <li><b>Backscatter</b>: glass always scatters a tiny fraction of light backwards (Rayleigh scattering), all along its length. As the pulse travels and weakens, the backscatter gets weaker too. Plotting it gives a straight sloping line on a dB scale. The slope is the fibre's loss in dB/km.</li>
+      <li><b>Reflections</b>: wherever the light meets a sudden change, such as a glass–air gap at a connector or the cut end of the fibre, a strong pulse bounces straight back. These show as spikes.</li>
+    </ul>
+    <p>The OTDR converts the return time into distance. The light goes out and back, so it divides by 2:</p>
+    <div class="formula">distance = (c × t) ÷ (2 × n) = (3×10<sup>8</sup> × 50 µs) ÷ (2 × 1.468) ≈ 5.1 km
+      <small>c is the speed of light in vacuum, t the round-trip time, n the group index of the glass (about 1.47 for single-mode, set in the OTDR). A wrong n setting gives wrong distances, which matters when you send a crew to dig.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 760 340" role="img" aria-label="An OTDR trace with launch dead zone, a connector, a splice, a bend, the end of the fibre and a ghost">
+        <line class="s-line" x1="60" y1="20" x2="60" y2="280"/>
+        <line class="s-line" x1="60" y1="280" x2="740" y2="280"/>
+        <text class="t t-small" x="10" y="16">dB</text>
+        <text class="t t-small" x="640" y="300">distance (km) →</text>
+        <!-- trace -->
+        <path class="s-accent" d="M60 40 L66 24 L74 34 L80 70 L170 86 L172 50 L176 92 L178 96 L330 122 L330 128 L440 147 L442 161 L560 182 L562 70 L566 262 L590 258 L605 266 L620 255 L640 264 L655 257 L675 263 L700 256 L720 262 L740 258"/>
+        <!-- ghost -->
+        <path class="s-accent" d="M680 260 L683 236 L686 260"/>
+        <!-- labels -->
+        <text class="t t-small t-bold" x="70" y="16">A</text>
+        <text class="t t-small t-bold" x="166" y="42">B</text>
+        <text class="t t-small t-bold" x="325" y="112">C</text>
+        <text class="t t-small t-bold" x="436" y="140">D</text>
+        <text class="t t-small t-bold" x="556" y="62">E</text>
+        <text class="t t-small t-bold" x="678" y="228">F</text>
+        <line class="s-thin s-dash" x1="80" y1="70" x2="80" y2="280"/>
+        <text class="t t-small t-muted" x="84" y="276">launch cable end</text>
+        <text class="t t-small t-muted" x="200" y="74">slope = dB/km</text>
+      </svg>
+      <figcaption>Figure 3. A labelled trace (shapes exaggerated for clarity). A: launch spike and dead zone. B: connector, a spike plus a step down. C: fusion splice, a small step, no spike. D: macrobend, a step with no spike that is larger at 1550 nm. E: end of fibre, a big reflection then noise. F: a ghost, a spike with no loss in the noise.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Event</th><th>What it looks like</th><th>What it means</th></tr>
+      <tr><td><b>Launch dead zone</b> (A)</td><td>Huge spike at the very start, receiver blinded for a short distance</td><td>The OTDR's own front connector. You cannot see events here, so testers use a <b>launch cable</b> (a spool of a few hundred metres to 1 km) to move the first real connector out of the dead zone. A <b>receive cable</b> at the far end lets you measure the last connector.</td></tr>
+      <tr><td><b>Reflective event</b> (B)</td><td>Spike, then the line continues lower</td><td>A connector or mechanical splice: a glass–air–glass gap. Step height = its loss; spike height relates to reflectance (APC spikes are much smaller).</td></tr>
+      <tr><td><b>Non-reflective event</b> (C)</td><td>Small step down, no spike</td><td>A fusion splice. Typically under 0.1 dB.</td></tr>
+      <tr><td><b>Gainer</b></td><td>Small step <i>up</i> at a splice</td><td>Not real gain. The two fibres scatter differently (slightly different mode field diameters). Test from both ends and average: the true loss appears.</td></tr>
+      <tr><td><b>Bend</b> (D)</td><td>Step down, no spike; much bigger at 1550 nm than 1310 nm</td><td>A macrobend: fibre bent tighter than its bend radius in a tray, clip or pit. Longer wavelengths leak out of bends more easily. Testing at both wavelengths is how you spot it.</td></tr>
+      <tr><td><b>Splitter</b></td><td>Large step, around 10–20 dB depending on ratio</td><td>A PON splitter. Expected; check it matches the design.</td></tr>
+      <tr><td><b>End of fibre / break</b> (E)</td><td>Big spike (clean break or open connector) or a sudden drop, then noise</td><td>The far end, or a break. If it is earlier than the known length, you have found a fault; the distance tells the crew where to dig.</td></tr>
+      <tr><td><b>Ghost</b> (F)</td><td>A spike with no loss, often at exactly twice the distance of a strong reflection, sometimes past the end</td><td>Light bouncing twice between strong reflections. Not a real event. Clean connectors and APC reduce ghosts.</td></tr>
+    </table></div>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Pulse width is a trade-off. A short pulse gives a small dead zone and separates close events, but has little energy, so the trace gets noisy over long distances. A long pulse sees far but blurs close events together. Start short for building and FTTP drops; go longer for long carrier spans. Average for longer to lower the noise.</p></div>
+
+    <div class="widget" id="c09-w2">
+      <span class="label">Interactive · Identify this event</span>
+      <p style="font-size:14.5px;margin:0 0 6px">Each trace is a zoomed piece of fibre with one event in the middle. Choose what it is. Where two traces are shown, <span style="color:var(--blue)">blue is 1310 nm</span> and <span style="color:var(--red)">red is 1550 nm</span>.</p>
+      <svg id="c09-tr" viewBox="0 0 560 200" role="img" aria-label="OTDR trace for the exercise">
+        <line class="s-line" x1="40" y1="10" x2="40" y2="180"/>
+        <line class="s-line" x1="40" y1="180" x2="540" y2="180"/>
+        <text class="t t-small t-muted" x="8" y="20">dB</text>
+        <text class="t t-small t-muted" x="430" y="196">distance →</text>
+        <path id="c09-p1" class="s-blue" d=""/>
+        <path id="c09-p2" class="s-red" d=""/>
+      </svg>
+      <div id="c09-btns" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
+      <p id="c09-fb" style="font-size:15px;margin:10px 0 4px;min-height:48px"></p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" id="c09-next" style="font:600 14px var(--sans);border:none;background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer">Next trace</button><span id="c09-sc" class="pill">Score 0 / 0</span></div>
+    </div>
+    <script>
+    (function(){
+      var opts=['Connector (reflective)','Fusion splice','Macrobend','End of fibre / break','Ghost','Splitter','Gainer'];
+      function line(segs){
+        // segs: list of [x,y] points; small noise only after end markers handled by caller
+        return 'M'+segs.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L');
+      }
+      function base(y0,slope,x0,x1){return [[x0,y0],[x1,y0+slope*(x1-x0)]];}
+      function noise(x0,x1,y){var p=[];for(var x=x0;x<=x1;x+=8){p.push([x,y+(Math.sin(x*1.7)*5+Math.cos(x*0.9)*4)]);}return p;}
+      var S=[
+        {a:0,d:function(){return [line([[40,40],[290,60],[292,22],[296,70],[540,90]]),''];},why:'A spike (reflection from the glass–air gap) followed by a step down (its loss). That is a connector or mechanical splice. A clean connector pair is ~0.3–0.5 dB.'},
+        {a:1,d:function(){return [line([[40,40],[290,60],[290,66],[540,86]]),''];},why:'A small step down with no spike: a fusion splice. Fused glass has no air gap, so there is no reflection. Good ones lose under ~0.1 dB.'},
+        {a:2,d:function(){return [line([[40,40],[290,60],[292,64],[540,84]]),line([[40,50],[290,66],[292,96],[540,112]])];},why:'No spike, and the step is much bigger at 1550 nm (red) than at 1310 nm (blue). Longer wavelengths leak out of tight bends more, so this is a macrobend. Look for a crushed tray, tight clip or kinked lead.'},
+        {a:3,d:function(){return [line([[40,40],[290,60],[292,18],[296,168]].concat(noise(300,540,166))),''];},why:'A large reflection then nothing but noise: the light has reached the end of the glass. If this is shorter than the cable record says, it is a break, and the distance tells you where.'},
+        {a:4,d:function(){return [line([[40,40],[163,50],[165,16],[169,58],[288,68],[290,50],[292,68],[540,88]]),''];},why:'There is a strong reflection near the start, and a second spike at about twice its distance with no step in the level after it. Something with no loss is not a real component: it is a ghost, light bouncing twice. Clean or replace the strongly reflecting connector and it usually fades.'},
+        {a:5,d:function(){return [line([[40,30],[290,44],[292,40],[296,130],[540,146]]),''];},why:'A very large step (here around 15–17 dB on the scale) at a planned location: a splitter, such as 1:32 on a PON. Compare the measured step with the design loss for that ratio.'},
+        {a:6,d:function(){return [line([[40,40],[290,62],[290,58],[540,78]]),''];},why:'A step UP at a splice. Light cannot be created there: the second fibre simply scatters more light back (a different mode field diameter). Test from the other end too and average the two results to get the true splice loss.'}
+      ];
+      var order=[],i=-1,score=0,tries=0,answered=false;
+      function shuffle(){order=S.map(function(_,k){return k;});for(var k=order.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=order[k];order[k]=order[j];order[j]=t;}}
+      var btns=document.getElementById('c09-btns'),fb=document.getElementById('c09-fb');
+      opts.forEach(function(o,k){var b=document.createElement('button');b.type='button';b.textContent=o;b.style.cssText='font:14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;border-radius:6px;cursor:pointer';b.onclick=function(){pick(k,b);};btns.appendChild(b);});
+      function show(){
+        i++;if(i>=order.length){shuffle();i=0;}
+        var s=S[order[i]],p=s.d();
+        document.getElementById('c09-p1').setAttribute('d',p[0]);document.getElementById('c09-p2').setAttribute('d',p[1]);
+        answered=false;fb.textContent='Which event is in the middle of this trace?';
+        Array.prototype.forEach.call(btns.children,function(b){b.style.borderColor='';b.style.fontWeight='';});
+      }
+      function pick(k,b){
+        if(answered)return;answered=true;tries++;var s=S[order[i]];
+        if(k===s.a){score++;fb.textContent='Correct. '+s.why;b.style.borderColor='var(--green)';}
+        else{fb.textContent='Not quite: this is "'+opts[s.a]+'". '+s.why;b.style.borderColor='var(--red)';btns.children[s.a].style.borderColor='var(--green)';}
+        btns.children[s.a].style.fontWeight='700';
+        document.getElementById('c09-sc').textContent='Score '+score+' / '+tries;
+      }
+      document.getElementById('c09-next').onclick=show;
+      shuffle();show();
+    })();
+    </script>
+
+    <h2>On the job: where fibre skills are used</h2>
+    <div class="cards">
+      <div class="card"><h4>Carrier and NBN splicing</h4><p>Joint enclosures in pits and on poles, street cabinets, exchange frames. Splicing large-count cables (hundreds of fibres) in order, then OTDR testing and reporting. Often a two-person crew with a splicing van or tent.</p></div>
+      <div class="card"><h4>FTTP installs and assurance</h4><p>Drops, connection boxes, power-meter checks, cleaning, swapping damaged leads. Covered in <a href="c08-nbn-technologies.html">C08</a>.</p></div>
+      <div class="card"><h4>Data centres and buildings</h4><p>Multimode and single-mode trunks, MPO/MTP multi-fibre cassettes, LC patching, certification testing with loss test sets. Very clean, very neat work.</p></div>
+      <div class="card"><h4>Security, BMS and industrial</h4><p>CCTV over fibre between buildings, campus backbones, fibre rings in mines and plants where copper would pick up interference or lightning. See C05 and C10.</p></div>
+    </div>
+    <div class="callout job"><span class="label">On the job</span><p>A typical splicing day: get the job pack (cable plan, splice chart saying which fibre joins which), set up a clean, sheltered spot near the pit or cabinet, prepare the enclosure, splice tube by tube following the colour code, then test with an OTDR from the exchange end. You save the traces with clear names, because the client checks them. A neat tray, correct labels and a clean report get you more work than speed alone.</p></div>
+
+    <h3>Tools and brands</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Tool</th><th>Brands you may see</th><th>Who usually buys it</th></tr>
+      <tr><td>Fusion splicer + cleaver</td><td>Fujikura, Sumitomo, INNO, others</td><td>Employer (expensive); sub-contractors buy their own</td></tr>
+      <tr><td>OTDR</td><td>EXFO, VIAVI, Anritsu, Yokogawa, Fluke Networks</td><td>Employer</td></tr>
+      <tr><td>Loss test set / power meter</td><td>Fluke Networks, EXFO, VIAVI, Kingfisher, budget generic units</td><td>Employer, or cheap ones yourself for practice</td></tr>
+      <tr><td>Inspection scope</td><td>VIAVI, EXFO, Fluke Networks, cheap USB probes</td><td>Employer</td></tr>
+      <tr><td>Strippers, cleaners, IPA, sleeves</td><td>Many; consumables</td><td>Everyone</td></tr>
+    </table></div>
+    <div class="callout try"><span class="label">Try this</span><p>A cheap way to practise at home, all at safe low power: buy a pen-style VFL (~A$20–40 online) and a couple of SC or LC patch leads (a few dollars each). Plug in the VFL and wrap the lead tightly around a pencil: you will see red light glow at the bend. That is a macrobend leaking light. Loosen it and the glow stops. Add a cheap optical power meter (~A$30–60) and a 1310 nm source if you like, and measure a lead's loss before and after cleaning the connectors. Never look into the lead's end.</p></div>
+
+    <h2>In Australia: registration and training</h2>
+    <div class="callout aus"><span class="label">In Australia</span><p>Fibre cabling on the customer side is "customer cabling" under the ACMA's cabling provider rules, and must be done by a <b>registered cabler with an optical fibre endorsement</b>. Employers on carrier and NBN networks commonly require the same registration and endorsement as a baseline, plus their own network accreditation and inductions. Registration is issued through ACMA-accredited registrars after you complete the required training. Requirements change: <b>confirm the current rules with the ACMA or a registrar</b>, and confirm what a particular employer requires before you pay for a course.</p></div>
+    <p>Training is usually a short registered course in optical fibre cabling (splicing, termination, testing) on top of open cabling registration, from TAFEs or private RTOs. Practical hours on a real splicer matter most. Many entrants start as cable haulers or trainee installers and learn splicing on the job from a senior splicer. Read <a href="c07-telecom-cabling-acma.html">C07</a> for the cabling rules and <a href="c11-licences-pathways.html">C11</a> for the full tickets list.</p>
+
+    <h3>Typical interview questions</h3>
+    <details class="more"><summary>"How do you tell single-mode from multimode?"</summary><p>Jacket colour (yellow OS2, aqua OM3/OM4, orange old OM1/OM2), the print on the jacket, connector colour (blue or green usually single-mode), and the equipment wavelength (1310/1550 SM, 850 MM). If in doubt, check the drawings.</p></details>
+    <details class="more"><summary>"Can you plug a green connector into a blue one?"</summary><p>No. Green is APC (8°), blue is UPC. Mating them leaves an air gap, causes high loss and reflections, and can damage both ferrules.</p></details>
+    <details class="more"><summary>"Walk me through a fusion splice."</summary><p>Sleeve on, strip, clean with IPA, cleave and check the angle, load, align, arc, check estimated loss, proof test, sleeve and shrink, tray and label, then confirm with an OTDR.</p></details>
+    <details class="more"><summary>"You see a step at 1550 nm much bigger than at 1310 nm. What is it?"</summary><p>A macrobend. Find the location from the OTDR distance and look for a tight bend in a tray, clip or pit.</p></details>
+    <details class="more"><summary>"Why use a launch cable?"</summary><p>To move the first connector out of the OTDR's dead zone so its loss can be measured; a receive cable does the same for the last connector.</p></details>
+    <details class="more"><summary>"What do you do with fibre offcuts?"</summary><p>Straight into a labelled scrap container, work on a dark mat, glasses on, never brush them away by hand, no food at the bench.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does a dirty connector matter more on single-mode than on multimode?</summary><div class="answer"><p>The single-mode core is about 9 µm across, smaller than many dust particles. One particle can cover much of the core and block or scatter a large share of the light. A 50 µm multimode core is less sensitive, though dirt still matters there too.</p></div></details>
+    <details class="quiz"><summary>Work out the loss: 12 km single-mode at 1550 nm, 2 connector pairs at 0.5 dB, 6 splices at 0.1 dB, no splitter.</summary><div class="answer"><p>Fibre 12 × 0.25 = 3.0 dB, connectors 1.0 dB, splices 0.6 dB. Total 4.6 dB. With typical point-to-point optics this is a comfortable link.</p></div></details>
+    <details class="quiz"><summary>An OTDR shows a step of 0.4 dB with a clear spike at 2.3 km, where the drawings show a joint enclosure with fusion splices only. What do you suspect?</summary><div class="answer"><p>A spike means a reflection, which a good fusion splice does not make. Suspect a mechanical splice or connector that is not on the drawings, a cracked splice, or a poor joint with an air gap. Go and look. Also check the distance setting (index) in case the event is somewhere else.</p></div></details>
+    <details class="quiz"><summary>Why is 1550 nm used to find bends, when 1310 nm is the usual "worst-case" wavelength for loss?</summary><div class="answer"><p>Fibre itself loses more at 1310 nm, but light at 1550 nm is less tightly held in the core, so it leaks out of bends far more easily. Testing at both and comparing the step size reveals bends.</p></div></details>
+    <details class="quiz"><summary>The OTDR group index is set to 1.50 instead of 1.468. Does it report breaks too near or too far?</summary><div class="answer"><p>Distance = c·t / (2n). A larger n gives a smaller distance, so it reports breaks about 2% too near. At 5 km that is about 100 m: enough to send a crew to the wrong pit.</p></div></details>
+    <details class="quiz"><summary>A splice shows +0.05 dB (a gain) from end A and 0.15 dB loss from end B. What is the real loss?</summary><div class="answer"><p>Average the two directions: (−0.05 + 0.15) / 2 = 0.05 dB. The apparent gain comes from the two fibres scattering differently, not from real gain.</p></div></details>
+    <details class="quiz"><summary>Why must the heat-shrink sleeve go on before you strip the fibre?</summary><div class="answer"><p>After the splice the fibre is one continuous piece with no free end, so a sleeve cannot be threaded on. Forgetting it means breaking and redoing the splice.</p></div></details>
+    <details class="quiz"><summary>Your 1:32 PON link calculates at 26.5 dB against a 28 dB budget. Is it fine?</summary><div class="answer"><p>It passes on paper, but with only 1.5 dB of margin. One dirty connector or a repair splice could make it fail. Re-check the actual measured loss, clean everything, and flag the low margin to the supervisor.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can identify OS2, OM3/OM4 and old OM1/OM2 fibre by colour and print, and state their wavelengths.</span></li>
+      <li><input type="checkbox"><span>I can tell LC from SC and APC (green) from UPC (blue), and I never mate APC with UPC.</span></li>
+      <li><input type="checkbox"><span>I follow inspect, clean, inspect on every connector, both sides.</span></li>
+      <li><input type="checkbox"><span>I can list the fusion splicing steps in order, starting with the sleeve.</span></li>
+      <li><input type="checkbox"><span>I can calculate a loss budget with fibre, connectors, splices and a splitter, and judge the margin.</span></li>
+      <li><input type="checkbox"><span>I can explain what a VFL, a power meter and an OTDR each tell me.</span></li>
+      <li><input type="checkbox"><span>I can identify launch dead zone, connector, splice, gainer, bend, splitter, end and ghost on a trace.</span></li>
+      <li><input type="checkbox"><span>I handle lasers and glass offcuts safely, and I know to confirm ACMA registration and the optical fibre endorsement with the ACMA or a registrar.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

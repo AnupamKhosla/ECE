@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P12 · Sensors and the ADC</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P12</span>
+    <h1>Sensors and the ADC</h1>
+    <p class="lede">Turn light, temperature, motion and distance into numbers. You will learn exactly how the Arduino's analogue-to-digital converter (ADC) turns a voltage into a count, read five kinds of temperature sensor including the 10 kΩ NTC thermistor used in building sensors, and make readings steady and accurate with averaging and calibration.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Beginner–Intermediate</span><span><b>Kit cost</b> ~A$25–45</span><span><b>Theory</b> T15, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Arduino Uno and breadboard</b><small>From P11</small></li>
+      <li><b>LDR (light-dependent resistor)</b><small>~A$1 · 5 mm cadmium-sulphide cell</small></li>
+      <li><b>TMP36 temperature sensor</b><small>~A$3–5 · 3-pin TO-92 package</small></li>
+      <li><b>DS18B20</b><small>~A$4–10 · TO-92 or waterproof probe</small></li>
+      <li><b>DHT22 (AM2302) module</b><small>~A$8–15 · temperature and humidity</small></li>
+      <li><b>10 kΩ NTC thermistor</b><small>~A$1–3 · note its Beta value (often 3950)</small></li>
+      <li><b>PIR motion module</b><small>~A$3–8 · HC-SR501 type</small></li>
+      <li><b>HC-SR04 ultrasonic module</b><small>~A$3–6</small></li>
+      <li><b>Resistors</b><small>10 kΩ ×3, 4.7 kΩ ×1, 1 kΩ and 2 kΩ (or 2× 1 kΩ)</small></li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Jaycar, Altronics and Core Electronics sell all of these, often in sensor kits. A waterproof DS18B20 probe on a 1 m lead is very useful later (ice baths, duct and pipe experiments). AliExpress is cheapest; buy two of each sensor, because cheap batches vary.</p></div>
+
+    <h2>How the ADC turns volts into a number</h2>
+    <p>Sensors give you a <b>voltage</b>. The microcontroller only understands <b>numbers</b>. The <b>analogue-to-digital converter</b> (ADC) is the circuit in between. The Uno's ADC is <b>10-bit</b>: it divides the range from 0 V to a <b>reference voltage</b> (normally the 5 V supply) into 2<sup>10</sup> = 1024 equal steps, and tells you which step the input is on, as a whole number from 0 to 1023.</p>
+    <div class="formula">step size (1 LSB) = V<sub>ref</sub> / 1024 = 5.000 / 1024 ≈ 4.88 mV
+      <small>"LSB" means least significant bit: the smallest change the ADC can see. With a 5 V reference, any change smaller than about 4.9 mV is invisible.</small></div>
+    <div class="formula">reading = floor( V<sub>in</sub> × 1024 / V<sub>ref</sub> ) &nbsp;&nbsp; and back: &nbsp;&nbsp; V<sub>in</sub> ≈ reading × V<sub>ref</sub> / 1024
+      <small>Worked example: V<sub>in</sub> = 1.250 V → 1.250 × 1024 / 5 = 256. Reading 256 → 256 × 5 / 1024 = 1.250 V. You will see code that divides by 1023 instead; the difference is 0.1%, much smaller than the error in your "5 V" supply.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Staircase transfer curve of an ADC">
+        <line class="s-thin" x1="70" y1="220" x2="610" y2="220"/>
+        <line class="s-thin" x1="70" y1="20" x2="70" y2="220"/>
+        <text class="t t-small t-muted" x="340" y="250" text-anchor="middle">input voltage (zoomed in: each step is 4.88 mV wide)</text>
+        <text class="t t-small t-muted" x="20" y="120" transform="rotate(-90 20 120)" text-anchor="middle">reading</text>
+        <line class="s-thin s-dash" x1="70" y1="220" x2="610" y2="40"/>
+        <polyline class="s-accent" points="70,220 130,220 130,190 190,190 190,160 250,160 250,130 310,130 310,100 370,100 370,70 430,70 430,40 610,40"/>
+        <text class="t t-small" x="62" y="224" text-anchor="end">254</text>
+        <text class="t t-small" x="62" y="194" text-anchor="end">255</text>
+        <text class="t t-small" x="62" y="164" text-anchor="end">256</text>
+        <text class="t t-small" x="62" y="134" text-anchor="end">257</text>
+        <text class="t t-small" x="62" y="104" text-anchor="end">258</text>
+        <text class="t t-small" x="62" y="74" text-anchor="end">259</text>
+        <text class="t t-small" x="62" y="44" text-anchor="end">260</text>
+        <path class="s-thin" d="M190 152 V146 H250 V152"/>
+        <text class="t t-small" x="220" y="140" text-anchor="middle">1 LSB</text>
+        <line class="s-red" x1="232" y1="20" x2="232" y2="220"/>
+        <text class="t t-small t-red" x="238" y="32">1.252 V → still 256</text>
+        <text class="t t-small t-muted" x="440" y="168">dashed: the true voltage</text>
+        <text class="t t-small t-muted" x="440" y="184">orange: what the ADC reports</text>
+      </svg>
+      <figcaption>Figure 1. The ADC's output is a staircase. Every input voltage inside one step gives the same number, so the reading can be up to 1 LSB (4.88 mV) below the truth. This "quantisation error" is the price of turning a smooth voltage into whole numbers.</figcaption>
+    </figure>
+
+    <p>Inside, the Uno uses a <b>successive-approximation</b> ADC. It first grabs the input voltage on a tiny capacitor (sample-and-hold), then plays "higher or lower" with an internal digital-to-analogue converter: is it above half of V<sub>ref</sub>? Above three-quarters? Ten yes/no questions find one of 1024 levels. One <code>analogRead()</code> takes about 100 µs, so you can read about 10 000 times per second.</p>
+
+    <div class="widget" id="p12-adc">
+      <span class="label">Interactive · ADC converter</span>
+      <label>Input voltage <span class="out" id="p12-vinv">1.250 V</span><input type="range" id="p12-vin" min="0" max="5.5" step="0.001" value="1.25"></label>
+      <label>Reference voltage <select id="p12-ref"><option value="5">5.0 V (Uno default)</option><option value="4.8">4.8 V (Uno on a weak USB port)</option><option value="3.3">3.3 V (ESP32, Pi ADCs)</option><option value="1.1">1.1 V (Uno internal reference)</option></select></label>
+      <label>ADC resolution <select id="p12-bits"><option value="10">10-bit (Uno)</option><option value="12">12-bit (ESP32, many others)</option><option value="8">8-bit</option></select></label>
+      <div class="readings">
+        <div><small>analogRead() result</small><span class="out" id="p12-code">256</span></div>
+        <div><small>Step size (1 LSB)</small><span class="out" id="p12-lsb">4.88 mV</span></div>
+        <div><small>Voltage the code means</small><span class="out" id="p12-back">1.2500 V</span></div>
+        <div><small>Quantisation error</small><span class="out" id="p12-err">0.0 mV</span></div>
+      </div>
+      <svg id="p12-bitsvg" viewBox="0 0 600 80" role="img" aria-label="Binary bits of the ADC result" style="margin-top:12px"></svg>
+      <p id="p12-note" style="font-size:15px;margin-top:8px"></p>
+    </div>
+    <script>
+    (function(){
+      var vin=document.getElementById('p12-vin'), ref=document.getElementById('p12-ref'), bits=document.getElementById('p12-bits'), svg=document.getElementById('p12-bitsvg');
+      function upd(){
+        var v=+vin.value, r=+ref.value, n=+bits.value, full=Math.pow(2,n);
+        var code=Math.floor(v*full/r), clip=false;
+        if(code>full-1){code=full-1;clip=true;} if(code<0)code=0;
+        var lsb=r/full, back=code*lsb;
+        document.getElementById('p12-vinv').textContent=v.toFixed(3)+' V';
+        document.getElementById('p12-code').textContent=code+' / '+(full-1);
+        document.getElementById('p12-lsb').textContent=(lsb*1000).toFixed(lsb<0.001?3:2)+' mV';
+        document.getElementById('p12-back').textContent=back.toFixed(4)+' V';
+        document.getElementById('p12-err').textContent=((v-back)*1000).toFixed(1)+' mV';
+        var s='', w=Math.min(46,560/n), x0=(600-w*n)/2;
+        for(var i=n-1;i>=0;i--){
+          var b=(code>>i)&1, x=x0+(n-1-i)*w;
+          s+='<rect class="'+(b?'f-accent-soft s-accent':'f-wash s-thin')+'" x="'+(x+2)+'" y="8" width="'+(w-4)+'" height="34" rx="4"/>';
+          s+='<text class="t t-bold" x="'+(x+w/2)+'" y="31" text-anchor="middle">'+b+'</text>';
+          s+='<text class="t t-small t-muted" x="'+(x+w/2)+'" y="60" text-anchor="middle">'+Math.pow(2,i)+'</text>';
+        }
+        s+='<text class="t t-small t-muted" x="300" y="77" text-anchor="middle">bit weights: add the weights of the 1s to get the reading</text>';
+        svg.innerHTML=s;
+        var note;
+        if(clip) note='The input is above the reference voltage, so the ADC is stuck at its maximum. On a real Uno, more than 5.5 V on a pin can also damage it.';
+        else if(r===1.1) note='The 1.1 V internal reference gives about 1.07 mV steps: 4.5 times finer than with 5 V. Great for small signals like a TMP36, but anything above 1.1 V reads full scale.';
+        else if(r===4.8) note='If the "5 V" rail is really 4.8 V but your code assumes 5.0 V, every voltage you calculate is about 4% high. Measure your 5 V pin and use the real value.';
+        else note='Each step is '+(lsb*1000).toFixed(2)+' mV. Changes smaller than that are invisible to this ADC.';
+        document.getElementById('p12-note').textContent=note;
+      }
+      [vin,ref,bits].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h3>First sketch: read a voltage</h3>
+    <p>Put a 10 kΩ potentiometer between 5 V and GND with its wiper on A0, or just use two 10 kΩ resistors as a divider (P04). Measure the A0 voltage with your meter and compare it with what the Arduino reports.</p>
+<pre><code>const int SENSOR_PIN = A0;      // analogue input 0
+const float VREF = 5.0;         // measure your board's 5V pin and put the real value here
+
+void setup() {
+  Serial.begin(9600);           // open the Serial Monitor at 9600 baud
+}
+
+void loop() {
+  int reading = analogRead(SENSOR_PIN);     // 0..1023
+  float volts = reading * VREF / 1024.0;    // convert the count back into volts
+  Serial.print("reading=");
+  Serial.print(reading);
+  Serial.print("  volts=");
+  Serial.println(volts, 3);                 // 3 decimal places
+  delay(250);                               // 4 lines per second
+}</code></pre>
+    <div class="callout tip"><span class="label">Bench tip</span><p>On USB power the Uno's "5 V" is often 4.7–5.1 V, depending on the cable and port. Since the ADC measures relative to that rail, your volts are off by the same percentage. Measure the 5V pin with your meter and put the real number in <code>VREF</code>. Better still, use <b>ratiometric</b> sensors (dividers powered from the same 5 V): then the supply error cancels out, as you will see with the LDR and the thermistor.</p></div>
+
+    <h2>Light: the LDR voltage divider</h2>
+    <p>An <b>LDR</b> (light-dependent resistor, or photoresistor) is a strip of cadmium sulphide. Light frees extra electrons in it, so its resistance falls as light increases: very roughly a few kΩ in a bright room, tens of kΩ in dim light, and around a megohm in darkness. The exact values vary a lot from part to part.</p>
+    <p>The ADC measures voltage, not resistance. So you put the LDR in a <b>voltage divider</b> with a fixed resistor. With the LDR on top (to 5 V) and 10 kΩ on the bottom (to GND), more light gives a higher voltage.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="LDR voltage divider connected to A0">
+        <defs><marker id="p12-arr1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t" x="200" y="24" text-anchor="middle">5 V</text>
+        <line class="s-line" x1="200" y1="30" x2="200" y2="50"/>
+        <rect class="f-panel s-line" x="186" y="50" width="28" height="60"/>
+        <circle class="s-line" cx="200" cy="80" r="26"/>
+        <text class="t" x="240" y="78">LDR</text>
+        <text class="t t-small t-muted" x="240" y="96">1 kΩ (bright) … 1 MΩ (dark)</text>
+        <path class="s-amber" d="M120 50 l40 18" marker-end="url(#p12-arr1)"/>
+        <path class="s-amber" d="M120 72 l40 18" marker-end="url(#p12-arr1)"/>
+        <text class="t t-small" x="100" y="44" text-anchor="middle">light</text>
+        <line class="s-line" x1="200" y1="110" x2="200" y2="150"/>
+        <circle class="f-ink" cx="200" cy="130" r="3.5"/>
+        <line class="s-line" x1="200" y1="130" x2="320" y2="130"/>
+        <rect class="f-accent-soft s-accent" x="320" y="114" width="70" height="32" rx="5"/>
+        <text class="t" x="355" y="135" text-anchor="middle">A0</text>
+        <path class="s-line" d="M200 150 l10 5 l-20 8 l20 8 l-20 8 l20 8 l-20 8 l10 5"/>
+        <text class="t" x="225" y="182">10 kΩ fixed</text>
+        <line class="s-line" x1="200" y1="200" x2="200" y2="220"/>
+        <line class="s-line" x1="186" y1="220" x2="214" y2="220"/>
+        <line class="s-line" x1="191" y1="226" x2="209" y2="226"/>
+        <line class="s-line" x1="196" y1="232" x2="204" y2="232"/>
+        <text class="t t-small t-muted" x="225" y="230">GND</text>
+        <text class="t" x="430" y="110">V<tspan dy="4" class="t-small">A0</tspan><tspan dy="-4"> = 5 × 10k / (10k + R</tspan><tspan dy="4" class="t-small">LDR</tspan><tspan dy="-4">)</tspan></text>
+        <text class="t t-small t-muted" x="430" y="140">brighter → R</text>
+        <text class="t t-small t-muted" x="430" y="156">falls → V rises</text>
+      </svg>
+      <figcaption>Figure 2. The LDR divider. The A0 node sits at a voltage set by the ratio of the two resistances. Swap the LDR and the fixed resistor and the logic flips: more light gives a lower voltage.</figcaption>
+    </figure>
+
+    <h3>Expected readings (10 kΩ fixed resistor, 5 V)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Condition</th><th>R<sub>LDR</sub> (typical)</th><th>V<sub>A0</sub></th><th>analogRead</th></tr>
+      <tr><td>Torch shining on it</td><td>~1 kΩ</td><td>4.55 V</td><td>~931</td></tr>
+      <tr><td>Bright room</td><td>~5 kΩ</td><td>3.33 V</td><td>~683</td></tr>
+      <tr><td>Dim room</td><td>~20 kΩ</td><td>1.67 V</td><td>~341</td></tr>
+      <tr><td>Hand cupped over it</td><td>~100 kΩ</td><td>0.45 V</td><td>~93</td></tr>
+      <tr><td>Dark cupboard</td><td>~1 MΩ</td><td>0.05 V</td><td>~10</td></tr>
+    </table></div>
+    <p>Notice that 10 kΩ gives the most change around 10 kΩ of LDR resistance. A good rule: choose the fixed resistor close to the sensor's resistance in the middle of the range you care about.</p>
+<pre><code>const int LDR_PIN = A0;            // LDR divider output
+const int LED_PIN = 8;             // LED + 220 Ω from P11
+const int DARK_ON = 300;           // below this reading, turn the light on
+const int DARK_OFF = 350;          // above this, turn it off (a gap stops flicker)
+bool lampOn = false;
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int light = analogRead(LDR_PIN);           // bigger number = brighter
+  if (!lampOn &amp;&amp; light &lt; DARK_ON) lampOn = true;    // getting dark: switch on
+  if (lampOn &amp;&amp; light &gt; DARK_OFF) lampOn = false;   // clearly light again: switch off
+  digitalWrite(LED_PIN, lampOn ? HIGH : LOW);
+  Serial.println(light);                     // open Tools › Serial Plotter to see a graph
+  delay(100);
+}</code></pre>
+    <div class="callout why"><span class="label">Why the gap between 300 and 350?</span><p>That gap is called <b>hysteresis</b>. With a single threshold, a reading that hovers around it (plus noise) would switch the lamp on and off many times per second. With two thresholds, the reading must move clearly past the other one to change state. Every thermostat and every BMS on/off control uses this idea, often called a "deadband" or "differential".</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The Uno's ADC works best when the source resistance is 10 kΩ or less, because its sample capacitor must charge in a few microseconds. A divider made of 1 MΩ resistors gives readings that are slightly wrong and that "leak" from the previous channel. If you must use high resistances, read the channel twice and throw away the first reading, or put 100 nF from the pin to GND.</p></div>
+
+    <h2>Temperature: four sensors, four ideas</h2>
+    <p>Temperature is the most common measurement in building services. Each sensor below teaches a different way of getting a reading into a controller.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Sensor</th><th>Output type</th><th>Typical accuracy</th><th>Where you meet it</th></tr>
+      <tr><td>TMP36</td><td>Analogue voltage, 10 mV/°C</td><td>±2 °C</td><td>Hobby projects, simple analogue inputs</td></tr>
+      <tr><td>DS18B20</td><td>Digital, 1-Wire bus</td><td>±0.5 °C (−10 to +85 °C)</td><td>Data loggers, pipe and tank probes</td></tr>
+      <tr><td>DHT22 / AM2302</td><td>Digital, single-wire protocol</td><td>±0.5 °C, ±2–5 % RH</td><td>Room temperature and humidity</td></tr>
+      <tr><td>10 kΩ NTC thermistor</td><td>Resistance</td><td>Depends on part and maths: ±0.2–1 °C</td><td>BMS room, duct, pipe and outdoor sensors</td></tr>
+    </table></div>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="Pinouts of TMP36 and DS18B20 viewed from the flat face">
+        <text class="t t-bold" x="150" y="22" text-anchor="middle">TMP36 (flat face towards you)</text>
+        <rect class="f-wash s-line" x="110" y="40" width="80" height="70" rx="10"/>
+        <text class="t t-small" x="150" y="80" text-anchor="middle">TMP36</text>
+        <line class="s-line" x1="125" y1="110" x2="125" y2="160"/>
+        <line class="s-line" x1="150" y1="110" x2="150" y2="160"/>
+        <line class="s-line" x1="175" y1="110" x2="175" y2="160"/>
+        <text class="t t-small" x="125" y="178" text-anchor="middle">+Vs</text>
+        <text class="t t-small" x="150" y="194" text-anchor="middle">Vout</text>
+        <text class="t t-small" x="175" y="178" text-anchor="middle">GND</text>
+        <text class="t t-small t-muted" x="150" y="222" text-anchor="middle">+Vs → 5 V, Vout → A0, GND → GND</text>
+        <text class="t t-small t-muted" x="150" y="240" text-anchor="middle">optional 100 nF from Vout to GND</text>
+        <line class="s-thin" x1="320" y1="10" x2="320" y2="260"/>
+        <text class="t t-bold" x="480" y="22" text-anchor="middle">DS18B20 (flat face towards you)</text>
+        <rect class="f-wash s-line" x="400" y="40" width="80" height="70" rx="10"/>
+        <text class="t t-small" x="440" y="80" text-anchor="middle">DS18B20</text>
+        <line class="s-line" x1="415" y1="110" x2="415" y2="160"/>
+        <line class="s-line" x1="440" y1="110" x2="440" y2="160"/>
+        <line class="s-line" x1="465" y1="110" x2="465" y2="160"/>
+        <text class="t t-small" x="415" y="178" text-anchor="middle">GND</text>
+        <text class="t t-small" x="440" y="194" text-anchor="middle">DQ</text>
+        <text class="t t-small" x="465" y="178" text-anchor="middle">VDD</text>
+        <path class="s-line" d="M465 160 V170"/>
+        <text class="t t-small" x="560" y="56" text-anchor="middle">5 V</text>
+        <line class="s-line" x1="560" y1="60" x2="560" y2="72"/>
+        <path class="s-accent" d="M560 72 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4"/>
+        <text class="t t-small t-accent" x="574" y="98">4.7 kΩ</text>
+        <path class="s-line" d="M560 108 V140 H500"/>
+        <circle class="f-ink" cx="560" cy="140" r="3"/>
+        <path class="s-line" d="M560 140 V200"/>
+        <text class="t t-small" x="560" y="216" text-anchor="middle">to D4</text>
+        <path class="s-thin s-dash" d="M500 140 H448 V160"/>
+        <text class="t t-small t-muted" x="480" y="240" text-anchor="middle">pull-up from DQ to 5 V is required</text>
+      </svg>
+      <figcaption>Figure 3. Same package, opposite pinouts. A TMP36 has +Vs on the left; a DS18B20 has GND on the left. Plug one in the other's position and the supply is reversed: the part gets hot within seconds. Waterproof DS18B20 probes are usually red = VDD, black = GND, yellow or white = DQ, but check the seller's sheet.</figcaption>
+    </figure>
+
+    <h3>TMP36: an analogue voltage</h3>
+    <p>Inside the TMP36, the voltage across a silicon junction changes by about −2 mV/°C (you met this in the diode chapters). The chip amplifies that into a neat output: <b>0.500 V at 0 °C, plus 10 mV per °C</b>. So 25 °C gives 0.750 V.</p>
+    <div class="formula">T(°C) = (V<sub>out</sub> − 0.500) × 100
+      <small>Example: analogRead returns 154 with a 5.00 V reference. V = 154 × 5 / 1024 = 0.752 V. T = (0.752 − 0.500) × 100 = 25.2 °C. One ADC step (4.88 mV) is about 0.5 °C, so the reading jumps in half-degree steps.</small></div>
+<pre><code>const int TMP_PIN = A0;
+const float VREF = 5.0;               // your measured 5 V value
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long sum = 0;
+  for (int i = 0; i &lt; 16; i++) {      // take 16 readings...
+    sum += analogRead(TMP_PIN);
+    delay(2);
+  }
+  float reading = sum / 16.0;         // ...and average them (keeps fractions of a step)
+  float volts = reading * VREF / 1024.0;
+  float tempC = (volts - 0.5) * 100.0;    // TMP36: 0.5 V at 0 °C, 10 mV per °C
+  Serial.print(volts, 3);
+  Serial.print(" V   ");
+  Serial.print(tempC, 1);
+  Serial.println(" C");
+  delay(500);
+}</code></pre>
+    <div class="callout try"><span class="label">Try this</span><p>Add <code>analogReference(INTERNAL);</code> in <code>setup()</code> and change <code>VREF</code> to 1.1. The step becomes 1.1/1024 ≈ 1.07 mV ≈ 0.1 °C, five times finer. The internal reference is only roughly 1.1 V (it varies by chip), so calibrate against a known temperature. Range is limited to 1.1 V, which is 60 °C for a TMP36. Remove the line before using A0 for 0–5 V signals again.</p></div>
+
+    <h3>DS18B20: a digital sensor on a 1-Wire bus</h3>
+    <p>The DS18B20 contains its own ADC. It sends the temperature as a number over a <b>1-Wire</b> bus: one data wire plus ground, with a 4.7 kΩ pull-up resistor (the same pull-up idea as P11, because the sensor only ever pulls the line low). Every DS18B20 has a unique 64-bit serial number, so you can put many sensors on one pair of wires and read each one by address. Long cables do not add analogue error, because the data is digital.</p>
+    <p>Install two libraries from <i>Tools › Manage Libraries</i>: <b>OneWire</b> and <b>DallasTemperature</b>.</p>
+<pre><code>#include &lt;OneWire.h&gt;              // low-level 1-Wire timing
+#include &lt;DallasTemperature.h&gt;     // DS18B20 commands on top of it
+
+const int ONE_WIRE_PIN = 4;          // DQ on D4, with 4.7 kΩ from D4 to 5 V
+OneWire oneWire(ONE_WIRE_PIN);       // create the bus on that pin
+DallasTemperature sensors(&amp;oneWire); // give the bus to the temperature library
+
+void setup() {
+  Serial.begin(9600);
+  sensors.begin();                   // search the bus for sensors
+  Serial.print("Sensors found: ");
+  Serial.println(sensors.getDeviceCount());
+}
+
+void loop() {
+  sensors.requestTemperatures();     // all sensors measure now (up to 750 ms at 12-bit)
+  float t = sensors.getTempCByIndex(0);   // read the first sensor found
+  if (t == DEVICE_DISCONNECTED_C) {  // the library returns -127 when nothing answers
+    Serial.println("Sensor not responding: check wiring and the 4.7k pull-up");
+  } else {
+    Serial.print(t, 2);
+    Serial.println(" C");
+  }
+  delay(1000);
+}</code></pre>
+
+    <h3>DHT22: temperature plus humidity</h3>
+    <p>The DHT22 (also sold as AM2302) measures temperature and <b>relative humidity</b> (RH). It uses its own one-wire-style timing protocol, which is not the same as Dallas 1-Wire. It is slow: read it no more than once every 2 seconds. Modules on a small board usually already include the pull-up resistor; a bare 4-pin sensor needs 10 kΩ from data to 5 V. Install the <b>DHT sensor library</b> (by Adafruit) and accept its dependency.</p>
+<pre><code>#include &lt;DHT.h&gt;
+
+const int DHT_PIN = 7;               // module "out" or "data" pin on D7
+DHT dht(DHT_PIN, DHT22);             // tell the library which pin and which sensor type
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  delay(2000);                       // the DHT22 needs at least 2 s between readings
+  float h = dht.readHumidity();      // % relative humidity
+  float t = dht.readTemperature();   // degrees Celsius
+  if (isnan(h) || isnan(t)) {        // NaN = "not a number": the read failed
+    Serial.println("DHT read failed");
+    return;                          // skip the rest of this loop() pass
+  }
+  Serial.print(t, 1);
+  Serial.print(" C   ");
+  Serial.print(h, 1);
+  Serial.println(" %RH");
+}</code></pre>
+
+    <h2>The 10 kΩ NTC thermistor: the BMS workhorse</h2>
+    <p>Open a typical room temperature sensor on a commercial building wall and you will often find a single small bead: an <b>NTC thermistor</b>. NTC means <b>negative temperature coefficient</b>: its resistance falls as it warms. It is cheap, tough and needs only two wires. The building controller measures its resistance and converts that to a temperature using the thermistor's curve.</p>
+    <p>Why does resistance fall? A thermistor is a semiconductor (a metal-oxide ceramic). Heat frees more charge carriers, and more carriers means less resistance. That is the opposite of a metal wire, where heat makes atoms vibrate more and resistance rises.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 280" role="img" aria-label="Resistance against temperature for a 10 kΩ NTC with Beta 3950">
+        <line class="s-thin" x1="80" y1="230" x2="600" y2="230"/>
+        <line class="s-thin" x1="80" y1="20" x2="80" y2="230"/>
+        <text class="t t-small t-muted" x="340" y="268" text-anchor="middle">temperature (°C)</text>
+        <text class="t t-small t-muted" x="24" y="125" transform="rotate(-90 24 125)" text-anchor="middle">resistance (kΩ)</text>
+        <text class="t t-small" x="80" y="248" text-anchor="middle">0</text>
+        <text class="t t-small" x="184" y="248" text-anchor="middle">10</text>
+        <text class="t t-small" x="288" y="248" text-anchor="middle">20</text>
+        <text class="t t-small" x="392" y="248" text-anchor="middle">30</text>
+        <text class="t t-small" x="496" y="248" text-anchor="middle">40</text>
+        <text class="t t-small" x="600" y="248" text-anchor="middle">50</text>
+        <text class="t t-small" x="72" y="234" text-anchor="end">0</text>
+        <text class="t t-small" x="72" y="174" text-anchor="end">10</text>
+        <text class="t t-small" x="72" y="114" text-anchor="end">20</text>
+        <text class="t t-small" x="72" y="54" text-anchor="end">30</text>
+        <line class="s-thin s-dash" x1="80" y1="170" x2="600" y2="170"/>
+        <polyline class="s-accent" points="80,28.3 132,74.5 184,109.0 236,135.0 288,154.8 340,170.0 392,181.8 444,191.0 496,198.2 548,203.9 600,208.5"/>
+        <circle class="f-accent" cx="340" cy="170" r="4"/>
+        <text class="t t-small" x="348" y="162">10.0 kΩ at 25 °C</text>
+        <circle class="f-accent" cx="80" cy="28.3" r="4"/>
+        <text class="t t-small" x="90" y="34">33.6 kΩ at 0 °C</text>
+        <circle class="f-accent" cx="600" cy="208.5" r="4"/>
+        <text class="t t-small" x="596" y="196" text-anchor="end">3.6 kΩ at 50 °C</text>
+      </svg>
+      <figcaption>Figure 4. A 10 kΩ NTC (Beta 3950) from 0 to 50 °C. The curve is steep when cold and flat when warm, so it is far from a straight line. That is why you need an equation (or a lookup table), not a simple "mV per degree".</figcaption>
+    </figure>
+
+    <h3>The Beta equation</h3>
+    <p>Over a moderate range, an NTC follows the <b>Beta equation</b> well. You need three numbers from the datasheet: R<sub>0</sub> (resistance at the reference temperature, 10 kΩ), T<sub>0</sub> (the reference temperature, 25 °C = 298.15 K) and β (Beta, the curve's steepness, often 3950 or 3435 for hobby parts).</p>
+    <div class="formula">1/T = 1/T<sub>0</sub> + (1/β) × ln(R / R<sub>0</sub>) &nbsp;&nbsp;&nbsp; (T in kelvin)
+      <small>ln is the natural logarithm. Temperatures must be in kelvin: K = °C + 273.15. The equation comes from the physics of carriers being freed by heat (an exponential, like the diode equation).</small></div>
+    <p><b>Worked example.</b> The thermistor is the bottom half of a divider with a 10 kΩ fixed resistor on top (to 5 V), and analogRead gives 341.</p>
+    <ol>
+      <li><b>Find the resistance.</b> The divider gives reading/1024 = R/(R<sub>fixed</sub> + R). Solve for R: R = R<sub>fixed</sub> × reading / (1024 − reading) = 10 000 × 341 / 683 ≈ <b>4 993 Ω</b>. The 5 V value does not appear anywhere: the measurement is <b>ratiometric</b>, so supply errors cancel.</li>
+      <li><b>Take the log.</b> ln(4993 / 10 000) = ln(0.4993) ≈ −0.6946.</li>
+      <li><b>Divide by β.</b> −0.6946 / 3950 ≈ −0.0001759.</li>
+      <li><b>Add 1/T<sub>0</sub>.</b> 1/298.15 = 0.0033540. Sum = 0.0031782 K<sup>−1</sup>.</li>
+      <li><b>Invert.</b> T = 1 / 0.0031782 ≈ 314.6 K → 314.6 − 273.15 = <b>41.5 °C</b>.</li>
+    </ol>
+    <p>Check: a reading of 512 gives R = 10 000 × 512/512 = 10 kΩ, ln(1) = 0, so T = T<sub>0</sub> = 25.0 °C. Exactly half the supply means exactly R<sub>0</sub>.</p>
+
+    <h3>The Steinhart–Hart equation</h3>
+    <p>The Beta equation assumes the curve has the same "steepness" everywhere. Real thermistors drift from that by a few tenths of a degree across a wide range. The <b>Steinhart–Hart equation</b> adds terms to follow the real curve closely, typically within about 0.1 °C over a wide range:</p>
+    <div class="formula">1/T = A + B·ln(R) + C·(ln R)<sup>3</sup>
+      <small>A, B and C come from the manufacturer, or you calculate them by measuring R at three known temperatures (for example an ice bath at 0 °C, a room reading against a trusted thermometer, and warm water at about 50 °C) and solving three equations. Building controllers usually store the full curve as a table for each thermistor "type".</small></div>
+<pre><code>const int NTC_PIN = A1;
+const float R_FIXED = 10000.0;    // fixed resistor from 5 V to A1 (measure it for best accuracy)
+const float R0 = 10000.0;         // thermistor resistance at 25 °C
+const float T0 = 298.15;          // 25 °C in kelvin
+const float BETA = 3950.0;        // from the thermistor datasheet
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long sum = 0;
+  for (int i = 0; i &lt; 32; i++) sum += analogRead(NTC_PIN);   // average 32 readings
+  float reading = sum / 32.0;
+
+  if (reading &lt; 1 || reading &gt; 1022) {          // pinned at a rail: wiring fault
+    Serial.println(reading &lt; 1 ? "Sensor SHORT" : "Sensor OPEN");
+  } else {
+    float r = R_FIXED * reading / (1024.0 - reading);  // divider: resistance of the NTC
+    float invT = 1.0 / T0 + log(r / R0) / BETA;        // Beta equation (log() = natural log)
+    float tempC = 1.0 / invT - 273.15;                 // kelvin to Celsius
+    Serial.print("R=");
+    Serial.print(r, 0);
+    Serial.print(" ohm   T=");
+    Serial.print(tempC, 2);
+    Serial.println(" C");
+  }
+  delay(1000);
+}</code></pre>
+
+    <div class="widget" id="p12-ntc">
+      <span class="label">Interactive · NTC thermistor calculator</span>
+      <label>analogRead() value <span class="out" id="p12-rdv">341</span><input type="range" id="p12-rd" min="1" max="1022" step="1" value="341"></label>
+      <label>Thermistor Beta <select id="p12-beta"><option value="3950">3950 (common hobby NTC)</option><option value="3435">3435</option><option value="3977">3977</option></select></label>
+      <label>Fixed resistor (top, to 5 V) <select id="p12-rf"><option value="10000">10 kΩ</option><option value="4700">4.7 kΩ</option><option value="22000">22 kΩ</option></select></label>
+      <div class="readings">
+        <div><small>Voltage at A1</small><span class="out" id="p12-va">1.665 V</span></div>
+        <div><small>Thermistor resistance</small><span class="out" id="p12-rn">4.99 kΩ</span></div>
+        <div><small>Temperature</small><span class="out" id="p12-t">41.5 °C</span></div>
+        <div><small>Change per ADC step</small><span class="out" id="p12-res">0.09 °C</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var rd=document.getElementById('p12-rd'), be=document.getElementById('p12-beta'), rf=document.getElementById('p12-rf');
+      function tOf(n,B,Rf){ var r=Rf*n/(1024-n); return 1/(1/298.15+Math.log(r/10000)/B)-273.15; }
+      function upd(){
+        var n=+rd.value, B=+be.value, Rf=+rf.value, r=Rf*n/(1024-n);
+        var t=tOf(n,B,Rf), step=Math.abs(tOf(Math.min(n+1,1023),B,Rf)-t);
+        document.getElementById('p12-rdv').textContent=n;
+        document.getElementById('p12-va').textContent=(n*5/1024).toFixed(3)+' V';
+        document.getElementById('p12-rn').textContent=r>=1000?(r/1000).toFixed(2)+' kΩ':r.toFixed(0)+' Ω';
+        document.getElementById('p12-t').textContent=t.toFixed(1)+' °C';
+        document.getElementById('p12-res').textContent=step.toFixed(2)+' °C';
+      }
+      [rd,be,rf].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <p>Move the slider to the ends. Near 1 or 1022 each ADC step is worth several degrees: resolution is best when the thermistor and fixed resistor are similar in value, which is why a 10 kΩ NTC is paired with 10 kΩ for room temperatures.</p>
+
+    <div class="callout job"><span class="label">On the job</span><p>On a BMS site you configure each analogue input (AI) for the sensor type: for example "10K Type 2" or "10K Type 3" thermistor, a 20K NTC, or a PT1000 RTD (a platinum resistor that rises with temperature). These names describe different R–T curves. If the controller expects one curve and the sensor follows another, the reading is wrong by a few degrees, which looks like a "calibration" fault but is a configuration fault. The field check: disconnect the sensor at the controller, measure its resistance with your meter, and compare with the manufacturer's table at the room temperature shown by a trusted thermometer. An <b>open</b> NTC reads as extremely cold (infinite resistance) and a <b>shorted</b> one as extremely hot. Many controllers flag both as a sensor fault, exactly like the sketch above.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"Higher resolution means higher accuracy." No. Resolution is the smallest step the system can show. Accuracy is how close the reading is to the truth. A 12-bit ADC with a ±5% reference and a ±1 °C thermistor still gives a reading that can be a degree out, displayed to two decimal places. Displaying 23.47 °C does not make it true; calibration does.</p></div>
+
+    <h2>Motion: the PIR sensor</h2>
+    <p>A <b>PIR</b> (passive infrared) sensor sees changes in heat radiation. Your body at about 37 °C radiates infrared light at wavelengths around 10 µm. "Passive" means the sensor sends nothing out; it only receives.</p>
+    <p>Inside the metal can are two <b>pyroelectric</b> elements: crystals that produce a small charge when their temperature <i>changes</i>. They are wired in opposition, so a slow change that heats both equally (the sun moving, the room warming) cancels out. The white plastic dome is a <b>Fresnel lens</b> array: it splits the room into many narrow zones. When a warm body crosses from one zone to the next, first one element and then the other sees it, and the output swings positive then negative. The module's chip detects that swing and sets its output HIGH.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="PIR sensor zones and the signal produced as a person walks across">
+        <defs><marker id="p12-arr2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="40" y="150" width="80" height="40" rx="6"/>
+        <rect class="f-blue" x="58" y="160" width="18" height="20"/>
+        <rect class="f-red" x="84" y="160" width="18" height="20"/>
+        <text class="t t-small" x="80" y="210" text-anchor="middle">two elements</text>
+        <path class="s-thin" d="M80 150 L40 20 M80 150 L90 20 M80 150 L140 20 M80 150 L190 20 M80 150 L240 20 M80 150 L290 20"/>
+        <path class="f-theory-soft" d="M80 150 L40 20 L90 20 Z"/>
+        <path class="f-warn-soft" d="M80 150 L90 20 L140 20 Z"/>
+        <path class="f-theory-soft" d="M80 150 L140 20 L190 20 Z"/>
+        <path class="f-warn-soft" d="M80 150 L190 20 L240 20 Z"/>
+        <path class="f-theory-soft" d="M80 150 L240 20 L290 20 Z"/>
+        <circle class="f-amber" cx="150" cy="44" r="10"/>
+        <path class="s-line" d="M162 44 h60" marker-end="url(#p12-arr2)"/>
+        <text class="t t-small" x="200" y="36">walking</text>
+        <text class="t t-small t-muted" x="170" y="120">lens zones</text>
+        <line class="s-thin" x1="340" y1="110" x2="620" y2="110"/>
+        <line class="s-thin" x1="340" y1="40" x2="340" y2="180"/>
+        <path class="s-accent" d="M340 110 H380 C395 110 395 60 410 60 C425 60 425 160 440 160 C455 160 455 70 470 70 C485 70 485 150 500 150 C515 150 515 110 530 110 H620"/>
+        <text class="t t-small t-muted" x="350" y="36">element signal</text>
+        <text class="t t-small t-muted" x="560" y="128">time →</text>
+        <path class="s-green" d="M340 210 H390 V190 H600 V210 H620"/>
+        <text class="t t-small t-green" x="398" y="186">module output HIGH (time set by the pot)</text>
+      </svg>
+      <figcaption>Figure 5. Moving across the lens zones makes the paired elements see heat alternately, giving a plus-minus signal. A person standing perfectly still, or a whole room warming slowly, gives no output. A PIR detects change, not presence.</figcaption>
+    </figure>
+    <p>The common HC-SR501-type module runs from about 5–20 V and gives a 3.3 V HIGH output, which an Uno reads as HIGH. It has two trimmer potentiometers (sensitivity and on-time) and usually a jumper for <b>single trigger</b> or <b>repeat trigger</b> mode. After power-up it needs roughly 30–60 seconds to settle; ignore its output during that time.</p>
+<pre><code>const int PIR_PIN = 3;               // PIR module OUT
+const int LED_PIN = 8;
+int lastMotion = LOW;
+
+void setup() {
+  pinMode(PIR_PIN, INPUT);           // the module drives the line; no pull-up needed
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("PIR warming up (60 s)...");
+  delay(60000);                      // a blocking wait is fine here: nothing else to do yet
+  Serial.println("Ready");
+}
+
+void loop() {
+  int motion = digitalRead(PIR_PIN);
+  digitalWrite(LED_PIN, motion);     // LED follows the PIR output
+  if (motion == HIGH &amp;&amp; lastMotion == LOW) {     // rising edge: motion just started
+    Serial.print("Motion at ");
+    Serial.print(millis() / 1000);
+    Serial.println(" s");
+  }
+  lastMotion = motion;
+}</code></pre>
+    <div class="callout job"><span class="label">On the job</span><p>The PIR detectors on alarm systems use exactly this physics: dual (or quad) pyroelectric elements and a Fresnel or mirror optic. A commercial detector adds a relay output (normally closed, opening on alarm), a tamper switch, and terminals for end-of-line resistors so the panel can supervise the cable. "Dual-tech" detectors add a microwave sensor and alarm only when both agree, which cuts false alarms from heaters and sunlight. When an installer says "don't point a PIR at a window or a heater duct", you now know why: those are fast heat changes that look like a person. Lighting occupancy sensors in offices are PIRs too.</p></div>
+
+    <h2>Distance: the HC-SR04 ultrasonic sensor</h2>
+    <p>The HC-SR04 is a tiny sonar. You send a 10 µs pulse to its <b>TRIG</b> pin. It fires eight pulses of 40 kHz ultrasound (far above human hearing), then sets its <b>ECHO</b> pin HIGH until the echo comes back. The echo pulse width is the round-trip travel time.</p>
+    <div class="formula">distance = (echo time × speed of sound) / 2
+      <small>Speed of sound in air ≈ 343 m/s at 20 °C = 0.0343 cm/µs. Divide by 2 because the sound goes there and back. Example: echo = 5830 µs → 5830 × 0.0343 / 2 ≈ 100 cm. Shortcut: cm ≈ µs / 58.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="HC-SR04 timing and echo voltage divider for 3.3 V boards">
+        <text class="t t-small" x="20" y="44">TRIG</text>
+        <path class="s-accent" d="M80 50 H110 V24 H126 V50 H600"/>
+        <text class="t t-small" x="118" y="18" text-anchor="middle">10 µs</text>
+        <text class="t t-small" x="20" y="94">burst</text>
+        <path class="s-thin" d="M80 90 H140 M140 90 l3 -12 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -24 l3 24 l3 -12 H600"/>
+        <text class="t t-small t-muted" x="200" y="84">8 × 40 kHz</text>
+        <text class="t t-small" x="20" y="144">ECHO</text>
+        <path class="s-green" d="M80 150 H190 V124 H470 V150 H600"/>
+        <path class="s-thin" d="M190 164 V170 H470 V164"/>
+        <text class="t t-small" x="330" y="186" text-anchor="middle">pulse width = round-trip time (≈ 58 µs per cm)</text>
+        <line class="s-thin" x1="20" y1="200" x2="620" y2="200"/>
+        <text class="t t-bold" x="20" y="226">Echo divider for 3.3 V boards (ESP32, Pi)</text>
+        <rect class="f-wash s-line" x="20" y="240" width="90" height="40" rx="5"/>
+        <text class="t t-small" x="65" y="265" text-anchor="middle">ECHO (5 V)</text>
+        <line class="s-line" x1="110" y1="260" x2="140" y2="260"/>
+        <path class="s-line" d="M140 260 h6 l4 -8 l8 16 l8 -16 l8 16 l8 -16 l8 16 l4 -8 h6"/>
+        <text class="t t-small" x="172" y="246" text-anchor="middle">1 kΩ</text>
+        <line class="s-line" x1="206" y1="260" x2="260" y2="260"/>
+        <circle class="f-ink" cx="260" cy="260" r="3"/>
+        <line class="s-line" x1="260" y1="260" x2="330" y2="260"/>
+        <rect class="f-accent-soft s-accent" x="330" y="244" width="110" height="32" rx="5"/>
+        <text class="t t-small" x="385" y="265" text-anchor="middle">GPIO (3.3 V)</text>
+        <path class="s-line" d="M260 260 v4 l8 4 l-16 6 l16 6 l-16 6 l8 4 v2"/>
+        <text class="t t-small" x="276" y="284">2 kΩ</text>
+        <line class="s-line" x1="250" y1="294" x2="270" y2="294"/>
+        <text class="t t-small t-muted" x="470" y="256">5 × 2k / (1k + 2k)</text>
+        <text class="t t-small t-muted" x="470" y="274">= 3.33 V</text>
+      </svg>
+      <figcaption>Figure 6. Top: the HC-SR04's timing. Bottom: its ECHO output swings to 5 V, which would damage a 3.3 V input, so a two-resistor divider scales it to 3.33 V. On the 5 V Uno, connect ECHO directly. (Two 1 kΩ in series make the 2 kΩ.)</figcaption>
+    </figure>
+<pre><code>const int TRIG_PIN = 9;
+const int ECHO_PIN = 10;
+
+void setup() {
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(TRIG_PIN, LOW);         // make sure TRIG starts low
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);        // 10 µs trigger pulse
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Measure how long ECHO stays HIGH, in µs. Give up after 30 000 µs (about 5 m).
+  unsigned long us = pulseIn(ECHO_PIN, HIGH, 30000UL);
+  if (us == 0) {
+    Serial.println("No echo (out of range or no target)");
+  } else {
+    float cm = us * 0.0343 / 2.0;      // 0.0343 cm per µs, halved for the round trip
+    Serial.print(cm, 1);
+    Serial.println(" cm");
+  }
+  delay(100);                          // wait for old echoes to die away
+}</code></pre>
+    <p>The speed of sound changes with air temperature: roughly c ≈ 331.3 + 0.606 × T(°C) m/s. At 35 °C (a hot Australian plant room) it is about 352.5 m/s, 2.7% faster than at 20 °C, so an uncorrected reading of 2.00 m is really about 2.05 m. If you have a temperature sensor on the same board, use it to correct.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Soft materials (curtains, clothing) absorb ultrasound, and surfaces at an angle reflect it away, giving "no echo". Aim straight at a flat, hard target for testing. Industrial ultrasonic level sensors on water tanks work on the same principle with better transducers and temperature compensation.</p></div>
+
+    <h2>Calibration and averaging</h2>
+    <h3>Averaging cuts random noise</h3>
+    <p>Every reading has a little random noise: a step or two of jitter from the supply, the ADC and the wiring. If the noise is random, averaging N readings reduces it by a factor of √N. Sixteen readings give four times less noise; 64 give eight times less. Averaging also gives you fractions of a step, which is why the TMP36 sketch above averages 16 readings.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Method</th><th>Good for</th><th>Cost</th></tr>
+      <tr><td>Block average (sum N, divide by N)</td><td>Steady signals, simple</td><td>N readings per result</td></tr>
+      <tr><td>Exponential moving average: <code>f += a*(x - f)</code></td><td>Continuous smoothing, one reading at a time</td><td>Slower response; a = 0.1 means about 10 readings of "memory"</td></tr>
+      <tr><td>Median of 5</td><td>Rejecting single spikes (e.g. one bad ultrasonic echo)</td><td>Sorting 5 numbers</td></tr>
+    </table></div>
+<pre><code>float smooth = 0;                    // filtered value, kept between loop() passes
+bool first = true;
+
+float readSmoothed(int pin) {
+  int x = analogRead(pin);
+  if (first) { smooth = x; first = false; }   // start the filter at the first reading
+  smooth += 0.1 * (x - smooth);      // move 10% of the way towards each new reading
+  return smooth;
+}
+
+int median5(int a[5]) {              // sort a copy of 5 values and return the middle one
+  int b[5];
+  for (int i = 0; i &lt; 5; i++) b[i] = a[i];
+  for (int i = 0; i &lt; 4; i++)        // simple bubble sort is fine for 5 items
+    for (int j = 0; j &lt; 4 - i; j++)
+      if (b[j] &gt; b[j + 1]) { int t = b[j]; b[j] = b[j + 1]; b[j + 1] = t; }
+  return b[2];                       // the middle value ignores one high and one low spike
+}</code></pre>
+
+    <h3>Two-point calibration fixes offset and gain</h3>
+    <p>Averaging removes random noise. It does not remove a <b>systematic</b> error, for example a sensor that always reads 1 °C high. For that, compare with a trusted reference at two points and correct both the <b>offset</b> (a fixed shift) and the <b>gain</b> (a slope error).</p>
+    <div class="formula">corrected = ref<sub>1</sub> + (raw − raw<sub>1</sub>) × (ref<sub>2</sub> − ref<sub>1</sub>) / (raw<sub>2</sub> − raw<sub>1</sub>)
+      <small>Worked example: in an ice-water bath (true 0.0 °C) your sensor reads 1.2 °C. In a room where a trusted thermometer says 25.0 °C, it reads 26.1 °C. Gain = 25.0 / (26.1 − 1.2) = 1.004. A raw reading of 30.0 °C becomes 0 + (30.0 − 1.2) × 1.004 = 28.9 °C.</small></div>
+    <div class="callout warn"><span class="label">Safety and care</span><p>For an ice bath use a waterproof DS18B20 probe or seal the sensor in a thin plastic bag; never put the Arduino or bare wires in water. Everything in this lab runs on 5 V from USB, which is extra-low voltage. Some PIR and sensor modules are sold for mains-powered lighting: do not wire anything to 230 V. Mains work in Australia is for licensed electricians only.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>analogRead jumps around wildly with nothing connected</td><td>Floating analogue input</td><td>Normal: a floating pin reads noise. Connect the sensor.</td></tr>
+      <tr><td>Always 1023 or always 0</td><td>Divider wired to the wrong rail, or open/short</td><td>Measure the pin with a meter. Check both divider halves.</td></tr>
+      <tr><td>TMP36 reads 100+ °C and is hot to touch</td><td>Inserted backwards</td><td>Unplug at once. Flat face towards you: +Vs, Vout, GND.</td></tr>
+      <tr><td>DS18B20 reads −127 °C</td><td>No reply on the bus</td><td>Check the 4.7 kΩ pull-up, pin order, and the pin number in code.</td></tr>
+      <tr><td>DS18B20 reads 85 °C</td><td>Read before a conversion finished, or power problem</td><td>85 °C is its power-on value. Check VDD, and call requestTemperatures() first.</td></tr>
+      <tr><td>DHT22 "read failed" often</td><td>Reading faster than every 2 s, missing pull-up, long wire</td><td>Slow down; add 10 kΩ pull-up; keep the lead short.</td></tr>
+      <tr><td>PIR triggers by itself</td><td>Warm-up time, heat sources, sensitivity too high, supply noise</td><td>Wait 60 s after power-up, aim away from heaters and windows, turn sensitivity down.</td></tr>
+      <tr><td>HC-SR04 gives 0 or random values</td><td>Soft or angled target, or TRIG/ECHO swapped</td><td>Hard flat target; check pins; add a timeout and a median filter.</td></tr>
+      <tr><td>Temperature off by a few % everywhere</td><td>VREF not the real supply voltage</td><td>Measure the 5V pin, or use ratiometric wiring.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>An Uno with a 5.00 V reference returns 600. What is the input voltage?</summary><div class="answer"><p>V = 600 × 5.00 / 1024 ≈ 2.930 V. The true value is somewhere between 2.930 V and 2.935 V, because one step is 4.88 mV.</p></div></details>
+    <details class="quiz"><summary>Why is the NTC divider calculation independent of the exact 5 V supply?</summary><div class="answer"><p>The divider output is 5 V × R<sub>ntc</sub>/(R<sub>fixed</sub> + R<sub>ntc</sub>) and the ADC compares it with the same 5 V. The reading is therefore 1024 × R<sub>ntc</sub>/(R<sub>fixed</sub> + R<sub>ntc</sub>): the supply voltage cancels. This is called a ratiometric measurement.</p></div></details>
+    <details class="quiz"><summary>A BMS room sensor suddenly reads −40 °C. What is the most likely fault?</summary><div class="answer"><p>An open circuit: a broken wire, a loose terminal or a failed thermistor. Open means infinite resistance, and for an NTC very high resistance means very cold. A short would read very hot instead. Check terminations, then measure the sensor's resistance.</p></div></details>
+    <details class="quiz"><summary>A TMP36 gives 0.68 V. What temperature is that?</summary><div class="answer"><p>(0.68 − 0.50) × 100 = 18 °C.</p></div></details>
+    <details class="quiz"><summary>You average 64 readings. By how much does random noise fall?</summary><div class="answer"><p>By √64 = 8 times. Averaging does not fix a constant offset or gain error; that needs calibration.</p></div></details>
+    <details class="quiz"><summary>An HC-SR04 echo pulse is 1160 µs. How far away is the target (20 °C)?</summary><div class="answer"><p>1160 × 0.0343 / 2 ≈ 19.9 cm (or 1160 / 58 = 20 cm).</p></div></details>
+    <details class="quiz"><summary>Why does a PIR not detect a person who stands completely still?</summary><div class="answer"><p>Pyroelectric elements respond to changes in temperature, not to temperature itself. With two elements wired in opposition and a lens splitting the view into zones, only movement between zones produces the plus-minus signal. A still person gives a constant input that the sensor ignores.</p></div></details>
+    <details class="quiz"><summary>Why connect the HC-SR04's ECHO to an ESP32 through a 1 kΩ / 2 kΩ divider?</summary><div class="answer"><p>ECHO swings to 5 V. ESP32 inputs are 3.3 V and not rated for 5 V. The divider gives 5 × 2/(1 + 2) = 3.33 V, which reads HIGH safely.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can convert between an ADC reading and a voltage for any reference and bit depth.</span></li>
+      <li><input type="checkbox"><span>I can design a sensor voltage divider and choose a sensible fixed resistor.</span></li>
+      <li><input type="checkbox"><span>I can read a TMP36, a DS18B20 and a DHT22 and know the pinout trap.</span></li>
+      <li><input type="checkbox"><span>I can convert a 10 kΩ NTC reading to temperature with the Beta equation by hand and in code.</span></li>
+      <li><input type="checkbox"><span>I can explain how a PIR detects motion and why it ignores slow heat changes.</span></li>
+      <li><input type="checkbox"><span>I can measure distance with an HC-SR04 and level-shift its echo for 3.3 V boards.</span></li>
+      <li><input type="checkbox"><span>I can reduce noise with averaging and fix offset and gain with two-point calibration.</span></li>
+      <li><input type="checkbox"><span>I can diagnose an open or shorted thermistor from its reading.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -32,6 +32,10 @@ window.TOC = {
         { title: "Part D · Networks and cabling on the bench", blurb: "The skills every installer job ad assumes.", chapters: [
           { n: "P19", file: "practice/p19-networking-hands-on.html", title: "Networking hands-on: IP, subnets, switches, PoE, VLANs", d: "Set static IPs, find devices, budget PoE, and segment cameras from office PCs." },
           { n: "P20", file: "practice/p20-cat6-termination.html", title: "Cat6 termination and testing", d: "T568A/B, RJ45 plugs, keystones, patch panels, testers, and the faults you will find." }
+        ]},
+        { title: "Part E · Working like a technician", blurb: "Method skills every employer tests.", chapters: [
+          { n: "P21", file: "practice/p21-fault-finding.html", title: "Fault-finding: a technician's troubleshooting method", d: "Half-splitting, measure-don't-guess, and worked faults on power, signals, networks and field devices." },
+          { n: "P22", file: "practice/p22-reading-drawings.html", title: "Reading drawings: schematics, wiring diagrams and as-builts", d: "Schematics vs wiring diagrams, riser and block diagrams, cable schedules, points lists and marking up as-builts." }
         ]}
       ]
     },
@@ -40,6 +44,7 @@ window.TOC = {
       blurb: "The physics under each component, from Class 12 up. Intuition first, then the numbers.",
       parts: [
         { title: "Part 1 · Electricity from the ground up", blurb: "Charge, fields, resistance, power and circuit laws.", chapters: [
+          { n: "T00", file: "theory/t00-maths-toolkit.html", title: "Maths toolkit: the school maths electronics uses", d: "SI prefixes, scientific notation, rearranging formulas, graphs, logs and dB, trig and sine waves, refreshed with circuit examples." },
           { n: "T01", file: "theory/t01-charge-current-voltage.html", title: "Charge, current and voltage", d: "What actually moves in a wire, how fast, and what a volt really is." },
           { n: "T02", file: "theory/t02-resistance-ohms-law.html", title: "Resistance and Ohm's law, physically", d: "Collisions, resistivity, temperature, and why Ohm's law is a material property." },
           { n: "T03", file: "theory/t03-power-energy-heat.html", title: "Power, energy and heat", d: "P = VI, I²R heating, kWh on your power bill, and why cables get hot." },
@@ -70,6 +75,9 @@ window.TOC = {
       id: "career", title: "Australia Job Track", short: "Career",
       blurb: "The systems Australian employers hire for: BMS, security, telecom, fibre, industrial. Plus licences and the path in.",
       parts: [
+        { title: "Part 0 · The market", blurb: "Start with the evidence from real Australian job ads.", chapters: [
+          { n: "C00", file: "career/c00-what-job-ads-ask-for.html", title: "What Australian job ads actually ask for", d: "2,764 SEEK ads from your research: competition, tickets, tools and pay for each technician family." }
+        ]},
         { title: "Part I · Building services", blurb: "The building systems trades.", chapters: [
           { n: "C01", file: "career/c01-bms-fundamentals.html", title: "BMS fundamentals: what a building management system does", d: "HVAC plant, points (AI/AO/DI/DO), controllers, front ends and alarms." },
           { n: "C02", file: "career/c02-bms-protocols-commissioning.html", title: "BMS protocols and commissioning: BACnet, Modbus, Niagara", d: "Device addressing, point mapping, trend logs, and a commissioning checklist." },
@@ -88,7 +96,8 @@ window.TOC = {
         { title: "Part IV · Industrial and the path in", blurb: "Instrumentation, PLCs, licences and getting hired.", chapters: [
           { n: "C10", file: "career/c10-plc-instrumentation.html", title: "PLCs and industrial instrumentation", d: "Ladder logic, 4–20 mA transmitters, HART, and the control panel you will wire." },
           { n: "C11", file: "career/c11-licences-pathways.html", title: "Licences, tickets and pathways in Australia", d: "White Card, ACMA, security licences, electrical licensing, skills assessment and visas." },
-          { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." }
+          { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." },
+          { n: "C13", file: "career/c13-first-day-on-site.html", title: "Your first day on an Australian site", d: "Inductions, SWMS and JSAs, PPE, permits, isolation and lock-out, site etiquette, your tool bag and job notes." }
         ]}
       ]
     },

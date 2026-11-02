@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T07 · AC: sine waves, RMS, phase and impedance</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 2 · Magnetism and AC</div>
+    <span class="eyebrow">Theory · T07</span>
+    <h1>AC: sine waves, RMS, phase and impedance</h1>
+    <p class="lede">What "230 V 50 Hz" really means, why the peak is 325 V, how capacitors and inductors behave when the current keeps reversing, and why the electricity network cares about power factor. You will finish able to calculate reactance, impedance and real power for any simple AC load.</p>
+    <div class="meta"><span><b>Read</b> 60 min</span><span><b>Level</b> Class 12 refresher → practical</span><span><b>Maths</b> trig, √, a little complex-number notation</span><span><b>Practice</b> P06, P07, P15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <div class="callout warn"><span class="label">Safety first</span><p>This chapter explains mains electricity so you understand the systems you work beside. You will <b>never</b> measure or connect to 230 V yourself: in Australia that is licensed electricians' work. Every AC experiment in this course uses a sealed <b>plug-pack</b> (wall transformer) that gives 9–24 V AC, which is extra-low voltage.</p></div>
+
+    <h2>A short history: the war of the currents</h2>
+    <p>Faraday's 1831 discovery (<a href="t06-magnetism-inductors.html">T06</a>) said that a changing flux makes a voltage. In 1832 the French instrument maker <b>Hippolyte Pixii</b> spun a magnet near a coil with a hand crank. The output reversed every half turn: it was <b>alternating current (AC)</b>. People at first saw the reversal as a nuisance and added a mechanical switch (a commutator) to turn it into one-way <b>direct current (DC)</b>.</p>
+    <p>In 1882 <b>Thomas Edison</b> opened the Pearl Street Station in New York, supplying DC at about 110 V to nearby customers. DC had a big problem: you cannot easily change its voltage. Low voltage means high current for a given power, and the I²R losses in the cables (<a href="t03-power-energy-heat.html">T03</a>) limited each station to customers within roughly a kilometre or two.</p>
+    <p><b>Nikola Tesla</b> patented a practical AC induction motor and polyphase (multi-phase) system in 1888. <b>George Westinghouse</b> bought the patents. AC had a killer advantage: the <b>transformer</b> (<a href="t08-transformers.html">T08</a>) can step its voltage up for transmission and back down for use, which cuts current and losses. Edison's side campaigned that high-voltage AC was deadly. Westinghouse lit the 1893 Chicago World's Fair with AC, and in 1895–96 the Niagara Falls hydro station sent AC power to Buffalo, about 40 km away. AC won the grid.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Australia's grid is AC at <b>50 Hz</b>, like the UK, Europe and India (the USA uses 60 Hz). DC has made a comeback for very long or undersea links, because DC cables have no reactive losses: <b>Basslink</b> joins Victoria and Tasmania with a high-voltage DC cable under Bass Strait. Solar panels and batteries are DC too; inverters convert them to 50 Hz AC.</p></div>
+
+    <h2>Generating AC with a rotating coil</h2>
+    <p>Put a coil of N turns and area A in a uniform field B and spin it at a steady rate. The angle between the coil's axis and the field is θ = ωt, where ω (omega) is the <b>angular frequency</b> in radians per second. The flux through the coil is</p>
+    <div class="formula">Φ = B A cos(ωt)   →   ε = −N dΦ/dt = N B A ω sin(ωt)
+      <small>When the coil faces the field (θ = 0), the flux is maximum but changing slowest, so the EMF is zero. When the coil is edge-on (θ = 90°), the flux is zero but changing fastest, so the EMF is maximum. Peak EMF = NBAω.</small></div>
+    <p><b>Worked example.</b> N = 100 turns, A = 0.01 m² (10 cm × 10 cm), B = 0.2 T, spinning at 50 revolutions per second. ω = 2π × 50 = 314 rad/s. Peak EMF = 100 × 0.2 × 0.01 × 314 ≈ <b>63 V</b>. Spin it twice as fast and both the frequency <i>and</i> the voltage double. That is why a car alternator needs a regulator.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="A coil rotating between magnet poles and the sine wave it produces">
+        <defs>
+          <marker id="t07f1-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t07f1-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-warn-soft s-line" x="30" y="70" width="44" height="120" rx="4"/>
+        <rect class="f-theory-soft s-line" x="256" y="70" width="44" height="120" rx="4"/>
+        <text class="t t-bold" x="45" y="135">N</text>
+        <text class="t t-bold" x="272" y="135">S</text>
+        <line class="s-blue s-thin" x1="76" y1="95" x2="252" y2="95" marker-end="url(#t07f1-b)"/>
+        <line class="s-blue s-thin" x1="76" y1="130" x2="252" y2="130" marker-end="url(#t07f1-b)"/>
+        <line class="s-blue s-thin" x1="76" y1="165" x2="252" y2="165" marker-end="url(#t07f1-b)"/>
+        <circle class="s-thin s-dash" cx="165" cy="130" r="62"/>
+        <line class="s-accent" x1="134" y1="184" x2="196" y2="76" style="stroke-width:5"/>
+        <path class="s-line" d="M210,62 A80,80 0 0 1 238,100" marker-end="url(#t07f1-k)"/>
+        <text class="t t-small" x="196" y="52">rotation, f turns/s</text>
+        <text class="t t-small t-muted" x="100" y="222">coil seen edge-on (θ = ωt)</text>
+        <text class="t t-small t-blue" x="140" y="88">B</text>
+        <line class="s-thin" x1="335" y1="130" x2="625" y2="130"/>
+        <path class="s-accent" d="M340,130 349,116 358,103 366,91 375,81 384,72 392,65 401,61 410,60 419,61 428,65 436,72 445,81 454,91 462,103 471,116 480,130 489,144 498,157 506,169 515,179 524,188 532,195 541,199 550,200 559,199 568,195 576,188 585,179 594,169 602,157 611,144 620,130"/>
+        <circle class="f-ink" cx="340" cy="130" r="3.5"/>
+        <circle class="f-ink" cx="410" cy="60" r="3.5"/>
+        <circle class="f-ink" cx="480" cy="130" r="3.5"/>
+        <text class="t t-small" x="345" y="152">0°: face-on,</text>
+        <text class="t t-small" x="345" y="166">EMF 0</text>
+        <text class="t t-small" x="420" y="50">90°: edge-on, EMF peak</text>
+        <text class="t t-small" x="488" y="122">180°</text>
+        <text class="t t-small t-muted" x="560" y="225">t →</text>
+        <text class="t t-small t-muted" x="350" y="245">one turn of the coil = one cycle = 20 ms at 50 Hz</text>
+      </svg>
+      <figcaption>Figure 1. A coil turning in a uniform field. The EMF depends on how fast the flux is <i>changing</i>, not on how much flux there is, so it peaks when the coil is edge-on and is zero when it faces the field. Steady rotation gives a sine wave.</figcaption>
+    </figure>
+    <p>Real power-station generators spin an electromagnet (the rotor) inside fixed coils (the stator), but the physics is the same. A two-pole generator must turn at 3000 rpm to give 50 Hz; a four-pole one at 1500 rpm. In general f = (number of poles × rpm) / 120. Every generator on the eastern Australian grid turns in lock-step so that the frequency is the same everywhere.</p>
+
+    <h2>The sine wave: vocabulary and numbers</h2>
+    <p>An AC voltage is written</p>
+    <div class="formula">v(t) = V<sub>p</sub> sin(ωt + φ)     ω = 2πf     T = 1/f
+      <small>V<sub>p</sub> = peak (amplitude), f = frequency in hertz (cycles per second), T = period (time for one cycle), φ (phi) = phase angle, which says where in its cycle the wave is at t = 0.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Quantity</th><th>Australian mains</th><th>24 V AC plug-pack</th></tr>
+      <tr><td>Frequency f</td><td>50 Hz</td><td>50 Hz (same mains, transformed)</td></tr>
+      <tr><td>Period T</td><td>20 ms</td><td>20 ms</td></tr>
+      <tr><td>Angular frequency ω</td><td>314 rad/s</td><td>314 rad/s</td></tr>
+      <tr><td>RMS voltage (the "name")</td><td>230 V</td><td>24 V</td></tr>
+      <tr><td>Peak voltage V<sub>p</sub></td><td>≈ 325 V</td><td>≈ 34 V</td></tr>
+      <tr><td>Peak-to-peak</td><td>≈ 650 V</td><td>≈ 68 V</td></tr>
+    </table></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>The nominal low-voltage supply is <b>230 V, 50 Hz</b> (Australian Standard AS 60038), with a tolerance of +10 % / −6 %, so roughly 216 V to 253 V at the customer's point of supply. Many homes measure 240 V or more, because the network was originally built for 240 V. Your distributor's rules may add details; confirm current figures with the relevant standard or your state's energy regulator if you need them for work.</p></div>
+
+    <h2>RMS: the "equivalent DC" value</h2>
+    <p>A sine wave spends most of its time below its peak, and half its time negative. So what single number describes how "strong" it is? The useful answer is <b>heating power</b>. The <b>RMS</b> (root-mean-square) value of an AC voltage is the DC voltage that would heat the same resistor by the same amount.</p>
+    <h3>Deriving it</h3>
+    <p>Power in a resistor at any instant: p = v²/R. With v = V<sub>p</sub> sin ωt:</p>
+    <div class="formula">p(t) = (V<sub>p</sub>² / R) · sin²(ωt) = (V<sub>p</sub>² / R) · ½ (1 − cos 2ωt)
+      <small>The cos 2ωt part averages to zero over a cycle, so the average power is P = V<sub>p</sub>² / 2R. We want a voltage V<sub>rms</sub> with V<sub>rms</sub>² / R = V<sub>p</sub>² / 2R.</small></div>
+    <div class="formula">V<sub>rms</sub> = V<sub>p</sub> / √2 ≈ 0.707 V<sub>p</sub>      V<sub>p</sub> = √2 · V<sub>rms</sub> ≈ 1.414 V<sub>rms</sub>
+      <small>The name says the recipe: take the <b>R</b>oot of the <b>M</b>ean (average) of the <b>S</b>quare. It works for any waveform; the √2 factor is only true for a pure sine.</small></div>
+    <p><b>Worked example.</b> 230 V RMS → peak = 230 × 1.414 ≈ <b>325 V</b>. At the top of the tolerance (253 V RMS), the peak is about 358 V. Twice per cycle the active conductor is about 325 V above neutral and twice per cycle about 325 V below it, so the swing is about 650 V peak-to-peak. A 2400 W kettle on 230 V draws 2400 / 230 ≈ 10.4 A RMS, and heats exactly as it would on 230 V DC.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 350" role="img" aria-label="Sine wave with peak, RMS and peak-to-peak marked, and the power waveform with its average">
+        <line class="s-thin" x1="60" y1="140" x2="610" y2="140"/>
+        <line class="s-thin s-dash" x1="60" y1="40" x2="610" y2="40"/>
+        <line class="s-thin s-dash" x1="60" y1="240" x2="610" y2="240"/>
+        <line class="s-green s-dash" x1="60" y1="69" x2="610" y2="69"/>
+        <path class="s-accent" d="M60,140 68,120 77,102 85,84 94,69 102,57 111,48 119,42 128,40 136,42 144,48 153,57 161,69 170,84 178,102 187,120 195,140 203,160 212,178 220,196 229,211 237,223 246,232 254,238 262,240 271,238 279,232 288,223 296,211 305,196 313,178 322,160 330,140 338,120 347,102 355,84 364,69 372,57 381,48 389,42 398,40 406,42 414,48 423,57 431,69 440,84 448,102 457,120 465,140 473,160 482,178 490,196 499,211 507,223 516,232 524,238 532,240 541,238 549,232 558,223 566,211 575,196 583,178 592,160 600,140"/>
+        <text class="t t-small" x="4" y="44">+325 V</text>
+        <text class="t t-small t-green" x="4" y="73">230 V</text>
+        <text class="t t-small" x="22" y="144">0</text>
+        <text class="t t-small" x="4" y="244">−325 V</text>
+        <text class="t t-small t-green" x="140" y="64">RMS = peak / √2</text>
+        <line class="s-line" x1="620" y1="40" x2="620" y2="240"/>
+        <text class="t t-small" x="566" y="262">650 V p-p</text>
+        <text class="t t-small t-muted" x="318" y="160">10 ms</text>
+        <text class="t t-small t-muted" x="586" y="160">20 ms</text>
+        <line class="s-thin" x1="60" y1="335" x2="610" y2="335"/>
+        <line class="s-red s-dash" x1="60" y1="300" x2="610" y2="300"/>
+        <path class="s-red" d="M60,335 68,332 77,325 85,313 94,300 102,287 111,275 119,268 128,265 136,268 144,275 153,287 161,300 170,313 178,325 187,332 195,335 203,332 212,325 220,313 229,300 237,287 246,275 254,268 262,265 271,268 279,275 288,287 296,300 305,313 313,325 322,332 330,335 338,332 347,325 355,313 364,300 372,287 381,275 389,268 398,265 406,268 414,275 423,287 431,300 440,313 448,325 457,332 465,335 473,332 482,325 490,313 499,300 507,287 516,275 524,268 532,265 541,268 549,275 558,287 566,300 575,313 583,325 592,332 600,335"/>
+        <text class="t t-small t-red" x="4" y="304">avg</text>
+        <text class="t t-small t-red" x="400" y="296">power v²/R: average = half the peak power</text>
+      </svg>
+      <figcaption>Figure 2. Top: Australian mains voltage, drawn for understanding only. The RMS line (green) sits at 0.707 of the peak. Bottom: power in a resistor is always positive and pulses at 100 Hz (twice per cycle). Its average is exactly half its peak, which is where the √2 comes from.</figcaption>
+    </figure>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"230 V AC is the same as 230 V DC, so the insulation only needs to handle 230 V."</b> For heating, yes, they match. For insulation and component ratings, the peak matters: a capacitor across 230 V AC sees 325 V (or more) every cycle. The same applies at ELV: a 24 V AC plug-pack feeding a bridge rectifier and a smoothing capacitor gives about 24 × 1.414 − 1.4 ≈ <b>32 V DC</b>, not 24 V (more when lightly loaded). Your filter capacitor must be rated for at least 35 V, preferably 50 V. You will measure exactly this in <a href="../practice/p06-diodes-rectifiers.html">P06</a>.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Cheap multimeters are often "average-responding": they measure the average of the rectified wave and multiply by 1.11, which is only correct for a pure sine. On the distorted current of an LED driver or a switch-mode supply they can read 20–40 % wrong. A meter marked <b>True RMS</b> computes the real RMS. For AC work on the job, buy True RMS.</p></div>
+
+    <h2>Phase and phasors</h2>
+    <p>Two sine waves of the same frequency can be shifted in time relative to each other. We measure the shift as an angle, the <b>phase difference φ</b>, where a full cycle is 360°. At 50 Hz, 1 ms of shift is 360° × 1/20 = 18°. If the current reaches its peak <i>after</i> the voltage, the current <b>lags</b>; if before, it <b>leads</b>.</p>
+    <p>Drawing two sine waves every time is slow. Engineers use a <b>phasor</b>: an arrow whose length is the amplitude and which rotates anticlockwise at ω. The vertical projection of the arrow's tip, as it turns, traces out the sine wave. Two waves of the same frequency rotate together, so their arrows keep a fixed angle between them: the phase difference. We can freeze the picture and just draw the arrows. Adding two AC voltages then becomes adding two arrows head-to-tail, which is much easier than adding two sine waves point by point.</p>
+    <p>The widget below shows a phasor diagram on the left and the waveforms on the right. The dashed lines show that each waveform is just the height of its phasor's tip.</p>
+
+    <div class="widget" id="t07-w">
+      <span class="label">Interactive · Phasor, waveform and power explorer</span>
+      <label>Load <select id="t07-preset">
+        <option value="0">Resistive: kettle or heater (φ = 0°)</option>
+        <option value="37" selected>Induction motor (PF ≈ 0.8, current lags ≈ 37°)</option>
+        <option value="7.5">Relay coil 240 Ω + 0.1 H at 50 Hz (lags ≈ 7.5°)</option>
+        <option value="90">Pure inductor (lags 90°)</option>
+        <option value="-90">Pure capacitor (leads 90°)</option>
+        <option value="-30">Capacitive load (leads 30°)</option>
+      </select></label>
+      <label>Phase φ: current lags voltage by <span class="out" id="t07-po">37°</span><input type="range" id="t07-p" min="-90" max="90" step="1" value="37"></label>
+      <label>Voltage V<sub>rms</sub> <span class="out" id="t07-vo">230 V</span><input type="range" id="t07-v" min="12" max="250" step="1" value="230"></label>
+      <label>Current I<sub>rms</sub> <span class="out" id="t07-io">10.0 A</span><input type="range" id="t07-i" min="0.1" max="20" step="0.1" value="10"></label>
+      <label><input type="checkbox" id="t07-run" checked> Animate the phasors</label>
+      <svg id="t07-svg" viewBox="0 0 620 340" role="img" aria-label="Rotating phasors with voltage, current and power waveforms">
+        <circle class="s-thin s-dash" cx="100" cy="110" r="80"/>
+        <line class="s-thin" x1="15" y1="110" x2="190" y2="110"/>
+        <line class="s-thin" x1="100" y1="25" x2="100" y2="195"/>
+        <line class="s-thin" x1="220" y1="110" x2="605" y2="110"/>
+        <line class="s-thin s-dash" id="t07-hv" x1="0" y1="0" x2="0" y2="0"/>
+        <line class="s-thin s-dash" id="t07-hi" x1="0" y1="0" x2="0" y2="0"/>
+        <path class="s-red" id="t07-wv" d=""/>
+        <path class="s-blue" id="t07-wi" d=""/>
+        <line class="s-thin" id="t07-cur" x1="220" y1="25" x2="220" y2="195"/>
+        <line class="s-red" id="t07-pv" x1="100" y1="110" x2="180" y2="110" style="stroke-width:4"/>
+        <line class="s-blue" id="t07-pi" x1="100" y1="110" x2="160" y2="110" style="stroke-width:4"/>
+        <circle class="f-red" id="t07-tv" cx="180" cy="110" r="4"/>
+        <circle class="f-blue" id="t07-ti" cx="160" cy="110" r="4"/>
+        <text class="t t-small t-red" x="230" y="22">voltage v(t)</text>
+        <text class="t t-small t-blue" x="330" y="22">current i(t)</text>
+        <line class="s-thin" x1="220" y1="275" x2="605" y2="275"/>
+        <line class="s-green s-dash" id="t07-pav" x1="220" y1="275" x2="605" y2="275"/>
+        <path class="s-green" id="t07-wp" d=""/>
+        <text class="t t-small t-green" x="230" y="222">power p(t) = v·i (dashed: average = real power P)</text>
+        <text class="t t-small t-muted" x="20" y="250">Below the axis, energy</text>
+        <text class="t t-small t-muted" x="20" y="266">flows back from the load</text>
+        <text class="t t-small t-muted" x="20" y="282">to the supply.</text>
+      </svg>
+      <div class="readings">
+        <div><small>Apparent power S = V·I</small><span class="out" id="t07-s">–</span></div>
+        <div><small>Real power P = V·I·cos φ</small><span class="out" id="t07-pp">–</span></div>
+        <div><small>Reactive power Q = V·I·sin φ</small><span class="out" id="t07-q">–</span></div>
+        <div><small>Power factor cos φ</small><span class="out" id="t07-pf">–</span></div>
+        <div><small>Current needed at PF 1 for the same P</small><span class="out" id="t07-i1">–</span></div>
+        <div><small>Cable loss vs PF 1</small><span class="out" id="t07-loss">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var sp=$('t07-p'), sv=$('t07-v'), si=$('t07-i'), pre=$('t07-preset'), run=$('t07-run');
+      var th=0.6, last=null, cx=100, cy=110, RV=80, RI=60, X0=220, X1=605, PY=275, PA=45;
+      try{ if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) run.checked=false; }catch(e){}
+      function waves(phi){
+        var dv='', di='', dp='', N=240;
+        for(var k=0;k<=N;k++){
+          var a=4*Math.PI*k/N, x=X0+(X1-X0)*k/N;
+          var v=Math.sin(a), i=Math.sin(a-phi);
+          dv+=(k?' L':'M')+x.toFixed(1)+','+(cy-RV*v).toFixed(1);
+          di+=(k?' L':'M')+x.toFixed(1)+','+(cy-RI*i).toFixed(1);
+          dp+=(k?' L':'M')+x.toFixed(1)+','+(PY-PA*v*i).toFixed(1);
+        }
+        $('t07-wv').setAttribute('d',dv); $('t07-wi').setAttribute('d',di); $('t07-wp').setAttribute('d',dp);
+        var avg=PY-PA*0.5*Math.cos(phi);
+        $('t07-pav').setAttribute('y1',avg.toFixed(1)); $('t07-pav').setAttribute('y2',avg.toFixed(1));
+      }
+      function fW(w,u){ var a=Math.abs(w); if(a>=1000) return (w/1000).toFixed(2)+' k'+u; return w.toFixed(a<10?2:0)+' '+u; }
+      function numbers(){
+        var phd=+sp.value, phi=phd*Math.PI/180, V=+sv.value, I=+si.value;
+        var S=V*I, P=S*Math.cos(phi), Q=S*Math.sin(phi), pf=Math.cos(phi);
+        $('t07-po').textContent=(phd>=0?phd+'° (lagging)':(-phd)+'° leading');
+        $('t07-vo').textContent=V+' V'; $('t07-io').textContent=I.toFixed(1)+' A';
+        $('t07-s').textContent=fW(S,'VA'); $('t07-pp').textContent=fW(P,'W');
+        $('t07-q').textContent=fW(Q,'var');
+        $('t07-pf').textContent=pf.toFixed(3)+(phd>0?' lag':phd<0?' lead':'');
+        $('t07-i1').textContent=(P/V).toFixed(2)+' A';
+        $('t07-loss').textContent=pf>0.001?'× '+(1/(pf*pf)).toFixed(2):'∞ (no real power)';
+        waves(phi);
+      }
+      function draw(){
+        var phi=(+sp.value)*Math.PI/180;
+        var a=th%(4*Math.PI);
+        var vx=cx+RV*Math.cos(a), vy=cy-RV*Math.sin(a), ix=cx+RI*Math.cos(a-phi), iy=cy-RI*Math.sin(a-phi);
+        var xc=X0+(X1-X0)*a/(4*Math.PI);
+        $('t07-pv').setAttribute('x2',vx.toFixed(1)); $('t07-pv').setAttribute('y2',vy.toFixed(1));
+        $('t07-pi').setAttribute('x2',ix.toFixed(1)); $('t07-pi').setAttribute('y2',iy.toFixed(1));
+        $('t07-tv').setAttribute('cx',vx.toFixed(1)); $('t07-tv').setAttribute('cy',vy.toFixed(1));
+        $('t07-ti').setAttribute('cx',ix.toFixed(1)); $('t07-ti').setAttribute('cy',iy.toFixed(1));
+        $('t07-cur').setAttribute('x1',xc.toFixed(1)); $('t07-cur').setAttribute('x2',xc.toFixed(1));
+        var hv=$('t07-hv'), hi=$('t07-hi');
+        hv.setAttribute('x1',vx.toFixed(1)); hv.setAttribute('y1',vy.toFixed(1)); hv.setAttribute('x2',xc.toFixed(1)); hv.setAttribute('y2',vy.toFixed(1));
+        hi.setAttribute('x1',ix.toFixed(1)); hi.setAttribute('y1',iy.toFixed(1)); hi.setAttribute('x2',xc.toFixed(1)); hi.setAttribute('y2',iy.toFixed(1));
+      }
+      function tick(ts){
+        if(last!==null && run.checked){ th+=(ts-last)/1000*2*Math.PI*0.25; }
+        last=ts; draw(); requestAnimationFrame(tick);
+      }
+      pre.addEventListener('change',function(){ sp.value=pre.value; numbers(); draw(); });
+      [sp,sv,si].forEach(function(e){ e.addEventListener('input',function(){ numbers(); draw(); }); });
+      numbers(); draw(); requestAnimationFrame(tick);
+    })();
+    </script>
+    <p>Play with the widget: with φ = 0 the power wave never goes negative. With φ = 90° (pure inductor), the power wave is half above and half below the axis, so the average is zero: energy goes into the inductor's field for a quarter cycle and comes back the next quarter. Current flows, but no net work is done.</p>
+
+    <h2>Reactance: how C and L behave at AC</h2>
+    <h3>Capacitor: current leads by 90°</h3>
+    <p>A capacitor's current is I = C dV/dt (<a href="t05-capacitors-fields.html">T05</a>). If v = V<sub>p</sub> sin ωt, then i = C V<sub>p</sub> ω cos ωt. A cosine is a sine shifted 90° earlier, so the <b>current leads the voltage by 90°</b>. Physically: the current is largest when the voltage is changing fastest (at the zero crossing) and zero at the voltage peak, where the capacitor is momentarily full. The ratio of peak voltage to peak current is the capacitor's <b>reactance</b>:</p>
+    <div class="formula">X<sub>C</sub> = 1 / (2π f C)    (ohms)
+      <small>Bigger capacitor or higher frequency → smaller X<sub>C</sub> → more current. At DC (f = 0) X<sub>C</sub> is infinite: a capacitor blocks DC.</small></div>
+    <h3>Inductor: current lags by 90°</h3>
+    <p>An inductor's voltage is V = L di/dt (<a href="t06-magnetism-inductors.html">T06</a>). If i = I<sub>p</sub> sin ωt, then v = L I<sub>p</sub> ω cos ωt. Now the voltage leads, or equivalently the <b>current lags the voltage by 90°</b>. The inductor's "inertia" makes the current arrive late.</p>
+    <div class="formula">X<sub>L</sub> = 2π f L    (ohms)
+      <small>Bigger inductor or higher frequency → bigger X<sub>L</sub> → less current. At DC X<sub>L</sub> = 0: an inductor passes DC.</small></div>
+    <div class="callout tip"><span class="label">Memory aid</span><p><b>ELI the ICE man.</b> In an inductor (L), voltage E comes before current I: ELI. In a capacitor (C), current I comes before voltage E: ICE.</p></div>
+
+    <h3>Numbers at 50 Hz and at 1 MHz</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Component</th><th>Reactance at 50 Hz</th><th>Reactance at 1 MHz</th><th>What it means</th></tr>
+      <tr><td>100 nF capacitor</td><td>31.8 kΩ</td><td>1.59 Ω</td><td>A decoupling capacitor is invisible to slow signals but shorts fast noise to ground.</td></tr>
+      <tr><td>10 µF capacitor</td><td>318 Ω</td><td>0.016 Ω</td><td>A bulk capacitor still lets real current through at 50 Hz.</td></tr>
+      <tr><td>10 µH inductor</td><td>0.0031 Ω</td><td>62.8 Ω</td><td>A small choke passes DC and 50 Hz freely but blocks RF noise.</td></tr>
+      <tr><td>100 mH coil</td><td>31.4 Ω</td><td>628 kΩ in theory</td><td>Real coils stop behaving like inductors at high frequency because of the small capacitance between their turns.</td></tr>
+    </table></div>
+    <p>Work one yourself: X<sub>C</sub> for 100 nF at 50 Hz = 1 / (2π × 50 × 100 × 10⁻⁹) = 1 / (3.14 × 10⁻⁵) ≈ 31 800 Ω. Check: at 1 MHz the frequency is 20 000 times higher, so X<sub>C</sub> is 20 000 times lower: 1.59 Ω. Reactance scales directly with frequency, which makes it easy to estimate.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Log-log plot of capacitor and inductor reactance against frequency, crossing at resonance">
+        <line class="s-thin" x1="70" y1="260" x2="600" y2="260"/>
+        <line class="s-thin" x1="70" y1="20" x2="70" y2="260"/>
+        <line class="s-thin s-dash" x1="123" y1="20" x2="123" y2="260"/>
+        <line class="s-thin s-dash" x1="449" y1="20" x2="449" y2="260"/>
+        <line class="s-thin s-dash" x1="388" y1="140" x2="388" y2="260"/>
+        <line class="s-red" x1="70" y1="241" x2="600" y2="73"/>
+        <line class="s-blue" x1="70" y1="39" x2="600" y2="207"/>
+        <circle class="f-ink" cx="388" cy="140" r="5"/>
+        <text class="t t-small t-red" x="470" y="86">X<tspan dy="3" class="t-small">L</tspan><tspan dy="-3"> = 2πfL (10 µH)</tspan></text>
+        <text class="t t-small t-blue" x="88" y="34">X<tspan dy="3" class="t-small">C</tspan><tspan dy="-3"> = 1/2πfC (100 nF)</tspan></text>
+        <text class="t t-small" x="396" y="132">equal at f₀ ≈ 159 kHz: resonance</text>
+        <text class="t t-small t-muted" x="104" y="278">50 Hz</text>
+        <text class="t t-small t-muted" x="432" y="278">1 MHz</text>
+        <text class="t t-small t-muted" x="364" y="278">159 kHz</text>
+        <text class="t t-small t-muted" x="560" y="278">100 MHz</text>
+        <text class="t t-small t-muted" x="62" y="278">10 Hz</text>
+        <text class="t t-small t-muted" x="8" y="24">1 MΩ</text>
+        <text class="t t-small t-muted" x="20" y="144">10 Ω</text>
+        <text class="t t-small t-muted" x="4" y="258">0.1 mΩ</text>
+        <text class="t t-small t-muted" x="250" y="296">frequency (log scale, ×10 per step)</text>
+      </svg>
+      <figcaption>Figure 3. Reactance against frequency on log scales, where both become straight lines. The capacitor's reactance falls ten times for every tenfold rise in frequency; the inductor's rises ten times. Where they cross, X<sub>L</sub> = X<sub>C</sub>: the resonant frequency of that L and C together.</figcaption>
+    </figure>
+
+    <h2>Impedance: resistance and reactance together</h2>
+    <p>Real loads have both resistance and reactance. A relay coil has copper resistance and inductance; a sensor cable has resistance and capacitance. The total opposition to AC is called <b>impedance Z</b>, also in ohms. You cannot simply add R and X, because the voltages across them are 90° apart in time: when one is at its peak, the other is at zero. You add them like the two sides of a right-angled triangle.</p>
+    <div class="formula">|Z| = √(R² + X²)      tan φ = X / R      I = V / |Z|
+      <small>Engineers often write Z = R + jX, where j = √−1 marks the 90°-shifted part (j instead of i, because i is current). Inductive reactance is +jX<sub>L</sub>, capacitive is −jX<sub>C</sub>. In series they simply subtract: X = X<sub>L</sub> − X<sub>C</sub>.</small></div>
+    <p><b>Worked example 1: a relay coil on AC.</b> R = 240 Ω, L = 0.1 H, at 50 Hz. X<sub>L</sub> = 2π × 50 × 0.1 = 31.4 Ω. |Z| = √(240² + 31.4²) ≈ 242 Ω, and φ = tan⁻¹(31.4 / 240) ≈ 7.5°. At 50 Hz, this small DC relay coil is almost a pure resistor. (That is the "relay coil" preset in the widget.)</p>
+    <p><b>Worked example 2: series RC on a 24 V AC plug-pack.</b> R = 1 kΩ, C = 1 µF, f = 50 Hz. X<sub>C</sub> = 1 / (2π × 50 × 10⁻⁶) ≈ 3183 Ω. |Z| = √(1000² + 3183²) ≈ 3336 Ω. I = 24 / 3336 ≈ 7.2 mA, leading the voltage by tan⁻¹(3183/1000) ≈ 73°. Now measure with a meter: V<sub>R</sub> = 7.2 mA × 1000 Ω ≈ 7.2 V, and V<sub>C</sub> = 7.2 mA × 3183 Ω ≈ 22.9 V.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Kirchhoff's voltage law fails at AC: 7.2 V + 22.9 V = 30 V, but the supply is only 24 V!"</b> KVL still holds at every instant. The two RMS readings are of waves that peak at different times, so they add as phasors (arrows at 90°): √(7.2² + 22.9²) = 24.0 V. A meter shows sizes only and throws away the phase. When AC readings "don't add up", think phasors.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A 24 V AC relay and a 24 V DC relay are interchangeable."</b> An AC coil relies on its reactance X<sub>L</sub> to limit current; its copper resistance is quite low. Put it on 24 V DC and only the resistance limits the current: for example, a coil with 50 Ω resistance and 150 Ω reactance draws about 150 mA on AC but 480 mA on DC, and its copper heating rises by about ten times. It burns out. A DC coil on AC draws less current than it needs and chatters or buzzes, because the force drops to zero 100 times a second. Match the coil to the supply. This mistake is common in BMS and access-control panels where 24 V AC and 24 V DC sit side by side.</p></div>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Impedance triangle and power triangle">
+        <defs><marker id="t07f4-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="40" y="24">Impedance triangle (series RC example)</text>
+        <line class="s-red" x1="60" y1="190" x2="130" y2="190" style="stroke-width:3"/>
+        <line class="s-blue" x1="130" y1="190" x2="130" y2="50" style="stroke-width:3"/>
+        <line class="s-line" x1="60" y1="190" x2="130" y2="50" style="stroke-width:3"/>
+        <text class="t t-small t-red" x="60" y="210">R = 1000 Ω</text>
+        <text class="t t-small t-blue" x="140" y="120">X<tspan dy="3" class="t-small">C</tspan><tspan dy="-3"> = 3183 Ω</tspan></text>
+        <text class="t t-small" x="20" y="110">|Z| = 3336 Ω</text>
+        <text class="t t-small" x="82" y="182">φ = 73°</text>
+
+        <text class="t t-bold" x="330" y="24">Power triangle (motor example)</text>
+        <line class="s-green" x1="350" y1="190" x2="550" y2="190" style="stroke-width:3"/>
+        <line class="s-amber" x1="550" y1="190" x2="550" y2="40" style="stroke-width:3"/>
+        <line class="s-line" x1="350" y1="190" x2="550" y2="40" style="stroke-width:3"/>
+        <text class="t t-small t-green" x="370" y="210">P = 2300 W (real: does work)</text>
+        <text class="t t-small" x="560" y="110">Q =</text>
+        <text class="t t-small" x="560" y="126">1725 var</text>
+        <text class="t t-small" x="380" y="104">S = 2875 VA</text>
+        <text class="t t-small" x="400" y="182">φ = 37°, PF = 0.8</text>
+      </svg>
+      <figcaption>Figure 4. Left: resistance and reactance add at right angles to give impedance. Right: real power P and reactive power Q add at right angles to give apparent power S. Power factor is the ratio P/S, which for sine waves equals cos φ.</figcaption>
+    </figure>
+
+    <h2>Resonance</h2>
+    <p>Look again at Figure 3. At one frequency the inductor's reactance equals the capacitor's. In a series LC circuit, X = X<sub>L</sub> − X<sub>C</sub> = 0 there, so the two reactances cancel and only the small resistance is left: the impedance is at its minimum and the current is at its maximum. In a parallel LC circuit it is the opposite: the impedance is at its maximum. Setting 2πfL = 1/(2πfC):</p>
+    <div class="formula">f₀ = 1 / (2π √(LC))
+      <small>For L = 10 µH and C = 100 nF: √(LC) = √(10⁻¹²) = 10⁻⁶ s, so f₀ = 1 / (2π × 10⁻⁶) ≈ 159 kHz.</small></div>
+    <p><b>The intuition</b> is a pendulum or a mass on a spring. Energy sloshes back and forth: all in the capacitor's electric field (voltage maximum, current zero), then all in the inductor's magnetic field (current maximum, voltage zero), then back. Push it at its natural frequency and a small push builds up a large swing. The <b>Q factor</b> (quality factor) says how sharp the resonance is: a high-Q circuit responds strongly over a narrow band of frequencies (bandwidth ≈ f₀ / Q).</p>
+    <p><b>Worked example, an FM radio tuner.</b> A 0.25 µH coil with a 10 pF capacitor: √(LC) = √(2.5 × 10⁻¹⁸) ≈ 1.58 × 10⁻⁹ s; f₀ ≈ 1 / (2π × 1.58 × 10⁻⁹) ≈ 100 MHz, in the middle of the FM band. Tuning the capacitor picks out one station.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Resonance is everywhere in the systems you will install. Proximity access cards and NFC phones use tuned coils at 125 kHz or 13.56 MHz; the card harvests power from the reader's resonant field. Inductive vehicle loop detectors at boom gates and car-park entries run a loop of wire buried in the slab as the L of an oscillator; a car's metal changes the inductance, the frequency shifts, and the detector switches a relay. Every antenna (<a href="t10-em-waves-antennas-fibre.html">T10</a>) is a resonant structure.</p></div>
+
+    <h2>Real, reactive and apparent power</h2>
+    <p>Instantaneous power is p = v × i. Multiply two sine waves that are φ apart and average over a cycle (a trigonometric identity does it in one line):</p>
+    <div class="formula">P = V<sub>rms</sub> · I<sub>rms</sub> · cos φ
+      <small>Only the part of the current that is in phase with the voltage does net work. The 90°-shifted part carries energy into fields and back again every cycle.</small></div>
+    <p>So there are three "powers", each with its own unit to stop confusion:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Name</th><th>Formula</th><th>Unit</th><th>Meaning</th></tr>
+      <tr><td>Real (active) power P</td><td>V I cos φ</td><td>watt, W</td><td>Turns into heat, light or mechanical work. What your energy meter bills as kWh.</td></tr>
+      <tr><td>Reactive power Q</td><td>V I sin φ</td><td>volt-ampere reactive, var</td><td>Energy borrowed and returned each cycle by magnetic and electric fields. No net work.</td></tr>
+      <tr><td>Apparent power S</td><td>V I</td><td>volt-ampere, VA</td><td>What the cables, transformers and generators must carry. S² = P² + Q².</td></tr>
+      <tr><td>Power factor PF</td><td>P / S (= cos φ for sine waves)</td><td>none, 0 to 1</td><td>How well the current is used. 1 is perfect.</td></tr>
+    </table></div>
+    <p><b>Worked example.</b> An induction motor takes 2.3 kW of real power on 230 V at a power factor of 0.8 lagging. S = P / PF = 2300 / 0.8 = 2875 VA. I = S / V = 2875 / 230 = <b>12.5 A</b>. If the power factor were 1, the same work would need only 2300 / 230 = 10 A. Q = √(2875² − 2300²) ≈ 1725 var. The cable losses scale as I², so this motor wastes (12.5/10)² ≈ 1.56 times as much in the cables as a PF-1 load doing the same work.</p>
+    <h3>Why utilities care</h3>
+    <p>The network has to be built for the <b>current</b>, not the watts. Transformers are rated in kVA for this reason (<a href="t08-transformers.html">T08</a>). A building full of motors with a poor power factor makes the network carry extra current that does no useful work, heating cables and transformers and using up their capacity. Large commercial and industrial customers are often charged on their peak <b>kVA</b> demand, so a poor power factor costs them real money. That is why plant rooms in larger buildings often have a <b>power-factor correction</b> cabinet: banks of capacitors switched in automatically. Capacitors draw leading current, which cancels part of the motors' lagging current, so the supply only has to deliver the real part.</p>
+    <p>Modern electronics adds a second kind of poor power factor. A simple rectifier with a smoothing capacitor only draws current in short spikes near the voltage peaks. Even if those spikes are in phase, their distorted shape means the RMS current is high for the power delivered: this is <b>distortion power factor</b>, and the spikes inject harmonics (currents at 150 Hz, 250 Hz and so on) into the network. Larger switch-mode power supplies and LED drivers include <b>PFC</b> (power factor correction) circuits to draw a sine-shaped current.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Home customers are billed for real energy in kWh. Many large customers' network tariffs include a demand charge based on kVA, which rewards good power factor. Tariff structures differ between distributors and change over time, so check the actual tariff for any site you work on. You will meet power-factor numbers when reading energy meters and BMS energy dashboards (<a href="../career/c01-bms-fundamentals.html">C01</a>).</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>You can see every idea in this chapter safely at extra-low voltage with a sealed 9–24 V AC plug-pack (~A$20–35 from Jaycar or Altronics) and, ideally, a cheap oscilloscope.</p>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · LED on AC, half-wave and bridge rectifiers: see peak vs RMS</a>
+    <a class="crosslink" href="../practice/p07-capacitors-rc.html">Practice P07 · Capacitors: smoothing, ripple and decoupling</a>
+    <a class="crosslink" href="../practice/p15-oscilloscope-logic-analyser.html">Practice P15 · Oscilloscope: measure period, peak, RMS and phase shift</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery: AC volts and True RMS</a>
+    <div class="callout try"><span class="label">Try this (ELV only)</span><p>With a 12 V AC plug-pack, a 1 kΩ resistor and a 1 µF film capacitor in series: measure the AC voltage across each with your meter. You should see roughly 3.6 V across R and 11.5 V across C, which "add up" to 15 V, not 12 V. Then check √(3.6² + 11.5²) ≈ 12 V. If you have a two-channel scope, view the plug-pack voltage and the resistor voltage together and measure the time shift: about 4 ms, which is about 73°.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>An Australian outlet is 230 V. What are the peak and peak-to-peak voltages, and why do component ratings care about the peak?</summary><div class="answer"><p>Peak = 230 × √2 ≈ 325 V; peak-to-peak ≈ 650 V (higher at the top of the tolerance, about 358 V peak at 253 V). Insulation and capacitors break down on the instantaneous voltage, so they must withstand the peak plus transients, not the RMS value.</p></div></details>
+    <details class="quiz"><summary>Why is the RMS value of a sine wave peak/√2, and not the simple average of the wave?</summary><div class="answer"><p>The simple average of a full sine wave is zero. RMS is defined by heating: power ∝ v², and the average of sin² over a cycle is ½. So the equivalent DC voltage satisfies V<sub>rms</sub>² = V<sub>p</sub>²/2, giving V<sub>p</sub>/√2.</p></div></details>
+    <details class="quiz"><summary>What is the reactance of a 100 nF capacitor at 50 Hz and at 1 MHz? What does that tell you about decoupling capacitors?</summary><div class="answer"><p>About 31.8 kΩ at 50 Hz and 1.59 Ω at 1 MHz. To slow signals the capacitor is nearly an open circuit, so it does not load the supply; to fast noise it is nearly a short circuit to ground, so it removes the noise.</p></div></details>
+    <details class="quiz"><summary>In a pure inductor on AC, current flows but the average power is zero. Explain physically.</summary><div class="answer"><p>For a quarter cycle the current is growing and energy flows into the magnetic field (½Li²). For the next quarter the current shrinks and the field returns that energy to the source. The current is 90° out of phase with the voltage, so v·i is positive half the time and negative half the time, averaging to zero.</p></div></details>
+    <details class="quiz"><summary>A 1.5 kW load has a power factor of 0.6 on 230 V. What current does it draw? What would it draw at PF 1?</summary><div class="answer"><p>S = 1500 / 0.6 = 2500 VA, so I = 2500 / 230 ≈ 10.9 A. At PF 1, I = 1500 / 230 ≈ 6.5 A. The extra current does no useful work but still heats the wiring and uses network capacity.</p></div></details>
+    <details class="quiz"><summary>What is the resonant frequency of 10 µH and 100 nF, and what happens to the impedance of a series LC there?</summary><div class="answer"><p>f₀ = 1/(2π√(10⁻⁵ × 10⁻⁷)) = 1/(2π × 10⁻⁶) ≈ 159 kHz. In series, X<sub>L</sub> and X<sub>C</sub> cancel, so the impedance falls to just the circuit's resistance, and current is maximum. (In parallel, impedance is maximum.)</p></div></details>
+    <details class="quiz"><summary>You measure 7 V across a resistor and 23 V across a capacitor in series on a 24 V AC supply. Is something wrong?</summary><div class="answer"><p>No. The two voltages are 90° out of phase, so they add as phasors: √(7² + 23²) ≈ 24 V. RMS meter readings give magnitudes only.</p></div></details>
+    <details class="quiz"><summary>Why does a 24 V AC plug-pack with a bridge rectifier and capacitor give about 32 V DC?</summary><div class="answer"><p>The capacitor charges to the peak of the AC, not the RMS: 24 × 1.414 ≈ 34 V, minus two diode drops (about 1.4 V) ≈ 32.5 V. With light load, the plug-pack's own output is also above its rated 24 V, so the DC can be even higher.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain why a rotating coil gives a sine wave and calculate its peak EMF.</span></li>
+      <li><input type="checkbox"><span>I can convert between RMS, peak and peak-to-peak, and explain where √2 comes from.</span></li>
+      <li><input type="checkbox"><span>I know Australia's nominal supply (230 V, 50 Hz) and why measured values are often higher.</span></li>
+      <li><input type="checkbox"><span>I can describe phase lead and lag and read a phasor diagram.</span></li>
+      <li><input type="checkbox"><span>I can calculate X<sub>C</sub> and X<sub>L</sub> at any frequency and predict how they change with frequency.</span></li>
+      <li><input type="checkbox"><span>I can find impedance and current for a series RL or RC circuit and explain why AC voltages add as phasors.</span></li>
+      <li><input type="checkbox"><span>I can calculate a resonant frequency and name where resonance is used in security and telecom gear.</span></li>
+      <li><input type="checkbox"><span>I can explain real, reactive and apparent power and why poor power factor costs money.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
