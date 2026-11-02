@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P02 · Breadboard and your first LED circuit</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<!-- body class: book-practice | book-theory | book-career -->
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part A</div>
+    <span class="eyebrow">Practice · Lab P02</span>
+    <h1>Breadboard and your first LED circuit</h1>
+    <p class="lede">One or two sentences that say what the learner will be able to do by the end.</p>
+    <div class="meta"><span><b>Time</b> 45 min</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$15</span><span><b>Theory</b> T01, T02</span></div>
+
+    <nav class="otp" data-auto></nav>  <!-- auto-filled with the h2 headings -->
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Breadboard, 830 holes</b><small>~A$8 · Jaycar PB8820 or similar</small></li>
+      <li><b>Red LED ×5</b><small>5 mm, ~2 V forward</small></li>
+    </ul>
+
+    <h2>Build it</h2>
+    <ol class="steps">
+      <li><p><b>Step title.</b> What to do, exactly, and what you should see.</p></li>
+      <li><p><b>Measure.</b> Put the meter across the LED. Expect about 1.8–2.0 V.</p></li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 520 200" role="img" aria-label="Battery, resistor and LED in series">
+        <!-- wires use s-line, parts can use s-accent, text uses class t / t-muted / t-small -->
+        <!-- marker ids must be unique per page: prefix with the figure name -->
+        <defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M60 40 H460 V160 H60 Z"/>
+        <rect class="f-panel s-line" x="40" y="80" width="40" height="40"/>
+        <text class="t" x="20" y="70">4.5 V</text>
+        <rect class="f-accent-soft s-accent" x="190" y="28" width="80" height="24" rx="4"/>
+        <text class="t t-small" x="203" y="22">330 Ω</text>
+        <polygon class="f-red" points="350,28 350,52 372,40"/>
+        <line class="s-line" x1="372" y1="28" x2="372" y2="52"/>
+        <text class="t t-small t-muted" x="335" y="78">LED (anode left)</text>
+        <path class="s-red" d="M120 100 h60" marker-end="url(#arrow)"/>
+        <text class="t t-red t-small" x="120" y="92">conventional current</text>
+      </svg>
+      <figcaption>Figure 1. Every figure gets a caption that says what to notice.</figcaption>
+    </figure>
+
+    <h3>Expected readings</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Battery</td><td>4.5–4.8 V</td><td>Flat cells</td></tr>
+    </table></div>
+
+    <div class="formula">I = (V<sub>supply</sub> − V<sub>LED</sub>) / R = (4.5 − 2.0) / 330 ≈ 7.6 mA
+      <small>Where each symbol comes from, in plain words.</small></div>
+
+    <div class="callout why"><span class="label">Why it works</span><p>Short physical explanation, then a link to the theory chapter.</p></div>
+    <a class="crosslink" href="../theory/t02-resistance-ohms-law.html">Theory T02 · Resistance and Ohm's law, physically</a>
+    <div class="callout warn"><span class="label">Safety</span><p>Never connect an LED straight across a battery.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Tradie habits and shortcuts.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Local suppliers, standards, licences, regulators.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Where this exact skill shows up in BMS, security, telecom or industrial work.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>An experiment to extend the lab.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>The wrong mental model, and the right one.</p></div>
+
+    <div class="widget" id="w-led">
+      <span class="label">Interactive · LED resistor calculator</span>
+      <label>Supply voltage <span class="out" id="vout">5.0 V</span><input type="range" id="vs" min="3" max="24" step="0.5" value="5"></label>
+      <div class="readings"><div><small>Resistor</small><span class="out" id="rout">150 Ω</span></div></div>
+    </div>
+    <script>
+    (function(){var vs=document.getElementById('vs');function upd(){var v=+vs.value;document.getElementById('vout').textContent=v.toFixed(1)+' V';document.getElementById('rout').textContent=Math.round((v-2)/0.02)+' Ω';}vs.oninput=upd;upd();})();
+    </script>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does the LED not light when reversed?</summary><div class="answer"><p>Answer with reasoning.</p></div></details>
+    <details class="more"><summary>Go deeper (optional)</summary><p>Extra detail for the curious.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can read a 4-band resistor colour code.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

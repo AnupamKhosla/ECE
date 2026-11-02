@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C12 · Portfolio projects, interviews and a 12-week plan</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part IV</div>
+    <span class="eyebrow">Career · C12</span>
+    <h1>Portfolio projects, interviews and a 12-week plan</h1>
+    <p class="lede">A diploma from long ago does not prove much to an Australian employer. Five small, well-documented projects and the right tickets do. This chapter turns the whole course into a 12-week plan that ends with something you can show in an interview.</p>
+    <div class="meta"><span><b>Time</b> 12 weeks, ~12–15 h/week</span><span><b>Level</b> Plan</span><span><b>Budget</b> ~A$600–1,200 spread out</span><span><b>Uses</b> every book</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What employers are really checking</h2>
+    <p>Entry-level technician hiring in Australia is mostly about <b>risk</b>. The manager asks three quiet questions about every applicant:</p>
+    <ol>
+      <li><b>Will this person be safe on site?</b> Do they have the White Card and the other tickets, and do they talk about safety without being prompted?</li>
+      <li><b>Can they do the basic hands-on work without hand-holding?</b> Terminate a cable, read a meter, wire a terminal neatly, find a device on a network.</li>
+      <li><b>Will they turn up, communicate and learn?</b> Driver's licence, reliable, writes a clear job note, asks good questions.</li>
+    </ol>
+    <p>Your projects answer question 2 with evidence. Your tickets answer question 1. How you talk about both answers question 3.</p>
+
+    <figure>
+      <svg viewBox="0 0 720 250" role="img" aria-label="Three pillars: tickets, evidence of skill, and communication, supporting a job offer">
+        <rect class="f-career-soft s-thin" x="40" y="20" width="640" height="46" rx="8"/>
+        <text class="t t-bold" x="360" y="49" text-anchor="middle">Job offer: "we can send this person to site"</text>
+        <rect class="f-panel s-line" x="70" y="80" width="170" height="120" rx="8"/>
+        <rect class="f-panel s-line" x="275" y="80" width="170" height="120" rx="8"/>
+        <rect class="f-panel s-line" x="480" y="80" width="170" height="120" rx="8"/>
+        <text class="t t-bold" x="155" y="106" text-anchor="middle">Tickets</text>
+        <text class="t t-small t-muted" x="155" y="130" text-anchor="middle">White Card, ACMA,</text>
+        <text class="t t-small t-muted" x="155" y="148" text-anchor="middle">first aid, licence,</text>
+        <text class="t t-small t-muted" x="155" y="166" text-anchor="middle">heights / EWP</text>
+        <text class="t t-bold" x="360" y="106" text-anchor="middle">Evidence of skill</text>
+        <text class="t t-small t-muted" x="360" y="130" text-anchor="middle">5 projects with photos,</text>
+        <text class="t t-small t-muted" x="360" y="148" text-anchor="middle">test results and</text>
+        <text class="t t-small t-muted" x="360" y="166" text-anchor="middle">a one-page write-up</text>
+        <text class="t t-bold" x="565" y="106" text-anchor="middle">Communication</text>
+        <text class="t t-small t-muted" x="565" y="130" text-anchor="middle">clear job notes,</text>
+        <text class="t t-small t-muted" x="565" y="148" text-anchor="middle">safety talk, STAR</text>
+        <text class="t t-small t-muted" x="565" y="166" text-anchor="middle">interview answers</text>
+        <rect class="f-wash s-thin" x="40" y="212" width="640" height="26" rx="6"/>
+        <text class="t t-small" x="360" y="230" text-anchor="middle">Foundation: the Theory Book, so you can explain why, not only how</text>
+      </svg>
+      <figcaption>Figure 1. Three things get you hired. The theory underneath is what makes you promotable, and it is what interviewers probe when they ask "why?".</figcaption>
+    </figure>
+
+    <div class="callout aus"><span class="label">In Australia</span>
+      <p>Job ads for installer and technician roles very often list a <b>driver's licence</b> and a <b>White Card</b> (the general construction induction card) as must-haves, and many want a <b>police check</b>, which security licences require anyway. Sort out the ones you can early. They are cheap compared with the jobs they unlock. The exact tickets for each role are in <a href="c11-licences-pathways.html">C11 · Licences, tickets and pathways</a>; always confirm the current requirements with the regulator and the employer.</p>
+    </div>
+
+    <h2>The five portfolio projects</h2>
+    <p>Each project copies a real job in miniature. Each one uses chapters you already have and ends with a deliverable you can hold up in an interview. Do them in this order: each one reuses skills from the one before.</p>
+
+    <div class="cards">
+      <div class="card"><h4>1 · Structured cabling board</h4><p>A plywood board with a 12-port patch panel, 4 wall outlets, a small switch, labelled and tested Cat6 links, and a printed test sheet.<br><span class="pill">Cabling · Telecom</span> <span class="pill">P19 P20 C07</span></p></div>
+      <div class="card"><h4>2 · Mini CCTV system</h4><p>Two PoE IP cameras, a PoE switch, an NVR or free VMS, a camera VLAN, a storage calculation and a handover sheet.<br><span class="pill">Security</span> <span class="pill">P19 C05</span></p></div>
+      <div class="card"><h4>3 · Door access demo</h4><p>A reader, a controller (ESP32 or a real entry-level controller), a 12 V strike on a small timber door frame, REX button, door contact, and an event log.<br><span class="pill">Access control</span> <span class="pill">P08 P13 C06</span></p></div>
+      <div class="card"><h4>4 · Plant-room monitor</h4><p>Raspberry Pi reading temperature points and a Modbus energy meter or module, trend logs, alarms, a web page, and a points list.<br><span class="pill">BMS</span> <span class="pill">P14 P17 C01 C02</span></p></div>
+      <div class="card"><h4>5 · 4–20 mA loop and PLC</h4><p>A loop calibrator or simulated transmitter, a 250 Ω resistor into an ADC, scaling to engineering units, and a start/stop latch in OpenPLC.<br><span class="pill">Instrumentation</span> <span class="pill">T16 C10</span></p></div>
+    </div>
+
+    <h3>Project 1 · Structured cabling board (week 3–4)</h3>
+    <p><b>Why first:</b> it is cheap, it is pure hand skill, and it is the most common entry door. Cabling crews hire beginners who can terminate neatly and fast.</p>
+    <ol class="steps">
+      <li><p><b>Build the board.</b> A 600 × 900 mm sheet of plywood, a small wall-mount bracket or a 6U rack shelf, a 12-port Cat6 patch panel, four surface-mount outlets spread across the board, a cheap unmanaged or smart switch.</p></li>
+      <li><p><b>Run and terminate.</b> Run solid Cat6 from each outlet to the panel, neatly dressed with hook-and-loop ties (not over-tightened cable ties, which crush the cable). Terminate everything T568A or everything T568B, never a mix. Follow <a href="../practice/p20-cat6-termination.html">P20</a>.</p></li>
+      <li><p><b>Label.</b> Same label on both ends: e.g. <code>L1-D01</code> (level 1, data outlet 01). Print a small floor plan with the outlet numbers.</p></li>
+      <li><p><b>Test and record.</b> Use a wire-map tester. Record each link as pass/fail in a table. Deliberately make one bad termination (a split pair), find it, fix it, and photograph before and after.</p></li>
+      <li><p><b>Deliverable.</b> Photos of the board, a close-up of your best and worst keystone, the test table, and a half-page note on what you learned about split pairs.</p></li>
+    </ol>
+    <div class="callout warn"><span class="label">Legal line</span><p>A practice board that is not connected to the telecommunications network is fine to build at home. Installing customer cabling that connects to the network is work for an ACMA-registered cabler (see <a href="c07-telecom-cabling-acma.html">C07</a>).</p></div>
+
+    <h3>Project 2 · Mini CCTV system (week 5–6)</h3>
+    <ol class="steps">
+      <li><p><b>Network first.</b> Put the cameras on their own subnet or VLAN, for example <code>192.168.20.0/24</code>, separate from the home network. Draw the network diagram before you plug anything in.</p></li>
+      <li><p><b>Discover and address.</b> Find each camera with the vendor's discovery tool or an IP scanner, change the default password, set a static IP, set the time zone and NTP so timestamps are correct (timestamps matter when footage is evidence).</p></li>
+      <li><p><b>Record.</b> Add both cameras to an NVR or a free VMS. Set continuous plus motion recording. Do the storage maths from <a href="c05-cctv-ip-cameras.html">C05</a> for 30 days and compare with what the recorder reports after 24 hours.</p></li>
+      <li><p><b>Aim and justify.</b> Pick a "door" and a "driveway" scene. Calculate the field of view and pixels per metre at the target distance. Screenshot the view.</p></li>
+      <li><p><b>Deliverable.</b> A one-page handover sheet: camera list (name, IP, MAC, location, lens), recorder settings, retention, admin password handled safely (never written on the sheet), and the network diagram.</p></li>
+    </ol>
+    <div class="callout aus"><span class="label">Privacy</span><p>Point cameras only at your own property. Surveillance and privacy laws differ by state, and recording neighbours or public areas can break them. In a real job the client and the installer must follow the local surveillance law.</p></div>
+
+    <h3>Project 3 · Door access demo (week 7)</h3>
+    <ol class="steps">
+      <li><p><b>Hardware.</b> A small timber door frame (or just a strike mounted on a block), a 12 V fail-secure electric strike, a 12 V supply with a fuse, a reed door contact, a REX push button, and a Wiegand reader.</p></li>
+      <li><p><b>Controller.</b> Either an entry-level commercial controller, or an ESP32 reading Wiegand D0/D1 (through level shifting to 3.3 V) and switching the strike with a MOSFET plus a flyback diode (<a href="../practice/p08-transistor-switches.html">P08</a>).</p></li>
+      <li><p><b>Logic.</b> Valid card → unlock 5 s. REX → unlock without logging an alarm. Door open without a valid card or REX → "forced door" event. Door held open more than 30 s → "door held" event.</p></li>
+      <li><p><b>Deliverable.</b> A wiring diagram you drew yourself, a short video of the four events, and the event log.</p></li>
+    </ol>
+
+    <h3>Project 4 · Plant-room monitor, a tiny BMS (week 8–9)</h3>
+    <ol class="steps">
+      <li><p><b>Points list first.</b> Write the points list before wiring, exactly as a BMS engineer would: point name, type (AI/AO/DI/DO), units, range, alarm limits. For example <code>PR-T-01 Plant room temp, AI, °C, alarm &gt; 32</code>.</p></li>
+      <li><p><b>Inputs.</b> Two temperature sensors (one could be a 10 kΩ NTC through a divider into an ADC, see <a href="../practice/p04-series-parallel-dividers.html">P04</a> and <a href="../practice/p12-sensors-adc.html">P12</a>), a door contact as a DI, and one Modbus RTU device read over RS-485 (<a href="../practice/p14-serial-buses-modbus.html">P14</a>).</p></li>
+      <li><p><b>Software.</b> Log every point every minute to CSV, show a trend graph on a web page, raise an alarm when a limit is crossed and clear it with hysteresis (alarm at 32 °C, clear at 30 °C), as in <a href="../practice/p17-pi-gpio-python.html">P17</a>.</p></li>
+      <li><p><b>Stretch.</b> Expose the points as BACnet objects with an open-source BACnet library and discover them with a free BACnet explorer on your laptop (<a href="c02-bms-protocols-commissioning.html">C02</a>).</p></li>
+      <li><p><b>Deliverable.</b> The points list, a screenshot of the trend with an alarm, the Modbus register map you used (with the scaling), and a commissioning sheet where you ticked each point after a point-to-point check.</p></li>
+    </ol>
+
+    <h3>Project 5 · 4–20 mA loop and a PLC (week 10–11)</h3>
+    <ol class="steps">
+      <li><p><b>Loop.</b> A 24 V DC supply, a loop-powered transmitter (or a cheap 4–20 mA signal generator/loop simulator), and a 250 Ω precision resistor. 4 mA gives 1.00 V; 20 mA gives 5.00 V. Measure both with your meter in series on the mA range (<a href="../practice/p03-multimeter-mastery.html">P03</a>).</p></li>
+      <li><p><b>Scale.</b> Read the 1–5 V with an ADC (through a divider for a 3.3 V board) and convert to engineering units, for example 0–10 bar. Detect a broken wire (below ~3.8 mA). The maths is in <a href="../theory/t16-signals-noise-loops.html">T16</a>.</p></li>
+      <li><p><b>PLC.</b> In free PLC software, write the start/stop latch, a pump that starts when pressure falls below 3 bar and stops above 6 bar, and an alarm output (<a href="c10-plc-instrumentation.html">C10</a>).</p></li>
+      <li><p><b>Deliverable.</b> A loop diagram, a calibration table (0/25/50/75/100% → expected mA → measured mA → error), and a screenshot of the ladder logic running.</p></li>
+    </ol>
+
+    <div class="widget" id="w-budget">
+      <span class="label">Interactive · Portfolio budget and time planner</span>
+      <p style="font-size:15px;margin-bottom:6px">Tick the projects you will build. Prices are rough Australian street prices and vary a lot; buying second-hand or from AliExpress can halve them.</p>
+      <div id="pb-list"></div>
+      <div class="readings">
+        <div><small>Estimated parts</small><span class="out" id="pb-cost">A$0</span></div>
+        <div><small>Estimated hours</small><span class="out" id="pb-hours">0 h</span></div>
+        <div><small>Weeks at</small><label style="margin:0"><input type="range" id="pb-rate" min="5" max="30" step="1" value="12"> <span id="pb-rate-v">12</span> h/week</label></div>
+        <div><small>Finished in about</small><span class="out" id="pb-weeks">0 weeks</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var items=[
+        ["Structured cabling board",120,18],["Mini CCTV system (2 cameras + PoE switch)",350,20],
+        ["Door access demo",160,16],["Plant-room monitor (Pi, sensors, RS-485 adapter)",180,24],
+        ["4–20 mA loop and PLC",120,18]];
+      var box=document.getElementById('pb-list');
+      items.forEach(function(it,i){var l=document.createElement('label');l.innerHTML='<input type="checkbox" checked data-i="'+i+'"> '+it[0]+' <span class="pill">~A$'+it[1]+' · '+it[2]+' h</span>';box.appendChild(l);});
+      var rate=document.getElementById('pb-rate');
+      function upd(){var c=0,h=0;box.querySelectorAll('input').forEach(function(cb){if(cb.checked){var it=items[+cb.dataset.i];c+=it[1];h+=it[2];}});
+        document.getElementById('pb-cost').textContent='A$'+c;document.getElementById('pb-hours').textContent=h+' h';
+        document.getElementById('pb-rate-v').textContent=rate.value;document.getElementById('pb-weeks').textContent=(h/ +rate.value).toFixed(1)+' weeks';}
+      box.addEventListener('change',upd);rate.oninput=upd;upd();
+    })();
+    </script>
+
+    <h2>How to document a project so it gets you interviews</h2>
+    <p>A project nobody can see does not exist. A project with a messy 40-photo dump is not much better. Use the same one-page format for all five:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Section</th><th>What goes in it</th><th>Example line</th></tr>
+      <tr><td>Problem</td><td>The real-world job this copies, in one sentence.</td><td>"A small office needs four data outlets cabled back to a patch panel and tested."</td></tr>
+      <tr><td>What I built</td><td>Hardware, standard followed, a single good photo.</td><td>"12-port Cat6 panel, 4 outlets, T568A throughout, labelled L1-D01 to L1-D04."</td></tr>
+      <tr><td>How I tested it</td><td>The instrument, the result table.</td><td>"Wire-map tested all links; 3 passed first time, 1 split pair found and re-terminated."</td></tr>
+      <tr><td>Problem I hit</td><td>One honest fault and how you found it. Interviewers love this part.</td><td>"Tester showed pass, but the link ran at 100 Mb/s. Cause: split pair. Fixed by re-terminating."</td></tr>
+      <tr><td>Safety</td><td>What you did to stay safe.</td><td>"Fused the 12 V strike supply at 2 A; kept all work at ELV."</td></tr>
+      <tr><td>Next time</td><td>One improvement.</td><td>"Leave a service loop at the panel."</td></tr>
+    </table></div>
+    <p>Put the five pages in a free GitHub repository or a simple shared folder, and put a printed copy in a plastic sleeve folder for face-to-face interviews. Many site managers would rather flip through printed photos than open a link.</p>
+    <div class="callout tip"><span class="label">Tip</span><p>Write your résumé bullet points with the same words job ads use: "terminated and tested Cat6", "configured IP cameras and NVR", "Modbus RTU integration", "4–20 mA loop checks", "point-to-point commissioning". Recruiters and screening software search for these exact words.</p></div>
+
+    <h2>Which role fits you?</h2>
+    <p>The job track covers five families of work. They differ more in lifestyle than in electronics. Answer honestly; it is about which one you will still enjoy after a year.</p>
+    <div class="widget" id="w-fit">
+      <span class="label">Interactive · Role fit finder</span>
+      <div id="fit-qs"></div>
+      <div id="fit-out" style="margin-top:12px"></div>
+    </div>
+    <script>
+    (function(){
+      var roles=["Data/telecom cabling","CCTV and security","BMS / controls","NBN and fibre field","Instrumentation / PLC"];
+      // weights per answer "yes" for each role
+      var qs=[
+        ["I am happy working at heights, in ceilings and on ladders most days.",[2,2,1,2,0]],
+        ["I like computers, networks and configuring software as much as hands-on work.",[1,2,2,0,1]],
+        ["I enjoy logic, troubleshooting and reading drawings.",[0,1,2,1,2]],
+        ["I want to work outdoors and drive between many sites.",[0,1,0,2,1]],
+        ["I would happily do FIFO or regional work (mining, water, energy).",[0,0,0,1,2]],
+        ["I want the fastest possible entry, even if pay starts lower.",[2,2,0,1,0]],
+        ["I want to work inside big buildings (offices, hospitals, data centres).",[1,1,2,0,0]],
+        ["I am willing to do a longer qualification (e.g. an electrical licence) for higher pay later.",[0,0,1,0,2]]];
+      var box=document.getElementById('fit-qs');
+      qs.forEach(function(q,i){var l=document.createElement('label');l.innerHTML='<input type="checkbox" data-i="'+i+'"> '+q[0];box.appendChild(l);});
+      function upd(){var s=[0,0,0,0,0];box.querySelectorAll('input').forEach(function(cb){if(cb.checked)qs[+cb.dataset.i][1].forEach(function(w,j){s[j]+=w;});});
+        var max=Math.max.apply(null,s)||1,html='';
+        roles.map(function(r,j){return [r,s[j]];}).sort(function(a,b){return b[1]-a[1];}).forEach(function(p){
+          html+='<div style="display:flex;gap:10px;align-items:center;margin:5px 0"><span style="min-width:190px;font-size:15px">'+p[0]+'</span><span style="flex:1;height:12px;background:var(--wash);border-radius:99px;overflow:hidden"><i style="display:block;height:100%;width:'+Math.round(100*p[1]/max)+'%;background:var(--career)"></i></span><b style="min-width:24px">'+p[1]+'</b></div>';});
+        document.getElementById('fit-out').innerHTML=html+'<p style="font-size:14px;color:var(--muted);margin-top:8px">A rough guide only. Many people start in cabling or security, then move into BMS or instrumentation after a year or two.</p>';}
+      box.addEventListener('change',upd);upd();
+    })();
+    </script>
+
+    <h2>Interview questions you should be able to answer</h2>
+    <p>Technical interviews for entry roles are practical. They test whether you understand what you are doing, not whether you remember formulas. Practise saying these answers out loud.</p>
+    <details class="quiz"><summary>"A camera on PoE keeps rebooting. How would you find the fault?"</summary><div class="answer"><p>Start at the power and the physical link, then move up. Check the switch's PoE budget and the port's power draw (IR lights at night raise consumption, so a camera that reboots only at night points to power). Check the cable: length under 100 m, a proper termination, no split pair (test it). Try a known-good short patch lead and another port. Check the camera's logs and firmware. Say it in that order: power budget → cable → port → device. This shows a method rather than guessing.</p></div></details>
+    <details class="quiz"><summary>"What's the difference between an AI and a DI on a BMS controller?"</summary><div class="answer"><p>An analogue input reads a value that can take any value in a range: a 10 kΩ thermistor for temperature, a 0–10 V or 4–20 mA signal for pressure or humidity. A digital (binary) input reads one of two states from a contact: a pump's run status from a current switch, a filter alarm from a differential pressure switch. Then give one example of each from your plant-room project.</p></div></details>
+    <details class="quiz"><summary>"Why do we use 4–20 mA rather than 0–10 V for long runs?"</summary><div class="answer"><p>In a series loop the current is the same everywhere, so wire resistance doesn't change the reading as long as the supply has enough voltage. A voltage signal loses some volts along the cable. The 4 mA "live zero" also lets you tell a real zero reading (4 mA) from a broken wire (0 mA).</p></div></details>
+    <details class="quiz"><summary>"What does an end-of-line resistor do?"</summary><div class="answer"><p>It makes the circuit's resistance different in each state, so the panel can tell normal from alarm and also detect tampering: an open circuit (cut wire) reads very high resistance, a short (bridged wires) reads near zero, and each is reported as a fault rather than silently looking "normal".</p></div></details>
+    <details class="quiz"><summary>"Fail-safe or fail-secure: which lock goes on a fire exit?"</summary><div class="answer"><p>The door must let people out when power fails or the fire system operates. A maglock is fail-safe (it releases without power) and is released by the fire interface. A fail-secure strike stays locked without power, so on an egress door free mechanical egress must still be possible from the inside (for example a lever handle). Mention that the building code and the fire engineer's requirements decide this, not the installer's preference.</p></div></details>
+    <details class="quiz"><summary>"T568A or T568B, which is correct?"</summary><div class="answer"><p>Both are valid wiring standards and perform the same. What matters is that both ends of a link use the same one, and that a site follows one standard consistently. Then mention that you check the site's existing standard before you start.</p></div></details>
+    <details class="quiz"><summary>"Tell me about a time you made a mistake on a job."</summary><div class="answer"><p>Use the STAR method: <b>S</b>ituation, <b>T</b>ask, <b>A</b>ction, <b>R</b>esult. Your portfolio "Problem I hit" sections are ready-made STAR stories: "While building my cabling board (S), I needed four links to pass (T). One passed the tester but ran slow, so I re-checked the pair order and found a split pair (A). After re-terminating it ran at full speed, and now I check pair order under a light before punching down (R)."</p></div></details>
+    <details class="quiz"><summary>"What would you do if a client asked you to move a power point while you're there?"</summary><div class="answer"><p>Politely say no: work on mains wiring must be done by a licensed electrician, and offer to pass the request to the supervisor so the company can arrange one. This one question checks whether you understand the legal line. Saying "sure, it's easy" can end the interview.</p></div></details>
+
+    <h2>The 12-week plan</h2>
+    <p>About 12–15 hours a week: two weekday evenings of theory, and one long weekend session on the bench. Tick the weeks off as you go. Your ticks are saved in this browser.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Week</th><th>Practice (bench)</th><th>Theory (read)</th><th>Career action</th></tr>
+      <tr><td>1</td><td>P01 kit order, simulator labs, P02 first LED</td><td>T01, T02</td><td>Read C11; list the tickets for your target role</td></tr>
+      <tr><td>2</td><td>P03 multimeter, P04 dividers</td><td>T03, T04</td><td>Book the White Card course</td></tr>
+      <tr><td>3</td><td>P05 soldering, P20 Cat6 termination</td><td>T05</td><td>Start Project 1 (cabling board)</td></tr>
+      <tr><td>4</td><td>P19 networking</td><td>T10 (fibre part)</td><td>Finish Project 1 write-up; look into an ACMA open registration course (C07)</td></tr>
+      <tr><td>5</td><td>P06 diodes, P07 capacitors</td><td>T11, T11+</td><td>Start Project 2 (CCTV); read C05</td></tr>
+      <tr><td>6</td><td>P08 transistors, P10 power supplies</td><td>T06, T12, T13</td><td>Finish Project 2; first-aid course if required</td></tr>
+      <tr><td>7</td><td>P09 555, P13 actuators</td><td>T07, T08</td><td>Project 3 (access); read C06</td></tr>
+      <tr><td>8</td><td>P11 Arduino, P12 sensors</td><td>T15</td><td>Start Project 4; read C01, C03</td></tr>
+      <tr><td>9</td><td>P14 Modbus/RS-485, P16 Pi, P17 logger</td><td>T16</td><td>Finish Project 4; read C02</td></tr>
+      <tr><td>10</td><td>P15 scope, P18 ESP32/MQTT</td><td>T14 op-amps</td><td>Start Project 5; read C10</td></tr>
+      <tr><td>11</td><td>Project 5 bench work</td><td>T09 mains and earthing</td><td>Résumé with job-ad keywords; ask a local tradie or ex-colleague to review it</td></tr>
+      <tr><td>12</td><td>Re-do your weakest lab from memory</td><td>Revise all "Check yourself" quizzes</td><td>Apply: 5 tailored applications a week; practise interview answers aloud</td></tr>
+    </table></div>
+
+    <h3>Weekly tick-off</h3>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>Week 1 — first LED lit and measured; theory T01–T02 read</span></li>
+      <li><input type="checkbox"><span>Week 2 — meter and dividers; White Card booked</span></li>
+      <li><input type="checkbox"><span>Week 3 — soldering and Cat6; cabling board started</span></li>
+      <li><input type="checkbox"><span>Week 4 — networking; Project 1 written up</span></li>
+      <li><input type="checkbox"><span>Week 5 — diodes and capacitors; CCTV project started</span></li>
+      <li><input type="checkbox"><span>Week 6 — transistors and supplies; Project 2 written up</span></li>
+      <li><input type="checkbox"><span>Week 7 — 555 and actuators; Project 3 done</span></li>
+      <li><input type="checkbox"><span>Week 8 — Arduino and sensors; Project 4 started</span></li>
+      <li><input type="checkbox"><span>Week 9 — Modbus and Pi; Project 4 written up</span></li>
+      <li><input type="checkbox"><span>Week 10 — scope and IoT; Project 5 started</span></li>
+      <li><input type="checkbox"><span>Week 11 — Project 5 done; résumé ready</span></li>
+      <li><input type="checkbox"><span>Week 12 — revision done; applications going out weekly</span></li>
+    </ul>
+
+    <div class="callout myth"><span class="label">Common misconception</span>
+      <p><b>"I should finish all the theory before I apply."</b> No. Entry roles hire people who can do the basics safely and want to learn. Apply from week 8 or 9 onward with the projects you have; keep building while you interview. Real site experience will teach you faster than any book, including this one.</p>
+    </div>
+
+    <h2>Getting the first job</h2>
+    <ul>
+      <li><b>Small integrators first.</b> Small security, cabling and BMS companies hire juniors more readily than large firms, and you learn every part of the job. Look at company websites and call; many small firms do not advertise.</li>
+      <li><b>Wholesalers and trade counters.</b> Security and data wholesalers know which installers are busy and hiring. Buying your project parts there and chatting at the counter is genuine networking.</li>
+      <li><b>Trainee and apprentice roles.</b> Some employers hire trainees and put them through a Certificate II/III. Being slightly older with a diploma can help: you show maturity and some background.</li>
+      <li><b>Labour hire as a stepping stone.</b> Cabling and fit-out labour hire can give you site time and references, which are worth a lot in your first year.</li>
+    </ul>
+
+    <div class="callout job"><span class="label">On the job</span><p>Your first months will be mostly pulling cable, mounting devices, labelling and cleaning up. Do those well and quickly, write tidy job notes, and ask to watch the commissioning and programming. That is how juniors move up to the technician work in this course.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why is "Problem I hit" the most valuable section of a project write-up?</summary><div class="answer"><p>Because fault-finding is most of a technician's real work. An honest story of a fault, how you found it with an instrument and how you fixed it proves method, honesty and learning, which are exactly what an interviewer is trying to see.</p></div></details>
+    <details class="quiz"><summary>You have only A$300 for projects. Which two give the most job value?</summary><div class="answer"><p>For the fastest entry: the cabling board (cheap, matches the most common junior roles) and either the CCTV project or the 4–20 mA loop, depending on whether you target security or BMS/instrumentation. Use the planner above to compare.</p></div></details>
+    <details class="quiz"><summary>Why put the same label on both ends of a cable?</summary><div class="answer"><p>So anyone can trace a link from the outlet to the patch panel without a tester, and so test results and as-built drawings match the physical cables. Unlabelled cabling costs hours of tracing later, and clients notice.</p></div></details>
+    <details class="quiz"><summary>An interviewer asks a theory question you can't answer. What do you say?</summary><div class="answer"><p>Say honestly what you do know, how you would find the rest ("I'd check the datasheet / the manufacturer's manual / ask my supervisor"), and never guess about anything safety-related. Saying "I don't know, but here's how I'd find out" is a good answer for a junior.</p></div></details>
+    <details class="quiz"><summary>Why apply from week 8–9 instead of waiting until week 12?</summary><div class="answer"><p>Hiring takes weeks. Applications, calls and interviews overlap with your last projects, and each interview teaches you what employers in your area care about, which you can then build into the remaining projects.</p></div></details>
+    <details class="quiz"><summary>What one-sentence answer shows you understand the legal line on mains work?</summary><div class="answer"><p>"I work on extra-low voltage systems; anything on 230 V mains is for a licensed electrician, and I'll ask my supervisor to arrange one."</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I have picked a target role family and listed its tickets.</span></li>
+      <li><input type="checkbox"><span>I have at least two finished projects with one-page write-ups.</span></li>
+      <li><input type="checkbox"><span>My résumé uses the same words as the job ads I'm applying to.</span></li>
+      <li><input type="checkbox"><span>I can answer the eight interview questions above out loud, without notes.</span></li>
+      <li><input type="checkbox"><span>I have a printed portfolio folder ready for face-to-face interviews.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P01 · Your bench: kit, budget and safety</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part A · Your bench</div>
+    <span class="eyebrow">Practice · Lab P01</span>
+    <h1>Your bench: kit, budget and safety</h1>
+    <p class="lede">By the end of this chapter you will know exactly what to buy in Australia (and what can wait), what each tool is for, how to set up a small bench at home, and the one safety line you never cross: everything you build stays at extra-low voltage.</p>
+    <div class="meta"><span><b>Time</b> 60 min reading + shopping</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$100 starter, ~A$250 next step</span><span><b>Theory</b> T03, T09</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>The one rule: stay at extra-low voltage</h2>
+    <p>Before we buy anything, we agree on the safety line. Everything in this course runs at <b>extra-low voltage (ELV)</b>. In Australia the wiring rules, <b>AS/NZS 3000</b>, define ELV as <b>not more than 50 V AC, or 120 V ripple-free DC</b>. "Ripple-free" means smooth DC from a battery or a good regulated supply, not the bumpy output of a rectifier.</p>
+    <p>Above ELV, up to 1000 V AC or 1500 V DC, the rules call it <b>low voltage (LV)</b>. Your 230 V power point is LV. That word is a trap for newcomers: in everyday English "low voltage" sounds harmless, but in Australian electrical law "low voltage" means <b>mains</b>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="Voltage scale showing the ELV zone used in this course and the LV mains zone that is for licensed electricians only">
+        <rect class="f-career-soft" x="30" y="120" width="300" height="44" rx="6"/>
+        <rect class="f-warn-soft" x="330" y="120" width="280" height="44" rx="6"/>
+        <rect class="s-thin" x="30" y="120" width="580" height="44" rx="6"/>
+        <text class="t t-bold" x="180" y="147" text-anchor="middle">ELV: everything you build</text>
+        <text class="t t-bold t-red" x="470" y="147" text-anchor="middle">LV (mains): electricians only</text>
+        <line class="s-red s-dash" x1="330" y1="62" x2="330" y2="200"/>
+        <text class="t t-small t-red t-bold" x="330" y="54" text-anchor="middle">ELV limit: 50 V AC / 120 V ripple-free DC</text>
+        <g class="t-small">
+          <line class="s-line" x1="60" y1="112" x2="60" y2="120"/><text class="t t-small" x="60" y="104" text-anchor="middle">AA 1.5 V</text>
+          <line class="s-line" x1="105" y1="164" x2="105" y2="172"/><text class="t t-small" x="105" y="186" text-anchor="middle">USB 5 V</text>
+          <line class="s-line" x1="150" y1="112" x2="150" y2="120"/><text class="t t-small" x="150" y="104" text-anchor="middle">12 V DC</text>
+          <line class="s-line" x1="210" y1="164" x2="210" y2="172"/><text class="t t-small" x="210" y="186" text-anchor="middle">24 V AC / DC</text>
+          <line class="s-line" x1="270" y1="112" x2="270" y2="120"/><text class="t t-small" x="270" y="104" text-anchor="middle">PoE ~48–57 V DC</text>
+          <line class="s-line" x1="420" y1="112" x2="420" y2="120"/><text class="t t-small" x="420" y="104" text-anchor="middle">230 V mains</text>
+          <line class="s-line" x1="500" y1="164" x2="500" y2="172"/><text class="t t-small" x="500" y="186" text-anchor="middle">400 V three-phase</text>
+          <line class="s-line" x1="585" y1="112" x2="585" y2="120"/><text class="t t-small" x="585" y="104" text-anchor="middle">1000 V AC</text>
+        </g>
+        <text class="t t-small t-muted" x="320" y="222" text-anchor="middle">Not to scale. Every lab in this course sits in the left (green) zone.</text>
+      </svg>
+      <figcaption>Figure 1. The legal voltage bands in Australia. Batteries, USB, 12 V and 24 V building supplies, AC plug-packs and Power over Ethernet are all ELV. The 230 V outlet on your wall is LV, and working on it is restricted by law.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Band (AS/NZS 3000)</th><th>AC limit</th><th>DC limit</th><th>Examples</th><th>Who may work on it</th></tr>
+      <tr><td><b>ELV</b> (extra-low voltage)</td><td>≤ 50 V</td><td>≤ 120 V ripple-free</td><td>Batteries, USB, 12/24 V DC, 24 V AC control transformers' output, PoE, alarm panels' 13.8 V</td><td>You, in this course</td></tr>
+      <tr><td><b>LV</b> (low voltage)</td><td>50 V – 1000 V</td><td>120 V – 1500 V</td><td>230 V power points, 400 V three-phase, switchboards, solar array DC strings</td><td>Licensed electricians only</td></tr>
+      <tr><td><b>HV</b> (high voltage)</td><td>> 1000 V</td><td>> 1500 V</td><td>Street distribution, substations</td><td>Specially authorised network workers</td></tr>
+    </table></div>
+
+    <div class="callout warn"><span class="label">Safety · non-negotiable</span>
+      <p><b>Never open, wire or measure anything connected to 230 V mains.</b> That includes the inside of plug-packs, camera power supplies, computer power supplies, microwaves, TVs and switchboards. In Australia, electrical work on mains is legally limited to licensed electricians. Your plug-packs are sealed: you use the low-voltage lead that comes out of them, and nothing else.</p>
+      <p>Each state and territory has its own electrical safety regulator and licensing rules (for example Energy Safe Victoria, NSW Fair Trading, and the Electrical Safety Office in Queensland). Rules change and differ by state, so confirm the current rule with your state's regulator before you take any job that touches electrical installations.</p>
+    </div>
+
+    <div class="callout why"><span class="label">Why ELV is the line</span>
+      <p>Danger comes from the <b>current</b> through your body, and your body behaves like a resistor whose value drops as voltage rises. Dry skin is a good insulator: hand to hand you may be around 100 kΩ or more at 12 V. Ohm's law gives I = 12 V / 100 kΩ = 0.12 mA, which you cannot even feel. At mains voltage the outer layer of skin breaks down and your body can fall to around 1 kΩ. Then I = 230 V / 1 kΩ = 230 mA, and a few tens of milliamps across the chest can stop the heart from beating in rhythm. The ELV limit is set so that, in normal dry conditions, touching both terminals is not expected to drive a dangerous current through you.</p>
+    </div>
+    <a class="crosslink" href="../theory/t09-mains-earthing-safety.html">Theory T09 · Mains, three-phase, earthing and RCDs (Australia)</a>
+
+    <div class="callout myth"><span class="label">Common misconception</span>
+      <p><b>Wrong:</b> "12 V can't hurt me, so ELV is completely safe."<br><b>Right:</b> ELV will not usually shock you, but it can still burn you. A 12 V lead-acid battery (like the 7 Ah one inside every alarm panel) can push hundreds of amps into a short circuit. That current can make a spanner glow red, weld a ring to a terminal, and blow hot metal into your eyes. Shock danger depends on <b>voltage</b>; burn and fire danger depend on <b>energy and current</b>. You manage both.</p>
+    </div>
+
+    <h2>The kit, in two tiers</h2>
+    <p>You do not need everything on day one. The <b>starter tier</b> (about A$100) covers P01–P04 and most of Part B on a breadboard. The <b>next step</b> (about A$250 more) adds soldering, crimping, a field-grade multimeter and the plug-packs you need from P06 onward. A <b>bench power supply</b> can come later.</p>
+    <p>Prices below are <b>indicative</b> (late 2026, rounded). They move with specials and exchange rates. Jaycar and Altronics have shops in most cities, so you can see the part before you buy. Core Electronics, element14 and RS Components ship fast. AliExpress is cheapest but slow (2–4 weeks) and quality varies. Bunnings is fine for hand tools and safety glasses.</p>
+
+    <h3>Starter tier (~A$100)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Item</th><th>What it is for</th><th>Indicative price</th></tr>
+      <tr><td><b>Solderless breadboard, 830 holes</b></td><td>Build circuits without soldering. Push parts into the holes; metal clips inside connect them. You will use it in nearly every lab.</td><td>~A$8–12</td></tr>
+      <tr><td><b>Jumper wires</b> (pre-cut solid set + flexible male–male leads)</td><td>Pre-cut solid wires lie flat and keep the board tidy. Flexible leads reach the meter and modules.</td><td>~A$8–12</td></tr>
+      <tr><td><b>Resistor assortment</b> (E12 values, ¼ W, a few hundred pieces)</td><td>Resistors set current and make dividers. An assortment saves dozens of trips to the shop.</td><td>~A$10–15</td></tr>
+      <tr><td><b>LED assortment</b> (5 mm red, green, yellow, blue, white)</td><td>Your first "output" and a visible current indicator. Red is easiest to start with.</td><td>~A$5–8</td></tr>
+      <tr><td><b>Capacitor assortment</b> (ceramic 10 pF–100 nF + electrolytic 1–1000 µF)</td><td>Timing, smoothing, decoupling labs in Part B.</td><td>~A$10–15</td></tr>
+      <tr><td><b>Transistor assortment</b> (small NPN/PNP such as BC547/BC557 or 2N3904/2N3906, a few logic-level MOSFETs)</td><td>Switching relays, motors and LEDs from small signals (P08).</td><td>~A$6–10</td></tr>
+      <tr><td><b>3×AA battery holder with switch</b> + AA cells</td><td>A safe 4.5 V supply for the first labs. It cannot deliver dangerous current.</td><td>~A$8–10</td></tr>
+      <tr><td><b>9 V battery snap</b> + 9 V battery</td><td>A second, higher voltage for divider and transistor labs.</td><td>~A$6–8</td></tr>
+      <tr><td><b>Basic digital multimeter</b> with continuity buzzer</td><td>Your eyes for electricity. P03 is all about it. Any honest basic meter is fine to begin.</td><td>~A$20–35</td></tr>
+      <tr><td><b>Side cutters</b> (flush-cut, small)</td><td>Cut component legs and wire cleanly.</td><td>~A$8–15</td></tr>
+      <tr><td><b>Wire strippers</b> (adjustable or self-adjusting)</td><td>Remove insulation without nicking the copper.</td><td>~A$10–25</td></tr>
+      <tr><td><b>Safety glasses</b> (clear, rated to AS/NZS 1337)</td><td>Clipped legs fly at your eyes. Wear them every time you cut or solder.</td><td>~A$5–10</td></tr>
+    </table></div>
+
+    <h3>Next step (~A$250)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Item</th><th>What it is for</th><th>Indicative price</th></tr>
+      <tr><td><b>Temperature-controlled soldering station</b> (around 50–80 W, adjustable, with stand and tip cleaner)</td><td>P05 onward. Temperature control means the tip stays at the set heat instead of overheating or cooling on big joints. Avoid cheap plug-in irons with no control.</td><td>~A$70–150</td></tr>
+      <tr><td><b>Better multimeter</b>: auto-ranging, true RMS, CAT III 600 V (or better), with an HRC fuse</td><td>The meter you take to a job. See the CAT section below for why this matters.</td><td>~A$60–150</td></tr>
+      <tr><td><b>AC plug-pack, 9–12 V AC</b> (output marked "AC", e.g. 12 V AC 1 A)</td><td>Safe low-voltage AC for rectifier and LED-on-AC labs (P06). The mains part stays sealed inside.</td><td>~A$20–30</td></tr>
+      <tr><td><b>12 V DC plug-pack</b>, regulated, 1–2 A</td><td>Powers 12 V relays, LED strips and modules, like the 12 V supplies used for cameras and access control.</td><td>~A$15–25</td></tr>
+      <tr><td><b>Ratchet ferrule crimper</b> + bootlace ferrule kit</td><td>Neat, reliable screw-terminal connections, exactly as used on BMS and access-control controllers (P05).</td><td>~A$35–50</td></tr>
+      <tr><td><b>Helping hands</b> (clips on arms, ideally with magnifier)</td><td>Hold the board and wire while both your hands are busy with iron and solder.</td><td>~A$15–25</td></tr>
+      <tr><td><b>Solder, flux pen, desoldering braid, solder sucker</b></td><td>Consumables for making and fixing joints.</td><td>~A$20–30</td></tr>
+      <tr><td><b>Heatshrink assortment</b></td><td>Insulates and strengthens joints in wire.</td><td>~A$8–12</td></tr>
+    </table></div>
+
+    <h3>Later</h3>
+    <ul>
+      <li><b>Small bench power supply</b> (0–30 V, 0–3 A or 0–5 A, with adjustable current limit), ~A$80–150. The current limit is the real feature: if you wire something wrong, the supply limits the current instead of letting parts cook. Buy one when you reach Part B or C.</li>
+      <li><b>Fume extractor</b> (fan with carbon filter), ~A$40–80, if you solder often (see P05).</li>
+      <li><b>ESD mat and wrist strap kit</b>, ~A$30–50, before you handle MOSFETs and microcontroller boards a lot.</li>
+      <li><b>Cheap USB oscilloscope or logic analyser</b> for P15, when you get there.</li>
+    </ul>
+
+    <div class="widget" id="p01-budget">
+      <span class="label">Interactive · Budget builder</span>
+      <p style="margin:0 0 8px">Tick what you already own off the list (untick it), or use a preset. The total is in Australian dollars, using mid-range indicative prices.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button type="button" data-preset="starter" class="p01-btn">Starter tier</button>
+        <button type="button" data-preset="next" class="p01-btn">Starter + next step</button>
+        <button type="button" data-preset="all" class="p01-btn">Everything</button>
+        <button type="button" data-preset="none" class="p01-btn">Clear</button>
+      </div>
+      <div id="p01-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 16px;font-size:15px"></div>
+      <div class="readings">
+        <div><small>Starter items</small><span class="out" id="p01-ts">A$0</span></div>
+        <div><small>Next-step items</small><span class="out" id="p01-tn">A$0</span></div>
+        <div><small>Later items</small><span class="out" id="p01-tl">A$0</span></div>
+        <div><small>Total</small><span class="out" id="p01-tt">A$0</span></div>
+      </div>
+      <p id="p01-note" style="margin:10px 0 0;font-size:14.5px;color:var(--muted)"></p>
+    </div>
+    <script>
+    (function(){
+      var items=[
+        ['Breadboard 830 holes',10,'s'],['Jumper wire set',10,'s'],['Resistor assortment',12,'s'],['LED assortment',6,'s'],
+        ['Capacitor assortment',12,'s'],['Transistor assortment',8,'s'],['3×AA holder + cells',9,'s'],['9 V snap + battery',7,'s'],
+        ['Basic multimeter',25,'s'],['Side cutters',10,'s'],['Wire strippers',14,'s'],['Safety glasses',7,'s'],
+        ['Soldering station',95,'n'],['CAT III true-RMS multimeter',80,'n'],['AC plug-pack 9–12 V AC',25,'n'],['12 V DC plug-pack',20,'n'],
+        ['Ferrule crimper + ferrules',40,'n'],['Helping hands',18,'n'],['Solder, flux, braid, sucker',25,'n'],['Heatshrink assortment',10,'n'],
+        ['Bench power supply',110,'l'],['Fume extractor',55,'l'],['ESD mat + wrist strap',40,'l']
+      ];
+      var list=document.getElementById('p01-list');
+      var boxes=[];
+      items.forEach(function(it,i){
+        var lab=document.createElement('label');
+        lab.style.display='flex';lab.style.gap='8px';lab.style.alignItems='baseline';lab.style.margin='2px 0';
+        var cb=document.createElement('input');cb.type='checkbox';cb.dataset.i=i;
+        var tag=it[2]==='s'?'starter':(it[2]==='n'?'next':'later');
+        var sp=document.createElement('span');sp.textContent=it[0]+' · ~A$'+it[1]+' ';
+        var pill=document.createElement('span');pill.className='pill';pill.textContent=tag;
+        sp.appendChild(pill);lab.appendChild(cb);lab.appendChild(sp);list.appendChild(lab);
+        cb.addEventListener('change',upd);boxes.push(cb);
+      });
+      function upd(){
+        var t={s:0,n:0,l:0};
+        boxes.forEach(function(cb){if(cb.checked){var it=items[+cb.dataset.i];t[it[2]]+=it[1];}});
+        var tot=t.s+t.n+t.l;
+        document.getElementById('p01-ts').textContent='A$'+t.s;
+        document.getElementById('p01-tn').textContent='A$'+t.n;
+        document.getElementById('p01-tl').textContent='A$'+t.l;
+        document.getElementById('p01-tt').textContent='A$'+tot;
+        var note='';
+        var hasMeter=boxes[8].checked||boxes[13].checked;
+        if(tot===0)note='Nothing selected yet.';
+        else if(!hasMeter)note='You have no multimeter selected. You cannot do P02 measurements or P03 without one.';
+        else if(!boxes[11].checked)note='Add safety glasses: they are the cheapest item on the list and protect the most expensive thing on your bench.';
+        else if(boxes[12].checked&&!boxes[18].checked)note='A soldering station needs solder, flux and braid to be useful.';
+        else note='Looks like a sensible bench. Prices are indicative; check current specials before you buy.';
+        document.getElementById('p01-note').textContent=note;
+      }
+      function preset(p){
+        boxes.forEach(function(cb){var tier=items[+cb.dataset.i][2];
+          cb.checked=(p==='all')||(p==='starter'&&tier==='s')||(p==='next'&&(tier==='s'||tier==='n'));});
+        upd();
+      }
+      document.querySelectorAll('#p01-budget .p01-btn').forEach(function(b){
+        b.style.cssText='font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer';
+        b.addEventListener('click',function(){preset(b.dataset.preset);});
+      });
+      preset('starter');
+    })();
+    </script>
+
+    <h2>What each tool is really for</h2>
+
+    <h3>Breadboard and jumpers</h3>
+    <p>A breadboard is a plastic block with rows of spring clips underneath. Parts pushed into the same row are connected. You can build, measure and rebuild a circuit in minutes. Buy a full-size 830-hole board: the half-size boards run out of space fast. P02 opens one up and shows the clips inside.</p>
+    <p>Get both kinds of jumper. The pre-cut, pre-bent solid wires (colour-coded by length) lie flat, so you can still see the circuit and measure it. Flexible "Dupont" leads are quicker but turn a board into a bird's nest. Tradies judge you by neatness, so start the habit now.</p>
+
+    <h3>Battery holders and plug-packs</h3>
+    <p>Batteries are the safest supply you can own: three AA cells give about 4.5 V and cannot deliver enough current to hurt you or most parts. A 9 V battery is handy for dividers and transistor labs, but it has small internal capacity and sags under load.</p>
+    <p>A <b>plug-pack</b> (wall adaptor) has a mains transformer or switch-mode converter sealed inside a double-insulated case. Only ELV comes out of its lead. Read the label carefully:</p>
+    <ul>
+      <li><b>AC plug-pack</b> ("Output: 12 V AC 1 A" or a ~ symbol). This is just a small transformer. The output is a 50 Hz sine wave. With no load it often reads 10–20% <b>higher</b> than the label, because the label is the voltage at full rated load. You need this for the rectifier labs in P06, and it mimics the 24 V AC supplies used on building controllers.</li>
+      <li><b>DC plug-pack</b> ("Output: 12 V DC 1.5 A" or a ⎓ symbol). Modern ones are regulated switch-mode supplies, so they read close to 12 V at any load up to the rating. Check the polarity symbol: most are centre-positive on the barrel plug, but not all.</li>
+    </ul>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Before you connect a new plug-pack to anything, measure its output with your meter (DC volts for a DC pack, AC volts for an AC pack) and write the reading on a piece of masking tape stuck to the pack. Check which side of the plug is positive. Mixing up an AC pack and a DC pack is a classic way to cook a module.</p></div>
+
+    <h3>The multimeter</h3>
+    <p>A digital multimeter measures voltage, current and resistance, and usually continuity (a beeper for "connected") and a diode test. P03 teaches it properly. When buying, three features matter most:</p>
+    <ul>
+      <li><b>Auto-ranging vs manual ranging.</b> A manual meter has many dial positions (200 mV, 2 V, 20 V, 200 V...) and you pick a range above the value you expect. An auto-ranging meter has one position per quantity and picks the range itself. Manual meters are cheap and teach you to estimate first. Auto-ranging is faster on a job. Both are fine for learning.</li>
+      <li><b>True RMS.</b> A basic meter measures AC correctly only for a clean sine wave. A true-RMS meter also reads distorted waveforms correctly (dimmers, variable-speed drives, switch-mode supplies). Your field meter should be true RMS.</li>
+      <li><b>CAT rating and fuses.</b> This is the safety rating. It deserves its own section.</li>
+    </ul>
+
+    <h3>CAT ratings: why CAT III matters for field work</h3>
+    <p>Meters are rated to the international standard <b>IEC 61010</b> in <b>measurement categories</b>, CAT II to CAT IV, plus a voltage (for example "CAT III 600 V"). The category is not about the normal voltage. It is about how big a <b>voltage spike (transient)</b> the meter can survive without failing in a way that hurts you. Lightning, switching of big motors and faults send short spikes of thousands of volts down building wiring. Closer to the street supply, the spikes carry more energy, because there is less wiring impedance to limit them.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 270" role="img" aria-label="Measurement categories from CAT IV at the service entrance to CAT II at power points and ELV on the bench">
+        <defs><marker id="p01-cat-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-warn-soft s-thin" x="10" y="20" width="150" height="170" rx="8"/>
+        <rect class="f-practice-soft s-thin" x="170" y="20" width="160" height="170" rx="8"/>
+        <rect class="f-theory-soft s-thin" x="340" y="20" width="150" height="170" rx="8"/>
+        <rect class="f-career-soft s-thin" x="500" y="20" width="150" height="170" rx="8"/>
+        <text class="t t-bold" x="85" y="42" text-anchor="middle">CAT IV</text>
+        <text class="t t-bold" x="250" y="42" text-anchor="middle">CAT III</text>
+        <text class="t t-bold" x="415" y="42" text-anchor="middle">CAT II</text>
+        <text class="t t-bold" x="575" y="42" text-anchor="middle">Your ELV bench</text>
+        <line class="s-line" x1="30" y1="70" x2="30" y2="150"/><line class="s-line" x1="20" y1="80" x2="40" y2="80"/>
+        <rect class="f-panel s-line" x="60" y="95" width="70" height="45" rx="4"/><text class="t t-small" x="95" y="122" text-anchor="middle">meter box</text>
+        <path class="s-line" d="M30 118 H60"/>
+        <rect class="f-panel s-line" x="190" y="88" width="60" height="60" rx="4"/>
+        <line class="s-thin" x1="200" y1="102" x2="240" y2="102"/><line class="s-thin" x1="200" y1="116" x2="240" y2="116"/><line class="s-thin" x1="200" y1="130" x2="240" y2="130"/>
+        <text class="t t-small" x="220" y="164" text-anchor="middle">switchboard</text>
+        <circle class="f-panel s-line" cx="300" cy="118" r="18"/><text class="t t-small" x="300" y="122" text-anchor="middle">M</text>
+        <text class="t t-small" x="300" y="152" text-anchor="middle">fixed motor</text>
+        <path class="s-line" d="M130 118 H190 M250 118 H282"/>
+        <rect class="f-panel s-line" x="365" y="95" width="40" height="46" rx="4"/>
+        <circle class="f-ink" cx="378" cy="112" r="2.5"/><circle class="f-ink" cx="392" cy="112" r="2.5"/><circle class="f-ink" cx="385" cy="126" r="2.5"/>
+        <text class="t t-small" x="385" y="160" text-anchor="middle">power point</text>
+        <rect class="f-panel s-line" x="425" y="100" width="50" height="36" rx="4"/><text class="t t-small" x="450" y="122" text-anchor="middle">kettle</text>
+        <path class="s-line" d="M318 118 H365 M405 118 H425"/>
+        <rect class="f-panel s-line" x="525" y="92" width="100" height="52" rx="4"/>
+        <text class="t t-small" x="575" y="114" text-anchor="middle">batteries,</text>
+        <text class="t t-small" x="575" y="130" text-anchor="middle">plug-pack leads</text>
+        <text class="t t-small t-muted" x="85" y="180" text-anchor="middle">service entrance</text>
+        <text class="t t-small t-muted" x="250" y="180" text-anchor="middle">fixed building wiring</text>
+        <text class="t t-small t-muted" x="415" y="180" text-anchor="middle">plug-in equipment</text>
+        <text class="t t-small t-muted" x="575" y="180" text-anchor="middle">no mains connection</text>
+        <path class="s-line" d="M610 222 H40" marker-end="url(#p01-cat-arr)"/>
+        <text class="t t-small" x="325" y="214" text-anchor="middle">Spike energy available rises towards the street supply</text>
+        <text class="t t-small t-red" x="325" y="252" text-anchor="middle">CAT IV, III and II locations are mains: electricians only. The rating protects you when you work nearby.</text>
+      </svg>
+      <figcaption>Figure 2. Measurement categories (IEC 61010). The higher the category, the bigger the transient the meter is built to survive. Your own measurements stay in the green zone, but on a job site your meter lives in plant rooms and comms cupboards full of CAT III equipment.</figcaption>
+    </figure>
+
+    <p>You will never measure mains in this course, so why pay for CAT III? Three reasons:</p>
+    <ol>
+      <li><b>Where you work.</b> A BMS controller, an access-control panel or a CCTV power supply often sits in the same cabinet as 230 V wiring, and a 24 V AC control transformer sits right next to its mains side. One slip of a probe, or a mislabelled terminal, puts your meter on a CAT III circuit. A properly built CAT III meter (correct input protection, spacing inside, and a <b>high-rupture-capacity (HRC) fuse</b> on the current ranges) is designed to fail safely instead of exploding in your hand.</li>
+      <li><b>Employers expect it.</b> Most companies' safe-work procedures specify the minimum meter category for site work. Turning up with a A$15 meter that has no rating looks bad.</li>
+      <li><b>Fake ratings exist.</b> Cheap meters sometimes print "CAT III 1000 V" without real testing. Look for the mark of an independent test laboratory on the meter or its documentation, buy from a reputable supplier, and check the fuse is a proper ceramic HRC type, not a glass fuse.</li>
+    </ol>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "My meter is CAT III 600 V, so I am allowed to measure 230 V."<br><b>Right:</b> The rating is about the <b>meter</b> surviving a spike. It gives you no legal permission. Measuring mains is electrical work and needs an electrical licence in Australia. The rating only protects you if an accident brings you into contact with a CAT III circuit.</p></div>
+
+    <h3>Soldering station and hand tools</h3>
+    <p>A <b>temperature-controlled station</b> has a sensor in the iron and a controller in the base. You set, say, 350 °C, and it pumps in more power when a big joint pulls heat away. Cheap uncontrolled irons either run far too hot (burning flux and lifting copper pads) or sag on large joints. P05 covers technique.</p>
+    <ul>
+      <li><b>Side cutters</b>: flush cutters for component legs. Never cut steel wire or hard wire with them; the edges chip.</li>
+      <li><b>Wire strippers</b>: an adjustable stripper has a notch or a stop for each wire size. A self-adjusting stripper grips and strips in one squeeze, which is fast on a job.</li>
+      <li><b>Crimpers</b>: a <b>ratchet</b> crimper will not release until the crimp is complete, so every crimp is the same. Pliers are not crimpers. You need one for bootlace ferrules and, later, one for insulated lugs; RJ45 crimpers come with P20.</li>
+      <li><b>Helping hands</b>: a weighted base with crocodile clips. A third and fourth hand for soldering wires together.</li>
+      <li><b>Safety glasses</b>: the cheapest life-long protection you will ever buy.</li>
+    </ul>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Safety glasses sold for work should be marked as meeting <b>AS/NZS 1337</b> (eye protectors). Most worksites make them mandatory in work areas, along with other PPE. Plug-in electrical equipment in workplaces is commonly inspected and tagged under <b>AS/NZS 3760</b> ("test and tag"), so expect your soldering station to need a tag on many sites. Confirm the current requirements with your employer and Safe Work Australia or your state's WHS regulator.</p></div>
+
+    <h2>Free virtual labs while the kit ships</h2>
+    <p>Online orders can take a week, and AliExpress can take a month. Start now with two free simulators. Both run in a web browser.</p>
+    <div class="cards">
+      <div class="card"><h4>Falstad circuit simulator</h4><p>A free in-browser simulator by Paul Falstad (falstad.com/circuit). It animates current as moving dots and colours wires by voltage, so you can <i>see</i> what a circuit does. Excellent for intuition about dividers, capacitors charging and transistor switching. No account needed.</p></div>
+      <div class="card"><h4>Tinkercad Circuits</h4><p>Autodesk's free tool (tinkercad.com, free account). You place a real-looking breadboard, battery, resistors, LEDs and a multimeter, and even simulate an Arduino. Perfect for rehearsing P02 and P11 before the parts arrive. LEDs in the simulator even "blow" if you forget the resistor.</p></div>
+    </div>
+    <div class="callout try"><span class="label">Try this</span><p>In Tinkercad Circuits, build: a 3×AA battery pack (it is in the parts list as a battery), a 330 Ω resistor and a red LED in series on a breadboard. Add a multimeter set to current in series with the LED. You should read about 7–8 mA. Now delete the resistor and start the simulation again: see what the simulator does to the LED. That is the mistake you will not make on the real bench.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Simulators are ideal circuits: perfect batteries, exact resistor values, no loose breadboard contacts. Use them to learn what <i>should</i> happen. The real bench then teaches you the 5% differences, and finding those differences is the actual job.</p></div>
+
+    <h2>Hazards that exist even at ELV</h2>
+
+    <h3>Batteries, especially lithium</h3>
+    <p>Lithium-ion (Li-ion) cells like the 18650 and lithium-polymer (LiPo) pouches store a lot of energy in a small space. If one is shorted, punctured, crushed, overcharged or charged when very cold, it can go into <b>thermal runaway</b>: the cell heats itself, vents flammable gas and burns very hot. It cannot be put out easily, and it can re-ignite.</p>
+    <ul>
+      <li>Charge lithium cells only with a charger made for that chemistry, on a non-flammable surface, and not while you sleep or leave the house.</li>
+      <li>Never use a swollen ("puffy") LiPo, a dented cell or one with torn wrapping. Tape the terminals and take it to a battery recycling point.</li>
+      <li>Store loose cells in a plastic case, never loose in a pocket or drawer with coins and keys.</li>
+      <li>Do not solder directly to cylindrical cells; buy cells with tabs or use a holder.</li>
+      <li>A 9 V battery in a drawer can short across a paperclip and start a fire. Keep the terminal cap on.</li>
+    </ul>
+    <p>Sealed lead-acid batteries (12 V, 7 Ah in alarm and access-control panels) do not usually catch fire like lithium, but their short-circuit current is huge. Always fit an inline fuse close to the battery when you use one, and remove rings and metal watch bands.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Do not put batteries in household bins: they start fires in rubbish trucks and recycling plants. Many supermarkets and hardware stores have battery recycling drop-off bins under the national battery stewardship scheme. Your council can tell you the nearest point for larger lithium batteries.</p></div>
+
+    <h3>Capacitors hold charge</h3>
+    <p>A capacitor is a small energy store. A big electrolytic capacitor can stay charged for minutes after the power is removed. The energy is <b>E = ½CV²</b>.</p>
+    <div class="formula">E = ½ C V² = ½ × 0.0047 F × (25 V)² ≈ 1.5 J
+      <small>A 4700 µF capacitor (0.0047 F) charged to 25 V stores about 1.5 joules. Shorted with a screwdriver, that energy is released in microseconds: a loud crack, a spark and a pitted tip. Not lethal at this voltage, but it can damage parts and eyes.</small></div>
+    <p>The safe way: discharge through a resistor, then confirm with the meter.</p>
+    <figure>
+      <svg viewBox="0 0 560 230" role="img" aria-label="Discharging a capacitor through a resistor while a voltmeter watches the voltage fall">
+        <path class="s-line" d="M110 50 H280 M110 180 H280"/>
+        <line class="s-line" x1="110" y1="50" x2="110" y2="104"/>
+        <line class="s-line" x1="80" y1="104" x2="140" y2="104"/>
+        <path class="s-line" d="M80 120 Q110 110 140 120"/>
+        <line class="s-line" x1="110" y1="116" x2="110" y2="180"/>
+        <text class="t t-bold" x="64" y="100">+</text>
+        <text class="t" x="20" y="140">C</text>
+        <text class="t t-small t-muted" x="10" y="158">4700 µF</text>
+        <text class="t t-small t-muted" x="10" y="174">charged</text>
+        <line class="s-line" x1="280" y1="50" x2="280" y2="70"/>
+        <path class="s-accent" d="M280 70 l10 6 l-20 12 l20 12 l-20 12 l20 12 l-20 12 l10 6"/>
+        <line class="s-line" x1="280" y1="142" x2="280" y2="180"/>
+        <text class="t" x="298" y="100">R</text>
+        <text class="t t-small t-muted" x="298" y="118">1 kΩ, ½ W or more</text>
+        <circle class="f-ink" cx="110" cy="50" r="3.5"/><circle class="f-ink" cx="110" cy="180" r="3.5"/>
+        <path class="s-line" d="M110 50 H470 V95 M110 180 H470 V135"/>
+        <circle class="f-panel s-line" cx="470" cy="115" r="22"/>
+        <text class="t t-bold" x="470" y="120" text-anchor="middle">V</text>
+        <text class="t t-small t-muted" x="430" y="80">meter on DC V</text>
+        <text class="t t-small" x="200" y="214" text-anchor="middle">τ = RC = 1000 Ω × 0.0047 F = 4.7 s.  After 5τ ≈ 24 s, under 1% remains.</text>
+      </svg>
+      <figcaption>Figure 3. Discharging a capacitor safely. The resistor limits the current; the meter shows the voltage fall away exponentially. Only remove the resistor when the meter reads close to 0 V.</figcaption>
+    </figure>
+    <p>Worked example: a 4700 µF capacitor at 25 V, discharged through 1 kΩ. The first current is I = 25 V / 1000 Ω = 25 mA, and the first power in the resistor is P = V²/R = 625/1000 = 0.63 W. That only lasts a second or so, so a ½ W resistor is fine; a 1 W one is safer. After one time constant τ = RC = 4.7 s the voltage is down to 37%, about 9 V; after 5τ (about 24 s) it is under 0.2 V.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>The capacitors inside mains equipment (camera power supplies, computer supplies, microwave ovens, TVs, LED drivers) can hold <b>hundreds of volts</b> long after unplugging. Never open mains equipment. In this course you only discharge capacitors in your own ELV circuits.</p></div>
+    <a class="crosslink" href="../theory/t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors</a>
+
+    <h3>Burns</h3>
+    <ul>
+      <li>A soldering tip at 350 °C burns skin instantly. Always return the iron to its stand. If you drop it, <b>let it fall</b>; never grab.</li>
+      <li>Resistors get hot when they dissipate more than their rating. Power in a resistor is P = I²R = V²/R. A ¼ W resistor with 9 V across 100 Ω dissipates 81/100 = 0.81 W: it will smoke and burn your finger. Feel for heat with the back of a finger, briefly, from above.</li>
+      <li>A shorted battery heats its wires. If a lead gets hot, disconnect the battery, not the hot wire.</li>
+      <li>First aid for burns: cool running water for 20 minutes, then seek medical help for anything larger than a small blister. Keep this rule written above your bench.</li>
+    </ul>
+    <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat</a>
+
+    <h3>Eyes</h3>
+    <p>Cut component legs fly fast and far. Solder can spit when it hits flux or moisture. An electrolytic capacitor connected backwards, or over its voltage rating, can burst and throw its case. Wear safety glasses for cutting, soldering and powering up anything new. Hold the leg you are cutting, or point it down into the bin.</p>
+
+    <h3>Static electricity (ESD)</h3>
+    <p>Walking on carpet can charge your body to several thousand volts. You feel a zap only above roughly 3000 V, but a few hundred volts is already enough to damage the thin gate insulation in a MOSFET or a microcontroller. The part may not die at once; it may fail weeks later. The current is tiny, so ESD is no danger to <i>you</i>; it is a danger to the parts.</p>
+    <ul>
+      <li>Keep sensitive parts in their anti-static bags or foam until you use them.</li>
+      <li>For serious work, use a commercial ESD mat and wrist strap kit with its own earthing lead. The strap contains a built-in resistor (typically 1 MΩ) so it bleeds charge slowly and is safe for you.</li>
+      <li>Avoid synthetic jumpers and working on carpet in dry weather.</li>
+    </ul>
+    <div class="callout job"><span class="label">On the job</span><p>Controller boards, camera boards and network switch modules are ESD-sensitive. Many site procedures ask you to wear a wrist strap when changing a controller I/O card or a memory module, and to handle boards by their edges. Building the habit at home makes you look experienced on day one.</p></div>
+
+    <h2>How to organise your bench</h2>
+    <p>A good bench is quick to work at and hard to hurt yourself on. A 1.2 m desk is plenty. Plan it in zones:</p>
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Top view of a home electronics bench divided into zones">
+        <rect class="f-wash s-line" x="20" y="20" width="600" height="240" rx="6"/>
+        <rect class="f-panel s-thin" x="40" y="34" width="560" height="46" rx="4"/>
+        <text class="t t-small" x="320" y="54" text-anchor="middle">Back shelf: labelled parts drawers · reference card · burn first-aid note</text>
+        <text class="t t-small t-muted" x="320" y="70" text-anchor="middle">Power board (switched, on RCD-protected circuit) mounted here, cords running backwards</text>
+        <rect class="f-theory-soft s-thin" x="40" y="94" width="150" height="150" rx="4"/>
+        <text class="t t-bold" x="115" y="114" text-anchor="middle">Measure</text>
+        <rect class="f-panel s-line" x="60" y="128" width="50" height="70" rx="4"/><text class="t t-small" x="85" y="214" text-anchor="middle">meter</text>
+        <rect class="f-panel s-line" x="120" y="140" width="56" height="40" rx="4"/><text class="t t-small" x="148" y="214" text-anchor="middle">PSU</text>
+        <rect class="f-practice-soft s-thin" x="205" y="94" width="230" height="150" rx="4"/>
+        <text class="t t-bold" x="320" y="114" text-anchor="middle">Build (in front of you)</text>
+        <rect class="f-panel s-line" x="240" y="130" width="160" height="56" rx="3"/>
+        <line class="s-thin" x1="246" y1="140" x2="394" y2="140"/><line class="s-thin" x1="246" y1="176" x2="394" y2="176"/>
+        <text class="t t-small" x="320" y="162" text-anchor="middle">breadboard</text>
+        <text class="t t-small t-muted" x="320" y="212" text-anchor="middle">clear space · good light</text>
+        <text class="t t-small t-muted" x="320" y="230" text-anchor="middle">tools in a row, same place every time</text>
+        <rect class="f-warn-soft s-thin" x="450" y="94" width="150" height="150" rx="4"/>
+        <text class="t t-bold" x="525" y="114" text-anchor="middle">Solder (hot)</text>
+        <rect class="f-panel s-line" x="465" y="130" width="60" height="40" rx="4"/><text class="t t-small" x="495" y="184" text-anchor="middle">station</text>
+        <circle class="f-panel s-line" cx="565" cy="148" r="18"/><text class="t t-small" x="565" y="184" text-anchor="middle">fan</text>
+        <rect class="f-panel s-thin" x="465" y="196" width="120" height="36" rx="4"/><text class="t t-small" x="525" y="218" text-anchor="middle">silicone mat</text>
+        <text class="t t-small t-muted" x="320" y="284" text-anchor="middle">Front edge: bin for offcuts, glasses on a hook. Hot zone on your dominant-hand side, away from cables.</text>
+      </svg>
+      <figcaption>Figure 4. A bench in three zones. The hot zone sits on your dominant-hand side so the iron's cord never crosses the work. Power cords run to the back, not across the front edge.</figcaption>
+    </figure>
+    <ul>
+      <li><b>Light</b>: a bright LED desk lamp, ideally with a magnifier. Most mistakes on a breadboard are wires one row off.</li>
+      <li><b>Surface</b>: a silicone soldering mat or a piece of MDF under the hot zone. Never solder on a carpet, bed or plastic tablecloth.</li>
+      <li><b>Power</b>: one switched power board at the back, so one switch turns everything off. If you are not sure your home's power circuits have RCDs (also called safety switches) in the switchboard, ask the owner or an electrician; a plug-in portable RCD is cheap insurance for the soldering station.</li>
+      <li><b>Parts</b>: small drawers or a tackle box, labelled by value. Tape resistor strips to card and write the value on it.</li>
+      <li><b>Tidy as you go</b>: an offcut bin at the front edge. Loose leg offcuts on a bench short out circuits.</li>
+      <li><b>Notebook</b>: a lab book (paper or a file). Write the date, what you built, what you measured and what surprised you. It becomes your portfolio (C12).</li>
+      <li><b>No food or drink at the bench.</b> Solder contains lead or flux residues; you do not want them on your sandwich.</li>
+    </ul>
+    <div class="callout job"><span class="label">On the job</span><p>On site, your "bench" is a toolbag and a ladder. The same habits carry over: a fixed place for each tool, a bag for offcuts (leaving cable offcuts in a client's ceiling is a classic complaint), PPE on before you start, and isolating power before you touch terminals. Technicians who keep a tidy van and bag are trusted with bigger jobs.</p></div>
+
+    <h2>Common mistakes</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mistake</th><th>What happens</th><th>Do this instead</th></tr>
+      <tr><td>Buying the cheapest unbranded meter for site work</td><td>Fake or missing CAT rating, glass fuse, slow readings</td><td>Learn on a cheap meter; buy a genuine CAT III true-RMS meter for jobs</td></tr>
+      <tr><td>Using an AC plug-pack where DC is needed</td><td>Modules get reverse voltage every half-cycle and fail</td><td>Read the label, measure first, tape the reading on the pack</td></tr>
+      <tr><td>Half-size breadboard</td><td>Runs out of room; cramped parts touch</td><td>Buy an 830-hole board, or two</td></tr>
+      <tr><td>Uncontrolled cheap iron</td><td>Burnt flux, lifted pads, frustration</td><td>Temperature-controlled station</td></tr>
+      <tr><td>Charging Li-ion cells unattended on a bed or carpet</td><td>Fire risk if a cell fails</td><td>Proper charger, hard non-flammable surface, stay nearby</td></tr>
+      <tr><td>"It's only 12 V" with a lead-acid battery</td><td>Shorted spanner, burns, melted wire</td><td>Inline fuse at the battery, rings off, insulated tools</td></tr>
+      <tr><td>Opening a plug-pack or camera power supply to "see inside"</td><td>Contact with mains and charged capacitors</td><td>Never. These are sealed for a reason. Only use the ELV output.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A job ad mentions "low voltage cabling". A friend says that means safe 12 V wiring. What does "low voltage" mean in Australian electrical rules?</summary><div class="answer"><p>Under AS/NZS 3000, <b>low voltage (LV)</b> means above ELV up to 1000 V AC or 1500 V DC, so it <b>includes 230 V mains</b>. Below that is <b>extra-low voltage (ELV)</b>: ≤ 50 V AC or ≤ 120 V ripple-free DC. In everyday trade talk, "low voltage" or "LV" is often used loosely for data and security cabling, so read the job carefully, but in the rules the word means mains.</p></div></details>
+    <details class="quiz"><summary>Is 24 V AC from a building controller transformer ELV? Is 48 V PoE?</summary><div class="answer"><p>Yes to both. 24 V AC is below 50 V AC. PoE runs at roughly 44–57 V DC, which is below the 120 V ripple-free DC limit. The transformer's <i>primary</i> side, however, is 230 V mains and is electrician-only work.</p></div></details>
+    <details class="quiz"><summary>Why is a CAT III 600 V meter safer near a switchboard than a CAT II 600 V meter, when both say 600 V?</summary><div class="answer"><p>The category describes the size of transient spike the meter is built to survive at that working voltage. Closer to the supply origin, spikes carry more energy because there is less wiring impedance to limit them. A CAT III 600 V meter is tested with larger impulses than a CAT II 600 V meter, with better internal spacing and fusing, so it is less likely to arc over or explode.</p></div></details>
+    <details class="quiz"><summary>You have a 2200 µF capacitor charged to 16 V. How much energy is stored, and how long does a 1 kΩ resistor take to discharge it to under 1%?</summary><div class="answer"><p>E = ½CV² = ½ × 0.0022 × 256 ≈ 0.28 J. τ = RC = 1000 × 0.0022 = 2.2 s. Under 1% needs about 5τ ≈ 11 s (e<sup>−5</sup> ≈ 0.7%). Confirm with the meter before touching.</p></div></details>
+    <details class="quiz"><summary>Why does 12 V DC not shock you through dry hands, while 230 V can kill?</summary><div class="answer"><p>Dry skin has high resistance at low voltage, roughly 100 kΩ or more hand to hand, so I = 12/100 000 ≈ 0.12 mA, below what you can feel. At 230 V the skin breaks down and body resistance can fall to about 1 kΩ: I ≈ 230 mA. Tens of milliamps across the chest can cause ventricular fibrillation. Current through the body is what kills; voltage is what drives it.</p></div></details>
+    <details class="quiz"><summary>Your new AC plug-pack is labelled 12 V AC 1 A, but your meter reads 14.6 V AC with nothing connected. Is it faulty?</summary><div class="answer"><p>Probably not. Small transformers are labelled with their voltage at full rated load. With no load there is no voltage drop in the winding resistance, so the output reads 10–20% high. Connect a sensible load and it will fall towards 12 V. This is also why a 24 V AC controller supply often reads 26–28 V on a lightly loaded site.</p></div></details>
+    <details class="quiz"><summary>Why would you put an inline fuse right next to a 12 V 7 Ah lead-acid battery, when the circuit only draws 200 mA?</summary><div class="answer"><p>The fuse protects the <b>wire</b>, not the circuit. If the wire is pinched or shorted anywhere, the battery can deliver hundreds of amps, heating the wire until the insulation melts and starts a fire. A fuse at the battery end protects the whole length of wire. Choose a rating above the normal current (for example 1 A) but below what the wire can safely carry.</p></div></details>
+    <details class="quiz"><summary>Name two hazards of a damaged LiPo pack, and what to do with a swollen one.</summary><div class="answer"><p>Thermal runaway (fierce fire with flammable gas venting) and re-ignition after it seems to be out. A swollen pack has already started to decompose internally. Stop using it, do not charge it, tape the terminals, keep it on a non-flammable surface and take it to a battery recycling drop-off.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can state the ELV limits (50 V AC, 120 V ripple-free DC) and explain why mains work is for licensed electricians only.</span></li>
+      <li><input type="checkbox"><span>I have bought (or ordered) the starter tier and know what each item is for.</span></li>
+      <li><input type="checkbox"><span>I can explain auto vs manual ranging, true RMS, and what a CAT III rating protects against.</span></li>
+      <li><input type="checkbox"><span>I can tell an AC plug-pack from a DC plug-pack by its label and by measuring it.</span></li>
+      <li><input type="checkbox"><span>I can discharge a capacitor safely through a resistor and confirm it with a meter.</span></li>
+      <li><input type="checkbox"><span>I know the hazards of Li-ion/LiPo and lead-acid batteries and how to store and recycle them.</span></li>
+      <li><input type="checkbox"><span>My bench has a hot zone, a build zone and a measure zone, with safety glasses within reach.</span></li>
+      <li><input type="checkbox"><span>I have built and simulated a first LED circuit in Falstad or Tinkercad Circuits.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

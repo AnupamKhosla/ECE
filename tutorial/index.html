@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ECE Workbench</title>
+<meta name="description" content="A practical electronics course in two books, Practice and Theory, plus an Australia job track.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page" style="max-width:1100px">
+    <div class="hero">
+      <div id="theme-top"></div>
+      <span class="eyebrow" style="--accent:var(--theory);--accent-soft:var(--theory-soft)">Your course · started 2 Nov 2026</span>
+      <h1>ECE Workbench</h1>
+      <p class="lede">A practical electronics course built around one goal: a hands-on technical job in Australia. Two books that work together, the way a lab and a lecture should, and a job track for the systems Australian employers actually hire for.</p>
+      <p class="livepill">This page updates itself. New chapters appear while you read.</p>
+    </div>
+
+    <div class="books" id="bookstats"></div>
+
+    <div class="compare">
+      <div>
+        <h4 style="margin-top:0">How to use the two books</h4>
+        <p style="font-size:15px">Start in the <b>Practice Book</b>. Every lab has a blue <b>"Why it works"</b> box that links to the <b>Theory Book</b> chapter behind it. Read the theory when the lab makes you curious, not before. Your earlier diode session lives in the Theory Book as <b>T11+</b>.</p>
+      </div>
+      <div>
+        <h4 style="margin-top:0">Recently written</h4>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="callout aus">
+      <span class="label">Australia rule you must know first</span>
+      <p>In Australia only a licensed electrician may work on mains wiring (anything above 50 V AC or 120 V ripple-free DC). Everything in this course stays at <b>extra-low voltage</b>: batteries, USB, 5 V, 12 V and 24 V DC. The good news: BMS, CCTV, access control, data cabling and telecom work is mostly extra-low voltage, so these are real jobs you can get without an electrical licence.</p>
+    </div>
+
+    <div id="hub"></div>
+  </main>
+</div>
+<script src="assets/toc.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
