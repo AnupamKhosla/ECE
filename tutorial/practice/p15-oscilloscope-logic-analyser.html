@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P15 · Seeing signals: oscilloscope and logic analyser</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P15</span>
+    <h1>Seeing signals: oscilloscope and logic analyser</h1>
+    <p class="lede">A multimeter gives you one number. An oscilloscope shows you the whole shape of a voltage over time, and a logic analyser turns digital signals into decoded bytes. By the end you will set volts/div, time/div and the trigger with confidence, measure PWM and power-supply ripple from earlier labs, and decode UART and I²C traffic with free software.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$15 (analyser) to A$900 (bench scope)</span><span><b>Theory</b> T07, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What a scope shows that a meter cannot</h2>
+    <p>A multimeter on DC volts measures for a fraction of a second and shows the <b>average</b>. On AC volts it shows an <b>RMS</b> value (a kind of effective average). Either way you get one number, updated a few times per second. Anything that happens faster, or any shape, is hidden.</p>
+    <p>An <b>oscilloscope</b> ("scope") draws a graph: voltage up the screen, time across. It captures millions of samples per second, so it shows things a meter never can:</p>
+    <ul>
+      <li>the real shape of a <b>PWM</b> signal: 0 V and 5 V, not the "average" the meter shows;</li>
+      <li>the <b>ripple</b> riding on a DC supply;</li>
+      <li><b>glitches</b>, spikes and <b>ringing</b> lasting microseconds;</li>
+      <li>button <b>bounce</b> (P11) and coil <b>kickback</b> spikes (P08, P13);</li>
+      <li>serial <b>data</b>: the bits of UART, I²C and RS-485 (P14);</li>
+      <li><b>noise</b> on sensor and 0–10 V signals.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="A meter shows an average, a scope shows the PWM waveform">
+        <rect class="f-wash s-line" x="40" y="30" width="170" height="170" rx="14"/>
+        <rect class="f-panel s-line" x="60" y="50" width="130" height="50" rx="4"/>
+        <text class="t t-bold" x="125" y="84" text-anchor="middle" style="font-size:22px">1.25 V</text>
+        <circle class="f-panel s-line" cx="125" cy="150" r="30"/>
+        <line class="s-line" x1="125" y1="150" x2="140" y2="128"/>
+        <text class="t t-small t-muted" x="125" y="220" text-anchor="middle">meter: "1.25 V DC"</text>
+        <rect class="f-wash s-line" x="290" y="30" width="320" height="170" rx="8"/>
+        <g class="s-thin">
+          <line x1="290" y1="72.5" x2="610" y2="72.5"/><line x1="290" y1="115" x2="610" y2="115"/><line x1="290" y1="157.5" x2="610" y2="157.5"/>
+          <line x1="354" y1="30" x2="354" y2="200"/><line x1="418" y1="30" x2="418" y2="200"/><line x1="482" y1="30" x2="482" y2="200"/><line x1="546" y1="30" x2="546" y2="200"/>
+        </g>
+        <polyline class="s-amber" points="290,180 310,180 310,60 342,60 342,180 438,180 438,60 470,60 470,180 566,180 566,60 598,60 598,180 610,180"/>
+        <text class="t t-small" x="296" y="56">5 V</text>
+        <text class="t t-small" x="296" y="196">0 V</text>
+        <text class="t t-small t-muted" x="450" y="220" text-anchor="middle">scope: 0–5 V pulses, 25% duty, 490 Hz</text>
+      </svg>
+      <figcaption>Figure 1. The same Arduino PWM output (analogWrite value 64) measured two ways. The meter's 1.25 V is the average (25% of 5 V); the signal is never actually at 1.25 V. Only the scope tells you that.</figcaption>
+    </figure>
+
+    <h2>What you need, and buying a scope</h2>
+    <ul class="kit">
+      <li><b>An oscilloscope</b><small>Any class below; two channels is the sweet spot</small></li>
+      <li><b>×10 probes</b><small>Usually included with bench scopes</small></li>
+      <li><b>USB logic analyser, 8 channels</b><small>~A$15 · the small "24 MHz 8-channel" type</small></li>
+      <li><b>PulseView (sigrok)</b><small>Free, Windows/macOS/Linux</small></li>
+      <li><b>Your 555 PWM circuit</b><small>From P09</small></li>
+      <li><b>Your rectifier and smoothing circuit</b><small>From P06/P07, on an AC plug-pack</small></li>
+      <li><b>Arduino and I²C module</b><small>From P11 and P14</small></li>
+    </ul>
+    <div class="table-wrap"><table>
+      <tr><th>Class</th><th>Indicative price</th><th>Typical capability</th><th>Good for</th></tr>
+      <tr><td>DIY kit / pocket single-channel</td><td>~A$30–80</td><td>Bandwidth in the hundreds of kHz; 1 channel; small screen</td><td>Learning, audio, slow PWM, 50 Hz ripple</td></tr>
+      <tr><td>USB PC scope</td><td>~A$80–300</td><td>2 channels, tens of MHz; uses your laptop screen</td><td>Bench work on a budget</td></tr>
+      <tr><td>Handheld battery scope or scope-meter</td><td>~A$100–500+</td><td>1–2 channels, 10–100 MHz; often also a multimeter</td><td>Field work: plant rooms, comms cabinets</td></tr>
+      <tr><td>Entry bench DSO</td><td>~A$400–900</td><td>2–4 channels, 50–200 MHz, 1 GSa/s, serial decode (sometimes optional)</td><td>Everything in this course and most service work</td></tr>
+    </table></div>
+    <p>Prices are indicative and change often. Well-known entry-level makers include Rigol, Siglent, Owon and Hantek, sold through element14, RS Components, Jaycar, Altronics and online. Three numbers matter:</p>
+    <ul>
+      <li><b>Bandwidth</b> (MHz): the frequency at which a sine wave's displayed amplitude has fallen by about 30%. Choose at least 3–5 times the highest frequency you care about; square waves need more, because their sharp edges contain higher harmonics.</li>
+      <li><b>Sample rate</b> (Sa/s): how many points per second it captures. Aim for at least 5–10 samples across the fastest detail you want to see.</li>
+      <li><b>Memory depth</b>: how many samples it stores. Deep memory lets you keep a high sample rate over a long time window, for example a whole Modbus frame.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Buy a scope whose power supply carries the RCM mark, and keep it on a tested and tagged lead if your workplace requires it (common on construction and commercial sites under work health and safety rules). Second-hand scopes on marketplaces are good value; ask the seller to show the self-calibration passing.</p></div>
+
+    <h2>Probes: ×1, ×10 and compensation</h2>
+    <p>A scope input looks like <b>1 MΩ in parallel with about 15–20 pF</b>. A probe cable adds more capacitance. That capacitance is the problem: at high frequencies it draws current from your circuit and rounds off fast edges.</p>
+    <ul>
+      <li><b>×1 setting:</b> the tip connects straight through. Full sensitivity (good for tiny signals), but the cable's ~100 pF loads the circuit and bandwidth is often only a few MHz.</li>
+      <li><b>×10 setting:</b> a 9 MΩ resistor in the probe tip forms a 10:1 divider with the scope's 1 MΩ. The circuit now sees about 10 MΩ and only around 10–15 pF, so it is disturbed far less, and the full scope bandwidth is available. The signal arrives 10 times smaller, so you must set the channel's probe factor to ×10 and the scope multiplies back. <b>Use ×10 for nearly everything.</b></li>
+    </ul>
+    <p>For the divider to be correct at all frequencies, the capacitor across the 9 MΩ must match the scope's input capacitance in the right ratio. A small trimmer in the probe sets this: <b>compensation</b>. Do it once per probe, per channel.</p>
+    <ol class="steps">
+      <li><p><b>Connect</b> the probe tip to the scope's calibration terminal (often marked with a square-wave symbol, giving roughly 1 kHz) and the ground clip to its ground tab. Set the probe switch and the channel to ×10.</p></li>
+      <li><p><b>Press Auto (or Autoset)</b>, then adjust to show two or three cycles filling most of the screen.</p></li>
+      <li><p><b>Adjust the trimmer</b> with the plastic tool until the tops and bottoms are flat with square corners, as in Figure 2.</p></li>
+    </ol>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-label="Probe compensation: over-compensated, correct and under-compensated square waves">
+        <polyline class="s-amber" points="20,120 40,120 40,34 46,40 52,48 60,50 100,50 100,136 106,130 112,122 120,120 160,120 160,34 166,40 172,48 180,50 196,50"/>
+        <text class="t t-small" x="108" y="160" text-anchor="middle">over-compensated: spikes</text>
+        <polyline class="s-green" points="230,120 250,120 250,50 310,50 310,120 370,120 370,50 406,50"/>
+        <text class="t t-small t-green" x="318" y="160" text-anchor="middle">correct: flat and square</text>
+        <path class="s-amber" d="M440 120 H460 Q463 54 490 50 H520 Q523 116 550 120 H580 Q583 54 610 50 H620"/>
+        <text class="t t-small" x="530" y="160" text-anchor="middle">under-compensated: rounded</text>
+      </svg>
+      <figcaption>Figure 2. Adjust the probe trimmer until the calibration square wave looks like the middle trace. A badly compensated probe makes your own circuit's edges look wrong when they are fine, or the other way round.</figcaption>
+    </figure>
+
+    <h2>The ground clip is earthed: the one rule that saves equipment</h2>
+    <p>On almost every mains-powered bench scope, the probe's <b>ground clip is connected to the scope's metal case and to mains protective earth</b> through the power cord. The clip is not a floating "negative lead" like a multimeter's black lead. Wherever you clip it, you connect that point to earth.</p>
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-label="Wrongly placed ground clip shorting a supply through protective earth">
+        <rect class="f-wash s-line" x="20" y="40" width="110" height="80" rx="6"/>
+        <text class="t t-small t-bold" x="75" y="70" text-anchor="middle">Desktop PC</text>
+        <text class="t t-small" x="75" y="88" text-anchor="middle">(earthed)</text>
+        <text class="t t-small" x="138" y="50">5 V</text>
+        <line class="s-line" x1="130" y1="55" x2="200" y2="55"/>
+        <rect class="f-panel s-line" x="200" y="45" width="50" height="20"/>
+        <text class="t t-small" x="225" y="38" text-anchor="middle">0.1 Ω shunt</text>
+        <line class="s-line" x1="250" y1="55" x2="300" y2="55"/>
+        <text class="t t-small" x="138" y="114">0 V</text>
+        <line class="s-line" x1="130" y1="105" x2="300" y2="105"/>
+        <rect class="f-accent-soft s-accent" x="300" y="40" width="100" height="80" rx="6"/>
+        <text class="t t-small t-bold" x="350" y="84" text-anchor="middle">Arduino</text>
+        <circle class="f-ink" cx="185" cy="55" r="3.5"/>
+        <rect class="f-wash s-line" x="470" y="40" width="190" height="90" rx="6"/>
+        <text class="t t-small t-bold" x="565" y="70" text-anchor="middle">Bench scope</text>
+        <text class="t t-small" x="565" y="88" text-anchor="middle">mains powered</text>
+        <text class="t t-small t-muted" x="565" y="106" text-anchor="middle">clip = case = earth</text>
+        <path class="s-red" d="M470 112 H440 V170 H185 V55"/>
+        <text class="t t-small t-red" x="300" y="164" text-anchor="middle">ground clip on the 5 V side: WRONG</text>
+        <path class="s-line" d="M75 120 V240"/>
+        <path class="s-line" d="M565 130 V240"/>
+        <path class="s-red s-dash" d="M75 240 H565"/>
+        <line class="s-line" x1="61" y1="240" x2="89" y2="240"/><line class="s-line" x1="66" y1="246" x2="84" y2="246"/><line class="s-line" x1="71" y1="252" x2="79" y2="252"/>
+        <line class="s-line" x1="551" y1="240" x2="579" y2="240"/><line class="s-line" x1="556" y1="246" x2="574" y2="246"/><line class="s-line" x1="561" y1="252" x2="569" y2="252"/>
+        <text class="t t-small t-red" x="320" y="232" text-anchor="middle">fault current flows through the building's protective earth</text>
+        <text class="t t-small" x="340" y="284" text-anchor="middle">Right way: CH1 tip on one end of the shunt, CH2 tip on the other, both clips on 0 V, display CH1 − CH2.</text>
+      </svg>
+      <figcaption>Figure 3. The PC's 0 V is earthed, and so is the scope's ground clip. Clipping it to the 5 V side shorts the 5 V supply to 0 V through the two earth connections. At best the USB port shuts down; at worst tracks, probes or ports burn.</figcaption>
+    </figure>
+    <div class="callout warn"><span class="label">Safety: scope ground and mains</span><p>
+      1. <b>Only clip the ground lead to a point that is at ground</b> (the circuit's 0 V) unless you are certain the whole circuit floats (battery, or an isolated plug-pack with nothing else connected).<br>
+      2. <b>Never remove or defeat the scope's earth pin</b> ("floating the scope"). Its case could then rise to a dangerous voltage.<br>
+      3. <b>Never probe mains.</b> Measuring 230 V needs differential probes, equipment rated for the right measurement category (CAT II/III), and in Australia the work is for licensed electricians. Everything in this course stays at extra-low voltage.<br>
+      4. <b>With two probes, both ground clips are joined inside the scope.</b> Clip both to the same point.<br>
+      5. <b>Rectifier circuits:</b> clip only to the DC negative output. A ground clip on the AC side of a bridge rectifier, with another clip on DC negative, shorts one of the diodes.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The ground clip is just the negative lead, like on my multimeter." A multimeter is battery-powered and fully floating, so its black lead can go anywhere. A mains-powered scope's ground is tied to earth. Battery handheld scopes are different again: they float, but on many models the channels share one common, so two clips at different voltages still short. Read the manual for your exact scope.</p></div>
+
+    <h2>The controls: volts/div, time/div and the trigger</h2>
+    <p>The screen is a grid, usually <b>10 divisions across</b> and <b>8 divisions high</b>. Every control answers one question about that grid.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Control</th><th>Question it answers</th><th>Typical setting for a 5 V Arduino signal</th></tr>
+      <tr><td>Volts/div (vertical scale)</td><td>How many volts is one square tall?</td><td>1 V/div or 2 V/div</td></tr>
+      <tr><td>Vertical position</td><td>Where is 0 V on the screen? (marked by a small arrow)</td><td>2–3 divisions below centre</td></tr>
+      <tr><td>Coupling: DC / AC</td><td>Show the full voltage, or only the changing part?</td><td>DC normally; AC to see small ripple on a big DC level</td></tr>
+      <tr><td>Time/div (horizontal scale)</td><td>How much time is one square wide?</td><td>So that 2–4 cycles fit across</td></tr>
+      <tr><td>Trigger source, slope, level</td><td>On which channel, rising or falling edge, and at what voltage should the picture start?</td><td>CH1, rising, half-way (e.g. 2.5 V)</td></tr>
+      <tr><td>Trigger mode: Auto / Normal / Single</td><td>Draw even without a trigger? Wait? Capture once and stop?</td><td>Auto to start; Single to catch one event</td></tr>
+    </table></div>
+    <p><b>Worked example.</b> A 0–5 V square wave at 1 kHz. At 1 V/div it is 5 divisions tall. Its period is 1/1000 = 1 ms. At 200 µs/div one period spans 5 divisions, so you see two full cycles across the 10-division screen. Reading back: count 5 divisions × 200 µs = 1 ms → f = 1 kHz.</p>
+    <h3>Why the trigger matters</h3>
+    <p>The scope captures a new picture many times per second. Without a trigger, each picture starts at a random point in the waveform, so the trace slides about and blurs. The <b>trigger</b> tells the scope: "start every picture at the moment the signal crosses this level, going in this direction". Every picture then lines up exactly, and a repeating waveform stands still. If the trigger level is outside the signal's range (above its top or below its bottom), nothing ever triggers: in Auto mode the scope draws anyway, untriggered and rolling; in Normal mode the screen freezes on the last good picture.</p>
+
+    <div class="widget" id="p15-scope">
+      <span class="label">Interactive · Oscilloscope simulator</span>
+      <label>Signal on CH1 <select id="p15-sig">
+        <option value="sine">Sine, 1 kHz, 6 V peak-to-peak</option>
+        <option value="square">Square, 1 kHz, 0–5 V</option>
+        <option value="pwm">Arduino PWM, 490 Hz, 0–5 V, 25% duty</option>
+        <option value="ripple">12 V DC supply with 1 V ripple at 100 Hz</option>
+      </select></label>
+      <svg id="p15-scr" viewBox="0 0 500 400" role="img" aria-label="Oscilloscope screen" style="max-width:560px;margin:10px 0"></svg>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 16px">
+        <label>Volts/div <select id="p15-vd"><option value="0.1">100 mV</option><option value="0.2">200 mV</option><option value="0.5">500 mV</option><option value="1" selected>1 V</option><option value="2">2 V</option><option value="5">5 V</option></select></label>
+        <label>Time/div <select id="p15-td"><option value="0.00005">50 µs</option><option value="0.0001">100 µs</option><option value="0.0002" selected>200 µs</option><option value="0.0005">500 µs</option><option value="0.001">1 ms</option><option value="0.002">2 ms</option><option value="0.005">5 ms</option></select></label>
+        <label>Coupling <select id="p15-cp"><option value="dc">DC</option><option value="ac">AC</option></select></label>
+        <label>Trigger slope <select id="p15-sl"><option value="rise">Rising edge</option><option value="fall">Falling edge</option></select></label>
+      </div>
+      <label>Trigger level <span class="out" id="p15-tlv">1.0 V</span><input type="range" id="p15-tl" min="-8" max="16" step="0.1" value="1"></label>
+      <label>Vertical position (divisions) <span class="out" id="p15-posv">0</span><input type="range" id="p15-pos" min="-4" max="4" step="0.5" value="0"></label>
+      <div class="readings">
+        <div><small>Trigger status</small><span class="out" id="p15-st">Trig'd</span></div>
+        <div><small>Peak-to-peak</small><span class="out" id="p15-vpp">6.00 V</span></div>
+        <div><small>Period / frequency</small><span class="out" id="p15-per">1.00 ms</span></div>
+        <div><small>Mean (DC average)</small><span class="out" id="p15-mean">0.00 V</span></div>
+      </div>
+      <p id="p15-tip" style="font-size:15px;margin-top:10px"></p>
+    </div>
+    <script>
+    (function(){
+      function $(i){return document.getElementById(i);}
+      function fr(x){return x-Math.floor(x);}
+      var S={
+        sine:{f:1000,mean:0,vpp:6,lo:-3,hi:3,fn:function(t){return 3*Math.sin(2*Math.PI*1000*t);}},
+        square:{f:1000,mean:2.5,vpp:5,lo:0,hi:5,fn:function(t){return fr(t*1000)<0.5?5:0;}},
+        pwm:{f:490,mean:1.25,vpp:5,lo:0,hi:5,fn:function(t){return fr(t*490)<0.25?5:0;}},
+        ripple:{f:100,mean:12,vpp:1,lo:11.5,hi:12.5,fn:function(t){var p=fr(t*100);return p<0.15?11.5+p/0.15:12.5-(p-0.15)/0.85;}}
+      };
+      var ids=['p15-sig','p15-vd','p15-td','p15-cp','p15-sl','p15-tl','p15-pos'];
+      function fmtT(s){return s>=1e-3?(s*1e3).toFixed(2)+' ms':(s*1e6).toFixed(0)+' µs';}
+      function draw(){
+        var s=S[$('p15-sig').value], V=+$('p15-vd').value, Td=+$('p15-td').value, ac=$('p15-cp').value==='ac', rise=$('p15-sl').value==='rise', L=+$('p15-tl').value, off=+$('p15-pos').value;
+        var sub=ac?s.mean:0;
+        function v(t){return s.fn(t)-sub;}
+        var T=1/s.f, t0=null, N=4000;
+        for(var i=1;i<=N;i++){var a=v((i-1)/N*T), b=v(i/N*T); if(rise?(a<L&&b>=L):(a>L&&b<=L)){t0=i/N*T;break;}}
+        var trig=t0!==null; if(!trig) t0=Math.random()*T;
+        function y(volts){return 200-(volts/V+off)*50;}
+        var g='<rect class="f-wash" x="0" y="0" width="500" height="400"/>';
+        for(var k=1;k<10;k++) g+='<line class="s-thin" x1="'+k*50+'" y1="0" x2="'+k*50+'" y2="400"'+(k===5?'':' style="opacity:.5"')+'/>';
+        for(var j=1;j<8;j++) g+='<line class="s-thin" x1="0" y1="'+j*50+'" x2="500" y2="'+j*50+'"'+(j===4?'':' style="opacity:.5"')+'/>';
+        g+='<rect class="s-line" x="0.5" y="0.5" width="499" height="399" fill="none"/>';
+        var pts=[], off_=false;
+        for(var x=0;x<=500;x+=0.5){var t=t0+(x-250)/50*Td, yy=y(v(t)); if(yy<0||yy>400) off_=true; yy=Math.max(-1,Math.min(401,yy)); pts.push(x+','+yy.toFixed(1));}
+        g+='<polyline class="s-amber" points="'+pts.join(' ')+'"/>';
+        var yz=y(0); if(yz>=0&&yz<=400) g+='<polygon class="f-amber" points="0,'+(yz-7)+' 12,'+yz+' 0,'+(yz+7)+'"/><text class="t t-small t-bold" x="15" y="'+(yz+4)+'">1</text>';
+        var yl=y(L), ylc=Math.max(6,Math.min(394,yl));
+        g+='<polygon class="f-red" points="500,'+(ylc-7)+' 488,'+ylc+' 500,'+(ylc+7)+'"/>';
+        if(yl>=0&&yl<=400) g+='<line class="s-red s-dash" style="stroke-width:1" x1="0" y1="'+yl+'" x2="488" y2="'+yl+'"/>';
+        g+='<line class="s-red" style="stroke-width:1" x1="250" y1="0" x2="250" y2="10"/><text class="t t-small t-muted" x="256" y="12">T</text>';
+        g+='<text class="t t-small t-muted" x="6" y="394">CH1 '+$('p15-vd').selectedOptions[0].text+'/div  '+(ac?'AC':'DC')+'</text>';
+        g+='<text class="t t-small t-muted" x="494" y="394" text-anchor="end">'+$('p15-td').selectedOptions[0].text+'/div</text>';
+        if(!trig) g+='<text class="t t-bold t-red" x="494" y="22" text-anchor="end">AUTO: NOT TRIGGERED</text>';
+        $('p15-scr').innerHTML=g;
+        $('p15-tlv').textContent=L.toFixed(1)+' V';
+        $('p15-posv').textContent=off;
+        $('p15-st').textContent=trig?"Trig'd":'Auto (rolling)';
+        $('p15-vpp').textContent=s.vpp.toFixed(2)+' V = '+(s.vpp/V).toFixed(1)+' div';
+        $('p15-per').textContent=fmtT(T)+' = '+(T/Td).toFixed(1)+' div · '+(s.f>=1000?(s.f/1000).toFixed(2)+' kHz':s.f+' Hz');
+        $('p15-mean').textContent=s.mean.toFixed(2)+' V';
+        var tip;
+        if(!trig) tip='The trigger level ('+L.toFixed(1)+' V) is outside the signal’s range on screen ('+(s.lo-sub).toFixed(1)+' to '+(s.hi-sub).toFixed(1)+' V'+(ac?', after AC coupling':'')+'). Each capture starts at a random point, so the picture jumps. Move the level into the signal.';
+        else if(off_) tip='Part of the trace is off the screen. Increase volts/div or move the vertical position until the whole waveform fits.';
+        else if(T/Td>10) tip='Less than one cycle fits on screen. Increase time/div to see whole cycles.';
+        else if(T/Td<0.7) tip='Many cycles squeezed together. Decrease time/div to see the shape of each cycle.';
+        else if($('p15-sig').value==='ripple'&&!ac) tip='The 1 V ripple sits on 12 V. Try AC coupling and 200 mV/div to magnify just the ripple.';
+        else tip='Stable, triggered picture. The trigger point is the centre of the screen (marked T); the red arrow on the right shows the trigger level.';
+        $('p15-tip').textContent=tip;
+      }
+      ids.forEach(function(i){$(i).addEventListener('input',draw);$(i).addEventListener('change',draw);});
+      draw(); setInterval(draw,300);
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>In the simulator: choose the 12 V ripple signal at 1 V/div DC coupling. You will need to move the trace down to see it, and the ripple is a thin wiggle. Now switch to AC coupling, 200 mV/div and 5 ms/div, and set the trigger to 0 V. The ripple fills the screen. That is exactly how you measure a real power supply.</p></div>
+
+    <h2>Measurement 1: PWM from your 555 (P09) and Arduino</h2>
+    <ol class="steps">
+      <li><p><b>Connect</b> CH1 (×10) tip to the 555 output (pin 3), ground clip to the circuit's 0 V. Your circuit runs from a battery or plug-pack, so the clip is safe on 0 V.</p></li>
+      <li><p><b>Set</b> DC coupling, 2 V/div, 0 V marker two divisions below centre, trigger CH1 rising at about half the supply voltage. Press Auto if you are lost, then fine-tune.</p></li>
+      <li><p><b>Measure</b> with the cursors or the automatic measurements: frequency, period, positive width, duty cycle, peak-to-peak. Compare frequency with your P09 calculation f ≈ 1.44 / ((R1 + 2R2) × C).</p></li>
+      <li><p><b>Compare with the meter.</b> Put the meter on DC volts across the same points. It should read about duty × V<sub>high</sub>.</p></li>
+      <li><p><b>Arduino PWM.</b> Probe an Uno pin running <code>analogWrite(9, 64)</code>. Expect about 490 Hz and 25% duty. Pins 5 and 6 give about 980 Hz.</p></li>
+    </ol>
+    <h3>Expected readings (example: 9 V supply, R1 = 1 kΩ, R2 = 10 kΩ, C = 100 nF)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Frequency</td><td>1.44 / (21 kΩ × 100 nF) ≈ 690 Hz</td><td>Capacitor tolerance (±10–20%) explains small errors</td></tr>
+      <tr><td>Duty cycle</td><td>(R1 + R2)/(R1 + 2R2) = 11/21 ≈ 52%</td><td>Check R1 and R2 are not swapped</td></tr>
+      <tr><td>High level</td><td>~7.5–8.5 V on a 9 V supply (bipolar NE555 output drops 1–1.5 V)</td><td>CMOS 555 (e.g. 7555) gives nearly full supply</td></tr>
+      <tr><td>Rise time (at 100 ns/div)</td><td>Around 100 ns for an NE555</td><td>Much slower: probe on ×1, or poorly compensated</td></tr>
+      <tr><td>Meter DC reading</td><td>≈ 0.52 × high level ≈ 4.2 V</td><td>Some meters misread PWM; trust the scope</td></tr>
+    </table></div>
+
+    <h2>Measurement 2: ripple on your rectifier supply (P07)</h2>
+    <p>Rebuild the full-wave bridge with a smoothing capacitor from P07, fed from an AC plug-pack (extra-low voltage). Add a load so ripple appears.</p>
+    <figure>
+      <svg viewBox="0 0 680 250" role="img" aria-label="Rectifier with smoothing capacitor and load, probed for ripple, and the expected ripple waveform">
+        <rect class="f-wash s-line" x="20" y="60" width="100" height="70" rx="6"/>
+        <text class="t t-small" x="70" y="90" text-anchor="middle">12 V AC</text>
+        <text class="t t-small" x="70" y="106" text-anchor="middle">plug-pack</text>
+        <line class="s-line" x1="120" y1="80" x2="150" y2="80"/>
+        <line class="s-line" x1="120" y1="110" x2="150" y2="110"/>
+        <rect class="f-panel s-line" x="150" y="60" width="70" height="70" rx="4"/>
+        <text class="t t-small" x="185" y="90" text-anchor="middle">bridge</text>
+        <text class="t t-small t-muted" x="185" y="106" text-anchor="middle">4 diodes</text>
+        <path class="s-line" d="M220 75 H330"/>
+        <path class="s-line" d="M220 115 H330"/>
+        <text class="t t-small" x="232" y="68">DC +</text>
+        <text class="t t-small" x="232" y="134">DC −</text>
+        <circle class="f-ink" cx="260" cy="75" r="3"/><circle class="f-ink" cx="260" cy="115" r="3"/>
+        <path class="s-line" d="M260 75 V88 M248 88 H272 M248 98 Q260 92 272 98 M260 96 V115"/>
+        <text class="t t-small" x="236" y="160">1000 µF</text>
+        <circle class="f-ink" cx="310" cy="75" r="3"/><circle class="f-ink" cx="310" cy="115" r="3"/>
+        <rect class="f-panel s-line" x="302" y="82" width="16" height="26"/>
+        <text class="t t-small" x="296" y="160">150 Ω, 5 W</text>
+        <path class="s-amber" d="M330 75 H360"/>
+        <text class="t t-small" x="364" y="79">CH1 tip</text>
+        <path class="s-line" d="M330 115 H360"/>
+        <text class="t t-small" x="364" y="119">ground clip</text>
+        <rect class="f-wash" x="450" y="30" width="210" height="160"/>
+        <g class="s-thin" style="opacity:.6"><line x1="450" y1="50" x2="660" y2="50"/><line x1="450" y1="70" x2="660" y2="70"/><line x1="450" y1="90" x2="660" y2="90"/><line x1="450" y1="110" x2="660" y2="110"/><line x1="450" y1="130" x2="660" y2="130"/><line x1="450" y1="150" x2="660" y2="150"/><line x1="450" y1="170" x2="660" y2="170"/><line x1="471" y1="30" x2="471" y2="190"/><line x1="492" y1="30" x2="492" y2="190"/><line x1="513" y1="30" x2="513" y2="190"/><line x1="534" y1="30" x2="534" y2="190"/><line x1="555" y1="30" x2="555" y2="190"/><line x1="576" y1="30" x2="576" y2="190"/><line x1="597" y1="30" x2="597" y2="190"/><line x1="618" y1="30" x2="618" y2="190"/><line x1="639" y1="30" x2="639" y2="190"/></g>
+        <polyline class="s-amber" points="450,90 456,60 492,160 498,60 534,160 540,60 576,160 582,60 618,160 624,60 660,150"/>
+        <text class="t t-small t-muted" x="555" y="210" text-anchor="middle">AC coupling, 200 mV/div, 5 ms/div</text>
+        <text class="t t-small t-muted" x="555" y="228" text-anchor="middle">sawtooth, ~1 V peak-to-peak, 10 ms apart</text>
+      </svg>
+      <figcaption>Figure 4. The ripple measurement. The capacitor charges quickly near each peak of the rectified sine, then discharges steadily into the load until the next peak. A full-wave bridge on 50 Hz mains gives peaks every 10 ms, so the ripple is at 100 Hz.</figcaption>
+    </figure>
+    <div class="formula">V<sub>ripple(p-p)</sub> ≈ I<sub>load</sub> / (f<sub>ripple</sub> × C)
+      <small>A 12 V AC plug-pack gives a peak of about 12 × √2 ≈ 17 V (often more when lightly loaded), minus two diode drops (~1.4 V) ≈ 15.5 V DC. Into 150 Ω that is about 0.10 A. Ripple ≈ 0.10 / (100 × 0.001) ≈ 1.0 V peak-to-peak. The resistor dissipates about 15.5² / 150 ≈ 1.6 W, so use a 5 W part and keep fingers off it: it gets hot.</small></div>
+    <ol class="steps">
+      <li><p><b>DC coupling first.</b> 5 V/div: you see a nearly flat line at about 15 V. The ripple is too small to judge.</p></li>
+      <li><p><b>Switch to AC coupling</b>, 200 mV/div, 5 ms/div, trigger level near 0 V. The sawtooth fills the screen. Measure peak-to-peak and the 10 ms spacing.</p></li>
+      <li><p><b>Experiment.</b> Double the capacitor (add another 1000 µF in parallel): ripple should halve. Remove the load: ripple almost disappears. With the plug-pack unplugged, remove one diode so the bridge becomes a half-wave rectifier, then power up again: the ripple roughly doubles and its frequency drops to 50 Hz.</p></li>
+      <li><p><b>Compare with the meter on AC volts.</b> A 1 V p-p sawtooth reads only about 0.3 V RMS (V<sub>pp</sub> / (2√3)), and many cheap meters read it inaccurately. The scope's peak-to-peak number is what matters for regulator headroom.</p></li>
+    </ol>
+    <div class="callout why"><span class="label">Why it works</span><p>Between peaks the capacitor alone feeds the load, so it loses charge at a steady rate: dV/dt = I/C. Over one ripple period (1/f) the voltage falls by I/(f × C). A bigger capacitor or a lighter load means a smaller fall. AC coupling simply puts a capacitor in series with the scope input to block the steady DC part, so you can use a sensitive volts/div setting on the small changing part.</p></div>
+    <a class="crosslink" href="../theory/t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors</a>
+
+    <h3>Bonus: catch button bounce with Single trigger</h3>
+    <p>Wire the P11 button with INPUT_PULLUP. Probe the pin, 2 V/div, 1 ms/div (then 100 µs/div), trigger on the <b>falling</b> edge at 2.5 V, mode <b>Single</b>. Press the button: the scope captures one event and stops. You will see the real bounce of Figure 4 in P11, and you can measure how long it lasts to choose your debounce time.</p>
+
+    <h2>The logic analyser: many digital channels, decoded</h2>
+    <p>A scope shows a few channels with full analogue detail. A <b>logic analyser</b> shows many channels as only HIGH or LOW, over a long time, and can <b>decode</b> them into bytes. The small USB analysers sold for about A$15 have 8 channels and sample up to about 24 MHz. With the free <b>sigrok</b> software and its graphical program <b>PulseView</b> (it uses a driver called fx2lafw for these devices), you can decode UART, I²C, SPI, 1-Wire, Wiegand and many more protocols.</p>
+    <figure>
+      <svg viewBox="0 0 680 230" role="img" aria-label="USB logic analyser connected to an Arduino, and a decoded UART trace">
+        <rect class="f-wash s-line" x="20" y="40" width="120" height="150" rx="6"/>
+        <text class="t t-small t-bold" x="80" y="30" text-anchor="middle">USB logic analyser</text>
+        <text class="t t-small" x="130" y="74" text-anchor="end">CH0</text>
+        <text class="t t-small" x="130" y="104" text-anchor="end">CH1</text>
+        <text class="t t-small" x="130" y="134" text-anchor="end">CH2</text>
+        <text class="t t-small" x="130" y="179" text-anchor="end">GND</text>
+        <text class="t t-small t-muted" x="80" y="210" text-anchor="middle">USB → PulseView</text>
+        <rect class="f-accent-soft s-accent" x="200" y="40" width="110" height="150" rx="6"/>
+        <text class="t t-small t-bold" x="255" y="30" text-anchor="middle">Arduino</text>
+        <text class="t t-small" x="210" y="74">TX (D11)</text>
+        <text class="t t-small" x="210" y="104">SCL (A5)</text>
+        <text class="t t-small" x="210" y="134">SDA (A4)</text>
+        <text class="t t-small" x="210" y="179">GND</text>
+        <line class="s-blue" x1="140" y1="70" x2="200" y2="70"/>
+        <line class="s-amber" x1="140" y1="100" x2="200" y2="100"/>
+        <line class="s-green" x1="140" y1="130" x2="200" y2="130"/>
+        <line class="s-line" x1="140" y1="175" x2="200" y2="175"/>
+        <rect class="f-theory-soft s-line" x="360" y="56" width="140" height="22" rx="4"/>
+        <text class="t t-small t-bold" x="430" y="72" text-anchor="middle">0x48 'H'</text>
+        <rect class="f-theory-soft s-line" x="520" y="56" width="140" height="22" rx="4"/>
+        <text class="t t-small t-bold" x="590" y="72" text-anchor="middle">0x69 'i'</text>
+        <polyline class="s-blue" points="340,90 360,90 360,120 416,120 416,90 430,90 430,120 458,120 458,90 472,90 472,120 486,120 486,90 520,90 520,120 534,120 534,90 548,90 548,120 576,120 576,90 590,90 590,120 604,120 604,90 632,90 632,120 646,120 646,90 670,90"/>
+        <text class="t t-small t-muted" x="340" y="146">D0: UART decoder, 9600 8N1, idle high</text>
+        <text class="t t-small t-muted" x="340" y="170">start bit, 8 data bits LSB first, stop bit,</text>
+        <text class="t t-small t-muted" x="340" y="186">exactly as in P14 Figure 1</text>
+      </svg>
+      <figcaption>Figure 5. Left: three signal wires and a ground from the analyser to the Arduino. Right: what PulseView shows on channel 0 when the Arduino sends "Hi": the decoder draws the byte value above each frame.</figcaption>
+    </figure>
+    <div class="callout warn"><span class="label">Safety: what the analyser can take</span><p>These cheap analysers are for logic signals: most accept roughly 0–5 V, and their inputs have little protection. Never connect them to RS-232 (±12 V), to the A/B lines of RS-485 directly (differential, and can go negative), to 12/24 V field wiring, or to anything mains-related. To look at RS-485 traffic, probe the TTL side of the transceiver (its RO and DI pins) instead. Check your unit's listing for its input range.</p></div>
+    <h3>Lab: decode UART</h3>
+    <ol class="steps">
+      <li><p><b>Install PulseView</b> from the sigrok project's website. On Windows, its installer includes a tool (Zadig) to set up the USB driver for the analyser.</p></li>
+      <li><p><b>Wire</b> analyser GND to Arduino GND and CH0 to the TX pin of the P14 sender sketch (D11), or to D1 for normal <code>Serial</code> output.</p></li>
+      <li><p><b>Capture.</b> In PulseView choose the fx2lafw device, sample rate 1 MHz (about 100 samples per bit at 9600 baud), 1 M samples (one second). Click Run.</p></li>
+      <li><p><b>Decode.</b> Add a protocol decoder: UART. Set RX = D0, baud rate 9600, 8 data bits, no parity, 1 stop bit. Set the display format to ASCII. You will read "Hello from board A" across the trace.</p></li>
+      <li><p><b>Break it on purpose.</b> Set the decoder to 19 200 baud: you get framing errors and garbage, exactly what a mismatched device sees.</p></li>
+    </ol>
+    <h3>Lab: decode I²C</h3>
+    <ol class="steps">
+      <li><p><b>Wire</b> CH1 to SCL (A5), CH2 to SDA (A4), GND to GND. Run the P14 I²C scanner (press the Uno's reset button to repeat it).</p></li>
+      <li><p><b>Capture</b> at 4 MHz or more (at least 10 samples per bit at 400 kHz; 100 kHz needs less). Use a trigger on CH2 falling edge so the capture starts with the first START condition.</p></li>
+      <li><p><b>Decode:</b> add the I²C decoder with SCL = D1 and SDA = D2. You will see the scanner trying "Address write 0x01, NACK", "0x02, NACK"… and then "0x3C, ACK" for an OLED (or whatever your module's address is).</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Sample at least 4 times, and ideally 10 times, faster than the fastest bit rate you are decoding. Too slow and edges land between samples, so decoders report errors that are not really on the wire. Too fast simply uses more memory: lower the sample count or rate for long captures.</p></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>A handheld scope or scope-meter earns its place in a BMS or security technician's kit. Typical uses: checking a 24 V DC or 12 V DC supply for ripple and dropouts (noisy supplies cause rolling lines on analogue CCTV images and random reboots of controllers and cameras); confirming a 0–10 V control signal is clean and steady rather than full of VSD noise; seeing whether an RS-485 trunk has ringing or reflections from bad termination (use two channels, A and B, both clips on the signal common, and view CH1 − CH2); and checking a 4–20 mA loop by viewing the voltage across a 250 Ω resistor (1–5 V). Access control technicians use a logic analyser to decode Wiegand reader output (C06) when a card reads "wrong". Always clip to the equipment's 0 V and keep to the ELV side of the equipment.</p></div>
+
+    <h2>Common mistakes</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+      <tr><td>Readings 10× too small or too big</td><td>Probe switch and channel probe setting disagree (×1 vs ×10)</td><td>Make both ×10.</td></tr>
+      <tr><td>Square waves look rounded or spiky</td><td>Probe not compensated, or probe on ×1</td><td>Compensate on the CAL output; use ×10.</td></tr>
+      <tr><td>Trace slides and blurs</td><td>Not triggered: level outside signal, wrong source or slope</td><td>Set source = the displayed channel, level mid-signal.</td></tr>
+      <tr><td>Flat line at the top or bottom</td><td>Signal off screen</td><td>Increase volts/div; adjust vertical position; press Auto.</td></tr>
+      <tr><td>Ripple invisible</td><td>DC coupling at large volts/div</td><td>AC coupling, small volts/div.</td></tr>
+      <tr><td>Lots of fuzzy noise on a clean signal</td><td>Long ground lead forms a loop that picks up interference</td><td>Use the short ground spring on the probe tip; keep the loop small.</td></tr>
+      <tr><td>Circuit stops when probe ground connected</td><td>Ground clip on a non-ground point: short through earth</td><td>Remove at once; clip to 0 V; use two channels and CH1 − CH2.</td></tr>
+      <tr><td>Decoder shows garbage</td><td>Wrong baud, wrong channel, or sample rate too low</td><td>Check settings; sample ≥10× the bit rate.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A waveform is 3.4 divisions tall at 2 V/div. What is its peak-to-peak voltage?</summary><div class="answer"><p>3.4 × 2 = 6.8 V peak-to-peak.</p></div></details>
+    <details class="quiz"><summary>One cycle spans 4 divisions at 500 µs/div. What is the frequency?</summary><div class="answer"><p>Period = 4 × 500 µs = 2 ms, so f = 1 / 0.002 = 500 Hz.</p></div></details>
+    <details class="quiz"><summary>Why is ×10 the normal probe setting?</summary><div class="answer"><p>It presents about 10 MΩ and only around 10–15 pF to the circuit, so it disturbs it far less and gives the scope's full bandwidth. The 10× smaller signal is corrected by setting the channel to ×10. ×1 is only for very small, slow signals.</p></div></details>
+    <details class="quiz"><summary>You set the trigger level to 8 V on a 0–5 V square wave. What happens?</summary><div class="answer"><p>The signal never crosses 8 V, so the trigger never fires. In Auto mode the scope draws untriggered pictures that start at random points, so the trace rolls; in Normal mode it waits and shows nothing new.</p></div></details>
+    <details class="quiz"><summary>Why must you not clip a mains-powered scope's ground lead to the 5 V side of a shunt resistor on a PC-powered Arduino?</summary><div class="answer"><p>The ground clip is connected to protective earth, and the PC's 0 V is also earthed. Clipping to 5 V connects 5 V to 0 V through the earth path, a short circuit. Use two probes with both grounds on 0 V and display the difference.</p></div></details>
+    <details class="quiz"><summary>A bridge rectifier on 50 Hz with 2200 µF supplies 0.5 A. Estimate the ripple.</summary><div class="answer"><p>Full-wave ripple frequency is 100 Hz. V<sub>pp</sub> ≈ I / (f × C) = 0.5 / (100 × 0.0022) ≈ 2.3 V.</p></div></details>
+    <details class="quiz"><summary>What sample rate should you use to decode 115 200 baud UART with a logic analyser?</summary><div class="answer"><p>At least 4× and ideally 10× the bit rate: about 0.5–1.2 MHz. A 2 MHz or 4 MHz setting is a comfortable choice.</p></div></details>
+    <details class="quiz"><summary>Why can you not connect a cheap logic analyser straight to RS-485 A and B?</summary><div class="answer"><p>RS-485 is differential: the information is the difference between A and B, and each wire can sit at voltages the analyser's single-ended, roughly 0–5 V inputs cannot read correctly, including negative ones. Probe the transceiver's TTL-side pins (RO, DI) instead.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain what a scope shows that a meter cannot, and choose a scope class for my budget.</span></li>
+      <li><input type="checkbox"><span>I can set a probe to ×10 and compensate it on the calibration output.</span></li>
+      <li><input type="checkbox"><span>I know the ground clip is earthed and only clip it to 0 V; I never probe mains.</span></li>
+      <li><input type="checkbox"><span>I can set volts/div, time/div, coupling and trigger to get a stable picture.</span></li>
+      <li><input type="checkbox"><span>I can measure frequency, duty cycle and amplitude of a PWM signal.</span></li>
+      <li><input type="checkbox"><span>I can measure supply ripple with AC coupling and check it against I/(fC).</span></li>
+      <li><input type="checkbox"><span>I can capture a single event such as button bounce.</span></li>
+      <li><input type="checkbox"><span>I can capture and decode UART and I²C with a logic analyser and PulseView.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

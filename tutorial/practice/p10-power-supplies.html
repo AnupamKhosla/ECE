@@ -111,20 +111,20 @@
         <rect class="f-panel s-line" x="250" y="40" width="110" height="56" rx="4"/>
         <text class="t t-bold" x="276" y="74">LM317</text>
         <text class="t t-small" x="256" y="56">IN</text><text class="t t-small" x="324" y="56">OUT</text><text class="t t-small" x="292" y="92">ADJ</text>
-        <path class="s-line" d="M90 68 H250 M360 68 H560"/>
+        <path class="s-line" d="M90 68 H250 M360 68 H600"/>
         <text class="t t-small t-bold" x="40" y="62">V<tspan baseline-shift="sub" font-size="9">IN</tspan></text>
-        <text class="t t-small t-bold" x="540" y="56">V<tspan baseline-shift="sub" font-size="9">OUT</tspan></text>
+        <text class="t t-small t-bold" x="560" y="56">V<tspan baseline-shift="sub" font-size="9">OUT</tspan></text>
         <path class="s-line" d="M440 68 V80 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V130 H305 V96"/>
         <text class="t t-small" x="456" y="104">R1 = 240 Ω</text>
         <text class="t t-small t-red" x="456" y="120">1.25 V across it</text>
         <path class="s-line" d="M305 130 V140 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V200"/>
         <text class="t t-small" x="322" y="168">R2</text>
-        <path class="s-line" d="M90 200 H560"/>
+        <path class="s-line" d="M90 200 H600"/>
         <path class="s-line" d="M150 68 V110"/><line class="s-line" x1="136" y1="110" x2="164" y2="110"/><line class="s-line" x1="136" y1="118" x2="164" y2="118"/><path class="s-line" d="M150 118 V200"/>
         <text class="t t-small" x="80" y="140">0.1 µF</text>
-        <path class="s-line" d="M520 68 V108"/><line class="s-line" x1="506" y1="108" x2="534" y2="108"/><path class="s-line" d="M506 122 Q520 112 534 122"/><path class="s-line" d="M520 118 V200"/>
-        <text class="t t-small" x="540" y="122">10 µF</text>
-        <circle class="f-ink" cx="440" cy="68" r="3.5"/><circle class="f-ink" cx="305" cy="130" r="3.5"/><circle class="f-ink" cx="520" cy="68" r="3.5"/><circle class="f-ink" cx="150" cy="68" r="3.5"/>
+        <path class="s-line" d="M580 68 V108"/><line class="s-line" x1="566" y1="108" x2="594" y2="108"/><path class="s-line" d="M566 122 Q580 112 594 122"/><path class="s-line" d="M580 118 V200"/>
+        <text class="t t-small" x="598" y="160">10 µF</text>
+        <circle class="f-ink" cx="440" cy="68" r="3.5"/><circle class="f-ink" cx="305" cy="130" r="3.5"/><circle class="f-ink" cx="580" cy="68" r="3.5"/><circle class="f-ink" cx="150" cy="68" r="3.5"/>
         <text class="t t-small t-muted" x="40" y="222">LM317T pin-out, front view, legs down: ADJ, OUT, IN. The tab is OUT.</text>
       </svg>
       <figcaption>Figure 2. LM317 adjustable regulator. R1 sets a reference current (1.25 V / 240 Ω ≈ 5.2 mA, which also gives the minimum load the chip needs). The same current through R2 adds its voltage on top of the 1.25 V.</figcaption>
@@ -162,7 +162,7 @@
         vo=r2<1?1.25:vo;var P=Math.max(0,(vi-vo)*I);$('p10l-p').textContent=P<1?(P*1000).toFixed(0)+' mW':P.toFixed(2)+' W';
         $('p10l-eff').textContent=vi>vo?(100*vo/vi).toFixed(0)+' %':'—';
         var n=[];
-        if(vi<vo+3)n.push('Input is too close to the output: allow about 3 V of headroom (minimum input ≈ '+(vo+3).toFixed(1)+' V) or the output will sag under load.');
+        if(vi<vo+2.5)n.push('Input is too close to the output: allow about 2.5–3 V of headroom (minimum input ≈ '+(vo+2.5).toFixed(1)+' V) or the output will sag under load.');
         if(vi-vo>37)n.push('Input-to-output difference is beyond the LM317 limit (about 40 V).');
         if(P>15)n.push('Over 15 W: far too much for a TO-220. Use a buck converter.');
         else if(P>1.5)n.push('Needs a heatsink: a bare TO-220 handles only about 1–1.5 W comfortably.');
@@ -185,7 +185,7 @@
     <p>A <b>buck converter</b> (step-down switching regulator) does not burn off the extra voltage. A transistor switches the input on and off very fast (about 150 kHz on LM2596-type modules), and an inductor and capacitor smooth the pulses into steady DC. The output voltage is set by the duty cycle (P09): roughly V<sub>out</sub> ≈ D × V<sub>in</sub>. The switch is either fully on (tiny voltage across it) or fully off (no current through it), so it wastes very little. The inductor stores energy while the switch is on and keeps pushing current to the load while it is off.</p>
 
     <figure>
-      <svg viewBox="0 0 640 250" role="img" aria-label="Buck converter: switch, inductor, diode and capacitor, with current paths when the switch is on and when it is off">
+      <svg viewBox="0 0 640 262" role="img" aria-label="Buck converter: switch, inductor, diode and capacitor, with current paths when the switch is on and when it is off">
         <defs><marker id="p10-arrA" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
         <marker id="p10-arrB" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker></defs>
         <text class="t t-small t-bold" x="20" y="64">12 V in</text>
@@ -271,9 +271,9 @@
         <text class="t t-small" x="306" y="194">Door strike or maglock (0.3–0.5 A)</text>
         <text class="t t-small t-muted" x="236" y="224">one fuse or PTC per output</text>
 
-        <text class="t t-bold" x="20" y="256">HVAC: 24 V AC control transformer → BMS controller, valve and damper actuators, thermostats</text>
+        <text class="t t-bold" x="20" y="256">HVAC: 24 V AC transformer → controllers, actuators, thermostats</text>
         <rect class="f-theory-soft s-line" x="20" y="268" width="600" height="22" rx="4"/>
-        <text class="t t-small t-muted" x="30" y="284">24 V AC side is ELV. Keep one transformer leg as "common" on every device (P06), and fuse the secondary.</text>
+        <text class="t t-small t-muted" x="30" y="284">ELV side. Keep the same transformer leg as common on every device (P06); fuse the secondary.</text>
       </svg>
       <figcaption>Figure 4. How low-voltage power is typically arranged on site. The security supply sits at 13.8 V so it can float-charge a 12 V lead-acid battery, and it feeds each device through its own fuse or polyfuse. HVAC controls commonly run on 24 V AC from a control transformer.</figcaption>
     </figure>
@@ -283,7 +283,7 @@
       <tr><td>12 V DC (13.6–13.8 V when float-charging a battery)</td><td>Intruder alarm panels, PIRs, sirens, non-PoE cameras, card readers, door strikes</td><td>Most security gear accepts about 10.5–14 V; check each data sheet</td></tr>
       <tr><td>24 V DC</td><td>PLCs and industrial sensors, many fire panels, some access control and maglocks, 4–20 mA loops</td><td>Half the current of 12 V for the same power, so less cable drop</td></tr>
       <tr><td>24 V AC</td><td>HVAC thermostats, BMS controllers, valve and damper actuators, some PTZ cameras and gate motors</td><td>From a 230/24 V control transformer; mains side is electrician's work</td></tr>
-      <tr><td>PoE (about 48–57 V DC on Ethernet)</td><td>IP cameras, access points, IP phones, some door controllers</td><td>Covered in P19; still ELV</td></tr>
+      <tr><td>PoE (about 44–57 V DC on Ethernet)</td><td>IP cameras, access points, IP phones, some door controllers</td><td>Covered in P19; still ELV</td></tr>
     </table></div>
 
     <div class="callout aus"><span class="label">In Australia</span><p>The ELV limit you have been working inside comes from AS/NZS 3000 (the Wiring Rules): up to 50 V AC or 120 V ripple-free DC. Fixed wiring of the 230 V side of any building power supply, transformer or battery charger must be done by a licensed electrician. Battery systems on solar installations have their own standards and accreditation (for example AS/NZS 5139 for battery installations). Confirm requirements with your state's electrical regulator and, for solar, the relevant accreditation body.</p></div>

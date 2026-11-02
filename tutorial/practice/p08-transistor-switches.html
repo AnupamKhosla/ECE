@@ -315,7 +315,7 @@
         <text class="t t-small t-muted" x="560" y="80">12 V</text>
         <line class="s-thin" x1="380" y1="290" x2="620" y2="290"/>
         <path class="s-green" d="M380 288 H460 L462 229 H500 L504 234 H620"/>
-        <text class="t t-small t-green" x="470" y="220">with diode: 12.7 V, then 12 V</text>
+        <text class="t t-small t-green" x="466" y="220">diode: 12.7 V, then 12 V</text>
         <text class="t t-small t-muted" x="384" y="310">transistor turns off here →</text>
         <line class="s-thin s-dash" x1="461" y1="160" x2="461" y2="300"/>
       </svg>
@@ -325,6 +325,8 @@
     <h3>Why the coil kicks back</h3>
     <p>A coil is an <b>inductor</b>. Its magnetic field stores energy (½LI²), and it resists any sudden change in its current: V = L × ΔI/Δt. When the transistor switches off in a microsecond, the coil "tries" to keep its 30 mA flowing. Put numbers in: a relay coil of, say, 0.5 H, with 30 mA stopping in 1 µs, would need 0.5 × 0.03 / 0.000001 = 15 000 V. In reality the voltage climbs until something conducts: the transistor's collector junction breaks down (a BC547 is rated 45 V), or a tiny arc forms. Each event damages the transistor a little; eventually it fails shorted, and the relay stays on forever.</p>
     <p>The <b>flyback diode</b> (also called a freewheeling or snubber diode) sits across the coil, reverse-biased in normal operation (band to +12 V). At switch-off, the coil's voltage reverses, the diode conducts, and the coil current circulates through the diode until its energy is spent as heat in the coil's resistance. The collector never goes above about 12.7 V.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>An inductor stores energy in its magnetic field, and the field cannot vanish instantly: collapsing it induces a voltage that tries to keep the current flowing (Faraday's and Lenz's laws). The faster you try to stop the current, the bigger that voltage. The diode gives the current a gentle path, so the stored ½LI² turns into a little heat instead of a spike.</p></div>
+    <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors</a>
 
     <ol class="steps">
       <li><p><b>Build Figure 3</b> with the diode fitted. Check the band goes to +12 V. Backwards, it shorts the supply through the transistor as soon as it turns on.</p></li>
