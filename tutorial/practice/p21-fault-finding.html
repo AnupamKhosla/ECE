@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P21 · Fault-finding: a technician's troubleshooting method</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget styles. Colours come only from the shared theme variables, so dark mode works. */
+.p21-btns{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.p21-btn{font:600 14px/1.3 var(--sans);border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);padding:7px 12px;border-radius:6px;cursor:pointer;text-align:left}
+.p21-btn.fix{border-color:var(--career);background:var(--career-soft);color:var(--career)}
+.p21-btn.used{opacity:.55}
+.p21-btn:disabled{cursor:default;opacity:.4}
+.p21-sub{font:700 12px/1 var(--sans);text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:12px 0 4px}
+.p21-log{margin:10px 0 0;padding-left:22px;font-size:15px}
+.p21-log li{margin:8px 0}
+.p21-log .r{display:block;font:14px/1.5 var(--mono);background:var(--wash);border-radius:6px;padding:6px 10px;margin-top:4px}
+.p21-log .bad{color:var(--warn)}
+.p21-log .good{color:var(--green)}
+.p21-status{font-weight:650;margin-top:10px}
+.p21-story{background:var(--wash);border-radius:8px;padding:10px 14px;font-size:15.5px;margin:8px 0}
+.p21-note{font:14.5px/1.6 var(--mono);white-space:pre-wrap;margin:0}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part E</div>
+    <span class="eyebrow">Practice · P21</span>
+    <h1>Fault-finding: a technician's troubleshooting method</h1>
+    <p class="lede">Learn the step-by-step method that good technicians use to find faults fast: understand normal, gather symptoms, check the simple things, measure instead of guessing, half-split, change one thing at a time, verify and document. Then practise it on seven real faults from CCTV, Arduino, Modbus, 4–20 mA, networking and access control, with the readings you would actually see.</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$0–40 (mostly kit you already have)</span><span><b>Theory</b> T02, T04, T16</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Multimeter</b><small>From <a href="p03-multimeter-mastery.html">P03</a>. DC volts, ohms, continuity, diode test and mA.</small></li>
+      <li><b>12 V DC plug-pack</b><small>1–2 A, from your bench kit (<a href="p01-bench-kit-safety.html">P01</a>)</small></li>
+      <li><b>Thin twin cable, 20 m</b><small>Figure-8 or alarm cable, ~A$10–15 (Jaycar, Altronics). Lets you feel volt drop.</small></li>
+      <li><b>Load: 12 V 5 W lamp or 27 Ω 10 W resistor</b><small>~A$3–5. The resistor gets hot: do not touch it.</small></li>
+      <li><b>Your LED and Arduino circuits</b><small>From <a href="p02-breadboard-first-led.html">P02</a> and <a href="p11-arduino-first-steps.html">P11</a></small></li>
+      <li><b>USB to RS-485 adapter (optional)</b><small>~A$10–20 (AliExpress, Core Electronics). For the Modbus fault in <a href="p14-serial-buses-modbus.html">P14</a>.</small></li>
+      <li><b>Notebook and pen</b><small>You will write a real job note at the end</small></li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>Everything in this chapter is extra-low voltage (ELV): 5 V, 12 V, 24 V DC and AC plug-packs. When a fault leads you to the <b>mains side</b> of a power supply (no output, PSU dead, a hard-wired 230 V supply), stop. Swapping a plug-pack is fine; opening, wiring or measuring anything at 230 V is licensed electrician work in Australia. Always <b>switch off</b> before you measure resistance or continuity: an ohmmeter on a live circuit gives wrong readings and can blow the meter's fuse.</p></div>
+
+    <h2>Why a method beats guessing</h2>
+    <p>A beginner sees a dead camera and swaps the camera. Then the power supply. Then the cable. Two hours and A$400 later, the camera works, and nobody knows why. Next month it fails again.</p>
+    <p>An experienced technician walks up to the same camera, measures the voltage at the camera while it is running, sees 9.6 V instead of 12 V, and knows within five minutes that the cable is too long and too thin. That is not talent. It is a <b>method</b>: a fixed order of questions that narrows the fault down quickly, using measurements instead of hope.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Fault-finding is about knowing every fault."</b> Nobody knows every fault. Good technicians fix equipment they have never seen before, because the method works on anything that has an input, a path and an output. Knowing common faults makes you faster, but the method is what makes you right.</p></div>
+
+    <h2>The method, step by step</h2>
+    <figure>
+      <svg viewBox="0 0 640 400" role="img" aria-label="Fault-finding flowchart: understand normal, gather symptoms, check simple things, measure, half-split, change one thing, verify, then document; if not fixed, go back to measuring">
+        <defs><marker id="p21-fc-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="p21-fc-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <g class="s-accent f-accent-soft">
+          <rect x="30" y="20" width="250" height="46" rx="8"/><rect x="30" y="90" width="250" height="46" rx="8"/><rect x="30" y="160" width="250" height="46" rx="8"/><rect x="30" y="230" width="250" height="46" rx="8"/>
+          <rect x="360" y="20" width="250" height="46" rx="8"/><rect x="360" y="90" width="250" height="46" rx="8"/><rect x="360" y="160" width="250" height="46" rx="8"/>
+        </g>
+        <rect class="s-green f-career-soft" x="360" y="330" width="250" height="46" rx="8"/>
+        <polygon class="s-line f-panel" points="485,226 570,262 485,298 400,262"/>
+        <g class="t">
+          <text x="44" y="40" class="t t-bold">1  Understand normal</text><text x="62" y="58" class="t t-small t-muted">What should it do? What readings?</text>
+          <text x="44" y="110" class="t t-bold">2  Gather symptoms</text><text x="62" y="128" class="t t-small t-muted">Ask, look, listen, read the logs</text>
+          <text x="44" y="180" class="t t-bold">3  Check the simple things</text><text x="62" y="198" class="t t-small t-muted">Power, connections, settings</text>
+          <text x="44" y="250" class="t t-bold">4  Measure, don't guess</text><text x="62" y="268" class="t t-small t-muted">Volts under load, compare to normal</text>
+          <text x="374" y="40" class="t t-bold">5  Half-split the path</text><text x="392" y="58" class="t t-small t-muted">Test in the middle, halve suspects</text>
+          <text x="374" y="110" class="t t-bold">6  Change one thing at a time</text><text x="392" y="128" class="t t-small t-muted">Then test again</text>
+          <text x="374" y="180" class="t t-bold">7  Verify the fix</text><text x="392" y="198" class="t t-small t-muted">Normal readings, full function</text>
+          <text x="485" y="258" class="t t-small t-bold" text-anchor="middle">Back to normal?</text><text x="485" y="275" class="t t-small t-muted" text-anchor="middle">and root cause found?</text>
+          <text x="374" y="350" class="t t-bold">8  Document</text><text x="392" y="368" class="t t-small t-muted">Found, measured, did, left</text>
+        </g>
+        <g class="s-line">
+          <line x1="155" y1="66" x2="155" y2="86" marker-end="url(#p21-fc-a)"/><line x1="155" y1="136" x2="155" y2="156" marker-end="url(#p21-fc-a)"/><line x1="155" y1="206" x2="155" y2="226" marker-end="url(#p21-fc-a)"/>
+          <path d="M280 240 H320 V43 H356" marker-end="url(#p21-fc-a)"/>
+          <line x1="485" y1="66" x2="485" y2="86" marker-end="url(#p21-fc-a)"/><line x1="485" y1="136" x2="485" y2="156" marker-end="url(#p21-fc-a)"/><line x1="485" y1="206" x2="485" y2="222" marker-end="url(#p21-fc-a)"/>
+          <line x1="485" y1="298" x2="485" y2="326" marker-end="url(#p21-fc-a)"/>
+        </g>
+        <path class="s-red" d="M400 262 H286" marker-end="url(#p21-fc-r)"/>
+        <text class="t t-small t-red" x="300" y="288">No: measure again</text>
+        <text class="t t-small t-green" x="492" y="318">Yes</text>
+        <text class="t t-small t-muted" x="30" y="320">A fault is fixed when the readings are normal</text>
+        <text class="t t-small t-muted" x="30" y="338">AND you know why it failed. Otherwise it</text>
+        <text class="t t-small t-muted" x="30" y="356">will come back.</text>
+      </svg>
+      <figcaption>Figure 1. The eight-step method. Steps 1–3 cost almost nothing and solve a large share of call-outs. Steps 4–6 find the rest. Step 7 is where you prove it, and step 8 is what your boss, the client and the next technician will judge you on.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><p><b>Understand normal.</b> You cannot spot "wrong" until you know "right". What should the system do? What voltage should be at each point? What should the LEDs show? Read the drawing (see <a href="p22-reading-drawings.html">P22</a>), the manual and the commissioning sheet. On a working site, measure a <b>working</b> camera or door next to the faulty one: that is your "normal".</p></li>
+      <li><p><b>Gather symptoms.</b> Ask the person who reported it: what exactly happens, when did it start, does it happen all the time or only sometimes, did anything change (new equipment, storm, painters, a software update)? Look for burnt smells, water, damaged cable, lights that are off. Read the event log on the NVR, controller or BMS. "Fails every night at dusk" is worth more than any measurement.</p></li>
+      <li><p><b>Check the simple things.</b> Power (is it on, is the fuse good, is the breaker on — the electrician checks the mains side), connections (is it plugged in, are the screw terminals tight, is the right cable in the right port), and settings (address, baud rate, IP address, input type). Most faults are here. Check them first, even when you are sure, because they are fast.</p></li>
+      <li><p><b>Measure, don't guess.</b> Use the meter to compare real readings with the normal ones from step 1. Measure voltage <b>under load</b> (with the device connected and running), because a bad joint can show full voltage with no current and collapse when current flows.</p></li>
+      <li><p><b>Half-split the signal path.</b> Instead of starting at one end, test in the middle of the chain. If it is good there, the fault is after that point; if bad, before it. Each test removes half of the suspects.</p></li>
+      <li><p><b>Change one thing at a time.</b> Then test again. If you change three things at once and it starts working, you do not know which one fixed it, and you may have added a new fault.</p></li>
+      <li><p><b>Verify the fix.</b> Check the readings are normal, the whole function works (not just "the light came on"), and the conditions that caused the fault are tested (if it failed at night, test with the infrared forced on). Ask yourself: do I know <b>why</b> it failed? A fuse you replaced without finding why it blew will blow again.</p></li>
+      <li><p><b>Document.</b> Write what you found, what you measured, what you did and what is left. The section at the end of this chapter shows how.</p></li>
+    </ol>
+
+    <h2>Measuring like a technician</h2>
+    <p>Three meter habits do most of the work in fault-finding.</p>
+    <h3>1. Voltage across a part tells you about current</h3>
+    <p>By Ohm's law, the voltage across a part is V = I × R. That gives you four rules you will use every day:</p>
+    <div class="table-wrap"><table>
+      <tr><th>You measure across…</th><th>Reading</th><th>Meaning</th></tr>
+      <tr><td>A closed switch, good fuse, or good joint (current flowing)</td><td>≈ 0 V (a few mV)</td><td>Normal. Very low resistance, so almost no voltage.</td></tr>
+      <tr><td>A fuse, switch or joint in a working circuit</td><td>Full supply voltage</td><td><b>Open circuit there.</b> Blown fuse, open switch, broken joint. No current flows, so no other part drops any voltage, and the whole supply appears across the gap.</td></tr>
+      <tr><td>A contact or joint</td><td>Some volts (e.g. 0.5–2 V)</td><td>A <b>high-resistance joint</b>: corroded, loose or burnt. It gets hot and steals voltage from the load.</td></tr>
+      <tr><td>The load (lamp, camera, coil)</td><td>Much less than supply</td><td>Voltage is being lost somewhere in the path. Find where by measuring along it.</td></tr>
+    </table></div>
+    <div class="callout why"><span class="label">Why it works</span><p>Kirchhoff's voltage law says the voltages around a loop add up to the supply voltage. If one part is open (infinite resistance), no current flows, every other part drops I × R = 0, so the whole supply must appear across the open part. That is why a blown fuse in a connected circuit reads the full supply voltage across it.</p></div>
+    <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
+    <h3>2. Measure under load</h3>
+    <p>A cable with one strand left in a screw terminal still shows 12.3 V with nothing connected, because the meter draws almost no current (its input resistance is about 10 MΩ). Connect the camera and that one strand cannot carry 0.5 A without dropping volts. Always measure with the device <b>connected and working</b>, and at the device's own terminals.</p>
+    <h3>3. Know your reference point</h3>
+    <p>"There's 12 V at the camera" is meaningless unless you know where the black probe was. Measure <b>across</b> the device (red on +, black on − at the device). Measuring from the device + back to the PSU − includes the volt drop in the return wire too, and hides half the problem.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Write readings down as you go, with where the probes were: "C7 +/− at camera, running: 11.1 V". After four measurements you will not remember which was which, and the note becomes your job record for free.</p></div>
+
+    <h2>Half-splitting the signal path</h2>
+    <p>Most systems are a <b>chain</b>: power or signal goes in at one end, passes through several blocks, and comes out at the other. If the output is wrong, one block (or one link between blocks) is faulty. You could test each block from the start. Half-splitting is faster: test in the <b>middle</b>.</p>
+    <figure>
+      <svg viewBox="0 0 680 230" role="img" aria-label="Six-block signal chain from a temperature sensor to the BMS front-end, with five test points; the first test is in the middle">
+        <defs><marker id="p21-hs-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <g class="s-line f-panel">
+          <rect x="10" y="60" width="90" height="50" rx="6"/><rect x="122" y="60" width="90" height="50" rx="6"/><rect x="234" y="60" width="90" height="50" rx="6"/>
+          <rect x="346" y="60" width="90" height="50" rx="6"/><rect x="458" y="60" width="90" height="50" rx="6"/><rect x="570" y="60" width="90" height="50" rx="6"/>
+        </g>
+        <g class="t t-small" text-anchor="middle">
+          <text x="55" y="82">Sensor</text><text x="55" y="98" class="t t-small t-muted">(PT100)</text>
+          <text x="167" y="82">Transmitter</text><text x="167" y="98" class="t t-small t-muted">4–20 mA</text>
+          <text x="279" y="82">Field cable</text><text x="279" y="98" class="t t-small t-muted">80 m</text>
+          <text x="391" y="82">Marshalling</text><text x="391" y="98" class="t t-small t-muted">terminals</text>
+          <text x="503" y="82">Controller</text><text x="503" y="98" class="t t-small t-muted">AI input</text>
+          <text x="615" y="82">Front-end</text><text x="615" y="98" class="t t-small t-muted">graphics</text>
+        </g>
+        <g class="s-line"><line x1="100" y1="85" x2="120" y2="85" marker-end="url(#p21-hs-a)"/><line x1="212" y1="85" x2="232" y2="85" marker-end="url(#p21-hs-a)"/><line x1="324" y1="85" x2="344" y2="85" marker-end="url(#p21-hs-a)"/><line x1="436" y1="85" x2="456" y2="85" marker-end="url(#p21-hs-a)"/><line x1="548" y1="85" x2="568" y2="85" marker-end="url(#p21-hs-a)"/></g>
+        <g class="f-amber"><circle cx="111" cy="128" r="6"/><circle cx="223" cy="128" r="6"/><circle cx="447" cy="128" r="6"/><circle cx="559" cy="128" r="6"/></g>
+        <circle class="f-red" cx="335" cy="128" r="9"/>
+        <g class="s-thin s-dash"><line x1="111" y1="85" x2="111" y2="122"/><line x1="223" y1="85" x2="223" y2="122"/><line x1="335" y1="85" x2="335" y2="119"/><line x1="447" y1="85" x2="447" y2="122"/><line x1="559" y1="85" x2="559" y2="122"/></g>
+        <g class="t t-small" text-anchor="middle"><text x="111" y="152">TP1</text><text x="223" y="152">TP2</text><text x="335" y="154" class="t t-small t-bold t-red">TP3: test here first</text><text x="447" y="152">TP4</text><text x="559" y="152">TP5</text></g>
+        <path class="s-blue" d="M14 178 V188 H326 V178"/><text class="t t-small t-blue" x="170" y="206" text-anchor="middle">bad at TP3 → fault is in here</text>
+        <path class="s-green" d="M344 178 V188 H656 V178"/><text class="t t-small t-green" x="500" y="206" text-anchor="middle">good at TP3 → fault is in here</text>
+        <text class="t t-small t-muted" x="340" y="30" text-anchor="middle">Front-end shows the wrong temperature. Where is the fault?</text>
+      </svg>
+      <figcaption>Figure 2. Half-splitting a BMS temperature point. Measure the loop current at TP3 (the marshalling terminals in the plant room). A good reading means the sensor, transmitter and cable are fine: look at the controller and its configuration. A bad reading sends you into the field. One measurement, half the work gone.</figcaption>
+    </figure>
+    <p><b>Why it is fast.</b> With 8 suspect blocks, testing one by one can take up to 7 tests. Half-splitting takes 3: 8 → 4 → 2 → 1. With 16 blocks it takes 4. Each test doubles how many blocks you can search (2 tests → 4 blocks, 3 → 8, 4 → 16). The more complex the system, the bigger the saving.</p>
+    <p><b>Choose the split point sensibly.</b> The best split point is not always the exact middle. Pick a point that is <b>easy to reach</b> (a plant room, a patch panel, a junction box) and that splits the <b>likely</b> causes in half. Field cables and connectors fail far more often than controllers, so weight your choice towards them.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Half-splitting is how network technicians work too. A PC cannot reach the internet: can it reach its own gateway? (<code>ping</code> the router.) Yes → the problem is beyond the router. No → is the link light on at the switch? Each question cuts the suspects in half. See <a href="p19-networking-hands-on.html">P19</a>.</p></div>
+
+    <h2>Worked faults with real readings</h2>
+    <p>Each fault below has the same structure: the <b>symptom</b>, the <b>measurements</b> to take, what each <b>result means</b>, and the <b>fix</b>. Readings are typical; your own will differ a little.</p>
+
+    <h3>Fault 1: a dead (or rebooting) 12 V camera</h3>
+    <p><b>Symptom.</b> Camera C7 at the far end of a car park shows "video loss" on the NVR. Sometimes it is dead all the time; sometimes it works by day and reboots every night.</p>
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="12 volt power supply feeding a camera through 60 metres of cable; each core has about 2.1 ohms; voltages at each end shown for day and night">
+        <defs><marker id="p21-cam-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="s-line f-panel" x="30" y="60" width="100" height="100" rx="6"/>
+        <text class="t t-bold" x="80" y="100" text-anchor="middle">12 V PSU</text>
+        <text class="t t-small t-muted" x="80" y="120" text-anchor="middle">+ top, − bottom</text>
+        <rect class="s-line f-panel" x="510" y="60" width="100" height="100" rx="6"/>
+        <text class="t t-bold" x="560" y="100" text-anchor="middle">Camera</text>
+        <text class="t t-small t-muted" x="560" y="120" text-anchor="middle">IR on at night</text>
+        <path class="s-line" d="M130 80 H270 M370 80 H510 M130 140 H270 M370 140 H510"/>
+        <rect class="s-accent f-accent-soft" x="270" y="70" width="100" height="20" rx="3"/>
+        <rect class="s-accent f-accent-soft" x="270" y="130" width="100" height="20" rx="3"/>
+        <text class="t t-small" x="320" y="62" text-anchor="middle">+ core, 60 m: 2.1 Ω</text>
+        <text class="t t-small" x="320" y="168" text-anchor="middle">− core, 60 m: 2.1 Ω</text>
+        <path class="s-red" d="M160 70 H230" marker-end="url(#p21-cam-a)"/>
+        <text class="t t-small t-red" x="150" y="40">I = 0.30 A day, 0.65 A night</text>
+        <line class="s-blue s-dash" x1="140" y1="80" x2="140" y2="140"/>
+        <text class="t t-small t-blue" x="20" y="190">At PSU: 12.4 V unloaded,</text>
+        <text class="t t-small t-blue" x="20" y="206">12.3 V with camera running</text>
+        <line class="s-blue s-dash" x1="500" y1="80" x2="500" y2="140"/>
+        <text class="t t-small t-blue" x="420" y="190">At camera: 11.1 V day,</text>
+        <text class="t t-small t-blue" x="420" y="206">9.6 V night → reboots</text>
+        <text class="t t-small t-muted" x="210" y="226">Drop = I × 4.2 Ω: 1.3 V by day, 2.7 V at night</text>
+      </svg>
+      <figcaption>Figure 3. The cable is a resistor. Thin 0.5 mm² figure-8 cable has about 0.034 Ω per metre per core. 60 m there and 60 m back is about 4.2 Ω. When the infrared LEDs switch on at dusk, the current doubles, the drop doubles, and the camera falls below its minimum voltage.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Measure</th><th>Reading</th><th>What it means</th><th>Next</th></tr>
+      <tr><td>PSU output, camera unplugged</td><td>12.4 V</td><td>PSU makes voltage. Not yet proven under load.</td><td>Measure under load.</td></tr>
+      <tr><td>PSU output, camera unplugged</td><td>0 V</td><td>PSU dead, its fuse blown, or no mains to it.</td><td>Check the output fuse. Mains side: electrician (or swap the plug-pack).</td></tr>
+      <tr><td>Across the output fuse, camera connected</td><td>12.3 V</td><td>Fuse is <b>blown</b> (open circuit, full supply across it).</td><td>Do not just replace it. Switch off, unplug the camera, measure ohms across the cable at the PSU end. &lt; 1 Ω = short in the cable (a staple, crushed cable, water in a junction box). Fix the short, then fit a fuse of the <b>same</b> rating.</td></tr>
+      <tr><td>Across the fuse, camera connected</td><td>≈ 0 V</td><td>Fuse is good.</td><td>Move on along the path.</td></tr>
+      <tr><td>Across the camera terminals, running, daytime</td><td>11.1 V</td><td>1.2 V lost in the cable. Many 12 V cameras accept 12 V ±10% (10.8–13.2 V): just OK.</td><td>Test the worst case: cover the camera's light sensor so the IR switches on.</td></tr>
+      <tr><td>Across the camera, IR on</td><td>9.6 V, then camera reboots</td><td><b>Cable volt drop</b>. Current rose to 0.65 A, the drop rose to 2.7 V.</td><td>Fix the power path (below).</td></tr>
+      <tr><td>Across the camera, red probe on camera +</td><td>−12.2 V</td><td><b>Reversed polarity.</b> The minus sign on the meter tells you. Many cameras have protection and simply do nothing; some are damaged.</td><td>Swap the cores at the pigtail. Most 12 V CCTV barrel plugs are centre-positive: check the label.</td></tr>
+    </table></div>
+    <p><b>The fix for volt drop.</b> Make the cable resistance smaller or the current smaller. Options: run thicker cable (1.0 mm² halves the resistance), move the PSU closer to the camera, feed the camera from PoE over the data cable (PoE runs at around 48 V, so the same power needs about a quarter of the current; see <a href="../career/c05-cctv-ip-cameras.html">C05</a>), or use a 24 V AC camera model if the job allows. Turning the PSU up to 13.5 V is a weak fix: the daytime voltage then rises and the problem returns when the cable warms or the joints age.</p>
+    <div class="callout try"><span class="label">Try this</span><p>Build Figure 3 on the bench. 12 V plug-pack → 20 m of thin figure-8 cable (go out and back on the reel) → a 12 V 5 W lamp or a 27 Ω 10 W resistor. Measure at the plug-pack and at the load, both under load. Thin 7/0.2 cable (about 0.22 mm²) has about 0.08 Ω per metre per core, so 40 m of conductor is about 3 Ω and you should lose roughly 1.2–1.5 V. Now unplug the load and measure at the far end again: the "missing" volts come back. That is why you measure under load.</p></div>
+
+    <h3>Fault 2: an LED circuit that won't light</h3>
+    <p><b>Symptom.</b> A 5 V supply, a 1 kΩ resistor and a red LED on a breadboard. Nothing lights. The theory says I = (5 − 2) / 1000 = 3 mA, which is visible.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Across the LED</th><th>Across the resistor</th><th>What it means</th><th>Fix</th></tr>
+      <tr><td>≈ 1.8 V</td><td>≈ 3.2 V</td><td>3.2 mA flows. The LED <b>is</b> on. Check it is not an infrared LED (invisible) or under strong light.</td><td>Look through a phone camera: many show IR as purple.</td></tr>
+      <tr><td>5.0 V</td><td>0 V</td><td>No current. LED <b>reversed</b>, or a leg not making contact (wrong row, bent leg).</td><td>Switch off, diode test on the LED: about 1.8 V one way (faint glow), "OL" the other. Turn it so the long leg (anode) goes to +.</td></tr>
+      <tr><td>0 V</td><td>5.0 V</td><td>Current flows but bypasses the LED: the LED is <b>shorted</b>. Classic cause: both LED legs in the same breadboard row.</td><td>Move one leg to another row.</td></tr>
+      <tr><td>0 V</td><td>0 V</td><td>No supply reaching the circuit. Long breadboards often have the power rails <b>split in the middle</b>.</td><td>Measure at the rails. Bridge the split with a jumper.</td></tr>
+      <tr><td>≈ 1.5 V</td><td>≈ 3.5 V</td><td>Tiny current. Resistor value wrong: 3.5 V / 3.5 µA ⇒ 1 MΩ? Check the colour bands: brown-black-green (1 MΩ) looks like brown-black-red (1 kΩ) in bad light.</td><td>Switch off, measure the resistor out of circuit. Fit the right value.</td></tr>
+    </table></div>
+    <a class="crosslink" href="p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit</a>
+
+    <h3>Fault 3: an Arduino input that reads random values</h3>
+    <p><b>Symptom.</b> A push button is wired between pin 2 and 5 V. With the button not pressed, the serial monitor prints a random mix of 0s and 1s. It changes when you move your hand near the wire. Sometimes the button "works", sometimes not.</p>
+    <p><b>Measurement.</b> Check the code: <code>pinMode(2, INPUT);</code>. Check the wiring: there is no resistor from pin 2 to anything. With the button released, pin 2 is connected to <b>nothing</b>. A microcontroller input has a very high resistance (megohms), so the tiny charge picked up from mains wiring and your body is enough to swing it between HIGH and LOW. This is a <b>floating input</b>.</p>
+    <p>Watch for a strange meter effect. When you put the meter on pin 2, it may read a steady 0 V, and the random readings stop. The meter's own 10 MΩ input acts as a weak pull-down resistor. A fault that disappears when you measure it is a strong clue that something is floating.</p>
+    <p><b>Fix.</b> Give the input a defined level when the button is open. Either wire the button from pin 2 to <b>GND</b> and use <code>pinMode(2, INPUT_PULLUP);</code> (released reads 1, pressed reads 0: invert your logic), or keep the button to 5 V and add a 10 kΩ resistor from pin 2 to GND (a pull-down). For a door contact on a long cable, use a stronger external pull-up (1–4.7 kΩ) and a 100 nF capacitor to GND to reject noise, and debounce in software.</p>
+    <a class="crosslink" href="p11-arduino-first-steps.html">Practice P11 · Arduino first steps (pull-ups and debouncing)</a>
+
+    <h3>Fault 4: a Modbus device that doesn't respond</h3>
+    <p><b>Symptom.</b> A new energy meter on an existing RS-485 Modbus RTU bus never answers. The BMS controller shows "timeout" for it. The other two meters on the same bus work.</p>
+    <figure>
+      <svg viewBox="0 0 680 240" role="img" aria-label="RS-485 bus: controller at the left end and three meters daisy-chained, 120 ohm terminators at both ends, A, B and common wires">
+        <rect class="s-line f-panel" x="20" y="20" width="120" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="80" y="46" text-anchor="middle">BMS controller</text><text class="t t-small t-muted" x="80" y="64" text-anchor="middle">master</text>
+        <rect class="s-line f-panel" x="230" y="20" width="110" height="60" rx="6"/><rect class="s-line f-panel" x="390" y="20" width="110" height="60" rx="6"/><rect class="s-red f-warn-soft" x="550" y="20" width="110" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="285" y="44" text-anchor="middle">Meter ID 1</text><text class="t t-small t-muted" x="285" y="62" text-anchor="middle">9600 8N1</text>
+        <text class="t t-small t-bold" x="445" y="44" text-anchor="middle">Meter ID 2</text><text class="t t-small t-muted" x="445" y="62" text-anchor="middle">9600 8N1</text>
+        <text class="t t-small t-bold t-red" x="605" y="44" text-anchor="middle">New meter ID 3</text><text class="t t-small t-red" x="605" y="62" text-anchor="middle">9600 8E1 ?</text>
+        <line class="s-blue" x1="60" y1="130" x2="665" y2="130"/><line class="s-green" x1="60" y1="170" x2="665" y2="170"/>
+        <line class="s-thin s-dash" x1="60" y1="200" x2="665" y2="200"/>
+        <text class="t t-small t-blue" x="10" y="134">A</text><text class="t t-small t-green" x="10" y="174">B</text><text class="t t-small t-muted" x="10" y="204">COM</text>
+        <g class="s-line"><line x1="80" y1="80" x2="80" y2="130"/><line x1="110" y1="80" x2="110" y2="170"/><line x1="270" y1="80" x2="270" y2="130"/><line x1="300" y1="80" x2="300" y2="170"/><line x1="430" y1="80" x2="430" y2="130"/><line x1="460" y1="80" x2="460" y2="170"/><line x1="590" y1="80" x2="590" y2="130"/><line x1="620" y1="80" x2="620" y2="170"/></g>
+        <g class="f-ink"><circle cx="80" cy="130" r="3"/><circle cx="110" cy="170" r="3"/><circle cx="270" cy="130" r="3"/><circle cx="300" cy="170" r="3"/><circle cx="430" cy="130" r="3"/><circle cx="460" cy="170" r="3"/><circle cx="590" cy="130" r="3"/><circle cx="620" cy="170" r="3"/></g>
+        <rect class="s-accent f-accent-soft" x="148" y="137" width="14" height="26" rx="2"/><line class="s-line" x1="155" y1="130" x2="155" y2="137"/><line class="s-line" x1="155" y1="163" x2="155" y2="170"/>
+        <rect class="s-accent f-accent-soft" x="643" y="137" width="14" height="26" rx="2"/><line class="s-line" x1="650" y1="130" x2="650" y2="137"/><line class="s-line" x1="650" y1="163" x2="650" y2="170"/>
+        <text class="t t-small t-accent" x="168" y="155">120 Ω</text><text class="t t-small t-accent" x="598" y="155" text-anchor="end">120 Ω</text>
+        <text class="t t-small" x="340" y="228" text-anchor="middle">Power off, meter between A and B: 60 Ω means exactly two terminators (correct)</text>
+      </svg>
+      <figcaption>Figure 4. An RS-485 bus is one cable daisy-chained from device to device, with a 120 Ω terminator at each <b>end</b> only. Every device must share the same baud rate, data bits, parity and stop bits, and each needs a unique ID. A common (0 V reference) wire keeps everything within the transceivers' voltage range.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>Reading or finding</th><th>What it means</th><th>Fix</th></tr>
+      <tr><td>Device powered and alive?</td><td>Display on, comms LED never blinks</td><td>Power OK. The meter does not think anything is addressed to it.</td><td>Check settings.</td></tr>
+      <tr><td>Compare settings: ID, baud, parity, stop bits</td><td>Controller polls ID 3 at 9600 8N1; meter set to 9600 <b>8E1</b> (even parity, a common factory default)</td><td><b>Parity mismatch</b>. Every byte fails its parity check, so the meter ignores the request.</td><td>Make them match (set the meter to 8N1, or the whole bus to 8E1). Never mix on one bus.</td></tr>
+      <tr><td>Two devices with the same ID?</td><td>Meter 1 also answers as ID 3 / replies are garbled</td><td><b>Duplicate ID</b>. Two devices reply at once and corrupt each other.</td><td>Give each device a unique ID; update the controller's point list.</td></tr>
+      <tr><td>Power off, ohms between A and B</td><td>60 Ω</td><td>Two terminators: correct.</td><td>—</td></tr>
+      <tr><td></td><td>120 Ω</td><td>Only one terminator: a <b>missing</b> one. Short, slow bench buses often work anyway; long or fast ones give errors.</td><td>Fit 120 Ω at the far end (or switch on the device's built-in terminator).</td></tr>
+      <tr><td></td><td>About 40 Ω</td><td><b>Three</b> terminators (120 / 3). A mid-bus device has its termination switch on.</td><td>Turn off termination on every device except the two ends.</td></tr>
+      <tr><td></td><td>Many kΩ</td><td>No terminators at all.</td><td>Fit both.</td></tr>
+      <tr><td>A and B polarity</td><td>Everything else is right, still no reply</td><td>Possibly <b>A/B swapped</b>. Manufacturers do not agree on whether "A" means + or −, so labels alone cannot be trusted.</td><td>Swap A and B at the new device only. RS-485 transceivers are not damaged by this.</td></tr>
+      <tr><td>Laptop + USB–RS-485 adapter at the meter, polling ID 3</td><td>Meter answers</td><td>Meter is good. Fault is in the bus or the controller config (half-split!).</td><td>Compare the laptop's working settings with the controller's.</td></tr>
+      <tr><td>Reply type</td><td>"Exception 02: illegal data address"</td><td><b>Comms work</b>. The register address is wrong (often off by one: register 40001 is address 0).</td><td>Fix the register map, not the wiring.</td></tr>
+    </table></div>
+    <p>The key insight in the last row: a <b>timeout</b> means "no reply at all" (wiring, ID, baud, parity). An <b>exception reply</b> means the device heard you perfectly and is saying "I don't have that". Do not pull cables apart for an exception.</p>
+    <a class="crosslink" href="p14-serial-buses-modbus.html">Practice P14 · Talking to devices: UART, I²C, SPI, RS-485 and Modbus</a>
+
+    <h3>Fault 5: a 4–20 mA loop reading 0 or stuck at 20+ mA</h3>
+    <p>A <b>4–20 mA loop</b> sends a measurement as a current: 4 mA means the bottom of the range, 20 mA the top. Current is the same everywhere in a series loop, so cable resistance does not change the reading, and 0 mA can only mean a fault (a "live zero"). The controller usually reads it as the voltage across a 250 Ω resistor: 4 mA → 1 V, 20 mA → 5 V.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Two-wire 4 to 20 mA loop: 24 volt supply, field transmitter, and a 250 ohm input resistor at the controller, with two test points">
+        <defs><marker id="p21-loop-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <line class="s-line" x1="60" y1="90" x2="60" y2="110"/><line class="s-line" x1="40" y1="110" x2="80" y2="110"/><line class="s-line" x1="50" y1="120" x2="70" y2="120"/><line class="s-line" x1="60" y1="120" x2="60" y2="170"/>
+        <text class="t t-small" x="88" y="118">24 V DC</text>
+        <path class="s-line" d="M60 90 V50 H450 V80"/>
+        <rect class="s-line f-panel" x="420" y="80" width="140" height="70" rx="6"/>
+        <text class="t t-small t-bold" x="490" y="108" text-anchor="middle">2-wire transmitter</text><text class="t t-small t-muted" x="490" y="126" text-anchor="middle">level, 0–100%</text>
+        <path class="s-line" d="M450 150 V190 H300"/>
+        <rect class="s-accent f-accent-soft" x="250" y="180" width="50" height="20" rx="3"/>
+        <path class="s-line" d="M250 190 H60 V170"/>
+        <text class="t t-small t-accent" x="275" y="172" text-anchor="middle">250 Ω (AI input)</text>
+        <path class="s-red" d="M200 40 H280" marker-end="url(#p21-loop-a)"/><text class="t t-small t-red" x="200" y="32">same current everywhere</text>
+        <line class="s-blue s-dash" x1="440" y1="80" x2="440" y2="150"/><line class="s-blue s-dash" x1="245" y1="205" x2="305" y2="205"/>
+        <text class="t t-small t-blue" x="575" y="100">V at transmitter:</text><text class="t t-small t-blue" x="575" y="116">needs about</text><text class="t t-small t-blue" x="575" y="132">12 V or more</text>
+        <text class="t t-small t-blue" x="320" y="222">V across 250 Ω: 1 V (4 mA) … 5 V (20 mA)</text>
+        <text class="t t-small t-muted" x="140" y="150">controller / panel</text><text class="t t-small t-muted" x="440" y="40">field</text>
+      </svg>
+      <figcaption>Figure 5. A 2-wire loop. The transmitter takes its power from the loop and sets the current. Two quick measurements: the voltage at the transmitter's terminals, and the voltage across the 250 Ω input resistor (current = volts ÷ 250).</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Measure</th><th>Reading</th><th>Meaning and fix</th></tr>
+      <tr><td>Reads 0 mA / under-range alarm</td><td>Across 250 Ω</td><td>0 V</td><td>No current: an <b>open circuit</b> somewhere in the loop.</td></tr>
+      <tr><td></td><td>At the transmitter terminals</td><td>24 V</td><td>Supply reaches the transmitter, but it draws nothing. Transmitter faulty, or wired reversed (many are protected and simply sit dead). Check polarity, then the transmitter.</td></tr>
+      <tr><td></td><td>At the transmitter terminals</td><td>0 V</td><td>Break <b>before</b> the transmitter: loop fuse, loose terminal, broken core. Half-split: measure at the junction box halfway.</td></tr>
+      <tr><td>Normal check</td><td>Across 250 Ω</td><td>3.0 V</td><td>3.0 / 250 = 12 mA = (12 − 4) / 16 = 50% of range. For a 0–100% level transmitter, 50%.</td></tr>
+      <tr><td>Stuck at 21–23 mA</td><td>Across 250 Ω</td><td>about 5.3–5.8 V</td><td>Many transmitters drive the loop above 20.5 mA (NAMUR NE43 uses ≥ 21 mA) to signal "sensor fault". Check the sensor: an open RTD or a disconnected probe. Or the process really is over range.</td></tr>
+      <tr><td>Very high, e.g. 60–96 mA</td><td>At the transmitter terminals</td><td>≈ 0 V</td><td>A <b>short across the transmitter</b> (or across the cable). Current is limited only by the 250 Ω: 24 / 250 = 96 mA, which can overheat the input. Find the short (water in a junction box, crushed cable).</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>To read loop current without opening the loop, measure the voltage across the 250 Ω and divide by 250. Many field transmitters also have TEST terminals for a meter on mA, and a milliamp clamp meter can read it around one core. Opening a live loop to insert a meter makes the controller see 0 mA and may trip alarms or move valves: tell the operator first.</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h3>Fault 6: a network camera you can't reach</h3>
+    <p><b>Symptom.</b> A new IP camera is plugged into a PoE switch. Its link light is on, and it powers up. But typing its address into the browser gives nothing.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>Finding</th><th>Meaning</th></tr>
+      <tr><td>Switch port lights and PoE power</td><td>Link on, switch shows 5 W drawn</td><td>Cable and power are fine. Not a physical fault.</td></tr>
+      <tr><td>Laptop address (<code>ipconfig</code> on Windows, <code>ip addr</code> on Linux)</td><td>192.168.0.25, mask 255.255.255.0 (/24)</td><td>The laptop can talk directly only to 192.168.0.1 – 192.168.0.254.</td></tr>
+      <tr><td>Camera's default address (manual or label)</td><td>192.168.1.64 /24</td><td><b>Different subnet</b>. With a /24 mask the first three numbers must match. 192.168.<b>0</b> ≠ 192.168.<b>1</b>.</td></tr>
+      <tr><td><code>ping 192.168.1.64</code></td><td>"Request timed out" or "Destination host unreachable"</td><td>Confirms the laptop has no route to it.</td></tr>
+    </table></div>
+    <p><b>Fix.</b> Give the laptop a temporary address in the camera's subnet (for example 192.168.1.200 /24, added as a second address or set manually), ping the camera, log in, and set the camera to its planned address from the IP schedule (for example 192.168.0.51 /24 with the correct gateway). Then put the laptop back. The manufacturer's discovery tool can also find cameras on any subnet, because it uses broadcast messages.</p>
+    <p><b>Other causes with the same symptom.</b> A <b>duplicate IP</b> (unplug the camera and ping again: if something still answers, another device owns that address). The switch port in the <b>wrong VLAN</b>. A camera set to DHCP on a network with no DHCP server, which gives itself a 169.254.x.x address.</p>
+    <a class="crosslink" href="p19-networking-hands-on.html">Practice P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</a>
+
+    <h3>Fault 7: a door that won't unlock</h3>
+    <p><b>Symptom.</b> A staff member badges their card. The reader beeps and shows green. The controller relay clicks. The door stays locked. The lock is a 12 V DC fail-secure electric strike (it needs power to unlock), powered from a 13.8 V battery-backed supply.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Door strike circuit: 13.8 volt supply, fuse, controller relay contact, strike coil, and a flyback diode across the coil with its cathode to positive">
+        <rect class="s-line f-panel" x="20" y="70" width="100" height="100" rx="6"/>
+        <text class="t t-small t-bold" x="70" y="110" text-anchor="middle">13.8 V PSU</text><text class="t t-small t-muted" x="70" y="128" text-anchor="middle">+ battery</text>
+        <path class="s-line" d="M120 90 H150 M190 90 H240"/>
+        <rect class="s-accent f-accent-soft" x="150" y="82" width="40" height="16" rx="3"/><text class="t t-small" x="170" y="72" text-anchor="middle">fuse</text>
+        <circle class="s-line f-panel" cx="244" cy="90" r="4"/><circle class="s-line f-panel" cx="296" cy="90" r="4"/>
+        <line class="s-line" x1="247" y1="88" x2="290" y2="70"/>
+        <text class="t t-small" x="270" y="120" text-anchor="middle">relay COM → NO</text><text class="t t-small t-muted" x="270" y="136" text-anchor="middle">(in controller)</text>
+        <path class="s-line" d="M300 90 H540 V128"/>
+        <path class="s-line" d="M440 90 V110"/>
+        <rect class="s-line f-accent-soft" x="425" y="110" width="30" height="60" rx="3"/>
+        <text class="t t-small" x="418" y="135" text-anchor="end">strike</text><text class="t t-small" x="418" y="151" text-anchor="end">coil</text>
+        <path class="s-line" d="M440 170 V200 H70 V170"/>
+        <polygon class="f-red" points="528,152 552,152 540,132"/><line class="s-red" x1="526" y1="130" x2="554" y2="130"/>
+        <path class="s-line" d="M540 152 V200 H440"/>
+        <text class="t t-small t-red" x="560" y="128">band (cathode)</text><text class="t t-small t-red" x="560" y="144">to +</text>
+        <text class="t t-small" x="560" y="164">1N4007</text>
+        <line class="s-blue s-dash" x1="470" y1="105" x2="470" y2="180"/>
+        <text class="t t-small t-blue" x="300" y="226">Measure across the strike while the door is unlocking: should be within ~1 V of the PSU</text>
+      </svg>
+      <figcaption>Figure 6. The flyback diode sits across the coil, reverse-biased in normal operation (band to +). When the relay opens, the coil's collapsing magnetic field drives current round through the diode instead of making a high-voltage spike. Fitted backwards, the diode is a dead short across the supply as soon as the relay closes.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Measure (during an unlock)</th><th>Reading</th><th>Meaning and fix</th></tr>
+      <tr><td>Across the strike terminals</td><td>13.4 V, strike hums, door still locked</td><td>Electrically fine. The fault is <b>mechanical</b>: the door is pressing on the strike keeper ("preload": a warped door, a seal, wind pressure). Push the door closed while badging: if it then opens, adjust the keeper or door.</td></tr>
+      <tr><td>Across the strike</td><td>9.0 V</td><td>Volts lost on the way. Half-split the path: across the fuse (should be ≈ 0 V), across the relay COM–NO (should be ≈ 0 V; 2 V means burnt contacts), along the cable (thin or long cable, loose joint). Also check the PSU itself under load: a failing battery can pull it down.</td></tr>
+      <tr><td>Across the strike</td><td>0 V, relay clicks</td><td>Open circuit after the relay: broken core, or wired to <b>NC</b> instead of NO (then it would be powered when it should not be).</td></tr>
+      <tr><td>Across the strike</td><td>≈ 0.7–1 V, fuse blows or PSU shuts down</td><td><b>Flyback diode backwards</b>. It conducts forward and shorts the supply. Turn it round: band (cathode) to +.</td></tr>
+      <tr><td>Controller resets or relay contacts pitted after a few months</td><td>—</td><td><b>No flyback diode</b>. Each release makes a voltage spike. Fit a 1N4007 across the coil, band to + (many strikes have one built in: check before adding).</td></tr>
+    </table></div>
+    <p><b>The REX (request-to-exit) button.</b> If the door unlocks by itself, stays unlocked, or will not unlock from the inside, check the exit button. Switch off and measure ohms across its terminals: "OL" released and ≈ 0 Ω pressed means it is <b>normally open</b> (NO); the reverse means normally closed (NC). The controller's REX input must be configured to match. If the input is set to NC but an NO button is wired, the controller sees "exit requested" all the time. On many sites the exit device for a maglock must also cut the lock's power directly, not only signal the controller: follow the design drawings and the site's egress requirements.</p>
+    <a class="crosslink" href="../career/c06-access-control-alarms.html">Job Track C06 · Access control and intruder alarms</a>
+    <div class="callout aus"><span class="label">In Australia</span><p>Installing and servicing security equipment (CCTV, access control, alarms) generally needs a security licence from the state or territory regulator, and cabling connected to telecommunications networks needs ACMA cabling registration. Fault-finding on these systems is part of that licensed work. Check the current requirements with your state's regulator and ACMA (see <a href="../career/c11-licences-pathways.html">C11</a>), because they change and differ by state.</p></div>
+
+    <h2>Interactive: find the fault</h2>
+    <p>Practise the method. Pick a scenario, then choose which test to do next. Each test costs one step and shows you the reading. When you think you know the fault, choose a fix. A wrong fix costs time and money, just like on site. Try to reach the fault in as few steps as a good technician would.</p>
+    <div class="widget" id="p21-ts">
+      <span class="label">Interactive · Troubleshooting scenarios</span>
+      <label>Scenario <select id="p21-ts-sel">
+        <option value="0">1 · Camera C7 reboots every night</option>
+        <option value="1">2 · New Modbus energy meter never answers</option>
+        <option value="2">3 · Tank level reads 0% (4–20 mA)</option>
+      </select></label>
+      <div class="p21-story" id="p21-ts-story"></div>
+      <div class="p21-sub">Tests</div>
+      <div class="p21-btns" id="p21-ts-tests"></div>
+      <div class="p21-sub">Fixes</div>
+      <div class="p21-btns" id="p21-ts-fixes"></div>
+      <div class="readings">
+        <div><small>Steps used</small><span class="out" id="p21-ts-steps">0</span></div>
+        <div><small>Money wasted on wrong fixes</small><span class="out" id="p21-ts-cost">A$0</span></div>
+      </div>
+      <ol class="p21-log" id="p21-ts-log"></ol>
+      <p class="p21-status" id="p21-ts-status"></p>
+      <button type="button" class="p21-btn" id="p21-ts-reset">Start this scenario again</button>
+    </div>
+    <script>
+    (function(){
+      var S=[
+        {story:'Car park level 2. Camera C7 shows "video loss" on the NVR every evening and comes back in the morning. The other cameras are fine. It is 2 pm and C7 is working now.',
+         best:3, need:['night'],
+         tests:[
+          {id:'log',t:'Read the NVR event log',r:'Video loss on C7 at 18:41, 18:43, 18:46, 18:50 … every evening, around dusk. Back at about 06:30.',m:'The timing matches dusk. What changes at dusk? The infrared LEDs switch on.'},
+          {id:'psu',t:'PSU output, camera unplugged',r:'12.4 V',m:'The PSU makes voltage, but this is not under load.'},
+          {id:'fuse',t:'Volts across the PSU output fuse, camera running',r:'0.01 V',m:'Fuse is good (≈ 0 V across a good fuse).'},
+          {id:'day',t:'Volts across the camera terminals, running (daytime)',r:'11.1 V (PSU end reads 12.3 V)',m:'1.2 V is being lost in the cable. Just inside a 12 V ±10% rating. What happens with more current?'},
+          {id:'night',t:'Cover the light sensor (force IR on) and measure at the camera',r:'Drops to 9.6 V … the camera clicks and reboots. While rebooting (IR off) it reads 11.3 V.',m:'Volt drop in the cable at the night-time current. This is the fault.'},
+          {id:'len',t:'Check the cable type and length on the drawing',r:'0.5 mm² figure-8, about 60 m from the comms cupboard.',m:'About 4.2 Ω loop resistance. 0.65 A × 4.2 Ω ≈ 2.7 V drop.'}
+         ],
+         fixes:[
+          {t:'Replace the camera',ok:false,cost:350,r:'New camera fitted. It reboots at dusk again tonight. A$350 wasted.'},
+          {t:'Replace the power supply',ok:false,cost:90,r:'New PSU fitted. Same reboots at dusk. The PSU was fine all along.'},
+          {t:'Turn the PSU up to 13.8 V',ok:false,cost:0,r:'It survives tonight at 10.9 V, but daytime is now 12.6 V and the margin is still thin. A cold morning or one aged joint and it is back. Not a real fix.'},
+          {t:'Power C7 from a closer supply / thicker cable (or PoE)',ok:true,r:'New 1.0 mm² feed from the level-2 cupboard (12 m). With IR forced on: 12.1 V at the camera. Watched 30 min, no reboots. NVR log clear overnight.'}
+         ]},
+        {story:'A new Modbus RTU energy meter (ID 3) was added to the end of an RS-485 bus with two existing meters. The BMS shows "timeout" for ID 3. Meters 1 and 2 still read correctly.',
+         best:2, need:['set'],
+         tests:[
+          {id:'pwr',t:'Is the meter powered?',r:'Display on, showing kWh. Comms LED never flashes.',m:'Alive. It does not think any request is for it.'},
+          {id:'set',t:'Read the meter\'s comms settings from its display',r:'ID 3, 9600 baud, parity EVEN, 1 stop bit (8E1).',m:'Compare with the controller.'},
+          {id:'ctl',t:'Read the controller\'s port settings',r:'9600 baud, parity NONE, 1 stop bit (8N1). Polling ID 3.',m:'Baud and ID match. Parity does not.'},
+          {id:'ohm',t:'Power off: ohms between A and B at the controller',r:'61 Ω',m:'Two terminators: correct.'},
+          {id:'lap',t:'Laptop + USB–RS-485 at the meter, poll ID 3 at 9600 8E1',r:'Meter answers: voltage L1 = 238.4 V.',m:'Meter and its wiring are good at 8E1.'},
+          {id:'idle',t:'Idle DC volts between B and A at the meter',r:'+0.28 V (same sign as at the controller)',m:'Biasing present and the pair is not crossed between here and the controller.'}
+         ],
+         fixes:[
+          {t:'Swap A and B at the meter',ok:false,cost:0,r:'No change, still timeouts. (Swapping does no harm, but it was not the fault. Swap back.)'},
+          {t:'Fit another 120 Ω terminator at the meter',ok:false,cost:0,r:'A–B now reads 40 Ω: three terminators. Still timeouts, and the bus is now overloaded. Remove it.'},
+          {t:'Replace the meter',ok:false,cost:420,r:'New meter, same factory default (8E1), same timeout. A$420 wasted.'},
+          {t:'Set the meter to 8N1 to match the bus',ok:true,r:'Meter set to 9600 8N1. Comms LED flashes; BMS reads ID 3 within one poll cycle. Meters 1 and 2 still fine.'}
+         ]},
+        {story:'A water tank level transmitter (2-wire, 4–20 mA, 0–100%) reads 0% on the BMS with an "under-range" alarm since a storm last week. The cable runs 80 m outside to the tank through one junction box halfway.',
+         best:3, need:['jb'],
+         tests:[
+          {id:'bms',t:'Look at the raw value in the controller',r:'0.0 mA (under range). Other inputs on the same card read normally.',m:'0 mA is not "empty tank": an empty tank would be 4 mA. This is a broken loop.'},
+          {id:'r250',t:'Volts across the 250 Ω input resistor',r:'0.00 V',m:'No current anywhere in the loop: open circuit.'},
+          {id:'sup',t:'Loop supply at the panel',r:'24.1 V',m:'Supply is good.'},
+          {id:'jb',t:'Half-split: volts between the loop cores at the junction box',r:'0 V on the tank side of the terminals, 24.0 V on the panel side. One screw terminal is green with corrosion and the core is loose.',m:'Found it: the break is in this junction box. Storm water got in.'},
+          {id:'tx',t:'Walk to the tank: volts at the transmitter terminals',r:'0.0 V',m:'Nothing reaches the transmitter: break is upstream of it.'}
+         ],
+         fixes:[
+          {t:'Replace the transmitter',ok:false,cost:600,r:'New transmitter fitted. Still 0 mA. A$600 and half a day wasted.'},
+          {t:'Replace the controller AI card',ok:false,cost:300,r:'New card. Still 0 mA. The other inputs on the old card were fine, which was a clue.'},
+          {t:'Re-terminate in the junction box and seal it',ok:true,r:'Cut back to clean copper, new ferrules, new gland and seal. Loop now 9.4 mA = 34% (tank dip-check agrees). Alarm cleared.'}
+         ]}
+      ];
+      var sel=document.getElementById('p21-ts-sel'),story=document.getElementById('p21-ts-story'),tb=document.getElementById('p21-ts-tests'),fb=document.getElementById('p21-ts-fixes'),log=document.getElementById('p21-ts-log'),st=document.getElementById('p21-ts-status'),stepsEl=document.getElementById('p21-ts-steps'),costEl=document.getElementById('p21-ts-cost');
+      var cur,steps,cost,done,seen;
+      function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+      function add(html){var li=document.createElement('li');li.innerHTML=html;log.appendChild(li);}
+      function upd(){stepsEl.textContent=steps;costEl.textContent='A$'+cost;}
+      function finish(){done=true;Array.prototype.forEach.call(document.querySelectorAll('#p21-ts .p21-btns button'),function(b){b.disabled=true;});}
+      function start(){
+        cur=S[+sel.value];steps=0;cost=0;done=false;seen={};log.innerHTML='';st.textContent='';
+        story.textContent=cur.story;tb.innerHTML='';fb.innerHTML='';
+        cur.tests.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='p21-btn';b.textContent=t.t;
+          b.onclick=function(){if(done)return;steps++;seen[t.id]=true;b.classList.add('used');
+            add('<b>'+esc(t.t)+'</b><span class="r">'+esc(t.r)+'</span>'+esc(t.m));upd();};tb.appendChild(b);});
+        cur.fixes.forEach(function(f){var b=document.createElement('button');b.type='button';b.className='p21-btn fix';b.textContent=f.t;
+          b.onclick=function(){if(done)return;steps++;
+            if(f.ok){
+              var evidence=cur.need.every(function(k){return seen[k];});
+              add('<b class="good">Fix: '+esc(f.t)+'</b><span class="r">'+esc(f.r)+'</span>');
+              upd();
+              var msg='Fixed in '+steps+' step'+(steps>1?'s':'')+'. A tidy path takes about '+(cur.best+1)+' (including the fix). ';
+              if(!evidence) msg+='But you fixed it without the measurement that proves the cause. On site you could not justify this to the client: next time, measure first.';
+              else if(cost>0) msg+='You found it, but wrong fixes cost A$'+cost+'. Measure before you replace parts.';
+              else if(steps<=cur.best+2) msg+='Excellent: evidence first, one correct fix, no money wasted.';
+              else msg+='Correct, with no money wasted. Try again and see if half-splitting gets you there sooner.';
+              st.textContent=msg;finish();
+            } else {
+              cost+=f.cost;b.classList.add('used');b.disabled=true;
+              add('<b class="bad">Fix tried: '+esc(f.t)+'</b><span class="r">'+esc(f.r)+'</span>');upd();
+            }};fb.appendChild(b);});
+        upd();
+      }
+      sel.onchange=start;document.getElementById('p21-ts-reset').onclick=start;start();
+    })();
+    </script>
+
+    <h2>Verify the fix, then write the job note</h2>
+    <p><b>Verify</b> means three things. The readings are back to normal (write them down). The whole function works, end to end (the door unlocks <b>and</b> the event shows on the access control software; the camera records <b>and</b> the NVR shows it at night). And the condition that caused the fault has been tested (force the IR on; run the pump to fill the tank; badge ten times in a row).</p>
+    <p>A <b>job note</b> (also called a service report or job card) is the written record of your visit. It goes to your supervisor, to the client, and to the next technician who opens that panel. A good note answers four questions:</p>
+    <ol>
+      <li><b>What I found</b>: the fault and its root cause, in plain words.</li>
+      <li><b>What I measured</b>: the key readings, with units and where you measured.</li>
+      <li><b>What I did</b>: the repair, parts used, settings changed, and how you verified it.</li>
+      <li><b>What's left</b>: anything not fixed, risks, follow-up work, quotes needed.</li>
+    </ol>
+    <div class="compare">
+      <div>
+        <h4>Bad job note</h4>
+        <p class="p21-note">C7 not working. Checked camera
+and power. Fixed. All OK now.</p>
+        <p>Nobody can tell what was wrong, whether it will come back, what was changed, or whether the client should pay for more work. If C7 fails again, the next technician starts from zero.</p>
+      </div>
+      <div>
+        <h4>Good job note</h4>
+        <p class="p21-note">Job 4471 · Car park L2 · Camera C7
+FOUND: C7 rebooting at dusk when IR turns
+on. Cause: volt drop on long thin feed.
+MEASURED: PSU 12.3 V on load. At camera
+11.1 V day, 9.6 V with IR on (reboots).
+Feed ~60 m 0.5 mm² fig-8 (loop 4.3 Ω).
+DID: New 1.0 mm² feed from L2 comms
+cupboard (12 m). Now 12.1 V at camera
+with IR forced on. Watched 30 min, no
+reboots. Old cable labelled SPARE.
+LEFT: C8, C9 on same long run read
+10.9 V / 10.7 V with IR on. Marginal.
+Recommend same fix, quote to follow.</p>
+      </div>
+    </div>
+    <div class="callout job"><span class="label">On the job</span><p>In Australia, job notes usually go into a phone app (the service management system) before you leave site, and the client often sees them. Write them as if the client, your boss and a lawyer will all read them: facts, readings and actions, no blame, no guesses presented as facts. A technician whose notes are clear gets trusted with bigger jobs.</p></div>
+
+    <h2>Common mistakes</h2>
+    <ul>
+      <li><b>Replacing parts before measuring.</b> "Swap until it works" wastes money and hides the cause. Measure, then replace only what the readings point to.</li>
+      <li><b>Measuring with no load.</b> A broken joint can show full voltage until current flows. Measure with the device connected and running.</li>
+      <li><b>Replacing a fuse without finding why it blew.</b> A fuse is a symptom, not a cause. Look for the short or the overload first. Never fit a bigger fuse.</li>
+      <li><b>Changing several things at once.</b> You lose track of what fixed it, and you may create a second fault.</li>
+      <li><b>Trusting labels.</b> A, B, +, −, NO, NC and cable labels can all be wrong. Verify with the meter.</li>
+      <li><b>Measuring resistance on a live circuit.</b> The reading is meaningless and the meter can be damaged. Switch off first.</li>
+      <li><b>Stopping at "it works now".</b> Without the root cause, it will fail again. Test the condition that caused it.</li>
+      <li><b>Forgetting the operator.</b> Opening a 4–20 mA loop or disabling a door can move valves, trip alarms or lock people in or out. Tell the site contact before you start, and follow the site's permits.</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>In a working 12 V circuit (load connected), you measure 12 V across a fuse. Is the fuse good?</summary><div class="answer"><p>No, it is blown. A good fuse has almost no resistance, so it drops almost no voltage (a few mV). When it is open, no current flows, the load drops nothing, and the whole 12 V appears across the gap. Find the cause before you replace it.</p></div></details>
+    <details class="quiz"><summary>A chain has 8 blocks and one is faulty. How many measurements does half-splitting need, at most?</summary><div class="answer"><p>Three. 8 → 4 → 2 → 1. Each measurement halves the suspects, so 2³ = 8 blocks need 3 tests. Testing one by one from the start can need 7.</p></div></details>
+    <details class="quiz"><summary>The PSU reads 12.4 V with the camera unplugged. Does that prove the power is fine?</summary><div class="answer"><p>No. With no load, almost no current flows, so cable resistance and bad joints drop almost nothing. You must measure across the camera while it is running, ideally in its worst case (IR on).</p></div></details>
+    <details class="quiz"><summary>With the bus powered off, you read 40 Ω between A and B on an RS-485 bus. What is wrong?</summary><div class="answer"><p>Three 120 Ω terminators are fitted (120 / 3 = 40 Ω). There should be exactly two, one at each end of the bus, giving 60 Ω. Turn off the termination on the device that is not at an end.</p></div></details>
+    <details class="quiz"><summary>A Modbus device replies "exception 02: illegal data address". Should you check the wiring?</summary><div class="answer"><p>No. An exception reply proves the wiring, ID, baud rate and parity are all working: the device heard and answered. The register address is wrong. Check the register map (often an off-by-one: register 40001 is address 0).</p></div></details>
+    <details class="quiz"><summary>You read 2.0 V across the 250 Ω input of a 0–10 bar pressure transmitter. What is the pressure?</summary><div class="answer"><p>I = 2.0 / 250 = 8 mA. Fraction of range = (8 − 4) / 16 = 0.25. Pressure = 0.25 × 10 = 2.5 bar.</p></div></details>
+    <details class="quiz"><summary>Your laptop is 10.1.1.20/24 and the camera is 10.1.2.30/24. Why can't you reach it?</summary><div class="answer"><p>With a /24 mask the first three numbers must match. 10.1.1 and 10.1.2 are different subnets, so the laptop sends the traffic to its gateway instead of directly to the camera. Give the laptop a temporary 10.1.2.x address, or change the camera's address.</p></div></details>
+    <details class="quiz"><summary>Since a new strike was fitted, the lock supply fuse blows every time the door is unlocked. What is the first thing you check?</summary><div class="answer"><p>The flyback diode across the strike. If it was fitted backwards, it is forward-biased when the relay closes and shorts the supply. The band (cathode) must go to +. Also check the strike's own wiring and its built-in diode before fitting another.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can list the eight steps of the fault-finding method in order, and explain why "understand normal" comes first.</span></li>
+      <li><input type="checkbox"><span>I measure voltage under load, across the device, and write down where my probes were.</span></li>
+      <li><input type="checkbox"><span>I can tell an open circuit, a good joint and a high-resistance joint from the voltage across them.</span></li>
+      <li><input type="checkbox"><span>I can half-split a signal chain and choose a sensible split point.</span></li>
+      <li><input type="checkbox"><span>I can calculate cable volt drop and recognise it as the cause of a night-time camera reboot.</span></li>
+      <li><input type="checkbox"><span>I can find a floating input and fix it with a pull-up or pull-down.</span></li>
+      <li><input type="checkbox"><span>I can check a Modbus RS-485 bus: settings, unique IDs, 60 Ω termination, A/B, and timeout vs exception.</span></li>
+      <li><input type="checkbox"><span>I can diagnose a 4–20 mA loop from the voltage across the 250 Ω input and at the transmitter.</span></li>
+      <li><input type="checkbox"><span>I can find a wrong-subnet problem with ipconfig and ping and fix it.</span></li>
+      <li><input type="checkbox"><span>I can check a door strike circuit under load, test a REX button, and fit a flyback diode the right way round.</span></li>
+      <li><input type="checkbox"><span>I write job notes that say what I found, what I measured, what I did and what is left.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
