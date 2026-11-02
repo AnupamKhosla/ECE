@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P22 · Reading drawings: schematics, wiring diagrams and as-builts</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part E</div>
+    <span class="eyebrow">Practice · P22</span>
+    <h1>Reading drawings: schematics, wiring diagrams and as-builts</h1>
+    <p class="lede">On site, the drawing set tells you what to install, where it goes and where every wire lands. By the end of this lab you can read the main kinds of drawing, trace a wire from a schematic to a real terminal, find your way with cross-references, and mark up an as-built so the next technician can trust it.</p>
+    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Level</b> Beginner → Intermediate</span><span><b>Kit cost</b> ~A$0–20</span><span><b>Theory</b> T04, T06</span><span><b>Reference</b> R03</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <p>This lab is mostly reading and marking up. You can do all of it on screen, but printing two or three pages and marking them by hand teaches the habit faster.</p>
+    <ul class="kit">
+      <li><b>Highlighters, 3 colours</b><small>~A$5 · one colour per wire or system</small></li>
+      <li><b>Red and green fine pens</b><small>~A$4 · for as-built markups</small></li>
+      <li><b>Scale ruler (1:20 to 1:500)</b><small>~A$6–12 · office or drafting supplier</small></li>
+      <li><b>A PDF reader with markup tools</b><small>Free readers can add comments, clouds and lines. Many contractors use a paid construction PDF tool; the company supplies it.</small></li>
+      <li><b>Your relay circuit from P08 (optional)</b><small>To draw its schematic and wiring diagram yourself</small></li>
+    </ul>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Print the drawing at the paper size written in the title block (for example A1), or remember that a smaller print changes the scale. A drawing marked <b>1:100 at A1</b> becomes <b>1:200</b> when printed on A3, because A3 is half the width of A1... no, A3 is a quarter of the width? Check: A1 is 841 mm wide and A3 is 420 mm wide, so A3 is half as wide, and the scale halves to 1:200.</p></div>
+
+    <h2>The drawing set: who draws what, and why</h2>
+    <p>A building project produces a <b>drawing set</b>: dozens or hundreds of sheets, each with a number and a revision. Different drawings answer different questions. The common beginner mistake is to look for the wrong answer on the wrong drawing, for example trying to find a terminal number on a floor plan.</p>
+    <p>Think of it like a map collection. A road atlas, a street directory and a house plan all show "where things are", but at different zoom levels and for different jobs.</p>
+
+    <div class="table-wrap"><table>
+      <tr><th>Drawing</th><th>The question it answers</th><th>What you will see</th><th>When you use it</th></tr>
+      <tr><td><b>Schematic</b> (circuit diagram)</td><td>How does it work?</td><td>Symbols arranged by function, power at the top, 0 V at the bottom. No physical positions.</td><td>Understanding, fault-finding, checking logic.</td></tr>
+      <tr><td><b>Wiring / connection diagram</b></td><td>Where does each wire land?</td><td>Real terminal numbers, terminal strips, wire numbers, cable numbers, often the physical layout of the panel.</td><td>Building a panel, terminating field cables, checking a termination.</td></tr>
+      <tr><td><b>Block diagram</b></td><td>What talks to what?</td><td>Boxes and lines. A system overview with no wire detail.</td><td>First look at a new system; network and integration questions.</td></tr>
+      <tr><td><b>Riser diagram</b></td><td>What is on each floor, and how is it fed?</td><td>Floors stacked vertically, the riser shaft, backbone cables, device counts per floor.</td><td>Planning cable runs, ordering equipment, commissioning floor by floor.</td></tr>
+      <tr><td><b>Floor plan / layout</b></td><td>Where exactly is each device?</td><td>The building plan with device symbols, tags and a legend. Drawn to scale.</td><td>Setting out, installing, finding a device later.</td></tr>
+      <tr><td><b>Cable schedule</b></td><td>Which cable goes from where to where?</td><td>A table: cable ID, from, to, type, length, test result.</td><td>Pulling and labelling cable, test reports.</td></tr>
+      <tr><td><b>Points list / I/O list</b></td><td>What signals does the controller handle?</td><td>A table: point name, type (AI/AO/DI/DO), terminal, device, range.</td><td>BMS and PLC wiring, programming, commissioning.</td></tr>
+      <tr><td><b>Single-line diagram (SLD)</b></td><td>How is mains power distributed?</td><td>Switchboards, breakers and feeders drawn as single lines.</td><td>Reading only, to know which board and circuit feeds your equipment.</td></tr>
+      <tr><td><b>Details and mounting drawings</b></td><td>How is it fixed?</td><td>Close-ups: reader height, back box, bracket, conduit entry.</td><td>Installing to the specification.</td></tr>
+    </table></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Most Australian electrical and electronic drawings use <b>IEC-style symbols</b> (from the IEC 60617 symbol library; older drawings may cite the old Australian symbols standard AS 1102). You will also meet American-style symbols on equipment made for the US market, such as zig-zag resistors and ladder-style control drawings. Security and communications floor plans use whatever symbols the consultant or company chooses. <b>Drawings vary by company, so always read the legend first.</b></p></div>
+
+    <h2>Title blocks, revisions and status</h2>
+    <p>Before you read a single symbol, read the <b>title block</b>. It is the box in the bottom-right corner of every sheet. It tells you what the drawing is, which version it is, and whether you are allowed to build from it.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="A drawing sheet corner with zone grid, revision cloud and title block">
+        <!-- sheet frame with zone grid -->
+        <rect class="s-line" x="10" y="10" width="310" height="250" fill="none"/>
+        <line class="s-thin" x1="10" y1="28" x2="320" y2="28"/>
+        <line class="s-thin" x1="28" y1="10" x2="28" y2="260"/>
+        <line class="s-thin" x1="101" y1="10" x2="101" y2="28"/>
+        <line class="s-thin" x1="174" y1="10" x2="174" y2="28"/>
+        <line class="s-thin" x1="247" y1="10" x2="247" y2="28"/>
+        <line class="s-thin" x1="10" y1="105" x2="28" y2="105"/>
+        <line class="s-thin" x1="10" y1="182" x2="28" y2="182"/>
+        <text class="t t-small t-muted" x="60" y="24">5</text>
+        <text class="t t-small t-muted" x="133" y="24">6</text>
+        <text class="t t-small t-muted" x="206" y="24">7</text>
+        <text class="t t-small t-muted" x="279" y="24">8</text>
+        <text class="t t-small t-muted" x="15" y="70">B</text>
+        <text class="t t-small t-muted" x="15" y="148">C</text>
+        <text class="t t-small t-muted" x="15" y="225">D</text>
+        <!-- faint corridor -->
+        <line class="s-thin" x1="28" y1="118" x2="320" y2="118"/>
+        <line class="s-thin" x1="28" y1="200" x2="320" y2="200"/>
+        <!-- continuation in B5 -->
+        <path class="s-line" d="M120 66 H40"/>
+        <polygon class="f-ink" points="40,60 30,66 40,72"/>
+        <text class="t t-small t-muted" x="36" y="88">cont. on sheet 5, ref D2</text>
+        <!-- camera in C7 with revision cloud -->
+        <circle class="f-panel s-blue" cx="212" cy="146" r="9"/>
+        <circle class="f-blue" cx="212" cy="146" r="3"/>
+        <path class="s-accent" fill="none" d="M182 126 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 0 20 a10 10 0 0 1 0 20 a10 10 0 0 1 -20 0 a10 10 0 0 1 -20 0 a10 10 0 0 1 -20 0 a10 10 0 0 1 0 -20 a10 10 0 0 1 0 -20 z"/>
+        <polygon class="f-panel s-accent" points="246,124 270,124 258,102"/>
+        <text class="t t-small t-bold" x="254" y="120">C</text>
+        <text class="t t-small" x="180" y="194">CAM-L1-07</text>
+        <!-- title block -->
+        <rect class="f-panel s-line" x="336" y="10" width="294" height="250"/>
+        <rect class="f-wash" x="337" y="11" width="292" height="17"/>
+        <line class="s-thin" x1="336" y1="28" x2="630" y2="28"/>
+        <line class="s-thin" x1="336" y1="48" x2="630" y2="48"/>
+        <line class="s-thin" x1="336" y1="68" x2="630" y2="68"/>
+        <rect class="f-accent-soft" x="337" y="69" width="292" height="19"/>
+        <line class="s-line" x1="336" y1="88" x2="630" y2="88"/>
+        <line class="s-thin" x1="368" y1="10" x2="368" y2="88"/>
+        <line class="s-thin" x1="420" y1="10" x2="420" y2="88"/>
+        <line class="s-thin" x1="596" y1="10" x2="596" y2="88"/>
+        <text class="t t-small t-bold" x="341" y="24">REV</text>
+        <text class="t t-small t-bold" x="373" y="24">DATE</text>
+        <text class="t t-small t-bold" x="426" y="24">DESCRIPTION</text>
+        <text class="t t-small t-bold" x="601" y="24">BY</text>
+        <text class="t t-small" x="348" y="43">A</text><text class="t t-small" x="373" y="43">03/26</text><text class="t t-small" x="426" y="43">Issued for tender</text><text class="t t-small" x="603" y="43">JS</text>
+        <text class="t t-small" x="348" y="63">B</text><text class="t t-small" x="373" y="63">05/26</text><text class="t t-small" x="426" y="63">Issued for construction</text><text class="t t-small" x="603" y="63">JS</text>
+        <text class="t t-small t-bold" x="348" y="83">C</text><text class="t t-small t-bold" x="373" y="83">09/26</text><text class="t t-small t-bold" x="426" y="83">As built (site markups)</text><text class="t t-small t-bold" x="603" y="83">AK</text>
+        <line class="s-thin" x1="336" y1="130" x2="630" y2="130"/>
+        <text class="t t-small t-muted" x="342" y="104">PROJECT</text>
+        <text class="t t-small" x="342" y="122">Office fit-out, Levels G–2</text>
+        <line class="s-thin" x1="336" y1="172" x2="630" y2="172"/>
+        <text class="t t-small t-muted" x="342" y="146">DRAWING TITLE</text>
+        <text class="t t-bold" x="342" y="164">Security layout · Level 1</text>
+        <line class="s-thin" x1="336" y1="216" x2="630" y2="216"/>
+        <line class="s-thin" x1="450" y1="172" x2="450" y2="216"/>
+        <line class="s-thin" x1="500" y1="172" x2="500" y2="216"/>
+        <line class="s-thin" x1="560" y1="172" x2="560" y2="216"/>
+        <text class="t t-small t-muted" x="342" y="188">DWG No.</text><text class="t t-small t-bold" x="342" y="207">SEC-L1-101</text>
+        <text class="t t-small t-muted" x="456" y="188">REV</text><text class="t t-small t-bold" x="466" y="207">C</text>
+        <text class="t t-small t-muted" x="506" y="188">SHEET</text><text class="t t-small t-bold" x="506" y="207">4 of 12</text>
+        <text class="t t-small t-muted" x="566" y="188">SCALE</text><text class="t t-small t-bold" x="566" y="207">1:100 A1</text>
+        <line class="s-thin" x1="480" y1="216" x2="480" y2="260"/>
+        <text class="t t-small t-muted" x="342" y="232">DRAWN / CHECKED</text><text class="t t-small" x="342" y="250">AK / JS</text>
+        <text class="t t-small t-muted" x="486" y="232">STATUS</text><text class="t t-small t-bold t-accent" x="486" y="250">AS BUILT</text>
+      </svg>
+      <figcaption>Figure 1. Left: part of a drawing sheet. The numbers along the top (columns) and letters down the side (rows) make a grid, so "sheet 4, ref C7" means sheet 4, row C, column 7. The camera there sits inside a <b>revision cloud</b> with a triangle marked C: it changed in revision C. Right: the title block and revision table. Only build from the current revision with a construction status.</figcaption>
+    </figure>
+
+    <h3>What to read in the title block, every time</h3>
+    <ol class="steps">
+      <li><p><b>Drawing number and sheet.</b> "SEC-L1-101, sheet 4 of 12". When you phone the office, quote this, not "the security plan".</p></li>
+      <li><p><b>Revision.</b> Letters (A, B, C) or numbers (0, 1, 2). Some companies use letters before construction and numbers after; others the reverse. The revision table shows the history. The latest row is the one that counts.</p></li>
+      <li><p><b>Status.</b> "Preliminary", "For tender", "For approval", "Issued for construction" (often written IFC), "As built". <b>Never install from a drawing that is not issued for construction</b> unless your supervisor tells you so in writing.</p></li>
+      <li><p><b>Scale and paper size.</b> "1:100 at A1" means 1 mm on an A1 print is 100 mm in the building. Many drawings also say "Do not scale": use written dimensions when they exist.</p></li>
+      <li><p><b>Clouds and triangles.</b> A revision cloud (the bumpy outline) marks what changed. The triangle next to it carries the revision letter. When a new revision arrives, look for the clouds first.</p></li>
+    </ol>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The drawing in the van is the drawing." <b>Right:</b> the drawing in the van might be two revisions old. The company keeps a <b>drawing register</b> (a list of every sheet and its current revision). Check your sheet's revision against the register at the start of each job. Installing from a superseded drawing is one of the most common and most expensive site mistakes.</p></div>
+
+    <h2>One circuit, two drawings</h2>
+    <p>Here is the key idea of this lab. A <b>schematic</b> and a <b>wiring diagram</b> can describe exactly the same circuit, but they are organised differently:</p>
+    <div class="compare">
+      <div><h4>Schematic: organised by function</h4><p>The supply rail runs along the top and 0 V along the bottom. Current "flows" down the page through each path. Parts are placed where they make the logic easy to follow. The relay coil and its contact can be far apart on the page, even on different sheets, linked only by the name <b>K1</b>.</p></div>
+      <div><h4>Wiring diagram: organised by place</h4><p>Parts are drawn where they physically sit: the power supply, fuse and relay on the DIN rail, the terminal strip at the edge of the panel, the field devices outside. Every terminal has its real number. You can wire the panel from it without understanding the circuit, which is exactly why mistakes hide in it.</p></div>
+    </div>
+    <p>The circuit: a <b>24 V DC</b> power supply G1 feeds a fuse F1. A push-button S1 on the wall energises relay coil K1. The relay's normally-open contact switches a 24 V indicator lamp H1. A diode D1 across the coil absorbs the voltage spike when the coil switches off. You built this kind of circuit in <a href="p08-transistor-switches.html">P08</a>. Everything here is extra-low voltage.</p>
+
+    <h3>The letter codes and terminal numbers you will see</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Code</th><th>Meaning</th><th>Terminal numbers you will meet</th></tr>
+      <tr><td><b>G</b></td><td>Power supply, generator, battery</td><td>+ and −, often two of each on a DIN-rail supply</td></tr>
+      <tr><td><b>F</b></td><td>Fuse or protective device</td><td>In / out, or 1 / 2</td></tr>
+      <tr><td><b>K</b></td><td>Relay (and on many drawings, contactor)</td><td>Coil <b>A1, A2</b>. Changeover contact <b>11</b> common, <b>12</b> normally closed, <b>14</b> normally open. A second set is 21/22/24.</td></tr>
+      <tr><td><b>S</b></td><td>Manual switch, push-button</td><td>NO contact <b>13–14</b>, NC contact <b>11–12</b> or 21–22</td></tr>
+      <tr><td><b>H</b> (or P)</td><td>Lamp, indicator, sounder</td><td>+ / − or X1 / X2</td></tr>
+      <tr><td><b>X</b></td><td>Terminal strip</td><td>X1:1, X1:2 … (strip X1, terminal 1, 2)</td></tr>
+      <tr><td><b>Q, M, T, A</b></td><td>Breaker or contactor, motor, transformer, assembly or controller</td><td>Varies by device</td></tr>
+    </table></div>
+    <p>The rule for contact numbers is neat once you see it. The <b>first digit</b> is which contact set (1st, 2nd …). The <b>second digit</b> is its function: 1–2 is a normally-closed path, 3–4 is a normally-open path, and on a changeover contact 1 is common, 2 is the NC side, 4 is the NO side. So "21–24" means "second contact set, normally-open side". Letter codes vary between companies and between old and new standards; the legend sheet or the first sheet of the set will list the ones used.</p>
+
+    <div class="widget" id="w-trace">
+      <span class="label">Interactive · Trace the wire</span>
+      <p>Choose a wire number, or pick any terminal. The same wire lights up in red on <b>both</b> drawings, and everything else fades. Then press <b>Test me</b>.</p>
+      <div id="tr-btns"></div>
+      <label>Or pick a terminal on the panel or field device
+        <select id="tr-term">
+          <option value="">Choose a terminal…</option>
+          <option value="1">G1 +</option><option value="0">G1 −</option>
+          <option value="1">F1 in (top)</option><option value="2">F1 out (bottom)</option>
+          <option value="3">K1 : A1</option><option value="0">K1 : A2</option>
+          <option value="2">K1 : 11</option><option value="none">K1 : 12</option><option value="4">K1 : 14</option>
+          <option value="3">X1 : 1</option><option value="2">X1 : 2</option><option value="4">X1 : 3</option><option value="0">X1 : 4</option>
+          <option value="2">S1 : 13</option><option value="3">S1 : 14</option>
+          <option value="4">H1 +</option><option value="0">H1 −</option>
+        </select>
+      </label>
+      <div class="readings"><div><small>Selected</small><span class="out" id="tr-out">—</span></div><div><small>Physical wires with this number</small><span class="out" id="tr-count">—</span></div></div>
+      <p id="tr-desc" style="margin-top:12px">Pick a wire to see its route on both drawings.</p>
+
+      <figure>
+        <svg viewBox="0 0 620 270" role="img" aria-label="Schematic of a push-button, relay and lamp circuit">
+          <!-- zone strip -->
+          <rect class="f-wash s-thin" x="2" y="2" width="616" height="18"/>
+          <line class="s-thin" x1="104" y1="2" x2="104" y2="20"/><line class="s-thin" x1="207" y1="2" x2="207" y2="20"/><line class="s-thin" x1="310" y1="2" x2="310" y2="20"/><line class="s-thin" x1="413" y1="2" x2="413" y2="20"/><line class="s-thin" x1="516" y1="2" x2="516" y2="20"/>
+          <text class="t t-small t-muted" x="49" y="16">1</text><text class="t t-small t-muted" x="151" y="16">2</text><text class="t t-small t-muted" x="254" y="16">3</text><text class="t t-small t-muted" x="357" y="16">4</text><text class="t t-small t-muted" x="460" y="16">5</text><text class="t t-small t-muted" x="563" y="16">6</text>
+          <!-- wires (traceable) -->
+          <path data-w="1" class="s-line" d="M50 122 V50 H100"/>
+          <path data-w="2" class="s-line" d="M140 50 H440 V88 M220 50 V88"/>
+          <path data-w="3" class="s-line" d="M220 112 V150 M220 130 H280 V154"/>
+          <path data-w="4" class="s-line" d="M440 112 V162"/>
+          <path data-w="0" class="s-line" d="M50 132 V230 H440 M220 180 V230 M280 176 V230 M440 198 V230"/>
+          <!-- G1 battery symbol -->
+          <line class="s-line" x1="34" y1="122" x2="66" y2="122"/>
+          <line class="s-line" x1="42" y1="132" x2="58" y2="132" style="stroke-width:4"/>
+          <text class="t t-small" x="70" y="120">+</text>
+          <text class="t t-bold" x="68" y="152">G1</text>
+          <text class="t t-small t-muted" x="68" y="168">24 V DC</text>
+          <!-- F1 fuse -->
+          <rect class="f-panel s-line" x="100" y="43" width="40" height="14"/>
+          <line class="s-line" x1="100" y1="50" x2="140" y2="50"/>
+          <text class="t t-small" x="100" y="36">F1 1 A</text>
+          <circle class="f-ink" cx="220" cy="50" r="3.5"/>
+          <!-- S1 push-button NO -->
+          <line class="s-line" x1="220" y1="112" x2="207" y2="91"/>
+          <line class="s-thin s-dash" x1="213" y1="101" x2="190" y2="101"/>
+          <path class="s-line" d="M192 93 H188 V109 H192"/>
+          <text class="t t-bold" x="156" y="106">S1</text>
+          <text class="t t-small" x="226" y="94">13</text>
+          <text class="t t-small" x="226" y="118">14</text>
+          <!-- K1 coil -->
+          <circle class="f-ink" cx="220" cy="130" r="3.5"/>
+          <rect class="f-panel s-line" x="205" y="150" width="30" height="30"/>
+          <text class="t t-small" x="240" y="162">A1</text>
+          <text class="t t-small" x="240" y="180">A2</text>
+          <text class="t t-bold" x="176" y="170">K1</text>
+          <!-- D1 flyback diode, cathode up -->
+          <line class="s-line" x1="272" y1="154" x2="288" y2="154"/>
+          <polygon class="f-ink" points="272,176 288,176 280,155"/>
+          <text class="t t-small t-bold" x="294" y="170">D1</text>
+          <circle class="f-ink" cx="220" cy="230" r="3.5"/>
+          <circle class="f-ink" cx="280" cy="230" r="3.5"/>
+          <!-- K1 contact 11-14 -->
+          <line class="s-line" x1="440" y1="112" x2="428" y2="91"/>
+          <text class="t t-small" x="448" y="94">11</text>
+          <text class="t t-small" x="448" y="118">14</text>
+          <text class="t t-bold" x="402" y="106">K1</text>
+          <text class="t t-small t-muted" x="476" y="106">(coil: zone 3)</text>
+          <!-- H1 lamp -->
+          <circle class="f-panel s-line" cx="440" cy="180" r="18"/>
+          <line class="s-line" x1="427" y1="167" x2="453" y2="193"/>
+          <line class="s-line" x1="453" y1="167" x2="427" y2="193"/>
+          <text class="t t-bold" x="466" y="178">H1</text>
+          <text class="t t-small t-muted" x="466" y="194">24 V lamp</text>
+          <!-- wire numbers -->
+          <text class="t t-small t-blue t-bold" x="72" y="44">1</text>
+          <text class="t t-small t-blue t-bold" x="300" y="44">2</text>
+          <text class="t t-small t-blue t-bold" x="248" y="124">3</text>
+          <text class="t t-small t-blue t-bold" x="446" y="142">4</text>
+          <text class="t t-small t-blue t-bold" x="340" y="224">0</text>
+          <text class="t t-small t-muted" x="60" y="248">0 V</text>
+          <text class="t t-small t-muted" x="168" y="256">K1 contacts: 11–14 ▸ zone 5</text>
+        </svg>
+        <figcaption>Figure 2. The schematic. Supply at the top, 0 V at the bottom, blue numbers are wire numbers. The coil K1 is in zone 3 and its contact is in zone 5; the small text under the coil is the contact cross-reference. D1 points "upwards" so it does not conduct in normal use.</figcaption>
+      </figure>
+
+      <figure>
+        <svg viewBox="0 0 620 320" role="img" aria-label="Wiring diagram of the same circuit with real terminals">
+          <rect class="s-thin s-dash" x="14" y="8" width="440" height="302" fill="none"/>
+          <text class="t t-small t-muted" x="22" y="302">Control panel CP-01 (inside)</text>
+          <text class="t t-small t-muted" x="522" y="100">Field devices</text>
+          <!-- wires (traceable) -->
+          <path data-w="1" class="s-line" d="M110 60 V40 H220 V60"/>
+          <path data-w="0" class="s-line" d="M80 60 V24 H300 V60"/>
+          <path data-w="0" class="s-line" d="M55 60 V46 H26 V248 H410"/>
+          <path data-w="3" class="s-line" d="M330 60 V40 H395 V164 H410"/>
+          <path data-w="2" class="s-line" d="M220 120 V136 H300 V120"/>
+          <path data-w="2" class="s-line" d="M220 136 V192 H410"/>
+          <path data-w="4" class="s-line" d="M360 120 V220 H410"/>
+          <path data-w="3" class="s-line" d="M440 164 H470 V136 H520"/>
+          <path data-w="2" class="s-line" d="M440 192 H485 V164 H520"/>
+          <path data-w="4" class="s-line" d="M440 220 H485 V242 H520"/>
+          <path data-w="0" class="s-line" d="M440 248 H470 V270 H520"/>
+          <circle class="f-ink" cx="220" cy="136" r="3"/>
+          <!-- G1 -->
+          <rect class="f-panel s-line" x="40" y="60" width="120" height="60"/>
+          <circle class="f-panel s-line" cx="55" cy="60" r="5"/><circle class="f-panel s-line" cx="80" cy="60" r="5"/><circle class="f-panel s-line" cx="110" cy="60" r="5"/><circle class="f-panel s-line" cx="135" cy="60" r="5"/>
+          <text class="t t-small" x="51" y="80">−</text><text class="t t-small" x="76" y="80">−</text><text class="t t-small" x="106" y="80">+</text><text class="t t-small" x="131" y="80">+</text>
+          <text class="t t-small t-bold" x="48" y="106">G1 · 24 V DC</text>
+          <!-- F1 -->
+          <rect class="f-panel s-line" x="200" y="60" width="40" height="60"/>
+          <circle class="f-panel s-line" cx="220" cy="60" r="5"/><circle class="f-panel s-line" cx="220" cy="120" r="5"/>
+          <text class="t t-small t-bold" x="211" y="88">F1</text>
+          <text class="t t-small" x="210" y="104">1 A</text>
+          <!-- K1 relay base -->
+          <rect class="f-panel s-line" x="280" y="60" width="110" height="60"/>
+          <circle class="f-panel s-line" cx="300" cy="60" r="5"/><circle class="f-panel s-line" cx="330" cy="60" r="5"/>
+          <circle class="f-panel s-line" cx="300" cy="120" r="5"/><circle class="f-panel s-line" cx="330" cy="120" r="5"/><circle class="f-panel s-line" cx="360" cy="120" r="5"/>
+          <text class="t t-small" x="291" y="80">A2</text><text class="t t-small" x="321" y="80">A1</text>
+          <text class="t t-small" x="292" y="112">11</text><text class="t t-small" x="322" y="112">12</text><text class="t t-small" x="352" y="112">14</text>
+          <text class="t t-small t-bold" x="346" y="96">K1</text>
+          <text class="t t-small t-muted" x="286" y="96">+D1</text>
+          <!-- X1 terminal strip -->
+          <text class="t t-small t-bold" x="412" y="144">X1</text>
+          <rect class="f-wash s-line" x="410" y="150" width="30" height="28"/><rect class="f-wash s-line" x="410" y="178" width="30" height="28"/><rect class="f-wash s-line" x="410" y="206" width="30" height="28"/><rect class="f-wash s-line" x="410" y="234" width="30" height="28"/>
+          <text class="t t-small t-bold" x="421" y="169">1</text><text class="t t-small t-bold" x="421" y="197">2</text><text class="t t-small t-bold" x="421" y="225">3</text><text class="t t-small t-bold" x="421" y="253">4</text>
+          <!-- ferrule numbers -->
+          <text class="t t-small t-blue t-bold" x="114" y="52">1</text><text class="t t-small t-blue t-bold" x="226" y="52">1</text>
+          <text class="t t-small t-blue t-bold" x="85" y="52">0</text><text class="t t-small t-blue t-bold" x="305" y="52">0</text><text class="t t-small t-blue t-bold" x="30" y="150">0</text><text class="t t-small t-blue t-bold" x="398" y="244">0</text>
+          <text class="t t-small t-blue t-bold" x="335" y="52">3</text><text class="t t-small t-blue t-bold" x="398" y="160">3</text>
+          <text class="t t-small t-blue t-bold" x="226" y="152">2</text><text class="t t-small t-blue t-bold" x="304" y="134">2</text><text class="t t-small t-blue t-bold" x="398" y="188">2</text>
+          <text class="t t-small t-blue t-bold" x="364" y="138">4</text><text class="t t-small t-blue t-bold" x="398" y="216">4</text>
+          <!-- field cables -->
+          <text class="t t-small t-muted" x="478" y="124">C1</text>
+          <text class="t t-small t-muted" x="462" y="292">C2 · 2-core</text>
+          <!-- S1 -->
+          <rect class="f-panel s-line" x="520" y="118" width="90" height="64"/>
+          <circle class="f-panel s-line" cx="520" cy="136" r="5"/><circle class="f-panel s-line" cx="520" cy="164" r="5"/>
+          <text class="t t-small" x="530" y="141">14</text><text class="t t-small" x="530" y="169">13</text>
+          <text class="t t-small t-bold" x="560" y="142">S1</text>
+          <text class="t t-small t-muted" x="556" y="160">button</text>
+          <!-- H1 -->
+          <rect class="f-panel s-line" x="520" y="226" width="90" height="62"/>
+          <circle class="f-panel s-line" cx="520" cy="242" r="5"/><circle class="f-panel s-line" cx="520" cy="270" r="5"/>
+          <text class="t t-small" x="530" y="247">+</text><text class="t t-small" x="530" y="275">−</text>
+          <text class="t t-small t-bold" x="556" y="250">H1</text>
+          <text class="t t-small t-muted" x="550" y="268">24 V lamp</text>
+        </svg>
+        <figcaption>Figure 3. The wiring diagram of the same circuit. Components are drawn where they sit on the DIN rail, with real terminal numbers. Blue numbers are the ferrule markers printed on each wire end. Where lines cross without a dot, they are not connected. Relay contact 12 (normally closed) is not used, so it has no wire.</figcaption>
+      </figure>
+
+      <div style="border-top:1px dashed var(--line);padding-top:12px;margin-top:8px">
+        <button type="button" id="tr-new" style="font:600 14px var(--sans);padding:7px 14px;border:none;border-radius:6px;background:var(--accent);color:var(--bg);cursor:pointer">Test me</button>
+        <span class="pill" id="tr-score">Score 0 / 0</span>
+        <p id="tr-qtext" style="margin:12px 0 8px;font-weight:600"></p>
+        <div id="tr-opts"></div>
+        <p id="tr-fb" style="margin-top:10px"></p>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var root=document.getElementById('w-trace');
+      var els=root.querySelectorAll('[data-w]');
+      els.forEach(function(e){e.setAttribute('data-base',e.getAttribute('class'));});
+      var BS='font:600 14px var(--sans);padding:6px 12px;margin:3px 6px 3px 0;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer';
+      var info={
+        '0':['3','0 V common. On the schematic it is the whole bottom rail: G1 −, coil A2, the anode of D1 and the lamp. In the panel it is three separate wires: G1 − to K1:A2 (over the top), G1 − to X1:4, and a core of cable C2 from X1:4 to H1 −. One node, one number, three pieces of copper.'],
+        '1':['1','+24 V before the fuse. Schematic: from G1 + to the fuse F1. Panel: one short link from G1 + to the top of F1. If you ever find wire 1 anywhere except these two places, someone has bypassed the fuse.'],
+        '2':['3','+24 V after the fuse. Schematic: the top rail from F1 to S1 and to relay contact 11. Panel: F1 out to K1:11, F1 out to X1:2, then a core of cable C1 out to S1:13. Two wires share the F1 out terminal, so they go into one twin ferrule.'],
+        '3':['2','The switched feed to the coil. Schematic: from S1 terminal 14 down to coil A1, and to the cathode of D1. Panel: S1:14 back through cable C1 to X1:1, then across the panel to K1:A1. D1 is plugged into the relay base across A1–A2, so it needs no separate wire.'],
+        '4':['2','The lamp feed. Schematic: from relay contact 14 down to lamp H1. Panel: K1:14 to X1:3, then a core of cable C2 to H1 +. It is live only when the relay is pulled in.']
+      };
+      var btnBox=document.getElementById('tr-btns'),btns={};
+      ['0','1','2','3','4'].forEach(function(w){var b=document.createElement('button');b.type='button';b.textContent='Wire '+w;b.style.cssText=BS;b.onclick=function(){sel(w);};btnBox.appendChild(b);btns[w]=b;});
+      var cb=document.createElement('button');cb.type='button';cb.textContent='Clear';cb.style.cssText=BS;cb.onclick=function(){sel(null);};btnBox.appendChild(cb);
+      var out=document.getElementById('tr-out'),cnt=document.getElementById('tr-count'),desc=document.getElementById('tr-desc');
+      function sel(w,msg){
+        els.forEach(function(e){
+          if(w===null){e.setAttribute('class',e.getAttribute('data-base'));e.style.opacity='';e.style.strokeWidth='';}
+          else if(e.getAttribute('data-w')===w){e.setAttribute('class','s-red');e.style.strokeWidth='4';e.style.opacity='1';}
+          else{e.setAttribute('class',e.getAttribute('data-base'));e.style.strokeWidth='';e.style.opacity='0.25';}
+        });
+        for(var k in btns){btns[k].style.background=(k===w)?'var(--accent-soft)':'var(--bg)';}
+        if(w===null){out.textContent='—';cnt.textContent='—';desc.textContent=msg||'Pick a wire to see its route on both drawings.';return;}
+        out.textContent='Wire '+w;cnt.textContent=info[w][0];desc.textContent=info[w][1];
+      }
+      var term=document.getElementById('tr-term');
+      term.onchange=function(){var v=term.value;if(v==='')return sel(null);if(v==='none')return sel(null,'K1:12 is the normally-closed side of the relay contact. This circuit only needs the normally-open path 11–14, so terminal 12 is a spare with no wire. Spares are normal: never assume an empty terminal is a fault.');sel(v);};
+      var Q=[
+        {q:'The schematic shows wire 3 going to the relay coil A1. On which terminal does that wire leave the panel for the push-button?',o:['X1:1','X1:2','X1:3','X1:4'],a:0,w:'3',why:'Wire 3 lands on X1:1. Note that the terminal number (1) and the wire number (3) are different things.'},
+        {q:'The lamp does not light. With S1 pressed you measure 24 V between K1:14 and 0 V. Which terminal do you measure next, moving towards the lamp?',o:['F1 out','X1:2','X1:3','K1:A1'],a:2,w:'4',why:'Follow wire 4: K1:14 then X1:3. If X1:3 has 24 V too, the fault is in cable C2 or the lamp. This is half-splitting with a drawing.'},
+        {q:'Wire 2 (+24 V fused) lands on which relay base terminal?',o:['A1','11','12','14'],a:1,w:'2',why:'11 is the common of the first contact set. Pulling the relay in connects 11 to 14 and the lamp gets 24 V.'},
+        {q:'Which S1 terminal does X1:2 feed?',o:['13','14','A1','11'],a:0,w:'2',why:'X1:2 carries wire 2 out through cable C1 to S1:13. Pressing S1 joins 13 to 14 and sends 24 V back on wire 3.'},
+        {q:'On the schematic, 0 V is one continuous line. How many separate pieces of copper carry ferrule number 0 in this job (panel plus field)?',o:['1','2','3','5'],a:2,w:'0',why:'Three: G1 − to K1:A2, G1 − to X1:4, and the core in C2 from X1:4 to H1 −. Same node, same number, several wires.'},
+        {q:'Someone has fitted a wire from F1 out to K1:12 instead of K1:11. What will the lamp do?',o:['Work normally','Never light','Light only when S1 is NOT pressed','Blow the fuse'],a:1,w:'2',why:'With 24 V on terminal 12 and nothing on 11, the common has no supply, so 14 can never be live. Checking each wire end against the drawing finds this in seconds.'}
+      ];
+      var qi=-1,score=0,asked=0,answered=false;
+      var qt=document.getElementById('tr-qtext'),qo=document.getElementById('tr-opts'),fb=document.getElementById('tr-fb'),sc=document.getElementById('tr-score');
+      document.getElementById('tr-new').onclick=function(){
+        qi=(qi+1)%Q.length;var it=Q[qi];answered=false;sel(null);qt.textContent='Q'+(qi+1)+'. '+it.q;qo.innerHTML='';fb.textContent='';
+        it.o.forEach(function(op,i){var b=document.createElement('button');b.type='button';b.textContent=op;b.style.cssText=BS;b.onclick=function(){
+          if(answered)return;answered=true;asked++;
+          if(i===it.a){score++;b.style.background='var(--career-soft)';fb.textContent='Correct. '+it.why;}
+          else{b.style.background='var(--warn-soft)';qo.children[it.a].style.background='var(--career-soft)';fb.textContent='Not quite. '+it.why;}
+          sc.textContent='Score '+score+' / '+asked;sel(it.w);
+        };qo.appendChild(b);});
+      };
+    })();
+    </script>
+
+    <div class="callout why"><span class="label">Why it works</span><p>A wire number names a <b>node</b>: every point that is joined by copper, and so sits at the same voltage. That is Kirchhoff's idea that a connected conductor is one equipotential (ignoring the tiny drop along the wire). So if you measure 24 V on one end of wire 2, every other end of wire 2 must also read 24 V. If it does not, that piece of copper or one of its terminations is broken. D1 is there because the coil is an inductor: when current through it is cut, it tries to keep the current flowing and the voltage spikes. The diode gives that current a safe path.</p></div>
+    <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
+    <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors (why relay coils kick)</a>
+
+    <h2>Wire numbers, ferrules and terminal numbers</h2>
+    <p>Three different numbers can sit on or near one wire end. Keep them apart in your head:</p>
+    <div class="cards">
+      <div class="card"><h4>Terminal number</h4><p>Belongs to the <b>place</b>: X1:3, K1:A1, S1:13. Printed on the terminal or on the device.</p></div>
+      <div class="card"><h4>Wire number</h4><p>Belongs to the <b>wire</b>: printed on a marker sleeve at both ends. Tells you which node the wire is part of.</p></div>
+      <div class="card"><h4>Cable number</h4><p>Belongs to the <b>multi-core cable</b> between two places: C1, L1-C07. Labelled on the sheath at both ends. Cores inside are identified by colour or number.</p></div>
+    </div>
+
+    <h3>Two common numbering systems</h3>
+    <div class="table-wrap"><table>
+      <tr><th>System</th><th>How it works</th><th>Example label</th><th>Good for</th></tr>
+      <tr><td><b>Node (potential) numbering</b></td><td>Every wire on the same node carries the same number. A new number starts after every component.</td><td><code>2</code> on both ends of F1-out→K1:11 and F1-out→X1:2</td><td>Small panels, fault-finding by measurement</td></tr>
+      <tr><td><b>Source–destination (address) numbering</b></td><td>Each end is labelled with where the <b>other</b> end goes.</td><td>At K1:14 the marker reads <code>X1:3</code>; at X1:3 it reads <code>K1:14</code></td><td>Large panels: you can find the far end without the drawing</td></tr>
+      <tr><td><b>Sheet–zone numbering</b></td><td>The number includes the sheet and column where the wire is drawn.</td><td><code>4-07</code> (sheet 4, column 7)</td><td>Big drawing sets: the number tells you where to look</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Ferrule" means two different things on Australian sites.</b> A <b>bootlace ferrule</b> is the small metal tube you crimp on the end of a stranded wire so it clamps cleanly in a screw terminal (see <a href="p05-soldering-wiring.html">P05</a>). A <b>ferrule marker</b> (often just "ferrule") is the printed sleeve that slides over the wire to show its number. When a supervisor says "ferrule every wire", ask which one; usually it means both.</p></div>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Fit the marker sleeves <b>before</b> you crimp the bootlace ferrule, and print them so they read from left to right as you look at the terminal (or from the bottom up for vertical wires). Most sites expect markers to be readable without twisting the wire. A label printer with heat-shrink sleeve tape saves hours on a big panel.</p></div>
+
+    <h2>Cross-references: "see sheet 4, ref C7"</h2>
+    <p>Large drawings do not fit on one sheet. A relay coil may be on sheet 3 and its contacts on sheets 5 and 9. A cable may leave one sheet and continue on another. <b>Cross-references</b> are the links between those places, like page references in a book.</p>
+    <p>Every sheet has a <b>zone grid</b> printed around its border: numbers along the top and bottom, letters down the sides (see Figure 1). A zone is a cell of that grid. The reference "sheet 4, ref C7" means: open sheet 4, go to row C, column 7. Software often writes the same thing in short form, for example <code>/4.C7</code> or <code>4-C7</code>, or only the column, <code>/4.7</code>, when each column holds one circuit.</p>
+    <h3>The three cross-references you will meet most</h3>
+    <ol class="steps">
+      <li><p><b>Continuation arrows.</b> A wire runs off the edge of the drawing area into an arrow labelled "to 5/D2". On sheet 5, zone D2, a matching arrow says "from 4/C7". Same wire number at both arrows.</p></li>
+      <li><p><b>Contact cross-reference under a coil.</b> Under relay coil K1 you see a little table: "11–14 ▸ 5" means "its NO contact is drawn in column 5". Under the contact, "(coil: 3)" points back. In Figure 2 these are the small grey notes.</p></li>
+      <li><p><b>Detail and section marks.</b> On floor plans, a circle with "3 / SEC-501" means "detail 3, drawn on sheet SEC-501". This is how you find the reader mounting height or the back-box detail.</p></li>
+    </ol>
+    <div class="formula">"to 5/D2" → open sheet 5 → row D, column 2 → find the same wire number
+      <small>If the wire number at the far arrow does not match, stop: either the drawing is wrong or you are on the wrong revision. Tell your supervisor before you wire anything.</small></div>
+
+    <h2>System drawings: block and riser diagrams</h2>
+    <p>A <b>block diagram</b> shows a system as boxes and lines: NVR, switches, cameras, access panel, the link to the building network. It has no wire detail. Read it first on a new job to get the "story" of the system.</p>
+    <p>A <b>riser diagram</b> is a block diagram stacked by floor. The vertical shaft that carries cables between floors is the <b>riser</b>. The diagram shows what equipment is on each floor, how many devices there are, and which backbone cable feeds each floor. It is not to scale and does not show where on the floor a device sits; that is the floor plan's job.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 430" role="img" aria-label="Security riser diagram for a three-storey building">
+        <defs>
+          <g id="p22-cam"><rect class="f-panel s-blue" x="0" y="0" width="16" height="10" rx="2" style="stroke-width:1.5"/><path class="f-blue" d="M16 2 L22 -1 L22 11 L16 8 Z"/></g>
+          <g id="p22-rdr"><rect class="f-panel s-green" x="0" y="0" width="11" height="17" rx="2" style="stroke-width:1.5"/><circle class="f-green" cx="5.5" cy="5" r="2"/></g>
+        </defs>
+        <!-- floors -->
+        <line class="s-thin" x1="10" y1="16" x2="630" y2="16"/>
+        <line class="s-line" x1="10" y1="136" x2="630" y2="136" style="stroke-width:4"/>
+        <line class="s-line" x1="10" y1="259" x2="630" y2="259" style="stroke-width:4"/>
+        <line class="s-line" x1="10" y1="392" x2="630" y2="392" style="stroke-width:4"/>
+        <text class="t t-small t-bold" x="16" y="34">LEVEL 2</text>
+        <text class="t t-small t-bold" x="16" y="156">LEVEL 1</text>
+        <text class="t t-small t-bold" x="16" y="280">GROUND</text>
+        <!-- riser -->
+        <rect class="s-thin s-dash" x="270" y="16" width="40" height="376" fill="none"/>
+        <text class="t t-small t-muted" x="272" y="32">RISER</text>
+        <!-- backbone lines -->
+        <path class="s-blue" d="M345 300 H300 V60 H330 M300 182 H330"/>
+        <path class="s-amber s-dash" d="M345 360 H280 V100 H260 M280 222 H260"/>
+        <!-- L2 -->
+        <rect class="f-panel s-line" x="330" y="44" width="120" height="32" rx="4"/>
+        <text class="t t-small" x="338" y="64">SW-L2 PoE switch</text>
+        <path class="s-line" d="M450 60 H470"/>
+        <rect class="s-thin s-dash" x="470" y="34" width="156" height="60" rx="6" fill="none"/>
+        <use href="#p22-cam" x="480" y="46"/><use href="#p22-cam" x="514" y="46"/><use href="#p22-cam" x="548" y="46"/><use href="#p22-cam" x="582" y="46"/>
+        <text class="t t-small t-muted" x="478" y="84">4 × camera · Cat6 each</text>
+        <rect class="f-panel s-line" x="150" y="84" width="110" height="32" rx="4"/>
+        <text class="t t-small" x="157" y="104">DC-L2 door ctrl</text>
+        <path class="s-line" d="M150 100 H134"/>
+        <rect class="s-thin s-dash" x="24" y="68" width="110" height="60" rx="6" fill="none"/>
+        <use href="#p22-rdr" x="34" y="76"/><use href="#p22-rdr" x="52" y="76"/>
+        <text class="t t-small" x="72" y="90">2 doors</text>
+        <text class="t t-small t-muted" x="30" y="118">reader, lock, REX</text>
+        <!-- L1 -->
+        <rect class="f-panel s-line" x="330" y="166" width="120" height="32" rx="4"/>
+        <text class="t t-small" x="338" y="186">SW-L1 PoE switch</text>
+        <path class="s-line" d="M450 182 H470"/>
+        <rect class="s-thin s-dash" x="470" y="156" width="156" height="60" rx="6" fill="none"/>
+        <use href="#p22-cam" x="480" y="168"/><use href="#p22-cam" x="514" y="168"/><use href="#p22-cam" x="548" y="168"/>
+        <text class="t t-small t-muted" x="478" y="206">3 × camera · Cat6 each</text>
+        <rect class="f-panel s-line" x="150" y="206" width="110" height="32" rx="4"/>
+        <text class="t t-small" x="157" y="226">DC-L1 door ctrl</text>
+        <path class="s-line" d="M150 222 H134"/>
+        <rect class="s-thin s-dash" x="24" y="190" width="110" height="60" rx="6" fill="none"/>
+        <use href="#p22-rdr" x="34" y="198"/><use href="#p22-rdr" x="52" y="198"/><use href="#p22-rdr" x="70" y="198"/>
+        <text class="t t-small" x="88" y="212">3 doors</text>
+        <text class="t t-small t-muted" x="30" y="240">reader, lock, REX</text>
+        <!-- GF comms room -->
+        <rect class="f-wash s-thin" x="330" y="270" width="290" height="114" rx="4"/>
+        <text class="t t-small t-bold" x="340" y="286">COMMS ROOM · rack</text>
+        <rect class="f-panel s-thin" x="345" y="292" width="260" height="16"/><text class="t t-small" x="351" y="304">Core switch + fibre patch panel</text>
+        <rect class="f-panel s-thin" x="345" y="312" width="260" height="16"/><text class="t t-small" x="351" y="324">PoE switch SW-GF</text>
+        <rect class="f-panel s-thin" x="345" y="332" width="260" height="16"/><text class="t t-small" x="351" y="344">NVR (records every camera)</text>
+        <rect class="f-panel s-thin" x="345" y="352" width="260" height="16"/><text class="t t-small" x="351" y="364">Access panel ACP-1 + battery PSU</text>
+        <path class="s-line" d="M330 376 H250"/>
+        <rect class="s-thin s-dash" x="24" y="300" width="226" height="84" rx="6" fill="none"/>
+        <use href="#p22-cam" x="36" y="312"/><use href="#p22-cam" x="70" y="312"/><use href="#p22-cam" x="104" y="312"/>
+        <use href="#p22-rdr" x="150" y="308"/><use href="#p22-rdr" x="170" y="308"/>
+        <text class="t t-small" x="34" y="350">3 × camera, 2 × entry door</text>
+        <text class="t t-small t-muted" x="34" y="368">cabled direct to comms room</text>
+        <!-- legend -->
+        <path class="s-blue" d="M20 412 H50"/><text class="t t-small" x="56" y="416">fibre backbone</text>
+        <path class="s-amber s-dash" d="M170 412 H200"/><text class="t t-small" x="206" y="416">RS-485 bus (panel → door controllers)</text>
+        <path class="s-line" d="M460 412 H490"/><text class="t t-small" x="496" y="416">Cat6 / multicore</text>
+      </svg>
+      <figcaption>Figure 4. A security riser diagram for a three-storey building. Read it bottom-up: the comms room on the ground floor holds the core switch, the NVR and the access panel. Fibre (blue) climbs the riser to a PoE switch on each floor, which feeds that floor's cameras over Cat6. A separate RS-485 data bus (amber) links the access panel to a door controller on each floor, which wires to the readers, locks and exit buttons.</figcaption>
+    </figure>
+
+    <h3>How to read a riser diagram in five questions</h3>
+    <ol>
+      <li><b>Where is the head end?</b> (Comms room, ground floor.) This is where recording, panels and the main switch live.</li>
+      <li><b>What is the backbone to each floor?</b> (Fibre for the network, RS-485 for access control.) Fibre is used when the run is longer than Ethernet's 100 m channel limit or between buildings; short risers sometimes use Cat6 instead.</li>
+      <li><b>What is on each floor, and how many?</b> Count devices: 4 + 3 + 3 = 10 cameras, 2 + 3 + 2 = 7 doors. Check the counts match the floor plans and the equipment order.</li>
+      <li><b>Which outstation feeds which device?</b> A level 1 camera goes back to SW-L1, not to the comms room. This tells you where to terminate and where to look when it fails.</li>
+      <li><b>What powers what?</b> Cameras get PoE from their floor switch. Door locks are usually powered from the door controller's power supply. Look for UPS and battery notes.</li>
+    </ol>
+
+    <div class="callout job"><span class="label">On the job</span><p>On a commissioning day the riser diagram is the checklist. You bring up the ground floor, then level 1, then level 2, ticking each device off the diagram as it appears on the NVR or access software. A camera that is on the floor plan but missing from the riser diagram is a design question to raise early, before the ceiling closes. See <a href="../career/c05-cctv-ip-cameras.html">C05 · CCTV and IP camera installation</a> and <a href="../career/c06-access-control-alarms.html">C06 · Access control and intruder alarms</a>.</p></div>
+
+    <h2>Floor plans, symbols and the legend</h2>
+    <p>A floor plan is the building seen from above, drawn to scale, with device symbols placed where they are to be installed. Each symbol carries a <b>tag</b> (a unique name such as CAM-G-01), and the <b>legend</b> explains every symbol used on that drawing.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 372" role="img" aria-label="Floor plan snippet with security and data devices and a legend">
+        <!-- walls -->
+        <path class="s-line" style="stroke-width:4" d="M20 20 H460 V340 H130 M80 340 H20 V20"/>
+        <path class="s-line" style="stroke-width:4" d="M300 20 V200"/>
+        <path class="s-line" style="stroke-width:4" d="M20 200 H220 M252 200 H380 M412 200 H460"/>
+        <path class="s-line" style="stroke-width:4" d="M20 250 H150 M186 250 H290 M322 250 H390 M422 250 H460"/>
+        <path class="s-line" style="stroke-width:4" d="M200 250 V340 M370 250 V340"/>
+        <!-- door swing at entry -->
+        <path class="s-thin" d="M80 340 V292 A48 48 0 0 1 128 340"/>
+        <!-- room names -->
+        <text class="t t-small t-muted" x="112" y="110">OPEN OFFICE</text>
+        <text class="t t-small t-muted" x="350" y="110">MEETING</text>
+        <text class="t t-small t-muted" x="232" y="230">CORRIDOR</text>
+        <text class="t t-small t-muted" x="120" y="300">LOBBY</text>
+        <text class="t t-small t-muted" x="262" y="300">STORE</text>
+        <text class="t t-small t-muted" x="392" y="280">COMMS</text>
+        <rect class="f-wash s-thin" x="400" y="292" width="40" height="36"/>
+        <text class="t t-small" x="404" y="315">rack</text>
+        <!-- CAM-G-01 lobby with FOV -->
+        <path class="s-blue s-dash" style="stroke-width:1.2" d="M40 270 L72 336 L140 330 Z" fill="none"/>
+        <circle class="f-panel s-blue" cx="40" cy="270" r="9"/><circle class="f-blue" cx="40" cy="270" r="3"/>
+        <text class="t t-small" x="52" y="266">CAM-G-01</text>
+        <!-- CAM-G-02 corridor -->
+        <path class="s-blue s-dash" style="stroke-width:1.2" d="M36 225 L200 208 L200 242 Z" fill="none"/>
+        <circle class="f-panel s-blue" cx="36" cy="225" r="9"/><circle class="f-blue" cx="36" cy="225" r="3"/>
+        <text class="t t-small" x="118" y="246">CAM-G-02</text>
+        <!-- entry door reader (outside), REX inside, door contact -->
+        <rect class="f-panel s-green" x="136" y="345" width="16" height="16"/><text class="t t-small" x="140" y="358">R</text>
+        <text class="t t-small" x="158" y="358">CR-G-01</text>
+        <circle class="f-panel s-green" cx="146" cy="324" r="8"/><text class="t t-small" x="142" y="328">E</text>
+        <rect class="f-panel s-red" x="96" y="331" width="18" height="8" style="stroke-width:1.5"/>
+        <!-- comms door reader -->
+        <rect class="f-panel s-green" x="428" y="226" width="16" height="16"/><text class="t t-small" x="432" y="239">R</text>
+        <text class="t t-small" x="362" y="240">CR-G-02</text>
+        <!-- PIRs -->
+        <path class="f-panel s-amber" d="M24 24 h18 a18 18 0 0 1 -18 18 z"/>
+        <text class="t t-small" x="48" y="38">PIR-G-01</text>
+        <path class="f-panel s-amber" d="M456 24 v18 a18 18 0 0 1 -18 -18 z"/>
+        <text class="t t-small" x="372" y="38">PIR-G-02</text>
+        <!-- data outlets -->
+        <polygon class="f-accent-soft s-accent" points="93,24 107,24 100,36"/><text class="t t-small" x="94" y="52">01</text>
+        <polygon class="f-accent-soft s-accent" points="193,24 207,24 200,36"/><text class="t t-small" x="194" y="52">02</text>
+        <polygon class="f-accent-soft s-accent" points="113,196 127,196 120,184"/><text class="t t-small" x="114" y="178">03</text>
+        <polygon class="f-accent-soft s-accent" points="296,83 296,97 284,90"/><text class="t t-small" x="262" y="94">04</text>
+        <polygon class="f-accent-soft s-accent" points="373,196 387,196 380,184"/><text class="t t-small" x="374" y="178">05</text>
+        <!-- legend -->
+        <rect class="f-panel s-thin" x="480" y="20" width="152" height="320" rx="4"/>
+        <text class="t t-small t-bold" x="492" y="42">LEGEND</text>
+        <circle class="f-panel s-blue" cx="500" cy="70" r="9"/><circle class="f-blue" cx="500" cy="70" r="3"/><text class="t t-small" x="518" y="74">Dome camera</text>
+        <rect class="f-panel s-green" x="492" y="102" width="16" height="16"/><text class="t t-small" x="496" y="115">R</text><text class="t t-small" x="518" y="115">Card reader</text>
+        <circle class="f-panel s-green" cx="500" cy="150" r="8"/><text class="t t-small" x="496" y="154">E</text><text class="t t-small" x="518" y="154">Exit button (REX)</text>
+        <rect class="f-panel s-red" x="491" y="186" width="18" height="8" style="stroke-width:1.5"/><text class="t t-small" x="518" y="194">Door contact (reed)</text>
+        <path class="f-panel s-amber" d="M492 222 h18 a18 18 0 0 1 -18 18 z"/><text class="t t-small" x="518" y="236">PIR detector</text>
+        <polygon class="f-accent-soft s-accent" points="493,262 507,262 500,274"/><text class="t t-small" x="518" y="273">Data outlet, 2-port</text>
+        <text class="t t-small t-muted" x="518" y="290">(tag TO-G-xx)</text>
+        <path class="s-blue s-dash" style="stroke-width:1.2" d="M492 322 L512 310 L512 334 Z" fill="none"/><text class="t t-small" x="518" y="326">Camera view</text>
+      </svg>
+      <figcaption>Figure 5. A floor-plan snippet. Cameras, readers, exit buttons, door contacts, motion detectors and data outlets each have a symbol and a tag. The dashed wedge shows what each camera is meant to see. These symbols are one company's choice; the next consultant's drawing may use different ones, which is why the legend is always on the sheet.</figcaption>
+    </figure>
+
+    <h3>Reading a floor plan without getting lost</h3>
+    <ul>
+      <li><b>Find north and a fixed reference.</b> A north arrow, a grid line (columns are named A, B, C … and 1, 2, 3 …) or the lift core. Grid lines on architectural plans are the most reliable way to set out a device.</li>
+      <li><b>Read the notes box.</b> Mounting heights ("all readers 1100 mm AFFL", above finished floor level), cable types, and "refer to detail" marks live there.</li>
+      <li><b>Check the ceiling type.</b> The reflected ceiling plan (RCP) shows ceiling tiles, plasterboard, bulkheads and lights. A camera on a solid plasterboard ceiling needs an access plan; a tile ceiling does not.</li>
+      <li><b>Measure, do not guess.</b> At 1:100, 1 mm on the print is 100 mm in the room. If a written dimension exists, it beats your ruler.</li>
+    </ul>
+
+    <h3>Worked example: estimating a cable run from a plan</h3>
+    <p>A data outlet on an A3 print of a drawing marked "1:100 at A1" is 85 mm (measured along the cable tray route) from the comms cupboard. How long is the cable?</p>
+    <div class="formula">Scale on A3 = 1:200 (A3 is half the width of A1)<br>Horizontal run = 85 mm × 200 = 17 000 mm = 17.0 m<br>+ drop into the rack 3 m + drop down the wall 3 m + service loops 2 × 1 m = 25 m
+      <small>Ceiling heights and loops are typical allowances; use the real ceiling height from the sections. 25 m is well under the 90 m limit for a Cat6 permanent link, so this outlet is fine. Always round up and order extra: a cable that is 1 m short is a new cable.</small></div>
+
+    <h2>Schedules and lists: cables, points and I/O</h2>
+    <p>Some information is easier as a table than a picture. Three tables matter most to an ELV technician.</p>
+
+    <h3>The cable schedule</h3>
+    <p>One row per cable. It tells you what to pull, what to label it, and it becomes the record of test results.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Cable ID</th><th>From</th><th>To</th><th>Type</th><th>Length</th><th>Test</th></tr>
+      <tr><td>L1-C07</td><td>PP-L1 port 07 (L1 cupboard)</td><td>CAM-L1-07</td><td>Cat6 U/UTP</td><td>46 m</td><td>Permanent link: pass</td></tr>
+      <tr><td>L1-C08</td><td>PP-L1 port 08</td><td>CAM-L1-08</td><td>Cat6 U/UTP</td><td>38 m</td><td>Permanent link: pass</td></tr>
+      <tr><td>L1-A03</td><td>DC-L1 reader port 3</td><td>CR-L1-03</td><td>6-core shielded data</td><td>22 m</td><td>Continuity, insulation</td></tr>
+      <tr><td>L1-A04</td><td>DC-L1 lock output 3</td><td>Electric strike, door L1-03</td><td>2-core power</td><td>22 m</td><td>Volt drop at lock</td></tr>
+      <tr><td>BB-L1</td><td>Comms room fibre panel</td><td>L1 cupboard fibre panel</td><td>Multimode fibre, 6 cores</td><td>35 m</td><td>Loss test: pass</td></tr>
+    </table></div>
+    <p>The cable ID goes on a label at <b>both ends</b>, usually within 300 mm of the termination. When the schedule, the label and the drawing all agree, the next technician can find a fault in minutes.</p>
+
+    <h3>Points lists and I/O lists (BMS and PLC)</h3>
+    <p>An <b>I/O list</b> is the hardware view: for each controller, what is wired to each input and output terminal. A <b>points list</b> is the wider BMS view: every point the system knows about, including hardware I/O, network points read from other equipment (such as a chiller over BACnet or Modbus), and software points such as setpoints, with alarm limits and trend settings. On small jobs the two are one spreadsheet. The terms <b>AI, AO, DI, DO</b> (analogue/digital input/output) are explained in <a href="../career/c01-bms-fundamentals.html">C01 · BMS fundamentals</a>.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 430" role="img" aria-label="BMS controller I/O terminal diagram for an air handling unit">
+        <!-- power and comms sources -->
+        <rect class="f-panel s-line" x="140" y="34" width="170" height="62" rx="4"/>
+        <text class="t t-small t-bold" x="150" y="56">24 V AC transformer</text>
+        <text class="t t-small t-muted" x="150" y="74">in BMS panel; mains side</text>
+        <text class="t t-small t-muted" x="150" y="90">wired by an electrician</text>
+        <rect class="f-panel s-line" x="380" y="34" width="150" height="62" rx="4"/>
+        <text class="t t-small t-bold" x="390" y="56">BACnet MS/TP trunk</text>
+        <text class="t t-small t-muted" x="390" y="74">RS-485, to the next</text>
+        <text class="t t-small t-muted" x="390" y="90">controller</text>
+        <path class="s-line" d="M180 96 V150 M210 96 V150"/>
+        <path class="s-amber" d="M410 96 V150 M440 96 V150 M470 96 V150"/>
+        <!-- controller -->
+        <rect class="f-theory-soft s-line" x="140" y="150" width="380" height="100" rx="4"/>
+        <circle class="f-panel s-line" cx="180" cy="150" r="5"/><circle class="f-panel s-line" cx="210" cy="150" r="5"/>
+        <circle class="f-panel s-line" cx="410" cy="150" r="5"/><circle class="f-panel s-line" cx="440" cy="150" r="5"/><circle class="f-panel s-line" cx="470" cy="150" r="5"/>
+        <text class="t t-small" x="168" y="172">24~</text><text class="t t-small" x="206" y="172">0</text>
+        <text class="t t-small" x="406" y="172">+</text><text class="t t-small" x="436" y="172">−</text><text class="t t-small" x="458" y="172">REF</text>
+        <text class="t t-bold" x="250" y="196">DDC controller · AHU-1</text>
+        <!-- bottom terminals 1..12 -->
+        <g>
+          <circle class="f-panel s-line" cx="165" cy="250" r="5"/><circle class="f-panel s-line" cx="195" cy="250" r="5"/>
+          <circle class="f-panel s-line" cx="225" cy="250" r="5"/><circle class="f-panel s-line" cx="255" cy="250" r="5"/>
+          <circle class="f-panel s-line" cx="285" cy="250" r="5"/><circle class="f-panel s-line" cx="315" cy="250" r="5"/>
+          <circle class="f-panel s-line" cx="345" cy="250" r="5"/><circle class="f-panel s-line" cx="375" cy="250" r="5"/>
+          <circle class="f-panel s-line" cx="405" cy="250" r="5"/><circle class="f-panel s-line" cx="435" cy="250" r="5"/>
+          <circle class="f-panel s-line" cx="465" cy="250" r="5"/><circle class="f-panel s-line" cx="495" cy="250" r="5"/>
+        </g>
+        <text class="t t-small" transform="rotate(-90 169 240)" x="169" y="240">UI1</text>
+        <text class="t t-small" transform="rotate(-90 199 240)" x="199" y="240">COM</text>
+        <text class="t t-small" transform="rotate(-90 229 240)" x="229" y="240">UI2</text>
+        <text class="t t-small" transform="rotate(-90 259 240)" x="259" y="240">COM</text>
+        <text class="t t-small" transform="rotate(-90 289 240)" x="289" y="240">UI3</text>
+        <text class="t t-small" transform="rotate(-90 319 240)" x="319" y="240">COM</text>
+        <text class="t t-small" transform="rotate(-90 349 240)" x="349" y="240">DO1 C</text>
+        <text class="t t-small" transform="rotate(-90 379 240)" x="379" y="240">DO1 NO</text>
+        <text class="t t-small" transform="rotate(-90 409 240)" x="409" y="240">AO1</text>
+        <text class="t t-small" transform="rotate(-90 439 240)" x="439" y="240">COM</text>
+        <text class="t t-small" transform="rotate(-90 469 240)" x="469" y="240">AO2</text>
+        <text class="t t-small" transform="rotate(-90 499 240)" x="499" y="240">COM</text>
+        <!-- terminal numbers -->
+        <text class="t t-small t-muted" x="161" y="272">1</text><text class="t t-small t-muted" x="191" y="272">2</text><text class="t t-small t-muted" x="221" y="272">3</text><text class="t t-small t-muted" x="251" y="272">4</text><text class="t t-small t-muted" x="281" y="272">5</text><text class="t t-small t-muted" x="311" y="272">6</text><text class="t t-small t-muted" x="341" y="272">7</text><text class="t t-small t-muted" x="371" y="272">8</text><text class="t t-small t-muted" x="401" y="272">9</text><text class="t t-small t-muted" x="427" y="272">10</text><text class="t t-small t-muted" x="457" y="272">11</text><text class="t t-small t-muted" x="487" y="272">12</text>
+        <!-- field wires -->
+        <path class="s-line" d="M165 255 V320 M195 255 V320 M225 255 V320 M255 255 V320 M285 255 V320 M315 255 V320"/>
+        <path class="s-green" d="M345 255 V320 M375 255 V320"/>
+        <path class="s-blue" d="M405 255 V320 M435 255 V320 M465 255 V320 M495 255 V320"/>
+        <!-- field devices -->
+        <rect class="f-panel s-line" x="153" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="167" y="345">SAT</text>
+        <rect class="f-panel s-line" x="213" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="227" y="345">RAT</text>
+        <rect class="f-panel s-line" x="273" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="282" y="345">FILT</text>
+        <rect class="f-panel s-line" x="333" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="340" y="345">SF run</text>
+        <rect class="f-panel s-line" x="393" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="398" y="345">CHW-V</text>
+        <rect class="f-panel s-line" x="453" y="320" width="54" height="40" rx="4"/><text class="t t-small t-bold" x="458" y="345">SF spd</text>
+        <text class="t t-small t-muted" x="161" y="380">10k NTC</text>
+        <text class="t t-small t-muted" x="221" y="380">10k NTC</text>
+        <text class="t t-small t-muted" x="276" y="380">volt-free</text>
+        <text class="t t-small t-muted" x="340" y="380">relay</text>
+        <text class="t t-small t-muted" x="398" y="380">0–10 V</text>
+        <text class="t t-small t-muted" x="458" y="380">0–10 V</text>
+        <text class="t t-small t-muted" x="160" y="412">inputs: sensors and switches</text>
+        <text class="t t-small t-green" x="330" y="412">output: start</text>
+        <text class="t t-small t-blue" x="418" y="412">outputs: valve, speed</text>
+      </svg>
+      <figcaption>Figure 6. An I/O terminal diagram for one BMS controller serving an air-handling unit (AHU). Top: 24 V AC power and the RS-485 network. Bottom: numbered field terminals in pairs, each wired to one field device. "UI" means universal input: it can be set up as a temperature, a voltage or a volt-free contact in software, so the drawing and the software must agree.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Point name</th><th>Type</th><th>Terminals</th><th>Field device</th><th>Signal and range</th></tr>
+      <tr><td>AHU1-SAT</td><td>AI (UI1)</td><td>1–2</td><td>Supply air temperature, duct sensor</td><td>10k NTC thermistor (check which curve type)</td></tr>
+      <tr><td>AHU1-RAT</td><td>AI (UI2)</td><td>3–4</td><td>Return air temperature</td><td>10k NTC thermistor</td></tr>
+      <tr><td>AHU1-FILT</td><td>DI (UI3)</td><td>5–6</td><td>Filter differential pressure switch</td><td>Volt-free contact; closed = filter dirty (alarm)</td></tr>
+      <tr><td>AHU1-SF-RUN</td><td>DO (DO1)</td><td>7–8</td><td>Supply fan drive, run input</td><td>Relay contact; closed = run</td></tr>
+      <tr><td>AHU1-CHWV</td><td>AO (AO1)</td><td>9–10</td><td>Chilled water valve actuator</td><td>0–10 V = 0–100 % open</td></tr>
+      <tr><td>AHU1-SF-SPD</td><td>AO (AO2)</td><td>11–12</td><td>Supply fan drive, speed reference</td><td>0–10 V = 0–100 % speed</td></tr>
+    </table></div>
+    <p>Read the table and Figure 6 together. If the supply air temperature on the BMS screen reads −40 °C, the points list tells you to look at terminals 1–2 and a 10k sensor: −40 °C usually means an open circuit (very high resistance), so check the wiring before blaming the sensor. That is the drawing doing half your fault-finding for you (see <a href="p21-fault-finding.html">P21 · Fault-finding</a>).</p>
+
+    <div class="callout job"><span class="label">On the job</span><p>BMS technicians live in points lists. During commissioning you go down the list one row at a time: force the output or simulate the input, check the right thing happens at the plant and on the screen, then tick the row and initial it. The signed points list becomes part of the handover. See <a href="../career/c02-bms-protocols-commissioning.html">C02 · BMS protocols and commissioning</a>.</p></div>
+
+    <h2>Single-line diagrams: look, don't touch</h2>
+    <p>A <b>single-line diagram</b> (SLD) shows how mains power is distributed through a building: the main switchboard, the distribution boards on each floor, and the circuit breakers that feed each one. Three-phase feeders are drawn as one line to keep the picture simple, which is where the name comes from.</p>
+    <p>As an ELV technician you <b>read</b> SLDs; you do not work on what they show. You use them to answer questions such as:</p>
+    <ul>
+      <li>Which distribution board and circuit feeds my security panel's power supply? (So you can ask the electrician to isolate the right one.)</li>
+      <li>Is the comms rack on an essential supply, a UPS or a generator-backed circuit?</li>
+      <li>Which board label should I quote in my job notes?</li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>In Australia, work on mains (230/400 V) wiring and switchboards is legally restricted to licensed electricians. Do not open a switchboard, remove a breaker cover or "just check" a mains terminal because the SLD makes it look simple. Your work starts on the extra-low-voltage side of the power supply. If the 24 V supply needs isolating at the mains, the electrician (or the site's isolation procedure) does it. See <a href="../theory/t09-mains-earthing-safety.html">T09 · Mains, earthing and RCDs</a> and <a href="../career/c13-first-day-on-site.html">C13 · Your first day on site</a>.</p></div>
+
+    <h2>As-builts: marking up what really happened</h2>
+    <p>No job is built exactly as drawn. A sprinkler pipe sits where a camera was meant to go. The client deletes an outlet. A cable takes a different route because a wall is fire-rated. The <b>as-built drawings</b> record what was actually installed. They are produced from the <b>site markups</b>: a set of drawings that the technicians mark by hand (or in a PDF tool) as the job goes on.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="A corridor drawing with red as-built markups">
+        <defs><marker id="p22-ab-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" style="stroke-width:4" d="M20 40 H620 M20 160 H620"/>
+        <line class="s-thin s-dash" x1="20" y1="58" x2="600" y2="58"/>
+        <text class="t t-small t-muted" x="26" y="54">cable tray</text>
+        <text class="t t-small t-muted" x="528" y="32">to SW-L1 ▸</text>
+        <!-- original design -->
+        <path class="s-blue s-dash" style="stroke-width:1.5" d="M200 100 V60"/>
+        <circle class="f-panel s-blue" cx="200" cy="110" r="10"/><circle class="f-blue" cx="200" cy="110" r="3"/>
+        <text class="t t-small" x="166" y="140">CAM-L1-07</text>
+        <line class="s-red" x1="184" y1="94" x2="216" y2="126"/><line class="s-red" x1="216" y1="94" x2="184" y2="126"/>
+        <!-- new position -->
+        <path class="s-red" d="M222 110 H300" marker-end="url(#p22-ab-arrow)"/>
+        <circle class="f-panel s-red" cx="320" cy="110" r="10"/><circle class="f-red" cx="320" cy="110" r="3"/>
+        <path class="s-red" d="M320 100 V66 H600"/>
+        <text class="t t-small t-red" x="338" y="114">CAM-L1-07 (new position)</text>
+        <text class="t t-small t-red" x="338" y="132">cable L1-C07 now 44 m, retested: pass</text>
+        <!-- deleted outlet -->
+        <polygon class="f-accent-soft s-accent" points="473,158 487,158 480,146"/>
+        <line class="s-green" x1="464" y1="138" x2="496" y2="164"/>
+        <text class="t t-small t-green" x="420" y="186">TO-L1-22 deleted (client request)</text>
+        <!-- notes -->
+        <text class="t t-small t-red" x="26" y="186">MOVED 1.2 m EAST: clash with sprinkler main</text>
+        <text class="t t-small t-red" x="26" y="206">AK 14/09/26 · ref RFI-031</text>
+      </svg>
+      <figcaption>Figure 7. A site markup. Red shows what changed: the original camera is crossed out, an arrow shows the move, the new cable route is drawn in, and a note says why, who and when. Green shows a deletion. Colour conventions vary: some companies use red for every change and green only for comments. Follow your company's rule.</figcaption>
+    </figure>
+
+    <h3>How to mark up as-builts properly</h3>
+    <ol class="steps">
+      <li><p><b>Keep one site set.</b> One clean, current set of drawings is the markup set, kept in the site office or one shared PDF. Not five copies in five vans.</p></li>
+      <li><p><b>Mark it the same day.</b> Memory fades fast. At the end of each day, mark every change made that day.</p></li>
+      <li><p><b>Show the change, not just the result.</b> Cross out the old position, draw the new one, add a dimension from a fixed point ("1.2 m east of grid line C").</p></li>
+      <li><p><b>Say why and who.</b> A short note, your initials, the date, and any reference (an RFI number: a "request for information" sent to the designer, or a client instruction).</p></li>
+      <li><p><b>Update the schedules too.</b> New cable length, new outlet numbers, test results. A floor plan that disagrees with the cable schedule is worse than either alone.</p></li>
+      <li><p><b>Hand over.</b> The drafter turns markups into a new revision with status "As built". You check that drawing before it goes to the client.</p></li>
+    </ol>
+
+    <div class="callout job"><span class="label">On the job</span><p>Why bother? Because the next technician might be you, two years later, at 2 am, looking for a dead camera in a hospital ceiling. Good as-builts tell them which ceiling tile to lift and which switch port to check. Bad as-builts send them along the wrong corridor. Maintenance companies quote higher, and clients complain louder, when the as-builts are wrong. Accurate markups are one of the quiet skills supervisors notice in a new technician.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Handover requirements are set by the project specification and contract, and for some systems by the standards they are built to (for example, fire systems and telecommunications cabling have their own documentation and labelling requirements; see <a href="../career/c04-fire-detection-ewis.html">C04</a> and <a href="../career/c07-telecom-cabling-acma.html">C07</a>). Read the specification's "documentation" or "handover" section early in the job so you know what records you must keep while you work.</p></div>
+
+    <h2>Worked example: from drawing set to a finished door</h2>
+    <p>Your task sheet says: <b>"Install and terminate reader CR-L1-03."</b> Here is the order in which experienced technicians use the drawings.</p>
+    <ol class="steps">
+      <li><p><b>Register and title block.</b> Confirm the floor plan, riser and door-wiring drawings are the current revision and issued for construction.</p></li>
+      <li><p><b>Floor plan.</b> Find CR-L1-03 on the level 1 security layout. It is beside door L1-03 near grid line C/4, on the corridor side. The notes say "readers 1100 mm AFFL, see detail 2/SEC-501".</p></li>
+      <li><p><b>Detail sheet.</b> Detail 2 on SEC-501 shows the back box, the mullion or wall mounting, and the cable entry.</p></li>
+      <li><p><b>Riser diagram.</b> Door L1-03 is served by door controller DC-L1 in the level 1 cupboard, not by the panel in the comms room.</p></li>
+      <li><p><b>Cable schedule.</b> L1-A03 (reader data, 6-core shielded, 22 m), L1-A04 (lock power, 2-core) and L1-A05 (REX and door contact, 4-core). Label them as you pull them.</p></li>
+      <li><p><b>Door wiring diagram.</b> The typical door diagram shows which reader core lands on which DC-L1 terminal (power, 0 V, data lines, LED, shield) and the lock and REX terminals.</p></li>
+      <li><p><b>Test and record.</b> Present a card, check the door event appears in the software, check the lock releases and the door contact reports. Tick the door on the commissioning sheet, mark any change on the site set.</p></li>
+    </ol>
+
+    <div class="callout try"><span class="label">Try this</span><p>Take the relay circuit you built in <a href="p08-transistor-switches.html">P08</a>. On paper, draw (1) its schematic with wire numbers, (2) a wiring diagram showing your breadboard or terminal block with real pin numbers, and (3) a mini cable schedule for any leads going off the board. Then change one thing (move the LED to another pin) and mark it up in red as an as-built. You now have a small portfolio piece; see <a href="../career/c12-portfolio-study-plan.html">C12</a>.</p></div>
+
+    <h2>Common mistakes</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mistake</th><th>What happens</th><th>The habit that prevents it</th></tr>
+      <tr><td>Working from an old revision</td><td>Devices in the wrong place, rework, back-charges</td><td>Check the register at the start of every job; look for clouds on each new issue</td></tr>
+      <tr><td>Confusing terminal number with wire number</td><td>"Wire 3" lands on terminal 3 instead of X1:1</td><td>Say both out loud: "wire 3 to X1 terminal 1"</td></tr>
+      <tr><td>Skipping the legend</td><td>A heat detector symbol read as a camera, a 2-port outlet installed as 1-port</td><td>Read the legend and notes box before the plan itself</td></tr>
+      <tr><td>Scaling off the wrong paper size</td><td>Cable runs half or double the real length</td><td>Check "1:100 at A1" against the print size; prefer written dimensions</td></tr>
+      <tr><td>Assuming an empty terminal is a fault</td><td>Spare contacts get "fixed" and the circuit breaks</td><td>If it is not on the wiring diagram, it is not meant to have a wire</td></tr>
+      <tr><td>Changing things on site without marking up</td><td>As-builts are wrong; the next tech loses hours</td><td>Mark up the same day, with why, who and when</td></tr>
+      <tr><td>Treating the schematic as a layout</td><td>Looking for the relay contact next to the coil on the panel</td><td>Schematic for <i>how</i>, wiring diagram for <i>where</i></td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>You need to know which terminal the lamp feed lands on. Which drawing do you open, and why not the schematic?</summary><div class="answer"><p>The <b>wiring (connection) diagram</b>. The schematic shows how the circuit works (the relay contact switches the lamp) but not where things sit or their real terminal numbers. The wiring diagram shows K1:14 → X1:3 → H1 +.</p></div></details>
+    <details class="quiz"><summary>A wiring diagram says a wire is marked "2" at both ends. Under node numbering, what does that tell you about the voltage at each end?</summary><div class="answer"><p>Both ends are on the same node, so they should be at the same voltage (here +24 V after the fuse). If you measure 24 V at one end and 0 V at the other, the wire or one of its terminations is open. That is a direct use of Kirchhoff's idea that connected copper is one equipotential.</p></div></details>
+    <details class="quiz"><summary>What do the relay terminal numbers 11, 12 and 14 mean?</summary><div class="answer"><p>First digit 1 = the first contact set. Second digit: 1 = common, 2 = normally-closed side, 4 = normally-open side. So 11–14 closes when the coil is energised, and 11–12 opens. A second set would be 21, 22, 24. The coil is A1–A2.</p></div></details>
+    <details class="quiz"><summary>A note says "cont. on 5/D2". What exactly do you do?</summary><div class="answer"><p>Open sheet 5, use the border grid to find row D and column 2, and look for the matching continuation arrow with the same wire or cable number. If the numbers do not match, stop and check the revision before wiring.</p></div></details>
+    <details class="quiz"><summary>The drawing says "1:100 at A1" but you have an A3 print. You measure 60 mm. How far is that in the building?</summary><div class="answer"><p>A3 is half the width of A1, so the print is at 1:200. 60 mm × 200 = 12 000 mm = 12 m. Better still, look for a written dimension, because prints can also be "fit to page" and the scale is then unknown.</p></div></details>
+    <details class="quiz"><summary>What is the difference between a riser diagram and a floor plan?</summary><div class="answer"><p>A riser diagram shows the system by floor: what equipment and how many devices are on each level and how each floor is fed (backbone cables up the riser). It is not to scale. A floor plan shows the exact position of each device on one floor, to scale, with tags and a legend.</p></div></details>
+    <details class="quiz"><summary>What is the difference between a points list and an I/O list?</summary><div class="answer"><p>An I/O list covers the physical inputs and outputs of each controller: what is on each terminal. A points list covers every point the BMS knows about, including hardware I/O, network points from other equipment, and software points like setpoints, often with alarm and trend settings.</p></div></details>
+    <details class="quiz"><summary>You moved a camera 1.2 m because of a sprinkler pipe. What goes on the as-built markup?</summary><div class="answer"><p>Cross out the old position, draw the new one with a dimension from a fixed reference (a grid line or wall), draw the new cable route, update the cable length and test result, and add a note with the reason, your initials, the date and any RFI or instruction number. Then update the cable schedule to match.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the main drawing types and say which question each one answers.</span></li>
+      <li><input type="checkbox"><span>I read the title block first: drawing number, revision, status, scale and paper size.</span></li>
+      <li><input type="checkbox"><span>I can trace a wire from a schematic to its real terminals on a wiring diagram.</span></li>
+      <li><input type="checkbox"><span>I can explain relay terminal numbers (A1/A2, 11/12/14) and push-button numbers (13/14).</span></li>
+      <li><input type="checkbox"><span>I know the difference between a terminal number, a wire number and a cable number, and between a bootlace ferrule and a ferrule marker.</span></li>
+      <li><input type="checkbox"><span>I can follow a cross-reference like "sheet 4, ref C7" using the zone grid.</span></li>
+      <li><input type="checkbox"><span>I can read a riser diagram and count devices per floor.</span></li>
+      <li><input type="checkbox"><span>I read the legend before the plan, and I can estimate a cable length from a scaled plan.</span></li>
+      <li><input type="checkbox"><span>I can read a cable schedule, an I/O terminal diagram and a points list together.</span></li>
+      <li><input type="checkbox"><span>I mark up as-builts the same day, in the company's colours, with why, who and when.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

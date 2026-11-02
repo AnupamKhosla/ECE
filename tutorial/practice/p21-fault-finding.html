@@ -203,7 +203,7 @@
       <tr><td>5.0 V</td><td>0 V</td><td>No current. LED <b>reversed</b>, or a leg not making contact (wrong row, bent leg).</td><td>Switch off, diode test on the LED: about 1.8 V one way (faint glow), "OL" the other. Turn it so the long leg (anode) goes to +.</td></tr>
       <tr><td>0 V</td><td>5.0 V</td><td>Current flows but bypasses the LED: the LED is <b>shorted</b>. Classic cause: both LED legs in the same breadboard row.</td><td>Move one leg to another row.</td></tr>
       <tr><td>0 V</td><td>0 V</td><td>No supply reaching the circuit. Long breadboards often have the power rails <b>split in the middle</b>.</td><td>Measure at the rails. Bridge the split with a jumper.</td></tr>
-      <tr><td>≈ 1.5 V</td><td>≈ 3.5 V</td><td>Tiny current. Resistor value wrong: 3.5 V / 3.5 µA ⇒ 1 MΩ? Check the colour bands: brown-black-green (1 MΩ) looks like brown-black-red (1 kΩ) in bad light.</td><td>Switch off, measure the resistor out of circuit. Fit the right value.</td></tr>
+      <tr><td>≈ 1.5 V</td><td>≈ 3.5 V</td><td>Very little current. With a real 1 kΩ, 3.5 V across it would mean 3.5 mA and a clearly lit LED. So the resistor is the <b>wrong value</b>: a 1 MΩ (brown-black-green) passes only about 3.5 µA. In bad light it looks like brown-black-red (1 kΩ).</td><td>Switch off, measure the resistor out of circuit. Fit the right value.</td></tr>
     </table></div>
     <a class="crosslink" href="p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit</a>
 
@@ -255,7 +255,7 @@
     <h3>Fault 5: a 4–20 mA loop reading 0 or stuck at 20+ mA</h3>
     <p>A <b>4–20 mA loop</b> sends a measurement as a current: 4 mA means the bottom of the range, 20 mA the top. Current is the same everywhere in a series loop, so cable resistance does not change the reading, and 0 mA can only mean a fault (a "live zero"). The controller usually reads it as the voltage across a 250 Ω resistor: 4 mA → 1 V, 20 mA → 5 V.</p>
     <figure>
-      <svg viewBox="0 0 640 230" role="img" aria-label="Two-wire 4 to 20 mA loop: 24 volt supply, field transmitter, and a 250 ohm input resistor at the controller, with two test points">
+      <svg viewBox="0 0 700 230" role="img" aria-label="Two-wire 4 to 20 mA loop: 24 volt supply, field transmitter, and a 250 ohm input resistor at the controller, with two test points">
         <defs><marker id="p21-loop-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
         <line class="s-line" x1="60" y1="90" x2="60" y2="110"/><line class="s-line" x1="40" y1="110" x2="80" y2="110"/><line class="s-line" x1="50" y1="120" x2="70" y2="120"/><line class="s-line" x1="60" y1="120" x2="60" y2="170"/>
         <text class="t t-small" x="88" y="118">24 V DC</text>
@@ -267,8 +267,8 @@
         <path class="s-line" d="M250 190 H60 V170"/>
         <text class="t t-small t-accent" x="275" y="172" text-anchor="middle">250 Ω (AI input)</text>
         <path class="s-red" d="M200 40 H280" marker-end="url(#p21-loop-a)"/><text class="t t-small t-red" x="200" y="32">same current everywhere</text>
-        <line class="s-blue s-dash" x1="440" y1="80" x2="440" y2="150"/><line class="s-blue s-dash" x1="245" y1="205" x2="305" y2="205"/>
-        <text class="t t-small t-blue" x="575" y="100">V at transmitter:</text><text class="t t-small t-blue" x="575" y="116">needs about</text><text class="t t-small t-blue" x="575" y="132">12 V or more</text>
+        <line class="s-blue s-dash" x1="410" y1="50" x2="410" y2="190"/><line class="s-blue s-dash" x1="245" y1="205" x2="305" y2="205"/>
+        <text class="t t-small t-blue" x="572" y="100">V at transmitter</text><text class="t t-small t-blue" x="572" y="116">(blue line at left):</text><text class="t t-small t-blue" x="572" y="132">usually 12 V or more</text>
         <text class="t t-small t-blue" x="320" y="222">V across 250 Ω: 1 V (4 mA) … 5 V (20 mA)</text>
         <text class="t t-small t-muted" x="140" y="150">controller / panel</text><text class="t t-small t-muted" x="440" y="40">field</text>
       </svg>
@@ -302,7 +302,7 @@
     <h3>Fault 7: a door that won't unlock</h3>
     <p><b>Symptom.</b> A staff member badges their card. The reader beeps and shows green. The controller relay clicks. The door stays locked. The lock is a 12 V DC fail-secure electric strike (it needs power to unlock), powered from a 13.8 V battery-backed supply.</p>
     <figure>
-      <svg viewBox="0 0 640 250" role="img" aria-label="Door strike circuit: 13.8 volt supply, fuse, controller relay contact, strike coil, and a flyback diode across the coil with its cathode to positive">
+      <svg viewBox="0 0 680 250" role="img" aria-label="Door strike circuit: 13.8 volt supply, fuse, controller relay contact, strike coil, and a flyback diode across the coil with its cathode to positive">
         <rect class="s-line f-panel" x="20" y="70" width="100" height="100" rx="6"/>
         <text class="t t-small t-bold" x="70" y="110" text-anchor="middle">13.8 V PSU</text><text class="t t-small t-muted" x="70" y="128" text-anchor="middle">+ battery</text>
         <path class="s-line" d="M120 90 H150 M190 90 H240"/>
@@ -320,7 +320,7 @@
         <text class="t t-small t-red" x="560" y="128">band (cathode)</text><text class="t t-small t-red" x="560" y="144">to +</text>
         <text class="t t-small" x="560" y="164">1N4007</text>
         <line class="s-blue s-dash" x1="470" y1="105" x2="470" y2="180"/>
-        <text class="t t-small t-blue" x="300" y="226">Measure across the strike while the door is unlocking: should be within ~1 V of the PSU</text>
+        <text class="t t-small t-blue" x="340" y="232" text-anchor="middle">Measure across the strike while the door is unlocking: should be within ~1 V of the PSU</text>
       </svg>
       <figcaption>Figure 6. The flyback diode sits across the coil, reverse-biased in normal operation (band to +). When the relay opens, the coil's collapsing magnetic field drives current round through the diode instead of making a high-voltage spike. Fitted backwards, the diode is a dead short across the supply as soon as the relay closes.</figcaption>
     </figure>
@@ -378,7 +378,7 @@
           {t:'Power C7 from a closer supply / thicker cable (or PoE)',ok:true,r:'New 1.0 mm² feed from the level-2 cupboard (12 m). With IR forced on: 12.1 V at the camera. Watched 30 min, no reboots. NVR log clear overnight.'}
          ]},
         {story:'A new Modbus RTU energy meter (ID 3) was added to the end of an RS-485 bus with two existing meters. The BMS shows "timeout" for ID 3. Meters 1 and 2 still read correctly.',
-         best:2, need:['set'],
+         best:3, need:['set','ctl'],
          tests:[
           {id:'pwr',t:'Is the meter powered?',r:'Display on, showing kWh. Comms LED never flashes.',m:'Alive. It does not think any request is for it.'},
           {id:'set',t:'Read the meter\'s comms settings from its display',r:'ID 3, 9600 baud, parity EVEN, 1 stop bit (8E1).',m:'Compare with the controller.'},
@@ -426,10 +426,10 @@
               var evidence=cur.need.every(function(k){return seen[k];});
               add('<b class="good">Fix: '+esc(f.t)+'</b><span class="r">'+esc(f.r)+'</span>');
               upd();
-              var msg='Fixed in '+steps+' step'+(steps>1?'s':'')+'. A tidy path takes about '+(cur.best+1)+' (including the fix). ';
+              var msg='Fixed in '+steps+' step'+(steps>1?'s':'')+'. A tidy path takes about '+cur.best+' (including the fix). ';
               if(!evidence) msg+='But you fixed it without the measurement that proves the cause. On site you could not justify this to the client: next time, measure first.';
               else if(cost>0) msg+='You found it, but wrong fixes cost A$'+cost+'. Measure before you replace parts.';
-              else if(steps<=cur.best+2) msg+='Excellent: evidence first, one correct fix, no money wasted.';
+              else if(steps<=cur.best+1) msg+='Excellent: evidence first, one correct fix, no money wasted.';
               else msg+='Correct, with no money wasted. Try again and see if half-splitting gets you there sooner.';
               st.textContent=msg;finish();
             } else {
