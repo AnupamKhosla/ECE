@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T03 · Power, energy and heat</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · Chapter T03</span>
+    <h1>Power, energy and heat</h1>
+    <p class="lede">Where the energy in a circuit goes, how fast it goes there, and how to stop it cooking your parts. You will be able to size a resistor, read a power bill, explain why power lines run at hundreds of kilovolts, and work out how long a battery will last.</p>
+    <div class="meta"><span><b>Reading</b> 45 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Algebra, one derivative</span><span><b>Practice</b> P02, P10, P13</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How we found out</h2>
+    <p>In the 1700s James Watt improved the steam engine, and to sell it he compared it with horses: one "horsepower" was the rate at which a horse could keep lifting a load. The idea of <b>power</b> as a <i>rate</i> of doing work comes from that practical question. The SI unit of power, the watt, was later named after him.</p>
+    <p>In 1841 James Prescott Joule, the son of a Manchester brewer, put coils of wire in water and measured how fast the water warmed. He found that the heat produced was proportional to the <i>square</i> of the current, times the resistance, times the time. Over the next few years he showed, with a falling weight turning a paddle in water, that a fixed amount of mechanical work always made the same amount of heat. Heat was not a separate fluid ("caloric") as many believed; it was another form of energy. This was a major step towards the law of conservation of energy. The unit of energy, the joule, is named after him.</p>
+    <p>Fifty years later, power engineering became a business battle. Thomas Edison's first central power station in New York (1882) supplied direct current (DC) at about 110 V. At that voltage, the I²R loss in the cables was so large that customers had to be within about a kilometre or two of the station. George Westinghouse and Nikola Tesla backed alternating current (AC), because transformers can step AC up to high voltage for transmission and back down for use. In 1896 AC power was sent about 35 km from Niagara Falls to the city of Buffalo, and AC won the grid. The reason is one formula from this chapter: P<sub>loss</sub> = I²R.</p>
+
+    <h2>Power: energy per second</h2>
+    <p><b>Energy</b> (W or E, in joules, J) is the capacity to do work or make heat. <b>Power</b> (P, in watts, W) is the rate at which energy is transferred: 1 W = 1 J/s. A 10 W LED lamp turns 10 joules of electrical energy into light and heat every second.</p>
+    <h3>Deriving P = VI</h3>
+    <p>Put together the two definitions from <a href="t01-charge-current-voltage.html">T01</a>:</p>
+    <ul>
+      <li>Voltage is energy per charge: V = W/Q (joules per coulomb).</li>
+      <li>Current is charge per second: I = Q/t (coulombs per second).</li>
+    </ul>
+    <p>Multiply them: (joules per coulomb) × (coulombs per second) = joules per second. Using calculus for a moment: the energy delivered when a small charge dQ passes through a voltage V is dW = V dQ. Divide by the small time dt:</p>
+    <div class="formula">P = dW/dt = V × dQ/dt = V × I
+      <small>This works for any part: resistor, motor, LED, battery charging or discharging. V is the voltage across the part and I the current through it.</small></div>
+    <p>For a resistor, Ohm's law V = IR lets us write the same power two more ways:</p>
+    <div class="formula">P = V I = I² R = V² / R
+      <small>Use I²R when you know the current (for example, a cable carrying a known load current). Use V²/R when you know the voltage across the resistor (for example, a resistor straight across a supply).</small></div>
+    <p>Each form tells a different story. I²R says: for a fixed current, more resistance means more heat, which is why a bad crimp or loose screw terminal (a few extra milliohms in a high-current path) can glow. V²/R says: for a fixed voltage, <i>less</i> resistance means more heat, which is why a short circuit across a battery is so violent.</p>
+    <h3>Where the energy goes in a resistor</h3>
+    <p>Inside a resistor, the field accelerates each electron between collisions (<a href="t02-resistance-ohms-law.html">T02</a>). At each collision the electron gives its extra energy to the vibrating atoms of the material. Faster vibrating atoms are what "hotter" means. So electrical energy becomes heat, at a rate of exactly I²R. This is <b>Joule heating</b> (or ohmic heating). It is the useful part of a kettle, toaster or heater, and the wasted part of everything else.</p>
+    <figure>
+      <svg viewBox="0 0 600 290" role="img" aria-label="Energy flow diagram: a linear regulator turns 12 watts in into 5 watts out and 7 watts of heat; a buck converter takes 5.6 watts in for the same 5 watts out">
+        <rect class="f-wash s-thin" x="20" y="55" width="120" height="50" rx="6"/>
+        <text class="t t-small" x="30" y="76">12 V × 1 A</text><text class="t t-small t-bold" x="30" y="94">12 W in</text>
+        <path class="s-accent" d="M140 80 H230" style="stroke-width:24"/>
+        <rect class="f-accent-soft s-accent" x="230" y="55" width="130" height="50" rx="6"/>
+        <text class="t t-small" x="240" y="76">linear regulator</text><text class="t t-small t-bold" x="240" y="94">η = 42%</text>
+        <path class="s-green" d="M360 92 H470" style="stroke-width:10"/>
+        <polygon class="f-green" points="470,80 488,92 470,104"/>
+        <rect class="f-wash s-thin" x="490" y="67" width="100" height="50" rx="6"/>
+        <text class="t t-small" x="498" y="88">5 V × 1 A</text><text class="t t-small t-bold" x="498" y="106">5 W load</text>
+        <path class="s-red" d="M360 68 H390 Q410 68 410 48 V26" style="stroke-width:14"/>
+        <polygon class="f-red" points="396,28 410,8 424,28"/>
+        <text class="t t-small t-red t-bold" x="430" y="28">7 W of heat</text>
+        <rect class="f-wash s-thin" x="20" y="185" width="120" height="50" rx="6"/>
+        <text class="t t-small" x="30" y="206">12 V × 0.46 A</text><text class="t t-small t-bold" x="30" y="224">5.6 W in</text>
+        <path class="s-accent" d="M140 210 H230" style="stroke-width:11"/>
+        <rect class="f-accent-soft s-accent" x="230" y="185" width="130" height="50" rx="6"/>
+        <text class="t t-small" x="240" y="206">buck converter</text><text class="t t-small t-bold" x="240" y="224">η ≈ 90%</text>
+        <path class="s-green" d="M360 214 H470" style="stroke-width:10"/>
+        <polygon class="f-green" points="470,202 488,214 470,226"/>
+        <rect class="f-wash s-thin" x="490" y="189" width="100" height="50" rx="6"/>
+        <text class="t t-small" x="498" y="210">5 V × 1 A</text><text class="t t-small t-bold" x="498" y="228">5 W load</text>
+        <path class="s-red" d="M360 196 H400 Q410 196 410 186 V166" style="stroke-width:2"/>
+        <polygon class="f-red" points="404,168 410,156 416,168"/>
+        <text class="t t-small t-red t-bold" x="424" y="166">0.6 W of heat</text>
+        <text class="t t-small t-muted" x="20" y="270">Arrow widths are proportional to power. Energy in = energy out + heat, every time.</text>
+      </svg>
+      <figcaption>Figure 1. Powering a 5 V, 1 A load from 12 V. A linear regulator acts like a smart resistor that drops the extra 7 V at the full 1 A, so it must get rid of 7 W as heat. A switch-mode buck converter changes voltage by switching quickly and wastes only about 10%.</figcaption>
+    </figure>
+
+    <h2>Heat, temperature and power ratings</h2>
+    <p>Power tells you how fast heat is made. Temperature depends on how fast that heat can escape. A part gets hotter until heat flows out to the air as fast as it is made. A simple model is</p>
+    <div class="formula">ΔT = P × θ
+      <small>ΔT is the temperature rise above the surrounding air, in °C. θ (theta) is the <b>thermal resistance</b> from the part to the air, in °C per watt. Small parts and parts in still air have large θ; heatsinks and fans make θ smaller.</small></div>
+    <p>Example: a regulator in a TO-220 package (the common three-legged package with a metal tab) has a thermal resistance to air of roughly 50–65 °C/W without a heatsink. In Figure 1 it must lose 7 W. ΔT ≈ 7 × 50 = 350 °C. Long before that, its built-in thermal protection shuts it down. It needs a large heatsink, or better, a buck converter (<a href="../practice/p10-power-supplies.html">P10</a>).</p>
+    <h3>Resistor power ratings</h3>
+    <p>Every resistor has a <b>power rating</b>: the power it can turn into heat continuously, at a stated surrounding (ambient) temperature, without damage. Common ratings: 1/16 W (0402 surface-mount), 1/10 W (0603), 1/8 W (0805), 1/4 W (1206 and the usual through-hole resistor), 1/2 W, 1 W, 2 W, and 5 W or more for ceramic-cased wirewound types. The rating depends on size: a bigger body has more surface to lose heat from.</p>
+    <p>Two practical facts about the rating:</p>
+    <ul>
+      <li><b>At its full rating, a resistor is already very hot.</b> A small resistor at its rated power can run at well over 100 °C: hot enough to brown a circuit board and burn your finger. Designers keep it cooler by choosing a rating at least <b>twice</b> the actual power.</li>
+      <li><b>The rating falls when the air around it is hot.</b> Inside a sealed enclosure on a sunny roof, the "ambient" may be 60 °C or more. The datasheet gives a <b>derating curve</b>.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 600 250" role="img" aria-label="Typical resistor derating curve: full power up to 70 degrees ambient, falling to zero at 155 degrees">
+        <g class="s-thin s-dash"><path d="M70 120 H550"/><path d="M70 40 H550"/></g>
+        <path class="s-line" d="M70 30 V200 H555"/>
+        <g class="t t-small">
+          <text x="30" y="204">0%</text><text x="24" y="124">50%</text><text x="18" y="44">100%</text>
+          <text x="66" y="218">0</text><text x="200" y="218">50</text><text x="254" y="218">70</text><text x="334" y="218">100</text><text x="486" y="218">155</text>
+        </g>
+        <path class="s-accent" d="M70 40 H262 L495 200"/>
+        <path class="s-thin s-dash" d="M262 40 V200"/>
+        <text class="t t-small t-muted" x="230" y="240">ambient (surrounding air) temperature, °C</text>
+        <text class="t t-small t-accent" x="300" y="70">allowed power falls in a straight line</text>
+        <text class="t t-small t-accent" x="300" y="86">above 70 °C, to zero at 155 °C</text>
+        <text class="t t-small t-green" x="90" y="112">rule of thumb: run at ≤ 50% of rating</text>
+        <text class="t t-small" x="8" y="22">allowed power (% of rating)</text>
+      </svg>
+      <figcaption>Figure 2. A typical derating curve for a film resistor. The exact knee and end temperatures vary by type and maker, so check the datasheet. A 0.25 W resistor in 110 °C air may only take about 0.13 W.</figcaption>
+    </figure>
+    <h3>What happens when the rating is exceeded</h3>
+    <p>A little over the rating, the resistor runs very hot, the colour bands darken, and its value drifts, usually upwards, over weeks. Well over the rating, the protective coating blisters and smokes, the board under it chars, and the resistive film or wire burns through, leaving an open circuit. Some resistors (called fusible resistors) are designed to fail open safely in exactly this way and act as a fuse. A charred resistor is usually a <i>symptom</i>: something else, often a shorted transistor, capacitor or diode, pushed too much current through it. Replacing only the resistor usually burns the new one too.</p>
+    <h3>Worked examples</h3>
+    <ol class="steps">
+      <li><p><b>LED resistor, 5 V supply.</b> Red LED at 1.9 V, 330 Ω, so I = (5 − 1.9)/330 = 9.4 mA. P<sub>R</sub> = I²R = 0.0094² × 330 = 29 mW. A 1/4 W (250 mW) resistor is at about 12% of its rating: cool.</p></li>
+      <li><p><b>Same LED on 24 V.</b> R = (24 − 1.9)/0.010 ≈ 2.2 kΩ for 10 mA. P<sub>R</sub> = 22.1 V × 0.010 A = 0.22 W. That is 88% of a 1/4 W rating: hot. Use a 1/2 W or 1 W resistor. Surprising but common: on 24 V, the resistor wastes over ten times more power than the LED uses.</p></li>
+      <li><p><b>100 Ω across 12 V.</b> P = V²/R = 144/100 = 1.44 W. A 1/4 W resistor is at almost 6 times its rating: it will smoke within seconds. You need at least a 2 W part, and a 5 W one would stay cooler.</p></li>
+      <li><p><b>A loose terminal.</b> A screw terminal carrying 10 A has a poor contact of 0.05 Ω. P = I²R = 100 × 0.05 = 5 W, concentrated in a spot a few millimetres across. That is enough to melt plastic and start a fire. This is why terminals are torqued, ferrules are used on stranded wire, and thermal cameras find faults in switchboards.</p></li>
+    </ol>
+    <div class="widget" id="t3w">
+      <span class="label">Interactive · Resistor power and "will it burn?"</span>
+      <label>Voltage across the resistor <span class="out" id="t3w-vout">12.0 V</span><input type="range" id="t3w-v" min="0.5" max="48" step="0.5" value="12"></label>
+      <label>Resistance
+        <select id="t3w-r">
+          <option value="10">10 Ω</option><option value="22">22 Ω</option><option value="47">47 Ω</option><option value="100" selected>100 Ω</option><option value="150">150 Ω</option><option value="220">220 Ω</option><option value="330">330 Ω</option><option value="470">470 Ω</option><option value="680">680 Ω</option><option value="1000">1 kΩ</option><option value="2200">2.2 kΩ</option><option value="4700">4.7 kΩ</option><option value="10000">10 kΩ</option><option value="22000">22 kΩ</option><option value="47000">47 kΩ</option><option value="100000">100 kΩ</option>
+        </select></label>
+      <label>Power rating
+        <select id="t3w-pr">
+          <option value="0.0625">1/16 W (0402 SMD)</option><option value="0.1">1/10 W (0603 SMD)</option><option value="0.125">1/8 W (0805 SMD)</option><option value="0.25" selected>1/4 W (common through-hole)</option><option value="0.5">1/2 W</option><option value="1">1 W</option><option value="2">2 W</option><option value="5">5 W (ceramic wirewound)</option><option value="10">10 W</option>
+        </select></label>
+      <label>Air temperature around it <span class="out" id="t3w-tout">25 °C</span><input type="range" id="t3w-t" min="0" max="150" step="5" value="25"></label>
+      <div class="readings">
+        <div><small>Current</small><span class="out" id="t3w-i">–</span></div>
+        <div><small>Power (heat)</small><span class="out" id="t3w-p">–</span></div>
+        <div><small>Allowed at this air temperature</small><span class="out" id="t3w-al">–</span></div>
+        <div><small>Load on the resistor</small><span class="out" id="t3w-pct">–</span></div>
+        <div><small>Energy if left on a year</small><span class="out" id="t3w-e">–</span></div>
+      </div>
+      <div style="margin-top:12px;background:var(--wash);border-radius:8px;height:18px;position:relative;overflow:hidden">
+        <div id="t3w-bar" style="height:100%;width:0;background:var(--green)"></div>
+        <div style="position:absolute;top:0;bottom:0;left:25%;border-left:2px dashed var(--ink)"></div>
+        <div style="position:absolute;top:0;bottom:0;left:50%;border-left:2px solid var(--ink)"></div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin:4px 0 0">Bar: full width = 200% of the allowed power. Dashed line = 50% (design target). Solid line = 100% (the limit).</p>
+      <p id="t3w-verdict" style="margin:8px 0 0;font-weight:600">–</p>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      function fP(p){if(p<1)return (p*1000).toPrecision(3)+' mW';return p.toPrecision(3)+' W';}
+      function fI(i){if(i<1)return (i*1000).toPrecision(3)+' mA';return i.toPrecision(3)+' A';}
+      function upd(){
+        var V=+$('t3w-v').value, R=+$('t3w-r').value, PR=+$('t3w-pr').value, T=+$('t3w-t').value;
+        var I=V/R, P=V*V/R, k=T<=70?1:Math.max(0,(155-T)/85), allowed=PR*k;
+        $('t3w-vout').textContent=V.toFixed(1)+' V'; $('t3w-tout').textContent=T+' °C';
+        $('t3w-i').textContent=fI(I); $('t3w-p').textContent=fP(P);
+        $('t3w-al').textContent=allowed>0?fP(allowed):'0 W';
+        var pct=allowed>0?P/allowed*100:Infinity;
+        $('t3w-pct').textContent=isFinite(pct)?Math.round(pct)+'%':'—';
+        var kwh=P*8760/1000; $('t3w-e').textContent=(kwh<1?(kwh*1000).toPrecision(3)+' Wh':kwh.toPrecision(3)+' kWh')+' (~A$'+(kwh*0.30).toFixed(2)+')';
+        var bar=$('t3w-bar'), vt=$('t3w-verdict');
+        bar.style.width=Math.min(100,(isFinite(pct)?pct:200)/2)+'%';
+        if(pct<=50){bar.style.background='var(--green)';vt.textContent='Cool enough: within the 50% rule of thumb.';}
+        else if(pct<=100){bar.style.background='var(--amber)';vt.textContent='Within the limit but hot. It may run near or above 100 °C. Choose the next rating up.';}
+        else if(pct<=200){bar.style.background='var(--red)';vt.textContent='Over the limit: it will overheat, discolour and drift in value, and may fail.';}
+        else {bar.style.background='var(--red)';vt.textContent='It will burn: expect smoke, a charred body and an open circuit, possibly within seconds.';}
+      }
+      ['t3w-v','t3w-r','t3w-pr','t3w-t'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <div class="callout warn"><span class="label">Safety</span><p>Overloaded resistors and regulators can reach temperatures that burn skin and char plastic, even at 5 V or 12 V. Touch-test a part only with the back of a finger, briefly, after switching off; better, use an infrared thermometer. Fuse every battery and supply you build with, close to the source.</p></div>
+
+    <h2>Why power lines use high voltage</h2>
+    <p>Suppose a power station must send 10 MW to a town through lines with a total resistance of 5 Ω. The power is P = VI, so the current needed depends on the voltage. The loss in the line is I²R. Look at what happens:</p>
+    <figure>
+      <svg viewBox="0 0 600 230" role="img" aria-label="Sending 10 megawatts through 5 ohms of line at 11 kilovolts and at 132 kilovolts">
+        <circle class="s-line f-panel" cx="50" cy="70" r="22"/><path class="s-line" d="M38 70 q6 -10 12 0 t12 0"/>
+        <path class="s-line" d="M72 70 H200"/>
+        <path class="s-red" d="M200 70 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M260 70 H470"/>
+        <rect class="f-wash s-line" x="470" y="48" width="115" height="44" rx="6"/>
+        <text class="t t-small" x="480" y="75">10 MW to town</text>
+        <text class="t t-small t-bold" x="84" y="52">11 kV</text>
+        <text class="t t-small" x="204" y="44">line 5 Ω</text>
+        <text class="t t-small" x="280" y="96">I = 10 MW ÷ 11 kV ≈ 909 A</text>
+        <text class="t t-small t-red t-bold" x="280" y="60">loss = 909² × 5 ≈ 4.1 MW</text>
+        <circle class="s-line f-panel" cx="50" cy="170" r="22"/><path class="s-line" d="M38 170 q6 -10 12 0 t12 0"/>
+        <path class="s-line" d="M72 170 H200"/>
+        <path class="s-green" d="M200 170 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M260 170 H470"/>
+        <rect class="f-wash s-line" x="470" y="148" width="115" height="44" rx="6"/>
+        <text class="t t-small" x="480" y="175">10 MW to town</text>
+        <text class="t t-small t-bold" x="84" y="152">132 kV</text>
+        <text class="t t-small" x="204" y="144">line 5 Ω</text>
+        <text class="t t-small" x="280" y="196">I = 10 MW ÷ 132 kV ≈ 76 A</text>
+        <text class="t t-small t-green t-bold" x="280" y="160">loss = 76² × 5 ≈ 29 kW</text>
+        <text class="t t-small t-muted" x="20" y="224">Same power, same wire. 12 × the voltage means 1/12 of the current and 1/144 of the loss.</text>
+      </svg>
+      <figcaption>Figure 3. At 11 kV the line would waste about 41% of the power (in reality the voltage would also sag badly). At 132 kV the loss is under 0.3%. Loss falls with the square of the voltage.</figcaption>
+    </figure>
+    <div class="formula">P<sub>loss</sub> = I² R<sub>line</sub> = (P / V)² × R<sub>line</sub>
+      <small>For a fixed power delivered, line loss is proportional to 1/V². Double the voltage and you cut the loss to a quarter, or use a quarter of the copper for the same loss.</small></div>
+    <p>So the grid steps voltage up for long distances and down for use. Transformers (<a href="t08-transformers.html">T08</a>) do this efficiently for AC, which is the historical reason the grid is AC. Australia's transmission networks run at voltages such as 220, 275, 330 and 500 kV; distribution feeders in streets commonly run at 11 or 22 kV; a pole or pad-mount transformer then supplies 230 V single-phase and 400 V three-phase to buildings. All of that is licensed electrical and network work, far outside the ELV limit of this course.</p>
+    <p>The same idea appears at ELV scale. Power over Ethernet uses roughly 44–57 V rather than 12 V, so that the thin Cat6 conductors carry less current for the same power. Building services often prefer 24 V over 12 V for the same reason (try it in the cable calculator in <a href="t02-resistance-ohms-law.html">T02</a>).</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"P = V²/R says higher voltage gives more loss, so high-voltage lines should waste more."</b> In V²/R, V must be the voltage <i>across the resistance</i>, which for a line is the small voltage drop along the wire, not the line's voltage to earth. The line's voltage decides the current through it (I = P/V), and the loss is I²R. Always ask: which voltage, across which part?</p></div>
+
+    <h2>Energy, kWh and your power bill</h2>
+    <p>Energy = power × time. In joules: E = P × t with P in watts and t in seconds. The joule is tiny for household use, so electricity retailers use the <b>kilowatt-hour</b> (kWh): the energy used by 1 kW for 1 hour.</p>
+    <div class="formula">1 kWh = 1,000 W × 3,600 s = 3.6 × 10⁶ J = 3.6 MJ
+      <small>Energy (kWh) = power (kW) × time (hours). Cost = energy (kWh) × price per kWh.</small></div>
+    <p>An Australian bill usually has two main parts: a <b>usage charge</b> in cents per kWh, and a fixed daily <b>supply charge</b>. Many homes also have a solar <b>feed-in tariff</b> credited for exported energy. Prices vary a lot by state, retailer, plan and time of day, so the table below uses an <i>illustrative</i> usage price of 30 c/kWh and supply charge of A$1.00 per day. Check your own bill for real figures.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Item (91-day quarter)</th><th>Power × time per day</th><th>kWh per day</th><th>kWh per quarter</th><th>Cost at 30 c</th></tr>
+      <tr><td>Fridge (from its energy label)</td><td>averages ~1 kWh/day</td><td>1.00</td><td>91</td><td>A$27.30</td></tr>
+      <tr><td>10 LED lights</td><td>10 × 9 W × 5 h</td><td>0.45</td><td>41</td><td>A$12.29</td></tr>
+      <tr><td>TV</td><td>100 W × 4 h</td><td>0.40</td><td>36</td><td>A$10.92</td></tr>
+      <tr><td>Kettle</td><td>2.2 kW × 10 min</td><td>0.37</td><td>33</td><td>A$10.01</td></tr>
+      <tr><td>Reverse-cycle air conditioner (summer)</td><td>2 kW input × 4 h</td><td>8.00</td><td>728</td><td>A$218.40</td></tr>
+      <tr><td>Standby loads (modem, chargers, TV standby)</td><td>20 W × 24 h</td><td>0.48</td><td>44</td><td>A$13.10</td></tr>
+      <tr><td>Supply charge</td><td colspan="3">91 days × A$1.00</td><td>A$91.00</td></tr>
+      <tr><td><b>Total</b></td><td></td><td></td><td><b>~973 kWh</b></td><td><b>~A$383</b></td></tr>
+    </table></div>
+    <p>Notice what matters: large power for long times (air conditioning, and in many homes electric hot water). Small things that run all day add up too: 20 W of standby costs about A$50 a year. A kettle draws a lot of power but for very little time.</p>
+    <div class="callout job"><span class="label">On the job</span><p>Clients ask installers about running costs. A CCTV system with 16 PoE cameras at about 6 W each plus a 40 W recorder draws about 136 W, 24 hours a day: 0.136 kW × 8,760 h ≈ 1,190 kWh a year, roughly A$360 at 30 c/kWh. The same arithmetic sizes the UPS or battery backup for it. BMS technicians use kWh data from energy meters (often read over Modbus, see <a href="../practice/p14-serial-buses-modbus.html">P14</a>) to show building owners where energy goes.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Many appliances carry the Energy Rating Label, which shows stars and an estimated energy use in kWh per year. That kWh figure times your tariff gives an estimated yearly running cost. Electricity prices and plans are regulated differently in each state; the Australian Energy Regulator and state bodies publish reference prices. Confirm current figures with them or your retailer.</p></div>
+
+    <h2>Efficiency</h2>
+    <p>Every real device turns some of its input into something other than the intended output, almost always heat. <b>Efficiency</b> η (eta) is</p>
+    <div class="formula">η = P<sub>out</sub> / P<sub>in</sub>        P<sub>loss</sub> = P<sub>in</sub> − P<sub>out</sub>
+      <small>η is between 0 and 1 (or 0% and 100%). Energy is conserved, so whatever does not come out as useful output comes out as loss, mostly heat.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Device</th><th>Typical efficiency (indicative)</th><th>Where the loss goes</th></tr>
+      <tr><td>Linear regulator 12 V → 5 V</td><td>~42% (it is always V<sub>out</sub>/V<sub>in</sub> at best)</td><td>Heat in the regulator</td></tr>
+      <tr><td>Buck (switch-mode) converter</td><td>85–95%</td><td>Switching and resistance losses in the transistor, inductor and capacitors</td></tr>
+      <tr><td>Plug-pack power supply</td><td>~80–90% at full load, worse at light load</td><td>Transformer and switching losses, standby</td></tr>
+      <tr><td>Incandescent lamp</td><td>a few percent as visible light</td><td>Most of the power leaves as infrared heat</td></tr>
+      <tr><td>LED lamp</td><td>several times better than incandescent</td><td>Heat at the LED and driver</td></tr>
+      <tr><td>Large electric motor</td><td>~85–95%</td><td>Winding I²R, iron losses, friction</td></tr>
+      <tr><td>Rooftop solar panel (sunlight → electricity)</td><td>~20%</td><td>Light not absorbed, heat in the cells</td></tr>
+    </table></div>
+    <p>A linear regulator's efficiency is easy to predict: the same current flows in and out, so η = (V<sub>out</sub> × I)/(V<sub>in</sub> × I) = V<sub>out</sub>/V<sub>in</sub>. From 12 V to 5 V that is 5/12 ≈ 42%, no matter how good the chip is.</p>
+    <p>Efficiencies multiply in a chain. A 90% charger into a 95% battery round-trip into a 90% converter gives 0.90 × 0.95 × 0.90 ≈ 77% overall.</p>
+
+    <h2>Maximum power transfer</h2>
+    <p>Every real source has internal resistance r (<a href="t01-charge-current-voltage.html">T01</a>). Connect a load R<sub>L</sub>. How should you choose R<sub>L</sub> to get the <i>most power into the load</i>?</p>
+    <p>If R<sub>L</sub> is very large, almost no current flows, so little power. If R<sub>L</sub> is very small, lots of current flows but almost no voltage is left across the load, so again little power. The best is somewhere in between. With I = ℰ/(R<sub>L</sub> + r):</p>
+    <div class="formula">P<sub>L</sub> = I² R<sub>L</sub> = ℰ² R<sub>L</sub> / (R<sub>L</sub> + r)²</div>
+    <p>To find the maximum, differentiate with respect to R<sub>L</sub> and set the result to zero (the quotient rule from Class 12):</p>
+    <div class="formula">dP<sub>L</sub>/dR<sub>L</sub> = ℰ² [ (R<sub>L</sub> + r)² − 2R<sub>L</sub>(R<sub>L</sub> + r) ] / (R<sub>L</sub> + r)⁴ = 0<br>⟹ R<sub>L</sub> + r = 2R<sub>L</sub>  ⟹  <b>R<sub>L</sub> = r</b>
+      <small>The load gets the most power when its resistance equals the source's internal resistance. Then P<sub>max</sub> = ℰ²/4r.</small></div>
+    <p>Example: a source with ℰ = 12 V and r = 2 Ω. With R<sub>L</sub> = 2 Ω: I = 12/4 = 3 A, P<sub>L</sub> = 9 × 2 = 18 W. But the internal resistance also gets 3² × 2 = 18 W. The source makes 36 W and only half reaches the load. With R<sub>L</sub> = 10 Ω: I = 1 A, P<sub>L</sub> = 10 W (less), but only 2 W is wasted inside, so efficiency is 83%.</p>
+    <figure>
+      <svg viewBox="0 0 600 270" role="img" aria-label="Load power and efficiency versus load resistance divided by source resistance">
+        <g class="s-thin s-dash"><path d="M70 140 H550"/><path d="M70 50 H550"/><path d="M166 50 V230"/></g>
+        <path class="s-line" d="M70 40 V230 H555"/>
+        <g class="t t-small">
+          <text x="50" y="234">0</text><text x="38" y="144">0.5</text><text x="50" y="54">1</text>
+          <text x="66" y="248">0</text><text x="162" y="248">1</text><text x="258" y="248">2</text><text x="354" y="248">3</text><text x="450" y="248">4</text><text x="546" y="248">5</text>
+        </g>
+        <text class="t t-small t-muted" x="200" y="266">load resistance ÷ source resistance (R<tspan dy="3" font-size="9">L</tspan><tspan dy="-3"> / r)</tspan></text>
+        <path class="s-accent" d="M70.0 230.0 L79.6 170.5 L89.2 130.0 L98.8 102.2 L108.4 83.1 L118.0 70.0 L127.6 61.3 L137.2 55.6 L146.8 52.2 L156.4 50.5 L166.0 50.0 L175.6 50.4 L185.2 51.5 L194.8 53.1 L204.4 55.0 L214.0 57.2 L223.6 59.6 L233.2 62.1 L242.8 64.7 L252.4 67.3 L262.0 70.0 L281.2 75.3 L300.4 80.5 L319.6 85.6 L338.8 90.4 L358.0 95.0 L377.2 99.4 L396.4 103.6 L415.6 107.5 L434.8 111.2 L454.0 114.8 L473.2 118.2 L492.4 121.4 L511.6 124.4 L530.8 127.3 L550.0 130.0"/>
+        <path class="s-green" d="M70.0 230.0 L79.6 213.6 L89.2 200.0 L98.8 188.5 L108.4 178.6 L118.0 170.0 L127.6 162.5 L137.2 155.9 L146.8 150.0 L156.4 144.7 L166.0 140.0 L185.2 131.8 L204.4 125.0 L223.6 119.2 L242.8 114.3 L262.0 110.0 L300.4 102.9 L338.8 97.4 L377.2 92.9 L415.6 89.1 L454.0 86.0 L492.4 83.3 L530.8 81.0 L550.0 80.0"/>
+        <circle class="f-accent" cx="166" cy="50" r="5"/><circle class="f-green" cx="166" cy="140" r="5"/>
+        <text class="t t-small t-accent" x="180" y="40">load power ÷ maximum: peaks at R<tspan dy="3" font-size="9">L</tspan><tspan dy="-3"> = r</tspan></text>
+        <text class="t t-small t-green" x="390" y="74">efficiency η = R<tspan dy="3" font-size="9">L</tspan><tspan dy="-3"> / (R</tspan><tspan dy="3" font-size="9">L</tspan><tspan dy="-3"> + r)</tspan></text>
+        <text class="t t-small t-green" x="176" y="160">only 50% at the power peak</text>
+      </svg>
+      <figcaption>Figure 4. Load power (blue) peaks when R<sub>L</sub> = r, but efficiency (green) there is only 50%. Making R<sub>L</sub> much larger than r gives slightly less power with far better efficiency.</figcaption>
+    </figure>
+    <p>So "matching" (R<sub>L</sub> = r) is right where the signal is weak and precious and wasting half is acceptable: radio receivers and antennas, which is why RF systems use a fixed impedance such as 50 Ω or 75 Ω for every cable and connector. It is the wrong goal for power delivery. The grid, batteries and power supplies are designed with r much smaller than the load, so that almost all the energy reaches the load.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Maximum power transfer means maximum efficiency."</b> At maximum power transfer, efficiency is exactly 50%. In the 1840s this result (then called Jacobi's law) led some people to think electric power could never be more than 50% efficient. Edison's team realised the goal for a power system is the opposite: keep the source and line resistance tiny compared with the load.</p></div>
+
+    <h2>Battery energy: Wh = V × Ah</h2>
+    <p>Battery capacity is usually given in amp-hours (Ah) or milliamp-hours (mAh). That is a <b>charge</b> rating (1 Ah = 3,600 C), not an energy rating. To get energy, multiply by the voltage:</p>
+    <div class="formula">Energy (Wh) = Voltage (V) × Capacity (Ah)
+      <small>Watt-hours make different batteries comparable. A 1 Ah cell at 3.7 V holds more than twice the energy of a 1 Ah cell at 1.2 V.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Battery</th><th>Rating</th><th>Energy</th><th>Notes</th></tr>
+      <tr><td>AA alkaline</td><td>1.5 V, ~2–2.5 Ah at low drain</td><td>~3 Wh</td><td>Much less at high current</td></tr>
+      <tr><td>Phone battery</td><td>3.85 V, 4,000 mAh</td><td>15.4 Wh</td><td>Costs about half a cent to charge at 30 c/kWh</td></tr>
+      <tr><td>Power bank "20,000 mAh"</td><td>3.7 V cells, 20 Ah</td><td>74 Wh</td><td>At 5 V output with ~85% conversion: only ~12.6 Ah at 5 V</td></tr>
+      <tr><td>12 V 7 Ah SLA (alarm panel)</td><td>12 V, 7 Ah</td><td>84 Wh</td><td>Lead-acid lives longer if not deeply discharged</td></tr>
+      <tr><td>Home battery</td><td>about 10–13.5 kWh</td><td>10,000–13,500 Wh</td><td>Sized to a household's evening use</td></tr>
+    </table></div>
+    <h3>Worked example: alarm panel standby time</h3>
+    <p>An alarm panel and its detectors draw 0.35 A at 12 V on standby. It has a 12 V 7 Ah SLA battery. Ideal standby time = 7 Ah ÷ 0.35 A = 20 hours. Real batteries deliver less: capacity falls at higher current and low temperature, and an older battery may have only about 80% of its rating left. A designer would allow for this, for example 7 × 0.8 ÷ 0.35 ≈ 16 hours, and then check the time the relevant standard or client requires. In energy terms: 84 Wh × 0.8 ÷ (12 V × 0.35 A = 4.2 W) ≈ 16 hours.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The "mAh" printed on a power bank is the capacity of its internal 3.7 V cells. Its USB output is 5 V or more, and the boost converter loses some energy. So you never get the printed mAh at 5 V. Compare batteries in Wh, not mAh. Airlines also limit power banks by Wh (commonly 100 Wh without approval); check your airline's current rules.</p></div>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit: check your LED resistor's power rating</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Power supplies: feel the difference between a hot 7805 and a cool buck converter</a>
+    <a class="crosslink" href="../practice/p13-actuators-motors.html">Practice P13 · Actuators: motor current, stall current and why drivers get hot</a>
+    <a class="crosslink" href="../practice/p05-soldering-wiring.html">Practice P05 · Soldering and wiring: good terminations that do not heat up</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Show that volts × amps gives watts, using units only.</summary><div class="answer"><p>V = J/C and A = C/s. So V × A = (J/C) × (C/s) = J/s = W. Power is energy per charge times charge per second.</p></div></details>
+    <details class="quiz"><summary>A 470 Ω resistor is connected across 12 V. What power does it dissipate, and is a 1/4 W part OK?</summary><div class="answer"><p>P = V²/R = 144/470 ≈ 0.31 W. That is 123% of 0.25 W: over the limit. Use at least a 1/2 W, preferably a 1 W, resistor so it runs at about 30–60% of rating.</p></div></details>
+    <details class="quiz"><summary>Why does doubling the transmission voltage cut the line loss to a quarter?</summary><div class="answer"><p>For the same power, I = P/V, so doubling V halves the current. Loss = I²R, and halving I divides I² by four.</p></div></details>
+    <details class="quiz"><summary>A 2.2 kW heater runs 3 hours a day for 90 days. At an illustrative 30 c/kWh, what does it cost?</summary><div class="answer"><p>2.2 kW × 3 h × 90 = 594 kWh. 594 × A$0.30 ≈ A$178.</p></div></details>
+    <details class="quiz"><summary>A linear regulator makes 3.3 V at 0.5 A from a 12 V input. What is its efficiency and how much heat must it lose?</summary><div class="answer"><p>η = 3.3/12 ≈ 27.5%. Heat = (12 − 3.3) × 0.5 = 4.35 W. That needs a real heatsink; a buck converter would be the better choice.</p></div></details>
+    <details class="quiz"><summary>A source has ℰ = 9 V and r = 3 Ω. What load gives the maximum power, and how much?</summary><div class="answer"><p>R<sub>L</sub> = r = 3 Ω. I = 9/6 = 1.5 A. P<sub>L</sub> = 1.5² × 3 = 6.75 W (= ℰ²/4r = 81/12). The same 6.75 W is wasted inside the source, so the efficiency is 50%.</p></div></details>
+    <details class="quiz"><summary>Which stores more energy: a 3.7 V 3,000 mAh cell or a 12 V 1.2 Ah SLA battery?</summary><div class="answer"><p>3.7 × 3 = 11.1 Wh versus 12 × 1.2 = 14.4 Wh. The SLA stores more energy even though its mAh number (1,200) is smaller.</p></div></details>
+    <details class="quiz"><summary>A resistor in a power supply is charred. Why should you not just replace it and switch on?</summary><div class="answer"><p>Resistors usually burn because something else failed (for example a shorted capacitor, diode or transistor) and pushed too much current through them. Unless you find and fix that cause, the new resistor will burn too, or worse.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can derive P = VI from the definitions of voltage and current, and use I²R and V²/R.</span></li>
+      <li><input type="checkbox"><span>I can choose a resistor power rating with a 2× margin and allow for hot surroundings.</span></li>
+      <li><input type="checkbox"><span>I can explain why bad connections get hot using I²R.</span></li>
+      <li><input type="checkbox"><span>I can show why higher transmission voltage reduces line loss.</span></li>
+      <li><input type="checkbox"><span>I can convert power and time into kWh and estimate a running cost.</span></li>
+      <li><input type="checkbox"><span>I can calculate efficiency and the heat a regulator must lose.</span></li>
+      <li><input type="checkbox"><span>I can state the maximum power transfer condition and why power systems do not use it.</span></li>
+      <li><input type="checkbox"><span>I can compare batteries in Wh and estimate standby time.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

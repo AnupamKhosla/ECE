@@ -60,6 +60,8 @@ img,svg{max-width:100%}
 .side a.nav .num{font:12px var(--mono);color:var(--muted);min-width:30px}
 .side a.nav.pending{color:var(--muted)}
 .side a.nav.pending .t::after{content:" · writing…";font-size:11px;font-style:italic}
+.side a.nav.planned{color:var(--muted)}
+.side a.nav.planned .t::after{content:" · planned";font-size:11px;font-style:italic}
 .side a.nav.done .t::before{content:"✓ ";color:var(--green)}
 .side .tools{display:flex;gap:6px;margin-top:22px;flex-wrap:wrap}
 .side .tools button{font:13px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:5px 10px;border-radius:6px;cursor:pointer}

@@ -92,7 +92,9 @@
   function markPending() {
     document.querySelectorAll(".side a.nav").forEach(function (a) {
       var m = meta[a.dataset.file];
-      a.classList.toggle("pending", !!m && !m.ok);
+      var c = all.filter(function (x) { return x.file === a.dataset.file; })[0];
+      a.classList.toggle("pending", !!m && !m.ok && !c.planned);
+      a.classList.toggle("planned", !!m && !m.ok && !!c.planned);
     });
   }
 
@@ -167,6 +169,7 @@
           a.href = ROOT + c.file;
           var badge = "";
           if (done[c.file]) badge = '<span class="badge done">done</span>';
+          else if (!m.ok && c.planned) badge = '<span class="badge wip">planned</span>';
           else if (!m.ok) badge = '<span class="badge wip">writing…</span>';
           else if (m.lm && now - new Date(m.lm).getTime() < 25 * 60 * 1000) badge = '<span class="badge new">new</span>';
           a.innerHTML = badge + '<span class="n">' + c.n + '</span><b>' + c.title + '</b><span class="d">' + c.d + "</span>";

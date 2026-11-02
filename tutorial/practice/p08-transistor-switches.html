@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P08 · Transistors as switches: BJT, MOSFET, relays</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
+    <span class="eyebrow">Practice · Lab P08</span>
+    <h1>Transistors as switches: BJT, MOSFET, relays</h1>
+    <p class="lede">You will switch a 12 V load from a 5 V signal three ways: with a bipolar transistor (calculating the base resistor so it switches hard), with a logic-level MOSFET, and with a relay protected by a flyback diode. Then you will see exactly where these circuits live inside BMS controllers and access-control panels.</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$40</span><span><b>Theory</b> T12, T13, T06</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>NPN transistors</b><small>~A$3 · BC547 ×5 (100 mA) and 2N2222 or PN2222A ×3 (up to ~600 mA)</small></li>
+      <li><b>Logic-level N-channel MOSFET ×2</b><small>~A$3–5 each · TO-220, fully on at 4.5–5 V gate, e.g. IRLZ44N. Core Electronics or element14.</small></li>
+      <li><b>12 V relay, PCB type</b><small>~A$3 · coil about 400 Ω, contacts marked COM, NO, NC</small></li>
+      <li><b>5 V relay module</b><small>~A$5 · the blue-relay board with a transistor, LED and diode already fitted</small></li>
+      <li><b>12 V DC plug-pack, 1–2 A, regulated</b><small>~A$20 · with a DC-jack-to-screw-terminal adaptor</small></li>
+      <li><b>12 V LED strip, 30–50 cm</b><small>~A$10 · or a 12 V computer fan or small DC motor</small></li>
+      <li><b>"Logic" supply</b><small>3×AA holder (4.5 V) or a USB 5 V breakout · stands in for a microcontroller pin until P11</small></li>
+      <li><b>Diodes and resistors</b><small>1N4007 ×5, 1N4148 ×2; 100 Ω, 220 Ω, 470 Ω, 560 Ω, 1 kΩ, 2.2 kΩ, 10 kΩ, 100 kΩ, 1 MΩ</small></li>
+      <li><b>LEDs and a push-button</b><small>From your P02 kit</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>Everything in this lab runs from 12 V DC and 5 V. A relay's contacts may be printed "10 A 250 V AC". That rating does not give you permission to switch mains: in Australia, connecting anything to 230 V is work for a licensed electrician. Use relays here only to switch ELV loads. Motors and LED strips can draw amps, so keep the plug-pack's current rating in mind and never short its output.</p></div>
+
+    <h2>1 · The idea: a small signal controls a big current</h2>
+    <p>A microcontroller pin can supply about 20 mA at 3.3 V or 5 V. A 12 V LED strip may need 1 A; a relay coil 30–70 mA; a door strike 250–500 mA. The pin cannot drive these directly. A transistor is an electrically controlled switch: a small control current (BJT) or a control voltage (MOSFET) opens or closes a path for a much bigger current from a separate supply.</p>
+    <p>In this lab we always use a <b>low-side switch</b>: the load connects to +12 V, and the transistor sits between the load and ground (0 V). That way the transistor's control terminal is referenced to ground, the same ground as the logic signal. The one rule you must never forget:</p>
+    <div class="callout myth"><span class="label">The rule people forget: common ground</span><p><b>Wrong:</b> "The 5 V signal and the 12 V supply are separate, so their grounds should stay separate." <b>Right:</b> a voltage is always measured between two points. The base or gate signal only means something relative to the transistor's emitter or source. Join the 0 V of the logic supply to the 0 V of the 12 V supply. Without it, the transistor sees no signal at all, or a random one.</p></div>
+
+    <h2>2 · NPN transistor low-side switch</h2>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="NPN low-side switch: 12 V through LED and 560 ohm to collector, emitter to ground, base resistor from 5 V control, 10k pull-down, shared ground">
+        <defs><marker id="p8-arrE" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="p8-arrR" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <!-- 12 V rail -->
+        <text class="t t-small t-bold" x="360" y="22">+12 V</text>
+        <path class="s-line" d="M380 30 V50"/>
+        <!-- LED pointing down -->
+        <polygon class="f-red" points="368,50 392,50 380,72"/>
+        <line class="s-line" x1="368" y1="72" x2="392" y2="72"/>
+        <text class="t t-small" x="400" y="66">LED (load)</text>
+        <path class="s-line" d="M380 72 V86 l-10 6 l20 8 l-20 8 l20 8 l-20 8 l10 6 V150"/>
+        <text class="t t-small" x="400" y="114">560 Ω</text>
+        <!-- NPN -->
+        <circle class="s-line f-panel" cx="374" cy="180" r="28"/>
+        <line class="s-line" x1="364" y1="164" x2="364" y2="196"/>
+        <path class="s-line" d="M364 172 L380 158 V150"/>
+        <path class="s-line" d="M364 188 L380 202" marker-end="url(#p8-arrE)"/>
+        <path class="s-line" d="M380 202 V250"/>
+        <text class="t t-small" x="388" y="156">C</text>
+        <text class="t t-small" x="388" y="214">E</text>
+        <text class="t t-small" x="410" y="186">BC547</text>
+        <!-- base -->
+        <path class="s-line" d="M120 180 H200 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H364"/>
+        <text class="t t-small" x="204" y="160">R<tspan baseline-shift="sub" font-size="9">B</tspan> = 2.2 kΩ</text>
+        <text class="t t-small" x="352" y="176">B</text>
+        <path class="s-line" d="M300 180 V200 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V250"/>
+        <text class="t t-small t-muted" x="234" y="226">10 kΩ</text>
+        <text class="t t-small t-muted" x="210" y="242">pull-down</text>
+        <circle class="f-ink" cx="300" cy="180" r="3.5"/>
+        <!-- control source -->
+        <circle class="f-panel s-line" cx="116" cy="180" r="5"/>
+        <text class="t t-small t-bold" x="40" y="172">Control</text>
+        <text class="t t-small" x="40" y="190">0 or 5 V</text>
+        <!-- ground -->
+        <path class="s-line" d="M60 250 H480"/>
+        <path class="s-line" d="M270 250 V264 M254 264 H286 M260 271 H280 M266 278 H274"/>
+        <text class="t t-small t-muted" x="60" y="244">logic 0 V</text>
+        <text class="t t-small t-muted" x="430" y="244">12 V supply 0 V</text>
+        <text class="t t-small t-red" x="40" y="296">Both supplies' 0 V must join here (common ground).</text>
+        <path class="s-red" d="M420 132 v34" marker-end="url(#p8-arrR)"/>
+        <text class="t t-small t-red" x="430" y="148">I<tspan baseline-shift="sub" font-size="9">C</tspan> ≈ 18 mA</text>
+        <path class="s-red" d="M240 196 h40" marker-end="url(#p8-arrR)"/>
+        <text class="t t-small t-red" x="150" y="210">I<tspan baseline-shift="sub" font-size="9">B</tspan> ≈ 2 mA</text>
+      </svg>
+      <figcaption>Figure 1. NPN low-side switch. 5 V on the control input pushes about 2 mA into the base; the transistor saturates and the LED's 18 mA flows from collector to emitter. The 10 kΩ pull-down holds the base at 0 V if the control wire is disconnected, so the load stays reliably off.</figcaption>
+    </figure>
+
+    <h3>Calculate the base resistor</h3>
+    <p>A bipolar junction transistor (BJT) amplifies current: collector current I<sub>C</sub> ≈ h<sub>FE</sub> × I<sub>B</sub>, where h<sub>FE</sub> (the current gain) is somewhere between about 100 and 800 for a BC547. That spread is the problem. If you design for "exactly enough" base current, a low-gain transistor will not switch fully. So for a switch we ignore the typical gain and push in far more base current than needed. The datasheet rule for a hard, saturated switch is:</p>
+    <div class="formula">I<sub>B</sub> ≈ I<sub>C</sub> / 10     R<sub>B</sub> = (V<sub>control</sub> − V<sub>BE</sub>) / I<sub>B</sub>
+      <small>V<sub>BE</sub> ≈ 0.7 V (it rises toward 0.8–0.9 V at high currents). The "/10" is called a <b>forced beta</b> of 10. It is the condition datasheets use when they quote V<sub>CE(sat)</sub>, the voltage left across a fully-on transistor.</small></div>
+
+    <p><b>Worked example 1: the LED.</b> Load current: (12 − 2) / 560 ≈ 18 mA. I<sub>B</sub> = 18 / 10 = 1.8 mA. R<sub>B</sub> = (5 − 0.7) / 0.0018 = 2.4 kΩ. The nearest standard value <i>below</i> is 2.2 kΩ (giving 1.95 mA). Round down, so you get a little more base current, not less.</p>
+    <p><b>Worked example 2: a 12 V relay coil of 400 Ω.</b> I<sub>C</sub> = 12 / 400 = 30 mA. I<sub>B</sub> = 3 mA. R<sub>B</sub> = 4.3 / 0.003 = 1.43 kΩ → use 1.2 kΩ (3.6 mA). Well within a BC547's 100 mA rating.</p>
+    <p><b>Worked example 3: 30 cm of LED strip at 200 mA.</b> Too much for a BC547 (100 mA maximum). Use a 2N2222: I<sub>B</sub> = 20 mA, R<sub>B</sub> = 4.3 / 0.02 = 215 Ω → 220 Ω. But 20 mA is the most a typical microcontroller pin should supply. This is where a MOSFET (section 3) becomes the better tool.</p>
+
+    <div class="widget" id="p8w-rb">
+      <span class="label">Interactive · BJT base resistor calculator</span>
+      <label>Load current I<sub>C</sub> <span class="out" id="p8b-ico">30 mA</span><input type="range" id="p8b-ic" min="1" max="1000" step="1" value="30"></label>
+      <label>Control voltage <select id="p8b-vc"><option value="3.3">3.3 V (ESP32, Raspberry Pi)</option><option value="5" selected>5 V (Arduino Uno, logic supply)</option><option value="12">12 V</option></select></label>
+      <label>Transistor <select id="p8b-t"><option value="100|45|BC547" selected>BC547 (100 mA, 45 V)</option><option value="600|30|2N2222 / PN2222A">2N2222 / PN2222A (≈600 mA, 30–40 V)</option><option value="1500|80|BD139">BD139 (1.5 A, 80 V)</option></select></label>
+      <label>Forced beta <select id="p8b-fb"><option value="10" selected>10 (hard saturation, recommended)</option><option value="20">20 (lighter drive)</option></select></label>
+      <div class="readings">
+        <div><small>Base current needed</small><span class="out" id="p8b-ib">—</span></div>
+        <div><small>Calculated R<sub>B</sub></small><span class="out" id="p8b-rc">—</span></div>
+        <div><small>Use (E12, rounded down)</small><span class="out" id="p8b-r">—</span></div>
+        <div><small>Transistor heat, about</small><span class="out" id="p8b-p">—</span></div>
+      </div>
+      <p id="p8b-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var E12=[1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+      function below(r){var d=Math.pow(10,Math.floor(Math.log(r)/Math.LN10)),m=r/d,b=E12[0];for(var i=0;i<E12.length;i++){if(E12[i]<=m+1e-9)b=E12[i];}return b*d;}
+      function fR(r){return r>=1000?(+(r/1000).toFixed(2))+' kΩ':Math.round(r)+' Ω';}
+      function fI(a){return a<0.001?(a*1e6).toFixed(0)+' µA':(a*1000).toFixed(a<0.01?2:1)+' mA';}
+      function upd(){
+        var ic=+$('p8b-ic').value/1000,vc=+$('p8b-vc').value,tp=$('p8b-t').value.split('|'),imax=+tp[0]/1000,name=tp[2],fb=+$('p8b-fb').value;
+        $('p8b-ico').textContent=ic>=1?ic.toFixed(2)+' A':Math.round(ic*1000)+' mA';
+        var vbe=ic>0.3?0.9:ic>0.05?0.8:0.7,ib=ic/fb,rc=(vc-vbe)/ib,r=below(rc),ib2=(vc-vbe)/r;
+        var vsat=ic<0.02?0.1:ic<0.15?0.2:ic<0.5?0.4:0.8;
+        $('p8b-ib').textContent=fI(ib);$('p8b-rc').textContent=fR(rc);$('p8b-r').textContent=fR(r)+' → '+fI(ib2);
+        var p=vsat*ic+vbe*ib2;$('p8b-p').textContent=(p*1000).toFixed(0)+' mW';
+        var n=[];
+        if(ic>imax)n.push('Too much current for a '+name+' ('+(imax*1000)+' mA maximum). Choose a bigger transistor or a MOSFET.');
+        else if(ic>0.7*imax)n.push('Close to the '+name+' limit. Leave more margin or pick a bigger part.');
+        if(ib2>0.02&&vc<12)n.push('The control pin must supply '+fI(ib2)+'. Most microcontroller pins should stay under about 20 mA: use a logic-level MOSFET instead.');
+        if(p>0.4)n.push('About '+(p*1000).toFixed(0)+' mW of heat: a small TO-92 package gets hot above roughly 0.5 W. Consider a MOSFET.');
+        if(!n.length)n.push('Good: '+name+' with a '+fR(r)+' base resistor will switch this load hard on. Expect V_CE(sat) of about '+vsat+' V.');
+        $('p8b-note').textContent=n.join(' ');
+      }
+      $('p8b-ic').oninput=upd;['p8b-vc','p8b-t','p8b-fb'].forEach(function(k){$(k).onchange=upd;});upd();
+    })();
+    </script>
+
+    <h3>Build it and measure V<sub>CE(sat)</sub></h3>
+    <ol class="steps">
+      <li><p><b>Pin-out first.</b> A BC547 seen from the flat face, legs down, is usually C–B–E from left to right. A 2N2222 in TO-92 plastic (PN2222A) is often E–B–C, the other way round. Check the datasheet for your exact part; pin-outs vary between makers.</p></li>
+      <li><p><b>Build Figure 1.</b> 12 V supply to the LED and 560 Ω, then to the collector. Emitter to 0 V. Base through 2.2 kΩ to the control wire; 10 kΩ from base to 0 V. Join the logic supply's 0 V to the 12 V supply's 0 V.</p></li>
+      <li><p><b>Control wire to 0 V.</b> LED off. Measure collector to emitter (V<sub>CE</sub>): about 10–12 V. The transistor is open: almost all the supply appears across it.</p></li>
+      <li><p><b>Control wire to 5 V.</b> LED on. Measure V<sub>CE</sub>: expect about 0.05–0.15 V. That is V<sub>CE(sat)</sub>. Measure V<sub>BE</sub>: about 0.7–0.8 V.</p></li>
+      <li><p><b>Starve the base.</b> Replace 2.2 kΩ with 100 kΩ (I<sub>B</sub> ≈ 43 µA), then 1 MΩ (≈ 4 µA). Measure V<sub>CE</sub> each time. The transistor is now in its <b>active</b> (amplifying) region: partly on, with volts across it.</p></li>
+    </ol>
+
+    <h3>Expected readings (BC547, 12 V, LED + 560 Ω load)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Base drive</th><th>I<sub>B</sub></th><th>LED</th><th>V<sub>CE</sub></th><th>What it means</th></tr>
+      <tr><td>Control at 0 V</td><td>0</td><td>Off</td><td>≈ 10–12 V</td><td>Cut-off: switch open</td></tr>
+      <tr><td>2.2 kΩ from 5 V</td><td>≈ 2 mA</td><td>Full brightness</td><td>≈ 0.05–0.15 V</td><td>Saturated: switch closed, tiny loss</td></tr>
+      <tr><td>100 kΩ from 5 V</td><td>≈ 43 µA</td><td>Bright or a bit dim</td><td>0.1 V to a few volts</td><td>Depends on <i>your</i> transistor's gain (×110 to ×800)</td></tr>
+      <tr><td>1 MΩ from 5 V</td><td>≈ 4 µA</td><td>Dim</td><td>≈ 7–11 V</td><td>Active region: the transistor is a variable resistor, and it heats</td></tr>
+      <tr><td>Control wire unplugged, no pull-down</td><td>?</td><td>Usually off, sometimes faint</td><td>varies</td><td>Floating base: why the 10 kΩ pull-down is there</td></tr>
+    </table></div>
+
+    <div class="callout why"><span class="label">Why it works</span><p>An NPN transistor is two p–n junctions back to back with a very thin p-type base in the middle. Forward-biasing the base–emitter junction floods the base with electrons from the emitter. The base is so thin that almost all of them diffuse across it and are swept into the collector by the reverse-biased collector junction. Only a small fraction recombine in the base, and that fraction is the base current. So a small base current "unlocks" a collector current 100 or more times bigger. In saturation, you have supplied more base current than the load can use, both junctions become forward biased, and V<sub>CE</sub> falls to about 0.1–0.2 V.</p></div>
+    <a class="crosslink" href="../theory/t12-bjt-physics.html">Theory T12 · How a bipolar transistor really works</a>
+
+    <h2>3 · Logic-level N-MOSFET low-side switch</h2>
+    <p>A MOSFET (metal–oxide–semiconductor field-effect transistor) is controlled by <b>voltage</b>, not current. The gate is insulated by a thin layer of oxide, so in steady state it draws essentially no current. Put enough voltage between gate and source and a conducting channel forms between drain and source with a very low resistance, R<sub>DS(on)</sub>, often tens of milliohms. That makes MOSFETs ideal for switching amps from a microcontroller pin.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 290" role="img" aria-label="N-MOSFET low-side switch for a 12 V LED strip or motor: gate resistor 220 ohm, pull-down 10k, flyback diode across a motor">
+        <defs><marker id="p8-arrM" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small t-bold" x="372" y="22">+12 V</text>
+        <path class="s-line" d="M390 30 V54 H470 V64 M390 54 H310 V64"/>
+        <!-- load box -->
+        <rect class="f-accent-soft s-accent" x="300" y="64" width="180" height="48" rx="4"/>
+        <text class="t t-small" x="312" y="86">LED strip or DC motor</text>
+        <text class="t t-small t-muted" x="312" y="102">up to ~1–2 A</text>
+        <path class="s-line" d="M390 112 V150"/>
+        <!-- flyback diode for motor -->
+        <path class="s-thin s-dash" d="M470 54 H540 V78 M540 98 V130 H390"/>
+        <circle class="f-ink" cx="390" cy="130" r="3"/>
+        <polygon class="f-grey" points="528,98 552,98 540,78"/>
+        <line class="s-thin" x1="528" y1="78" x2="552" y2="78"/>
+        <text class="t t-small t-muted" x="500" y="150">1N4007 or 1N5819</text>
+        <text class="t t-small t-muted" x="500" y="166">(motor only)</text>
+        <!-- MOSFET vertical: gate plate at x=366 -->
+        <line class="s-line" x1="366" y1="162" x2="366" y2="198"/>
+        <line class="s-line" x1="374" y1="160" x2="374" y2="170"/>
+        <line class="s-line" x1="374" y1="175" x2="374" y2="185"/>
+        <line class="s-line" x1="374" y1="190" x2="374" y2="200"/>
+        <path class="s-line" d="M374 165 H390 V150"/>
+        <path class="s-line" d="M374 195 H390 V250"/>
+        <path class="s-line" d="M390 180 H376" marker-end="url(#p8-arrM)"/>
+        <text class="t t-small" x="398" y="160">D</text>
+        <text class="t t-small" x="398" y="206">S</text>
+        <text class="t t-small" x="398" y="184">logic-level N-MOSFET</text>
+        <text class="t t-small" x="352" y="210">G</text>
+        <!-- gate resistor & pull-down -->
+        <path class="s-line" d="M120 180 H200 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H366"/>
+        <text class="t t-small" x="200" y="160">220 Ω gate resistor</text>
+        <path class="s-line" d="M310 180 V200 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V250"/>
+        <text class="t t-small t-muted" x="240" y="230">10 kΩ</text>
+        <circle class="f-ink" cx="310" cy="180" r="3.5"/>
+        <circle class="f-panel s-line" cx="116" cy="180" r="5"/>
+        <text class="t t-small t-bold" x="30" y="172">Control</text>
+        <text class="t t-small" x="30" y="190">0 or 5 V</text>
+        <path class="s-line" d="M60 250 H480"/>
+        <path class="s-line" d="M270 250 V264 M254 264 H286 M260 271 H280 M266 278 H274"/>
+        <text class="t t-small t-muted" x="420" y="244">common 0 V</text>
+      </svg>
+      <figcaption>Figure 2. Logic-level MOSFET low-side switch. The 220 Ω limits the brief current spike into the gate's capacitance when it switches. The 10 kΩ keeps the gate at 0 V when nothing drives it. A motor (an inductor) needs the dashed diode across it, cathode to +12 V.</figcaption>
+    </figure>
+
+    <h3>What "logic-level" means</h3>
+    <p>Every MOSFET datasheet lists V<sub>GS(th)</sub>, the threshold voltage. Beginners think the MOSFET is "on" above this. It is not. Threshold is where it <i>starts</i> to conduct, typically defined at only 250 µA. What you need is the R<sub>DS(on)</sub> figure quoted at your gate voltage. A <b>logic-level</b> MOSFET has R<sub>DS(on)</sub> specified at V<sub>GS</sub> = 4.5 V (sometimes 2.5 V), so 5 V from an Arduino turns it fully on. A standard MOSFET such as an IRF540N is specified at 10 V; at 5 V it may be only partly on, and at 3.3 V it may barely conduct.</p>
+
+    <div class="formula">P = I² × R<sub>DS(on)</sub> = (1.0 A)² × 0.03 Ω = 0.03 W     V<sub>DS</sub> = I × R<sub>DS(on)</sub> = 30 mV
+      <small>30 mW in a TO-220 package is nothing; it stays at room temperature without a heatsink. A BJT carrying 1 A with 0.5–1 V across it would make 0.5–1 W and need a base current of about 100 mA. That is why MOSFETs took over power switching.</small></div>
+
+    <ol class="steps">
+      <li><p><b>Pin-out.</b> Most TO-220 MOSFETs, seen from the front with legs down: Gate, Drain, Source from left to right. The metal tab is the drain. Check your datasheet.</p></li>
+      <li><p><b>Build Figure 2</b> with the LED strip as the load (strip + to +12 V, strip − to drain).</p></li>
+      <li><p><b>Switch it.</b> Control to 5 V: strip on. Control to 0 V: strip off.</p></li>
+      <li><p><b>Measure V<sub>DS</sub> while on</b>, and the strip current with the meter in series (10 A range, red lead moved to the 10 A socket). Calculate R<sub>DS(on)</sub> = V<sub>DS</sub> / I.</p></li>
+      <li><p><b>Feel the tab after a minute.</b> Cool. Then try 3.3 V as the control (two AA cells ≈ 3 V). A logic-level part usually still works; note any rise in V<sub>DS</sub>.</p></li>
+      <li><p><b>Motor version.</b> Swap the strip for a 12 V fan or motor, with the 1N4007 or 1N5819 across the motor (band to +12 V). Add a 100 nF ceramic across the motor terminals to reduce electrical noise.</p></li>
+    </ol>
+
+    <div class="table-wrap"><table>
+      <tr><th>Condition</th><th>Expected V<sub>DS</sub></th><th>Tab temperature</th><th>Notes</th></tr>
+      <tr><td>Off (gate 0 V)</td><td>≈ 12 V</td><td>Cool</td><td>Strip dark</td></tr>
+      <tr><td>Logic-level part, 5 V gate, 0.5 A</td><td>≈ 10–25 mV</td><td>Cool</td><td>R<sub>DS(on)</sub> in the tens of milliohms</td></tr>
+      <tr><td>Logic-level part, 3 V gate, 0.5 A</td><td>tens to hundreds of mV</td><td>Cool to warm</td><td>Check the datasheet curve for low gate voltages</td></tr>
+      <tr><td>Standard (non-logic) part, 5 V gate, 0.5 A</td><td>0.2 V to several volts</td><td>Warm to hot</td><td>Partly on: the wrong part for 5 V logic</td></tr>
+    </table></div>
+
+    <div class="callout try"><span class="label">Try this: why the pull-down matters</span><p>Remove the 10 kΩ pull-down and unplug the control wire. Touch the gate leg with a finger, then touch 0 V with the other hand, then 12 V. The strip may switch on or off and <i>stay</i> that way. The gate is a tiny capacitor (a few nanofarads) with almost no leakage, so it holds whatever charge you gave it. In a real product, that is a motor starting by itself while the microcontroller boots. Put the pull-down back.</p></div>
+
+    <div class="callout why"><span class="label">Why it works</span><p>The gate, oxide and silicon underneath form a capacitor. A positive gate voltage pulls electrons to the surface of the p-type silicon under the gate until, above threshold, the surface "inverts" into a thin n-type channel joining the n-type drain and source. More gate voltage, more electrons, lower resistance. No steady current flows into the gate, only the charge needed to fill that capacitor when it switches.</p></div>
+    <a class="crosslink" href="../theory/t13-mosfet-physics.html">Theory T13 · How a MOSFET works</a>
+
+    <div class="widget" id="p8w-heat">
+      <span class="label">Interactive · How hot will the switch get?</span>
+      <label>Load current <span class="out" id="p8h-io">1.0 A</span><input type="range" id="p8h-i" min="0.1" max="10" step="0.1" value="1"></label>
+      <label>Switch <select id="p8h-s"><option value="m|0.03">Logic-level MOSFET, RDS(on) 30 mΩ</option><option value="m|0.01">Power MOSFET, RDS(on) 10 mΩ</option><option value="m|0.5">Wrong MOSFET (partly on), ≈ 0.5 Ω</option><option value="b|0.8">BJT at about 1 A, VCE(sat) ≈ 0.8 V</option></select></label>
+      <label>Package <select id="p8h-p"><option value="62">TO-220, no heatsink (≈ 62 °C/W)</option><option value="20">TO-220 on a small clip-on heatsink (≈ 20 °C/W)</option><option value="200">TO-92 or SOT-23 (≈ 200 °C/W)</option></select></label>
+      <div class="readings">
+        <div><small>Power in the switch</small><span class="out" id="p8h-pw">—</span></div>
+        <div><small>Temperature rise</small><span class="out" id="p8h-dt">—</span></div>
+        <div><small>Part temperature at 25 °C room</small><span class="out" id="p8h-t">—</span></div>
+      </div>
+      <p id="p8h-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      function upd(){
+        var I=+$('p8h-i').value,s=$('p8h-s').value.split('|'),th=+$('p8h-p').value;
+        $('p8h-io').textContent=I.toFixed(1)+' A';
+        var P=s[0]==='m'?I*I*(+s[1]):I*(+s[1]),dT=P*th,T=25+dT;
+        $('p8h-pw').textContent=P<1?(P*1000).toFixed(0)+' mW':P.toFixed(2)+' W';
+        $('p8h-dt').textContent='+'+dT.toFixed(0)+' °C';$('p8h-t').textContent=T.toFixed(0)+' °C';
+        var n=T<50?'Fine: barely warm.':T<80?'Warm to hot to touch. Acceptable, but add margin in a hot enclosure.':T<125?'Too hot for comfort or long life. Add a heatsink or choose a lower-loss part.':'Over the safe limit: this part will fail. Rethink the design.';
+        $('p8h-note').textContent=n+' (Rough estimate: thermal resistance values vary by part; check the datasheet.)';
+      }
+      $('p8h-i').oninput=upd;['p8h-s','p8h-p'].forEach(function(k){$(k).onchange=upd;});upd();
+    })();
+    </script>
+
+    <h2>4 · Relays and the flyback diode</h2>
+    <p>A <b>relay</b> is a switch moved by an electromagnet. Current through the coil pulls a metal armature, which moves the contacts. The coil circuit and the contact circuit are electrically separate (isolated), so a 12 V coil can switch a completely different circuit: 24 V AC, a separate 12 V supply, or a dry contact input on another controller. The contacts are labelled <b>COM</b> (common), <b>NO</b> (normally open: joined to COM only when the coil is energised) and <b>NC</b> (normally closed: joined to COM when the coil is off).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 330" role="img" aria-label="Relay driven by an NPN transistor with a flyback diode across the coil, and two collector voltage waveforms with and without the diode">
+        <defs><marker id="p8-arrK" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small t-bold" x="100" y="22">+12 V</text>
+        <path class="s-line" d="M120 30 V50 H60 V70 M120 50 H180 V70"/>
+        <!-- coil -->
+        <rect class="f-panel s-line" x="160" y="70" width="40" height="60"/>
+        <line class="s-line" x1="160" y1="130" x2="200" y2="70"/>
+        <text class="t t-small" x="206" y="96">coil</text>
+        <text class="t t-small t-muted" x="206" y="112">≈ 400 Ω</text>
+        <!-- diode cathode up -->
+        <polygon class="f-ink" points="48,112 72,112 60,92"/>
+        <line class="s-line" x1="48" y1="90" x2="72" y2="90"/>
+        <path class="s-line" d="M60 70 V90 M60 112 V150 H180 V130"/>
+        <text class="t t-small" x="8" y="174">1N4007,</text>
+        <text class="t t-small" x="8" y="190">band to +12 V</text>
+        <path class="s-line" d="M180 150 V180"/>
+        <!-- NPN -->
+        <circle class="s-line f-panel" cx="174" cy="210" r="26"/>
+        <line class="s-line" x1="164" y1="196" x2="164" y2="224"/>
+        <path class="s-line" d="M164 202 L180 190 V180"/>
+        <path class="s-line" d="M164 218 L180 230" marker-end="url(#p8-arrK)"/>
+        <path class="s-line" d="M180 230 V270"/>
+        <path class="s-line" d="M80 210 H100 l5 -8 l8 16 l8 -16 l8 16 l8 -16 l5 8 H164"/>
+        <text class="t t-small" x="96" y="238">1.2 kΩ</text>
+        <text class="t t-small" x="30" y="214">ctrl</text>
+        <path class="s-line" d="M40 270 H260"/>
+        <path class="s-line" d="M150 270 V282 M138 282 H162 M143 288 H157 M148 294 H152"/>
+        <text class="t t-small t-muted" x="210" y="214">BC547</text>
+        <!-- contacts -->
+        <line class="s-thin s-dash" x1="200" y1="100" x2="250" y2="100"/>
+        <circle class="f-panel s-line" cx="260" cy="120" r="4"/>
+        <circle class="f-panel s-line" cx="300" cy="80" r="4"/>
+        <circle class="f-panel s-line" cx="300" cy="120" r="4"/>
+        <line class="s-line" x1="264" y1="118" x2="298" y2="84"/>
+        <text class="t t-small" x="240" y="146">COM</text>
+        <text class="t t-small" x="308" y="84">NC</text>
+        <text class="t t-small" x="308" y="124">NO</text>
+        <text class="t t-small t-muted" x="230" y="64">contacts (isolated)</text>
+        <!-- waveforms -->
+        <text class="t t-small t-bold" x="380" y="30">Collector voltage at switch-off</text>
+        <line class="s-thin" x1="380" y1="140" x2="620" y2="140"/>
+        <path class="s-red" d="M380 138 H460 L462 36 L468 70 L474 90 L480 86 H620"/>
+        <text class="t t-small t-red" x="472" y="54">no diode: spike of tens</text>
+        <text class="t t-small t-red" x="472" y="70">to hundreds of volts</text>
+        <text class="t t-small t-muted" x="384" y="130">on: ≈ 0.1 V</text>
+        <text class="t t-small t-muted" x="560" y="80">12 V</text>
+        <line class="s-thin" x1="380" y1="290" x2="620" y2="290"/>
+        <path class="s-green" d="M380 288 H460 L462 229 H500 L504 234 H620"/>
+        <text class="t t-small t-green" x="470" y="220">with diode: 12.7 V, then 12 V</text>
+        <text class="t t-small t-muted" x="384" y="310">transistor turns off here →</text>
+        <line class="s-thin s-dash" x1="461" y1="160" x2="461" y2="300"/>
+      </svg>
+      <figcaption>Figure 3. Relay driver. While the transistor is on, its collector sits near 0 V. At switch-off, the coil's current has nowhere to go. Without the diode, the collector voltage leaps far above 12 V until something breaks down (often the transistor). With the diode, the coil current circulates through the diode and the collector only rises to 12 V + 0.7 V.</figcaption>
+    </figure>
+
+    <h3>Why the coil kicks back</h3>
+    <p>A coil is an <b>inductor</b>. Its magnetic field stores energy (½LI²), and it resists any sudden change in its current: V = L × ΔI/Δt. When the transistor switches off in a microsecond, the coil "tries" to keep its 30 mA flowing. Put numbers in: a relay coil of, say, 0.5 H, with 30 mA stopping in 1 µs, would need 0.5 × 0.03 / 0.000001 = 15 000 V. In reality the voltage climbs until something conducts: the transistor's collector junction breaks down (a BC547 is rated 45 V), or a tiny arc forms. Each event damages the transistor a little; eventually it fails shorted, and the relay stays on forever.</p>
+    <p>The <b>flyback diode</b> (also called a freewheeling or snubber diode) sits across the coil, reverse-biased in normal operation (band to +12 V). At switch-off, the coil's voltage reverses, the diode conducts, and the coil current circulates through the diode until its energy is spent as heat in the coil's resistance. The collector never goes above about 12.7 V.</p>
+
+    <ol class="steps">
+      <li><p><b>Build Figure 3</b> with the diode fitted. Check the band goes to +12 V. Backwards, it shorts the supply through the transistor as soon as it turns on.</p></li>
+      <li><p><b>Click it.</b> Control to 5 V: relay clicks; measure continuity COM–NO (beeps) and COM–NC (open). Control to 0 V: the opposite.</p></li>
+      <li><p><b>Measure the coil</b> (power off) on the ohms range: about 400 Ω for a 12 V relay, about 70 Ω for a 5 V relay. Coil current = V/R.</p></li>
+      <li><p><b>Use the contacts.</b> Wire a separate LED + 1 kΩ from the 12 V supply through COM and NO. Then move it to NC and see the logic reverse.</p></li>
+      <li><p><b>If you have a scope</b> (P15), look at the collector at switch-off with and without the diode. Without it, use a spare transistor, keep switching to a few clicks only, and expect the spike to be clipped by breakdown somewhere above 45 V. Do not touch the circuit while doing this. Refit the diode afterwards.</p></li>
+    </ol>
+
+    <div class="callout tip"><span class="label">Bench tip: diode side effects</span><p>A plain flyback diode lets the coil current die away slowly, so the relay releases a few milliseconds later than it would otherwise. Usually that does not matter. Where fast release matters, designers put a Zener in series with the diode, which lets the voltage rise to a safe, higher level and dumps the energy faster. For AC coils (24 V AC relays and contactors), a diode cannot be used; use the RC snubber or varistor that the relay maker specifies.</p></div>
+
+    <h3>Relay modules</h3>
+    <p>The common "5 V relay module" boards contain everything in Figure 3: a transistor, base resistor, flyback diode and an indicator LED, sometimes an optocoupler (an LED and phototransistor in one package for isolation). Know their quirks:</p>
+    <ul>
+      <li><b>Active-low inputs.</b> Many modules switch ON when the input is pulled to 0 V, not 5 V. Read the board or test it.</li>
+      <li><b>3.3 V boards.</b> Modules built for 5 V may not switch reliably from a 3.3 V pin. Check before you depend on it.</li>
+      <li><b>JD-VCC jumper.</b> On opto-isolated modules, removing this jumper lets the relay coils run from a separate supply for real isolation. Read the module's notes.</li>
+      <li><b>Contact ratings.</b> The relay may say 10 A; the thin PCB tracks and screw terminals on cheap modules may not carry that. Derate generously and keep to ELV loads.</li>
+    </ul>
+
+    <h2>5 · On the job: relay outputs, dry contacts and door locks</h2>
+    <p>Everything above is exactly what sits behind the terminals you will wire on site.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Access control lock relay: 12 V lock supply to COM, fail-secure strike on NO, fail-safe maglock on NC, each with a diode across it; and a BMS digital output dry contact driving an interposing relay">
+        <text class="t t-bold" x="20" y="24">Door controller lock relay</text>
+        <rect class="f-wash s-line" x="20" y="40" width="130" height="150" rx="6"/>
+        <text class="t t-small" x="30" y="62">Controller</text>
+        <circle class="f-panel s-line" cx="150" cy="90" r="5"/><text class="t t-small" x="110" y="94">NC</text>
+        <circle class="f-panel s-line" cx="150" cy="130" r="5"/><text class="t t-small" x="104" y="134">COM</text>
+        <circle class="f-panel s-line" cx="150" cy="170" r="5"/><text class="t t-small" x="110" y="174">NO</text>
+        <path class="s-line" d="M155 130 H200 V230 H240"/>
+        <rect class="f-accent-soft s-accent" x="240" y="216" width="80" height="30" rx="4"/>
+        <text class="t t-small" x="250" y="236">12 V PSU</text>
+        <text class="t t-small t-muted" x="204" y="262">+ to COM, − to locks</text>
+        <path class="s-line" d="M320 231 H360 V60 H400 M360 200 H400"/>
+        <path class="s-line" d="M155 90 H180 V30 H460 V44"/>
+        <path class="s-line" d="M155 170 H180 V280 H460 V216"/>
+        <rect class="f-panel s-line" x="400" y="44" width="120" height="34" rx="4"/>
+        <text class="t t-small" x="408" y="66">Maglock (fail-safe)</text>
+        <rect class="f-panel s-line" x="400" y="182" width="120" height="34" rx="4"/>
+        <text class="t t-small" x="408" y="204">Strike (fail-secure)</text>
+        <!-- diodes at locks -->
+        <polygon class="f-ink" points="528,70 548,70 538,54"/><line class="s-line" x1="528" y1="52" x2="548" y2="52"/>
+        <path class="s-line" d="M520 48 H538 V52 M538 70 V74 H520"/>
+        <polygon class="f-ink" points="528,190 548,190 538,206"/><line class="s-line" x1="528" y1="208" x2="548" y2="208"/>
+        <path class="s-line" d="M520 186 H538 V190 M538 208 V212 H520"/>
+        <text class="t t-small t-muted" x="556" y="64">diode at</text>
+        <text class="t t-small t-muted" x="556" y="80">the lock</text>
+        <text class="t t-small t-muted" x="400" y="100">locked while powered:</text>
+        <text class="t t-small t-muted" x="400" y="116">wired to NC</text>
+        <text class="t t-small t-muted" x="400" y="238">unlocks when powered:</text>
+        <text class="t t-small t-muted" x="400" y="254">wired to NO</text>
+        <text class="t t-small t-muted" x="20" y="212">(both shown; a real door</text>
+        <text class="t t-small t-muted" x="20" y="228">uses one or the other)</text>
+      </svg>
+      <figcaption>Figure 4. A door controller's lock relay is just the relay from section 4 with its contacts brought out to terminals. The lock power supply goes to COM. A fail-safe maglock (holds when powered, releases on power loss) uses NC; a fail-secure strike (stays locked without power) uses NO. Each lock gets a flyback diode as close to the lock as possible, band to +, unless the lock has one built in.</figcaption>
+    </figure>
+
+    <div class="callout job"><span class="label">On the job: BMS controllers</span><p>A BMS controller's <b>digital outputs</b> (DOs) are usually relay contacts or solid-state switches. A <b>dry contact</b> (also "volt-free" or "potential-free") is a relay contact with no voltage of its own: just a switch between two terminals. The device on the other side provides the voltage, for example a chiller's "remote start" input. A <b>wet</b> output supplies voltage itself. When a controller output is too small or the wrong voltage for the job, it drives an <b>interposing relay</b>: a separate relay in the panel whose coil is driven by the DO and whose contacts switch the bigger or different circuit, such as a pump starter's control circuit. Check the contact rating printed on the controller (voltage, current, AC or DC) before you connect anything. Where an interposing relay's contacts are in a mains control circuit, that side is electrician's work; many BMS roles prefer or require an electrical licence for that reason (see C11).</p></div>
+
+    <div class="callout job"><span class="label">On the job: access control</span><p>Door strikes and maglocks are coils. Switching them off creates the same inductive kick as your relay, and the kick appears on long cables right next to the reader and data wiring. That causes reader resets, damaged relay contacts and controller faults. Manufacturers typically require a diode across each DC lock, at the lock end, band to +. Some locks have suppression built in and some are polarity sensitive: read the lock's instructions. Fail-safe versus fail-secure choices, fire-alarm release of maglocks, and free egress (being able to leave without a key) are governed by the National Construction Code and the relevant Australian standards plus the site's fire design. Your employer and the fire engineer set what is required on a given door; confirm the current rules with your state's building regulator.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Security installation work (including access control and alarms) needs a security licence in every state and territory, issued by the state regulator (for example the police licensing body in several states). The classes and names differ by state. Cabling that connects to the telecommunications network needs ACMA cabling registration. Check C11 and confirm with your state regulator before taking paid work.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>Load never turns on</td><td>No common ground; transistor pins wrong; emitter/source not at 0 V</td><td>Join the 0 V rails. Check the pin-out in the datasheet.</td></tr>
+      <tr><td>Load always on</td><td>Transistor failed short (often after relay kick without a diode); or C and E swapped</td><td>Diode-test the transistor out of circuit. Fit the flyback diode.</td></tr>
+      <tr><td>Load dim, transistor hot</td><td>BJT under-driven (R<sub>B</sub> too big) or MOSFET not logic-level</td><td>Recalculate with I<sub>B</sub> = I<sub>C</sub>/10; check R<sub>DS(on)</sub> at your gate voltage.</td></tr>
+      <tr><td>Load turns on by itself at power-up</td><td>Floating base or gate</td><td>Add 10 kΩ pull-down from base/gate to 0 V.</td></tr>
+      <tr><td>Relay chatters (buzzes)</td><td>Supply sagging when the coil pulls in; weak drive; 5 V module on 3.3 V logic</td><td>Check the supply under load; drive harder; use the right module.</td></tr>
+      <tr><td>Supply shorts as soon as the relay turns on</td><td>Flyback diode fitted backwards</td><td>Band to +V.</td></tr>
+      <tr><td>Microcontroller resets when the motor or relay switches</td><td>No flyback diode; no decoupling; shared thin ground wire</td><td>Diode across the load, 100 nF + bulk capacitor, separate heavy ground return.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A 12 V relay coil measures 360 Ω. You drive it from a 5 V pin through a BC547. Choose the base resistor.</summary><div class="answer"><p>I<sub>C</sub> = 12 / 360 ≈ 33 mA. For hard saturation, I<sub>B</sub> = I<sub>C</sub> / 10 ≈ 3.3 mA. R<sub>B</sub> = (5 − 0.7) / 0.0033 ≈ 1.3 kΩ. Round down to 1.2 kΩ (≈ 3.6 mA). Fit a 1N4007 across the coil, band to +12 V.</p></div></details>
+    <details class="quiz"><summary>Why do we design for I<sub>B</sub> = I<sub>C</sub>/10 when the BC547 has a gain of 110 to 800?</summary><div class="answer"><p>Because the gain varies hugely from part to part and with temperature and current. Designing for exactly I<sub>C</sub>/h<sub>FE</sub> would leave a low-gain part partly on, with volts across it and heat in it. Overdriving the base guarantees saturation (V<sub>CE</sub> ≈ 0.1–0.2 V) with any part from the batch.</p></div></details>
+    <details class="quiz"><summary>A MOSFET's datasheet says V<sub>GS(th)</sub> = 2 V. Is it fully on with a 3.3 V gate?</summary><div class="answer"><p>Not necessarily. Threshold is where the MOSFET just starts to conduct (often defined at 250 µA). Look for R<sub>DS(on)</sub> specified at V<sub>GS</sub> = 2.5 V or 4.5 V, or read the output characteristic graph at 3.3 V. Only then do you know whether it is fully on at your current.</p></div></details>
+    <details class="quiz"><summary>A MOSFET with R<sub>DS(on)</sub> = 25 mΩ switches 4 A. How much heat, and does it need a heatsink in TO-220?</summary><div class="answer"><p>P = I² × R = 16 × 0.025 = 0.4 W. At about 62 °C/W for a bare TO-220, the rise is about 25 °C, so roughly 50 °C at room temperature: fine without a heatsink, though warm. Note R<sub>DS(on)</sub> rises when the part is hot, so leave margin.</p></div></details>
+    <details class="quiz"><summary>What does the flyback diode do, and which way round does it go?</summary><div class="answer"><p>It gives the coil's current a path when the transistor turns off, so the coil's stored energy circulates and dies away harmlessly instead of forcing the collector voltage to tens or hundreds of volts. It goes across the coil, reverse-biased in normal operation: cathode (band) to the positive supply, anode to the transistor side.</p></div></details>
+    <details class="quiz"><summary>What is a "dry contact" output on a BMS controller?</summary><div class="answer"><p>A relay contact that provides no voltage itself: it just opens or closes the connection between two terminals. The equipment on the other side supplies the voltage and current. You must still respect the contact's voltage and current rating.</p></div></details>
+    <details class="quiz"><summary>A fail-safe maglock must release when power fails. Which relay contact do you wire it to, and why?</summary><div class="answer"><p>NC (normally closed) with the lock supply on COM. When the controller is idle, the relay is off, NC is closed, and the maglock is powered and holding. To let someone through, the controller energises the relay, NC opens, and the lock releases. If the controller or supply fails, the lock is unpowered and releases: that is "fail-safe". Fire release and egress requirements for such doors come from the NCC, standards and the site's fire design.</p></div></details>
+    <details class="quiz"><summary>Your relay module turns on when you set the pin LOW and off when you set it HIGH. Is it broken?</summary><div class="answer"><p>No. Many relay modules are "active low": the input drives an optocoupler LED or a PNP stage from the module's own 5 V, so pulling the input to 0 V turns the relay on. Write your code (or wiring logic) to match, and make sure the relay stays off during start-up.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I always join the logic 0 V to the load supply's 0 V in a low-side switch.</span></li>
+      <li><input type="checkbox"><span>I can calculate a BJT base resistor using I<sub>B</sub> ≈ I<sub>C</sub>/10 and round it the safe way.</span></li>
+      <li><input type="checkbox"><span>I can measure V<sub>CE(sat)</sub> and tell saturation from the active region by the readings.</span></li>
+      <li><input type="checkbox"><span>I can choose a logic-level MOSFET by reading R<sub>DS(on)</sub> at my gate voltage, not V<sub>GS(th)</sub>.</span></li>
+      <li><input type="checkbox"><span>I fit a gate resistor and a pull-down, and I can explain both.</span></li>
+      <li><input type="checkbox"><span>I can estimate switch heat with P = I² × R<sub>DS(on)</sub> or P = V<sub>CE</sub> × I.</span></li>
+      <li><input type="checkbox"><span>I always fit a flyback diode across DC relay coils, motors and locks, band to +.</span></li>
+      <li><input type="checkbox"><span>I can explain COM, NO, NC, dry contacts and interposing relays.</span></li>
+      <li><input type="checkbox"><span>I know which contact a fail-safe maglock and a fail-secure strike use.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

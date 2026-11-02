@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T16 · Signals: sampling, decibels, noise and 4–20 mA loops</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget controls. Colours come only from the shared theme variables, so dark mode works. */
+.wbtn{font:600 14px var(--sans);border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);padding:7px 14px;border-radius:6px;cursor:pointer;margin:4px 6px 4px 0}
+.widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:220px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 14px}
+.wsmall{font-size:14px;color:var(--muted)}
+.wstatus{border-radius:8px;padding:10px 14px;margin:12px 0 4px;font-size:15px;border:1px solid var(--line);background:var(--wash)}
+.wstatus.ok{background:var(--career-soft);border-color:var(--career)}
+.wstatus.amber{background:var(--tip-soft);border-color:var(--tip)}
+.wstatus.bad{background:var(--warn-soft);border-color:var(--warn)}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 4 · Digital, computers and signals</div>
+    <span class="eyebrow">Theory · T16</span>
+    <h1>Signals: sampling, decibels, noise and 4–20 mA loops</h1>
+    <p class="lede">How a smooth real-world signal becomes a stream of numbers without lying to you, how to read any dB figure in your head, where noise comes from and how cables beat it, and why every plant room in the world sends its measurements as a current between 4 and 20 milliamps.</p>
+    <div class="meta"><span><b>Reading</b> ~70 min</span><span><b>Level</b> Beginner → intermediate</span><span><b>Builds on</b> T04, T15</span><span><b>Used in</b> P12, C01, C10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Analogue and digital signals</h2>
+    <p>A <b>signal</b> is a quantity that changes in time and carries information. The voltage from a temperature sensor, the current in a pressure transmitter's cable and the light pulses in an optical fibre are all signals.</p>
+    <ul>
+      <li>An <b>analogue</b> signal is continuous in time and in value. Between 1.20 V and 1.21 V there are infinitely many possible values, and the signal has a value at every instant.</li>
+      <li>A <b>digital</b> signal is a list of numbers: values taken only at certain instants, and each one rounded to one of a fixed set of levels.</li>
+    </ul>
+    <p>Turning analogue into digital therefore needs two separate steps, and each has its own way to go wrong:</p>
+    <ol>
+      <li><b>Sampling</b> (cutting time into slices): measure the signal at regular instants, say 1000 times per second. Risk: <i>aliasing</i>, where a fast signal pretends to be a slow one.</li>
+      <li><b>Quantisation</b> (cutting value into steps): round each sample to the nearest level the ADC can represent. Risk: <i>quantisation error</i>, a small rounding error on every sample.</li>
+    </ol>
+    <p>Chapter <a href="t15-digital-logic-microcontrollers.html">T15</a> showed how a successive-approximation ADC does both in about 100 µs on an Arduino. This chapter is about choosing <i>how often</i> and <i>how finely</i> to do it, and about protecting the analogue signal on its way to the ADC.</p>
+
+    <h2>Sampling and the Nyquist idea</h2>
+    <p>Think of a film camera. It takes 24 still pictures every second. For a person walking, that is plenty. But in old Westerns, wagon wheels sometimes seem to turn slowly backwards. The spokes move almost one full spoke-spacing between frames, so each new picture looks like the spokes moved a little <i>backwards</i>. The camera has created a motion that is not really there. This is <b>aliasing</b>: a fast signal, sampled too slowly, appears as a slower false signal, an <b>alias</b>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="A fast sine wave sampled too slowly; the samples trace out a slow false sine wave">
+        <line class="s-thin" x1="50" y1="110" x2="610" y2="110"/>
+        <path class="s-thin" style="stroke-width:1.5" d="M50 110 52.6 91.9 55.2 75 57.8 60.5 60.4 49.4 63 42.4 65.6 40 68.1 42.4 70.7 49.4 73.3 60.5 75.9 75 78.5 91.9 81.1 110 83.7 128.1 86.3 145 88.9 159.5 91.5 170.6 94.1 177.6 96.7 180 99.3 177.6 101.9 170.6 104.4 159.5 107 145 109.6 128.1 112.2 110 114.8 91.9 117.4 75 120 60.5 122.6 49.4 125.2 42.4 127.8 40 130.4 42.4 133 49.4 135.6 60.5 138.1 75 140.7 91.9 143.3 110 145.9 128.1 148.5 145 151.1 159.5 153.7 170.6 156.3 177.6 158.9 180 161.5 177.6 164.1 170.6 166.7 159.5 169.3 145 171.9 128.1 174.4 110 177 91.9 179.6 75 182.2 60.5 184.8 49.4 187.4 42.4 190 40 192.6 42.4 195.2 49.4 197.8 60.5 200.4 75 203 91.9 205.6 110 208.1 128.1 210.7 145 213.3 159.5 215.9 170.6 218.5 177.6 221.1 180 223.7 177.6 226.3 170.6 228.9 159.5 231.5 145 234.1 128.1 236.7 110 239.3 91.9 241.9 75 244.4 60.5 247 49.4 249.6 42.4 252.2 40 254.8 42.4 257.4 49.4 260 60.5 262.6 75 265.2 91.9 267.8 110 270.4 128.1 273 145 275.6 159.5 278.1 170.6 280.7 177.6 283.3 180 285.9 177.6 288.5 170.6 291.1 159.5 293.7 145 296.3 128.1 298.9 110 301.5 91.9 304.1 75 306.7 60.5 309.3 49.4 311.9 42.4 314.4 40 317 42.4 319.6 49.4 322.2 60.5 324.8 75 327.4 91.9 330 110 332.6 128.1 335.2 145 337.8 159.5 340.4 170.6 343 177.6 345.6 180 348.1 177.6 350.7 170.6 353.3 159.5 355.9 145 358.5 128.1 361.1 110 363.7 91.9 366.3 75 368.9 60.5 371.5 49.4 374.1 42.4 376.7 40 379.3 42.4 381.9 49.4 384.4 60.5 387 75 389.6 91.9 392.2 110 394.8 128.1 397.4 145 400 159.5 402.6 170.6 405.2 177.6 407.8 180 410.4 177.6 413 170.6 415.6 159.5 418.1 145 420.7 128.1 423.3 110 425.9 91.9 428.5 75 431.1 60.5 433.7 49.4 436.3 42.4 438.9 40 441.5 42.4 444.1 49.4 446.7 60.5 449.3 75 451.9 91.9 454.4 110 457 128.1 459.6 145 462.2 159.5 464.8 170.6 467.4 177.6 470 180 472.6 177.6 475.2 170.6 477.8 159.5 480.4 145 483 128.1 485.6 110 488.1 91.9 490.7 75 493.3 60.5 495.9 49.4 498.5 42.4 501.1 40 503.7 42.4 506.3 49.4 508.9 60.5 511.5 75 514.1 91.9 516.7 110 519.3 128.1 521.9 145 524.4 159.5 527 170.6 529.6 177.6 532.2 180 534.8 177.6 537.4 170.6 540 159.5 542.6 145 545.2 128.1 547.8 110 550.4 91.9 553 75 555.6 60.5 558.1 49.4 560.7 42.4 563.3 40 565.9 42.4 568.5 49.4 571.1 60.5 573.7 75 576.3 91.9 578.9 110 581.5 128.1 584.1 145 586.7 159.5 589.3 170.6 591.9 177.6 594.4 180 597 177.6 599.6 170.6 602.2 159.5 604.8 145 607.4 128.1 610 110"/>
+        <path class="s-red s-dash" d="M50 110 61.7 119.1 73.3 128.1 85 136.8 96.7 145 108.3 152.6 120 159.5 131.7 165.5 143.3 170.6 155 174.7 166.7 177.6 178.3 179.4 190 180 201.7 179.4 213.3 177.6 225 174.7 236.7 170.6 248.3 165.5 260 159.5 271.7 152.6 283.3 145 295 136.8 306.7 128.1 318.3 119.1 330 110 341.7 100.9 353.3 91.9 365 83.2 376.7 75 388.3 67.4 400 60.5 411.7 54.5 423.3 49.4 435 45.3 446.7 42.4 458.3 40.6 470 40 481.7 40.6 493.3 42.4 505 45.3 516.7 49.4 528.3 54.5 540 60.5 551.7 67.4 563.3 75 575 83.2 586.7 91.9 598.3 100.9 610 110"/>
+        <circle class="f-red" cx="50" cy="110" r="5"/><circle class="f-red" cx="106" cy="151.1" r="5"/><circle class="f-red" cx="162" cy="176.6" r="5"/><circle class="f-red" cx="218" cy="176.6" r="5"/><circle class="f-red" cx="274" cy="151.1" r="5"/><circle class="f-red" cx="330" cy="110" r="5"/><circle class="f-red" cx="386" cy="68.9" r="5"/><circle class="f-red" cx="442" cy="43.4" r="5"/><circle class="f-red" cx="498" cy="43.4" r="5"/><circle class="f-red" cx="554" cy="68.9" r="5"/><circle class="f-red" cx="610" cy="110" r="5"/>
+        <text class="t t-small t-muted" x="50" y="208">true signal: 9 cycles in this window (thin line)</text>
+        <text class="t t-small t-red" x="50" y="224">10 samples (dots) trace a false 1-cycle wave (dashed): the alias</text>
+      </svg>
+      <figcaption>Figure 1. A 900 Hz sine sampled at 1000 samples per second (only about 1.1 samples per cycle). Each sample lands a little further back on the wave than the one before, so the dots draw a 100 Hz wave, upside down. Nothing in the numbers tells you it was really 900 Hz. Once aliasing has happened, it cannot be undone.</figcaption>
+    </figure>
+
+    <h3>The rule</h3>
+    <p>To capture a sine wave of frequency f without aliasing, you must take <b>more than two samples per cycle</b>. The sampling rate f<sub>s</sub> must be greater than 2f. Half the sampling rate, f<sub>s</sub>/2, is called the <b>Nyquist frequency</b>: the highest frequency a given sampling rate can represent honestly.</p>
+    <div class="formula">f<sub>s</sub> &gt; 2 f<sub>max</sub> &nbsp;&nbsp;&nbsp; f<sub>alias</sub> = | f − k·f<sub>s</sub> | (k = the whole number that makes this smallest)
+      <small>Worked: f = 900 Hz, f<sub>s</sub> = 1000 Hz, k = 1 → alias = |900 − 1000| = 100 Hz. Another: 50 Hz mains hum sampled at 60 samples per second → |50 − 60| = 10 Hz, a slow wobble that looks like a real change in your reading. Any frequency above f<sub>s</sub>/2 folds back below it.</small></div>
+    <p>Examples you know: audio CDs sample at 44.1 kHz because human hearing ends near 20 kHz (2 × 20 = 40 kHz, plus some room). Telephone speech is sampled at 8 kHz because the phone network only passes up to about 3.4 kHz.</p>
+    <p>Two practical rules follow:</p>
+    <ul>
+      <li><b>In practice, sample 5–10 times faster</b> than the highest frequency you care about. Exactly 2× is not enough: if the samples happen to land on the zero crossings, you see a flat line.</li>
+      <li><b>Remove what you cannot sample before the ADC.</b> Noise and interference above f<sub>s</sub>/2 will alias down into your band. An <b>anti-aliasing filter</b>, even a simple RC low-pass filter in front of the ADC input (T05), removes it first. Industrial analogue input cards include such filters for exactly this reason.</li>
+    </ul>
+
+    <div class="widget" id="t16-samp">
+      <span class="label">Interactive · Sample a sine and watch it alias</span>
+      <p class="wsmall">The window shows 0.5 s. Thin line: the real signal. Dots: the samples. Dashed: the wave the samples suggest. Try signal 9 Hz with 10 samples/s, then 49 Hz with 50 samples/s.</p>
+      <label>Signal frequency <span class="out" id="t16s-fo">5 Hz</span><input type="range" id="t16s-f" min="0.5" max="40" step="0.5" value="5"></label>
+      <label>Sampling rate <span class="out" id="t16s-so">50 samples/s</span><input type="range" id="t16s-s" min="2" max="120" step="1" value="50"></label>
+      <svg id="t16s-svg" viewBox="0 0 600 200" role="img" aria-label="Sampled sine wave"></svg>
+      <div class="readings">
+        <div><small>Nyquist frequency (f<sub>s</sub>/2)</small><span class="out" id="t16s-ny">25 Hz</span></div>
+        <div><small>Samples per cycle</small><span class="out" id="t16s-spc">10</span></div>
+        <div><small>Frequency the samples show</small><span class="out" id="t16s-ap">5 Hz</span></div>
+      </div>
+      <div class="wstatus ok" id="t16s-st">OK</div>
+    </div>
+    <script>
+    (function(){
+      var fS=document.getElementById('t16s-f'),sS=document.getElementById('t16s-s'),svg=document.getElementById('t16s-svg'),T=0.5;
+      function X(t){return 40+t/T*540;}function Y(v){return 95-70*v;}
+      function draw(){
+        var f=+fS.value,fs=+sS.value,k=Math.round(f/fs),fa=Math.abs(f-k*fs),sign=(f-k*fs)>=0?1:-1,h='',i,t,p;
+        document.getElementById('t16s-fo').textContent=f+' Hz';
+        document.getElementById('t16s-so').textContent=fs+' samples/s';
+        h+='<line class="s-thin" x1="40" y1="95" x2="580" y2="95"/>';
+        p='M';for(i=0;i<=900;i++){t=i/900*T;p+=(i?' ':'')+X(t).toFixed(1)+' '+Y(Math.sin(2*Math.PI*f*t)).toFixed(1);}
+        h+='<path class="s-thin" style="stroke-width:1.5" d="'+p+'"/>';
+        var alias=fa<f-1e-9;
+        p='M';for(i=0;i<=600;i++){t=i/600*T;p+=(i?' ':'')+X(t).toFixed(1)+' '+Y(sign*Math.sin(2*Math.PI*fa*t)).toFixed(1);}
+        h+='<path class="'+(alias?'s-red':'s-green')+' s-dash" d="'+p+'"/>';
+        for(i=0;i/fs<=T+1e-9;i++){t=i/fs;var v=Math.sin(2*Math.PI*f*t);h+='<line class="s-thin" x1="'+X(t).toFixed(1)+'" y1="95" x2="'+X(t).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'"/><circle class="f-accent" cx="'+X(t).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="4"/>';}
+        h+='<text class="t t-small t-muted" x="40" y="190">0 s</text><text class="t t-small t-muted" x="580" y="190" text-anchor="end">0.5 s</text>';
+        svg.innerHTML=h;
+        document.getElementById('t16s-ny').textContent=(fs/2)+' Hz';
+        document.getElementById('t16s-spc').textContent=(fs/f).toFixed(2);
+        document.getElementById('t16s-ap').textContent=(Math.round(fa*100)/100)+' Hz';
+        var st=document.getElementById('t16s-st');
+        if(alias){st.className='wstatus bad';st.textContent='Aliasing: '+f+' Hz is above the Nyquist frequency ('+(fs/2)+' Hz). The samples look exactly like a '+(Math.round(fa*100)/100)+' Hz wave. No software can tell the difference afterwards.';}
+        else if(fs/f<2.0001){st.className='wstatus amber';st.textContent='Exactly 2 samples per cycle: on the edge. Depending on timing, the samples can land on the zero crossings and show nothing at all.';}
+        else if(fs/f<5){st.className='wstatus amber';st.textContent='Technically above Nyquist, but with under 5 samples per cycle the dots give a rough shape. Real systems sample faster.';}
+        else{st.className='wstatus ok';st.textContent='Good: '+(fs/f).toFixed(1)+' samples per cycle. The samples follow the real signal.';}
+      }
+      fS.oninput=draw;sS.oninput=draw;draw();
+    })();
+    </script>
+    <div class="callout job"><span class="label">On the job</span><p>Aliasing shows up in the field more often than people realise. A BMS that logs a value every 15 minutes cannot see a fan that cycles on and off every 10 minutes; the trend log may show a slow, false wave or a flat line. A cheap scope set to a slow timebase can show a 50 Hz signal as a strange slow wobble. When a trend looks odd, ask: "Is my sampling fast enough for what I am looking at?"</p></div>
+
+    <h2>Quantisation and resolution</h2>
+    <p>After sampling, each value is rounded to one of 2ⁿ levels, where n is the number of bits of the ADC. The voltage difference between neighbouring levels is the <b>step size</b>, also called 1 LSB (one least-significant bit).</p>
+    <div class="formula">Step (1 LSB) = V<sub>ref</sub> / 2ⁿ
+      <small>V<sub>ref</sub> is the ADC's full-scale reference voltage. (Some datasheets divide by 2ⁿ − 1 instead; the difference is tiny for 10 bits and above.)</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="A smooth sine wave and its 3-bit quantised staircase version">
+        <g class="s-thin s-dash">
+          <line x1="70" y1="210" x2="610" y2="210"/><line x1="70" y1="187.5" x2="610" y2="187.5"/><line x1="70" y1="165" x2="610" y2="165"/><line x1="70" y1="142.5" x2="610" y2="142.5"/><line x1="70" y1="120" x2="610" y2="120"/><line x1="70" y1="97.5" x2="610" y2="97.5"/><line x1="70" y1="75" x2="610" y2="75"/><line x1="70" y1="52.5" x2="610" y2="52.5"/><line x1="70" y1="30" x2="610" y2="30"/>
+        </g>
+        <g class="t t-small t-muted" text-anchor="end" style="font-family:var(--mono)">
+          <text x="62" y="206">000</text><text x="62" y="183">001</text><text x="62" y="161">010</text><text x="62" y="138">011</text><text x="62" y="116">100</text><text x="62" y="93">101</text><text x="62" y="71">110</text><text x="62" y="48">111</text>
+        </g>
+        <path class="s-blue" d="M70 120 77.5 112.9 85 105.9 92.5 99 100 92.3 107.5 85.8 115 79.5 122.5 73.5 130 67.9 137.5 62.7 145 58 152.5 53.6 160 49.9 167.5 46.6 175 43.9 182.5 41.8 190 40.2 197.5 39.3 205 39 212.5 39.3 220 40.2 227.5 41.8 235 43.9 242.5 46.6 250 49.9 257.5 53.6 265 58 272.5 62.7 280 67.9 287.5 73.5 295 79.5 302.5 85.8 310 92.3 317.5 99 325 105.9 332.5 112.9 340 120 347.5 127.1 355 134.1 362.5 141 370 147.7 377.5 154.2 385 160.5 392.5 166.5 400 172.1 407.5 177.3 415 182 422.5 186.4 430 190.1 437.5 193.4 445 196.1 452.5 198.2 460 199.8 467.5 200.7 475 201 482.5 200.7 490 199.8 497.5 198.2 505 196.1 512.5 193.4 520 190.1 527.5 186.4 535 182 542.5 177.3 550 172.1 557.5 166.5 565 160.5 572.5 154.2 580 147.7 587.5 141 595 134.1 602.5 127.1 610 120"/>
+        <path class="s-accent" d="M70 120 H92.5 V120 H115 V97.5 H137.5 V75 H160 V52.5 H182.5 H205 H227.5 H250 V52.5 H272.5 V75 H295 V97.5 H317.5 V120 H340 H362.5 V142.5 H385 V165 H407.5 V187.5 H430 V210 H452.5 H475 H497.5 H520 V210 H542.5 V187.5 H565 V165 H587.5 V142.5 H610"/>
+        <text class="t t-small t-blue" x="420" y="60">real signal</text>
+        <text class="t t-small t-accent" x="420" y="78">3-bit ADC output (8 levels)</text>
+      </svg>
+      <figcaption>Figure 2. A 3-bit ADC has only 2³ = 8 levels (000 to 111), so the smooth signal becomes a coarse staircase. Each step is V<sub>ref</sub>/8. The gap between the blue line and the staircase is the quantisation error, never more than one step. A 10-bit ADC has 1024 levels and a 12-bit ADC 4096, so the staircase becomes far finer, but it is always a staircase.</figcaption>
+    </figure>
+
+    <h3>Worked numbers: 10-bit and 12-bit</h3>
+    <div class="table-wrap"><table>
+      <tr><th>ADC</th><th>Levels</th><th>V<sub>ref</sub></th><th>Step (1 LSB)</th><th>Where you meet it</th></tr>
+      <tr><td>10-bit</td><td>1024</td><td>5 V</td><td>5 / 1024 = 4.88 mV</td><td>Arduino Uno <code>analogRead</code></td></tr>
+      <tr><td>10-bit</td><td>1024</td><td>1.1 V (internal)</td><td>1.1 / 1024 = 1.07 mV</td><td>Uno with <code>analogReference(INTERNAL)</code></td></tr>
+      <tr><td>12-bit</td><td>4096</td><td>3.3 V</td><td>3.3 / 4096 = 0.81 mV</td><td>ESP32, many ARM microcontrollers</td></tr>
+      <tr><td>12-bit</td><td>4096</td><td>5 V</td><td>5 / 4096 = 1.22 mV</td><td>External ADC chips, small PLC input cards</td></tr>
+      <tr><td>16-bit</td><td>65,536</td><td>5 V</td><td>76 µV</td><td>Precision ADC modules, industrial input cards</td></tr>
+    </table></div>
+    <p><b>Example: an LM35-type temperature sensor</b> gives 10 mV per °C. On a Uno at 5 V reference, one step is 4.88 mV, so the reading moves in jumps of 4.88 / 10 = 0.49 °C. Switch to the 1.1 V internal reference and one step is 1.07 mV, or 0.11 °C per step, about 4.5 times finer (but the input range shrinks to 0–1.1 V, which is 0–110 °C for this sensor). A 12-bit ADC at 3.3 V gives 0.08 °C per step.</p>
+    <p><b>Example: a 4–20 mA signal into an Arduino</b> through a 250 Ω resistor gives 1–5 V (explained below). 1 V is code 1/5 × 1024 ≈ 205, 5 V is code 1023. So the useful range is only about 818 steps, not 1024, because the bottom 20 % of the ADC range is spent on the "live zero". For a 0–10 bar transmitter that is 10 / 818 ≈ 0.012 bar per step, still plenty.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A 12-bit ADC is more accurate than a 10-bit one." <b>Right:</b> bits give <b>resolution</b>, the size of the smallest step. <b>Accuracy</b> is how close the reading is to the truth, and it depends on the reference voltage, the sensor, offsets, gain errors and noise. A 12-bit ADC on a noisy, drifting 3.3 V rail can be less accurate than a 10-bit ADC with a good reference. If the bottom 3 bits of a reading jump around randomly, you do not really have 12 bits; you have 9 bits and some noise.</p></div>
+
+    <h2>Decibels: the language of ratios</h2>
+    <p>Electronics deals with huge ranges. A Wi-Fi signal arriving at your phone may be ten million times weaker than one measured near the access point. Writing such ratios as plain numbers is clumsy, so engineers use a logarithmic scale: the <b>decibel</b> (dB). A decibel always describes a <b>ratio</b> between two values, never an absolute amount on its own (unless a reference is named, like dBm below).</p>
+    <p>Logarithms have one magic property: they turn multiplication into addition. If an amplifier multiplies power by 100 and a cable then divides it by 4, the total is 100/4 = 25 times. In decibels: +20 dB − 6 dB = +14 dB. Engineers add and subtract dB in their heads all day for exactly this reason.</p>
+
+    <h3>Power ratios: 10 log</h3>
+    <div class="formula">G<sub>dB</sub> = 10 · log₁₀(P₂ / P₁)
+      <small>log₁₀(2) = 0.301, so doubling power is 10 × 0.301 = +3.01 dB, written "+3 dB". Halving power is −3 dB. Ten times the power is +10 dB; a hundred times is +20 dB; a thousand times is +30 dB.</small></div>
+
+    <h3>Voltage ratios: 20 log</h3>
+    <p>Power in a resistor is P = V²/R. If the voltage doubles, the power goes up four times. So for a voltage (or current) ratio, the square turns into a factor of 2 in front of the logarithm:</p>
+    <div class="formula">G<sub>dB</sub> = 10 · log₁₀(V₂²/V₁²) = 20 · log₁₀(V₂ / V₁)
+      <small>Doubling voltage is 20 × 0.301 = +6 dB (four times the power, which is also +6 dB: the two formulas agree). Ten times the voltage is +20 dB (a hundred times the power). This works when both voltages are across the same resistance, which is the normal case.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>dB</th><th>Power ratio</th><th>Voltage ratio</th><th>Where you meet it</th></tr>
+      <tr><td>+3 dB</td><td>× 2</td><td>× 1.41</td><td>Two equal amplifiers combined</td></tr>
+      <tr><td>+6 dB</td><td>× 4</td><td>× 2</td><td>Doubling a voltage</td></tr>
+      <tr><td>+10 dB</td><td>× 10</td><td>× 3.16</td><td></td></tr>
+      <tr><td>+20 dB</td><td>× 100</td><td>× 10</td><td>An amplifier with a voltage gain of 10</td></tr>
+      <tr><td>+40 dB</td><td>× 10,000</td><td>× 100</td><td>An op-amp stage with gain 100</td></tr>
+      <tr><td>−3 dB</td><td>× 0.5 (half)</td><td>× 0.707</td><td>The cut-off frequency of an RC filter (T05)</td></tr>
+      <tr><td>−10 dB</td><td>× 0.1</td><td>× 0.316</td><td></td></tr>
+      <tr><td>−20 dB</td><td>× 0.01</td><td>× 0.1</td><td></td></tr>
+    </table></div>
+    <p><b>Mental trick:</b> break any dB figure into tens and threes. 23 dB = 20 + 3 → power × 100 × 2 = × 200. 16 dB = 10 + 3 + 3 → × 10 × 2 × 2 = × 40. −7 dB = −10 + 3 → × 0.1 × 2 = × 0.2 in power.</p>
+
+    <h3>dBm: decibels with a reference</h3>
+    <p>Add a letter and the dB figure becomes an absolute quantity. <b>dBm</b> means "dB relative to 1 milliwatt".</p>
+    <div class="formula">P<sub>dBm</sub> = 10 · log₁₀(P / 1 mW) &nbsp;&nbsp; P<sub>mW</sub> = 10^(P<sub>dBm</sub> / 10)
+      <small>0 dBm = 1 mW. +10 dBm = 10 mW. +20 dBm = 100 mW (a typical Wi-Fi transmitter). +30 dBm = 1 W. −30 dBm = 1 µW. −60 dBm = 1 nW. Every 10 dB is a factor of 10.</small></div>
+    <p>Wi-Fi survey tools show received signal strength in dBm. A common rule of thumb in the industry: around −30 dBm is right next to the access point, −67 dBm or better is good for voice and video, and below about −80 dBm the link becomes unreliable. Note that −67 dBm is 0.2 nanowatts. Radios work with astonishingly small powers.</p>
+    <h3>Worked example: a fibre loss budget</h3>
+    <p>Fibre technicians live in dB. A single-mode link has a transmitter at −3 dBm. The fibre is 10 km long with a typical loss of 0.35 dB/km at 1310 nm. There are 2 connectors at about 0.5 dB each and 4 fusion splices at about 0.1 dB each. What arrives?</p>
+    <div class="formula">Loss = 10 × 0.35 + 2 × 0.5 + 4 × 0.1 = 3.5 + 1.0 + 0.4 = 4.9 dB<br>Received = −3 dBm − 4.9 dB = −7.9 dBm = 10^(−0.79) mW ≈ 0.16 mW
+      <small>Notice you just subtract. Without dB you would multiply 0.923¹⁰ × 0.891² × 0.977⁴. If the receiver needs at least, say, −20 dBm, the margin is 12.1 dB. Career chapter C09 uses this exact method with an OTDR.</small></div>
+
+    <div class="widget" id="t16-db">
+      <span class="label">Interactive · Decibel converter</span>
+      <p class="wsmall">Type in any box. Ratios are output ÷ input; values below 1 mean a loss.</p>
+      <div class="wgrid">
+        <label>Decibels (dB)<input type="text" id="t16d-db" value="20"></label>
+        <label>Power ratio<input type="text" id="t16d-p" value="100"></label>
+        <label>Voltage ratio<input type="text" id="t16d-v" value="10"></label>
+      </div>
+      <div class="wgrid" style="margin-top:8px">
+        <label>Power in dBm<input type="text" id="t16d-dbm" value="0"></label>
+        <label>Power in mW<input type="text" id="t16d-mw" value="1"></label>
+      </div>
+      <p class="wsmall" id="t16d-note"></p>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);},db=g('t16d-db'),p=g('t16d-p'),v=g('t16d-v'),dbm=g('t16d-dbm'),mw=g('t16d-mw'),note=g('t16d-note');
+      function fmt(x){if(!isFinite(x))return '—';var a=Math.abs(x);if(a!==0&&(a<0.001||a>=1e6))return x.toExponential(3);return String(Math.round(x*10000)/10000);}
+      function fromDb(src){var d=parseFloat(db.value);if(isNaN(d)){note.textContent='Enter a number.';return;}
+        if(src!=='p')p.value=fmt(Math.pow(10,d/10));if(src!=='v')v.value=fmt(Math.pow(10,d/20));
+        note.textContent=d>=0?(fmt(d)+' dB is a gain: power × '+fmt(Math.pow(10,d/10))+', voltage × '+fmt(Math.pow(10,d/20))+'.'):(fmt(d)+' dB is a loss: power ÷ '+fmt(Math.pow(10,-d/10))+', voltage ÷ '+fmt(Math.pow(10,-d/20))+'.');}
+      db.oninput=function(){fromDb('db');};
+      p.oninput=function(){var x=parseFloat(p.value);if(!(x>0)){note.textContent='A ratio must be greater than 0.';return;}db.value=fmt(10*Math.log10(x));fromDb('p');};
+      v.oninput=function(){var x=parseFloat(v.value);if(!(x>0)){note.textContent='A ratio must be greater than 0.';return;}db.value=fmt(20*Math.log10(x));fromDb('v');};
+      dbm.oninput=function(){var x=parseFloat(dbm.value);if(isNaN(x))return;mw.value=fmt(Math.pow(10,x/10));};
+      mw.oninput=function(){var x=parseFloat(mw.value);if(!(x>0))return;dbm.value=fmt(10*Math.log10(x));};
+      fromDb('db');
+    })();
+    </script>
+
+    <h2>Signal-to-noise ratio</h2>
+    <p>Every real signal arrives with some <b>noise</b> on top. What matters is not the noise alone but how big it is compared with the signal. The <b>signal-to-noise ratio</b> (SNR) says this in dB:</p>
+    <div class="formula">SNR = 10 · log₁₀(P<sub>signal</sub> / P<sub>noise</sub>) = 20 · log₁₀(V<sub>signal,rms</sub> / V<sub>noise,rms</sub>)
+      <small>Example: a 1 V signal with 10 mV of noise → 20 × log₁₀(100) = 40 dB. The same 10 mV of noise on a 50 mV thermocouple-sized signal → 20 × log₁₀(5) = 14 dB, which is poor. Small signals are the ones that suffer.</small></div>
+    <p>An ADC adds its own rounding noise. For an ideal n-bit ADC measuring a full-scale sine wave, the best possible SNR is about <b>6.02 n + 1.76 dB</b>. Each extra bit buys about 6 dB (each bit halves the step, and halving a voltage is 6 dB). A 10-bit ADC tops out near 62 dB, a 12-bit near 74 dB and a 16-bit near 98 dB. If the analogue noise at the input is worse than this, extra bits are wasted.</p>
+
+    <h2>Where noise comes from</h2>
+    <h3>Thermal noise: the floor you cannot remove</h3>
+    <p>The electrons in any resistor jiggle randomly because of heat, just like gas molecules. At any instant there are a few more moving one way than the other, so a tiny random voltage appears across every resistor, even one sitting on the bench with nothing connected. This is <b>thermal noise</b> (Johnson–Nyquist noise):</p>
+    <div class="formula">v<sub>n,rms</sub> = √(4 k T R B)
+      <small>k = 1.38 × 10⁻²³ J/K (Boltzmann's constant), T = temperature in kelvin, R = resistance, B = bandwidth in Hz (the range of frequencies you are measuring). Example: 10 kΩ at 300 K over 10 kHz: √(4 × 1.38×10⁻²³ × 300 × 10⁴ × 10⁴) ≈ 1.3 µV. That is about 3,800 times smaller than one 4.88 mV step of an Arduino ADC.</small></div>
+    <p>So for typical sensor work, thermal noise is far below what your ADC can see. It matters in radio receivers and precision instruments. Notice that it grows with bandwidth: measuring over a narrower range of frequencies (filtering, averaging) lets in less noise. That is why averaging 16 ADC readings reduces random noise by √16 = 4 times.</p>
+    <h3>Interference: the noise you can do something about</h3>
+    <p>On a real site, nearly all trouble comes from <b>interference</b>: energy from other equipment coupling into your cable. There are three main paths:</p>
+    <div class="cards">
+      <div class="card"><h4>Capacitive (electric field)</h4><p>A conductor at changing voltage, such as a 230 V cable, forms a tiny capacitor with your signal wire and pushes small currents into it. Worst for high-impedance inputs (voltage inputs, floating wires). Beaten by <b>shielding</b> and distance.</p></div>
+      <div class="card"><h4>Inductive (magnetic field)</h4><p>A conductor carrying changing current, such as a motor cable, makes a changing magnetic field. Any loop of wire in that field gets an EMF (Faraday, T06). Beaten by <b>small loop area</b>: twisted pairs and keeping signal and return wires together.</p></div>
+      <div class="card"><h4>Conducted and radiated</h4><p>Noise travelling along shared supply and earth wires, or radio-frequency energy from radios and fast-switching electronics. Variable speed drives (VSDs) in plant rooms are notorious sources. Beaten by filtering, good earthing and separation.</p></div>
+    </div>
+    <p>In Australia the most common interference you will see on a scope is <b>50 Hz hum</b> and its harmonics (100, 150 Hz …) from the mains supply, because mains cables run everywhere in a building.</p>
+
+    <h2>Fighting noise: twisted pairs, shields and ground loops</h2>
+    <h3>Twisted pairs cancel magnetic pickup</h3>
+    <p>A changing magnetic field induces an EMF in a loop proportional to the loop's area (Faraday's law). A signal wire and its return, run separately, form a big loop. Twist them together and the loop is divided into many small loops, and each twist reverses the loop's direction. The EMF induced in one half-twist is cancelled by the opposite EMF in the next. Twisting also makes both wires pick up almost exactly the same capacitive noise. Noise that appears equally on both wires is called <b>common-mode</b> noise, and a receiver that looks only at the <i>difference</i> between the wires (a <b>differential</b> receiver) ignores it. Ethernet, RS-485, CAN, 4–20 mA loops and telephone lines all use twisted pairs for this reason.</p>
+    <h3>Shields catch electric-field pickup</h3>
+    <p>A <b>shield</b> is a foil or braided metal layer wrapped around the conductors. Electric-field interference lands on the shield instead of on the signal wires, and the shield drains it away to earth. A shield is only useful if it is connected to earth somewhere; a floating shield can actually make things worse. At low frequencies, a shield does little against magnetic fields; that is the twisting's job.</p>
+    <h3>Ground loops, and why shields are usually earthed at one end</h3>
+    <p>In a big building, "earth" is not one perfect point. Earth conductors carry small leakage currents and occasionally fault currents, and they have resistance, so the earth bar in a plant room and the earth at a field device 200 m away can sit at slightly different voltages, often with a 50 Hz component. Now connect a cable shield (or a signal 0 V) to earth at <i>both</i> ends. You have made a closed loop: shield → earth at one end → building earth → earth at the other end → back to the shield. The voltage difference drives a current around this loop, and the loop is also a large one-turn antenna for magnetic fields. That current flows in the shield right next to your signal and couples into it. This is a <b>ground loop</b>, and it is the classic cause of hum in audio systems and wobbling readings in instrumentation.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 300" role="img" aria-label="Shield earthed at both ends forms a ground loop; earthed at one end, the loop is broken">
+        <defs><marker id="t16gl-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="22">A · Shield earthed at both ends: a ground loop</text>
+        <rect class="f-wash s-line" x="20" y="36" width="110" height="56" rx="6"/>
+        <text class="t t-small" x="75" y="60" text-anchor="middle">field sensor</text>
+        <text class="t t-small t-muted" x="75" y="78" text-anchor="middle">(far end)</text>
+        <rect class="f-wash s-line" x="530" y="36" width="110" height="56" rx="6"/>
+        <text class="t t-small" x="585" y="60" text-anchor="middle">controller</text>
+        <text class="t t-small t-muted" x="585" y="78" text-anchor="middle">(panel end)</text>
+        <line class="s-line" x1="130" y1="56" x2="530" y2="56"/><line class="s-line" x1="130" y1="72" x2="530" y2="72"/>
+        <rect class="s-blue s-dash" x="170" y="46" width="320" height="36" rx="10"/>
+        <text class="t t-small t-blue" x="282" y="40">shield</text>
+        <path class="s-blue" d="M175 82 V112"/><path class="s-blue" d="M485 82 V112"/>
+        <g class="s-line"><line x1="163" y1="112" x2="187" y2="112"/><line x1="168" y1="118" x2="182" y2="118"/><line x1="172" y1="124" x2="178" y2="124"/>
+        <line x1="473" y1="112" x2="497" y2="112"/><line x1="478" y1="118" x2="492" y2="118"/><line x1="482" y1="124" x2="488" y2="124"/></g>
+        <path class="s-red s-dash" d="M175 130 V138 H485 V130"/>
+        <text class="t t-small t-red" x="200" y="153">building earth: the two earth points differ by ΔV</text>
+        <path class="s-red" d="M300 96 H360" marker-end="url(#t16gl-a)"/>
+        <text class="t t-small t-red" x="368" y="100">loop current in shield</text>
+        <text class="t t-bold" x="20" y="186">B · Shield earthed at the panel end only: no loop</text>
+        <rect class="f-wash s-line" x="20" y="200" width="110" height="56" rx="6"/>
+        <text class="t t-small" x="75" y="224" text-anchor="middle">field sensor</text>
+        <text class="t t-small t-muted" x="75" y="242" text-anchor="middle">(far end)</text>
+        <rect class="f-wash s-line" x="530" y="200" width="110" height="56" rx="6"/>
+        <text class="t t-small" x="585" y="224" text-anchor="middle">controller</text>
+        <text class="t t-small t-muted" x="585" y="242" text-anchor="middle">(panel end)</text>
+        <line class="s-line" x1="130" y1="220" x2="530" y2="220"/><line class="s-line" x1="130" y1="236" x2="530" y2="236"/>
+        <rect class="s-blue s-dash" x="170" y="210" width="320" height="36" rx="10"/>
+        <path class="s-blue" d="M485 246 V276"/>
+        <g class="s-line"><line x1="473" y1="276" x2="497" y2="276"/><line x1="478" y1="282" x2="492" y2="282"/><line x1="482" y1="288" x2="488" y2="288"/></g>
+        <text class="t t-small t-muted" x="150" y="270">shield cut back and insulated here</text>
+        <text class="t t-small t-green" x="250" y="290">no closed path, so no loop current</text>
+      </svg>
+      <figcaption>Figure 3. (A) With the shield earthed at both ends, any voltage difference between the two earth points drives a current along the shield, which couples into the signal pair. (B) Earthed at one end only, usually the panel end, the shield still catches electric-field interference and drains it, but no loop exists, so no loop current flows.</figcaption>
+    </figure>
+    <p>That is why, for analogue instrument cables (4–20 mA, thermocouples, RTDs), the common practice is to <b>earth the shield at one end only</b>, normally at the control panel, and to cut back and insulate it at the field end. For high-frequency (radio-frequency) shielding the rules differ, and data cables such as shielded Ethernet are terminated as their manufacturer's system specifies. On any real job, follow the site specification and the equipment manual.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A floating multimeter or a battery-powered handheld scope breaks ground loops for free. If a reading is noisy on the mains-powered bench scope but clean on a battery meter, suspect a ground loop through the scope's earth lead. Never "fix" this by cutting the earth pin off a mains plug: the earth pin is a safety device, and only a licensed electrician may work on mains plugs and wiring in Australia.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>The wiring rules (AS/NZS 3000) and the telecommunications cabling standard (AS/CA S009) both require separation or barriers between low-voltage power cabling and ELV, data and telecom cabling. Good separation is also good noise practice: distance weakens both capacitive and magnetic coupling. Confirm the current separation distances with the standards themselves (or ACMA and your state electrical regulator), because rules are revised and site specifications may be stricter.</p></div>
+
+    <h2>Why industry sends current: 4–20 mA</h2>
+    <p>Imagine a pressure sensor on a pump 300 m from the control panel. If it sends its reading as a voltage, three things go wrong:</p>
+    <ul>
+      <li><b>Voltage drop.</b> Any current drawn through 600 m of wire (out and back) causes a drop, and the panel sees less than the sensor sent.</li>
+      <li><b>Earth differences.</b> If the sensor's 0 V and the panel's 0 V differ by some millivolts or volts (see ground loops), that difference adds straight onto the signal.</li>
+      <li><b>Noise pickup.</b> A voltage input usually has a high input resistance, so small induced currents create large noise voltages across it.</li>
+    </ul>
+    <p>Now send a <b>current</b> instead. The sensor's transmitter, the cable and the receiver are all <b>in series</b> in one loop. Kirchhoff's current law (T04) says the current is the same at every point in a series loop: charge cannot pile up anywhere. If the transmitter forces 12.00 mA, then 12.00 mA flows through every metre of cable and through the receiver, whether the cable is 10 Ω or 100 Ω. The wire resistance changes the <i>voltage</i> needed to push the current around, but not the current itself, as long as the supply has enough voltage to spare. The receiver measures the current, so it reads exactly what the transmitter sent. And because the receiver is a low resistance (typically 250 Ω or less), induced noise currents make only small noise voltages.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Current gets used up along a long cable, so the far end sees less." <b>Right:</b> current is not used up; energy is. In a series loop the current is identical everywhere. What the cable consumes is <i>voltage</i> (as I × R<sub>wire</sub>), and that only matters if the supply runs out of voltage. This is the whole reason 4–20 mA works.</p></div>
+    <h3>Why 4 mA and not 0 mA: the live zero</h3>
+    <p>The range is 4 mA = 0 % and 20 mA = 100 % of the measurement. Starting at 4 instead of 0 gives two big benefits:</p>
+    <ol>
+      <li><b>Broken wires are detectable.</b> A cut cable, a loose terminal, a blown fuse or a dead transmitter gives 0 mA. With a 0–20 mA scale, 0 mA would look like a valid "0 %" reading. With 4–20 mA, anything well below 4 mA is clearly a fault. A widely used recommendation (NAMUR NE 43) treats readings below 3.8 mA or above 20.5 mA as outside the valid measurement range, and transmitters signal a detected internal fault by driving the loop to about 3.6 mA or below, or 21 mA or above.</li>
+      <li><b>The transmitter can power itself.</b> Even at 0 %, 4 mA flows, and the transmitter's own electronics can run on the part of it that they use. That makes the two-wire transmitter possible: the same two wires carry power and signal.</li>
+    </ol>
+    <div class="formula">I = 4 mA + 16 mA × (value − LRV) / (URV − LRV) &nbsp;&nbsp; value = LRV + (I − 4) / 16 × (URV − LRV)
+      <small>LRV and URV are the lower and upper range values (for a 0–10 bar transmitter, 0 and 10 bar). The span is 16 mA. Worked: 12 mA → (12 − 4)/16 = 50 % → 5.0 bar. 7.2 mA → 20 % → 2.0 bar. For a 0–50 °C transmitter, 15.2 mA → (15.2 − 4)/16 = 70 % → 35 °C.</small></div>
+
+    <div class="widget" id="t16-loop">
+      <span class="label">Interactive · 4–20 mA scaling and fault check</span>
+      <label>Range preset <select id="t16l-pre"><option value="0,10,bar">Pressure 0–10 bar</option><option value="0,50,°C" selected>Temperature 0–50 °C</option><option value="-20,80,°C">Outdoor air −20–80 °C</option><option value="0,100,% open">Valve position 0–100 %</option><option value="0,2000,ppm CO₂">CO₂ 0–2000 ppm</option></select></label>
+      <div class="wgrid">
+        <label>LRV (value at 4 mA)<input type="text" id="t16l-lo" value="0"></label>
+        <label>URV (value at 20 mA)<input type="text" id="t16l-hi" value="50"></label>
+        <label>Unit<input type="text" id="t16l-un" value="°C"></label>
+      </div>
+      <label>Loop current <span class="out" id="t16l-mao">12.00 mA</span><input type="range" id="t16l-mas" min="0" max="24" step="0.01" value="12"></label>
+      <div class="wgrid">
+        <label>Current (mA)<input type="text" id="t16l-ma" value="12"></label>
+        <label>Percent of span (%)<input type="text" id="t16l-pct" value="50"></label>
+        <label>Engineering value<input type="text" id="t16l-eng" value="25"></label>
+      </div>
+      <svg id="t16l-bar" viewBox="0 0 600 70" role="img" aria-label="Loop current position on a 0 to 24 mA scale with fault zones"></svg>
+      <div class="readings">
+        <div><small>Voltage across 250 Ω</small><span class="out" id="t16l-v">3.00 V</span></div>
+        <div><small>Arduino 10-bit code (5 V ref)</small><span class="out" id="t16l-code">614</span></div>
+        <div><small>Reading</small><span class="out" id="t16l-read" style="font-size:16px">25 °C</span></div>
+      </div>
+      <div class="wstatus ok" id="t16l-st">Normal</div>
+    </div>
+    <script>
+    (function(){
+      var g=function(i){return document.getElementById(i);};
+      var pre=g('t16l-pre'),lo=g('t16l-lo'),hi=g('t16l-hi'),un=g('t16l-un'),mas=g('t16l-mas'),ma=g('t16l-ma'),pct=g('t16l-pct'),eng=g('t16l-eng'),bar=g('t16l-bar'),st=g('t16l-st');
+      var I=12;
+      function r(x,n){var m=Math.pow(10,n);return String(Math.round(x*m)/m);}
+      function L(){return parseFloat(lo.value);}function H(){return parseFloat(hi.value);}
+      function X(m){return 20+m/24*560;}
+      function upd(src){
+        var a=L(),b=H(),u=un.value;
+        if(isNaN(a)||isNaN(b)||a===b){st.className='wstatus amber';st.textContent='Enter two different numbers for LRV and URV.';return;}
+        var p=(I-4)/16*100,e=a+(b-a)*p/100;
+        if(src!=='slider')mas.value=Math.max(0,Math.min(24,I));
+        g('t16l-mao').textContent=I.toFixed(2)+' mA';
+        if(src!=='ma')ma.value=r(I,3);
+        if(src!=='pct')pct.value=r(p,2);
+        if(src!=='eng')eng.value=r(e,3);
+        var v=I*0.25;g('t16l-v').textContent=v.toFixed(2)+' V';
+        var c=Math.floor(v/5*1024);g('t16l-code').textContent=c>1023?'1023 (clipped)':String(Math.max(0,c));
+        var h='';
+        h+='<rect class="f-warn-soft" x="'+X(0)+'" y="14" width="'+(X(3.8)-X(0))+'" height="22"/>';
+        h+='<rect class="f-amber" style="opacity:.35" x="'+X(3.8)+'" y="14" width="'+(X(4)-X(3.8))+'" height="22"/>';
+        h+='<rect class="f-career-soft" x="'+X(4)+'" y="14" width="'+(X(20)-X(4))+'" height="22"/>';
+        h+='<rect class="f-amber" style="opacity:.35" x="'+X(20)+'" y="14" width="'+(X(20.5)-X(20))+'" height="22"/>';
+        h+='<rect class="f-warn-soft" x="'+X(20.5)+'" y="14" width="'+(X(24)-X(20.5))+'" height="22"/>';
+        h+='<rect class="s-thin f-none" x="20" y="14" width="560" height="22"/>';
+        [0,4,8,12,16,20,24].forEach(function(m){h+='<line class="s-thin" x1="'+X(m)+'" y1="36" x2="'+X(m)+'" y2="42"/><text class="t t-small t-muted" x="'+X(m)+'" y="56" text-anchor="middle">'+m+'</text>';});
+        h+='<text class="t t-small t-muted" x="585" y="56">mA</text>';
+        var xm=X(Math.max(0,Math.min(24,I)));
+        h+='<line class="s-accent" x1="'+xm+'" y1="6" x2="'+xm+'" y2="44" style="stroke-width:3"/><circle class="f-accent" cx="'+xm+'" cy="8" r="5"/>';
+        bar.innerHTML=h;
+        var read=g('t16l-read');
+        if(I<3.8){st.className='wstatus bad';
+          st.textContent=(I<0.5?'About 0 mA: open circuit. Cut or loose wire, blown fuse, no 24 V loop supply, or a dead transmitter. ':'FAULT LOW (below 3.8 mA): ')+'This is not a valid measurement. A well-configured controller raises an alarm and does not show it as a process value.';
+          read.textContent='FAULT (no valid value)';}
+        else if(I<4){st.className='wstatus amber';st.textContent='Under-range (3.8–4 mA): the process is slightly below the LRV, or the transmitter needs trimming. Usually shown as the LRV.';read.textContent=r(a,3)+' '+u+' (clamped)';}
+        else if(I<=20){st.className='wstatus ok';st.textContent='Normal: '+r(p,1)+' % of span.';read.textContent=r(e,3)+' '+u;}
+        else if(I<=20.5){st.className='wstatus amber';st.textContent='Over-range (20–20.5 mA): the process is slightly above the URV. Usually shown as the URV.';read.textContent=r(b,3)+' '+u+' (clamped)';}
+        else{st.className='wstatus bad';st.textContent='FAULT HIGH (above 20.5 mA): the transmitter is signalling a fault, or something is shorting the loop. Not a valid measurement.';read.textContent='FAULT (no valid value)';}
+      }
+      pre.onchange=function(){var s=pre.value.split(',');lo.value=s[0];hi.value=s[1];un.value=s[2];upd(null);};
+      lo.oninput=hi.oninput=un.oninput=function(){upd(null);};
+      mas.oninput=function(){I=+mas.value;upd('slider');};
+      ma.oninput=function(){var x=parseFloat(ma.value);if(isNaN(x)||x<0||x>30)return;I=x;upd('ma');};
+      pct.oninput=function(){var x=parseFloat(pct.value);if(isNaN(x))return;I=4+16*x/100;upd('pct');};
+      eng.oninput=function(){var x=parseFloat(eng.value),a=L(),b=H();if(isNaN(x)||isNaN(a)||isNaN(b)||a===b)return;I=4+16*(x-a)/(b-a);upd('eng');};
+      upd(null);
+    })();
+    </script>
+
+    <h2>Two-wire loop-powered transmitters</h2>
+    <p>The most common field device in industry and in building plant rooms is the <b>two-wire (loop-powered) transmitter</b>. It has only two terminals, + and −. It does not have its own power supply. Instead:</p>
+    <ol>
+      <li>A 24 V DC power supply in the control panel pushes current around the loop.</li>
+      <li>The current goes out on one wire to the transmitter's + terminal, through the transmitter, out of its − terminal, back along the second wire, through the receiver's measuring resistor, and back to the supply's 0 V.</li>
+      <li>The transmitter acts as a <b>controlled current sink</b>: it measures the process (pressure, temperature, level) and adjusts how much current it lets through, between 4 and 20 mA. Its electronics run on the voltage left across its own terminals and on less than 4 mA of the loop current.</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 660 310" role="img" aria-label="A 2-wire 4-20 mA loop: 24 V DC supply, field cable with wire resistance, loop-powered transmitter and 250 ohm receiver resistor">
+        <defs><marker id="t16lp-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="s-thin s-dash f-none" x="14" y="20" width="286" height="270" rx="10"/>
+        <text class="t t-small t-muted" x="26" y="40">Control panel (PLC or BMS controller)</text>
+        <rect class="s-thin s-dash f-none" x="460" y="20" width="186" height="270" rx="10"/>
+        <text class="t t-small t-muted" x="472" y="40">Field (on the pipe)</text>
+        <!-- supply -->
+        <line class="s-line" x1="80" y1="70" x2="80" y2="132"/>
+        <line class="s-line" x1="60" y1="132" x2="100" y2="132"/>
+        <line class="s-line" x1="70" y1="142" x2="90" y2="142" style="stroke-width:4"/>
+        <line class="s-line" x1="60" y1="152" x2="100" y2="152"/>
+        <line class="s-line" x1="70" y1="162" x2="90" y2="162" style="stroke-width:4"/>
+        <line class="s-line" x1="80" y1="162" x2="80" y2="250"/>
+        <text class="t t-small t-bold" x="104" y="128">+</text>
+        <text class="t t-small t-bold" x="104" y="172">−</text>
+        <text class="t t-small" x="30" y="190">24 V DC</text>
+        <!-- top wire -->
+        <path class="s-line" d="M80 70 H340"/>
+        <rect class="f-panel s-line" x="340" y="62" width="44" height="16"/>
+        <path class="s-line" d="M384 70 H500"/>
+        <text class="t t-small t-muted" x="334" y="54">R_wire ≈ 10 Ω</text>
+        <path class="s-red" d="M400 84 H440" marker-end="url(#t16lp-a)"/>
+        <!-- transmitter -->
+        <rect class="f-accent-soft s-accent" x="500" y="56" width="130" height="200" rx="8"/>
+        <circle class="f-panel s-line" cx="500" cy="70" r="5"/><circle class="f-panel s-line" cx="500" cy="240" r="5"/>
+        <text class="t t-small t-bold" x="512" y="74">+</text>
+        <text class="t t-small t-bold" x="512" y="244">−</text>
+        <text class="t t-small t-bold" x="565" y="110" text-anchor="middle">2-wire</text>
+        <text class="t t-small t-bold" x="565" y="126" text-anchor="middle">transmitter</text>
+        <text class="t t-small" x="565" y="150" text-anchor="middle">0–10 bar</text>
+        <text class="t t-small t-muted" x="565" y="176" text-anchor="middle">sets I between</text>
+        <text class="t t-small t-muted" x="565" y="192" text-anchor="middle">4 and 20 mA</text>
+        <text class="t t-small t-muted" x="565" y="216" text-anchor="middle">needs ~12 V min</text>
+        <!-- bottom wire -->
+        <path class="s-line" d="M500 240 H384"/>
+        <rect class="f-panel s-line" x="340" y="232" width="44" height="16"/>
+        <path class="s-line" d="M340 240 H240"/>
+        <text class="t t-small t-muted" x="334" y="268">R_wire ≈ 10 Ω</text>
+        <path class="s-red" d="M440 226 H400" marker-end="url(#t16lp-a)"/>
+        <!-- receiver resistor -->
+        <rect class="f-panel s-line" x="160" y="232" width="80" height="16"/>
+        <text class="t t-small" x="200" y="270" text-anchor="middle">250 Ω</text>
+        <path class="s-line" d="M160 240 H80"/>
+        <circle class="f-ink" cx="80" cy="240" r="4"/>
+        <line class="s-line" x1="80" y1="240" x2="80" y2="256"/>
+        <line class="s-line" x1="68" y1="256" x2="92" y2="256"/><line class="s-line" x1="73" y1="262" x2="87" y2="262"/><line class="s-line" x1="77" y1="268" x2="83" y2="268"/>
+        <text class="t t-small t-muted" x="30" y="284">0 V</text>
+        <rect class="f-theory-soft s-line" x="150" y="150" width="100" height="44" rx="6"/>
+        <text class="t t-small t-bold" x="200" y="168" text-anchor="middle">analogue in</text>
+        <text class="t t-small" x="200" y="186" text-anchor="middle">reads 1–5 V</text>
+        <path class="s-thin" d="M160 194 V240 M240 194 V240"/>
+        <circle class="f-ink" cx="160" cy="240" r="3"/><circle class="f-ink" cx="240" cy="240" r="3"/>
+        <text class="t t-small t-red" x="306" y="140">I = 4–20 mA,</text>
+        <text class="t t-small t-red" x="306" y="156">the same at</text>
+        <text class="t t-small t-red" x="306" y="172">every point</text>
+        <text class="t t-small t-muted" x="306" y="200">300 m twisted,</text>
+        <text class="t t-small t-muted" x="306" y="216">shielded pair</text>
+      </svg>
+      <figcaption>Figure 4. A two-wire 4–20 mA loop. Conventional current leaves the supply's +, travels out to the transmitter, comes back on the second wire, passes through the 250 Ω resistor and returns to 0 V. The controller's analogue input measures the voltage across the resistor: 4 mA × 250 Ω = 1 V, 20 mA × 250 Ω = 5 V. The two cable resistances change the voltage around the loop, not the current.</figcaption>
+    </figure>
+
+    <h3>The 250 Ω resistor: from current to voltage</h3>
+    <p>ADCs measure voltage, so the receiver converts current to voltage with a precision resistor, using nothing more than Ohm's law:</p>
+    <div class="formula">V = I × 250 Ω → 4 mA → 1.00 V, 12 mA → 3.00 V, 20 mA → 5.00 V
+      <small>The resistor should be a precision type (0.1 % tolerance is common), because any error in R is an error in every reading. Many PLC and BMS analogue input cards contain this resistor already and just need the right jumper or configuration (for example "4–20 mA" instead of "0–10 V"). The 250 Ω value is also handy for HART, a digital signal that rides on top of the 4–20 mA current and needs some loop resistance to work.</small></div>
+    <p>On an Arduino with a 5 V reference, 20 mA gives exactly 5 V, the very top of the ADC, so over-range and fault-high currents (20.5–22 mA) cannot be seen. A slightly smaller resistor, such as 200 Ω (20 mA → 4.0 V, 24 mA → 4.8 V), leaves headroom. On a 3.3 V board, use around 150 Ω (20 mA → 3.0 V). Always check that the resistor's voltage at the highest current stays inside the ADC's input range.</p>
+
+    <h2>The loop voltage budget</h2>
+    <p>The current does not depend on wire resistance, but the loop still needs enough <b>voltage</b> to push that current through everything in series. Kirchhoff's voltage law (T04) says the drops around the loop must add up to the supply. The transmitter only gets what is left over, and it stops working properly if that falls below its minimum (from its datasheet; for many 2-wire transmitters it is somewhere around 10–12 V). Always check at the <b>highest</b> current, because that is where the resistive drops are largest.</p>
+    <h3>Worked example</h3>
+    <p>24 V DC supply. 250 Ω receiver resistor. 300 m of 0.5 mm² copper pair. Transmitter minimum 12 V. Is it OK at 20 mA?</p>
+    <div class="table-wrap"><table>
+      <tr><th>Item</th><th>Calculation</th><th>Voltage at 20 mA</th></tr>
+      <tr><td>Cable resistance per conductor</td><td>R = ρL/A = 1.72×10⁻⁸ × 300 / 0.5×10⁻⁶</td><td>10.3 Ω</td></tr>
+      <tr><td>Cable, both conductors</td><td>2 × 10.3 Ω = 20.6 Ω; 0.020 A × 20.6 Ω</td><td>0.41 V</td></tr>
+      <tr><td>Receiver resistor</td><td>0.020 A × 250 Ω</td><td>5.00 V</td></tr>
+      <tr><td>Left for the transmitter</td><td>24 − 0.41 − 5.00</td><td><b>18.59 V</b> ✔ (needs 12 V)</td></tr>
+      <tr><td>Spare margin</td><td>18.59 − 12</td><td>6.59 V</td></tr>
+    </table></div>
+    <p>Turn it around to find the most resistance the loop can tolerate:</p>
+    <div class="formula">R<sub>loop,max</sub> = (V<sub>supply</sub> − V<sub>tx,min</sub>) / I<sub>max</sub> = (24 − 12) / 0.020 = 600 Ω
+      <small>Subtract the 250 Ω receiver and 350 Ω is left for cable and any other devices in series. At 2 × 0.0344 Ω per metre of 0.5 mm² pair, that is about 5 km of cable. So cable length is rarely the limit. Extra devices are: a loop-powered display, an isolator or a safety barrier can each take several volts. Design engineers also check at the fault current (about 21–22 mA), where the limit becomes (24 − 12)/0.022 ≈ 545 Ω.</small></div>
+    <div class="callout warn"><span class="label">Safety</span><p>A 24 V DC loop is extra-low voltage and safe to work on, and everything in this course stays at ELV. Some field instruments, however, are "4-wire" devices with a separate 230 V mains supply in the same enclosure, and some panels contain mains circuits next to the 24 V terminals. In Australia only a licensed electrician may work on the mains side. If a device or panel has mains wiring, do not open or measure it; ask the site's electrician to isolate it. Some sites also have hazardous-area (explosive atmosphere) instruments that need specific training and certification before anyone touches them.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>To measure loop current without breaking the loop, many transmitters have "test" terminals across a diode, and clamp meters made for milliamps can read the current through the insulation. Otherwise, measure the voltage across the known 250 Ω resistor and divide: 3.20 V / 250 Ω = 12.8 mA, which is 55 % of span. A loop calibrator (a handheld tool that can source, sink or measure 4–20 mA) is the instrument technician's everyday tool.</p></div>
+
+    <h2>0–10 V signals and their weak spots</h2>
+    <p>Building services use a lot of <b>0–10 V</b> signals (and the live-zero version, <b>2–10 V</b>): valve and damper actuator commands, variable speed drive speed references, some room sensors. They are cheap and simple: the controller output drives a voltage, and the actuator's input has a high resistance, often tens of kilohms or more, so it draws only a fraction of a milliamp. Over short runs inside a plant room they work well. Over long runs they have three weaknesses:</p>
+    <ol>
+      <li><b>Shared common wires.</b> Many 24 V actuators use three wires: 24 V supply, common (0 V) and the 0–10 V signal. The actuator's supply current returns on the same common wire that the signal is measured against. Example: an actuator drawing 0.2 A, with 50 m of 0.75 mm² common wire (R = 1.72×10⁻⁸ × 50 / 0.75×10⁻⁶ ≈ 1.15 Ω), drops about 0.23 V on the common. The actuator measures its signal against its own, shifted 0 V, so the position is off by about 2.3 % of span. With an AC-powered actuator that shift is a 50 Hz ripple instead.</li>
+      <li><b>No broken-wire detection with 0–10 V.</b> A cut signal wire reads 0 V, which is a perfectly valid "0 %, valve closed". The 2–10 V version adds a live zero for the same reason 4–20 mA has one.</li>
+      <li><b>Noise and earth differences add directly.</b> Any voltage between the controller's 0 V and the device's 0 V, and any induced noise, adds straight onto the signal. In a current loop, the receiver only sees the current.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>4–20 mA</th><th>0–10 V</th></tr>
+      <tr><td>Wire resistance</td><td>No effect on the reading (within the voltage budget)</td><td>Causes errors whenever current flows in a shared wire</td></tr>
+      <tr><td>Broken wire</td><td>0 mA → detected as a fault</td><td>0 V → looks like a valid 0 % (2–10 V can detect it)</td></tr>
+      <tr><td>Noise immunity</td><td>Good (low-resistance receiver)</td><td>Fair (high-resistance receiver picks up more)</td></tr>
+      <tr><td>Field power</td><td>2-wire devices powered by the loop itself</td><td>Usually needs a separate supply pair</td></tr>
+      <tr><td>Typical use</td><td>Process transmitters, long runs, critical measurements</td><td>HVAC actuators, VSD speed references, short runs</td></tr>
+    </table></div>
+    <div class="callout job"><span class="label">On the job</span><p>"The valve says 100 % on the BMS screen but it's only half open" and "the pressure reading drops to zero every afternoon" are classic service calls. For the first, measure the 0–10 V at the actuator terminals, not at the controller, and check the common for voltage drop. For the second, a reading at or below about 3.8 mA (often a loose terminal moving with heat) means a wiring fault, not a real pressure. Knowing the scaling formula, the live zero and the loop voltage budget lets you diagnose both with a multimeter in minutes.</p></div>
+
+    <h2>See it on the job</h2>
+    <p>These ideas carry straight into the job track and the bench labs:</p>
+    <a class="crosslink" href="../career/c10-plc-instrumentation.html">Career C10 · PLCs and industrial instrumentation: 4–20 mA transmitters, HART and the panel you will wire</a>
+    <a class="crosslink" href="../career/c01-bms-fundamentals.html">Career C01 · BMS fundamentals: AI/AO/DI/DO points, controllers and alarms</a>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC: sampling and resolution on a real Arduino</a>
+    <a class="crosslink" href="../practice/p15-oscilloscope-logic-analyser.html">Practice P15 · Seeing signals: watch noise, hum and aliasing on a scope</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A vibration of 180 Hz is sampled at 200 samples per second. What frequency do the samples show, and how would you prevent this?</summary><div class="answer"><p>The Nyquist frequency is 100 Hz, so 180 Hz aliases. f<sub>alias</sub> = |180 − 1 × 200| = 20 Hz. The data shows a convincing but false 20 Hz vibration. Prevent it by sampling faster (5–10 times the highest real frequency, so 1–2 kHz here) and by putting a low-pass anti-aliasing filter in front of the ADC to remove anything above f<sub>s</sub>/2.</p></div></details>
+    <details class="quiz"><summary>What is the step size of a 12-bit ADC with a 3.3 V reference, and what temperature step does that give with a 10 mV/°C sensor?</summary><div class="answer"><p>3.3 / 4096 = 0.806 mV per step. With 10 mV per °C, one step is 0.0806 °C. That is the resolution; the accuracy will be worse, set by the sensor and reference.</p></div></details>
+    <details class="quiz"><summary>An amplifier has a voltage gain of 10. A cable after it loses 6 dB. What is the overall gain in dB and as a voltage ratio?</summary><div class="answer"><p>Voltage gain 10 = 20 log₁₀(10) = +20 dB. Overall: 20 − 6 = +14 dB. As a voltage ratio, 10^(14/20) ≈ 5.0. Check: 6 dB is a voltage halving, and 10 ÷ 2 = 5. dB lets you add instead of multiply.</p></div></details>
+    <details class="quiz"><summary>A Wi-Fi reading changes from −50 dBm to −60 dBm. How much did the received power change?</summary><div class="answer"><p>A drop of 10 dB is a factor of 10 in power. −50 dBm = 10 nW; −60 dBm = 1 nW. The power fell to one tenth.</p></div></details>
+    <details class="quiz"><summary>Why are analogue instrument cable shields usually earthed at one end only?</summary><div class="answer"><p>Earthing at both ends closes a loop through the building's earth system. Any voltage difference between the two earth points (and any magnetic field through the loop) drives current along the shield, right next to the signal pair, injecting hum. Earthing at one end (normally the panel) still drains electric-field pickup, but leaves no closed loop for current to flow in.</p></div></details>
+    <details class="quiz"><summary>A 0–10 bar 4–20 mA transmitter reads 0.0 mA at the panel. A colleague says "the pump has no pressure". What do you say?</summary><div class="answer"><p>No pressure would give 4 mA, not 0 mA. 0 mA means no current flows in the loop at all: a broken or loose wire, a blown fuse, missing 24 V supply, or a dead transmitter. This is the "live zero" doing its job. Check loop supply voltage, then terminals, then the transmitter.</p></div></details>
+    <details class="quiz"><summary>A loop has a 24 V supply, a 250 Ω receiver, 60 Ω of cable and a loop-powered display that drops 4 V. The transmitter needs 12 V. Does it work at 20 mA?</summary><div class="answer"><p>Drops at 20 mA: receiver 0.02 × 250 = 5 V, cable 0.02 × 60 = 1.2 V, display 4 V. Total 10.2 V. Left for the transmitter: 24 − 10.2 = 13.8 V, which is above 12 V, so yes, with 1.8 V to spare. At a 22 mA fault current it would be 24 − 5.5 − 1.32 − 4 = 13.2 V, still fine.</p></div></details>
+    <details class="quiz"><summary>What current corresponds to 35 °C on a −20 to 80 °C transmitter, and what voltage appears across 250 Ω?</summary><div class="answer"><p>Percentage of span = (35 − (−20)) / (80 − (−20)) = 55 / 100 = 55 %. Current = 4 + 0.55 × 16 = 12.8 mA. Voltage = 12.8 mA × 250 Ω = 3.2 V.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain sampling and quantisation as two separate steps, and what goes wrong in each.</span></li>
+      <li><input type="checkbox"><span>I can state the Nyquist rule, calculate an alias frequency, and explain why an anti-aliasing filter is needed.</span></li>
+      <li><input type="checkbox"><span>I can calculate the step size of a 10-bit or 12-bit ADC, and explain the difference between resolution and accuracy.</span></li>
+      <li><input type="checkbox"><span>I can convert between dB, power ratios and voltage ratios in my head using "tens and threes", and convert dBm to milliwatts.</span></li>
+      <li><input type="checkbox"><span>I can name the main noise sources and explain how twisted pairs, shields and single-end earthing fight them.</span></li>
+      <li><input type="checkbox"><span>I can explain why 4–20 mA ignores wire resistance and why the 4 mA live zero detects broken wires.</span></li>
+      <li><input type="checkbox"><span>I can scale any 4–20 mA reading to engineering units and back, and recognise fault currents below 3.8 mA or above 20.5 mA.</span></li>
+      <li><input type="checkbox"><span>I can do a loop voltage budget and explain why 0–10 V signals struggle on long runs.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

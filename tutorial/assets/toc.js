@@ -35,7 +35,8 @@ window.TOC = {
         ]},
         { title: "Part E · Working like a technician", blurb: "Method skills every employer tests.", chapters: [
           { n: "P21", file: "practice/p21-fault-finding.html", title: "Fault-finding: a technician's troubleshooting method", d: "Half-splitting, measure-don't-guess, and worked faults on power, signals, networks and field devices." },
-          { n: "P22", file: "practice/p22-reading-drawings.html", title: "Reading drawings: schematics, wiring diagrams and as-builts", d: "Schematics vs wiring diagrams, riser and block diagrams, cable schedules, points lists and marking up as-builts." }
+          { n: "P22", file: "practice/p22-reading-drawings.html", title: "Reading drawings: schematics, wiring diagrams and as-builts", d: "Schematics vs wiring diagrams, riser and block diagrams, cable schedules, points lists and marking up as-builts." },
+          { n: "P23", planned: true, file: "practice/p23-din-rail-panel-build.html", title: "Build a DIN-rail control panel (12/24 V)", d: "Power supply, fusing, terminals, relays and labels: a mini security/BMS panel on your bench." }
         ]}
       ]
     },
@@ -68,6 +69,11 @@ window.TOC = {
         { title: "Part 4 · Digital, computers and signals", blurb: "From logic gates to sensors, current loops and decibels.", chapters: [
           { n: "T15", file: "theory/t15-digital-logic-microcontrollers.html", title: "Digital logic and how a microcontroller works", d: "Binary, gates, flip-flops, clocks, memory, registers and the ADC." },
           { n: "T16", file: "theory/t16-signals-noise-loops.html", title: "Signals: sampling, decibels, noise and 4–20 mA loops", d: "Why industry sends current not voltage, and how to read a dB figure." }
+        ]},
+        { title: "Part 5 · Systems theory for the field", blurb: "Networks, sensors and motors: the theory under building and security systems.", chapters: [
+          { n: "T17", planned: true, file: "theory/t17-networking-theory.html", title: "How networks really work: Ethernet, IP, TCP/UDP", d: "Layers, frames, MAC and IP addresses, ARP, switching vs routing, ports, multicast and why cameras flood networks." },
+          { n: "T18", planned: true, file: "theory/t18-sensor-physics.html", title: "Sensor physics: how sensors turn the world into signals", d: "Thermistors, RTDs, thermocouples, PIR, Hall effect, pressure, humidity, CO₂ and photoelectric smoke." },
+          { n: "T19", planned: true, file: "theory/t19-motors-vsds.html", title: "Motors and variable speed drives", d: "DC, stepper and induction motors, slip, VSDs and the fan affinity laws behind every AHU." }
         ]}
       ]
     },
@@ -86,7 +92,8 @@ window.TOC = {
         ]},
         { title: "Part II · Security systems", blurb: "Cameras, access control and alarms.", chapters: [
           { n: "C05", file: "career/c05-cctv-ip-cameras.html", title: "CCTV and IP camera installation", d: "Camera types, lenses and field of view, PoE, NVRs, storage maths and a job walkthrough." },
-          { n: "C06", file: "career/c06-access-control-alarms.html", title: "Access control and intruder alarms", d: "Readers, Wiegand and OSDP, locks, REX, fail-safe vs fail-secure, sensors and EOL." }
+          { n: "C06", file: "career/c06-access-control-alarms.html", title: "Access control and intruder alarms", d: "Readers, Wiegand and OSDP, locks, REX, fail-safe vs fail-secure, sensors and EOL." },
+          { n: "C14", file: "career/c14-security-platforms.html", title: "Security platforms: how Gallagher, Genetec, Integriti and Milestone think", d: "Cardholders, access levels, schedules, doors, VMS recording rules and integrations, explained vendor-neutrally." }
         ]},
         { title: "Part III · Telecommunications", blurb: "Structured cabling, NBN, fibre and wireless.", chapters: [
           { n: "C07", file: "career/c07-telecom-cabling-acma.html", title: "Telecom cabling in Australia: ACMA rules and structured cabling", d: "Cabling registration, AS/CA S009, comms rooms, labelling and testing." },
@@ -95,6 +102,7 @@ window.TOC = {
         ]},
         { title: "Part IV · Industrial and the path in", blurb: "Instrumentation, PLCs, licences and getting hired.", chapters: [
           { n: "C10", file: "career/c10-plc-instrumentation.html", title: "PLCs and industrial instrumentation", d: "Ladder logic, 4–20 mA transmitters, HART, and the control panel you will wire." },
+          { n: "C15", file: "career/c15-solar-batteries.html", title: "Solar, batteries and EV chargers for technicians", d: "How PV and battery systems work, what needs an electrician, and the monitoring and support roles that don't." },
           { n: "C11", file: "career/c11-licences-pathways.html", title: "Licences, tickets and pathways in Australia", d: "White Card, ACMA, security licences, electrical licensing, skills assessment and visas." },
           { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." },
           { n: "C13", file: "career/c13-first-day-on-site.html", title: "Your first day on an Australian site", d: "Inductions, SWMS and JSAs, PPE, permits, isolation and lock-out, site etiquette, your tool bag and job notes." }

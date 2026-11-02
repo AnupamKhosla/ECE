@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C03 · HVAC for electronics people</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part I · Building services</div>
+    <span class="eyebrow">Job Track · C03</span>
+    <h1>HVAC for electronics people</h1>
+    <p class="lede">A BMS technician does not repair chillers, but must understand what every valve, damper and fan in the plant is trying to do. This chapter explains heating, ventilation and air conditioning from the physics up: the refrigeration cycle, central plant, air handling units, VAV boxes, fan coils, the sensors, and the control loops you will tune. A simulator lets you tune a PID loop yourself.</p>
+    <div class="meta"><span><b>Reading</b> 60 min</span><span><b>Level</b> Beginner</span><span><b>Physics</b> heat, latent heat, feedback</span><span><b>Builds on</b> C01, T03</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Heat, temperature and latent heat</h2>
+    <p>HVAC is the business of moving heat. Two kinds of heat matter.</p>
+    <p><b>Sensible heat</b> changes temperature. You can "sense" it with a thermometer. The energy needed is:</p>
+    <div class="formula">Q = m · c · ΔT
+      <small>m is mass (kg), c is specific heat capacity (kJ/kg·K), ΔT is the temperature change (K, same size as °C). Water: c ≈ 4.19 kJ/kg·K. Air: c ≈ 1.005 kJ/kg·K, and 1 m³ of air weighs about 1.2 kg.</small></div>
+    <p><b>Latent heat</b> changes state (liquid to gas) without changing temperature. When a liquid boils it soaks up a large amount of energy while staying at the same temperature. Evaporating 1 kg of water at room temperature takes about 2,450 kJ: almost <b>600 times</b> more than warming that kilogram by 1 K. This is why sweating cools you, and why every air conditioner works by boiling a liquid.</p>
+    <p>The key fact that makes refrigeration possible: <b>the boiling point depends on pressure</b>. Water boils at 100 °C at sea level but at about 70 °C high on a mountain. A refrigerant can be made to boil at 5 °C by keeping it at low pressure, and to condense at 45 °C by squeezing it to high pressure. Control the pressure and you control where the heat is absorbed and where it is released.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "An air conditioner makes cold."<br><b>Right:</b> there is no such thing as "cold" to make. An air conditioner is a <b>heat pump</b>: it uses electrical work to move heat from a cool place (the room) to a warm place (outside). That is why the outdoor unit blows hot air, and why the same machine run backwards heats a house.</p></div>
+    <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat (joules, watts and kWh)</a>
+
+    <h2>The refrigeration cycle</h2>
+    <p>Every chiller, split system and fridge uses the same four-part loop. Follow one kilogram of refrigerant round it.</p>
+    <figure>
+      <svg viewBox="0 0 760 360" role="img" aria-label="Vapour compression refrigeration cycle with compressor, condenser, expansion valve and evaporator">
+        <defs>
+          <marker id="c3r-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c3r-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c3r-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- condenser -->
+        <rect class="f-warn-soft s-red" x="230" y="70" width="300" height="44" rx="6"/>
+        <path class="s-red" d="M245 92 l15 -12 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24"/>
+        <text class="t t-bold" x="380" y="132" text-anchor="middle">Condenser</text>
+        <text class="t t-small t-muted" x="380" y="148" text-anchor="middle">hot gas condenses to liquid (~45 °C)</text>
+        <path class="s-amber" d="M300 62 V22 M380 62 V22 M460 62 V22" marker-end="url(#c3r-a)"/>
+        <text class="t t-small t-red" x="490" y="30">heat out (to outside air or cooling tower)</text>
+        <!-- evaporator -->
+        <rect class="f-theory-soft s-blue" x="230" y="246" width="300" height="44" rx="6"/>
+        <path class="s-blue" d="M245 268 l15 -12 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24 l15 24 l15 -24"/>
+        <text class="t t-bold" x="380" y="222" text-anchor="middle">Evaporator</text>
+        <text class="t t-small t-muted" x="380" y="238" text-anchor="middle">liquid boils to gas (~5 °C)</text>
+        <path class="s-amber" d="M300 340 V300 M380 340 V300 M460 340 V300" marker-end="url(#c3r-a)"/>
+        <text class="t t-small t-blue" x="490" y="334">heat in (from room air or chilled water)</text>
+        <!-- compressor -->
+        <circle class="f-panel s-line" cx="640" cy="180" r="34"/>
+        <path class="s-line" d="M620 158 L662 170 L662 190 L620 202 Z"/>
+        <text class="t t-bold" x="640" y="236" text-anchor="middle">Compressor</text>
+        <text class="t t-small t-muted" x="640" y="252" text-anchor="middle">electrical work in</text>
+        <!-- expansion -->
+        <path class="f-panel s-line" d="M100 160 L140 200 L100 200 L140 160 Z"/>
+        <text class="t t-bold" x="120" y="236" text-anchor="middle">Expansion</text>
+        <text class="t t-bold" x="120" y="252" text-anchor="middle">valve</text>
+        <text class="t t-small t-muted" x="120" y="268" text-anchor="middle">pressure drops</text>
+        <!-- pipes: high side red -->
+        <path class="s-red" d="M640 146 V92 H536" marker-end="url(#c3r-r)"/>
+        <path class="s-red" d="M230 92 H120 V156" marker-end="url(#c3r-r)"/>
+        <!-- low side blue -->
+        <path class="s-blue" d="M120 204 V268 H224" marker-end="url(#c3r-b)"/>
+        <path class="s-blue" d="M530 268 H640 V218" marker-end="url(#c3r-b)"/>
+        <text class="t t-small t-red" x="560" y="84">hot high-pressure gas</text>
+        <text class="t t-small t-red" x="20" y="84">warm high-pressure liquid</text>
+        <text class="t t-small t-blue" x="20" y="290">cold low-pressure mix</text>
+        <text class="t t-small t-blue" x="560" y="290">cool low-pressure gas</text>
+        <text class="t t-small t-red t-bold" x="20" y="130">HIGH SIDE</text>
+        <text class="t t-small t-blue t-bold" x="20" y="320">LOW SIDE</text>
+      </svg>
+      <figcaption>Figure 1. The vapour compression cycle. The compressor and expansion valve split the loop into a high-pressure side (red), where the refrigerant condenses and gives heat away, and a low-pressure side (blue), where it boils and absorbs heat. Temperatures are indicative.</figcaption>
+    </figure>
+    <ol>
+      <li><b>Compressor.</b> Squeezes cool, low-pressure gas into hot, high-pressure gas. This is where the electrical energy goes in.</li>
+      <li><b>Condenser.</b> The hot gas passes through a coil cooled by outside air (or by water from a cooling tower). At this high pressure it condenses at about 40–50 °C, releasing its latent heat outside.</li>
+      <li><b>Expansion device.</b> A small restriction (expansion valve) drops the pressure suddenly. Some of the liquid flashes to vapour and the mix becomes very cold.</li>
+      <li><b>Evaporator.</b> The cold mix passes through a coil over which room air (or chilled water) flows. At this low pressure it boils at about 5 °C, absorbing heat. The gas returns to the compressor.</li>
+    </ol>
+    <p>Reverse the direction (with a reversing valve) and the indoor coil becomes the condenser: you have a heat pump heating the room. Heat pump water heaters and air-to-water heat pumps for building heating use the same idea.</p>
+    <h3>Efficiency: the COP</h3>
+    <div class="formula">COP = heat moved / electrical energy in
+      <small>Worked example: a chiller moves 500 kW of heat out of the building and its compressors draw 100 kW. COP = 500 / 100 = 5. It moves five units of heat for each unit of electricity. Indicative values for water-cooled chillers are around 5–7 at good conditions; they fall when the condenser side is hot. Raising the chilled water temperature or lowering the condenser water temperature improves COP, which is one reason BMS reset strategies save energy.</small></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Handling refrigerant (connecting gauges, recovering, charging, brazing refrigerant lines) requires a <b>refrigerant handling licence</b> issued by the <b>Australian Refrigeration Council (ARC)</b> under Commonwealth law, and businesses that buy and store refrigerant need a refrigerant trading authorisation. BMS technicians typically <b>do not</b> handle refrigerant: that is the refrigeration mechanic's job. Confirm the current requirements with ARC.</p></div>
+
+    <h2>Central plant: chillers, towers, boilers and heat pumps</h2>
+    <p>Large buildings do not put a refrigeration loop in every room. They make <b>chilled water</b> in a central plant and pipe it to coils around the building. Heating is often done the same way with <b>heating hot water</b>.</p>
+    <figure>
+      <svg viewBox="0 0 760 310" role="img" aria-label="Central plant with cooling tower, chiller, chilled water loop and AHU coils">
+        <defs>
+          <marker id="c3p-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c3p-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- cooling tower -->
+        <path class="f-wash s-line" d="M40 40 H180 L165 110 H55 Z"/>
+        <text class="t t-bold" x="110" y="70" text-anchor="middle">Cooling tower</text>
+        <text class="t t-small t-muted" x="110" y="88" text-anchor="middle">evaporates water</text>
+        <path class="s-amber s-dash" d="M85 34 V10 M110 34 V10 M135 34 V10"/>
+        <text class="t t-small t-muted" x="150" y="18">heat + vapour out</text>
+        <!-- chiller -->
+        <rect class="f-panel s-line" x="290" y="110" width="180" height="120" rx="6"/>
+        <line class="s-thin" x1="290" y1="170" x2="470" y2="170"/>
+        <text class="t t-small t-bold" x="380" y="135" text-anchor="middle">Chiller: condenser</text>
+        <text class="t t-small t-bold" x="380" y="200" text-anchor="middle">Chiller: evaporator</text>
+        <text class="t t-small t-muted" x="380" y="155" text-anchor="middle">refrigerant loop inside</text>
+        <!-- condenser water loop -->
+        <path class="s-amber" d="M290 130 H220 V60 H186" marker-end="url(#c3p-a)"/>
+        <path class="s-amber" d="M110 110 V150 H284" marker-end="url(#c3p-a)"/>
+        <circle class="f-panel s-amber" cx="200" cy="150" r="12"/><text class="t t-small" x="200" y="178" text-anchor="middle">CW pump</text>
+        <text class="t t-small t-amber" x="226" y="52">~35 °C</text>
+        <text class="t t-small t-amber" x="128" y="140">~29 °C</text>
+        <!-- chilled water loop -->
+        <path class="s-blue" d="M470 190 H690 V120" marker-end="url(#c3p-b)"/>
+        <path class="s-blue" d="M640 270 H380 V236" marker-end="url(#c3p-b)"/>
+        <circle class="f-panel s-blue" cx="540" cy="190" r="12"/><text class="t t-small" x="540" y="218" text-anchor="middle">CHW pump (VSD)</text>
+        <text class="t t-small t-blue" x="480" y="182">supply ~6 °C</text>
+        <text class="t t-small t-blue" x="480" y="290">return ~12 °C</text>
+        <!-- AHU coils -->
+        <rect class="f-theory-soft s-blue" x="610" y="40" width="130" height="70" rx="6"/>
+        <text class="t t-small t-bold" x="675" y="65" text-anchor="middle">AHU coils</text>
+        <text class="t t-small t-muted" x="675" y="83" text-anchor="middle">FCUs, other loads</text>
+        <text class="t t-small t-muted" x="675" y="100" text-anchor="middle">each with a valve (AO)</text>
+        <path class="s-blue" d="M640 110 V270"/>
+      </svg>
+      <figcaption>Figure 2. A water-cooled central plant. The chilled water loop (blue) carries heat from the building's coils to the chiller's evaporator. The condenser water loop (amber) carries that heat, plus the compressor's energy, to the cooling tower. Temperatures are typical design values and vary by site.</figcaption>
+    </figure>
+    <ul>
+      <li><b>Chillers</b> are either <b>air-cooled</b> (fans on the roof reject the heat) or <b>water-cooled</b> (a condenser water loop takes the heat to a cooling tower). Water-cooled plant is more efficient but needs towers and water treatment.</li>
+      <li><b>Cooling towers</b> spray warm condenser water over fill while fans pull air through. A small fraction evaporates, and its latent heat cools the rest. The BMS controls tower fans (often with VSDs) to hold condenser water temperature.</li>
+      <li><b>Pumps</b> circulate each loop, often in duty/standby pairs, increasingly with VSDs controlled from a differential pressure sensor.</li>
+      <li><b>Boilers</b> (usually gas) or <b>heat pumps</b> make heating hot water. Many Australian buildings are now replacing gas boilers with heat pumps, so you will see both.</li>
+    </ul>
+    <div class="formula">Q = ṁ · c · ΔT  →  ṁ = 60 kW / (4.19 kJ/kg·K × 6 K) ≈ 2.4 kg/s ≈ 2.4 L/s
+      <small>Worked example: an AHU coil removing 60 kW with chilled water going in at 6 °C and out at 12 °C needs about 2.4 litres per second of water. If the BMS sees only a 3 K difference across the coil, either the flow is twice what it needs (wasting pump energy) or the coil is not doing its job.</small></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Cooling towers can grow <i>Legionella</i> bacteria, which cause a dangerous pneumonia. State and territory health laws set rules for registering, maintaining, testing and risk-managing cooling towers, and the BMS often monitors tower water treatment and run hours. The details differ by state; confirm with the state health department.</p></div>
+
+    <h2>The air handling unit (AHU)</h2>
+    <p>An AHU is a big metal box that mixes, filters, cools or heats, and pushes air into the building's ductwork. It is where most BMS points live (see the points list in <a href="c01-bms-fundamentals.html">C01</a>).</p>
+    <figure>
+      <svg viewBox="0 0 760 330" role="img" aria-label="Air handling unit anatomy with dampers, filter, coils, fan, VSD and sensors">
+        <defs>
+          <marker id="c3h-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c3h-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-green" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- ducts -->
+        <rect class="f-wash s-line" x="60" y="40" width="680" height="50"/>
+        <rect class="f-wash s-line" x="60" y="170" width="680" height="60"/>
+        <rect class="f-wash s-line" x="130" y="90" width="60" height="80"/>
+        <rect class="f-wash" x="132" y="86" width="56" height="88"/>
+        <!-- dampers -->
+        <g class="s-line"><line x1="60" y1="50" x2="60" y2="80"/><line x1="52" y1="56" x2="68" y2="64"/><line x1="52" y1="70" x2="68" y2="78"/></g>
+        <g class="s-line"><line x1="60" y1="180" x2="60" y2="220"/><line x1="52" y1="186" x2="68" y2="194"/><line x1="52" y1="202" x2="68" y2="210"/></g>
+        <g class="s-line"><line x1="140" y1="130" x2="180" y2="130"/><line x1="146" y1="122" x2="154" y2="138"/><line x1="166" y1="122" x2="174" y2="138"/></g>
+        <path class="s-line" d="M50 65 H14" marker-end="url(#c3h-k)"/>
+        <text class="t t-small" x="10" y="108">relief air</text>
+        <path class="s-green" d="M12 200 H48" marker-end="url(#c3h-g)"/>
+        <text class="t t-small t-green" x="8" y="250">outside air</text>
+        <text class="t t-small t-muted" x="8" y="266">(OA damper)</text>
+        <text class="t t-small t-muted" x="196" y="128">return air</text>
+        <text class="t t-small t-muted" x="196" y="144">damper</text>
+        <!-- flow arrows -->
+        <path class="s-line" d="M520 65 H420" marker-end="url(#c3h-k)"/>
+        <text class="t t-small" x="430" y="58">return air from building</text>
+        <path class="s-line" d="M160 100 V160" marker-end="url(#c3h-k)"/>
+        <!-- filter -->
+        <rect class="f-panel s-line" x="220" y="170" width="16" height="60"/>
+        <path class="s-thin" d="M220 180 L236 190 L220 200 L236 210 L220 220"/>
+        <!-- CHW coil -->
+        <rect class="f-theory-soft s-blue" x="270" y="170" width="30" height="60"/>
+        <path class="s-blue" d="M270 185 L300 175 M270 200 L300 190 M270 215 L300 205 M270 229 L300 220"/>
+        <!-- HHW coil -->
+        <rect class="f-warn-soft s-red" x="330" y="170" width="30" height="60"/>
+        <path class="s-red" d="M330 185 L360 175 M330 200 L360 190 M330 215 L360 205 M330 229 L360 220"/>
+        <!-- valves -->
+        <path class="f-panel s-blue" d="M276 252 L294 264 L294 252 L276 264 Z"/>
+        <path class="f-panel s-red" d="M336 252 L354 264 L354 252 L336 264 Z"/>
+        <path class="s-thin" d="M285 230 V252 M345 230 V252"/>
+        <!-- fan -->
+        <circle class="f-panel s-line" cx="450" cy="200" r="24"/>
+        <path class="s-line" d="M450 200 L450 180 M450 200 L469 210 M450 200 L431 210"/>
+        <rect class="f-accent-soft s-accent" x="425" y="252" width="50" height="26" rx="4"/>
+        <text class="t t-small t-bold" x="450" y="270" text-anchor="middle">VSD</text>
+        <path class="s-thin" d="M450 224 V252"/>
+        <path class="s-line" d="M560 200 H720" marker-end="url(#c3h-k)"/>
+        <text class="t t-small" x="600" y="190">supply air to VAVs</text>
+        <!-- sensors -->
+        <g class="f-panel s-accent">
+          <circle cx="228" cy="140" r="12"/><circle cx="490" cy="140" r="12"/>
+          <circle cx="520" cy="230" r="11"/><circle cx="680" cy="230" r="11"/>
+          <circle cx="600" cy="40" r="11"/><circle cx="650" cy="40" r="11"/><circle cx="700" cy="40" r="11"/>
+        </g>
+        <path class="s-thin" d="M220 140 L214 170 M236 140 L244 170 M482 140 L430 172 M498 140 L520 172"/>
+        <text class="t t-small" x="228" y="144" text-anchor="middle">ΔP</text>
+        <text class="t t-small" x="490" y="144" text-anchor="middle">ΔP</text>
+        <text class="t t-small" x="520" y="234" text-anchor="middle">T</text>
+        <text class="t t-small" x="680" y="234" text-anchor="middle">P</text>
+        <text class="t t-small" x="600" y="44" text-anchor="middle">C</text>
+        <text class="t t-small" x="650" y="44" text-anchor="middle">H</text>
+        <text class="t t-small" x="700" y="44" text-anchor="middle">T</text>
+        <!-- labels -->
+        <text class="t t-small" x="206" y="296">filter</text>
+        <text class="t t-small t-blue" x="262" y="296">CHW coil</text>
+        <text class="t t-small t-red" x="332" y="314">HHW coil</text>
+        <text class="t t-small" x="410" y="296">supply fan</text>
+        <text class="t t-small" x="498" y="262">SAT</text>
+        <text class="t t-small" x="620" y="262">static pressure</text>
+        <text class="t t-small t-muted" x="250" y="114">filter DP switch</text>
+        <text class="t t-small t-muted" x="510" y="128">fan DP switch</text>
+        <text class="t t-small t-muted" x="560" y="22">CO₂ · humidity · RAT</text>
+      </svg>
+      <figcaption>Figure 3. Anatomy of a typical AHU. Return air comes back from the building (top). Some is relieved outside, the rest mixes with outside air, then passes through the filter, the cooling and heating coils and the supply fan. Every labelled sensor, valve, damper and drive is a BMS point.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Part</th><th>What it does</th><th>BMS points</th></tr>
+      <tr><td>Outside air, return and relief dampers</td><td>Set how much fresh air enters. Linked so that more outside air means less return air.</td><td>AO to actuators; sometimes DI end switches</td></tr>
+      <tr><td>Filter</td><td>Removes dust. Pressure drop rises as it clogs.</td><td>DI from a DP switch or AI from a DP transducer</td></tr>
+      <tr><td>Cooling coil (CHW)</td><td>Chilled water cools the air and condenses moisture out of it (dehumidifies).</td><td>AO to the valve</td></tr>
+      <tr><td>Heating coil (HHW)</td><td>Warms the air in winter or for reheat.</td><td>AO to the valve</td></tr>
+      <tr><td>Supply fan with VSD</td><td>Moves the air. Speed controls duct pressure. Fan power rises roughly with the cube of speed, so 80 % speed needs only about half the power.</td><td>DO start, AO speed, DI status, DI fault</td></tr>
+      <tr><td>Sensors</td><td>Supply air temp, return air temp, humidity, CO₂, duct static pressure.</td><td>AIs</td></tr>
+    </table></div>
+    <div class="callout warn"><span class="label">Safety</span><p>AHU fans, pumps, chillers and compressors run on 400 V three-phase supplies, and fans can start automatically at any moment under BMS control. Never reach into an AHU or remove panels unless the unit is isolated and locked out under the site's procedure, done by an authorised person. The 400 V supplies are licensed electrician work. Your work is at the sensor and controller (ELV) end.</p></div>
+
+    <h2>VAV boxes and fan coil units</h2>
+    <h3>VAV boxes</h3>
+    <p>A <b>VAV</b> (variable air volume) box sits in the ceiling and controls how much of the AHU's supply air goes into one zone. It has a damper with an actuator, an <b>airflow sensor</b> (a cross-shaped tube that measures velocity pressure, read by a small DP transducer in the controller), and often a reheat coil or electric heater. The room sensor tells the controller the zone temperature.</p>
+    <p>Most VAV boxes use <b>pressure-independent cascade control</b>: the temperature loop does not move the damper directly. Instead it sets an <b>airflow setpoint</b> between a minimum and a maximum (say 40–200 L/s), and a second, fast loop moves the damper to hold that airflow. If the duct pressure changes, the airflow loop corrects it before the room even notices.</p>
+    <div class="formula">Sensible cooling (W) ≈ 1.2 × airflow (L/s) × ΔT (K)
+      <small>Worked example: a meeting room gains 2,000 W of heat (people, computers, sun). Supply air is 13 °C and the room should be 23 °C, so ΔT = 10 K. Airflow = 2,000 / (1.2 × 10) ≈ 167 L/s. If the VAV's maximum is set to 120 L/s, it can only remove 1.2 × 120 × 10 = 1,440 W, and the room will be hot whenever full. That is a real cause of "level 5 meeting room is always hot" complaints.</small></div>
+    <h3>Fan coil units (FCUs)</h3>
+    <p>An FCU is a small fan and coil in a ceiling, wall or cassette, fed with chilled water (and sometimes hot water). A <b>2-pipe</b> FCU has one coil that gets either chilled or hot water depending on season; a <b>4-pipe</b> FCU has separate cooling and heating coils. The controller runs the fan (often 3-speed relays or an EC fan with a 0–10 V speed signal) and opens the valve to hold room temperature. Hotels and apartment buildings use many FCUs.</p>
+
+    <h2>Sensors you will meet</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Measures</th><th>Common sensor</th><th>Typical signal</th><th>How a tech checks it</th></tr>
+      <tr><td>Temperature</td><td>10 kΩ NTC thermistor, PT1000 (platinum)</td><td>Resistance</td><td>Calibrated reference thermometer next to it; measure resistance disconnected</td></tr>
+      <tr><td>Humidity</td><td>Capacitive polymer sensor</td><td>0–10 V or 4–20 mA for 0–100 %RH</td><td>Calibrated handheld hygrometer; expect a few %RH tolerance</td></tr>
+      <tr><td>CO₂</td><td>NDIR (infrared absorption)</td><td>0–10 V for 0–2,000 ppm, for example</td><td>Handheld CO₂ meter; outdoor air is around 420 ppm, an empty building at night should fall towards that</td></tr>
+      <tr><td>Air pressure</td><td>Differential pressure transducer</td><td>0–10 V for 0–500 Pa, for example</td><td>Digital manometer on the same tubes</td></tr>
+      <tr><td>Water pressure / DP</td><td>Pressure transmitter</td><td>4–20 mA for 0–600 kPa, for example</td><td>Gauge on the same tapping</td></tr>
+      <tr><td>Water flow, energy</td><td>Magnetic or ultrasonic flow meter, BTU meter</td><td>Modbus, pulse or 4–20 mA</td><td>Compare with the meter's display; check pipe size setting</td></tr>
+      <tr><td>Airflow</td><td>Velocity pressure probe + DP transducer</td><td>Internal to VAV controller</td><td>Balancer's hood reading; check the "K-factor" setting</td></tr>
+    </table></div>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC (read these signal types on the bench)</a>
+
+    <h2>Control loops: on/off, P, PI and PID</h2>
+    <p>Every loop in a BMS follows the same picture: measure, compare with the setpoint, act, and measure again.</p>
+    <figure>
+      <svg viewBox="0 0 760 220" role="img" aria-label="Feedback control loop block diagram">
+        <defs><marker id="c3l-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="c3l-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small" x="10" y="74">setpoint</text><text class="t t-small t-muted" x="10" y="90">22 °C</text>
+        <path class="s-line" d="M70 80 H124" marker-end="url(#c3l-k)"/>
+        <circle class="f-panel s-line" cx="140" cy="80" r="16"/><text class="t t-bold" x="140" y="85" text-anchor="middle">Σ</text>
+        <text class="t t-small" x="110" y="64">+</text><text class="t t-small" x="146" y="114">−</text>
+        <path class="s-line" d="M156 80 H214" marker-end="url(#c3l-k)"/><text class="t t-small t-muted" x="166" y="72">error</text>
+        <rect class="f-accent-soft s-accent" x="218" y="55" width="130" height="50" rx="6"/><text class="t t-small t-bold" x="283" y="78" text-anchor="middle">PID controller</text><text class="t t-small t-muted" x="283" y="95" text-anchor="middle">in the DDC</text>
+        <path class="s-line" d="M348 80 H404" marker-end="url(#c3l-k)"/><text class="t t-small t-muted" x="356" y="72">0–100 %</text>
+        <rect class="f-panel s-line" x="408" y="55" width="110" height="50" rx="6"/><text class="t t-small t-bold" x="463" y="78" text-anchor="middle">Valve + coil</text><text class="t t-small t-muted" x="463" y="95" text-anchor="middle">(actuator, AO)</text>
+        <path class="s-line" d="M518 80 H574" marker-end="url(#c3l-k)"/>
+        <rect class="f-panel s-line" x="578" y="55" width="100" height="50" rx="6"/><text class="t t-small t-bold" x="628" y="78" text-anchor="middle">Room</text><text class="t t-small t-muted" x="628" y="95" text-anchor="middle">thermal mass</text>
+        <path class="s-amber" d="M628 14 V50" marker-end="url(#c3l-a)"/><text class="t t-small t-amber" x="636" y="26">disturbance: sun, people</text>
+        <path class="s-line" d="M678 80 H740"/><text class="t t-small" x="690" y="72">temp</text>
+        <path class="s-line" d="M720 80 V170 H520" marker-end="url(#c3l-k)"/>
+        <rect class="f-panel s-line" x="408" y="148" width="110" height="44" rx="6"/><text class="t t-small t-bold" x="463" y="168" text-anchor="middle">Sensor</text><text class="t t-small t-muted" x="463" y="184" text-anchor="middle">10 kΩ NTC (AI)</text>
+        <path class="s-line" d="M408 170 H140 V100" marker-end="url(#c3l-k)"/>
+        <text class="t t-small t-muted" x="200" y="164">measured value (process variable)</text>
+      </svg>
+      <figcaption>Figure 4. A feedback loop. The controller only sees the error between setpoint and measurement. Delays anywhere in the loop (valve travel, coil warm-up, air mixing, the sensor's own time constant) are what make loops oscillate if the gain is too high.</figcaption>
+    </figure>
+    <h3>On/off with hysteresis</h3>
+    <p>The simplest control: cooling on above 23 °C, off below 21 °C. The 2 K gap is the <b>hysteresis</b> (or differential). Without it, the compressor would switch on and off many times a minute and wear out. On/off is fine for small things (an exhaust fan, a frost heater) but makes temperature swing.</p>
+    <h3>Proportional (P)</h3>
+    <p>Output is proportional to the error. BMS tools often express gain as a <b>proportional band (PB)</b>: the error that moves the output from 0 to 100 %. A PB of 4 K means 25 % per K.</p>
+    <div class="formula">output = K<sub>p</sub> × error,   K<sub>p</sub> = 100 % / PB
+      <small>Worked example: PB = 4 K, room 1 K above setpoint → cooling valve 25 % open. Problem: if the room needs 57 % cooling to stay steady, a P-only controller can only give 57 % when the error is 2.3 K. The room settles <i>above</i> setpoint. That permanent error is called <b>offset</b> (or droop).</small></div>
+    <h3>Integral (I): removing the offset</h3>
+    <p>The integral term adds up error over time. As long as any error remains, it keeps pushing the output further. It stops only when error is zero. BMS tools often give <b>integral time</b> T<sub>i</sub> (seconds or minutes) instead of K<sub>i</sub>; K<sub>i</sub> = K<sub>p</sub> / T<sub>i</sub>. Too much integral (short T<sub>i</sub>) makes the loop overshoot and hunt.</p>
+    <h3>Derivative (D)</h3>
+    <p>The derivative term reacts to how fast the measurement is changing, braking the output before overshoot. It helps fast loops but amplifies sensor noise. Most HVAC loops are <b>PI only</b>, with D set to zero.</p>
+    <div class="formula">u(t) = K<sub>p</sub>·e + K<sub>i</sub>·∫e dt + K<sub>d</sub>·de/dt
+      <small>e = measured − setpoint for a cooling loop (hotter room → more cooling). For heating, the sign is reversed; getting the "action" (direct or reverse) wrong makes a loop run away to 0 or 100 % immediately.</small></div>
+
+    <div class="widget" id="w-c03">
+      <span class="label">Interactive · Tune a room cooling loop</span>
+      <p style="margin:0 0 6px;font-size:15px">A summer office starts at 28 °C. The PID controller drives a chilled-water valve. At 90 minutes the afternoon sun adds heat. Try P only (K<sub>i</sub> = 0) and see the offset; add integral to remove it; push K<sub>p</sub> or K<sub>i</sub> too high and watch it hunt.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 18px">
+        <label>K<sub>p</sub> <span class="out" id="c03-kpo">25</span> %/K <small id="c03-pb" style="color:var(--muted)"></small><input type="range" id="c03-kp" min="0" max="120" step="1" value="25"></label>
+        <label>K<sub>i</sub> <span class="out" id="c03-kio">2.0</span> %/(K·min) <small id="c03-ti" style="color:var(--muted)"></small><input type="range" id="c03-ki" min="0" max="20" step="0.5" value="2"></label>
+        <label>K<sub>d</sub> <span class="out" id="c03-kdo">0</span> %·min/K<input type="range" id="c03-kd" min="0" max="60" step="1" value="0"></label>
+        <label>Setpoint <span class="out" id="c03-spo">22.0</span> °C<input type="range" id="c03-sp" min="20" max="25" step="0.5" value="22"></label>
+      </div>
+      <svg viewBox="0 0 620 330" role="img" aria-label="Simulated room temperature and valve output over 3 hours" style="margin-top:8px">
+        <g class="s-thin s-dash"><line x1="50" y1="50" x2="590" y2="50"/><line x1="50" y1="80" x2="590" y2="80"/><line x1="50" y1="110" x2="590" y2="110"/><line x1="50" y1="140" x2="590" y2="140"/><line x1="50" y1="170" x2="590" y2="170"/></g>
+        <path class="s-line" d="M50 20 V200 H590"/>
+        <text class="t t-small t-muted" x="44" y="24" text-anchor="end">30</text>
+        <text class="t t-small t-muted" x="44" y="84" text-anchor="end">26</text>
+        <text class="t t-small t-muted" x="44" y="144" text-anchor="end">22</text>
+        <text class="t t-small t-muted" x="44" y="204" text-anchor="end">18</text>
+        <text class="t t-small t-muted" x="8" y="14">°C</text>
+        <line class="s-amber s-dash" x1="320" y1="20" x2="320" y2="300"/>
+        <text class="t t-small t-amber" x="326" y="34">sun load +4 K</text>
+        <line id="c03-spl" class="s-green s-dash" x1="50" y1="140" x2="590" y2="140"/>
+        <polyline id="c03-tl" class="s-accent" points=""/>
+        <path class="s-line" d="M50 240 V300 H590"/>
+        <text class="t t-small t-muted" x="44" y="244" text-anchor="end">100</text>
+        <text class="t t-small t-muted" x="44" y="304" text-anchor="end">0</text>
+        <text class="t t-small t-blue" x="56" y="234">valve %</text>
+        <polyline id="c03-ul" class="s-blue" points=""/>
+        <text class="t t-small t-muted" x="50" y="320" text-anchor="middle">0</text>
+        <text class="t t-small t-muted" x="230" y="320" text-anchor="middle">60 min</text>
+        <text class="t t-small t-muted" x="410" y="320" text-anchor="middle">120 min</text>
+        <text class="t t-small t-muted" x="590" y="320" text-anchor="middle">180</text>
+      </svg>
+      <div class="readings">
+        <div><small>Temp at 85 min</small><span class="out" id="c03-r1">–</span></div>
+        <div><small>Temp at 180 min</small><span class="out" id="c03-r2">–</span></div>
+        <div><small>Worst undershoot</small><span class="out" id="c03-r3">–</span></div>
+        <div><small>Verdict</small><span class="out" id="c03-r4" style="font-size:16px">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      function run(){
+        var kp=+$('c03-kp').value,ki=+$('c03-ki').value,kd=+$('c03-kd').value,sp=+$('c03-sp').value;
+        $('c03-kpo').textContent=kp;$('c03-kio').textContent=ki.toFixed(1);$('c03-kdo').textContent=kd;$('c03-spo').textContent=sp.toFixed(1);
+        $('c03-pb').textContent=kp>0?'(PB '+(100/kp).toFixed(1)+' K)':'';
+        $('c03-ti').textContent=(ki>0&&kp>0)?'(Ti '+(kp/ki).toFixed(1)+' min)':'';
+        var dt=0.05,tau=20,tauv=2,dead=2,cap=14;
+        var T=28,c=0,I=0,prevT=T,buf=[],nd=Math.round(dead/dt);
+        for(var i=0;i<nd;i++)buf.push(0);
+        var tp=[],up=[],t1=null,t2=null,minDev=0,tail=[];
+        var N=Math.round(180/dt);
+        for(var k=0;k<=N;k++){
+          var t=k*dt,free=t<90?30:34;
+          var e=T-sp,dT=(T-prevT)/dt;prevT=T;
+          var Inew=I+ki*e*dt;
+          var u=kp*e+Inew+kd*dT;
+          if(u>100){u=100;if(e<0)I=Inew;}else if(u<0){u=0;if(e>0)I=Inew;}else{I=Inew;}
+          buf.push(u);var ud=buf.shift();
+          c+=(ud/100-c)*dt/tauv;
+          T+=((free-cap*c)-T)*dt/tau;
+          if(k%10===0){tp.push((50+t*3).toFixed(1)+','+Math.max(5,Math.min(215,200-(T-18)*15)).toFixed(1));up.push((50+t*3).toFixed(1)+','+(300-u*0.6).toFixed(1));}
+          if(Math.abs(t-85)<dt/2)t1=T;
+          if(t>20&&T-sp<minDev)minDev=T-sp;
+          if(t>=150)tail.push(T);
+        }
+        t2=T;
+        $('c03-tl').setAttribute('points',tp.join(' '));
+        $('c03-ul').setAttribute('points',up.join(' '));
+        var y=200-(sp-18)*15;$('c03-spl').setAttribute('y1',y);$('c03-spl').setAttribute('y2',y);
+        $('c03-r1').textContent=t1.toFixed(1)+' °C';
+        $('c03-r2').textContent=t2.toFixed(1)+' °C';
+        $('c03-r3').textContent=minDev<-0.05?(minDev.toFixed(1)+' K'):'none';
+        var mx=Math.max.apply(null,tail),mn=Math.min.apply(null,tail),swing=mx-mn,off=Math.abs(t2-sp);
+        var v;
+        if(kp===0&&ki===0)v='No control';
+        else if(swing>0.6)v='Hunting';
+        else if(off>0.4)v='Offset';
+        else if(minDev<-1)v='Overshoots';
+        else v='Good';
+        $('c03-r4').textContent=v;
+      }
+      ['c03-kp','c03-ki','c03-kd','c03-sp'].forEach(function(id){$(id).addEventListener('input',run);});
+      run();
+    })();
+    </script>
+    <p>What you should find: with K<sub>i</sub> = 0 the room settles about 2 K above setpoint, and the offset gets worse when the sun arrives. Moderate integral (T<sub>i</sub> around 10–20 minutes) removes it. High gain or short integral time makes the valve swing between 0 and 100 %: that is <b>hunting</b>, and on a real site it wears out actuators and wastes energy. Tuning on site is the same: change one setting at a time, wait, and read the trend.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A practical tuning habit: start with integral off and raise the gain until the loop just starts to oscillate, then halve the gain. Then add integral slowly (start with a long integral time and shorten it) until the offset disappears in a reasonable time without overshoot. Record the old values before you change anything.</p></div>
+    <a class="crosslink" href="../theory/t14-op-amps.html">Theory T14 · Op-amps: the feedback idea that also runs every control loop</a>
+
+    <h2>The economy cycle and ventilation</h2>
+    <p>When outside air is cooler than return air, it is free cooling. An <b>economy cycle</b> (economiser) opens the outside air damper beyond the minimum and closes the return air damper, so the building is cooled by outside air before the chilled water valve opens. Simple versions compare temperatures (dry-bulb changeover); better versions compare <b>enthalpy</b> (total heat, including moisture), because humid outside air can be cool but still add a lot of latent load to the cooling coil.</p>
+    <p>Example logic: "If the AHU is in cooling and outside air temperature is at least 2 K below return air, and outside humidity is acceptable, modulate the outside air damper to hold supply air setpoint; only when the damper is fully open, start opening the chilled water valve." In Melbourne's climate the economy cycle runs for many hours a year; in humid tropical places like Darwin, outside air is rarely cool and dry enough to help.</p>
+    <p>Whatever the economy cycle does, the AHU must never go below the <b>minimum outside air</b> needed for ventilation. Many buildings use <b>CO₂-based demand-controlled ventilation</b>: when return CO₂ rises (more people), the minimum outside air rises too.</p>
+
+    <h2>The Australian context</h2>
+    <div class="callout aus"><span class="label">In Australia</span><p><b>NCC Section J.</b> The National Construction Code (Volume One) Section J sets energy efficiency requirements for commercial buildings, including HVAC controls such as time switches, and, for some system sizes and climate zones, economy cycles; it also requires facilities for energy monitoring in larger buildings. The requirements depend on building class, size and climate zone, and change with each edition, so check the current NCC published by the Australian Building Codes Board (ABCB).</p>
+    <p><b>NABERS Energy.</b> The National Australian Built Environment Rating System rates a building's measured energy performance over 12 months, on a scale up to 6 stars. Large office spaces offered for sale or lease must disclose a rating under the Commercial Building Disclosure program. Owners care a great deal about their rating, and BMS tuning (schedules, resets, removing forgotten overrides) is one of the cheapest ways to improve it. Confirm current rules and thresholds with NABERS and the CBD program.</p>
+    <p><b>Ventilation.</b> Minimum outside air rates for mechanical ventilation are set by AS 1668.2 (referenced by the NCC). <b>Refrigerant</b> work needs an ARC licence, as above. Rules change and differ by state; always check the current version with the regulator.</p></div>
+
+    <h2>Faults you will diagnose</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom on the BMS</th><th>Likely causes</th><th>First checks</th></tr>
+      <tr><td>Heating and cooling valves both open on one AHU</td><td>Wrong loop action, overlapping setpoints, a stuck valve</td><td>Trend both valves and SAT; check deadband between heating and cooling setpoints</td></tr>
+      <tr><td>Valve swinging 0–100 % every few minutes</td><td>Loop gain too high or integral time too short</td><td>Trend at 1-minute interval; retune (see the widget)</td></tr>
+      <tr><td>Zone hot, VAV at maximum airflow</td><td>Supply air too warm, VAV max too low, extra load (new equipment)</td><td>AHU SAT and CHW valve; VAV max setting; airflow reading vs a balancer's hood</td></tr>
+      <tr><td>Supply fan at 100 % but duct pressure low</td><td>Clogged filter, broken belt, blocked or leaking pressure tube</td><td>Filter DP, fan status, the sensor's tubing</td></tr>
+      <tr><td>Supply air temp reads 8 °C below the coil's leaving water</td><td>Sensor wrong type/curve, sensor placed against the coil, broken wire</td><td>Reference thermometer; resistance check; sensor location</td></tr>
+      <tr><td>Chilled water ΔT only 2 K</td><td>Pumps over-flowing, coil valves leaking through, bypass open</td><td>Pump speed, valve positions, plant DP setpoint</td></tr>
+    </table></div>
+    <div class="callout job"><span class="label">On the job</span><p>Most HVAC complaints arrive as "too hot" or "too cold". A good BMS tech works from the zone up: room sensor reading correct? VAV or FCU doing what its controller asks? Is the AHU delivering the right supply air? Is the central plant delivering chilled water at the right temperature? The answer is usually found by reading trends before climbing a ladder. When the fault is mechanical (a refrigeration fault, a seized pump bearing), you hand it to the mechanical service tech with good evidence.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Turn your Arduino thermistor (from <a href="../practice/p12-sensors-adc.html">P12</a>) and a small 12 V fan (driven by a MOSFET, <a href="../practice/p08-transistor-switches.html">P08</a>) into a real PI loop: warm the sensor with your fingers or a 12 V resistor heater, and let the fan speed (PWM) hold it at a setpoint. Print temperature and output to the serial plotter. You will see offset with P only and hunting with too much gain, exactly as in the simulator.</p></div>
+
+    <h2>Interview questions</h2>
+    <details class="more"><summary>"Explain the refrigeration cycle in one minute."</summary><p>The compressor raises refrigerant pressure; in the condenser the hot gas condenses and releases heat outside; the expansion valve drops the pressure; in the evaporator the cold liquid boils and absorbs heat from the air or water; the gas returns to the compressor. It moves heat using latent heat and the pressure–boiling point relationship.</p></details>
+    <details class="more"><summary>"What's the difference between P and PI control, and why does it matter?"</summary><p>P-only output is proportional to error, so it needs some error to produce output and leaves an offset. Adding integral accumulates error over time and removes the offset. Too much integral causes overshoot and hunting.</p></details>
+    <details class="more"><summary>"What is an economy cycle?"</summary><p>Using cool outside air for free cooling by opening the outside air damper above minimum, before mechanical cooling, when outside conditions (temperature or enthalpy) are better than return air.</p></details>
+    <details class="more"><summary>"How does a VAV box control temperature?"</summary><p>The zone temperature loop sets an airflow setpoint between min and max; a fast airflow loop moves the damper to hold that airflow (pressure-independent). Reheat is used if the zone is cold at minimum airflow.</p></details>
+    <details class="more"><summary>"Do you need a licence to work on HVAC in Australia?"</summary><p>Refrigerant handling needs an ARC licence; mains electrical work needs a state electrical licence. BMS controls work on the ELV side may not need either, depending on the role and state, but check the employer's requirements and the regulator.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does an evaporator absorb so much heat without the refrigerant getting warmer?</summary><div class="answer"><p>Because the refrigerant is boiling. While changing state from liquid to gas, it absorbs latent heat at constant temperature (set by its pressure). Latent heat is far larger than sensible heat for the same mass.</p></div></details>
+    <details class="quiz"><summary>An AHU supplies 4,000 L/s of air at 13 °C to rooms at 23 °C. Roughly how much sensible cooling is that?</summary><div class="answer"><p>1.2 × 4,000 × 10 = 48,000 W ≈ <b>48 kW</b>.</p></div></details>
+    <details class="quiz"><summary>A loop has a proportional band of 5 K and no integral. The room needs 60 % cooling to hold steady. Where does it settle?</summary><div class="answer"><p>K<sub>p</sub> = 100/5 = 20 %/K. 60 % output needs an error of 60/20 = 3 K, so it settles about <b>3 K above setpoint</b>. Integral action would remove this offset.</p></div></details>
+    <details class="quiz"><summary>A chiller rejects 600 kW at the condenser while drawing 100 kW. How much cooling does it provide and what is its COP?</summary><div class="answer"><p>Energy balance: heat rejected = cooling + compressor work, so cooling = 600 − 100 = <b>500 kW</b>, and COP = 500/100 = <b>5</b>.</p></div></details>
+    <details class="quiz"><summary>Why is humid outside air at 20 °C not always good for an economy cycle?</summary><div class="answer"><p>Its moisture carries latent heat. The cooling coil must condense that moisture out, which can cost more energy than cooling drier return air. Enthalpy-based economy control accounts for this.</p></div></details>
+    <details class="quiz"><summary>A heating valve loop is set to "direct acting" by mistake (output rises as temperature rises). What will the trend show?</summary><div class="answer"><p>As the room warms, the valve opens more, making it warmer still: the valve runs to 100 % and the room overheats. When cold, the valve shuts. Wrong action is a classic commissioning error, fixed by reversing the loop action.</p></div></details>
+    <details class="quiz"><summary>Who in Australia may recover and recharge refrigerant in a chiller?</summary><div class="answer"><p>A person holding the appropriate refrigerant handling licence from the Australian Refrigeration Council (typically a refrigeration mechanic). A BMS technician without that licence must not.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain sensible vs latent heat with numbers.</span></li>
+      <li><input type="checkbox"><span>I can draw the refrigeration cycle and say what happens in each part.</span></li>
+      <li><input type="checkbox"><span>I can calculate COP, chilled water flow and air-side cooling with Q = m·c·ΔT.</span></li>
+      <li><input type="checkbox"><span>I can name every part of an AHU and the BMS points on it.</span></li>
+      <li><input type="checkbox"><span>I can explain VAV cascade control and 2-pipe vs 4-pipe FCUs.</span></li>
+      <li><input type="checkbox"><span>I can explain on/off, P, PI and PID, offset and hunting, and tune a loop in the simulator.</span></li>
+      <li><input type="checkbox"><span>I can describe an economy cycle and CO₂ demand ventilation.</span></li>
+      <li><input type="checkbox"><span>I know what NCC Section J, NABERS, AS 1668.2 and the ARC licence are, and where to check current rules.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

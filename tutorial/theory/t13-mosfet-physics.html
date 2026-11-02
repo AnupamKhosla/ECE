@@ -36,7 +36,6 @@
         <text class="t t-bold" x="30" y="20">1 · Accumulation</text>
         <text class="t t-small t-muted" x="30" y="36">V<tspan baseline-shift="sub" font-size="9">G</tspan> negative</text>
         <rect class="f-ink" x="30" y="50" width="180" height="12"/>
-        <text class="t t-small" x="34" y="78">oxide</text>
         <rect class="f-wash s-thin" x="30" y="62" width="180" height="22"/>
         <text class="t t-small t-muted" x="40" y="78">oxide (insulator)</text>
         <rect class="f-warn-soft s-thin" x="30" y="84" width="180" height="150"/>
@@ -111,7 +110,6 @@
         <path class="s-line" d="M130 110 V40"/><text class="t t-small t-bold" x="100" y="34">Source</text>
         <path class="s-line" d="M530 110 V40"/><text class="t t-small t-bold" x="508" y="34">Drain</text>
         <!-- channel tapering -->
-        <path class="f-blue" d="M200 111 H420 L455 111 L420 117 H200 Z" opacity="0.85"/>
         <path class="f-blue" d="M200 111 L200 121 Q330 119 425 113 L425 111 Z"/>
         <rect class="f-wash" x="425" y="111" width="35" height="22" opacity="0.9"/>
         <text class="t t-small" x="380" y="150">pinch-off</text>
@@ -147,7 +145,7 @@ Saturation (V<sub>DS</sub> ≥ V<sub>ov</sub>):  I<sub>D</sub> = (k/2) V<sub>ov<
       <p style="font-size:15px;margin:0 0 6px">Circuit: 12 V supply → load resistor R<sub>L</sub> → MOSFET drain; source to 0 V. Slide the gate voltage and the threshold and see whether the MOSFET is really "on".</p>
       <label>Threshold V<sub>th</sub> <span class="out" id="t13-vth-o"></span><input type="range" id="t13-vth" min="0.5" max="4" step="0.1" value="2"></label>
       <label>Gain factor k <span class="out" id="t13-k-o"></span><input type="range" id="t13-k" min="-1" max="1.6" step="0.05" value="0.6"></label>
-      <label>Load resistor R<sub>L</sub> <span class="out" id="t13-rl-o"></span><input type="range" id="t13-rl" min="0.4" max="2.4" step="0.02" value="0.38"></label>
+      <label>Load resistor R<sub>L</sub> <span class="out" id="t13-rl-o"></span><input type="range" id="t13-rl" min="0.3" max="2.4" step="0.02" value="0.38"></label>
       <label>Gate voltage V<sub>GS</sub> <span class="out" id="t13-vgs-o"></span><input type="range" id="t13-vgs" min="0" max="10" step="0.05" value="3.3"></label>
       <svg id="t13-plot" viewBox="0 0 560 300" role="img" aria-label="Drain current against gate voltage"></svg>
       <div class="readings">
@@ -194,7 +192,7 @@ Saturation (V<sub>DS</sub> ≥ V<sub>ov</sub>):  I<sub>D</sub> = (k/2) V<sub>ov<
       [vthR,kR,rlR,vgsR].forEach(function(e){e.oninput=draw;});draw();
     })();
     </script>
-    <div class="callout try"><span class="label">Try this</span><p>Start at the default (V<sub>th</sub> 2 V, 5 A load). At 3.3 V gate drive the MOSFET only reaches saturation and burns watts. Move V<sub>GS</sub> to 5 V and then 10 V and watch the heat collapse to a fraction of a watt. Now set V<sub>th</sub> to 1 V (a logic-level part) and go back to 3.3 V: fully on. That is the whole story of logic-level MOSFETs in one slider.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Start at the default (V<sub>th</sub> 2 V, 5 A load). At 3.3 V gate drive the MOSFET stays in saturation, passes only part of the load current and turns more than 10 W into heat. Move V<sub>GS</sub> to 5 V and then 10 V and watch the heat fall to about 2 W and then under 1 W. Now set V<sub>th</sub> to 1 V and k to about 20 A/V² (a modern logic-level part) and go back to 3.3 V: ohmic, and only about half a watt. That is the whole story of logic-level MOSFETs in a few sliders.</p></div>
 
     <h2>R<sub>DS(on)</sub> and why logic-level MOSFETs matter</h2>
     <p>Datasheets give <strong>R<sub>DS(on)</sub></strong>, the on-resistance, <em>at a stated V<sub>GS</sub></em>, usually 10 V for standard parts. They also give <strong>V<sub>GS(th)</sub></strong>, but read its definition: it is the gate voltage where the drain current just reaches a tiny test value, often 250 µA. <strong>At V<sub>GS(th)</sub> the MOSFET is barely on, not fully on.</strong></p>
