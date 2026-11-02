@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P04 · Series, parallel and voltage dividers</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part A · Your bench</div>
+    <span class="eyebrow">Practice · Lab P04</span>
+    <h1>Series, parallel and voltage dividers</h1>
+    <p class="lede">You will prove Kirchhoff's two laws with your own meter readings, combine resistors in series and parallel, and build voltage dividers from fixed resistors, a potentiometer, a light sensor and a thermistor, the same way a BMS controller reads a room temperature sensor and an alarm panel supervises its zones.</p>
+    <div class="meta"><span><b>Time</b> 2 hours</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$10 extra (pot, LDR, NTC)</span><span><b>Theory</b> T02, T04</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>9 V battery + snap</b><small>and the 3×AA pack from P02</small></li>
+      <li><b>Resistors</b><small>1 kΩ, 2.2 kΩ ×2, 4.7 kΩ, 10 kΩ ×3, 100 kΩ, 1 MΩ ×2</small></li>
+      <li><b>Potentiometer, 10 kΩ linear</b><small>often marked B10K, ~A$2</small></li>
+      <li><b>LDR (light-dependent resistor)</b><small>~A$1–2</small></li>
+      <li><b>10 kΩ NTC thermistor</b><small>"10 kΩ at 25 °C", ~A$1–3</small></li>
+      <li><b>Push-button or reed switch</b><small>for the alarm-zone experiment</small></li>
+      <li><b>Multimeter, breadboard, jumpers</b><small>from P01–P03</small></li>
+    </ul>
+
+    <h2>The two rules: series and parallel</h2>
+    <p>Two parts are in <b>series</b> when the same current must pass through one and then the other: there is only one path. Two parts are in <b>parallel</b> when they connect between the same two nodes: the current has a choice of paths, and both parts have the same voltage across them.</p>
+    <div class="compare">
+      <div><h4>Series</h4><p><b>Same current</b> through each part. The <b>voltages add up</b> to the total. Resistances add: more resistors in a row make it harder for current to flow.</p><p style="font-family:var(--mono)">R<sub>total</sub> = R<sub>1</sub> + R<sub>2</sub> + R<sub>3</sub> + …</p></div>
+      <div><h4>Parallel</h4><p><b>Same voltage</b> across each part. The <b>currents add up</b> to the total. Every extra path makes it easier for current to flow, so the total is <b>smaller</b> than the smallest resistor.</p><p style="font-family:var(--mono)">1/R<sub>total</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + …</p></div>
+    </div>
+    <p>For exactly two resistors in parallel there is a handy shortcut, "product over sum": R = (R<sub>1</sub> × R<sub>2</sub>) / (R<sub>1</sub> + R<sub>2</sub>). Two equal resistors in parallel give half the value: 10 kΩ ∥ 10 kΩ = 5 kΩ.</p>
+    <p><b>Worked examples.</b> 1 kΩ + 2.2 kΩ + 4.7 kΩ in series = 7.9 kΩ. The same three in parallel: 1/R = 1/1 + 1/2.2 + 1/4.7 = 1 + 0.4545 + 0.2128 = 1.6673 per kΩ, so R = 0.600 kΩ = 600 Ω. Check: it is smaller than the smallest (1 kΩ), as it must be.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Adding a resistor always increases the resistance."<br><b>Right:</b> Only in series. In parallel, adding a resistor adds a new path, so the total <b>drops</b>. Think of lanes on a road: adding a lane (parallel) lets more cars through; adding a toll gate in line (series) lets fewer through.</p></div>
+
+    <div class="widget" id="p04-rcalc">
+      <span class="label">Interactive · Series and parallel calculator</span>
+      <label>Resistor values, separated by commas (use k and M, e.g. 1k, 2k2, 4.7k, 1M)
+        <input type="text" id="p04-rlist" value="1k, 2.2k, 4.7k" style="font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%">
+      </label>
+      <div class="readings">
+        <div><small>All in series</small><span class="out" id="p04-rs">–</span></div>
+        <div><small>All in parallel</small><span class="out" id="p04-rp">–</span></div>
+        <div><small>Current from 9 V (series)</small><span class="out" id="p04-is">–</span></div>
+        <div><small>Current from 9 V (parallel)</small><span class="out" id="p04-ip">–</span></div>
+      </div>
+      <p id="p04-rnote" style="margin:10px 0 0;font-size:14.5px;color:var(--muted)"></p>
+    </div>
+    <script>
+    (function(){
+      function parse(s){s=s.trim().replace(/Ω|ohms?/gi,'');if(!s)return NaN;
+        var m=s.match(/^(\d*\.?\d*)([rRkKmM]?)(\d*)$/);if(!m)return NaN;
+        var mul={'':1,r:1,R:1,k:1e3,K:1e3,m:1e6,M:1e6}[m[2]];
+        var num=m[3]?parseFloat((m[1]||'0')+'.'+m[3]):parseFloat(m[1]);
+        return isNaN(num)?NaN:num*mul;}
+      function fmt(v){if(!isFinite(v))return '–';if(v>=1e6)return +(v/1e6).toPrecision(4)+' MΩ';if(v>=1e3)return +(v/1e3).toPrecision(4)+' kΩ';return +v.toPrecision(4)+' Ω';}
+      function fi(i){if(!isFinite(i))return '–';if(i>=1)return i.toFixed(2)+' A';if(i>=1e-3)return (i*1e3).toFixed(2)+' mA';return (i*1e6).toFixed(1)+' µA';}
+      var inp=document.getElementById('p04-rlist');
+      function upd(){
+        var vals=inp.value.split(',').map(parse).filter(function(v){return v>0;});
+        var note=document.getElementById('p04-rnote');
+        if(!vals.length){['p04-rs','p04-rp','p04-is','p04-ip'].forEach(function(id){document.getElementById(id).textContent='–';});note.textContent='Type at least one value.';return;}
+        var s=vals.reduce(function(a,b){return a+b;},0),g=vals.reduce(function(a,b){return a+1/b;},0),p=1/g,mn=Math.min.apply(null,vals);
+        document.getElementById('p04-rs').textContent=fmt(s);
+        document.getElementById('p04-rp').textContent=fmt(p);
+        document.getElementById('p04-is').textContent=fi(9/s);
+        document.getElementById('p04-ip').textContent=fi(9/p);
+        var pw=81/p;
+        note.textContent=vals.length+' resistor(s). Parallel total is '+(100*p/mn).toFixed(0)+'% of the smallest one ('+fmt(mn)+'). '+
+          (pw>0.25*vals.length?'Careful: on 9 V the parallel set dissipates '+pw.toFixed(2)+' W in total, more than ¼ W resistors can share.':'Power on 9 V is fine for ¼ W resistors.');
+      }
+      inp.addEventListener('input',upd);upd();
+    })();
+    </script>
+
+    <h2>Lab: prove Kirchhoff's laws with a meter</h2>
+    <p>Two laws, named after Gustav Kirchhoff, solve every DC circuit. They are just bookkeeping of charge and energy:</p>
+    <ul>
+      <li><b>Kirchhoff's voltage law (KVL)</b>: around any closed loop, the voltage rises equal the voltage drops. Energy given to each coulomb by the battery is all spent by the time it returns.</li>
+      <li><b>Kirchhoff's current law (KCL)</b>: the current into a node equals the current out. Charge is not created, destroyed or stored in a wire junction.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 620 270" role="img" aria-label="Test circuit: 9 volt battery, R1 1 kilohm in series with R2 2.2 kilohm and R3 4.7 kilohm in parallel, nodes A B and C labelled">
+        <defs><marker id="p04-kcl-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M80 50 H170 M250 50 H420 M340 50 V90 M500 50 V90 M420 50 H500 M340 160 V220 M500 160 V220 M80 220 H500 M80 220 V156 M80 124 V50"/>
+        <line class="s-line" x1="56" y1="128" x2="104" y2="128"/><line class="s-line" x1="68" y1="136" x2="92" y2="136"/><line class="s-line" x1="56" y1="144" x2="104" y2="144"/><line class="s-line" x1="68" y1="152" x2="92" y2="152"/>
+        <text class="t t-bold" x="40" y="126">+</text><text class="t" x="112" y="144">9 V</text>
+        <path class="s-accent" d="M170 50 l7 -10 l13 20 l13 -20 l13 20 l13 -20 l13 20 l8 -10"/>
+        <text class="t" x="186" y="28">R1 = 1 kΩ</text>
+        <path class="s-accent" d="M340 90 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <path class="s-accent" d="M500 90 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <text class="t" x="270" y="134">R2</text><text class="t t-small" x="262" y="150">2.2 kΩ</text>
+        <text class="t" x="520" y="134">R3</text><text class="t t-small" x="520" y="150">4.7 kΩ</text>
+        <circle class="f-ink" cx="80" cy="50" r="4"/><circle class="f-ink" cx="340" cy="50" r="4"/><circle class="f-ink" cx="340" cy="220" r="4"/>
+        <text class="t t-bold t-accent" x="72" y="40">A</text><text class="t t-bold t-accent" x="346" y="40">B</text><text class="t t-bold t-accent" x="346" y="242">C (0 V)</text>
+        <path class="s-red" d="M270 66 H320" marker-end="url(#p04-kcl-arr)"/><text class="t t-small t-red" x="262" y="82">I₁ ≈ 3.60 mA</text>
+        <path class="s-red" d="M356 64 V84" marker-end="url(#p04-kcl-arr)"/><text class="t t-small t-red" x="362" y="80">I₂ ≈ 2.45 mA</text>
+        <path class="s-red" d="M516 64 V84" marker-end="url(#p04-kcl-arr)"/><text class="t t-small t-red" x="524" y="80">I₃ ≈ 1.15 mA</text>
+        <text class="t t-small t-muted" x="150" y="262">KVL: V(R1) + V(R2) = 9 V.  KCL at node B: I₁ = I₂ + I₃.</text>
+      </svg>
+      <figcaption>Figure 1. The test circuit. R1 is in series with the parallel pair R2 ∥ R3. Node B is where the current splits; node C is the common 0 V return. The values shown are for exactly 9.00 V.</figcaption>
+    </figure>
+    <h3>Predict first</h3>
+    <p>R2 ∥ R3 = (2.2 × 4.7) / (2.2 + 4.7) = 10.34 / 6.9 = 1.499 kΩ. Total = 1 + 1.499 = 2.499 kΩ. Battery current I₁ = 9 / 2.499 kΩ = 3.60 mA. V(R1) = 3.60 mA × 1 kΩ = 3.60 V. V(B) = 9 − 3.60 = 5.40 V. Then I₂ = 5.40 / 2.2 kΩ = 2.45 mA and I₃ = 5.40 / 4.7 kΩ = 1.15 mA. Notice I₂ + I₃ = 3.60 mA = I₁, and the smaller resistor takes the larger share.</p>
+    <ol class="steps">
+      <li><p><b>Build it</b> on the breadboard from Figure 1. Measure each resistor first (out of circuit) and write down the real values.</p></li>
+      <li><p><b>Measure the battery under load</b> (a fresh 9 V often reads 9.3–9.6 V). Scale all predictions by V<sub>battery</sub>/9.</p></li>
+      <li><p><b>Measure voltages</b> (black probe on node C for V(B) and the battery; across R1 directly).</p></li>
+      <li><p><b>Measure the three currents</b>, each with the meter in series: I₁ in the wire between R1 and node B; I₂ in the leg of R2; I₃ in the leg of R3. Power off each time you rearrange.</p></li>
+      <li><p><b>Check the laws</b>: does V(R1) + V(B) equal the battery? Does I₂ + I₃ equal I₁?</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <tr><th>Quantity</th><th>Predicted (9.00 V)</th><th>Predicted (9.40 V)</th><th>Typical measured</th></tr>
+      <tr><td>V battery (loaded)</td><td>9.00 V</td><td>9.40 V</td><td>9.38 V</td></tr>
+      <tr><td>V across R1</td><td>3.60 V</td><td>3.76 V</td><td>3.73 V</td></tr>
+      <tr><td>V(B) = V across R2 and R3</td><td>5.40 V</td><td>5.64 V</td><td>5.65 V</td></tr>
+      <tr><td>I₁</td><td>3.60 mA</td><td>3.76 mA</td><td>3.74 mA</td></tr>
+      <tr><td>I₂ (2.2 kΩ)</td><td>2.45 mA</td><td>2.56 mA</td><td>2.58 mA</td></tr>
+      <tr><td>I₃ (4.7 kΩ)</td><td>1.15 mA</td><td>1.20 mA</td><td>1.19 mA</td></tr>
+      <tr><td>KVL: 3.73 + 5.65</td><td colspan="3">= 9.38 V ✓ (matches the battery)</td></tr>
+      <tr><td>KCL: 2.58 + 1.19</td><td colspan="3">= 3.77 mA vs I₁ = 3.74 mA ✓ (within meter accuracy and burden voltage)</td></tr>
+    </table></div>
+    <div class="callout why"><span class="label">Why it works</span><p>Voltage is energy per coulomb. A coulomb leaving the battery's + terminal carries 9.38 J; it spends 3.73 J in R1 and 5.65 J in R2 or R3, and arrives back with nothing left. That is KVL. Current is coulombs per second; charge cannot pile up in a junction of copper (it would build a huge voltage almost instantly), so what flows in must flow out. That is KCL. The small mismatches you see are resistor tolerance, meter accuracy and the burden voltage of the ammeter.</p></div>
+    <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
+
+    <h2>The voltage divider</h2>
+    <p>Two resistors in series across a supply share the voltage <b>in proportion to their resistance</b>. The bigger resistor gets the bigger share. The junction between them gives you a smaller voltage, set by the ratio:</p>
+    <div class="formula">V<sub>out</sub> = V<sub>in</sub> × R2 / (R1 + R2)
+      <small>R1 is the top resistor (from V<sub>in</sub>), R2 the bottom one (to 0 V), and V<sub>out</sub> is measured across R2. Example: 9 V with R1 = 10 kΩ and R2 = 4.7 kΩ gives 9 × 4.7 / 14.7 = 2.88 V. The same current flows through both, I = 9 / 14.7 kΩ = 0.61 mA.</small></div>
+    <p>The divider is everywhere: setting a transistor's bias, scaling 12 V down to a 3.3 V microcontroller input, reading sensors whose resistance changes, and inside every voltmeter range. Its weak point is the <b>load</b>.</p>
+    <figure>
+      <svg viewBox="0 0 560 250" role="img" aria-label="Voltage divider of R1 over R2 with a load resistor RL connected across the output">
+        <path class="s-line" d="M80 30 H220 V50 M220 120 V140 M220 210 V230 H80 V156 M80 124 V30 M220 135 H380 V160 M380 210 V230 H220"/>
+        <line class="s-line" x1="56" y1="128" x2="104" y2="128"/><line class="s-line" x1="68" y1="136" x2="92" y2="136"/><line class="s-line" x1="56" y1="144" x2="104" y2="144"/><line class="s-line" x1="68" y1="152" x2="92" y2="152"/>
+        <text class="t" x="20" y="100">V<tspan dy="4" class="t-small">in</tspan></text>
+        <path class="s-accent" d="M220 50 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <path class="s-accent" d="M220 140 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <text class="t" x="240" y="90">R1</text><text class="t" x="240" y="180">R2</text>
+        <rect class="f-practice-soft s-blue s-dash" x="360" y="160" width="40" height="50" rx="4"/>
+        <text class="t t-blue" x="410" y="182">R<tspan dy="4" class="t-small">L</tspan></text>
+        <text class="t t-small t-blue" x="410" y="202">the load (what you</text>
+        <text class="t t-small t-blue" x="410" y="218">connect to V<tspan dy="3">out</tspan>)</text>
+        <circle class="f-ink" cx="220" cy="135" r="4"/>
+        <text class="t t-bold t-accent" x="290" y="128">V<tspan dy="4" class="t-small">out</tspan></text>
+      </svg>
+      <figcaption>Figure 2. A divider with a load. Anything you connect to V<sub>out</sub> (a meter, a microcontroller input, another circuit) is a resistor R<sub>L</sub> in parallel with R2. If R<sub>L</sub> is not much bigger than R2, it pulls V<sub>out</sub> down.</figcaption>
+    </figure>
+
+    <div class="widget" id="p04-div">
+      <span class="label">Interactive · Voltage divider with load</span>
+      <label>V<sub>in</sub> <span class="out" id="p04-vino">9.0 V</span><input type="range" id="p04-vin" min="1" max="24" step="0.5" value="9"></label>
+      <label>R1 (top) <span class="out" id="p04-r1o">10 kΩ</span><input type="range" id="p04-r1" min="0" max="30" step="1" value="12"></label>
+      <label>R2 (bottom) <span class="out" id="p04-r2o">10 kΩ</span><input type="range" id="p04-r2" min="0" max="30" step="1" value="12"></label>
+      <label>Load R<sub>L</sub> <span class="out" id="p04-rlo">none</span><input type="range" id="p04-rl" min="0" max="31" step="1" value="31"></label>
+      <svg viewBox="0 0 400 46" style="width:100%;max-width:520px;display:block;margin:6px 0" aria-label="Bar showing output voltage as a fraction of input">
+        <rect class="f-wash s-thin" x="2" y="12" width="396" height="22" rx="4"/>
+        <rect id="p04-barU" class="f-grey" x="2" y="12" width="0" height="22" rx="4" opacity="0.45"/>
+        <rect id="p04-barL" class="f-accent" x="2" y="16" width="0" height="14" rx="3"/>
+        <text class="t t-small t-muted" x="4" y="9">0 V</text><text id="p04-barmax" class="t t-small t-muted" x="396" y="9" text-anchor="end">V in</text>
+      </svg>
+      <div class="readings">
+        <div><small>V<sub>out</sub> unloaded</small><span class="out" id="p04-vu">–</span></div>
+        <div><small>V<sub>out</sub> with load</small><span class="out" id="p04-vl">–</span></div>
+        <div><small>Error from loading</small><span class="out" id="p04-err">–</span></div>
+        <div><small>Divider current</small><span class="out" id="p04-id">–</span></div>
+      </div>
+      <p id="p04-dnote" style="margin:10px 0 0;font-size:14.5px;color:var(--muted)"></p>
+    </div>
+    <script>
+    (function(){
+      // slider index -> E6-ish log steps from 100 Ω to 10 MΩ
+      function val(i){var dec=Math.floor(i/6),k=i%6;return [1,1.5,2.2,3.3,4.7,6.8][k]*Math.pow(10,dec+2);}
+      function fmt(v){if(v>=1e6)return +(v/1e6).toPrecision(3)+' MΩ';if(v>=1e3)return +(v/1e3).toPrecision(3)+' kΩ';return +v.toPrecision(3)+' Ω';}
+      function fi(i){if(i>=1e-3)return (i*1e3).toFixed(2)+' mA';return (i*1e6).toFixed(1)+' µA';}
+      var ids=['vin','r1','r2','rl'],el={};ids.forEach(function(k){el[k]=document.getElementById('p04-'+k);});
+      function upd(){
+        var vin=+el.vin.value,r1=val(+el.r1.value),r2=val(+el.r2.value),hasL=+el.rl.value<31,rl=hasL?val(+el.rl.value):Infinity;
+        var vu=vin*r2/(r1+r2),r2e=hasL?r2*rl/(r2+rl):r2,vl=vin*r2e/(r1+r2e),err=(vu-vl)/vu*100;
+        document.getElementById('p04-vino').textContent=vin.toFixed(1)+' V';
+        document.getElementById('p04-r1o').textContent=fmt(r1);
+        document.getElementById('p04-r2o').textContent=fmt(r2);
+        document.getElementById('p04-rlo').textContent=hasL?fmt(rl):'none (open)';
+        document.getElementById('p04-vu').textContent=vu.toFixed(3)+' V';
+        document.getElementById('p04-vl').textContent=hasL?vl.toFixed(3)+' V':'= unloaded';
+        document.getElementById('p04-err').textContent=hasL?'−'+err.toFixed(1)+' %':'0 %';
+        document.getElementById('p04-id').textContent=fi(vin/(r1+r2e));
+        document.getElementById('p04-barU').setAttribute('width',(396*vu/vin).toFixed(1));
+        document.getElementById('p04-barL').setAttribute('width',(396*vl/vin).toFixed(1));
+        document.getElementById('p04-barmax').textContent=vin.toFixed(1)+' V';
+        var ratio=rl/r2,n;
+        if(!hasL)n='No load connected. Slide R_L left to connect one, e.g. a 10 MΩ meter or a 10 kΩ circuit input.';
+        else if(ratio>=100)n='Load is '+(ratio>=1e3?'over 1000':Math.round(ratio))+'× R2: negligible effect. A 10 MΩ meter on a 10 kΩ divider looks like this.';
+        else if(ratio>=10)n='Load is about '+Math.round(ratio)+'× R2: a few percent error. The usual rule: keep the load at least 10× the divider resistance.';
+        else n='Load is only '+ratio.toFixed(1)+'× R2: the divider is badly loaded. Use smaller divider resistors, or buffer the output.';
+        document.getElementById('p04-dnote').textContent=n;
+      }
+      ids.forEach(function(k){el[k].addEventListener('input',upd);});upd();
+    })();
+    </script>
+
+    <h2>The loading effect, measured</h2>
+    <ol class="steps">
+      <li><p><b>Build a 10 kΩ / 10 kΩ divider</b> on 9 V. Measure V<sub>out</sub>: half the battery, about 4.5–4.7 V.</p></li>
+      <li><p><b>Add a 10 kΩ load</b> from V<sub>out</sub> to 0 V. The bottom becomes 10 k ∥ 10 k = 5 kΩ. Predicted V<sub>out</sub> = 9 × 5 / 15 = <b>3.0 V</b>. Measure it. A third of your output has vanished.</p></li>
+      <li><p><b>Swap the load for 100 kΩ.</b> Bottom = 10 k ∥ 100 k = 9.09 kΩ, V<sub>out</sub> = 9 × 9.09 / 19.09 = <b>4.29 V</b>, about 5% low.</p></li>
+      <li><p><b>Now make the meter the load.</b> Build a 1 MΩ / 1 MΩ divider and measure V<sub>out</sub>. You expect 4.5 V; the meter's own 10 MΩ input gives 1 M ∥ 10 M = 0.909 MΩ, so it shows about <b>4.29 V</b>. Same 10:1 ratio, same 5% error.</p></li>
+    </ol>
+    <p>The lesson: <b>a divider only gives its ideal voltage when the load is much bigger than the divider resistors</b>. A practical rule is load ≥ 10 × R2 for about 5% error, and ≥ 100 × R2 for under 1%. You cannot power anything hungry from a divider: a divider is for <i>signals</i> (inputs that draw microamps), not for supplying a motor or an LED. For power you need a regulator (P10).</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>If a voltage reads lower than it should only when your meter touches it, suspect loading: the circuit has a very high resistance (hundreds of kΩ or more). Try the measurement on a higher-impedance setting if your meter has one, or measure the resistors instead and calculate.</p></div>
+
+    <h2>The potentiometer: an adjustable divider</h2>
+    <p>A potentiometer ("pot") is a resistive track with a sliding contact called the <b>wiper</b>. The two end terminals see the full track resistance; the middle terminal is the wiper. Connect the ends across a supply and the wiper gives any voltage from 0 to V<sub>in</sub>: it is a divider whose R1 and R2 change together, always adding up to the track value.</p>
+    <figure>
+      <svg viewBox="0 0 560 220" role="img" aria-label="Potentiometer wired as a voltage divider, wiper as output, with its physical three-pin view">
+        <defs><marker id="p04-wiper" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M80 30 H180 V50 M180 160 V190 H80 V126 M80 94 V30"/>
+        <line class="s-line" x1="56" y1="98" x2="104" y2="98"/><line class="s-line" x1="68" y1="106" x2="92" y2="106"/><line class="s-line" x1="56" y1="114" x2="104" y2="114"/><line class="s-line" x1="68" y1="122" x2="92" y2="122"/>
+        <text class="t" x="18" y="88">5 V</text>
+        <path class="s-accent" d="M180 50 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <path class="s-accent" d="M250 110 H192" marker-end="url(#p04-wiper)"/>
+        <path class="s-line" d="M250 110 H300"/>
+        <text class="t t-bold t-accent" x="306" y="115">wiper → 0 to 5 V</text>
+        <text class="t t-small" x="196" y="64">pin 3 (to 5 V)</text><text class="t t-small" x="196" y="166">pin 1 (to 0 V)</text>
+        <text class="t t-small t-muted" x="306" y="134">pin 2 (middle)</text>
+        <circle class="f-panel s-line" cx="460" cy="80" r="40"/><circle class="f-wash s-line" cx="460" cy="80" r="12"/>
+        <line class="s-line" x1="440" y1="120" x2="440" y2="170"/><line class="s-line" x1="460" y1="120" x2="460" y2="170"/><line class="s-line" x1="480" y1="120" x2="480" y2="170"/>
+        <text class="t t-small" x="440" y="188" text-anchor="middle">1</text><text class="t t-small" x="460" y="188" text-anchor="middle">2</text><text class="t t-small" x="480" y="188" text-anchor="middle">3</text>
+        <text class="t t-small t-muted" x="460" y="210" text-anchor="middle">pins facing you, shaft up</text>
+      </svg>
+      <figcaption>Figure 3. A pot as a divider. The outer pins go across the supply; the middle pin is the wiper. Turning the shaft moves the wiper along the track and slides V<sub>out</sub> smoothly between 0 V and the supply.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><p><b>Measure the pot</b> with the ohms range: outer pins about 10 kΩ whatever the shaft position; wiper to one end changes from near 0 to near 10 kΩ as you turn.</p></li>
+      <li><p><b>Wire it as a divider</b> on the 3×AA pack: ends to + and −, meter on the wiper. Turn the shaft: V<sub>out</sub> sweeps from 0 to about 4.7 V. At the midpoint it reads about 2.35 V.</p></li>
+      <li><p><b>Load it</b> with a 1 kΩ resistor from wiper to 0 V. Near mid-travel the reading sags badly (the source resistance at mid-travel is 5 k ∥ 5 k = 2.5 kΩ, larger than the load). Remove the load.</p></li>
+    </ol>
+    <div class="callout job"><span class="label">On the job</span><p>The setpoint knob on many wall-mounted room temperature sensors is a potentiometer. The BMS controller reads its wiper voltage (or resistance) and turns it into "±3 °C from the setpoint". Trim pots ("trimmers") on PCBs set things like a PIR sensor's sensitivity, a power supply's exact output voltage, or a camera's IR threshold. Adjust trimmers with an insulated trim tool, gently: they are only rated for a few hundred turns.</p></div>
+
+    <h2>Sensor dividers: LDR and NTC thermistor</h2>
+    <p>Many sensors are just <b>resistors that change with the world</b>. A circuit cannot measure resistance directly, but it can measure voltage. So we put the sensor into a divider with a fixed resistor, and read the junction voltage. This is the single most common sensor circuit in electronics.</p>
+    <h3>The light-dependent resistor (LDR)</h3>
+    <p>An LDR is a cadmium sulfide track whose resistance falls as light frees more charge carriers. A typical small LDR reads several hundred kΩ to over 1 MΩ in darkness, roughly 5–20 kΩ under room lighting, and under 1 kΩ in bright light (each type differs; measure yours).</p>
+    <ol class="steps">
+      <li><p><b>Measure the LDR</b> on the ohms range: covered with your finger, in room light, and under a phone torch. Write the three values.</p></li>
+      <li><p><b>Build a divider</b>: LDR on top (from + 4.7 V), 10 kΩ fixed on the bottom. V<sub>out</sub> across the 10 kΩ <b>rises</b> with light.</p></li>
+      <li><p><b>Predict and measure.</b> With the LDR at 10 kΩ: 4.7 × 10/20 = 2.35 V. At 500 kΩ (dark): 4.7 × 10/510 = 0.09 V. At 500 Ω (torch): 4.7 × 10/10.5 = 4.48 V.</p></li>
+      <li><p><b>Swap the positions</b> (10 kΩ on top, LDR on the bottom): now V<sub>out</sub> <b>falls</b> with light. Which way round you wire it decides whether the signal means "light" or "dark".</p></li>
+    </ol>
+    <p>Choose the fixed resistor near the sensor's resistance in the middle of the range you care about: that is where the divider is most sensitive.</p>
+
+    <h3>The 10 kΩ NTC thermistor</h3>
+    <p>An <b>NTC</b> (negative temperature coefficient) thermistor is a ceramic semiconductor bead. Warmer means more free charge carriers, so its resistance <b>falls</b> as temperature rises, by roughly 4% per °C near room temperature. "10 kΩ" means 10 kΩ at 25 °C. A common model for its curve is the beta equation:</p>
+    <div class="formula">R(T) = R<sub>25</sub> × e<sup>B (1/T − 1/298.15)</sup>
+      <small>T is in kelvin (°C + 273.15), R<sub>25</sub> = 10 kΩ, and B (the "beta" value) describes how steep the curve is; 3950 K is common for hobby parts. At 20 °C: 1/293.15 − 1/298.15 = 5.72 × 10⁻⁵, × 3950 = 0.226, e<sup>0.226</sup> = 1.254, so R = 12.5 kΩ.</small></div>
+    <figure>
+      <svg viewBox="0 0 560 230" role="img" aria-label="NTC thermistor divider: 10 kilohm reference resistor on top, thermistor to ground, output to a controller's analogue input">
+        <path class="s-line" d="M120 20 V40 M120 110 V130 M120 190 V210 M120 120 H260"/>
+        <text class="t t-small" x="98" y="16">V<tspan dy="3">ref</tspan> = 5 V</text>
+        <path class="s-accent" d="M120 40 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-20 10 l10 4"/>
+        <text class="t" x="140" y="74">10 kΩ fixed</text><text class="t t-small t-muted" x="140" y="90">(inside the controller)</text>
+        <rect class="f-practice-soft s-line" x="108" y="130" width="24" height="60" rx="3"/>
+        <line class="s-line" x1="96" y1="186" x2="144" y2="136"/><line class="s-line" x1="96" y1="186" x2="86" y2="186"/>
+        <text class="t" x="150" y="160">NTC 10 kΩ</text><text class="t t-small t-muted" x="150" y="176">(in the room sensor)</text>
+        <line class="s-line" x1="104" y1="210" x2="136" y2="210"/><line class="s-line" x1="110" y1="216" x2="130" y2="216"/><line class="s-line" x1="116" y1="222" x2="124" y2="222"/>
+        <circle class="f-ink" cx="120" cy="120" r="4"/>
+        <rect class="f-theory-soft s-line" x="260" y="96" width="120" height="48" rx="6"/>
+        <text class="t t-small t-bold" x="320" y="117" text-anchor="middle">ADC input</text>
+        <text class="t t-small" x="320" y="134" text-anchor="middle">voltage → °C</text>
+        <text class="t t-small t-muted" x="400" y="110">table or</text>
+        <text class="t t-small t-muted" x="400" y="126">equation</text>
+        <text class="t t-small t-red" x="200" y="20">open wire → reads 5 V ("very cold")</text>
+        <text class="t t-small t-red" x="200" y="38">shorted wire → reads 0 V ("very hot")</text>
+      </svg>
+      <figcaption>Figure 4. How a BMS controller (or an Arduino in P12) reads an NTC thermistor. A fixed resistor inside the controller and the thermistor in the room form a divider; the controller's analogue-to-digital converter (ADC) measures the junction and converts it to a temperature.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Temperature</th><th>NTC resistance (B = 3950)</th><th>V<sub>out</sub> with 5 V ref</th><th>On your 4.5 V bench (×0.9)</th></tr>
+      <tr><td>0 °C</td><td>33.6 kΩ</td><td>3.85 V</td><td>3.47 V</td></tr>
+      <tr><td>20 °C</td><td>12.5 kΩ</td><td>2.78 V</td><td>2.50 V</td></tr>
+      <tr><td>25 °C</td><td>10.0 kΩ</td><td>2.50 V</td><td>2.25 V</td></tr>
+      <tr><td>30 °C</td><td>8.04 kΩ</td><td>2.23 V</td><td>2.01 V</td></tr>
+      <tr><td>40 °C</td><td>5.30 kΩ</td><td>1.73 V</td><td>1.56 V</td></tr>
+      <tr><td>Open circuit</td><td>∞</td><td>5.00 V</td><td>4.5 V</td></tr>
+      <tr><td>Short circuit</td><td>0</td><td>0 V</td><td>0 V</td></tr>
+    </table></div>
+    <ol class="steps">
+      <li><p><b>Measure the thermistor</b> on the ohms range at room temperature. Then pinch it between finger and thumb and watch the resistance fall over 20–30 seconds towards about 7 kΩ (skin at roughly 32–34 °C).</p></li>
+      <li><p><b>Build the divider</b> of Figure 4 on the 3×AA pack. Note V<sub>out</sub> at room temperature and compare with the table.</p></li>
+      <li><p><b>Warm it</b> with your fingers and watch V<sub>out</sub> fall. Breathe on it. Touch it with a cold can from the fridge and watch it rise.</p></li>
+    </ol>
+    <div class="callout job"><span class="label">On the job</span><p>The plain wall-mounted room temperature sensor in an office is very often just a 10 kΩ NTC thermistor in a plastic box, wired back over two cores to an analogue input on the BMS controller. The controller contains the fixed resistor and does exactly this divider maths. Sensors are sold with different 10 kΩ curves (you will see names like "10K Type 2" and "10K Type 3"), and the controller input must be configured for the matching curve, or the reading will be off by a degree or more at the ends of the range. Check the sensor's datasheet.</p><p>A sensor reading −40 °C or +150 °C in the BMS is almost never the weather: it is a broken wire (open → very cold) or a short (→ very hot). Check the resistance at the controller end with the input disconnected, and compare it with the expected value for the room temperature.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The meter itself can warm a thermistor: on the ohms range it pushes a small current through it. The controller does too: with 5 V across 20 kΩ about 0.25 mA flows and the thermistor dissipates around 0.6 mW, enough to warm a tiny bead by a fraction of a degree in still air. That "self-heating" is why sensor circuits keep the current small.</p></div>
+    <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC (read this thermistor with an Arduino)</a>
+
+    <h2>End-of-line resistors: four states from one pair of wires</h2>
+    <p>An alarm panel has to know more than "door open or closed". It must also know if someone has <b>cut</b> the cable, or <b>shorted</b> it to fool the panel. With a plain switch on two wires, a cut wire looks exactly like an open door, and a short looks exactly like a closed door. The fix is to put known resistors at the <b>end of the line</b> (EOL), at the device, so each state gives a different resistance.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Double end-of-line zone: panel input, cable pair, door contact in parallel with an alarm resistor, in series with an end-of-line resistor at the device">
+        <rect class="f-theory-soft s-line" x="20" y="50" width="140" height="140" rx="8"/>
+        <rect class="f-practice-soft s-thin" x="380" y="40" width="250" height="160" rx="8"/>
+        <text class="t t-bold" x="90" y="76" text-anchor="middle">Alarm panel</text>
+        <text class="t t-small" x="90" y="98" text-anchor="middle">zone input</text>
+        <text class="t t-small t-muted" x="90" y="118" text-anchor="middle">measures the</text>
+        <text class="t t-small t-muted" x="90" y="134" text-anchor="middle">loop resistance</text>
+        <text class="t t-small t-muted" x="90" y="150" text-anchor="middle">(really: a divider</text>
+        <text class="t t-small t-muted" x="90" y="166" text-anchor="middle">voltage)</text>
+        <circle class="f-ink" cx="160" cy="80" r="4"/><circle class="f-ink" cx="160" cy="170" r="4"/>
+        <text class="t t-small" x="168" y="74">Z</text><text class="t t-small" x="168" y="188">COM</text>
+        <path class="s-line" d="M160 80 H400 M160 170 H560 V150 M508 80 H560 V100"/>
+        <rect class="f-wash s-thin s-dash" x="200" y="60" width="160" height="130" rx="6"/>
+        <text class="t t-small t-muted" x="280" y="210" text-anchor="middle">cable run (can be cut or shorted)</text>
+        <path class="s-accent" d="M400 80 l6 -9 l12 18 l12 -18 l12 18 l12 -18 l12 18 l12 -18 l12 18 l6 -9"/>
+        <text class="t t-small" x="410" y="52">EOL 2.2 kΩ</text>
+        <path class="s-accent" d="M560 100 l-9 5 l18 8 l-18 8 l18 8 l-18 8 l18 8 l-9 5"/>
+        <text class="t t-small" x="578" y="118">alarm</text><text class="t t-small" x="578" y="134">2.2 kΩ</text>
+        <path class="s-line" d="M520 80 V100 M520 150 V170"/>
+        <line class="s-line" x1="520" y1="100" x2="536" y2="146"/>
+        <circle class="f-ink" cx="520" cy="100" r="3"/><circle class="f-ink" cx="520" cy="150" r="3"/>
+        <text class="t t-small" x="440" y="124" text-anchor="middle">door contact</text>
+        <text class="t t-small t-muted" x="440" y="140" text-anchor="middle">(NC: closed</text>
+        <text class="t t-small t-muted" x="440" y="156" text-anchor="middle">when door shut)</text>
+        <text class="t t-small t-bold t-accent" x="505" y="228" text-anchor="middle">at the device (inside the sensor)</text>
+      </svg>
+      <figcaption>Figure 5. A double end-of-line (DEOL) zone. The door contact is normally closed (NC), and shorts out the alarm resistor while the door is shut. The EOL resistor is always in series. Both resistors live inside or right at the sensor, never back at the panel, or the cable would not be supervised.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>State</th><th>What is happening</th><th>Resistance the panel sees</th><th>Panel reports</th></tr>
+      <tr><td><b>Normal</b></td><td>Door shut: contact closed, shorting the alarm resistor</td><td>EOL only = <b>2.2 kΩ</b></td><td>Sealed / normal</td></tr>
+      <tr><td><b>Alarm</b></td><td>Door opens: contact opens, alarm resistor now in series</td><td>2.2 + 2.2 = <b>4.4 kΩ</b></td><td>Alarm (if armed)</td></tr>
+      <tr><td><b>Open</b></td><td>Cable cut, or a terminal loose</td><td><b>∞</b> (open circuit)</td><td>Tamper / fault</td></tr>
+      <tr><td><b>Short</b></td><td>Cable shorted (crushed, or deliberately bridged)</td><td><b>≈ 0 Ω</b></td><td>Tamper / fault</td></tr>
+    </table></div>
+    <p>Inside the panel the zone input is, once again, a <b>voltage divider</b>: an internal resistor from a reference voltage, with your zone loop as the bottom resistor. The panel's ADC measures the voltage and decides which window it falls in. The widget below uses an illustrative 5 V reference and a 2.2 kΩ internal resistor; real panels use their own values.</p>
+    <div class="widget" id="p04-eol">
+      <span class="label">Interactive · Alarm zone supervision (illustrative values)</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="p04-eolbtns">
+        <button type="button" data-s="n">Door shut (normal)</button>
+        <button type="button" data-s="a">Door open (alarm)</button>
+        <button type="button" data-s="o">Cable cut (open)</button>
+        <button type="button" data-s="s">Cable shorted</button>
+      </div>
+      <label style="margin-top:12px">Wiring
+        <select id="p04-eolmode"><option value="d">Double EOL (2.2 kΩ + 2.2 kΩ)</option><option value="s">Single EOL, 2.2 kΩ in series with NC contact</option><option value="none">No EOL (bare contact)</option></select>
+      </label>
+      <div class="readings">
+        <div><small>Loop resistance</small><span class="out" id="p04-eolr">–</span></div>
+        <div><small>Zone voltage</small><span class="out" id="p04-eolv">–</span></div>
+        <div><small>Panel decides</small><span class="out" id="p04-eold" style="font-size:16px">–</span></div>
+      </div>
+      <svg viewBox="0 0 400 54" style="width:100%;max-width:520px;display:block;margin-top:10px" aria-label="Voltage windows used by the panel">
+        <rect class="f-warn-soft" x="0" y="14" width="80" height="20"/><rect class="f-career-soft" x="80" y="14" width="120" height="20"/>
+        <rect class="f-practice-soft" x="200" y="14" width="136" height="20"/><rect class="f-warn-soft" x="336" y="14" width="64" height="20"/>
+        <text class="t t-small" x="40" y="10" text-anchor="middle">short</text><text class="t t-small" x="140" y="10" text-anchor="middle">normal</text>
+        <text class="t t-small" x="268" y="10" text-anchor="middle">alarm</text><text class="t t-small" x="368" y="10" text-anchor="middle">open</text>
+        <text class="t t-small t-muted" x="0" y="50">0 V</text><text class="t t-small t-muted" x="400" y="50" text-anchor="end">5 V</text>
+        <polygon id="p04-eolptr" class="f-ink" points="0,36 -6,46 6,46"/>
+      </svg>
+    </div>
+    <script>
+    (function(){
+      var mode=document.getElementById('p04-eolmode'),state='n';
+      var btns=document.querySelectorAll('#p04-eolbtns button');
+      btns.forEach(function(b){b.style.cssText='font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer';
+        b.addEventListener('click',function(){state=b.dataset.s;upd();});});
+      function upd(){
+        var m=mode.value,R;
+        if(state==='o')R=Infinity;else if(state==='s')R=0;
+        else if(m==='d')R=state==='n'?2200:4400;
+        else if(m==='s')R=state==='n'?2200:Infinity;
+        else R=state==='n'?0:Infinity;
+        var V=isFinite(R)?5*R/(2200+R):5;
+        var d;
+        if(V<1)d='SHORT / tamper';else if(V<2.9)d='Normal (sealed)';else if(V<4.2)d='ALARM';else d='OPEN / tamper';
+        if(m!=='d'){
+          if(m==='s'&&V>=4.2)d='OPEN: alarm or cut? Cannot tell';
+          if(m==='none'&&V<1)d='Closed: normal, or shorted? Cannot tell';
+          if(m==='none'&&V>=4.2)d='Open: alarm or cut? Cannot tell';
+        }
+        document.getElementById('p04-eolr').textContent=isFinite(R)?(R>=1000?(R/1000).toFixed(1)+' kΩ':R+' Ω'):'∞ (open)';
+        document.getElementById('p04-eolv').textContent=V.toFixed(2)+' V';
+        document.getElementById('p04-eold').textContent=d;
+        document.getElementById('p04-eolptr').setAttribute('transform','translate('+(V/5*400).toFixed(1)+',0)');
+        btns.forEach(function(b){b.style.borderColor=b.dataset.s===state?'var(--accent)':'var(--line)';b.style.color=b.dataset.s===state?'var(--accent)':'var(--ink)';});
+      }
+      mode.addEventListener('change',upd);upd();
+    })();
+    </script>
+    <p>Try the widget with "Single EOL" and "No EOL". With a single EOL in series with a normally-closed contact, the panel can detect a short, but "door open" and "cable cut" both read as open circuit. With a bare contact, it can tell nothing beyond open or closed. Double EOL gives all four states, which is why many intruder-alarm panels use it. Build it on the breadboard with a push-button (or reed switch) and two 2.2 kΩ resistors, and measure each state with the ohms range: 2.2 kΩ, 4.4 kΩ, OL, 0 Ω.</p>
+    <p><b>Fire circuits</b> use the same idea differently. On a conventional fire zone, detectors are connected <b>in parallel</b> across the pair and an EOL device sits at the far end. In normal state a small supervisory current flows through the EOL. A detector in alarm draws a much larger, defined current. An open cable stops the supervisory current (fault), and a short draws more current than any detector would. The panel watches the current level to tell these apart; exactly how a short is treated depends on the panel and its standard.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>EOL values are set by the panel manufacturer (common values include 1 kΩ, 2.2 kΩ, 4.7 kΩ and 6.8 kΩ, but use exactly what the panel's installation manual specifies). Fire detection and alarm systems are designed and installed to <b>AS 1670.1</b>, and fire-protection work is licensed or accredited in some states. Security installation work generally needs a security licence from your state's licensing body. Requirements differ by state and change over time, so confirm with the relevant regulator (see C04, C06 and C11).</p></div>
+    <a class="crosslink" href="../career/c06-access-control-alarms.html">Job Track C06 · Access control and intruder alarms</a>
+    <a class="crosslink" href="../career/c04-fire-detection-ewis.html">Job Track C04 · Fire detection and EWIS basics</a>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr>
+      <tr><td>KCL doesn't add up (I₂ + I₃ ≠ I₁ by more than ~3%)</td><td>Meter range changed between readings; burden voltage on a low range; mis-read units</td><td>Use the same mA range for all three; double-check µA vs mA.</td></tr>
+      <tr><td>Divider output much lower than predicted</td><td>Load too heavy (or a resistor in the wrong strip)</td><td>Remove the load and re-measure; measure each resistor out of circuit.</td></tr>
+      <tr><td>Pot output only covers part of the range, or jumps</td><td>Wiper on an outer pin; worn or dirty track</td><td>Confirm the middle pin is the wiper with the ohms range.</td></tr>
+      <tr><td>LDR divider barely changes</td><td>Fixed resistor far from the LDR's mid-range value</td><td>Pick a fixed resistor close to the LDR's resistance in typical light.</td></tr>
+      <tr><td>Thermistor reading changes the wrong way</td><td>Thermistor and fixed resistor swapped (top/bottom)</td><td>Thermistor at the bottom gives V falling with temperature.</td></tr>
+      <tr><td>DEOL zone reads 4.4 kΩ with the door shut</td><td>Contact not closing (misaligned magnet) or wired to the wrong terminals</td><td>Test the contact alone with continuity while moving the magnet.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>What is 4.7 kΩ ∥ 4.7 kΩ ∥ 4.7 kΩ? And 220 Ω + 330 Ω + 1 kΩ?</summary><div class="answer"><p>Three equal resistors in parallel give a third: 1.57 kΩ. In series they simply add: 220 + 330 + 1000 = 1550 Ω.</p></div></details>
+    <details class="quiz"><summary>In the Kirchhoff lab, why does R2 (2.2 kΩ) carry more current than R3 (4.7 kΩ)?</summary><div class="answer"><p>They are in parallel, so they have the same voltage (5.40 V). By Ohm's law, I = V/R, the smaller resistance carries the larger current: 5.40/2.2 k = 2.45 mA vs 5.40/4.7 k = 1.15 mA. Current divides in inverse proportion to resistance.</p></div></details>
+    <details class="quiz"><summary>Design a divider to turn 12 V into about 3 V for a microcontroller input.</summary><div class="answer"><p>You need R2/(R1 + R2) = 3/12 = 0.25, so R1 = 3 × R2. With E12 values: R1 = 33 kΩ, R2 = 10 kΩ gives 12 × 10/43 = 2.79 V (safe, a bit low), or R1 = 30 kΩ (E24) gives exactly 3.0 V. Use tens of kΩ: low enough that the input's leakage doesn't load it, high enough that the divider wastes only about 0.3 mA.</p></div></details>
+    <details class="quiz"><summary>A 100 kΩ / 100 kΩ divider on 10 V is measured with a 10 MΩ meter. What does the meter show?</summary><div class="answer"><p>Bottom = 100 k ∥ 10 M = 99.0 kΩ. V = 10 × 99.0/199.0 = 4.975 V instead of 5.000 V: 0.5% low. The load is 100× R2, so the error is under 1%.</p></div></details>
+    <details class="quiz"><summary>A BMS shows a room at −40 °C. The sensor is a 10 kΩ NTC. What is the most likely fault, and how do you check it?</summary><div class="answer"><p>An open circuit: a broken core, a loose terminal or a disconnected sensor. Open circuit means infinite resistance, which the controller reads as extremely cold. Disconnect the sensor wires at the controller and measure the resistance of the loop: OL confirms the break. A healthy loop at about 22 °C would read roughly 11 kΩ plus a few ohms of cable.</p></div></details>
+    <details class="quiz"><summary>With double EOL (2.2 kΩ + 2.2 kΩ), what does the panel see in each state?</summary><div class="answer"><p>Normal: 2.2 kΩ (contact shorts the alarm resistor). Alarm: 4.4 kΩ (both in series). Cut cable: open circuit (∞). Shorted cable: about 0 Ω. Four different values, so the panel can tell all four apart.</p></div></details>
+    <details class="quiz"><summary>An installer fits both EOL resistors in the panel instead of at the door sensor. Why is that wrong?</summary><div class="answer"><p>Then the resistors are at the panel end, and the cable run to the door is just a bare contact on two wires. A short across the cable at any point between panel and door would look like a closed door (normal), defeating the supervision. EOL resistors must be at the end of the line, at or inside the device.</p></div></details>
+    <details class="quiz"><summary>Why can't you power a 100 mA module from a 10 kΩ / 10 kΩ divider on 12 V to get 6 V?</summary><div class="answer"><p>The module looks like a load of about 6 V / 0.1 A = 60 Ω, in parallel with the 10 kΩ bottom resistor. The bottom becomes about 60 Ω and V<sub>out</sub> collapses to about 12 × 60/10 060 ≈ 0.07 V. Dividers are for signals into high-impedance inputs. To power something, use a regulator.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can calculate series and parallel resistance, including product-over-sum.</span></li>
+      <li><input type="checkbox"><span>I proved KVL and KCL with my own readings and can explain the small differences.</span></li>
+      <li><input type="checkbox"><span>I can design a voltage divider for a target ratio with standard resistor values.</span></li>
+      <li><input type="checkbox"><span>I can predict and measure the loading effect, including my meter's 10 MΩ input.</span></li>
+      <li><input type="checkbox"><span>I can wire a potentiometer as an adjustable divider and identify its wiper.</span></li>
+      <li><input type="checkbox"><span>I built LDR and NTC thermistor dividers and can explain which way the output moves.</span></li>
+      <li><input type="checkbox"><span>I can explain how a BMS controller reads a 10 kΩ thermistor and what open and short faults look like.</span></li>
+      <li><input type="checkbox"><span>I can state the resistance a panel sees for normal, alarm, open and short on a DEOL zone.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

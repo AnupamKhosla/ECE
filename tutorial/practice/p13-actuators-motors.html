@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P13 · Actuators: motors, servos and relays</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P13</span>
+    <h1>Actuators: motors, servos and relays</h1>
+    <p class="lede">Make things move. You will drive a DC motor forwards and backwards at any speed through an H-bridge, position a servo with a precise pulse, step a stepper motor, and switch a 12 V load with a relay, all without resetting or damaging your Arduino. Then you will see the same ideas in HVAC damper actuators and door locks.</p>
+    <div class="meta"><span><b>Time</b> 3–4 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$30–50</span><span><b>Theory</b> T06, T13, T15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Arduino Uno, breadboard, jumpers</b><small>From P11</small></li>
+      <li><b>TB6612FNG motor driver module</b><small>~A$5–12 · or an L298N module</small></li>
+      <li><b>Small DC motor, 3–6 V</b><small>~A$2–5 · "130 size" or a geared "TT" motor</small></li>
+      <li><b>Micro servo (SG90 type)</b><small>~A$4–8</small></li>
+      <li><b>28BYJ-48 stepper + ULN2003 board</b><small>~A$5–8 as a pair</small></li>
+      <li><b>1-channel 5 V relay module</b><small>~A$3–6</small></li>
+      <li><b>4×AA battery holder</b><small>6 V for the motor · ~A$3</small></li>
+      <li><b>5 V 2 A supply</b><small>USB power brick with a USB breakout, or a 5 V plug-pack</small></li>
+      <li><b>12 V DC plug-pack and a 12 V lamp or buzzer</b><small>For the relay test</small></li>
+      <li><b>Electrolytic capacitors</b><small>100–470 µF, 16 V or higher</small></li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Jaycar, Altronics and Core Electronics stock motor driver modules, servos, the 28BYJ-48 kit and relay modules. Jaycar and Altronics sell 12 V plug-packs and small 12 V lamps and buzzers. Check that any plug-pack you buy carries the Australian RCM compliance mark.</p></div>
+
+    <h2>Why a pin cannot drive a motor</h2>
+    <p>In P11 you learned that a pin can safely give about 20 mA. A small hobby motor draws a few hundred milliamps while running, and often more than 1 A in the instant it starts or when it is stalled (held so it cannot turn). That is 50 times too much for a pin.</p>
+    <p>There is a second problem. A motor is a coil of wire, an <b>inductor</b>. When you suddenly stop the current through an inductor, its collapsing magnetic field produces a voltage spike that can be tens of volts (you met this "kick" in P08). A third problem: a spinning motor is also a <b>generator</b>, producing a back-EMF that opposes the supply. When the motor starts, there is no back-EMF yet, so the current is limited only by the winding resistance. That is why start-up current is so high.</p>
+    <div class="formula">I<sub>start</sub> ≈ V / R<sub>winding</sub> = 6 V / 4 Ω = 1.5 A &nbsp;&nbsp;&nbsp; I<sub>running</sub> = (V − V<sub>back-EMF</sub>) / R<sub>winding</sub> ≈ (6 − 5.2) / 4 = 0.2 A
+      <small>Measure your own motor's winding resistance with the meter (turn the shaft slowly between readings; it changes a bit with brush position). The back-EMF grows with speed, which is why running current is much smaller than starting current.</small></div>
+    <p>So we put a <b>driver</b> between the pin and the motor. The pin gives a tiny signal; the driver switches the big current from a separate supply.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>A motor driver is four transistor switches (usually MOSFETs) controlled by logic inputs. A MOSFET's gate is an insulated plate: a few volts on it, with almost no steady current, opens a low-resistance channel that can carry amps. That is the same "small signal controls big current" idea as the relay and transistor switch of P08, done four times.</p></div>
+    <a class="crosslink" href="../theory/t13-mosfet-physics.html">Theory T13 · How a MOSFET works</a>
+
+    <h2>The H-bridge: forwards, backwards, brake</h2>
+    <p>One transistor can turn a motor on and off, but only in one direction. To reverse a DC motor you must reverse the current through it. The <b>H-bridge</b> does this with four switches arranged like the letter H, with the motor as the cross-bar.</p>
+    <ul>
+      <li><b>S1 + S4 closed:</b> current flows from the supply, down through S1, left to right through the motor, down through S4 to ground. The motor turns <b>forwards</b>.</li>
+      <li><b>S3 + S2 closed:</b> current flows right to left through the motor. The motor turns <b>backwards</b>.</li>
+      <li><b>S2 + S4 closed (both bottom switches):</b> the motor's two terminals are shorted together. The spinning motor acts as a generator into a short, which makes a strong braking force. This is <b>brake</b>.</li>
+      <li><b>All open:</b> the motor is disconnected and freewheels to a stop. This is <b>coast</b>.</li>
+      <li><b>S1 + S2 (or S3 + S4) closed:</b> the supply is shorted straight to ground through one side. This is called <b>shoot-through</b>. It destroys the transistors. Driver chips have logic that prevents it.</li>
+    </ul>
+
+    <div class="widget" id="p13-hb">
+      <span class="label">Interactive · H-bridge switch explorer</span>
+      <p style="font-size:15px;margin:0 0 8px">Click a switch to open or close it, or use a preset.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <button type="button" data-s="1" class="p13-b">S1</button><button type="button" data-s="2" class="p13-b">S2</button><button type="button" data-s="3" class="p13-b">S3</button><button type="button" data-s="4" class="p13-b">S4</button>
+        <span style="width:12px"></span>
+        <button type="button" data-p="fwd" class="p13-b">Forward</button><button type="button" data-p="rev" class="p13-b">Reverse</button><button type="button" data-p="brake" class="p13-b">Brake</button><button type="button" data-p="coast" class="p13-b">Coast</button>
+      </div>
+      <svg id="p13-hbsvg" viewBox="0 0 520 300" role="img" aria-label="H-bridge with four switches and a motor"></svg>
+      <div class="readings">
+        <div><small>Motor</small><span class="out" id="p13-hbm">coasting</span></div>
+        <div><small>Closed switches</small><span class="out" id="p13-hbc">none</span></div>
+      </div>
+      <p id="p13-hbt" style="font-size:15px;margin-top:10px"></p>
+    </div>
+    <style>.p13-b{font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:6px;cursor:pointer}.p13-b.on{background:var(--accent);color:#fff;border-color:var(--accent)}</style>
+    <script>
+    (function(){
+      var st={1:0,2:0,3:0,4:0}, svg=document.getElementById('p13-hbsvg');
+      function sw(x,yt,yb,closed,lab,id){
+        var a=yt+22,b=yb-22, s='';
+        s+='<line class="s-line" x1="'+x+'" y1="'+yt+'" x2="'+x+'" y2="'+a+'"/>';
+        s+='<line class="s-line" x1="'+x+'" y1="'+b+'" x2="'+x+'" y2="'+yb+'"/>';
+        s+='<circle class="f-panel s-line" cx="'+x+'" cy="'+a+'" r="4"/><circle class="f-panel s-line" cx="'+x+'" cy="'+b+'" r="4"/>';
+        if(closed) s+='<line class="s-accent" x1="'+x+'" y1="'+a+'" x2="'+x+'" y2="'+b+'"/>';
+        else s+='<line class="s-line" x1="'+x+'" y1="'+b+'" x2="'+(x+24)+'" y2="'+(a+6)+'"/>';
+        s+='<text class="t t-bold" x="'+(x<260?x-16:x+16)+'" y="'+((a+b)/2+5)+'" text-anchor="'+(x<260?'end':'start')+'">'+lab+'</text>';
+        s+='<rect x="'+(x-30)+'" y="'+yt+'" width="60" height="'+(yb-yt)+'" fill="transparent" style="cursor:pointer" data-sw="'+id+'"/>';
+        return s;
+      }
+      function draw(){
+        var s='<defs><marker id="p13-hbarr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>';
+        s+='<line class="s-line" x1="120" y1="30" x2="400" y2="30"/><text class="t t-bold" x="260" y="20" text-anchor="middle">+V (motor supply)</text>';
+        s+='<line class="s-line" x1="120" y1="270" x2="400" y2="270"/><text class="t t-bold" x="260" y="292" text-anchor="middle">GND</text>';
+        s+=sw(150,30,150,st[1],'S1',1)+sw(150,150,270,st[2],'S2',2)+sw(370,30,150,st[3],'S3',3)+sw(370,150,270,st[4],'S4',4);
+        s+='<circle class="f-ink" cx="150" cy="150" r="3.5"/><circle class="f-ink" cx="370" cy="150" r="3.5"/>';
+        s+='<text class="t t-small t-muted" x="160" y="144">A</text><text class="t t-small t-muted" x="352" y="144">B</text>';
+        s+='<line class="s-line" x1="150" y1="150" x2="232" y2="150"/><line class="s-line" x1="288" y1="150" x2="370" y2="150"/>';
+        s+='<circle class="f-accent-soft s-line" cx="260" cy="150" r="28"/><text class="t t-bold" x="260" y="156" text-anchor="middle">M</text>';
+        var fwd=st[1]&&st[4]&&!st[2]&&!st[3], rev=st[3]&&st[2]&&!st[1]&&!st[4], shootL=st[1]&&st[2], shootR=st[3]&&st[4];
+        var brakeLo=st[2]&&st[4]&&!st[1]&&!st[3], brakeHi=st[1]&&st[3]&&!st[2]&&!st[4];
+        var m='coasting', t='All switches open: the motor is disconnected and freewheels to a stop.';
+        if(shootL||shootR){ m='SHORT CIRCUIT'; t='Shoot-through! '+(shootL?'S1 and S2':'S3 and S4')+' connect +V straight to GND. Huge current flows and the transistors burn out. Real driver chips include logic that makes this impossible.';
+          if(shootL) s+='<path class="s-red" d="M136 34 V266" marker-end="url(#p13-hbarr)"/>';
+          if(shootR) s+='<path class="s-red" d="M384 34 V266" marker-end="url(#p13-hbarr)"/>';
+          s+='<text class="t t-bold t-red" x="260" y="230" text-anchor="middle">SHOOT-THROUGH</text>'; }
+        else if(fwd){ m='forward'; t='S1 and S4 closed: current flows A → B through the motor. On a TB6612 this is IN1 = HIGH, IN2 = LOW.'; s+='<path class="s-red" d="M136 40 V136 H232 M288 136 H384 V262" marker-end="url(#p13-hbarr)"/>'; }
+        else if(rev){ m='reverse'; t='S3 and S2 closed: current flows B → A, so the motor turns the other way. On a TB6612 this is IN1 = LOW, IN2 = HIGH.'; s+='<path class="s-red" d="M384 40 V136 H288 M232 136 H136 V262" marker-end="url(#p13-hbarr)"/>'; }
+        else if(brakeLo||brakeHi){ m='braking'; t='Both '+(brakeLo?'bottom':'top')+' switches closed: the motor terminals are shorted together. The spinning motor generates a voltage into that short, and the current it drives produces a strong braking torque. On a TB6612 this is IN1 = IN2 = HIGH (short brake).'; s+='<path class="s-amber s-dash" d="'+(brakeLo?'M150 164 H370 V250 H150 Z':'M150 136 H370 V50 H150 Z')+'"/>'; }
+        else { var n=st[1]+st[2]+st[3]+st[4]; if(n>0){ m='stopped'; t='Only one side is connected, so there is no complete path through the motor. Nothing happens.'; } }
+        svg.innerHTML=s;
+        document.getElementById('p13-hbm').textContent=m;
+        var c=[1,2,3,4].filter(function(k){return st[k];}).map(function(k){return 'S'+k;}).join(' + ');
+        document.getElementById('p13-hbc').textContent=c||'none';
+        document.getElementById('p13-hbt').textContent=t;
+        document.querySelectorAll('#p13-hb [data-s]').forEach(function(b){b.classList.toggle('on',!!st[b.getAttribute('data-s')]);});
+      }
+      document.getElementById('p13-hb').addEventListener('click',function(e){
+        var el=e.target, k=el.getAttribute('data-s')||el.getAttribute('data-sw'), p=el.getAttribute('data-p');
+        if(k){ st[k]=st[k]?0:1; draw(); }
+        else if(p){ st={1:0,2:0,3:0,4:0}; if(p==='fwd'){st[1]=1;st[4]=1;} if(p==='rev'){st[3]=1;st[2]=1;} if(p==='brake'){st[2]=1;st[4]=1;} draw(); }
+      });
+      draw();
+    })();
+    </script>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>When a transistor in the bridge turns off, the motor's current must keep flowing for a moment (it is an inductor). Each MOSFET has a built-in "body diode" that gives that current a safe path back to the supply, which is why H-bridge modules do not need the external flyback diode you fitted in P08. Older bipolar bridges like the L298 need external diodes; good modules include them.</p></div>
+
+    <h2>Lab 1: a DC motor with the TB6612FNG</h2>
+    <p>The <b>TB6612FNG</b> is a small dual H-bridge chip (two motors) built from MOSFETs. Its datasheet rates it at about 1.2 A continuous per channel (3.2 A short peaks) and a motor supply (VM) up to about 13.5 V, with 2.7–5.5 V logic. Because MOSFETs have low on-resistance, it wastes little voltage and stays cool.</p>
+    <figure>
+      <svg viewBox="0 0 680 290" role="img" aria-label="Wiring of an Arduino Uno to a TB6612FNG module, motor and battery">
+        <rect class="f-wash s-line" x="20" y="30" width="130" height="220" rx="8"/>
+        <text class="t t-bold" x="85" y="22" text-anchor="middle">Arduino Uno</text>
+        <text class="t" x="140" y="74" text-anchor="end">D6</text>
+        <text class="t" x="140" y="99" text-anchor="end">D7</text>
+        <text class="t" x="140" y="124" text-anchor="end">D8</text>
+        <text class="t" x="140" y="149" text-anchor="end">~D9</text>
+        <text class="t" x="140" y="184" text-anchor="end">5V</text>
+        <text class="t" x="140" y="219" text-anchor="end">GND</text>
+        <rect class="f-accent-soft s-accent" x="300" y="30" width="150" height="220" rx="8"/>
+        <text class="t t-bold" x="375" y="22" text-anchor="middle">TB6612FNG module</text>
+        <text class="t t-small" x="310" y="74">STBY</text>
+        <text class="t t-small" x="310" y="99">AIN1</text>
+        <text class="t t-small" x="310" y="124">AIN2</text>
+        <text class="t t-small" x="310" y="149">PWMA</text>
+        <text class="t t-small" x="310" y="184">VCC</text>
+        <text class="t t-small" x="310" y="219">GND</text>
+        <text class="t t-small" x="440" y="74" text-anchor="end">VM</text>
+        <text class="t t-small" x="440" y="124" text-anchor="end">AO1</text>
+        <text class="t t-small" x="440" y="149" text-anchor="end">AO2</text>
+        <text class="t t-small" x="440" y="219" text-anchor="end">GND</text>
+        <line class="s-blue" x1="150" y1="70" x2="300" y2="70"/>
+        <line class="s-blue" x1="150" y1="95" x2="300" y2="95"/>
+        <line class="s-blue" x1="150" y1="120" x2="300" y2="120"/>
+        <line class="s-blue" x1="150" y1="145" x2="300" y2="145"/>
+        <line class="s-line" x1="150" y1="180" x2="300" y2="180"/>
+        <line class="s-line" x1="150" y1="215" x2="300" y2="215"/>
+        <text class="t t-small t-muted" x="225" y="208" text-anchor="middle">common GND</text>
+        <text class="t t-small t-blue" x="225" y="88" text-anchor="middle">logic signals</text>
+        <path class="s-red" d="M450 70 H630 V110"/>
+        <line class="s-line" x1="615" y1="110" x2="645" y2="110"/>
+        <line class="s-line" x1="622" y1="117" x2="638" y2="117"/>
+        <line class="s-line" x1="615" y1="124" x2="645" y2="124"/>
+        <line class="s-line" x1="622" y1="131" x2="638" y2="131"/>
+        <path class="s-red" d="M630 131 V215 H450"/>
+        <text class="t t-small" x="652" y="108">+</text>
+        <text class="t t-small" x="620" y="160" text-anchor="end">6 V pack</text>
+        <path class="s-red" d="M450 120 H490 V100 H540 V113"/>
+        <path class="s-red" d="M450 145 H490 V170 H540 V157"/>
+        <circle class="f-panel s-line" cx="540" cy="135" r="22"/>
+        <text class="t t-bold" x="540" y="141" text-anchor="middle">M</text>
+        <circle class="f-ink" cx="590" cy="70" r="3"/>
+        <circle class="f-ink" cx="590" cy="215" r="3"/>
+        <path class="s-line" d="M590 70 V190"/>
+        <line class="s-line" x1="578" y1="190" x2="602" y2="190"/>
+        <path class="s-line" d="M578 198 q12 -6 24 0"/>
+        <path class="s-line" d="M590 197 V215"/>
+        <text class="t t-small" x="584" y="250" text-anchor="end">470 µF across VM–GND</text>
+      </svg>
+      <figcaption>Figure 1. Blue: low-current logic signals from the Uno. Red: the motor current loop, which runs from the battery through the driver and motor and back to the battery, never through the Arduino. The grounds are joined so the driver can understand the Uno's HIGH and LOW. The capacitor near the driver supplies current spikes locally.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>AIN1</th><th>AIN2</th><th>PWMA</th><th>STBY</th><th>Motor</th></tr>
+      <tr><td>HIGH</td><td>LOW</td><td>HIGH (or PWM)</td><td>HIGH</td><td>Forward (at the PWM duty)</td></tr>
+      <tr><td>LOW</td><td>HIGH</td><td>HIGH (or PWM)</td><td>HIGH</td><td>Reverse</td></tr>
+      <tr><td>HIGH</td><td>HIGH</td><td>any</td><td>HIGH</td><td>Short brake</td></tr>
+      <tr><td>LOW</td><td>LOW</td><td>HIGH</td><td>HIGH</td><td>Stop (coast, outputs off)</td></tr>
+      <tr><td>any</td><td>any</td><td>any</td><td>LOW</td><td>Standby: everything off</td></tr>
+    </table></div>
+
+    <h3>PWM sets the speed</h3>
+    <p><code>analogWrite(pin, value)</code> on a PWM pin (3, 5, 6, 9, 10, 11 on the Uno) switches the pin fully on and off very fast: about 490 Hz on most pins and about 980 Hz on pins 5 and 6. The value 0–255 sets the <b>duty cycle</b>, the fraction of time it is on. The motor's inductance and its spinning mass smooth the pulses, so it responds to the <b>average</b>: 50% duty from a 6 V supply acts roughly like 3 V. You built the same idea with a 555 in P09.</p>
+    <div class="formula">V<sub>average</sub> ≈ duty × V<sub>supply</sub> = (value / 255) × V<sub>supply</sub> &nbsp; e.g. 128/255 × 6 V ≈ 3.0 V
+      <small>The transistors are either fully on or fully off, so they waste very little power. A resistor or linear regulator dropping the voltage instead would turn the difference into heat.</small></div>
+<pre><code>const int AIN1 = 7;    // direction input 1
+const int AIN2 = 8;    // direction input 2
+const int PWMA = 9;    // speed: must be a PWM pin (marked ~)
+const int STBY = 6;    // standby: HIGH = driver enabled
+
+// speed from -255 (full reverse) through 0 (stop) to +255 (full forward)
+void setMotor(int speed) {
+  if (speed &gt; 0) {                     // forward
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+  } else if (speed &lt; 0) {              // reverse
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+  } else {                             // zero: both LOW = coast
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, LOW);
+  }
+  analogWrite(PWMA, abs(speed));       // duty cycle 0..255 sets the speed
+}
+
+void setup() {
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
+  pinMode(PWMA, OUTPUT);
+  pinMode(STBY, OUTPUT);
+  digitalWrite(STBY, HIGH);            // wake the driver up
+}
+
+void loop() {
+  for (int s = 0; s &lt;= 255; s += 5) { setMotor(s); delay(40); }     // ramp up forward
+  delay(1000);
+  for (int s = 255; s &gt;= -255; s -= 5) { setMotor(s); delay(40); }  // slow, stop, reverse
+  delay(1000);
+  for (int s = -255; s &lt;= 0; s += 5) { setMotor(s); delay(40); }    // back to stop
+  delay(2000);
+}</code></pre>
+    <h3>Expected readings (small 3–6 V motor, 6 V pack)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Battery pack, motor off</td><td>6.0–6.5 V (fresh alkaline)</td><td>Below 5 V: flat cells</td></tr>
+      <tr><td>Battery while motor starts</td><td>Dips by 0.3–1 V briefly</td><td>Big dips: weak cells or bad contacts</td></tr>
+      <tr><td>AO1–AO2 at full speed (meter on DC)</td><td>~5.8–6.2 V</td><td>Much lower: driver in standby or current limit</td></tr>
+      <tr><td>AO1–AO2 at value 128 (meter on DC)</td><td>~2.5–3.5 V (average)</td><td>Meters average PWM imperfectly; a scope (P15) shows the truth</td></tr>
+      <tr><td>Running current (meter in series)</td><td>~100–300 mA</td><td>Over 1 A when free-running: motor binding</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"PWM at 50% gives the motor half the voltage, like a dimmer knob." Electrically, the motor sees full voltage half the time and zero the other half. It only <i>behaves</i> like it gets half because its inductance and inertia average the pulses. That is why at low duty a motor may hum but not turn: each short pulse is not enough to overcome friction. Starting at a higher duty and then reducing (a "kick start") fixes it.</p></div>
+
+    <h3>The L298N alternative</h3>
+    <p>The red <b>L298N</b> module with a big black heatsink is everywhere in kits. It works the same way logically (IN1/IN2 set direction, ENA takes PWM after you remove its jumper), and it handles up to about 46 V. But it is built from bipolar transistors, which lose about 1.5–2 V each, so roughly 2–4 V in total across the two conducting switches. From a 6 V pack your motor may see only 3–4 V, and the lost power becomes heat. Its on-board 5 V regulator (enabled by a jumper) should only be used with supplies up to about 12 V.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Driver</th><th>Switch type</th><th>Voltage lost at ~1 A</th><th>Motor supply</th><th>Use it for</th></tr>
+      <tr><td>TB6612FNG</td><td>MOSFET</td><td>~0.5 V</td><td>up to ~13.5 V</td><td>Small motors, battery projects</td></tr>
+      <tr><td>L298N</td><td>Bipolar</td><td>~2–4 V</td><td>up to ~46 V</td><td>Higher-voltage motors, where efficiency does not matter</td></tr>
+      <tr><td>ULN2003</td><td>Darlington, low-side only</td><td>~1 V</td><td>up to ~50 V</td><td>One-direction loads: stepper coils, relays, solenoids</td></tr>
+    </table></div>
+
+    <h2>Lab 2: the hobby servo</h2>
+    <p>A <b>servo</b> is a small DC motor, a gearbox, a potentiometer on the output shaft, and a control circuit, all in one box. You do not tell it a speed; you tell it a <b>position</b>. The control circuit compares the position you asked for with the potentiometer reading and drives the motor until they match. This is a closed control loop, the same idea a BMS uses to hold a room at 22 °C.</p>
+    <p>You send the position as a pulse width, repeated about 50 times per second (every 20 ms). The classic radio-control standard is <b>1.0 ms for one end, 1.5 ms for centre, 2.0 ms for the other end</b>. Many hobby servos such as the SG90 actually travel further, reaching their end stops at around 0.5 ms and 2.5 ms; the Arduino Servo library maps 0° to 544 µs and 180° to 2400 µs by default.</p>
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Servo control pulses of 1.0, 1.5 and 2.0 ms repeated every 20 ms">
+        <path class="s-thin" d="M90 22 V28 H330 V22"/>
+        <text class="t t-small" x="210" y="18" text-anchor="middle">20 ms period (50 Hz)</text>
+        <text class="t t-small" x="10" y="72">1.0 ms</text>
+        <path class="s-accent" d="M90 80 V50 H102 V80 H330 V50 H342 V80 H570"/>
+        <text class="t t-small" x="585" y="72">≈ 0°</text>
+        <text class="t t-small" x="10" y="137">1.5 ms</text>
+        <path class="s-accent" d="M90 145 V115 H108 V145 H330 V115 H348 V145 H570"/>
+        <text class="t t-small" x="585" y="137">≈ 90°</text>
+        <text class="t t-small" x="10" y="202">2.0 ms</text>
+        <path class="s-accent" d="M90 210 V180 H114 V210 H330 V180 H354 V210 H570"/>
+        <text class="t t-small" x="585" y="202">≈ 180°</text>
+        <text class="t t-small t-muted" x="460" y="102" text-anchor="middle">only the width matters,</text>
+        <text class="t t-small t-muted" x="460" y="118" text-anchor="middle">not the exact period</text>
+      </svg>
+      <figcaption>Figure 2. Servo control signals drawn to scale (12 px per ms). The pulse is narrow compared with the 20 ms gap. The servo measures the pulse width and turns to the matching angle; the gap only needs to be roughly 20 ms.</figcaption>
+    </figure>
+
+    <div class="widget" id="p13-sv">
+      <span class="label">Interactive · Servo pulse-width to angle</span>
+      <label>Pulse width <span class="out" id="p13-pwv">1.50 ms</span><input type="range" id="p13-pw" min="0.4" max="2.6" step="0.01" value="1.5"></label>
+      <label>Mapping <select id="p13-map"><option value="std">Textbook: 1.0–2.0 ms → 0–180°</option><option value="ard">Arduino Servo library: 0.544–2.4 ms → 0–180°</option></select></label>
+      <svg id="p13-svsvg" viewBox="0 0 600 200" role="img" aria-label="Pulse waveform and servo horn position"></svg>
+      <div class="readings">
+        <div><small>Angle</small><span class="out" id="p13-ang">90°</span></div>
+        <div><small>Duty cycle</small><span class="out" id="p13-duty">7.5 %</span></div>
+        <div><small>writeMicroseconds()</small><span class="out" id="p13-us">1500</span></div>
+      </div>
+      <p id="p13-svt" style="font-size:15px;margin-top:10px"></p>
+    </div>
+    <script>
+    (function(){
+      var pw=document.getElementById('p13-pw'), mp=document.getElementById('p13-map'), svg=document.getElementById('p13-svsvg');
+      function upd(){
+        var w=+pw.value, lo=mp.value==='std'?1.0:0.544, hi=mp.value==='std'?2.0:2.4;
+        var a=(w-lo)/(hi-lo)*180, stall=false; if(a<0){a=0;stall=true;} if(a>180){a=180;stall=true;}
+        var s='', x0=20, k=12, y0=90;
+        s+='<path class="s-accent" d="M'+x0+' '+y0+' V40 H'+(x0+w*k)+' V'+y0+' H'+(x0+20*k)+' V40 H'+(x0+20*k+w*k)+' V'+y0+' H'+(x0+33*k)+'"/>';
+        s+='<line class="s-thin" x1="'+x0+'" y1="'+(y0+4)+'" x2="'+(x0+33*k)+'" y2="'+(y0+4)+'"/>';
+        s+='<text class="t t-small t-muted" x="'+x0+'" y="'+(y0+22)+'">0</text><text class="t t-small t-muted" x="'+(x0+20*k)+'" y="'+(y0+22)+'" text-anchor="middle">20 ms</text>';
+        s+='<text class="t t-small" x="'+(x0+w*k+4)+'" y="36">'+w.toFixed(2)+' ms</text>';
+        var cx=500, cy=150, L=60, r=a*Math.PI/180;
+        s+='<path class="s-thin s-dash" d="M'+(cx-70)+' '+cy+' A70 70 0 0 1 '+(cx+70)+' '+cy+'"/>';
+        s+='<text class="t t-small t-muted" x="'+(cx-80)+'" y="'+(cy+16)+'" text-anchor="middle">0°</text><text class="t t-small t-muted" x="'+cx+'" y="'+(cy-76)+'" text-anchor="middle">90°</text><text class="t t-small t-muted" x="'+(cx+80)+'" y="'+(cy+16)+'" text-anchor="middle">180°</text>';
+        s+='<rect class="f-wash s-line" x="'+(cx-34)+'" y="'+(cy-10)+'" width="68" height="40" rx="4"/>';
+        s+='<line class="s-red" style="stroke-width:7;stroke-linecap:round" x1="'+cx+'" y1="'+cy+'" x2="'+(cx-L*Math.cos(r)).toFixed(1)+'" y2="'+(cy-L*Math.sin(r)).toFixed(1)+'"/>';
+        s+='<circle class="f-ink" cx="'+cx+'" cy="'+cy+'" r="6"/>';
+        svg.innerHTML=s;
+        document.getElementById('p13-pwv').textContent=w.toFixed(2)+' ms';
+        document.getElementById('p13-ang').textContent=Math.round(a)+'°';
+        document.getElementById('p13-duty').textContent=(w/20*100).toFixed(1)+' %';
+        document.getElementById('p13-us').textContent=Math.round(w*1000);
+        document.getElementById('p13-svt').textContent= stall ? 'Outside this servo’s range: it drives into its end stop, buzzes and draws stall current. Real servos differ, so find each one’s safe limits with writeMicroseconds() in small steps.' : 'Each 0.1 ms of pulse width moves the horn about '+(18/(hi-lo)).toFixed(0)+'°. The signal wire carries almost no current; the power comes from the red wire.';
+      }
+      pw.addEventListener('input',upd); mp.addEventListener('change',upd); upd();
+    })();
+    </script>
+
+    <ol class="steps">
+      <li><p><b>Wire the servo.</b> Servo wires are usually brown (or black) = GND, red = V+ (about 5 V), orange (or yellow, white) = signal. Signal to D9. Red and brown to a <b>separate 5 V 2 A supply</b>. Join that supply's GND to the Arduino GND.</p></li>
+      <li><p><b>Upload the sweep sketch</b> below. The horn should sweep smoothly from one end to the other.</p></li>
+      <li><p><b>Find the real limits.</b> Replace the sweep with <code>myServo.writeMicroseconds(1500);</code> and change the number in steps of 100. Stop increasing when the servo starts to buzz at the end of travel: that is its end stop.</p></li>
+    </ol>
+<pre><code>#include &lt;Servo.h&gt;         // built-in library: makes the 50 Hz pulses for you
+
+Servo myServo;              // one Servo object per servo
+
+void setup() {
+  myServo.attach(9);        // signal wire on D9 (any digital pin works)
+}
+
+void loop() {
+  for (int angle = 0; angle &lt;= 180; angle += 2) {   // sweep one way
+    myServo.write(angle);   // library converts the angle to a pulse width
+    delay(15);              // give the servo time to move
+  }
+  for (int angle = 180; angle &gt;= 0; angle -= 2) {   // and back
+    myServo.write(angle);
+    delay(15);
+  }
+}</code></pre>
+    <div class="callout warn"><span class="label">Safety: power</span><p>A micro servo draws roughly 10 mA when idle but several hundred mA in bursts when it starts to move, and more when stalled against a stop. Powering it from the Uno's 5 V pin on USB is the classic cause of the board resetting every time the servo moves. Use a separate 5 V supply and a common ground. Keep fingers clear of the horn on larger servos: they are strong.</p></div>
+
+    <h2>Lab 3: the 28BYJ-48 stepper with a ULN2003</h2>
+    <p>A <b>stepper motor</b> moves in fixed steps. Inside are several coils around a toothed rotor. Energise the coils in a sequence and the rotor follows, one step per change. Because the controller counts steps, you know the position without a sensor (as long as the motor does not skip steps under too much load).</p>
+    <p>The 28BYJ-48 is a cheap 5 V <b>unipolar</b> stepper (four coil halves with a common centre wire, the red one) with a gearbox of about 64:1. In full-step mode it needs about <b>2048 steps per output revolution</b>, so each step is about 0.18°. It is slow (about 10–15 rpm at most) but strong for its size. Each coil draws roughly 100 mA at 5 V.</p>
+    <p>The <b>ULN2003</b> on its driver board is seven Darlington transistor switches, each able to pull a load to ground. It also contains a flyback diode for each output, connected to its COM pin, so the coils' turn-off spikes are clamped. The four LEDs on the board show which coils are energised.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Full step</th><th>IN1 (blue)</th><th>IN2 (pink)</th><th>IN3 (yellow)</th><th>IN4 (orange)</th></tr>
+      <tr><td>1</td><td>ON</td><td>ON</td><td>off</td><td>off</td></tr>
+      <tr><td>2</td><td>off</td><td>ON</td><td>ON</td><td>off</td></tr>
+      <tr><td>3</td><td>off</td><td>off</td><td>ON</td><td>ON</td></tr>
+      <tr><td>4</td><td>ON</td><td>off</td><td>off</td><td>ON</td></tr>
+    </table></div>
+    <p>Two coils are on at each full step, so the motor draws about 200 mA continuously, even when it is not turning. Give the ULN2003 board its own 5 V supply (with common ground) if you also run a servo or motor.</p>
+<pre><code>#include &lt;Stepper.h&gt;       // built-in library
+
+const int STEPS_PER_REV = 2048;    // 28BYJ-48, full-step, after the gearbox
+
+// ULN2003 IN1..IN4 wired to D8..D11.
+// The library wants the coils in the order IN1, IN3, IN2, IN4 for this motor:
+Stepper stepper(STEPS_PER_REV, 8, 10, 9, 11);
+
+void setup() {
+  stepper.setSpeed(10);            // 10 rpm (above ~15 the motor starts to skip)
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.println("One turn one way");
+  stepper.step(STEPS_PER_REV);     // blocks until finished: about 6 s at 10 rpm
+  delay(500);
+  Serial.println("One turn back");
+  stepper.step(-STEPS_PER_REV);    // negative = the other direction
+  delay(500);
+}</code></pre>
+    <div class="callout tip"><span class="label">Bench tip</span><p><code>stepper.step()</code> blocks, like <code>delay()</code> in P11. For projects that must also read sensors, use the <b>AccelStepper</b> library: you call its <code>run()</code> function every pass through <code>loop()</code> and it takes one step only when it is time. It also ramps speed up and down so the motor does not skip.</p></div>
+
+    <h2>Lab 4: relay modules for bigger loads</h2>
+    <p>A <b>relay</b> is a switch moved by an electromagnet. A small current through the coil pulls a metal armature, which moves a set of contacts. The contacts are electrically separate from the coil, so a 5 V coil can switch a completely different circuit, such as a 12 V lamp. That separation is called <b>galvanic isolation</b>.</p>
+    <figure>
+      <svg viewBox="0 0 640 280" role="img" aria-label="Relay module: transistor driving the coil with a flyback diode, contacts switching a 12 V lamp">
+        <defs><marker id="p13-arr3" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small" x="20" y="186">IN</text>
+        <line class="s-line" x1="40" y1="190" x2="90" y2="190"/>
+        <path class="s-line" d="M90 190 h6 l4 -8 l8 16 l8 -16 l8 16 l8 -16 l8 16 l4 -8 h6"/>
+        <text class="t t-small" x="122" y="176" text-anchor="middle">1 kΩ</text>
+        <line class="s-line" x1="156" y1="190" x2="190" y2="190"/>
+        <line class="s-line" style="stroke-width:3" x1="192" y1="174" x2="192" y2="206"/>
+        <line class="s-line" x1="192" y1="182" x2="215" y2="166"/>
+        <line class="s-line" x1="192" y1="198" x2="215" y2="214" marker-end="url(#p13-arr3)"/>
+        <text class="t t-small t-muted" x="148" y="226">NPN</text>
+        <line class="s-line" x1="215" y1="166" x2="215" y2="140"/>
+        <line class="s-line" x1="215" y1="214" x2="215" y2="250"/>
+        <line class="s-line" x1="203" y1="250" x2="227" y2="250"/>
+        <line class="s-line" x1="208" y1="256" x2="222" y2="256"/>
+        <line class="s-line" x1="213" y1="262" x2="217" y2="262"/>
+        <rect class="f-practice-soft s-line" x="203" y="80" width="24" height="60"/>
+        <text class="t t-small" x="196" y="104" text-anchor="end">coil</text>
+        <text class="t t-small t-muted" x="196" y="120" text-anchor="end">~70 mA</text>
+        <path class="s-line" d="M215 80 V50"/>
+        <text class="t t-small" x="215" y="40" text-anchor="middle">VCC 5 V</text>
+        <path class="s-line" d="M215 56 H262 V97"/>
+        <polygon class="f-ink" points="252,117 272,117 262,99"/>
+        <line class="s-line" x1="252" y1="98" x2="272" y2="98"/>
+        <path class="s-line" d="M262 117 V134 H215"/>
+        <text class="t t-small t-muted" x="278" y="112">flyback diode</text>
+        <path class="s-thin s-dash" d="M227 110 H420"/>
+        <text class="t t-small t-muted" x="320" y="102" text-anchor="middle">magnetic pull</text>
+        <circle class="f-panel s-line" cx="440" cy="170" r="4"/>
+        <circle class="f-panel s-line" cx="410" cy="80" r="4"/>
+        <circle class="f-panel s-line" cx="480" cy="80" r="4"/>
+        <line class="s-accent" x1="440" y1="166" x2="413" y2="85"/>
+        <text class="t t-small" x="440" y="192" text-anchor="middle">COM</text>
+        <text class="t t-small" x="398" y="70" text-anchor="middle">NC</text>
+        <text class="t t-small" x="492" y="70" text-anchor="middle">NO</text>
+        <path class="s-line" d="M480 76 V40 H540"/>
+        <circle class="f-panel s-line" cx="555" cy="40" r="15"/>
+        <path class="s-line" d="M545 30 l20 20 M565 30 l-20 20"/>
+        <text class="t t-small" x="555" y="20" text-anchor="middle">12 V lamp</text>
+        <path class="s-line" d="M570 40 H610 V120"/>
+        <line class="s-line" x1="595" y1="120" x2="625" y2="120"/>
+        <line class="s-line" x1="602" y1="128" x2="618" y2="128"/>
+        <text class="t t-small" x="630" y="118">+</text>
+        <path class="s-line" d="M610 128 V230 H440 V174"/>
+        <text class="t t-small" x="560" y="250" text-anchor="middle">12 V DC plug-pack (ELV)</text>
+      </svg>
+      <figcaption>Figure 3. Inside a typical relay module. The Arduino's pin only drives the transistor's base. The transistor carries the ~70 mA coil current; the diode clamps the coil's turn-off spike. The contacts (COM, NC, NO) are a separate circuit: here COM–NO switches a 12 V lamp. At rest COM touches NC; when the coil is energised COM moves to NO.</figcaption>
+    </figure>
+    <p>Things to know about cheap relay modules:</p>
+    <ul>
+      <li><b>Many are "active LOW".</b> The relay switches on when IN is pulled LOW, because the input drives an LED inside an opto-coupler from VCC. Check by testing, or look for a jumper marked H/L.</li>
+      <li><b>JD-VCC jumper.</b> Opto-isolated modules have a jumper linking VCC (the logic side) to JD-VCC (the coil side). Remove it and feed JD-VCC from a separate 5 V supply to keep coil current and noise completely away from the Arduino.</li>
+      <li><b>Contact ratings.</b> The relay body may say "10 A 250 VAC, 10 A 30 VDC". DC is harder to switch than AC, because a DC arc does not go out by itself at a zero crossing. For inductive DC loads (solenoids, locks, motors), fit a diode across the load and stay well under the rating.</li>
+    </ul>
+<pre><code>const int RELAY_PIN = 7;
+const int RELAY_ON  = LOW;     // most cheap modules switch on when IN is LOW
+const int RELAY_OFF = HIGH;
+
+void setup() {
+  digitalWrite(RELAY_PIN, RELAY_OFF);  // set the level first so the relay does not click at boot
+  pinMode(RELAY_PIN, OUTPUT);          // now drive the pin
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(RELAY_PIN, RELAY_ON);   // coil energised: COM connects to NO, lamp on
+  Serial.println("Relay ON");
+  delay(2000);
+  digitalWrite(RELAY_PIN, RELAY_OFF);  // coil off: COM back to NC, lamp off
+  Serial.println("Relay OFF");
+  delay(2000);
+}</code></pre>
+    <div class="callout warn"><span class="label">Safety: stay at ELV</span><p>Relay modules are often sold with photos of them switching a 230 V lamp or power point. Do not do this. The contact rating does not make a hobby module safe for mains: the board's spacing between mains and your 5 V side is often inadequate, there is no enclosure, and mains work in Australia must be done by a licensed electrician. In this course, relays switch only extra-low-voltage loads such as 12 V or 24 V DC lamps, buzzers and lock demos, or 24 V AC from a plug-pack.</p></div>
+
+    <h2>Power: separate supplies, common ground, no brown-outs</h2>
+    <p>Motors, servos, steppers and relays all pull large, sudden currents. If they share the Arduino's USB supply, two bad things happen.</p>
+    <ol>
+      <li><b>The supply voltage dips.</b> The USB port, the cable and the board's fuse all have resistance. A 1 A surge through 0.5 Ω of total resistance drops 0.5 V. If the 5 V rail falls far enough, the microcontroller's <b>brown-out detector</b> resets it (to stop it running unreliably at low voltage). You see your "ready" message again in the Serial Monitor every time the motor starts. Smaller dips can still corrupt readings or crash the program.</li>
+      <li><b>Ground bounce and noise.</b> Big current returning through the same thin ground wire as your sensor signals lifts the "0 V" at the Arduino by tens or hundreds of millivolts, in spikes. Analogue readings jump, and logic can glitch.</li>
+    </ol>
+    <figure>
+      <svg viewBox="0 0 680 270" role="img" aria-label="Separate supplies for logic and motor, with grounds joined at one point">
+        <defs><marker id="p13-arr4" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="20" y="30" width="150" height="56" rx="6"/>
+        <text class="t" x="95" y="54" text-anchor="middle">USB 5 V</text>
+        <text class="t t-small t-muted" x="95" y="72" text-anchor="middle">logic supply</text>
+        <line class="s-line" x1="170" y1="58" x2="258" y2="58"/>
+        <rect class="f-accent-soft s-accent" x="260" y="30" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="340" y="63" text-anchor="middle">Arduino</text>
+        <rect class="f-wash s-line" x="20" y="180" width="150" height="56" rx="6"/>
+        <text class="t" x="95" y="204" text-anchor="middle">6 V battery</text>
+        <text class="t t-small t-muted" x="95" y="222" text-anchor="middle">motor supply</text>
+        <rect class="f-accent-soft s-accent" x="260" y="180" width="160" height="56" rx="6"/>
+        <text class="t t-bold" x="340" y="213" text-anchor="middle">Motor driver</text>
+        <circle class="f-panel s-line" cx="560" cy="208" r="26"/>
+        <text class="t t-bold" x="560" y="214" text-anchor="middle">M</text>
+        <path class="s-red" d="M170 196 H258" marker-end="url(#p13-arr4)"/>
+        <path class="s-red" d="M420 196 H534"/>
+        <path class="s-red" d="M534 222 H420"/>
+        <path class="s-red" d="M258 222 H170" marker-end="url(#p13-arr4)"/>
+        <text class="t t-small t-red" x="214" y="188" text-anchor="middle">1 A</text>
+        <text class="t t-small t-red" x="480" y="254" text-anchor="middle">big current loop stays down here</text>
+        <path class="s-blue" d="M310 86 V180"/>
+        <text class="t t-small t-blue" x="302" y="140" text-anchor="end">IN1, IN2, PWM</text>
+        <text class="t t-small t-blue" x="302" y="156" text-anchor="end">(~1 mA)</text>
+        <path class="s-line" d="M380 86 V180"/>
+        <circle class="f-ink" cx="380" cy="180" r="4"/>
+        <text class="t t-small" x="390" y="130">GND link:</text>
+        <text class="t t-small" x="390" y="146">reference only,</text>
+        <text class="t t-small" x="390" y="162">almost no current</text>
+      </svg>
+      <figcaption>Figure 4. Two supplies, one reference. The motor's heavy current circulates between the battery, the driver and the motor. The Arduino sends only tiny signal currents, and the single ground link gives both sides the same "0 V" so that HIGH and LOW mean the same thing to each.</figcaption>
+    </figure>
+    <div class="callout why"><span class="label">Why the grounds must be joined</span><p>Voltage is always measured <i>between two points</i>. When the Arduino says "HIGH", it means "5 V above <i>my</i> GND". The driver decides HIGH or LOW by comparing its input with <i>its</i> GND. If the two grounds are not connected, the driver has no idea where the Arduino's 0 V is, so the signal is meaningless (and current may find a path through the pins instead). The exception is a deliberately isolated input, such as an opto-coupler with the JD-VCC jumper removed, where the light beam carries the signal and no shared ground is needed.</p></div>
+    <a class="crosslink" href="../theory/t01-charge-current-voltage.html">Theory T01 · Charge, current and voltage</a>
+
+    <h3>Current budget</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Load</th><th>Typical current</th><th>Notes</th></tr>
+      <tr><td>Uno itself</td><td>~40–50 mA</td><td>Plus whatever its pins supply</td></tr>
+      <tr><td>LED on a pin</td><td>~10 mA</td><td>From P11</td></tr>
+      <tr><td>Micro servo moving</td><td>~100–300 mA, peaks higher</td><td>Stall can approach an amp on larger servos</td></tr>
+      <tr><td>28BYJ-48 (two coils on)</td><td>~200 mA, continuous</td><td>Even when holding still</td></tr>
+      <tr><td>5 V relay coil</td><td>~70–90 mA</td><td>Per relay that is on</td></tr>
+      <tr><td>Small DC motor</td><td>~100–300 mA running, 1 A+ starting</td><td>Measure yours</td></tr>
+      <tr><td>USB 2.0 port supply</td><td>500 mA total</td><td>Includes the Uno</td></tr>
+    </table></div>
+    <p><b>Worked example.</b> Uno (50 mA) + servo moving (250 mA) + stepper (200 mA) + relay (80 mA) = 580 mA, already over a USB 2.0 port's 500 mA before the servo's peaks. Put the servo and stepper on a 5 V 2 A supply, and only the Uno and relay on USB.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Put a 100–470 µF electrolytic capacitor across the supply right at each motor driver or servo connector, plus a 100 nF ceramic. The big capacitor supplies the sudden current peak locally, so the peak does not have to travel down long wires from the supply (P07). Mind the polarity: the stripe marks the negative leg.</p></div>
+
+    <h2>On the job: actuators in buildings</h2>
+    <h3>HVAC damper and valve actuators</h3>
+    <p>In a building, the "motors" a BMS technician deals with most are <b>actuators</b> on air dampers and water valves. A damper actuator clamps onto a damper shaft in a duct and rotates it about 90° to set airflow. A valve actuator turns or lifts a valve stem to set the flow of chilled or hot water through a coil. Inside each is a small motor, a gearbox and a position-feedback circuit: it is a big, slow servo.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Power</th><th>Control signal</th><th>Like on your bench</th></tr>
+      <tr><td>Modulating</td><td>Often 24 V AC or 24 V DC</td><td>0–10 V or 2–10 V DC from a controller analogue output; often a 2–10 V position feedback</td><td>The servo: a signal sets a position</td></tr>
+      <tr><td>Floating (3-point)</td><td>24 V AC</td><td>Two digital outputs: one drives open, one drives closed</td><td>The H-bridge: forward, reverse, stop</td></tr>
+      <tr><td>Two-position (on/off)</td><td>24 V AC/DC</td><td>One digital output</td><td>The relay</td></tr>
+      <tr><td>Spring-return</td><td>Any of the above</td><td>A spring drives it to a safe position on power loss</td><td>A fail-safe default</td></tr>
+    </table></div>
+    <p>A classic commissioning fault: many 24 V AC actuators use the same wire as both the 24 V AC common and the 0–10 V signal reference. If the controller and the actuator do not share that common correctly, or a 24 V AC transformer powers several devices with their wires swapped, the signal is offset or devices are damaged. It is the same "common ground" lesson as your motor driver, at plant scale. Making 0–10 V from an Arduino needs extra parts: PWM, an RC filter (P07) and an op-amp with a gain of 2 (T14), or a ready-made PWM-to-0–10 V module.</p>
+
+    <h3>Door strikes and magnetic locks</h3>
+    <p>Access control systems switch door locks with a relay in the door controller, exactly like Lab 4. The lock type decides which relay contact you use.</p>
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Relay wiring for a fail-safe maglock through NC and a fail-secure strike through NO">
+        <text class="t t-bold" x="155" y="22" text-anchor="middle">Maglock: fail-safe, via NC</text>
+        <text class="t t-bold" x="485" y="22" text-anchor="middle">Strike: fail-secure, via NO</text>
+        <line class="s-thin" x1="320" y1="10" x2="320" y2="240"/>
+        <rect class="f-wash s-line" x="20" y="60" width="70" height="90" rx="5"/>
+        <text class="t t-small" x="55" y="100" text-anchor="middle">12 V DC</text>
+        <text class="t t-small" x="55" y="116" text-anchor="middle">PSU</text>
+        <text class="t t-small" x="96" y="76">+</text>
+        <text class="t t-small" x="96" y="144">−</text>
+        <line class="s-line" x1="90" y1="80" x2="120" y2="80"/>
+        <circle class="f-panel s-line" cx="124" cy="80" r="3.5"/>
+        <circle class="f-panel s-line" cx="156" cy="80" r="3.5"/>
+        <line class="s-line" x1="127" y1="80" x2="153" y2="80"/>
+        <text class="t t-small t-muted" x="140" y="68" text-anchor="middle">fire release</text>
+        <line class="s-line" x1="160" y1="80" x2="186" y2="80"/>
+        <circle class="f-panel s-line" cx="190" cy="80" r="3.5"/>
+        <circle class="f-panel s-line" cx="226" cy="80" r="3.5"/>
+        <circle class="f-panel s-line" cx="226" cy="48" r="3.5"/>
+        <line class="s-accent" x1="193" y1="80" x2="222" y2="80"/>
+        <text class="t t-small" x="190" y="100" text-anchor="middle">COM</text>
+        <text class="t t-small" x="232" y="100">NC</text>
+        <text class="t t-small" x="234" y="46">NO</text>
+        <path class="s-line" d="M230 80 H255 V100"/>
+        <rect class="f-practice-soft s-line" x="240" y="100" width="30" height="50"/>
+        <text class="t t-small" x="255" y="170" text-anchor="middle">maglock</text>
+        <path class="s-line" d="M255 150 V190 H90 V140"/>
+        <path class="s-line" d="M255 92 H298 V112"/>
+        <polygon class="f-ink" points="289,130 307,130 298,113"/>
+        <line class="s-line" x1="289" y1="112" x2="307" y2="112"/>
+        <path class="s-line" d="M298 130 V160 H255"/>
+        <text class="t t-small t-muted" x="160" y="214" text-anchor="middle">relay energised → NC opens → door releases</text>
+        <text class="t t-small t-muted" x="160" y="232" text-anchor="middle">power lost → door releases (safe exit)</text>
+        <rect class="f-wash s-line" x="340" y="60" width="70" height="90" rx="5"/>
+        <text class="t t-small" x="375" y="100" text-anchor="middle">12 V DC</text>
+        <text class="t t-small" x="375" y="116" text-anchor="middle">PSU</text>
+        <text class="t t-small" x="416" y="76">+</text>
+        <text class="t t-small" x="416" y="144">−</text>
+        <line class="s-line" x1="410" y1="80" x2="456" y2="80"/>
+        <circle class="f-panel s-line" cx="460" cy="80" r="3.5"/>
+        <circle class="f-panel s-line" cx="496" cy="80" r="3.5"/>
+        <circle class="f-panel s-line" cx="496" cy="48" r="3.5"/>
+        <line class="s-accent" x1="463" y1="80" x2="492" y2="80"/>
+        <text class="t t-small" x="460" y="100" text-anchor="middle">COM</text>
+        <text class="t t-small" x="502" y="100">NC</text>
+        <text class="t t-small" x="476" y="40" text-anchor="end">NO</text>
+        <path class="s-line" d="M500 48 H575 V100"/>
+        <rect class="f-practice-soft s-line" x="560" y="100" width="30" height="50"/>
+        <text class="t t-small" x="575" y="170" text-anchor="middle">strike</text>
+        <path class="s-line" d="M575 150 V190 H410 V140"/>
+        <path class="s-line" d="M575 60 H615 V112"/>
+        <polygon class="f-ink" points="606,130 624,130 615,113"/>
+        <line class="s-line" x1="606" y1="112" x2="624" y2="112"/>
+        <path class="s-line" d="M615 130 V160 H575"/>
+        <text class="t t-small t-muted" x="480" y="214" text-anchor="middle">relay energised → NO closes → strike unlocks</text>
+        <text class="t t-small t-muted" x="480" y="232" text-anchor="middle">power lost → stays locked (secure)</text>
+      </svg>
+      <figcaption>Figure 5. Left: a magnetic lock holds only while powered, so it is wired through the relay's NC contact (and usually through a fire-release contact) and releases when the relay operates or the power fails. Right: a fail-secure strike needs power to unlock, so it is wired through NO. Each lock has a diode (or the manufacturer's suppressor) across its coil to absorb the turn-off spike.</figcaption>
+    </figure>
+    <div class="callout job"><span class="label">On the job</span><p>Security installers wire this every day at 12 V or 24 V DC. You will size the lock power supply (a maglock draws a few hundred mA continuously, so a door full of them adds up), fit the suppression diode with the correct polarity (stripe to +), and check what happens on a power failure and a fire alarm. Building and fire rules require doors on exit paths to let people out in an emergency, which is why fail-safe locks are tied to the fire system. The exact requirements come from the National Construction Code and the fire engineering for each building, so always follow the job's design documents and confirm current rules with the relevant authority. Read more in C06.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Lock power supplies and access controllers on site are usually powered from mains through a transformer or switch-mode supply that an electrician has installed. Your work is on the ELV side: the 12/24 V output terminals, the controller relays and the lock cabling. Security installation work also needs a security licence in most states and territories; see C11, and check the current rules with your state's licensing regulator.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>Arduino resets when the motor or servo starts</td><td>Brown-out: shared supply sags</td><td>Separate supply for the load, common ground, bulk capacitor at the driver.</td></tr>
+      <tr><td>Motor does nothing, TB6612</td><td>STBY left LOW or floating; no VM supply; no common GND</td><td>Drive STBY HIGH; check VM with the meter; join grounds.</td></tr>
+      <tr><td>Motor turns one way only</td><td>One direction pin not connected, or wrong pin number</td><td>Measure AIN1 and AIN2 while the code runs.</td></tr>
+      <tr><td>Motor hums at low PWM but does not turn</td><td>Duty too low to overcome friction</td><td>Kick-start at a higher duty, or set a minimum duty.</td></tr>
+      <tr><td>L298N motor is weak</td><td>2–4 V lost in the bipolar driver</td><td>Raise the supply voltage within the motor's rating, or use a MOSFET driver.</td></tr>
+      <tr><td>Servo jitters</td><td>Weak supply, missing common ground, noisy signal wire</td><td>Separate 5 V supply, join grounds, capacitor across servo power.</td></tr>
+      <tr><td>Stepper vibrates but does not turn</td><td>Coil order wrong, or speed too high</td><td>Use pin order 8, 10, 9, 11 for IN1–IN4; lower the rpm.</td></tr>
+      <tr><td>Relay clicks at power-up</td><td>Active-LOW module, pin starts LOW</td><td>Write HIGH before <code>pinMode(OUTPUT)</code>.</td></tr>
+      <tr><td>Relay works but load does not</td><td>Using NC instead of NO, or load supply missing</td><td>Measure continuity COM–NO with relay on and off (power off the load first).</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Which two switches of an H-bridge must never be closed together, and why?</summary><div class="answer"><p>The two on the same side (S1 with S2, or S3 with S4). Together they connect +V straight to ground through two transistors with almost no resistance: shoot-through. The current is limited only by the supply and the transistors, which overheat and fail.</p></div></details>
+    <details class="quiz"><summary>A 6 V motor driver output runs at analogWrite(…, 64). Roughly what average voltage does the motor see?</summary><div class="answer"><p>64/255 ≈ 25% duty, so about 0.25 × 6 = 1.5 V average. The motor may not even start at that level because of friction.</p></div></details>
+    <details class="quiz"><summary>A servo receives 1.25 ms pulses. With the textbook mapping, what angle is that?</summary><div class="answer"><p>(1.25 − 1.0) / (2.0 − 1.0) × 180° = 45°.</p></div></details>
+    <details class="quiz"><summary>Why does the 28BYJ-48 draw current even when it is not moving?</summary><div class="answer"><p>To hold position, the controller keeps the last pair of coils energised. Two coils at about 100 mA each means about 200 mA continuously. You can switch all four inputs LOW when holding torque is not needed, to save power and heat.</p></div></details>
+    <details class="quiz"><summary>Your relay module turns on when the Arduino pin is LOW. Is it broken?</summary><div class="answer"><p>No. Many modules are active LOW: the input sinks current through the opto-coupler's LED from VCC. Write HIGH for off and LOW for on, and set the pin HIGH before making it an output.</p></div></details>
+    <details class="quiz"><summary>The motor and the Arduino use separate supplies. Why must you still connect their grounds?</summary><div class="answer"><p>Logic levels are voltages relative to ground. The driver compares its input with its own GND. Without a shared ground, the Arduino's 5 V has no defined relationship to the driver's 0 V, so the signal is meaningless. Only deliberately isolated inputs (opto-couplers) can skip it.</p></div></details>
+    <details class="quiz"><summary>A maglock on an exit door: NO or NC contact, and why?</summary><div class="answer"><p>NC. A maglock locks while powered. Through NC, it is powered (locked) while the relay is at rest, and releases when the relay energises (access granted) or when power fails. That fail-safe behaviour lets people exit in an emergency.</p></div></details>
+    <details class="quiz"><summary>Why does a DC motor draw much more current at start-up than when running?</summary><div class="answer"><p>A spinning motor generates a back-EMF that opposes the supply. At standstill the back-EMF is zero, so the current is V/R<sub>winding</sub>. Once spinning, the current is (V − back-EMF)/R, which is much smaller.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain why a pin cannot drive a motor and what a driver does.</span></li>
+      <li><input type="checkbox"><span>I can explain the H-bridge states: forward, reverse, brake, coast and shoot-through.</span></li>
+      <li><input type="checkbox"><span>I can wire a TB6612FNG and control motor direction and PWM speed.</span></li>
+      <li><input type="checkbox"><span>I can position a servo and find its real pulse-width limits.</span></li>
+      <li><input type="checkbox"><span>I can drive a 28BYJ-48 stepper through a ULN2003 board.</span></li>
+      <li><input type="checkbox"><span>I can use an active-LOW relay module to switch a 12 V load through COM/NO/NC.</span></li>
+      <li><input type="checkbox"><span>I can plan separate supplies with a common ground and add bulk capacitors to prevent brown-outs.</span></li>
+      <li><input type="checkbox"><span>I can explain 0–10 V and floating HVAC actuators and fail-safe vs fail-secure locks.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

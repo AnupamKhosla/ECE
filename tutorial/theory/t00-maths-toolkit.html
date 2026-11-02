@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T00 · Maths toolkit: the school maths electronics uses</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Page-local widget styles. Colours come only from the shared theme variables, so dark mode works. */
+.t00-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:6px 0 10px}
+.t00-row label{margin:0}
+.t00-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.t00-list div{background:var(--wash);border-radius:8px;padding:6px 10px;font:15px/1.4 var(--mono)}
+.t00-list div.hit{background:var(--accent-soft);outline:2px solid var(--accent)}
+.t00-list small{display:block;font:12px var(--sans);color:var(--muted)}
+.t00-note{font-size:14.5px;color:var(--muted);margin:10px 0 0}
+</style>
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · T00</span>
+    <h1>Maths toolkit: the school maths electronics uses</h1>
+    <p class="lede">You did all of this maths in Class 12, but that was a long time ago. This chapter brings back only the parts a technician uses every day: prefixes, powers of ten, rearranging formulas, percentages, graphs, exponentials, logs and decibels, sine waves and square roots. Every idea comes with a real circuit and real numbers, so you can see why it matters.</p>
+    <div class="meta"><span><b>Reading</b> 60 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Class 10–12, refreshed</span><span><b>Practice</b> P02, P03, P06, P07</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How to use this chapter</h2>
+    <p>You do not need to read this chapter in one sitting. Read the first four sections now (prefixes, notation, significant figures and rearranging formulas). You will use them in every lab from <a href="../practice/p02-breadboard-first-led.html">P02</a> onwards. Come back to the later sections (exponentials, decibels, sine waves, phasors) when a chapter sends you here.</p>
+    <p>Each section follows the same pattern: first the <b>intuition</b> (what the idea means in plain words), then the <b>rule</b>, then a <b>circuit example</b> with numbers. Keep a scientific calculator next to you and do the examples yourself. Maths you only read does not stay; maths you press into a calculator does.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A cheap scientific calculator (Casio fx-82 style, around A$25 from Officeworks or Big W) is better than a phone on the bench. It has real keys, it shows the whole expression, and it never locks the screen while your hands hold probes. Your phone calculator turns into a scientific one when you rotate it sideways.</p></div>
+
+    <h2>SI units and prefixes</h2>
+    <h3>Intuition</h3>
+    <p>Electronics covers a huge range of sizes. A capacitor can be 10 pF (ten million-millionths of a farad). A power station makes about 1 GW (one thousand million watts). Writing all those zeros is slow and easy to get wrong. So we use <b>prefixes</b>: a letter in front of the unit that means "multiply by this power of ten".</p>
+    <p>The <b>SI system</b> (Système International, the metric system) gives each quantity one base unit: volt (V), ampere (A), ohm (Ω), farad (F), henry (H), watt (W), hertz (Hz), second (s). The prefixes we use most go up and down in steps of 1000.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 160" role="img" aria-label="Prefix ladder from pico to giga, each step a factor of one thousand">
+        <defs>
+          <marker id="t00-pl-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t00-pl-l" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <line class="s-line" x1="30" y1="70" x2="610" y2="70"/>
+        <g class="t" text-anchor="middle">
+          <line class="s-line" x1="50" y1="62" x2="50" y2="78"/><text x="50" y="52" class="t t-bold">p</text><text x="50" y="98" class="t t-small t-muted">pico</text><text x="50" y="114" class="t t-small">10⁻¹²</text>
+          <line class="s-line" x1="127" y1="62" x2="127" y2="78"/><text x="127" y="52" class="t t-bold">n</text><text x="127" y="98" class="t t-small t-muted">nano</text><text x="127" y="114" class="t t-small">10⁻⁹</text>
+          <line class="s-line" x1="204" y1="62" x2="204" y2="78"/><text x="204" y="52" class="t t-bold">µ</text><text x="204" y="98" class="t t-small t-muted">micro</text><text x="204" y="114" class="t t-small">10⁻⁶</text>
+          <line class="s-line" x1="281" y1="62" x2="281" y2="78"/><text x="281" y="52" class="t t-bold">m</text><text x="281" y="98" class="t t-small t-muted">milli</text><text x="281" y="114" class="t t-small">10⁻³</text>
+          <line class="s-accent" x1="358" y1="58" x2="358" y2="82"/><text x="358" y="52" class="t t-bold t-accent">unit</text><text x="358" y="98" class="t t-small t-muted">V, A, Ω, F</text><text x="358" y="114" class="t t-small">10⁰ = 1</text>
+          <line class="s-line" x1="435" y1="62" x2="435" y2="78"/><text x="435" y="52" class="t t-bold">k</text><text x="435" y="98" class="t t-small t-muted">kilo</text><text x="435" y="114" class="t t-small">10³</text>
+          <line class="s-line" x1="512" y1="62" x2="512" y2="78"/><text x="512" y="52" class="t t-bold">M</text><text x="512" y="98" class="t t-small t-muted">mega</text><text x="512" y="114" class="t t-small">10⁶</text>
+          <line class="s-line" x1="589" y1="62" x2="589" y2="78"/><text x="589" y="52" class="t t-bold">G</text><text x="589" y="98" class="t t-small t-muted">giga</text><text x="589" y="114" class="t t-small">10⁹</text>
+        </g>
+        <path class="s-accent" d="M440 140 H590" marker-end="url(#t00-pl-r)"/>
+        <text class="t t-small" x="440" y="134">bigger prefix: number ÷ 1000</text>
+        <path class="s-red" d="M270 140 H60" marker-end="url(#t00-pl-l)"/>
+        <text class="t t-small t-red" x="80" y="134">smaller prefix: number × 1000</text>
+      </svg>
+      <figcaption>Figure 1. The prefix ladder. Each step is ×1000. Moving to a smaller prefix makes the number bigger (4.7 nF = 4700 pF); moving to a bigger prefix makes the number smaller (4700 Ω = 4.7 kΩ). The thing itself does not change, only the label.</figcaption>
+    </figure>
+
+    <h3>The rule</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Prefix</th><th>Symbol</th><th>Multiply by</th><th>Where you meet it</th></tr>
+      <tr><td>pico</td><td>p</td><td>10⁻¹² = 0.000 000 000 001</td><td>Small capacitors (22 pF next to a crystal)</td></tr>
+      <tr><td>nano</td><td>n</td><td>10⁻⁹</td><td>Decoupling capacitors (100 nF), light wavelength (850 nm, 1310 nm in fibre), time on a scope</td></tr>
+      <tr><td>micro</td><td>µ</td><td>10⁻⁶</td><td>Electrolytic capacitors (100 µF), sensor currents, microseconds</td></tr>
+      <tr><td>milli</td><td>m</td><td>10⁻³</td><td>LED current (10 mA), 4–20 mA loops, millivolts from thermocouples, milliseconds</td></tr>
+      <tr><td>—</td><td>—</td><td>1</td><td>Volts, amps, ohms as they are</td></tr>
+      <tr><td>kilo</td><td>k</td><td>10³ = 1000</td><td>Resistors (4.7 kΩ), kilowatts, kilohertz</td></tr>
+      <tr><td>mega</td><td>M</td><td>10⁶</td><td>Big resistors (1 MΩ), megahertz, megabits per second</td></tr>
+      <tr><td>giga</td><td>G</td><td>10⁹</td><td>Wi-Fi at 2.4 GHz and 5 GHz, gigabit Ethernet, insulation resistance in GΩ</td></tr>
+    </table></div>
+    <p>Two details catch people. First, case matters: <b>m</b> is milli (one thousandth), <b>M</b> is mega (one million). A 1 mΩ resistance and a 1 MΩ resistance differ by a factor of a thousand million. Second, <b>µ</b> (the Greek letter mu) is often typed as <b>u</b> when the keyboard has no µ. So "100uF" on a parts list means 100 µF.</p>
+    <p>Component markings also hide the decimal point inside the prefix. <b>4k7</b> means 4.7 kΩ. <b>2R2</b> means 2.2 Ω (R stands for the decimal point). <b>4n7</b> means 4.7 nF. This stops a tiny printed dot from being lost.</p>
+
+    <h3>Circuit example</h3>
+    <p>A schematic asks for a 4700 pF capacitor. The shop lists 4.7 nF. The old datasheet says 0.0047 µF. Are they the same part?</p>
+    <ul>
+      <li>4700 pF → one step up the ladder (÷1000) → 4.7 nF.</li>
+      <li>4.7 nF → one more step up (÷1000) → 0.0047 µF.</li>
+    </ul>
+    <p>Yes, all three are the same value. Small ceramic capacitors print a three-digit code: the first two digits, then the number of zeros, in picofarads. So 4700 pF is printed <b>472</b> (47 followed by 2 zeros). A 100 nF capacitor is 100 000 pF, printed <b>104</b>.</p>
+
+    <div class="widget" id="t00-conv">
+      <span class="label">Interactive · Prefix converter</span>
+      <div class="t00-row">
+        <label>Value<br><input type="number" id="t00-cv" value="4700" step="any"></label>
+        <label>Prefix<br><select id="t00-cp">
+          <option value="-12" selected>p (pico)</option><option value="-9">n (nano)</option><option value="-6">µ (micro)</option><option value="-3">m (milli)</option><option value="0">none</option><option value="3">k (kilo)</option><option value="6">M (mega)</option><option value="9">G (giga)</option>
+        </select></label>
+        <label>Unit<br><select id="t00-cu">
+          <option value="F" selected>F (farad)</option><option value="Ω">Ω (ohm)</option><option value="A">A (ampere)</option><option value="V">V (volt)</option><option value="Hz">Hz (hertz)</option><option value="W">W (watt)</option><option value="s">s (second)</option>
+        </select></label>
+      </div>
+      <div class="t00-list" id="t00-clist"></div>
+      <div class="readings">
+        <div><small>Scientific notation</small><span class="out" id="t00-csci">—</span></div>
+        <div><small>Engineering notation</small><span class="out" id="t00-ceng">—</span></div>
+        <div><small>Ceramic capacitor code</small><span class="out" id="t00-ccode">—</span></div>
+      </div>
+      <p class="t00-note">The highlighted box is the "natural" way to write the value: the prefix that gives a number between 1 and 999.</p>
+    </div>
+    <script>
+    (function(){
+      var P=[[-12,'p'],[-9,'n'],[-6,'µ'],[-3,'m'],[0,''],[3,'k'],[6,'M'],[9,'G']];
+      var SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+      function sup(n){return String(n).split('').map(function(c){return SUP[c]||c;}).join('');}
+      function trim(x,sig){return String(Number(x.toPrecision(sig)));}
+      function plain(v){
+        var a=Math.abs(v); if(v===0) return '0';
+        if(a>=1e7||a<1e-4){var e=Math.floor(Math.log10(a)+1e-9);return trim(v/Math.pow(10,e),4)+'×10'+sup(e);}
+        return Number(v.toPrecision(6)).toLocaleString('en-AU',{maximumFractionDigits:6});
+      }
+      var vEl=document.getElementById('t00-cv'),pEl=document.getElementById('t00-cp'),uEl=document.getElementById('t00-cu');
+      function upd(){
+        var v=parseFloat(vEl.value),u=uEl.value,list=document.getElementById('t00-clist');
+        if(!isFinite(v)){list.innerHTML='<div>Type a number</div>';return;}
+        var base=v*Math.pow(10,+pEl.value),a=Math.abs(base),html='';
+        var nat=a>0?Math.max(-12,Math.min(9,Math.floor((Math.log10(a)+1e-9)/3)*3)):0;
+        P.forEach(function(p){
+          var x=base/Math.pow(10,p[0]);
+          html+='<div'+(p[0]===nat?' class="hit"':'')+'><small>in '+(p[1]||'')+u+'</small>'+plain(x)+' '+p[1]+u+'</div>';
+        });
+        list.innerHTML=html;
+        if(a===0){document.getElementById('t00-csci').textContent='0';document.getElementById('t00-ceng').textContent='0';}
+        else{
+          var e=Math.floor(Math.log10(a)+1e-9),e3=Math.floor(e/3)*3;
+          document.getElementById('t00-csci').textContent=trim(base/Math.pow(10,e),4)+' × 10'+sup(e)+' '+u;
+          document.getElementById('t00-ceng').textContent=trim(base/Math.pow(10,e3),4)+' × 10'+sup(e3)+' '+u;
+        }
+        var code='—';
+        if(u==='F'){
+          var pf=base/1e-12;
+          if(pf>=10&&pf<1e11){var ex=Math.floor(Math.log10(pf)+1e-9)-1,m=Math.round(pf/Math.pow(10,ex));
+            if(m>=10&&m<=99&&ex<=9&&Math.abs(m*Math.pow(10,ex)-pf)/pf<1e-6) code=m+''+ex+' ('+plain(pf)+' pF)';}
+          else if(pf>0&&pf<10){code=trim(pf,2).replace('.','R')+' (under 10 pF)';}
+        } else { code='only for capacitors'; }
+        document.getElementById('t00-ccode').textContent=code;
+      }
+      vEl.oninput=upd;pEl.onchange=upd;uEl.onchange=upd;upd();
+    })();
+    </script>
+
+    <h2>Scientific and engineering notation</h2>
+    <h3>Intuition</h3>
+    <p>Prefixes are words. <b>Powers of ten</b> are the same idea written as maths. 10³ means 10 × 10 × 10 = 1000. 10⁻³ means 1 ÷ 1000 = 0.001. The small number up high (the <b>exponent</b>) counts how many places the decimal point moves: positive to the right, negative to the left.</p>
+    <h3>The rule</h3>
+    <ul>
+      <li><b>Scientific notation</b>: one digit before the decimal point, then × 10 to some power. 4700 = 4.7 × 10³. 0.000 022 = 2.2 × 10⁻⁵.</li>
+      <li><b>Engineering notation</b>: the exponent must be a multiple of 3, so it matches a prefix. 0.000 022 = 22 × 10⁻⁶ = 22 µ. This is the one electronics people use, because you can read the prefix straight off it.</li>
+      <li><b>Multiplying</b>: multiply the front numbers, <b>add</b> the exponents. (2 × 10⁻³) × (4.7 × 10³) = 9.4 × 10⁰ = 9.4. That is 2 mA × 4.7 kΩ = 9.4 V. Notice that milli and kilo cancel. This is why "mA × kΩ = V" works.</li>
+      <li><b>Dividing</b>: divide the front numbers, <b>subtract</b> the exponents. 5 V ÷ (10 × 10³ Ω) = 0.5 × 10⁻³ A = 0.5 mA.</li>
+    </ul>
+    <h3>Typing it on a calculator</h3>
+    <p>A scientific calculator has a key marked <kbd>×10ˣ</kbd> (on older models <kbd>EXP</kbd> or <kbd>EE</kbd>). It means "× 10 to the power of", in one key. To enter 4.7 nF (4.7 × 10⁻⁹):</p>
+    <div class="formula">4.7  [×10ˣ]  [(−)]  9
+      <small>Use the <b>(−)</b> negative key for the exponent, not the minus (subtract) key. The screen may show 4.7E-9 or 4.7×10⁻⁹. Both mean the same thing.</small></div>
+    <p>Now the trap. To enter 1 kΩ (1 × 10³) you type <kbd>1</kbd> <kbd>×10ˣ</kbd> <kbd>3</kbd>. Many people type <kbd>10</kbd> <kbd>×10ˣ</kbd> <kbd>3</kbd>, because they think "ten to the three". That is 10 × 10³ = 10 000, which is ten times too big. The key already contains the "× 10".</p>
+    <p>Most Casio-style calculators also have an <kbd>ENG</kbd> key. Press it after an answer and the display shifts to engineering notation. An answer of 0.0047 becomes 4.7×10⁻³, which you read straight off as 4.7 m (milli). Press it again to step the exponent by three.</p>
+    <h3>Circuit example</h3>
+    <p>An RC timing circuit uses R = 47 kΩ and C = 220 nF. The <b>time constant</b> is τ = R × C (you will meet it properly below).</p>
+    <div class="formula">τ = 47 × 10³ × 220 × 10⁻⁹ = (47 × 220) × 10³⁻⁹ = 10 340 × 10⁻⁶ s ≈ 10.3 ms
+      <small>On the calculator: 47 ×10ˣ 3 × 220 ×10ˣ (−)9 = 0.01034. Press ENG: 10.34×10⁻³, which is 10.34 milliseconds.</small></div>
+
+    <h2>Significant figures and sensible rounding</h2>
+    <h3>Intuition</h3>
+    <p>A calculator happily gives you 7.575757576 mA. But your resistor is only accurate to 5%, and your meter to about 1%. Most of those digits are noise. Writing them down pretends you know something you do not. <b>Significant figures</b> are the digits that carry real information.</p>
+    <h3>The rule</h3>
+    <ul>
+      <li>Count from the first non-zero digit. 4.7 has 2 significant figures. 0.0047 also has 2 (leading zeros only place the decimal point). 4.70 has 3 (the trailing zero says "I measured this place too").</li>
+      <li>Keep all the digits <b>during</b> a calculation. Round only the final answer.</li>
+      <li>Give the answer about as many significant figures as your least precise input. For bench work, 2 or 3 significant figures is almost always right.</li>
+      <li>When you choose a real part, round to the nearest <b>standard value</b>. Resistors come in series such as E12: 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 (then ×10, ×100 and so on). E24 adds values in between. For an LED resistor, round <b>up</b>: a bit less current is always safe.</li>
+    </ul>
+    <h3>Circuit example: how good is a meter reading?</h3>
+    <p>Your multimeter shows <b>12.37 V</b> across a 12 V battery. The manual says DC volts accuracy is ±(0.5% + 2 counts). A "count" is one step of the last digit, here 0.01 V.</p>
+    <div class="formula">0.5% of 12.37 = 0.062 V;  2 counts = 0.02 V;  total ≈ ±0.08 V
+      <small>The real voltage is somewhere between about 12.29 V and 12.45 V. So 12.37 V and 12.40 V from two different meters do not disagree. Do not read meaning into the last digit.</small></div>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">See it on the bench · P03 Multimeter mastery (ranges, counts and accuracy)</a>
+
+    <h2>Rearranging formulas</h2>
+    <h3>Intuition</h3>
+    <p>A formula is a balance. Whatever you do to one side, you must do to the other, and it stays true. To "make R the subject" you undo the operations around R one at a time, in reverse order, doing the same to both sides.</p>
+    <h3>Ohm's law three ways</h3>
+    <p>Ohm's law says V = I × R: the voltage across a resistor equals the current through it times its resistance. Divide both sides by R and you get I = V / R. Divide both sides of the original by I and you get R = V / I.</p>
+    <figure>
+      <svg viewBox="0 0 560 190" role="img" aria-label="The V I R formula triangle next to the three forms of Ohm's law">
+        <polygon class="s-accent f-accent-soft" points="100,20 25,165 175,165"/>
+        <line class="s-accent" x1="62" y1="95" x2="138" y2="95"/>
+        <line class="s-accent" x1="100" y1="95" x2="100" y2="165"/>
+        <text class="t t-bold" x="100" y="80" text-anchor="middle" font-size="26">V</text>
+        <text class="t t-bold" x="70" y="145" text-anchor="middle" font-size="24">I</text>
+        <text class="t t-bold" x="130" y="145" text-anchor="middle" font-size="24">R</text>
+        <text class="t t-small t-muted" x="100" y="184" text-anchor="middle">cover what you want</text>
+        <text class="t" x="230" y="50">Cover V: the rest is I beside R  →  V = I × R</text>
+        <text class="t" x="230" y="95">Cover I: V over R  →  I = V ÷ R</text>
+        <text class="t" x="230" y="140">Cover R: V over I  →  R = V ÷ I</text>
+        <text class="t t-small t-muted" x="230" y="175">Works only for formulas of the shape A = B × C.</text>
+      </svg>
+      <figcaption>Figure 2. The formula triangle. Cover the quantity you want with your finger. Side by side means multiply; one above the other means divide. It is a handy memory aid for Ohm's law and P = V × I, but it cannot handle anything with a plus, a minus, a square or an exponential.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"I just need the triangle."</b> The triangle only works for three quantities linked by one multiplication. The very next formula you meet, the LED resistor, has a subtraction in it, and the triangle cannot rearrange it. Algebra (do the same thing to both sides) works for every formula. Use the triangle as a quick check, and use algebra to actually rearrange.</p></div>
+
+    <h3>Harder example 1: the LED resistor</h3>
+    <p>An LED in series with a resistor sits across a supply. The LED takes a nearly fixed voltage V<sub>F</sub> (its forward voltage). The resistor takes the rest. So the resistor's voltage is V<sub>S</sub> − V<sub>F</sub>, and Ohm's law on the resistor gives:</p>
+    <div class="formula">I = (V<sub>S</sub> − V<sub>F</sub>) / R   →   multiply both sides by R:  I × R = V<sub>S</sub> − V<sub>F</sub>   →   divide by I:  R = (V<sub>S</sub> − V<sub>F</sub>) / I
+      <small>V<sub>S</sub> = supply voltage, V<sub>F</sub> = LED forward voltage (about 2.0 V for red, about 3.0 V for blue or white), I = the LED current you want.</small></div>
+    <p><b>Numbers.</b> A red indicator LED on a 12 V panel, at 10 mA: R = (12 − 2.0) / 0.010 = 1000 Ω. Use 1 kΩ. Check the resistor's power: P = I² × R = 0.010² × 1000 = 0.1 W, so a common ¼ W (0.25 W) resistor is fine.</p>
+
+    <h3>Harder example 2: the 555 timer and a voltage divider</h3>
+    <p>A 555 timer in one-shot (monostable) mode stays on for t = 1.1 × R × C. You want 5 seconds and you have a 100 µF capacitor. Divide both sides by 1.1 × C:</p>
+    <div class="formula">R = t / (1.1 × C) = 5 / (1.1 × 100 × 10⁻⁶) = 45 455 Ω ≈ 45 kΩ
+      <small>The nearest E12 value is 47 kΩ, which gives 1.1 × 47 000 × 100 × 10⁻⁶ = 5.2 s. Electrolytic capacitors are often ±20%, so the real time could be anywhere from about 4.1 s to 6.2 s anyway.</small></div>
+    <p>A <b>voltage divider</b> scales a 12 V signal down to a microcontroller pin: V<sub>out</sub> = V<sub>in</sub> × R2 / (R1 + R2). You pick R2 = 10 kΩ and want V<sub>out</sub> = 3.3 V. Solve for R1: multiply both sides by (R1 + R2), divide by V<sub>out</sub>, then subtract R2.</p>
+    <div class="formula">R1 = R2 × (V<sub>in</sub> − V<sub>out</sub>) / V<sub>out</sub> = 10 k × (12 − 3.3) / 3.3 = 26.4 kΩ  →  use 27 kΩ (gives 3.24 V)
+      <small>Rounding R1 up makes V<sub>out</sub> slightly lower, which is the safe direction for a 3.3 V input.</small></div>
+
+    <h3>Harder example 3: the RC formula</h3>
+    <p>A capacitor charging through a resistor from a supply V<sub>S</sub> reaches the voltage V = V<sub>S</sub>(1 − e<sup>−t/RC</sup>) after time t. (The next sections explain e and ln.) How long until it reaches a chosen voltage V? Undo the operations in reverse order:</p>
+    <div class="formula">V / V<sub>S</sub> = 1 − e<sup>−t/RC</sup>  →  e<sup>−t/RC</sup> = 1 − V/V<sub>S</sub>  →  −t/RC = ln(1 − V/V<sub>S</sub>)  →  t = RC × ln( V<sub>S</sub> / (V<sub>S</sub> − V) )
+      <small>The step from e<sup>x</sup> to x is "take the natural log (ln) of both sides", because ln undoes e<sup>x</sup>, just as division undoes multiplication.</small></div>
+    <p><b>Numbers.</b> R = 10 kΩ and C = 100 µF, so RC = 1.0 s. An Arduino running at 5 V reads a pin as HIGH above about 3.0 V. Time for the capacitor to get there: t = 1.0 × ln(5 / 2) = 1.0 × 0.916 = 0.92 s.</p>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">See it on the bench · P02 Breadboard and your first LED circuit (LED resistor)</a>
+
+    <h2>Ratios, percentages and tolerance</h2>
+    <h3>Intuition</h3>
+    <p>A <b>ratio</b> compares two things of the same kind: "this is three times that". A <b>percentage</b> is a ratio out of 100. In electronics they answer questions like "how far off is this part allowed to be?", "how much of my voltage did the cable eat?" and "how much power does this converter waste?"</p>
+    <h3>The rule</h3>
+    <ul>
+      <li>To use a percentage, turn it into a decimal: 5% = 5/100 = 0.05. "5% of 1000" = 0.05 × 1000 = 50.</li>
+      <li>Increase by 10% = multiply by 1.10. Decrease by 10% = multiply by 0.90.</li>
+      <li>Percentage change = (new − old) / old × 100%.</li>
+      <li>Efficiency = power out / power in × 100%.</li>
+    </ul>
+    <h3>Circuit examples</h3>
+    <p><b>Tolerance.</b> A 1 kΩ resistor marked ±5% (gold band) may be anywhere from 1000 × 0.95 = <b>950 Ω</b> to 1000 × 1.05 = <b>1050 Ω</b>, and it is still a good part. If your meter reads 1012 Ω, nothing is wrong. A 4.7 kΩ ±1% resistor (brown band) is 4653–4747 Ω.</p>
+    <p><b>Cable volt drop.</b> A 12 V supply feeds a camera at the end of a long cable. The camera sees 10.8 V. The drop is 12 − 10.8 = 1.2 V, and 1.2 / 12 × 100% = 10% of the supply is lost in the cable. Many 12 V devices accept about ±10%, so this camera is right at the edge.</p>
+    <p><b>Efficiency.</b> A buck converter takes 24 V at 0.25 A (6.0 W) from a plant-room supply and delivers 5 V at 1.0 A (5.0 W) to a Raspberry Pi. Efficiency = 5.0 / 6.0 = 83%. The missing 1.0 W turns into heat in the converter.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Down 10% then up 10% gets you back where you started."</b> It does not. 100 × 0.9 = 90, then 90 × 1.1 = 99. Each percentage is "of" a different starting number. This is why tolerances and volt drops along a chain must be worked out step by step, not added in your head.</p></div>
+
+    <h2>Straight-line graphs and log scales</h2>
+    <h3>Intuition</h3>
+    <p>A graph turns a formula into a picture. For a resistor, plot current (I) up the side against voltage (V) along the bottom. Double the voltage and the current doubles, so the points sit on a straight line through zero. A steep line means a lot of current for a little voltage: a <b>small</b> resistance.</p>
+    <h3>The rule</h3>
+    <p>A straight line is y = m x + c. The <b>slope</b> m = rise / run = Δy / Δx (Δ, "delta", means "change in"). c is where it crosses the vertical axis. For a resistor, I = (1/R) × V + 0, so the slope of an I–V graph is <b>1/R</b> and it passes through zero.</p>
+    <figure>
+      <svg viewBox="0 0 540 290" role="img" aria-label="Current against voltage for 100, 220 and 1000 ohm resistors, with a slope triangle on the 100 ohm line">
+        <g class="s-thin s-dash">
+          <line x1="60" y1="40" x2="460" y2="40"/><line x1="60" y1="80" x2="460" y2="80"/><line x1="60" y1="120" x2="460" y2="120"/><line x1="60" y1="160" x2="460" y2="160"/><line x1="60" y1="200" x2="460" y2="200"/>
+          <line x1="140" y1="40" x2="140" y2="240"/><line x1="220" y1="40" x2="220" y2="240"/><line x1="300" y1="40" x2="300" y2="240"/><line x1="380" y1="40" x2="380" y2="240"/><line x1="460" y1="40" x2="460" y2="240"/>
+        </g>
+        <line class="s-line" x1="60" y1="240" x2="470" y2="240"/><line class="s-line" x1="60" y1="240" x2="60" y2="30"/>
+        <g class="t t-small" text-anchor="middle"><text x="60" y="258">0</text><text x="140" y="258">2</text><text x="220" y="258">4</text><text x="300" y="258">6</text><text x="380" y="258">8</text><text x="460" y="258">10</text></g>
+        <g class="t t-small" text-anchor="end"><text x="54" y="244">0</text><text x="54" y="204">20</text><text x="54" y="164">40</text><text x="54" y="124">60</text><text x="54" y="84">80</text><text x="54" y="44">100</text></g>
+        <text class="t t-small t-muted" x="260" y="282" text-anchor="middle">Voltage V (volts)</text>
+        <text class="t t-small t-muted" x="16" y="140" transform="rotate(-90 16 140)" text-anchor="middle">Current I (mA)</text>
+        <line class="s-red" x1="60" y1="240" x2="460" y2="40"/>
+        <line class="s-blue" x1="60" y1="240" x2="460" y2="149"/>
+        <line class="s-green" x1="60" y1="240" x2="460" y2="220"/>
+        <text class="t t-small t-red" x="468" y="44">100 Ω</text>
+        <text class="t t-small t-blue" x="468" y="153">220 Ω</text>
+        <text class="t t-small t-green" x="468" y="224">1 kΩ</text>
+        <path class="s-line" d="M220 160 H380 V80"/>
+        <text class="t t-small" x="300" y="176" text-anchor="middle">ΔV = 4 V</text>
+        <text class="t t-small" x="386" y="125">ΔI = 40 mA</text>
+        <rect class="f-panel s-thin" x="76" y="46" width="200" height="44" rx="6"/>
+        <text class="t t-small" x="86" y="64">slope = 0.040 A ÷ 4 V = 0.01 A/V</text>
+        <text class="t t-small t-bold" x="86" y="82">R = 1 ÷ slope = 100 Ω</text>
+      </svg>
+      <figcaption>Figure 3. I–V lines for three resistors. All pass through zero. The steepest (red) is the smallest resistance. Pick any two points on a line, divide the change in current by the change in voltage, and you have 1/R.</figcaption>
+    </figure>
+    <p>An LED's I–V graph is <b>not</b> a straight line. It stays near zero until about 1.8 V, then shoots up. That curve is why an LED needs a series resistor: a tiny change in voltage makes a huge change in current. See <a href="t11-semiconductors-diodes.html">T11</a> and the <a href="pn-junction-deep-dive.html">p–n junction deep dive</a>.</p>
+
+    <h3>Reading log-scale graphs</h3>
+    <p>Datasheets often use a <b>logarithmic (log) scale</b>. On a log axis, each equal step multiplies by 10 instead of adding a fixed amount: 10, 100, 1000, 10 000. This lets one graph show 10 Hz and 100 kHz together, and the shape of the curve stays readable at both ends. You meet log axes in filter and amplifier frequency responses, thermistor resistance tables, cable attenuation charts and battery discharge curves.</p>
+    <figure>
+      <svg viewBox="0 0 560 260" role="img" aria-label="Frequency response of an RC low-pass filter on a log frequency axis with the minus 3 dB point marked">
+        <g class="s-thin s-dash">
+          <line x1="175" y1="40" x2="175" y2="210"/><line x1="290" y1="40" x2="290" y2="210"/><line x1="405" y1="40" x2="405" y2="210"/><line x1="520" y1="40" x2="520" y2="210"/>
+          <line x1="60" y1="90" x2="520" y2="90"/><line x1="60" y1="130" x2="520" y2="130"/><line x1="60" y1="170" x2="520" y2="170"/><line x1="60" y1="210" x2="520" y2="210"/>
+        </g>
+        <g class="s-thin">
+          <line x1="94.6" y1="206" x2="94.6" y2="214"/><line x1="114.9" y1="206" x2="114.9" y2="214"/><line x1="129.3" y1="206" x2="129.3" y2="214"/><line x1="140.4" y1="206" x2="140.4" y2="214"/><line x1="149.5" y1="206" x2="149.5" y2="214"/><line x1="157.2" y1="206" x2="157.2" y2="214"/><line x1="163.9" y1="206" x2="163.9" y2="214"/><line x1="169.7" y1="206" x2="169.7" y2="214"/>
+          <line x1="209.6" y1="206" x2="209.6" y2="214"/><line x1="229.9" y1="206" x2="229.9" y2="214"/><line x1="244.3" y1="206" x2="244.3" y2="214"/><line x1="255.4" y1="206" x2="255.4" y2="214"/><line x1="264.5" y1="206" x2="264.5" y2="214"/><line x1="272.2" y1="206" x2="272.2" y2="214"/><line x1="278.9" y1="206" x2="278.9" y2="214"/><line x1="284.7" y1="206" x2="284.7" y2="214"/>
+        </g>
+        <line class="s-line" x1="60" y1="210" x2="525" y2="210"/><line class="s-line" x1="60" y1="210" x2="60" y2="35"/>
+        <g class="t t-small" text-anchor="middle"><text x="60" y="228">10</text><text x="175" y="228">100</text><text x="290" y="228">1 k</text><text x="405" y="228">10 k</text><text x="520" y="228">100 k</text></g>
+        <g class="t t-small" text-anchor="end"><text x="54" y="54">0</text><text x="54" y="94">−10</text><text x="54" y="134">−20</text><text x="54" y="174">−30</text><text x="54" y="214">−40</text></g>
+        <text class="t t-small t-muted" x="290" y="250" text-anchor="middle">Frequency (Hz), log scale: each grid step is ×10</text>
+        <text class="t t-small t-muted" x="16" y="125" transform="rotate(-90 16 125)" text-anchor="middle">Gain (dB)</text>
+        <path class="s-accent" d="M60.0 50.0 L71.5 50.0 L83.0 50.0 L94.5 50.0 L106.0 50.0 L117.5 50.0 L129.0 50.0 L140.5 50.0 L152.0 50.0 L163.5 50.0 L175.0 50.1 L186.5 50.1 L198.0 50.2 L209.5 50.3 L221.0 50.4 L232.5 50.7 L244.0 51.1 L255.5 51.6 L267.0 52.5 L278.5 53.9 L290.0 55.8 L301.5 58.4 L313.0 62.0 L324.5 66.4 L336.0 71.7 L347.5 77.8 L359.0 84.4 L370.5 91.5 L382.0 98.9 L393.5 106.5 L405.0 114.3 L416.5 122.1 L428.0 130.0 L439.5 138.0 L451.0 145.9 L462.5 153.9 L474.0 161.9 L485.5 169.9 L497.0 177.9 L508.5 185.9 L520.0 193.9"/>
+        <circle class="f-red" cx="313.2" cy="62" r="5"/>
+        <line class="s-red s-dash" x1="313.2" y1="62" x2="313.2" y2="210"/>
+        <text class="t t-small t-red" x="320" y="48">−3 dB at 1.59 kHz</text>
+        <text class="t t-small t-muted" x="420" y="100">falls 20 dB per ×10</text>
+      </svg>
+      <figcaption>Figure 4. An RC low-pass filter (1 kΩ and 100 nF) drawn on a log frequency axis. The small ticks between 10 and 100 are 20, 30 … 90: they bunch up towards the right of each decade. The point 2 sits 30% of the way across a decade, 5 sits 70% of the way.</figcaption>
+    </figure>
+    <p>To read a value between grid lines on a log axis, measure what fraction p of the way across the decade it sits. The value is (start of decade) × 10<sup>p</sup>. Halfway between 1 kHz and 10 kHz is 1 k × 10<sup>0.5</sup> = <b>3.16 kHz</b>, not 5.5 kHz. Halfway on a log scale is a <b>multiplying</b> halfway (×3.16 then ×3.16 again), not an adding halfway.</p>
+
+    <h2>Exponentials and the number e</h2>
+    <h3>Intuition</h3>
+    <p>Charge a capacitor through a resistor. At the start the capacitor is empty, the full supply voltage sits across the resistor, and a big current flows. As the capacitor fills, its voltage rises, the voltage left across the resistor shrinks, and so the current shrinks too. The closer you get to full, the slower you go. You approach the supply voltage forever and never quite arrive.</p>
+    <p>The key fact: <b>the speed at which the gap closes is proportional to the size of the gap</b>. Anything that behaves like that follows an exponential curve, and the natural base for that curve is the number <b>e ≈ 2.718</b>. Radioactive decay, a hot soldering iron cooling, a capacitor discharging and a thermistor warming up all follow the same shape.</p>
+    <h3>The rule</h3>
+    <p>Call the gap g = V<sub>S</sub> − v. The current is g / R, and current fills the capacitor at dv/dt = i / C. So dg/dt = −g / (RC). The function whose rate of change is proportional to itself is the exponential, so g = V<sub>S</sub> e<sup>−t/RC</sup>, which gives:</p>
+    <div class="formula">Charging:  v = V<sub>S</sub> (1 − e<sup>−t/τ</sup>)     Discharging:  v = V<sub>0</sub> e<sup>−t/τ</sup>     τ = R × C
+      <small>τ (tau) is the <b>time constant</b>, in seconds when R is in ohms and C in farads. Every τ, the remaining gap shrinks to 1/e = 37% of what it was. So after 1τ you are 63% of the way there.</small></div>
+    <figure>
+      <svg viewBox="0 0 540 270" role="img" aria-label="Capacitor charging curve with 63, 86, 95, 98 and 99 percent marked at one to five time constants">
+        <g class="s-thin s-dash">
+          <line x1="140" y1="40" x2="140" y2="220"/><line x1="220" y1="40" x2="220" y2="220"/><line x1="300" y1="40" x2="300" y2="220"/><line x1="380" y1="40" x2="380" y2="220"/><line x1="460" y1="40" x2="460" y2="220"/>
+          <line x1="60" y1="40" x2="470" y2="40"/>
+        </g>
+        <line class="s-line" x1="60" y1="220" x2="475" y2="220"/><line class="s-line" x1="60" y1="220" x2="60" y2="30"/>
+        <g class="t t-small" text-anchor="middle"><text x="60" y="238">0</text><text x="140" y="238">1τ</text><text x="220" y="238">2τ</text><text x="300" y="238">3τ</text><text x="380" y="238">4τ</text><text x="460" y="238">5τ</text></g>
+        <g class="t t-small" text-anchor="end"><text x="54" y="224">0</text><text x="54" y="44">V<tspan baseline-shift="sub" font-size="10">S</tspan></text></g>
+        <text class="t t-small t-muted" x="260" y="260" text-anchor="middle">time</text>
+        <path class="s-accent" d="M60 220.0 L70 198.8 L80 180.2 L90 163.7 L100 149.2 L110 136.3 L120 125.0 L130 115.0 L140 106.2 L150 98.4 L160 91.6 L170 85.5 L180 80.2 L190 75.4 L200 71.3 L210 67.6 L220 64.4 L230 61.5 L240 59.0 L250 56.7 L260 54.8 L270 53.0 L280 51.5 L290 50.2 L300 49.0 L310 47.9 L320 47.0 L330 46.2 L340 45.4 L350 44.8 L360 44.2 L370 43.7 L380 43.3 L390 42.9 L400 42.6 L410 42.3 L420 42.0 L430 41.8 L440 41.6 L450 41.4 L460 41.2"/>
+        <g class="f-red"><circle cx="140" cy="106.2" r="4.5"/><circle cx="220" cy="64.4" r="4.5"/><circle cx="300" cy="49" r="4.5"/><circle cx="380" cy="43.3" r="4.5"/><circle cx="460" cy="41.2" r="4.5"/></g>
+        <g class="t t-small t-red"><text x="146" y="122">63%</text><text x="224" y="82">86%</text><text x="296" y="68">95%</text><text x="372" y="62">98%</text><text x="436" y="62">99.3%</text></g>
+        <line class="s-blue s-dash" x1="60" y1="220" x2="140" y2="40"/>
+        <text class="t t-small t-blue" x="96" y="60">starting slope</text>
+      </svg>
+      <figcaption>Figure 5. Capacitor charging. After 1τ it is at 63% of the supply, after 5τ at 99.3%, which engineers call "fully charged". The dashed blue line shows the starting slope: if the current never fell, the capacitor would be full at exactly 1τ.</figcaption>
+    </figure>
+    <h3>Circuit example</h3>
+    <p>R = 10 kΩ, C = 100 µF, V<sub>S</sub> = 5 V. τ = 10 000 × 0.000 1 = 1.0 s.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Time</th><th>e<sup>−t/τ</sup> (gap left)</th><th>Capacitor voltage</th><th>Current = gap ÷ R</th></tr>
+      <tr><td>0 s</td><td>1.000</td><td>0 V</td><td>0.50 mA</td></tr>
+      <tr><td>1 s (1τ)</td><td>0.368</td><td>3.16 V</td><td>0.18 mA</td></tr>
+      <tr><td>2 s (2τ)</td><td>0.135</td><td>4.32 V</td><td>0.068 mA</td></tr>
+      <tr><td>3 s (3τ)</td><td>0.050</td><td>4.75 V</td><td>0.025 mA</td></tr>
+      <tr><td>5 s (5τ)</td><td>0.0067</td><td>4.97 V</td><td>0.003 mA</td></tr>
+    </table></div>
+    <p>On a calculator, e<sup>x</sup> is usually <kbd>SHIFT</kbd> + <kbd>ln</kbd>. For e<sup>−2</sup> type <kbd>SHIFT</kbd> <kbd>ln</kbd> <kbd>(−)</kbd> <kbd>2</kbd> <kbd>=</kbd> and you get 0.1353.</p>
+    <a class="crosslink" href="../practice/p07-capacitors-rc.html">See it on the bench · P07 Capacitors: timing, smoothing and decoupling</a>
+    <a class="crosslink" href="t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors (the RC time constant derived)</a>
+
+    <h2>Logarithms and decibels</h2>
+    <h3>Intuition</h3>
+    <p>A <b>logarithm</b> answers the question "how many times do I multiply?". log<sub>10</sub>(1000) = 3, because 10 × 10 × 10 = 1000. log<sub>10</sub>(2) = 0.301, because 10<sup>0.301</sup> = 2. The natural log, <b>ln</b>, asks the same question with e instead of 10.</p>
+    <p>The magic property is this: <b>logs turn multiplying into adding</b>. log(a × b) = log a + log b. A signal that passes through an amplifier (×100 power), then a long cable (×0.25), then a splitter (×0.5) ends up at 100 × 0.25 × 0.5 = 12.5 times the original power. Multiplying a chain of ratios is awkward in your head. Adding them is easy. That is the whole reason the <b>decibel</b> exists.</p>
+    <h3>The rule</h3>
+    <div class="formula">Power:  dB = 10 × log<sub>10</sub>(P<sub>2</sub> / P<sub>1</sub>)       Voltage or current:  dB = 20 × log<sub>10</sub>(V<sub>2</sub> / V<sub>1</sub>)
+      <small>Voltage uses 20 because power goes as voltage squared (P = V² / R), and log(x²) = 2 log x. So a voltage ratio and the matching power ratio give the same number of dB. Positive dB is a gain; negative dB is a loss.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>dB</th><th>Power ratio</th><th>Voltage ratio</th><th>Where you see it</th></tr>
+      <tr><td>+3 dB</td><td>×2</td><td>×1.41</td><td>Double the power</td></tr>
+      <tr><td>+10 dB</td><td>×10</td><td>×3.16</td><td>An amplifier stage</td></tr>
+      <tr><td>+20 dB</td><td>×100</td><td>×10</td><td>Voltage ×10</td></tr>
+      <tr><td>0 dB</td><td>×1</td><td>×1</td><td>No change</td></tr>
+      <tr><td>−3 dB</td><td>×0.5</td><td>×0.707</td><td>The "corner" of a filter (Figure 4)</td></tr>
+      <tr><td>−10 dB</td><td>×0.1</td><td>×0.316</td><td>A tenth of the power left</td></tr>
+      <tr><td>−30 dB</td><td>×0.001</td><td>×0.0316</td><td>One thousandth left</td></tr>
+    </table></div>
+    <p>Two numbers to memorise: <b>×2 power = +3 dB</b> and <b>×10 power = +10 dB</b>. From those you can build almost anything in your head. ×4 = ×2 × 2 = 3 + 3 = 6 dB. ×20 = ×10 × 2 = 13 dB. ×1000 = 10 + 10 + 10 = 30 dB.</p>
+    <p><b>dBm</b> is an absolute power: decibels compared with 1 milliwatt. 0 dBm = 1 mW, +20 dBm = 100 mW, +30 dBm = 1 W. A Wi-Fi signal at −65 dBm is 10<sup>−6.5</sup> mW, about 0.3 nanowatts. Fibre and wireless technicians talk in dBm all day.</p>
+    <h3>Circuit example: a fibre loss budget</h3>
+    <p>A fibre link is 2 km long. Using common planning values (check the real figures on the job's specification): fibre loss 0.35 dB per km, 0.5 dB per connector pair, 0.1 dB per splice. With 2 connector pairs and 4 splices:</p>
+    <div class="formula">Loss = 2 × 0.35 + 2 × 0.5 + 4 × 0.1 = 0.7 + 1.0 + 0.4 = 2.1 dB
+      <small>If the transmitter launches −3 dBm, the receiver should see about −3 − 2.1 = −5.1 dBm. 2.1 dB of loss means 10<sup>−0.21</sup> = 0.62, so 62% of the light arrives. Adding was much easier than multiplying 0.92 × 0.89 × 0.89 × …</small></div>
+
+    <div class="widget" id="t00-db">
+      <span class="label">Interactive · Ratio ↔ decibels</span>
+      <div class="t00-row">
+        <label>Type of ratio<br><select id="t00-dbk"><option value="10">Power (10 log)</option><option value="20">Voltage or current (20 log)</option></select></label>
+        <label>Ratio (out ÷ in)<br><input type="number" id="t00-dbr" value="2" step="any" min="0"></label>
+        <label>Decibels<br><input type="number" id="t00-dbd" value="3.01" step="any"></label>
+      </div>
+      <div class="readings">
+        <div><small>Result</small><span class="out" id="t00-dbo">—</span></div>
+        <div><small>Plain words</small><span id="t00-dbw">—</span></div>
+      </div>
+      <p class="t00-note">Change either box. Try ratio 0.5, then ratio 10, then switch to voltage and see the dB double.</p>
+    </div>
+    <script>
+    (function(){
+      var k=document.getElementById('t00-dbk'),r=document.getElementById('t00-dbr'),d=document.getElementById('t00-dbd');
+      function words(ratio,kind){
+        var what=kind==='10'?'power':'voltage';
+        if(ratio>1) return 'The '+what+' is '+Number(ratio.toPrecision(3))+' times bigger: a gain.';
+        if(ratio<1) return 'Only '+Number((ratio*100).toPrecision(3))+'% of the '+what+' is left: a loss.';
+        return 'No change.';
+      }
+      function fromR(){var x=parseFloat(r.value);if(!(x>0)){document.getElementById('t00-dbo').textContent='ratio must be > 0';return;}
+        var db=+k.value*Math.log10(x);d.value=Number(db.toFixed(2));show(x,db);}
+      function fromD(){var db=parseFloat(d.value);if(!isFinite(db))return;var x=Math.pow(10,db/(+k.value));r.value=Number(x.toPrecision(4));show(x,db);}
+      function show(x,db){document.getElementById('t00-dbo').textContent=(db>=0?'+':'')+db.toFixed(2)+' dB = ×'+Number(x.toPrecision(4));
+        document.getElementById('t00-dbw').textContent=words(x,k.value);}
+      r.oninput=fromR;d.oninput=fromD;k.onchange=fromR;fromR();
+    })();
+    </script>
+    <a class="crosslink" href="t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Trigonometry for AC</h2>
+    <h3>Intuition</h3>
+    <p>Imagine a point going round a circle of radius 1 at a steady speed. Watch only its <b>height</b>. It rises from zero to the top, falls back through zero to the bottom, and rises again. Plot that height against time and you get a <b>sine wave</b>. An AC generator does exactly this: a coil spins in a magnetic field, and the voltage it makes follows the height of the spinning coil. That is why mains power, and the output of every AC plug-pack, is a sine wave.</p>
+    <h3>The rule</h3>
+    <ul>
+      <li>sin θ is the height of the point on a circle of radius 1 at angle θ. cos θ is its sideways position.</li>
+      <li>Angles come in <b>degrees</b> (a full turn is 360°) or <b>radians</b> (a full turn is 2π ≈ 6.283 rad). 1 rad ≈ 57.3°. Radians measure the angle by the length of arc on a radius-1 circle, which is why the maths of waves uses them.</li>
+      <li>A sine-wave voltage is v(t) = V<sub>p</sub> sin(ωt + φ). V<sub>p</sub> is the <b>peak</b> voltage. ω (omega) is the <b>angular frequency</b> in rad/s: ω = 2πf, where f is the frequency in hertz (turns per second). φ (phi) is the <b>phase angle</b>: how far ahead or behind this wave is compared with another.</li>
+      <li>Period T = 1 / f. For 50 Hz mains, T = 20 ms and ω = 2π × 50 = 314 rad/s. A phase shift of 90° is a quarter of a period: 5 ms at 50 Hz.</li>
+    </ul>
+    <div class="callout warn"><span class="label">Calculator trap</span><p>Your calculator has a <b>degree</b> mode (D on screen) and a <b>radian</b> mode (R). sin(30) is 0.5 in degree mode and −0.988 in radian mode. If a trig answer looks strange, check the mode first. Use radians whenever ωt is involved, because ω is in radians per second.</p></div>
+
+    <div class="widget" id="t00-uc">
+      <span class="label">Interactive · The unit circle makes a sine wave</span>
+      <svg viewBox="0 0 640 260" role="img" aria-label="A point on a unit circle and the sine wave traced by its height">
+        <line class="s-thin" x1="30" y1="130" x2="230" y2="130"/><line class="s-thin" x1="130" y1="30" x2="130" y2="230"/>
+        <circle class="s-line" cx="130" cy="130" r="90"/>
+        <line class="s-thin" x1="255" y1="130" x2="630" y2="130"/><line class="s-thin" x1="260" y1="35" x2="260" y2="225"/>
+        <g class="s-thin s-dash"><line x1="260" y1="40" x2="630" y2="40"/><line x1="260" y1="220" x2="630" y2="220"/></g>
+        <g class="t t-small t-muted" text-anchor="middle"><text x="350" y="148">90°</text><text x="440" y="148">180°</text><text x="530" y="148">270°</text><text x="616" y="148">360°</text></g>
+        <g class="t t-small t-muted" text-anchor="end"><text x="254" y="44">+1</text><text x="254" y="224">−1</text></g>
+        <path class="s-accent" d="M260 130.0 L265 122.2 L270 114.4 L275 106.7 L280 99.2 L285 92.0 L290 85.0 L295 78.4 L300 72.1 L305 66.4 L310 61.1 L315 56.3 L320 52.1 L325 48.4 L330 45.4 L335 43.1 L340 41.4 L345 40.3 L350 40.0 L355 40.3 L360 41.4 L365 43.1 L370 45.4 L375 48.4 L380 52.1 L385 56.3 L390 61.1 L395 66.4 L400 72.1 L405 78.4 L410 85.0 L415 92.0 L420 99.2 L425 106.7 L430 114.4 L435 122.2 L440 130.0 L445 137.8 L450 145.6 L455 153.3 L460 160.8 L465 168.0 L470 175.0 L475 181.6 L480 187.9 L485 193.6 L490 198.9 L495 203.7 L500 207.9 L505 211.6 L510 214.6 L515 216.9 L520 218.6 L525 219.7 L530 220.0 L535 219.7 L540 218.6 L545 216.9 L550 214.6 L555 211.6 L560 207.9 L565 203.7 L570 198.9 L575 193.6 L580 187.9 L585 181.6 L590 175.0 L595 168.0 L600 160.8 L605 153.3 L610 145.6 L615 137.8 L620 130.0"/>
+        <path id="t00-uc-arc" class="s-amber" d="M158 130"/>
+        <line id="t00-uc-rad" class="s-line" x1="130" y1="130" x2="220" y2="130"/>
+        <line id="t00-uc-cos" class="s-blue" x1="130" y1="130" x2="220" y2="130"/>
+        <line id="t00-uc-sin" class="s-red" x1="220" y1="130" x2="220" y2="130"/>
+        <line id="t00-uc-proj" class="s-thin s-dash" x1="220" y1="130" x2="260" y2="130"/>
+        <circle id="t00-uc-dot" class="f-red" cx="220" cy="130" r="6"/>
+        <circle id="t00-uc-gdot" class="f-red" cx="260" cy="130" r="6"/>
+        <text class="t t-small t-red" x="20" y="250">red = sin θ (height)</text>
+        <text class="t t-small t-blue" x="150" y="250">blue = cos θ (sideways)</text>
+      </svg>
+      <label>Angle θ <span class="out" id="t00-uc-ao">0°</span><input type="range" id="t00-uc-a" min="0" max="360" step="1" value="45"></label>
+      <label>Frequency for the time readout <select id="t00-uc-f"><option value="50" selected>50 Hz (Australian mains frequency)</option><option value="60">60 Hz (USA, parts of Asia)</option><option value="1000">1 kHz (audio test tone)</option></select></label>
+      <div class="readings">
+        <div><small>Radians</small><span class="out" id="t00-uc-r">—</span></div>
+        <div><small>sin θ</small><span class="out" id="t00-uc-s">—</span></div>
+        <div><small>cos θ</small><span class="out" id="t00-uc-c">—</span></div>
+        <div><small>Time into the cycle</small><span class="out" id="t00-uc-t">—</span></div>
+        <div><small>ω = 2πf</small><span class="out" id="t00-uc-w">—</span></div>
+        <div><small>24 V AC plug-pack: v = 33.9 sin θ</small><span class="out" id="t00-uc-v">—</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var a=document.getElementById('t00-uc-a'),fs=document.getElementById('t00-uc-f');
+      function $(id){return document.getElementById(id);}
+      function upd(){
+        var deg=+a.value,th=deg*Math.PI/180,s=Math.sin(th),c=Math.cos(th),f=+fs.value;
+        var px=130+90*c,py=130-90*s,gx=260+deg*(360/360),gy=130-90*s;
+        $('t00-uc-rad').setAttribute('x2',px);$('t00-uc-rad').setAttribute('y2',py);
+        $('t00-uc-cos').setAttribute('x2',px);
+        $('t00-uc-sin').setAttribute('x1',px);$('t00-uc-sin').setAttribute('x2',px);$('t00-uc-sin').setAttribute('y2',py);
+        $('t00-uc-dot').setAttribute('cx',px);$('t00-uc-dot').setAttribute('cy',py);
+        $('t00-uc-gdot').setAttribute('cx',gx);$('t00-uc-gdot').setAttribute('cy',gy);
+        $('t00-uc-proj').setAttribute('x1',px);$('t00-uc-proj').setAttribute('y1',py);$('t00-uc-proj').setAttribute('x2',gx);$('t00-uc-proj').setAttribute('y2',gy);
+        var arc='M158 130';
+        if(deg>0&&deg<360){var ex=130+28*c,ey=130-28*s;arc='M158 130 A28 28 0 '+(deg>180?1:0)+' 0 '+ex.toFixed(1)+' '+ey.toFixed(1);}
+        $('t00-uc-arc').setAttribute('d',arc);
+        $('t00-uc-ao').textContent=deg+'°';
+        $('t00-uc-r').textContent=th.toFixed(3)+' rad';
+        $('t00-uc-s').textContent=(Math.abs(s)<5e-4?0:s).toFixed(3);
+        $('t00-uc-c').textContent=(Math.abs(c)<5e-4?0:c).toFixed(3);
+        var T=1/f,t=deg/360*T;
+        $('t00-uc-t').textContent=(f>=1000?(t*1e6).toFixed(0)+' µs':(t*1e3).toFixed(2)+' ms')+' of '+(f>=1000?(T*1e6).toFixed(0)+' µs':(T*1e3).toFixed(2)+' ms');
+        $('t00-uc-w').textContent=Math.round(2*Math.PI*f).toLocaleString('en-AU')+' rad/s';
+        var v=33.94*s;$('t00-uc-v').textContent=(Math.abs(v)<0.05?0:v).toFixed(1)+' V';
+      }
+      a.oninput=upd;fs.onchange=upd;upd();
+    })();
+    </script>
+    <h3>Circuit example</h3>
+    <p>A 24 V AC plug-pack (24 V is its RMS value, explained in the next section) has a peak of 33.9 V. At 50 Hz, how far into the cycle is the voltage +17 V? Solve 17 = 33.9 sin θ: sin θ = 0.501, so θ = sin⁻¹(0.501) = 30°. 30° is 30/360 of 20 ms = 1.67 ms after the zero crossing. Move the slider to 30° and check.</p>
+    <p><b>Phase angle on the bench.</b> Put two AC signals on a two-channel oscilloscope. If one crosses zero 2.5 ms after the other at 50 Hz, the phase difference is 2.5 / 20 × 360° = 45°.</p>
+    <a class="crosslink" href="t07-ac-fundamentals.html">Theory T07 · AC: sine waves, RMS, phase and impedance</a>
+
+    <h2>Square roots: RMS and √3</h2>
+    <h3>Intuition</h3>
+    <p>An AC voltage is always changing, so which number do you quote? We quote the one that gives the <b>same heating</b> as DC. A heater on 230 V AC gets just as hot as it would on 230 V DC. That "equivalent heating" value is the <b>RMS</b> (root mean square) value: square the wave, take the mean (average), then take the square root. Squaring is used because heating goes as V².</p>
+    <h3>The rule</h3>
+    <div class="formula">For a sine wave:  V<sub>RMS</sub> = V<sub>p</sub> / √2 ≈ 0.707 × V<sub>p</sub>       V<sub>p</sub> = √2 × V<sub>RMS</sub> ≈ 1.414 × V<sub>RMS</sub>
+      <small>This √2 is only for sine waves. A square wave that switches between +V and −V has RMS = V. Other shapes need a "true RMS" meter.</small></div>
+    <h3>Circuit examples</h3>
+    <ul>
+      <li><b>24 V AC plug-pack</b>: peak = 1.414 × 24 = 33.9 V. Peak to peak (top to bottom) = 67.9 V. Rectify and smooth it with a bridge and a capacitor and you get about 33.9 − 1.4 (two diode drops) ≈ 32 V DC, not 24 V. This surprises everyone the first time; see <a href="../practice/p06-diodes-rectifiers.html">P06</a>. Choose a capacitor rated well above 35 V.</li>
+      <li><b>Mains (theory only)</b>: 230 V RMS has a peak of 325 V. Australian low-voltage supply uses 230 V between each phase and neutral. Three phases are 120° apart, and the voltage <b>between</b> two phases is √3 times bigger: 230 × 1.732 = 398 V, quoted as 400 V. This is why you hear "230/400 V". All mains work in Australia is legally restricted to licensed electricians. You learn the numbers to understand drawings and talk to electricians, not to touch it.</li>
+      <li><b>Adding noise</b>: two independent noise sources of 3 µV and 4 µV RMS do not add to 7 µV. Random signals add as root-sum-of-squares: √(3² + 4²) = 5 µV.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>The nominal supply is 230 V, 50 Hz (AS 60038), with an allowed range commonly quoted as +10% / −6% (about 216–253 V). Measuring mains is electrical work: in Australia it is limited to licensed electricians, regulated by the electrical safety regulator in your state or territory. Confirm the current rules with that regulator, because they change and differ between states.</p></div>
+
+    <h2>Vectors and phasors, in brief</h2>
+    <h3>Intuition</h3>
+    <p>A <b>vector</b> is an arrow: it has a length and a direction. A <b>phasor</b> is the arrow from the unit-circle widget, frozen at one moment. Its length is the amplitude of an AC wave and its angle is the wave's phase. Two AC signals of the same frequency add like arrows, not like plain numbers, because their peaks happen at different times.</p>
+    <h3>The rule</h3>
+    <p>In a resistor, voltage and current are in step (0°). In a capacitor, the voltage lags the current by 90°. So in a series R–C circuit, the resistor's voltage and the capacitor's voltage are at right angles. Use Pythagoras for the length and trigonometry for the angle:</p>
+    <div class="formula">Z = √(R² + X²)       φ = tan⁻¹(X / R)       power factor = cos φ = R / Z
+      <small>Z is the impedance (total opposition to AC, in ohms). X is the reactance of the capacitor or inductor. For a capacitor X<sub>C</sub> = 1 / (2πfC).</small></div>
+    <figure>
+      <svg viewBox="0 0 520 250" role="img" aria-label="Phasor diagram: 3 kilohm resistance across, 4 kilohm capacitive reactance down, 5 kilohm impedance on the diagonal">
+        <defs><marker id="t00-ph-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="t00-ph-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="t00-ph-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <line class="s-red" x1="60" y1="40" x2="216" y2="40" marker-end="url(#t00-ph-r)"/>
+        <line class="s-blue" x1="220" y1="40" x2="220" y2="196" marker-end="url(#t00-ph-b)"/>
+        <line class="s-accent" x1="60" y1="40" x2="217.6" y2="196.8" marker-end="url(#t00-ph-a)"/>
+        <path class="s-amber" d="M100 40 A40 40 0 0 1 88.3 68.3"/>
+        <text class="t t-small" x="104" y="64">φ = −53°</text>
+        <text class="t t-red" x="80" y="30">R = 3 kΩ  (V<tspan baseline-shift="sub" font-size="10">R</tspan> = 6 V)</text>
+        <text class="t t-blue" x="228" y="120">X<tspan baseline-shift="sub" font-size="10">C</tspan> = 4 kΩ  (V<tspan baseline-shift="sub" font-size="10">C</tspan> = 8 V)</text>
+        <text class="t t-accent t-bold" x="40" y="160">Z = 5 kΩ</text>
+        <text class="t t-small t-accent" x="40" y="178">(V<tspan baseline-shift="sub" font-size="9">supply</tspan> = 10 V)</text>
+        <text class="t t-small t-muted" x="300" y="200">10 V RMS ÷ 5 kΩ = 2 mA</text>
+        <text class="t t-small t-muted" x="300" y="220">6 V + 8 V ≠ 10 V, but √(6² + 8²) = 10 V</text>
+      </svg>
+      <figcaption>Figure 6. A 3 kΩ resistor in series with a capacitor whose reactance is 4 kΩ (about 40 nF at 1 kHz). The impedance is the diagonal, 5 kΩ. With 10 V RMS applied, 2 mA flows; the resistor drops 6 V and the capacitor 8 V. They add as arrows to 10 V.</figcaption>
+    </figure>
+    <div class="callout try"><span class="label">Try this</span><p>With a 12 V AC plug-pack (ELV only), put a 1.5 kΩ resistor in series with a 2.2 µF <b>film</b> (non-polarised) capacitor rated 63 V or more. At 50 Hz, X<sub>C</sub> = 1 / (2π × 50 × 2.2 µF) ≈ 1.45 kΩ. Measure the AC voltage across the resistor, then across the capacitor. You should read roughly 8 V and 8 V, which add to 16 V, yet the supply is only 12 V. Square them, add, and take the square root: about 12 V. (Plug-packs read a little high with a light load, so expect the numbers to scale up slightly.)</p></div>
+
+    <h2>Estimation and sanity checks</h2>
+    <h3>Intuition</h3>
+    <p>The most useful maths skill on the job is not exact calculation. It is knowing roughly what the answer should be <b>before</b> you calculate or measure, so you notice at once when something is wrong. A wrong meter range, a misread colour band or a slipped prefix gives an answer that is 1000 times off. A quick estimate catches it.</p>
+    <h3>The rules of thumb</h3>
+    <ul>
+      <li><b>volts ÷ kΩ = mA</b>. 5 V across 10 kΩ = 0.5 mA. 12 V across 1 kΩ = 12 mA.</li>
+      <li><b>mA × kΩ = V</b>. 4 mA through 250 Ω (0.25 kΩ) = 1 V. That is the bottom of a 4–20 mA loop read across a 250 Ω resistor.</li>
+      <li><b>V × mA = mW</b>. 12 V × 10 mA = 120 mW.</li>
+      <li>Know typical sizes: an indicator LED runs at 2–20 mA; an Arduino pin should stay below about 20 mA; a small 12 V CCTV camera draws a few hundred mA (more at night with infrared on); a ¼ W resistor must stay below 250 mW.</li>
+      <li>Check direction: if R goes up, I should go down. If a cable gets longer, the volt drop should go up.</li>
+    </ul>
+    <h3>Circuit example: is 30 A through a 330 Ω resistor plausible?</h3>
+    <p>A classmate's notes say "30 A through the 330 Ω resistor". Check it:</p>
+    <div class="formula">V = I × R = 30 × 330 = 9900 V       P = I² × R = 30² × 330 = 297 000 W
+      <small>Nearly 10 kV and 300 kW, through a part the size of a grain of rice, on a bench powered by a 12 V plug-pack. Impossible. The note almost certainly meant 30 <b>mA</b>.</small></div>
+    <p>Now check 30 mA: V = 0.030 × 330 = 9.9 V. Plausible on a 12 V supply. But P = 0.030² × 330 = 0.30 W, which is <b>more</b> than a ¼ W resistor can take. So even the corrected version found a real problem: the resistor will run hot and should be ½ W. The sanity check was worth doing twice.</p>
+    <p><b>Cable estimate.</b> Copper of 0.5 mm² cross-section has about 0.034 Ω per metre (resistivity of copper ≈ 1.7 × 10⁻⁸ Ω·m, divided by 0.5 × 10⁻⁶ m²). A camera 50 m away needs 100 m of conductor (there and back): 3.4 Ω. At 0.5 A, that drops 1.7 V. So a 12 V supply delivers about 10.3 V to the camera. You can work this out in your head before you buy the cable, and it tells you to use thicker cable or a higher supply voltage. Fault-finding in <a href="../practice/p21-fault-finding.html">P21</a> starts with exactly this kind of estimate.</p>
+    <div class="callout job"><span class="label">On the job</span><p>On an Australian site nobody will ask you to integrate anything. They will ask "why is the camera at the end of the car park rebooting?", "is this 4–20 mA reading right?", "will this 24 V supply run eight more door strikes?" or "how much fibre loss should this link have?". Each one is prefixes, Ohm's law, a percentage, a dB sum or a quick estimate. Being fast and right at this level is what makes a technician trusted.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A capacitor is marked 223. What is it in pF, nF and µF?</summary><div class="answer"><p>22 followed by 3 zeros = 22 000 pF. One step up the ladder (÷1000) is 22 nF, and one more is 0.022 µF. All three are the same capacitor.</p></div></details>
+    <details class="quiz"><summary>You want to enter 2.2 kΩ on a calculator. Why is "22 ×10ˣ 2" correct but "10 ×10ˣ 3" wrong for 1 kΩ?</summary><div class="answer"><p>The ×10ˣ key means "times ten to the power of". 22 × 10² = 2200, which is right. "10 ×10ˣ 3" means 10 × 10³ = 10 000, which is ten times too big. For 1 kΩ, type 1 ×10ˣ 3.</p></div></details>
+    <details class="quiz"><summary>A 12 V, 5 W lamp is running. What is its resistance while hot? Which formula do you rearrange?</summary><div class="answer"><p>P = V² / R. Multiply both sides by R, then divide by P: R = V² / P = 144 / 5 = 28.8 Ω. (Measured cold with a meter it will read much lower, because a filament's resistance rises a lot with temperature.)</p></div></details>
+    <details class="quiz"><summary>What range of values is a 4.7 kΩ ±1% resistor allowed to have?</summary><div class="answer"><p>1% of 4700 is 47. So 4700 − 47 = 4653 Ω up to 4700 + 47 = 4747 Ω. A reading of 4.71 kΩ is fine.</p></div></details>
+    <details class="quiz"><summary>On a log axis, what frequency sits exactly halfway between 100 Hz and 1 kHz?</summary><div class="answer"><p>Halfway on a log scale is half a decade: 100 × 10<sup>0.5</sup> = 316 Hz. Not 550 Hz. On a log axis, equal distances mean equal multiplications.</p></div></details>
+    <details class="quiz"><summary>An amplifier gives +20 dB of power gain, then a cable loses 6 dB. What is the overall power ratio?</summary><div class="answer"><p>Add the dB: 20 − 6 = +14 dB. Then convert: 10 dB is ×10, and 4 dB is about ×2.5 (3 dB = ×2, a little more). So about ×25. Exactly: 10<sup>1.4</sup> = 25.1.</p></div></details>
+    <details class="quiz"><summary>R = 47 kΩ and C = 10 µF. What is the time constant, and roughly how long until the capacitor is "fully" charged?</summary><div class="answer"><p>τ = 47 000 × 10 × 10⁻⁶ = 0.47 s. "Fully" (99.3%) is 5τ ≈ 2.4 s. After 1τ (0.47 s) it is at 63% of the supply.</p></div></details>
+    <details class="quiz"><summary>Your meter says 0.25 A flows through a 10 kΩ resistor on a 5 V Arduino circuit. Do you believe it?</summary><div class="answer"><p>No. The most current 5 V can push through 10 kΩ is 5 / 10 000 = 0.5 mA. 0.25 A is 500 times more. Either the reading is really 0.25 mA (check the range and the unit on the display), the resistor is not 10 kΩ, or the meter is measuring something else. Estimate first, then trust the meter only if it agrees.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can convert between p, n, µ, m, k, M and G without a calculator, and read 4k7, 2R2 and a 3-digit capacitor code.</span></li>
+      <li><input type="checkbox"><span>I can enter and read scientific and engineering notation on my calculator, using the ×10ˣ and ENG keys correctly.</span></li>
+      <li><input type="checkbox"><span>I round final answers to 2–3 significant figures and pick the nearest standard (E12) part.</span></li>
+      <li><input type="checkbox"><span>I can rearrange Ohm's law, the LED resistor formula, a voltage divider and the RC charging formula by algebra.</span></li>
+      <li><input type="checkbox"><span>I can work out a tolerance range, a percentage volt drop and an efficiency.</span></li>
+      <li><input type="checkbox"><span>I can find R from the slope of an I–V graph and read a value between grid lines on a log axis.</span></li>
+      <li><input type="checkbox"><span>I know what τ = RC means and the 63% / 5τ rules.</span></li>
+      <li><input type="checkbox"><span>I can convert power and voltage ratios to dB and back, and add up a simple loss budget.</span></li>
+      <li><input type="checkbox"><span>I can use ω = 2πf, switch between degrees and radians, and convert RMS to peak for a sine wave.</span></li>
+      <li><input type="checkbox"><span>I estimate before I measure, and I catch answers that are 1000 times off.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

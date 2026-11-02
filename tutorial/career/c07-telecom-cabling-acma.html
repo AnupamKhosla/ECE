@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C07 · Telecom cabling in Australia: ACMA rules and structured cabling</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part III · Telecommunications</div>
+    <span class="eyebrow">Job Track · C07</span>
+    <h1>Telecom cabling in Australia: ACMA rules and structured cabling</h1>
+    <p class="lede">Why you need to be a registered cabler to run data cable in Australia, what the registration types and endorsements are, and how a building's structured cabling is laid out, labelled, protected and tested. This is the licence most security, BMS and IT installer jobs ask for first.</p>
+    <div class="meta"><span><b>Read</b> 55 min</span><span><b>Level</b> Job-ready basics</span><span><b>Practice</b> P19, P20</span><span><b>Theory</b> T09, T10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Why cabling is regulated</h2>
+    <p>Telephone and data cabling in a building connects, directly or through a router, to the public telecommunications network. Badly installed cabling can harm the network, give an electric shock if it touches mains wiring, or carry a fault from one building into the carrier's equipment. So in Australia, cabling work on <b>customer cabling</b> is regulated under the Telecommunications Act 1997 by the <b>ACMA</b> (Australian Communications and Media Authority).</p>
+    <ul>
+      <li><b>Customer cabling</b> is the cabling on the customer's side of the <b>network boundary</b>: the point where the carrier's network ends. For example, for an NBN fibre service the boundary is at the user ports of the NBN connection box (NTD). For copper services in larger buildings it is often at the building's main distribution frame (MDF).</li>
+      <li>Everything on the customer side that is connected, or will be connected, to a telecommunications network counts. That includes phone cabling, and the Cat6 cabling for computers, Wi-Fi access points, IP cameras and BMS controllers on a network that connects to the internet.</li>
+      <li>Under the ACMA's <b>Telecommunications Cabling Provider Rules</b> (the CPRs), this work must be done by a <b>registered cabler</b>, or by someone working under the direct supervision of one.</li>
+      <li>The work must follow the <b>Wiring Rules</b>: the standard <b>AS/CA S009</b> (Installation requirements for customer cabling), published by Communications Alliance.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>The ACMA rules apply nationally, unlike security licences, which are set by each state. Doing cabling work without being registered (or properly supervised) is an offence, and the ACMA can take enforcement action. The rules, the registration types and the current edition of AS/CA S009 change from time to time. <b>Check the ACMA website and talk to an accredited registrar for the current requirements</b> before you pay for a course.</p></div>
+
+    <h2>Registration types and endorsements</h2>
+    <p>You do not register directly with the ACMA. You register through an <b>ACMA-accredited registrar</b> (for example ACRS or BICSI; the ACMA lists the current registrars). You show evidence that you have completed the required training units, and you pay a fee. The registrar gives you a registration card with your number. You must renew it, and some registrars require ongoing training.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Registration</th><th>What it covers (in short)</th><th>Who has it</th></tr>
+      <tr><td><b>Open</b></td><td>All types of customer cabling work in any type of premises, within the endorsements you hold</td><td>Data cablers, security and BMS technicians, electricians who also do data</td></tr>
+      <tr><td><b>Restricted</b></td><td>Limited, simple cabling work, mainly in residential and small business premises</td><td>Some electricians and handypersons; not enough for commercial jobs</td></tr>
+      <tr><td><b>Lift</b></td><td>Cabling work associated with lifts (for example the lift emergency phone)</td><td>Lift technicians</td></tr>
+    </table></div>
+    <p>An open registration can carry <b>endorsements</b> for specialist work. Each needs extra training units. Common endorsements include:</p>
+    <div class="cards">
+      <div class="card"><h4>Structured cabling</h4><p>Cat5e/6/6A systems, patch panels, racks, certification testing. The most requested in job ads.</p></div>
+      <div class="card"><h4>Optical fibre</h4><p>Installing, terminating and splicing fibre. See C09.</p></div>
+      <div class="card"><h4>Coaxial cabling</h4><p>TV, satellite and other coax distribution connected to a network.</p></div>
+      <div class="card"><h4>Aerial cabling</h4><p>Cabling run overhead between buildings or poles.</p></div>
+      <div class="card"><h4>Underground cabling</h4><p>Cabling in conduits and pits between buildings, and lead-ins.</p></div>
+    </div>
+    <p>Your registrar can tell you the full current list and which units each endorsement needs.</p>
+
+    <h3>The TCA1 form</h3>
+    <p>When a registered cabler finishes a job, they must give the customer a <b>Telecommunications Cabling Advice</b> form, called the <b>TCA1</b> (or an equivalent document with the same information). It records who did the work, their registration number, the address, the type of work, and a statement that it complies with the Wiring Rules. Keep a copy. Many companies fill in a TCA1 electronically for every job.</p>
+
+    <div class="callout job"><span class="label">On the job</span><p>"ACMA Open Registration" (often written as "ACMA open licence" or "cabling licence", although it is a registration, not a licence) appears in a very large share of Australian ads for data cablers, CCTV and security installers, AV installers and BMS technicians. Structured cabling endorsement is usually expected; fibre is a strong bonus. A White Card and a driver's licence are near-universal requirements too.</p></div>
+
+    <h2>Structured cabling: how a building is wired</h2>
+    <p><b>Structured cabling</b> is a planned, standard layout. Every outlet is wired back to a patch panel in a comms room, in a star. Then any outlet can be connected to any service (data, phone, camera, BMS) just by moving a short patch cord. The Australian generic cabling standard is <b>AS/NZS 3080</b>, based on the international ISO/IEC 11801. Manufacturers' documents often use the American TIA-568 series too. The ideas are the same.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 380" role="img" aria-label="Building cross-section with entrance facility, main comms room, fibre backbone riser to floor comms rooms, horizontal cabling to outlets">
+        <defs><marker id="c07f1-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-none s-line" x="120" y="20" width="520" height="320"/>
+        <line class="s-thin" x1="120" y1="126" x2="640" y2="126"/>
+        <line class="s-thin" x1="120" y1="232" x2="640" y2="232"/>
+        <text class="t t-small t-muted" x="560" y="40">Level 2</text>
+        <text class="t t-small t-muted" x="560" y="146">Level 1</text>
+        <text class="t t-small t-muted" x="560" y="252">Ground</text>
+        <line class="s-line" x1="10" y1="340" x2="650" y2="340"/>
+        <!-- carrier lead-in -->
+        <path class="s-amber" d="M10 362 H140 V318"/>
+        <text class="t t-small" x="10" y="356">carrier lead-in</text>
+        <rect class="f-practice-soft s-line" x="130" y="282" width="86" height="40" rx="4"/>
+        <text class="t t-small t-bold" x="138" y="298">Entrance</text><text class="t t-small" x="138" y="314">facility / NTD</text>
+        <!-- main comms room -->
+        <rect class="f-accent-soft s-accent" x="232" y="250" width="96" height="74" rx="4"/>
+        <text class="t t-small t-bold" x="240" y="270">Main comms</text><text class="t t-small t-bold" x="240" y="286">room (BD)</text>
+        <text class="t t-small t-muted" x="240" y="304">MDF, core,</text><text class="t t-small t-muted" x="240" y="318">servers</text>
+        <path class="s-line" d="M216 302 H232"/>
+        <!-- riser -->
+        <path class="s-blue" d="M300 250 V90"/>
+        <text class="t t-small t-blue" x="306" y="196">backbone</text><text class="t t-small t-blue" x="306" y="212">(fibre riser)</text>
+        <rect class="f-accent-soft s-accent" x="262" y="40" width="76" height="50" rx="4"/>
+        <text class="t t-small t-bold" x="270" y="60">Floor</text><text class="t t-small t-bold" x="270" y="76">comms (FD)</text>
+        <rect class="f-accent-soft s-accent" x="262" y="146" width="76" height="50" rx="4"/>
+        <text class="t t-small t-bold" x="270" y="166">Floor</text><text class="t t-small t-bold" x="270" y="182">comms (FD)</text>
+        <!-- horizontal -->
+        <path class="s-green" d="M338 64 H420 V108 M338 64 H500 V108 M338 64 H540 V108"/>
+        <path class="s-green" d="M338 170 H430 V214 M338 170 H520 V214"/>
+        <path class="s-green" d="M328 270 H460 V314"/>
+        <rect class="f-panel s-line" x="412" y="106" width="16" height="12"/><rect class="f-panel s-line" x="492" y="106" width="16" height="12"/><rect class="f-panel s-line" x="532" y="106" width="16" height="12"/>
+        <rect class="f-panel s-line" x="422" y="212" width="16" height="12"/><rect class="f-panel s-line" x="512" y="212" width="16" height="12"/>
+        <rect class="f-panel s-line" x="452" y="312" width="16" height="12"/>
+        <text class="t t-small t-green" x="350" y="56">horizontal cable ≤ 90 m</text>
+        <text class="t t-small" x="420" y="100">outlets (TO)</text>
+        <text class="t t-small t-muted" x="10" y="40">Work areas:</text>
+        <text class="t t-small t-muted" x="10" y="56">PCs, APs,</text>
+        <text class="t t-small t-muted" x="10" y="72">cameras, BMS</text>
+      </svg>
+      <figcaption>Figure 1. A three-storey building. The carrier's cable enters at the entrance facility. The main comms room (building distributor, BD) holds the MDF and core equipment. A fibre backbone runs up the riser to a floor comms room (floor distributor, FD) on each level. From each FD, horizontal cables run in a star to the telecommunications outlets (TO) in the work areas.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Part</th><th>What it is</th><th>Typical cable</th></tr>
+      <tr><td><b>Entrance facility</b></td><td>Where carrier cables enter the building and the network boundary sits (lead-in, NBN NTD, carrier equipment)</td><td>Carrier fibre or copper</td></tr>
+      <tr><td><b>MDF</b> (main distribution frame)</td><td>The cross-connect where carrier copper pairs meet the building's own cabling; in older buildings it is a wall of frames and connection blocks</td><td>Multi-pair copper</td></tr>
+      <tr><td><b>Main comms room</b> (BD)</td><td>Racks with core switches, servers, firewall, patch panels for the backbone</td><td>—</td></tr>
+      <tr><td><b>Backbone</b></td><td>Links between comms rooms, up the risers, and between buildings on a campus</td><td>Fibre (single-mode or multimode), sometimes multi-pair copper</td></tr>
+      <tr><td><b>Floor comms room</b> (FD)</td><td>Racks with patch panels and access switches serving one floor or zone</td><td>—</td></tr>
+      <tr><td><b>Horizontal cabling</b></td><td>The fixed cable from an FD patch panel to each outlet</td><td>Cat6 or Cat6A U/UTP or F/UTP</td></tr>
+      <tr><td><b>Work-area outlet</b> (TO)</td><td>The wall plate or floor box jack, or a ceiling outlet for an access point or camera</td><td>Patch cord to the device</td></tr>
+    </table></div>
+
+    <h3>Permanent link and channel</h3>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-label="Channel of 100 m made of patch cords and a permanent link of up to 90 m">
+        <rect class="f-wash s-line" x="20" y="50" width="70" height="40" rx="4"/><text class="t t-small" x="30" y="74">Switch</text>
+        <path class="s-amber" d="M90 70 H140"/>
+        <rect class="f-accent-soft s-accent" x="140" y="50" width="60" height="40" rx="4"/><text class="t t-small" x="146" y="68">Patch</text><text class="t t-small" x="146" y="84">panel</text>
+        <path class="s-green" d="M200 70 H480"/>
+        <rect class="f-accent-soft s-accent" x="480" y="50" width="50" height="40" rx="4"/><text class="t t-small" x="490" y="74">TO</text>
+        <path class="s-amber" d="M530 70 H570"/>
+        <rect class="f-wash s-line" x="570" y="50" width="56" height="40" rx="4"/><text class="t t-small" x="576" y="74">Device</text>
+        <path class="s-thin" d="M200 112 H530 M200 106 V118 M530 106 V118"/>
+        <text class="t t-small t-green" x="250" y="132">permanent link ≤ 90 m (fixed cable, tested and certified)</text>
+        <path class="s-thin" d="M90 26 H570 M90 20 V32 M570 20 V32"/>
+        <text class="t t-small" x="230" y="18">channel ≤ 100 m end to end</text>
+        <text class="t t-small t-muted" x="96" y="158">patch cords: about 10 m in total for both ends</text>
+      </svg>
+      <figcaption>Figure 2. The permanent link is the fixed cable from the patch panel jack to the outlet jack: at most 90 m. Add patch cords at both ends (about 10 m in total) and you get the channel, at most 100 m. This is why "100 m" appears in every Ethernet and PoE spec.</figcaption>
+    </figure>
+    <a class="crosslink" href="../practice/p20-cat6-termination.html">Practice P20 · Cat6 termination and testing (T568A/B, keystones, patch panels)</a>
+
+    <h3>The comms rack</h3>
+    <figure>
+      <svg viewBox="0 0 560 360" role="img" aria-label="Rack elevation with patch panels, cable managers, switches, fibre tray and the rack earth bar">
+        <rect class="f-none s-line" x="60" y="20" width="240" height="320"/>
+        <line class="s-thin" x1="80" y1="20" x2="80" y2="340"/><line class="s-thin" x1="280" y1="20" x2="280" y2="340"/>
+        <rect class="f-practice-soft s-line" x="80" y="34" width="200" height="22"/><text class="t t-small" x="90" y="50">Fibre patch tray (backbone)</text>
+        <rect class="f-accent-soft s-accent" x="80" y="66" width="200" height="22"/><text class="t t-small" x="90" y="82">Patch panel A (ports 1–24)</text>
+        <rect class="f-wash s-thin" x="80" y="90" width="200" height="16"/><text class="t t-small t-muted" x="90" y="102">cable manager</text>
+        <rect class="f-panel s-line" x="80" y="108" width="200" height="22"/><text class="t t-small" x="90" y="124">PoE switch 1</text>
+        <rect class="f-wash s-thin" x="80" y="132" width="200" height="16"/><text class="t t-small t-muted" x="90" y="144">cable manager</text>
+        <rect class="f-accent-soft s-accent" x="80" y="150" width="200" height="22"/><text class="t t-small" x="90" y="166">Patch panel B (ports 1–24)</text>
+        <rect class="f-wash s-thin" x="80" y="174" width="200" height="16"/><text class="t t-small t-muted" x="90" y="186">cable manager</text>
+        <rect class="f-panel s-line" x="80" y="192" width="200" height="22"/><text class="t t-small" x="90" y="208">PoE switch 2</text>
+        <rect class="f-wash s-line" x="80" y="230" width="200" height="40"/><text class="t t-small" x="90" y="254">NVR / server</text>
+        <rect class="f-warn-soft s-line" x="80" y="286" width="200" height="40"/><text class="t t-small" x="90" y="304">UPS (mains side:</text><text class="t t-small" x="90" y="320">electrician)</text>
+        <path class="s-amber" d="M262 77 C300 77 300 119 262 119"/>
+        <text class="t t-small t-muted" x="306" y="100">short patch cord: panel → switch</text>
+        <path class="s-green" d="M60 60 C30 60 30 140 60 140"/>
+        <text class="t t-small t-green" x="4" y="16">horizontal cables enter,</text>
+        <text class="t t-small t-green" x="4" y="32">dressed to each panel</text>
+        <rect class="f-ink" x="300" y="300" width="60" height="8"/>
+        <path class="s-green" d="M280 304 H300"/>
+        <text class="t t-small" x="368" y="300">rack earth bar</text>
+        <path class="s-green s-dash" d="M360 304 H420 V340 H540"/>
+        <text class="t t-small t-muted" x="370" y="334">to telecommunications earth</text>
+      </svg>
+      <figcaption>Figure 3. A small floor rack. Patch panels sit next to switches so patch cords stay short, with cable managers between them. The fibre backbone ends in a patch tray. The rack frame is bonded to an earth bar, which connects to the building's telecommunications earth. A UPS is plugged in or hard-wired by an electrician; you never work on its mains side.</figcaption>
+    </figure>
+
+    <h2>Doing it properly: labelling, separation, fire-stopping and earthing</h2>
+    <h3>Labelling</h3>
+    <p>Every cable gets the <b>same unique ID at both ends</b>: on the outlet faceplate, on the cable near each termination, and on the patch panel port. A common scheme is <em>level – panel – port</em>, for example <code>2-B-17</code> for Level 2, patch panel B, port 17. Labels must be printed (not handwritten), durable and readable without removing anything. The Australian administration standard is <b>AS/NZS 3085.1</b>, and many sites also use the American TIA-606 scheme. Follow the client's or builder's scheme if they have one. The as-built records (floor plans with outlet IDs and the test results) are part of the handover.</p>
+
+    <div class="widget" id="w-cable">
+      <span class="label">Interactive · Cable-run planner and label list</span>
+      <label>Number of cable runs (one per outlet port) <span class="out" id="cr-no">30</span><input type="range" id="cr-n" min="1" max="240" step="1" value="30"></label>
+      <label>Average route length, rack to outlet <span class="out" id="cr-lo">60 m</span><input type="range" id="cr-l" min="5" max="90" step="1" value="60"></label>
+      <label>Slack per run (service loop at the rack + outlet) <span class="out" id="cr-so">3 m</span><input type="range" id="cr-s" min="0" max="10" step="0.5" value="3"></label>
+      <label>Allowance for rises, drops and waste <span class="out" id="cr-wo">10%</span><input type="range" id="cr-w" min="0" max="30" step="1" value="10"></label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <label>Level <input type="number" id="cr-lv" min="0" max="99" value="2"></label>
+        <label>Ports per patch panel <select id="cr-pp"><option value="24" selected>24</option><option value="48">48</option></select></label>
+      </div>
+      <div class="readings">
+        <div><small>Length per run</small><span class="out" id="cr-run">–</span></div>
+        <div><small>Total cable</small><span class="out" id="cr-tot">–</span></div>
+        <div><small>Whole runs per 305 m box</small><span class="out" id="cr-rpb">–</span></div>
+        <div><small>Boxes to order</small><span class="out" id="cr-box">–</span></div>
+        <div><small>Patch panels</small><span class="out" id="cr-pan">–</span></div>
+      </div>
+      <p style="font-size:14px;margin:10px 0 4px" id="cr-msg"></p>
+      <pre id="cr-labels" style="margin:6px 0 0;font-size:13px"></pre>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var ids=['cr-n','cr-l','cr-s','cr-w','cr-lv','cr-pp'];
+      function upd(){
+        var n=+$('cr-n').value,l=+$('cr-l').value,s=+$('cr-s').value,w=+$('cr-w').value,lv=Math.max(0,Math.floor(+$('cr-lv').value||0)),pp=+$('cr-pp').value;
+        var run=(l+s)*(1+w/100),tot=n*run,rpb=Math.floor(305/run),naive=Math.ceil(tot/305);
+        var boxes=rpb>0?Math.ceil(n/rpb):Infinity,panels=Math.ceil(n/pp);
+        $('cr-no').textContent=n;$('cr-lo').textContent=l+' m';$('cr-so').textContent=s+' m';$('cr-wo').textContent=w+'%';
+        $('cr-run').textContent=run.toFixed(1)+' m';
+        $('cr-tot').textContent=Math.round(tot)+' m';
+        $('cr-rpb').textContent=rpb>0?rpb:'0';
+        $('cr-box').textContent=isFinite(boxes)?boxes:'–';
+        $('cr-pan').textContent=panels;
+        var msg='';
+        if(l>90){msg='Over 90 m: this is beyond the permanent-link limit. Add a floor rack closer to the outlets.';}
+        else if(l>80){msg='Close to the 90 m limit. Remember this is the AVERAGE: measure the longest runs, which must stay at or under 90 m of installed cable.';}
+        else{msg='Total metres alone would suggest '+naive+' box'+(naive===1?'':'es')+'. You cannot join horizontal cable, so each run must come from one box: plan '+boxes+' box'+(boxes===1?'':'es')+' and use the off-cuts for short runs or patch cords.';}
+        $('cr-msg').textContent=msg;
+        var letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        function lab(i){var p=Math.floor(i/pp),port=i%pp+1,pl=p<26?letters[p]:'P'+(p+1);return lv+'-'+pl+'-'+(port<10?'0':'')+port;}
+        var out=[];
+        var show=Math.min(n,4);
+        for(var i=0;i<show;i++)out.push('Run '+(i+1)+'  →  '+lab(i));
+        if(n>5)out.push('   …');
+        if(n>4)out.push('Run '+n+'  →  '+lab(n-1));
+        $('cr-labels').textContent='Labels (level-panel-port):\n'+out.join('\n');
+      }
+      ids.forEach(function(i){var e=$(i);e.oninput=upd;e.onchange=upd;});upd();
+    })();
+    </script>
+    <p><b>Worked example.</b> 30 runs with an average route of 60 m, 3 m of slack and a 10% allowance: each run is (60 + 3) × 1.1 = 69.3 m. The total is 30 × 69.3 ≈ 2079 m, which looks like 2079 / 305 = 6.8, so 7 boxes. But each 305 m box only gives 4 whole runs of 69.3 m (277 m), with 28 m left over. You cannot join horizontal cable, so you need 30 / 4 = 7.5, rounded up to <b>8 boxes</b>. Ordering 7 would leave you two runs short on the last day.</p>
+
+    <h3>Separation from power</h3>
+    <p>Telecommunications cabling must be kept apart from electrical (mains) cabling. This is for safety: if mains insulation fails, it must not energise data cable that people touch at a desk. It also reduces interference. AS/CA S009 sets minimum separation distances, or requires a suitable barrier, for cables in walls, ceilings, conduits, trays and underground. A figure you will often hear for building interiors is 50 mm from low-voltage power cables unless there is a barrier, but the requirement depends on the situation, so learn the table in the current edition. Never share a conduit, pit or enclosure compartment with mains cables, and never use power cable fixings or penetrations for data.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>In ceilings and risers you work close to live 230 V cabling and equipment you did not install. Treat all electrical cabling as live. Do not move, cut or handle mains cables to make room for yours: ask the site electrician. Check the asbestos register before drilling in older buildings, use the right ladder or EWP, and watch for ceiling insulation and heat in summer roof spaces.</p></div>
+    <a class="crosslink" href="../theory/t09-mains-earthing-safety.html">Theory T09 · Mains, earthing and RCDs: why separation and earthing matter</a>
+
+    <h3>Fire-stopping penetrations</h3>
+    <p>Many walls and floors in commercial buildings are <b>fire-rated</b>: they are built to stop fire and smoke spreading for a set time. Every hole you drill through one for cables breaks that rating until it is sealed with a <b>tested fire-stopping system</b> (approved collars, sleeves, pillows, mastics or boards, installed as the system's test report says). The National Construction Code requires the rating to be kept. On most commercial sites the builder or fire engineer specifies the system, and every penetration is labelled and photographed for the records. Leave room in sleeves for future cables, and reseal after each addition.</p>
+
+    <h3>Earthing of racks: the telecommunications earth</h3>
+    <p>Metal racks, cable trays and screened cabling are bonded to an earth bar in the comms room. That bar connects back to the building's earthing system through a dedicated earth conductor. This protects people if a mains fault makes a rack live, gives surge currents a path to earth, and makes screened (F/UTP) cabling work properly. AS/CA S009 sets out how the telecommunications earth is designed and connected. The final connection to the electrical installation's main earth is electrician's work.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The rack is plugged into a power outlet, so it is earthed." The <em>equipment</em> in the rack is earthed through its power cords, but the rack frame, doors and trays are not, unless they are bonded. Paint and powder coat insulate the panels from each other. Use the proper bonding kit (toothed washers or bonding straps) so every part of the rack is connected to the earth bar.</p></div>
+
+    <h2>Testing and certification</h2>
+    <p>A cheap continuity tester only checks the <b>wiremap</b>: that each of the 8 wires goes to the right pin. That is the minimum. A commercial job is <b>certified</b> with a certification tester (Fluke Networks testers are the brand most often named in Australian ads). The tester measures the permanent link at frequencies up to 250 MHz for Cat6 (500 MHz for Cat6A) and compares the results with the limits in the standard:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Test</th><th>What it means</th><th>Common cause of a fail</th></tr>
+      <tr><td>Wiremap</td><td>Each wire lands on the correct pin; no opens, shorts, crossed or split pairs</td><td>Termination error; split pair (wrong wires paired)</td></tr>
+      <tr><td>Length</td><td>Permanent link ≤ 90 m</td><td>Route too long; too much slack</td></tr>
+      <tr><td>Insertion loss</td><td>How much the signal weakens along the cable</td><td>Too long; poor cable; hot ceiling spaces</td></tr>
+      <tr><td>NEXT (near-end crosstalk)</td><td>Signal leaking from one pair into another at the same end</td><td>Pairs untwisted too far at the jack (keep it within about 13 mm)</td></tr>
+      <tr><td>Return loss</td><td>Signal reflected back by impedance changes</td><td>Kinks, tight bends, crushed cable, poor terminations</td></tr>
+      <tr><td>Delay and delay skew</td><td>Time for signal to travel; difference between pairs</td><td>Mixed cable types; very long runs</td></tr>
+    </table></div>
+    <p>Save every result with the cable ID. The results go to the client and, for a manufacturer's system warranty (often 20–25 years), to the manufacturer. Those warranties usually require the installer to be trained and certified by the manufacturer and to use only that manufacturer's matched components. Fibre backbones are tested with a light source and power meter (loss) and often an OTDR. See <a href="c09-fibre-splicing-otdr.html">C09</a>.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Most failed links are made at the termination or during the pull. Keep the jacket on to within a few millimetres of the jack, keep the twists to the termination, do not exceed the cable's bend radius (about 4 × the cable diameter for UTP once installed) or pulling tension (about 110 N for 4-pair UTP), and never crush bundles with tight cable ties. Hook-and-loop (Velcro) straps are standard in racks and trays.</p></div>
+
+    <h2>Entry paths, brands and interviews</h2>
+    <h3>How people get in</h3>
+    <ol class="steps">
+      <li><p><b>Safety basics.</b> White Card (general construction induction). Working-at-heights and asbestos-awareness training are often asked for too.</p></li>
+      <li><p><b>Open registration course.</b> Many RTOs run a short course (often about a week) that covers the units needed for ACMA open registration. Some package it as part of a <b>Certificate II in Telecommunications Cabling</b>. Then you register through an accredited registrar.</p></li>
+      <li><p><b>Endorsements.</b> Structured cabling first (a few extra days of training, usually including termination and testing), then optical fibre. Coaxial, aerial and underground if your work needs them.</p></li>
+      <li><p><b>Manufacturer certification.</b> Once you have a job, employers often send you on a manufacturer's installer course so they can offer system warranties.</p></li>
+      <li><p><b>Grow.</b> From cabler to lead hand, then to fibre splicing, comms room fit-outs, security systems (C05, C06) or BMS (C01).</p></li>
+    </ol>
+    <div class="callout aus"><span class="label">In Australia</span><p>Course names, required units and registrar fees change. Before you enrol, (1) read the ACMA's cabling pages, (2) ask a registrar which units they accept for open registration and each endorsement, and (3) check that the RTO's course delivers exactly those units. Overseas qualifications are not automatically accepted for registration; ask the registrar what evidence they need.</p></div>
+
+    <h3>Brands you will see</h3>
+    <p>Cabling systems: CommScope, Panduit, Molex, Clipsal (Schneider Electric) and others. Testers: Fluke Networks certifiers. Racks, cable managers, fibre trays and fire-stopping products come from many makers. You do not need to know them all; most employers standardise on one or two cabling systems.</p>
+
+    <div class="callout job"><span class="label">On the job</span><p>A typical data-cabling day: read the outlet plan, set up cable boxes, pull a bundle through the ceiling or cable tray (one person feeding, one pulling), leave slack, dress the cables into the rack, terminate patch panels and outlets, label everything, then certify-test at the end of the day and fix the fails. Neat, labelled work with clean test reports is what gets you kept on.</p></div>
+
+    <div class="callout try"><span class="label">Try this</span><p>Draw a floor plan of your home or a small office. Mark a rack location and 12 outlets. Measure or estimate each route (up the wall, across the ceiling, down to the outlet). Feed the numbers into the planner above, write out the label list, and draw the patch panel with each port labelled. Add it to your portfolio next to a photo of a patch panel you terminated in P20.</p></div>
+
+    <h3>Typical interview questions</h3>
+    <ul>
+      <li>"Do you have ACMA open registration? Which endorsements?"</li>
+      <li>"What is the maximum length of a horizontal Cat6 run, and why?" (90 m permanent link, 100 m channel.)</li>
+      <li>"What is the difference between T568A and T568B, and does it matter?" (Pairs 2 and 3 swapped; be consistent across the site.)</li>
+      <li>"A link fails NEXT on the certifier. What would you look at first?" (Untwist and jacket at the terminations.)</li>
+      <li>"How do you cross a fire-rated wall with cables?"</li>
+      <li>"What is a TCA1 and when do you fill one in?"</li>
+      <li>"How would you label 48 outlets on Level 3?"</li>
+      <li>"How do you keep data cabling away from power in a ceiling?"</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Is installing Cat6 for IP cameras on an office network "customer cabling" under the ACMA rules?</summary><div class="answer"><p>Yes, if the network is connected (or will be connected) to a telecommunications network, which almost every office network is through its internet connection. So the work must be done by a registered cabler or under direct supervision of one, following AS/CA S009.</p></div></details>
+    <details class="quiz"><summary>What is the difference between open and restricted registration?</summary><div class="answer"><p>Open registration covers all types of cabling work in any premises (within your endorsements). Restricted covers only limited simple work, mainly in residential and small business premises. Commercial employers almost always need open registration.</p></div></details>
+    <details class="quiz"><summary>Why must the same label appear on the outlet, the cable and the patch panel port?</summary><div class="answer"><p>So anyone can trace a fault or move a service without opening ceilings or toning cables. A user says "outlet 2-B-17 is dead"; the tech goes straight to panel B, port 17 on Level 2, checks the patch cord and the switch port, and tests the link.</p></div></details>
+    <details class="quiz"><summary>40 runs with an average route of 45 m, 2 m slack and 10% allowance. How many 305 m boxes?</summary><div class="answer"><p>Each run = (45 + 2) × 1.1 = 51.7 m. Whole runs per box = floor(305 / 51.7) = 5. Boxes = 40 / 5 = 8. (Total metres would suggest 40 × 51.7 = 2068 m / 305 = 6.8, so 7. That is one box short.)</p></div></details>
+    <details class="quiz"><summary>Why does a hole through a fire-rated wall need a tested fire-stopping system, not just any sealant?</summary><div class="answer"><p>The wall's fire rating was proven by a test. A penetration must be sealed with a system that has itself been tested in that type of wall with those cables, so the wall still resists fire and smoke for the rated time. Ordinary sealant or foam may burn or shrink and let fire and smoke through.</p></div></details>
+    <details class="quiz"><summary>What does a certification tester check that a cheap continuity tester does not?</summary><div class="answer"><p>Performance at high frequency: insertion loss, NEXT, return loss, delay and skew, and length, against the Cat6 limits. A cheap tester checks only the wiremap. A link can pass wiremap but fail NEXT because of too much untwisting, and then it may not run gigabit reliably.</p></div></details>
+    <details class="quiz"><summary>Why bond a rack to the telecommunications earth if the equipment already has earthed power cords?</summary><div class="answer"><p>The power cords earth the equipment, not the rack frame, doors, side panels or cable trays, which are insulated from each other by paint. Bonding makes every metal part safe to touch if a mains fault occurs, gives surges a low-impedance path, and is needed for screened cabling to work as designed.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain what customer cabling is and why it must be done by a registered cabler.</span></li>
+      <li><input type="checkbox"><span>I can name the registration types (open, restricted, lift) and common endorsements.</span></li>
+      <li><input type="checkbox"><span>I know AS/CA S009 is the Wiring Rules and what a TCA1 form is for.</span></li>
+      <li><input type="checkbox"><span>I can draw a building's structured cabling from entrance facility to outlet.</span></li>
+      <li><input type="checkbox"><span>I can explain the 90 m permanent link and 100 m channel.</span></li>
+      <li><input type="checkbox"><span>I can plan cable boxes using whole runs per box, and write a label scheme.</span></li>
+      <li><input type="checkbox"><span>I can explain separation from power, fire-stopping and rack earthing.</span></li>
+      <li><input type="checkbox"><span>I can list the main certification tests and a common cause of each fail.</span></li>
+      <li><input type="checkbox"><span>I know to confirm current registration and course requirements with the ACMA and a registrar.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
