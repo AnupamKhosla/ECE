@@ -311,7 +311,7 @@
           var y2=36+map[i]*27,cls=(map[i]===i)?CLS[base(near[i])]:'s-red';
           mk('path',{d:'M105 '+y1+' C 260 '+y1+', 360 '+y2+', 515 '+y2,'class':cls});}
         if(shorts.length){var ya=36+(shorts[0]-1)*27,yb=36+(shorts[1]-1)*27;mk('path',{d:'M86 '+ya+' C 70 '+ya+', 70 '+yb+', 86 '+yb,'class':'s-red'});mk('text',{x:120,y:Math.min(ya,yb)-6,'class':'t t-small t-red'},'⚡ short '+shorts[0]+'–'+shorts[1]);}
-        splits.forEach(function(s,k){mk('text',{x:300,y:244-k*0,'class':'t t-small t-red','text-anchor':'middle'},'split pair on pins '+splits.join(', '));});
+        if(splits.length)mk('text',{x:310,y:246,'class':'t t-small t-red','text-anchor':'middle'},'split pair on pins '+splits.join(', ')+' (wires from different twisted pairs)');
         // verdicts
         var basic,cert,det=[];
         if(opens.length){basic='FAIL — open on pin '+opens.join(', ');det.push('An open conductor: the LED for that pin never lights. Re-terminate, or find the damage with a length-to-fault tester.');}
@@ -338,9 +338,9 @@
       <tr><td>Untwist at each termination</td><td>≤ 13 mm</td><td>Cut off and redo</td></tr>
       <tr><td>Jacket under plug strain relief</td><td>Yes, gripped by the wedge</td><td>Redo: too much conductor exposed</td></tr>
       <tr><td>Link speed on a gigabit switch</td><td>1 Gb/s (switch LED or OS shows 1000 Mb/s)</td><td>100 Mb/s: a pair on 4/5 or 7/8 open or badly made</td></tr>
-      <tr><td>Conductor resistance (meter, end to end, loop of two wires)</td><td>About 0.17 Ω per metre of loop for Cat6 (≈ 3.4 Ω for 20 m)</td><td>Open or very high: bad IDC/plug contact</td></tr>
+      <tr><td>Conductor resistance (meter, end to end, loop of two wires)</td><td>About 0.13–0.19 Ω per metre of loop for Cat6 (≈ 2.6–3.8 Ω for 20 m); short the probes first and subtract the lead resistance</td><td>Open or very high: bad IDC/plug contact</td></tr>
     </table></div>
-    <p>The resistance figure comes from the copper itself: 23 AWG is about 0.57 mm diameter, area ≈ 0.26 mm². R = ρL/A = (1.7 × 10⁻⁸ × 1) / (0.26 × 10⁻⁶) ≈ <b>0.066 Ω per metre</b> per conductor; a loop of two conductors is about 0.13 Ω/m, and real Cat6 specs allow a little more (roughly up to ~0.19 Ω/m loop). Close enough to check with your meter on a known length.</p>
+    <p>The resistance figure comes from the copper itself: 23 AWG is about 0.57 mm diameter, area ≈ 0.26 mm². R = ρL/A = (1.7 × 10⁻⁸ × 1) / (0.26 × 10⁻⁶) ≈ <b>0.066 Ω per metre</b> per conductor; a loop of two conductors is about 0.13 Ω/m, and the Cat6 specification allows up to roughly 0.19 Ω/m for the loop. Close enough to check with your meter on a known length.</p>
 
     <h2>Troubleshooting</h2>
     <div class="table-wrap"><table>

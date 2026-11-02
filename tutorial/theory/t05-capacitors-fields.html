@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T05 · Electric fields and capacitors</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 1</div>
+    <span class="eyebrow">Theory · Chapter T05</span>
+    <h1>Electric fields and capacitors</h1>
+    <p class="lede">A capacitor is two conductors separated by an insulator, and its energy lives in the electric field between them. You will derive C = εA/d and the RC charging curve, see why a capacitor "blocks DC and passes AC", and learn what real capacitors do that the ideal one does not.</p>
+    <div class="meta"><span><b>Reading</b> 50 min</span><span><b>Level</b> Foundation</span><span><b>Maths</b> Simple integration, one differential equation</span><span><b>Practice</b> P07, P09, P10, P15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>How we found out</h2>
+    <p>In 1745 and 1746, two experimenters independently tried to "store" electricity in a glass jar of water: Ewald Georg von Kleist in Germany and Pieter van Musschenbroek at the University of Leiden in the Netherlands. They charged the water through a wire from a friction machine while holding the jar in one hand. When they touched the wire with the other hand, they got a shock far stronger than anything the machine gave directly. Musschenbroek wrote that he would not repeat it for the whole kingdom of France. The "Leyden jar" (later made with metal foil inside and outside the glass) was the first capacitor.</p>
+    <p>Benjamin Franklin studied Leyden jars in the 1740s. He showed that the charge was held by the <i>glass</i> between the two conductors, not by the water, and he connected several jars together and called the group a "battery", the first use of that word in electricity. In 1837 Michael Faraday measured how much more charge a capacitor holds at the same voltage when you fill the gap with different insulators, which he called their "specific inductive capacity". We now call it the dielectric constant, and the unit of capacitance, the farad, is named after him.</p>
+    <p>In the 1860s James Clerk Maxwell asked a sharp question: current flows in the wire to one plate and out of the other plate, but no charge crosses the gap, so is the circuit broken? His answer was that a <i>changing electric field</i> in the gap acts as a current, which he called <b>displacement current</b>. That idea completed his equations and predicted electromagnetic waves (<a href="t10-em-waves-antennas-fibre.html">T10</a>). Practical capacitors followed: the aluminium electrolytic capacitor was patented by Charles Pollak in 1896, and the first supercapacitor patent was filed at General Electric in 1957, with commercial products from the late 1970s.</p>
+
+    <h2>The field between two plates</h2>
+    <p>Take two flat metal plates, each of area A, parallel and a small distance d apart. Connect a battery: it pulls electrons off one plate and pushes them onto the other, until the plates carry +Q and −Q. The capacitor as a whole stays neutral. Between the plates there is now an electric field E, pointing from + to −.</p>
+    <p>Gauss's law (from Class 12) gives the field near a large charged sheet. For two closely spaced plates with charge density σ = Q/A, the fields from the two plates add between them and cancel outside:</p>
+    <div class="formula">E = σ / ε₀ = Q / (ε₀ A)        V = E × d = Q d / (ε₀ A)
+      <small>ε₀ (epsilon-nought) = 8.854 × 10⁻¹² F/m is the permittivity of free space, a constant of nature. The field is uniform between the plates, so the voltage is simply field × distance.</small></div>
+    <p>The charge stored is proportional to the voltage. The ratio is the <b>capacitance</b>:</p>
+    <div class="formula">C = Q / V = ε₀ A / d        (with an insulator: C = ε<sub>r</sub> ε₀ A / d)
+      <small>C in farads (F): 1 F = 1 C/V. Bigger plates hold more charge at the same voltage; a smaller gap gives a stronger pull between the + and − charges, so again more charge for the same voltage. ε<sub>r</sub> is the relative permittivity (dielectric constant) of the insulator.</small></div>
+    <h3>Worked example: how big is a farad?</h3>
+    <p>Two plates 10 cm × 10 cm (A = 0.01 m²), 1 mm apart in air: C = 8.854 × 10⁻¹² × 0.01 / 0.001 = 8.85 × 10⁻¹¹ F = <b>88.5 pF</b> (picofarads). Tiny.</p>
+    <p>To make 1 µF with a 1 mm air gap you would need A = C d / ε₀ = 10⁻⁶ × 10⁻³ / 8.854 × 10⁻¹² ≈ <b>113 m²</b> of plate: the floor of a small house. Yet a 1 µF capacitor is the size of a grain of rice. Engineers get there three ways, all visible in the formula: make d tiny (films and oxides a few micrometres down to nanometres thick), make ε<sub>r</sub> large (special ceramics), and make A huge (long rolled foils, roughened surfaces, stacked layers).</p>
+    <h3>Capacitors in parallel and in series</h3>
+    <p>In parallel, capacitors share the same voltage and their charges add, like adding plate area: C<sub>total</sub> = C₁ + C₂ + …. In series, each carries the same charge and their voltages add, like making the gap thicker: 1/C<sub>total</sub> = 1/C₁ + 1/C₂ + …. These are the opposite of the resistor rules in <a href="t04-circuit-laws.html">T04</a>.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"A capacitor stores charge."</b> A charged capacitor has +Q on one plate and −Q on the other, so its total charge is zero, exactly as before. What it stores is <b>energy</b>, in the electric field between the plates. "Charging a capacitor" means separating charge, not adding it. The same was true of batteries in <a href="t01-charge-current-voltage.html">T01</a>.</p></div>
+
+    <h2>Dielectrics and polarisation</h2>
+    <p>Put an insulator (a <b>dielectric</b>) between the plates and the capacitance goes up by the factor ε<sub>r</sub>. Why? Inside an insulator the electrons cannot leave their atoms, but the field can stretch each atom or molecule slightly: the electron cloud shifts towards the + plate, and the nucleus towards the − plate. Some molecules (such as water) are already lopsided and they rotate to line up with the field. Either way, the material becomes full of tiny aligned dipoles. This is <b>polarisation</b>.</p>
+    <figure>
+      <svg viewBox="0 0 620 260" role="img" aria-label="Parallel plates in air with a strong field, and with a dielectric whose aligned dipoles create bound surface charges that reduce the field">
+        <defs><marker id="t5f1-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t5f1-d" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small t-bold" x="40" y="22">Air (or vacuum)</text>
+        <rect class="f-grey" x="40" y="44" width="220" height="8"/><rect class="f-grey" x="40" y="190" width="220" height="8"/>
+        <g class="t t-red t-bold"><text x="50" y="40">+</text><text x="90" y="40">+</text><text x="130" y="40">+</text><text x="170" y="40">+</text><text x="210" y="40">+</text><text x="245" y="40">+</text></g>
+        <g class="t t-blue t-bold"><text x="50" y="216">−</text><text x="90" y="216">−</text><text x="130" y="216">−</text><text x="170" y="216">−</text><text x="210" y="216">−</text><text x="245" y="216">−</text></g>
+        <g class="s-amber" style="stroke-width:1.6">
+          <path d="M60 58 V184" marker-end="url(#t5f1-a)"/><path d="M95 58 V184" marker-end="url(#t5f1-a)"/><path d="M130 58 V184" marker-end="url(#t5f1-a)"/><path d="M165 58 V184" marker-end="url(#t5f1-a)"/><path d="M200 58 V184" marker-end="url(#t5f1-a)"/><path d="M235 58 V184" marker-end="url(#t5f1-a)"/>
+        </g>
+        <path class="s-line" d="M280 52 V190" marker-start="url(#t5f1-d)" marker-end="url(#t5f1-d)" style="stroke-width:1.5"/>
+        <text class="t t-small" x="288" y="126">d</text>
+        <text class="t t-small t-muted" x="40" y="240">strong field E = σ/ε₀</text>
+        <text class="t t-small t-bold" x="340" y="22">With a dielectric</text>
+        <rect class="f-accent-soft" x="340" y="52" width="230" height="138"/>
+        <rect class="f-grey" x="340" y="44" width="230" height="8"/><rect class="f-grey" x="340" y="190" width="230" height="8"/>
+        <g class="t t-red t-bold"><text x="350" y="40">+</text><text x="390" y="40">+</text><text x="430" y="40">+</text><text x="470" y="40">+</text><text x="510" y="40">+</text><text x="550" y="40">+</text></g>
+        <g class="t t-blue t-bold"><text x="350" y="216">−</text><text x="390" y="216">−</text><text x="430" y="216">−</text><text x="470" y="216">−</text><text x="510" y="216">−</text><text x="550" y="216">−</text></g>
+        <g class="t t-small t-blue"><text x="352" y="66">−</text><text x="392" y="66">−</text><text x="432" y="66">−</text><text x="472" y="66">−</text><text x="512" y="66">−</text><text x="552" y="66">−</text></g>
+        <g class="t t-small t-red"><text x="352" y="186">+</text><text x="392" y="186">+</text><text x="432" y="186">+</text><text x="472" y="186">+</text><text x="512" y="186">+</text><text x="552" y="186">+</text></g>
+        <g class="s-line" style="stroke-width:1.2">
+          <ellipse cx="375" cy="95" rx="7" ry="13"/><ellipse cx="415" cy="95" rx="7" ry="13"/><ellipse cx="455" cy="95" rx="7" ry="13"/><ellipse cx="495" cy="95" rx="7" ry="13"/><ellipse cx="535" cy="95" rx="7" ry="13"/>
+          <ellipse cx="375" cy="145" rx="7" ry="13"/><ellipse cx="415" cy="145" rx="7" ry="13"/><ellipse cx="455" cy="145" rx="7" ry="13"/><ellipse cx="495" cy="145" rx="7" ry="13"/><ellipse cx="535" cy="145" rx="7" ry="13"/>
+        </g>
+        <g class="f-blue"><circle cx="375" cy="88" r="3"/><circle cx="415" cy="88" r="3"/><circle cx="455" cy="88" r="3"/><circle cx="495" cy="88" r="3"/><circle cx="535" cy="88" r="3"/><circle cx="375" cy="138" r="3"/><circle cx="415" cy="138" r="3"/><circle cx="455" cy="138" r="3"/><circle cx="495" cy="138" r="3"/><circle cx="535" cy="138" r="3"/></g>
+        <g class="f-red"><circle cx="375" cy="102" r="3"/><circle cx="415" cy="102" r="3"/><circle cx="455" cy="102" r="3"/><circle cx="495" cy="102" r="3"/><circle cx="535" cy="102" r="3"/><circle cx="375" cy="152" r="3"/><circle cx="415" cy="152" r="3"/><circle cx="455" cy="152" r="3"/><circle cx="495" cy="152" r="3"/><circle cx="535" cy="152" r="3"/></g>
+        <g class="s-amber" style="stroke-width:1.6">
+          <path d="M395 58 V184" marker-end="url(#t5f1-a)"/><path d="M475 58 V184" marker-end="url(#t5f1-a)"/><path d="M555 58 V184" marker-end="url(#t5f1-a)"/>
+        </g>
+        <text class="t t-small t-muted" x="340" y="240">bound charges cancel part of the field: E = σ/(ε<tspan dy="3" font-size="9">r</tspan><tspan dy="-3">ε₀)</tspan></text>
+      </svg>
+      <figcaption>Figure 1. Same charge on the plates in both cases. Right: each molecule stretches into a small dipole (electron side towards +). Inside the material the dipoles cancel each other, but a thin layer of "bound" − charge appears next to the + plate and bound + next to the − plate. These partly cancel the plate charge, so the field (fewer amber lines) and the voltage are smaller for the same Q. Smaller V for the same Q means larger C.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Dielectric</th><th>ε<sub>r</sub> (typical)</th><th>Where it is used</th></tr>
+      <tr><td>Vacuum / air</td><td>1 / 1.0006</td><td>Variable capacitors, air-spaced RF parts</td></tr>
+      <tr><td>PTFE (Teflon)</td><td>2.1</td><td>Low-loss coax and RF boards</td></tr>
+      <tr><td>Polypropylene film</td><td>2.2</td><td>Film capacitors for audio, timing, motor-run and snubbers</td></tr>
+      <tr><td>Polyester (PET) film</td><td>3.3</td><td>General-purpose "greencap" and box film capacitors</td></tr>
+      <tr><td>Glass / mica</td><td>~4–8</td><td>Stable RF and high-voltage capacitors</td></tr>
+      <tr><td>Aluminium oxide (Al₂O₃)</td><td>~8–10</td><td>Aluminium electrolytic capacitors</td></tr>
+      <tr><td>Tantalum pentoxide (Ta₂O₅)</td><td>~25–27</td><td>Tantalum capacitors</td></tr>
+      <tr><td>Water</td><td>~80</td><td>Why humidity changes capacitive sensors</td></tr>
+      <tr><td>Class 1 ceramic (C0G/NP0)</td><td>tens</td><td>Stable small-value ceramic capacitors (pF to nF)</td></tr>
+      <tr><td>Class 2 ceramic, barium titanate (X7R, X5R)</td><td>~1,000–10,000+</td><td>Small, high-value multilayer ceramic capacitors (MLCCs)</td></tr>
+    </table></div>
+    <p>Every dielectric also has a <b>breakdown field</b>: above it, electrons are torn loose, a spark punches through, and the capacitor is destroyed (or, in air, a spark jumps). Air breaks down at about 3 kV per millimetre. Good plastic films withstand hundreds of volts per micrometre. This is the reason for every capacitor's <b>voltage rating</b>: the thinner the dielectric (for more capacitance), the lower the voltage it can survive.</p>
+
+    <h2>Energy stored in the field</h2>
+    <p>Charging a capacitor takes work, because each new bit of charge must be pushed onto a plate that already repels it. When the capacitor holds charge q, its voltage is v = q/C. Moving an extra small charge dq costs energy dW = v dq = (q/C) dq. Add up (integrate) from empty to Q:</p>
+    <div class="formula">W = ∫₀<sup>Q</sup> (q / C) dq = Q² / (2C) = ½ C V²
+      <small>The first coulombs go on easily (low voltage); the last ones need the full voltage. On average you pay half the final voltage per coulomb, hence the ½.</small></div>
+    <p>Where is the energy? In the field. Put C = εA/d and V = Ed into ½CV²: W = ½ (εA/d)(Ed)² = ½ εE² × (A d). A × d is the volume between the plates, so the field holds <b>u = ½ εE² joules per cubic metre</b> wherever it exists. This is the same "energy in the field" idea as in <a href="t01-charge-current-voltage.html">T01</a>.</p>
+    <h3>Worked numbers</h3>
+    <ul>
+      <li>A 1,000 µF, 25 V smoothing capacitor at 24 V: W = ½ × 10⁻³ × 24² = <b>0.29 J</b>. Small, but released in microseconds through a screwdriver it makes a loud spark and pits the metal.</li>
+      <li>A 100 nF decoupling capacitor at 5 V: W = ½ × 10⁻⁷ × 25 = 1.25 µJ. Tiny, but it can deliver that in nanoseconds, which is exactly its job.</li>
+      <li>A 10 F, 2.7 V supercapacitor: W = ½ × 10 × 2.7² = <b>36 J</b>. Enough to keep a clock chip running for a very long time.</li>
+    </ul>
+    <p>Notice the V². Doubling the voltage stores four times the energy. That is why high-voltage capacitors are dangerous even when small.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>Capacitors can stay charged after the power is off. Before touching a board, discharge large capacitors through a resistor (for example 100 Ω to 1 kΩ, 1–5 W, held with insulated leads), then confirm 0 V with a meter. Never short them with a screwdriver. Capacitors inside mains equipment, power supplies, microwave ovens and camera flash units can hold lethal energy at hundreds of volts: never open mains equipment. In Australia, work inside mains-powered equipment is for licensed electricians and qualified repairers; everything in this course stays at extra-low voltage.</p></div>
+    <div class="widget" id="t5p">
+      <span class="label">Interactive · Parallel-plate capacitor</span>
+      <label>Plate area <span class="out" id="t5p-ao">100 cm²</span><input type="range" id="t5p-a" min="1" max="1000" value="100"></label>
+      <label>Gap d <span class="out" id="t5p-do">1.00 mm</span><input type="range" id="t5p-d" min="0" max="100" value="60"></label>
+      <label>Dielectric
+        <select id="t5p-e"><option value="1">Air (ε<sub>r</sub> ≈ 1)</option><option value="2.1">PTFE (2.1)</option><option value="2.2">Polypropylene (2.2)</option><option value="3.3">Polyester (3.3)</option><option value="9">Aluminium oxide (≈ 9)</option><option value="26">Tantalum pentoxide (≈ 26)</option><option value="3000">X7R ceramic (≈ 3,000)</option></select></label>
+      <div class="readings">
+        <div><small>Capacitance</small><span class="out" id="t5p-c">–</span></div>
+        <div><small>Plate area for 1 µF at this gap</small><span class="out" id="t5p-a1">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      var E0=8.854e-12;
+      function fC(c){var u=[[1,'F'],[1e-3,'mF'],[1e-6,'µF'],[1e-9,'nF'],[1e-12,'pF'],[1e-15,'fF']];for(var k=0;k<u.length;k++){if(c>=u[k][0]*0.9995)return (c/u[k][0]).toPrecision(3)+' '+u[k][1];}return c.toExponential(2)+' F';}
+      function fA(a){if(a>=1)return a.toPrecision(3)+' m²';if(a>=1e-4)return (a*1e4).toPrecision(3)+' cm²';return (a*1e6).toPrecision(3)+' mm²';}
+      function upd(){
+        var Acm=+$('t5p-a').value, d=Math.pow(10,-6+3*(+$('t5p-d').value)/60)*1; /* metres: slider 0 -> 1 µm, 60 -> 1 mm, 100 -> 10 mm */
+        var er=+$('t5p-e').value, A=Acm*1e-4, C=er*E0*A/d;
+        $('t5p-ao').textContent=Acm+' cm²';
+        $('t5p-do').textContent=d>=1e-3?(d*1e3).toPrecision(3)+' mm':(d*1e6).toPrecision(3)+' µm';
+        $('t5p-c').textContent=fC(C);
+        $('t5p-a1').textContent=fA(1e-6*d/(er*E0));
+      }
+      ['t5p-a','t5p-d','t5p-e'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <p>Try a 1 µm gap with X7R ceramic: a few square centimetres of plate already gives tens of microfarads. That is how a multilayer ceramic capacitor works: hundreds of very thin ceramic layers with metal between them, all connected in parallel inside one small block.</p>
+
+    <h2>Charging through a resistor: the RC curve</h2>
+    <figure>
+      <svg viewBox="0 0 600 220" role="img" aria-label="RC charging circuit: battery, switch, resistor and capacitor in series">
+        <defs><marker id="t5f2-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <path class="s-line" d="M80 102 V50 H150"/>
+        <circle class="f-ink" cx="150" cy="50" r="3.5"/><circle class="f-ink" cx="200" cy="50" r="3.5"/>
+        <path class="s-line" d="M150 50 L196 30"/>
+        <path class="s-line" d="M200 50 H260"/>
+        <path class="s-accent" d="M260 50 l5 -8 l10 16 l10 -16 l10 16 l10 -16 l10 16 l5 -8"/>
+        <path class="s-line" d="M320 50 H420 V112"/>
+        <line class="s-accent" x1="392" y1="112" x2="448" y2="112" style="stroke-width:4"/>
+        <line class="s-accent" x1="392" y1="126" x2="448" y2="126" style="stroke-width:4"/>
+        <path class="s-line" d="M420 126 V190 H80 V118"/>
+        <line class="s-line" x1="58" y1="102" x2="102" y2="102"/><line class="s-line" x1="68" y1="118" x2="92" y2="118" style="stroke-width:5"/>
+        <text class="t t-bold" x="16" y="116">V₀</text>
+        <text class="t t-small" x="160" y="22">switch S</text>
+        <text class="t t-small" x="282" y="32">R</text>
+        <text class="t t-small" x="456" y="124">C</text>
+        <text class="t t-small t-red t-bold" x="468" y="106">+</text><text class="t t-small t-red t-bold" x="468" y="146">−</text>
+        <text class="t t-small" x="482" y="128">v<tspan dy="3" font-size="9">C</tspan></text>
+        <path class="s-red" d="M330 66 H390" marker-end="url(#t5f2-a)"/><text class="t t-small t-red" x="350" y="84">i</text>
+        <text class="t t-small t-muted" x="120" y="212">KVL after the switch closes: V₀ = iR + v<tspan dy="3" font-size="9">C</tspan></text>
+      </svg>
+      <figcaption>Figure 2. The capacitor starts empty. At t = 0 the switch closes and current flows through R into the capacitor.</figcaption>
+    </figure>
+    <h3>Intuition first</h3>
+    <p>At the instant the switch closes, the capacitor is empty, so v<sub>C</sub> = 0. The whole supply voltage is across R, and the current is as large as it will ever be: i = V₀/R. An empty capacitor acts, for that instant, like a plain wire.</p>
+    <p>As charge builds up, v<sub>C</sub> rises. Now less voltage is left across R, so the current falls, so the capacitor fills more slowly. The closer it gets to V₀, the slower it goes. Anything that slows down in proportion to how far it still has to go follows an <b>exponential</b> curve. It approaches V₀ but, in theory, never quite gets there.</p>
+    <h3>The maths</h3>
+    <p>KVL round the loop: V₀ = iR + v<sub>C</sub>. The current is the rate at which charge arrives on the plate: i = dq/dt = C dv<sub>C</sub>/dt (since q = Cv<sub>C</sub>). Substitute:</p>
+    <div class="formula">RC × dv<sub>C</sub>/dt = V₀ − v<sub>C</sub></div>
+    <p>Separate the variables (all the v on one side, all the t on the other) and integrate from v<sub>C</sub> = 0 at t = 0:</p>
+    <div class="formula">∫ dv<sub>C</sub> / (V₀ − v<sub>C</sub>) = ∫ dt / RC<br>−ln(V₀ − v<sub>C</sub>) + ln V₀ = t / RC<br>(V₀ − v<sub>C</sub>) / V₀ = e<sup>−t/RC</sup></div>
+    <div class="formula">v<sub>C</sub>(t) = V₀ (1 − e<sup>−t/RC</sup>)        i(t) = (V₀/R) e<sup>−t/RC</sup>
+      <small>The product τ = RC is the <b>time constant</b>. Check the units: ohms × farads = (V/A) × (C/V) = C/A = seconds.</small></div>
+    <p>Discharging a capacitor from V₀ through R gives the mirror image: v<sub>C</sub>(t) = V₀ e<sup>−t/RC</sup>.</p>
+    <figure>
+      <svg viewBox="0 0 600 275" role="img" aria-label="RC charging curve: capacitor voltage rising and current falling, with time constant markers">
+        <g class="s-thin s-dash"><path d="M70 50 H550"/><path d="M166 50 V230"/><path d="M262 50 V230"/><path d="M358 50 V230"/><path d="M70 116.2 H166"/></g>
+        <path class="s-line" d="M70 40 V230 H555"/>
+        <path class="s-thin" d="M70 230 L166 50" style="stroke-dasharray:3 3"/>
+        <path class="s-accent" d="M70.0 230.0 L79.6 212.9 L89.2 197.4 L98.8 183.3 L108.4 170.7 L118.0 159.2 L127.6 148.8 L137.2 139.4 L146.8 130.9 L156.4 123.2 L166.0 116.2 L175.6 109.9 L185.2 104.2 L194.8 99.1 L204.4 94.4 L214.0 90.2 L223.6 86.3 L233.2 82.9 L242.8 79.8 L252.4 76.9 L262.0 74.4 L271.6 72.0 L281.2 69.9 L290.8 68.0 L300.4 66.3 L310.0 64.8 L319.6 63.4 L329.2 62.1 L338.8 60.9 L348.4 59.9 L358.0 59.0 L367.6 58.1 L377.2 57.3 L386.8 56.6 L396.4 56.0 L406.0 55.4 L415.6 54.9 L425.2 54.5 L434.8 54.0 L444.4 53.6 L454.0 53.3 L463.6 53.0 L473.2 52.7 L482.8 52.4 L492.4 52.2 L502.0 52.0 L511.6 51.8 L521.2 51.6 L530.8 51.5 L540.4 51.3 L550.0 51.2"/>
+        <path class="s-red s-dash" d="M70.0 50.0 L79.6 67.1 L89.2 82.6 L98.8 96.7 L108.4 109.3 L118.0 120.8 L127.6 131.2 L137.2 140.6 L146.8 149.1 L156.4 156.8 L166.0 163.8 L175.6 170.1 L185.2 175.8 L194.8 180.9 L204.4 185.6 L214.0 189.8 L223.6 193.7 L233.2 197.1 L242.8 200.2 L252.4 203.1 L262.0 205.6 L271.6 208.0 L281.2 210.1 L290.8 212.0 L300.4 213.7 L310.0 215.2 L319.6 216.6 L329.2 217.9 L338.8 219.1 L348.4 220.1 L358.0 221.0 L377.2 222.7 L396.4 224.0 L415.6 225.1 L434.8 226.0 L454.0 226.7 L473.2 227.3 L492.4 227.8 L511.6 228.2 L530.8 228.5 L550.0 228.8" style="stroke-width:2"/>
+        <circle class="f-accent" cx="166" cy="116.2" r="4.5"/><circle class="f-accent" cx="262" cy="74.4" r="4.5"/><circle class="f-accent" cx="358" cy="59" r="4.5"/><circle class="f-accent" cx="550" cy="51.2" r="4.5"/>
+        <g class="t t-small">
+          <text x="38" y="54">V₀</text><text x="50" y="234">0</text>
+          <text x="66" y="248">0</text><text x="162" y="248">τ</text><text x="254" y="248">2τ</text><text x="350" y="248">3τ</text><text x="446" y="248">4τ</text><text x="542" y="248">5τ</text>
+        </g>
+        <text class="t t-small t-accent" x="172" y="134">63%</text><text class="t t-small t-accent" x="266" y="92">86%</text><text class="t t-small t-accent" x="362" y="78">95%</text><text class="t t-small t-accent" x="510" y="72">99.3%</text>
+        <text class="t t-small t-accent t-bold" x="400" y="110">capacitor voltage v<tspan dy="3" font-size="9">C</tspan></text>
+        <text class="t t-small t-red t-bold" x="400" y="200">current i (starts at V₀/R)</text>
+        <text class="t t-small t-muted" x="86" y="70">initial slope</text>
+        <text class="t t-small t-muted" x="250" y="270">time</text>
+      </svg>
+      <figcaption>Figure 3. The voltage (blue) rises to 63% of V₀ after one time constant τ = RC, 86% after 2τ, 95% after 3τ and over 99% after 5τ. The current (red, dashed, scaled to the same height) falls by the same proportions. The dotted line shows that if the capacitor kept charging at its starting rate, it would be full at exactly t = τ.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Time</th><th>Charging: v<sub>C</sub> / V₀</th><th>Discharging: v<sub>C</sub> / V₀</th></tr>
+      <tr><td>τ</td><td>63.2%</td><td>36.8%</td></tr>
+      <tr><td>2τ</td><td>86.5%</td><td>13.5%</td></tr>
+      <tr><td>3τ</td><td>95.0%</td><td>5.0%</td></tr>
+      <tr><td>4τ</td><td>98.2%</td><td>1.8%</td></tr>
+      <tr><td>5τ</td><td>99.3%</td><td>0.7%</td></tr>
+    </table></div>
+    <h3>Worked examples</h3>
+    <ul>
+      <li>R = 10 kΩ, C = 100 µF: τ = 10⁴ × 10⁻⁴ = <b>1 s</b>. On a 9 V supply the capacitor reaches 5.7 V after 1 s and is "full" (99%) after about 5 s. The first current is 9 V/10 kΩ = 0.9 mA.</li>
+      <li>A switch debounce filter, R = 10 kΩ, C = 100 nF: τ = 1 ms. Contact bounce lasting under a millisecond is smoothed out (<a href="../practice/p11-arduino-first-steps.html">P11</a>).</li>
+      <li>A 555 timer measures time by charging a capacitor between 1/3 and 2/3 of the supply: t = RC × ln 2 ≈ 0.693 RC for that step (<a href="../practice/p09-555-timer.html">P09</a>).</li>
+      <li>When does the voltage reach a given fraction? Solve v/V₀ = 1 − e<sup>−t/τ</sup> for t: t = −τ ln(1 − v/V₀). To 50%: t = τ ln 2 = 0.69τ. To 90%: t = τ ln 10 = 2.3τ.</li>
+    </ul>
+    <div class="widget" id="t5w">
+      <span class="label">Interactive · RC charge and discharge plotter</span>
+      <label>Resistance R <span class="out" id="t5w-ro">10.0 kΩ</span><input type="range" id="t5w-r" min="0" max="100" value="50"></label>
+      <label>Capacitance C
+        <select id="t5w-c">
+          <option value="1e-9">1 nF</option><option value="1e-8">10 nF</option><option value="1e-7">100 nF</option><option value="1e-6">1 µF</option><option value="1e-5">10 µF</option><option value="1e-4" selected>100 µF</option><option value="4.7e-4">470 µF</option><option value="1e-3">1,000 µF</option><option value="4.7e-3">4,700 µF</option><option value="1">1 F (supercapacitor)</option>
+        </select></label>
+      <label>Supply V₀ <span class="out" id="t5w-vo">9.0 V</span><input type="range" id="t5w-v" min="1" max="24" step="0.5" value="9"></label>
+      <label>Mode
+        <select id="t5w-m"><option value="c" selected>Charging from 0 V</option><option value="d">Discharging from V₀</option></select></label>
+      <label>Look at time t <span class="out" id="t5w-to">–</span><input type="range" id="t5w-t" min="0" max="500" value="100"></label>
+      <div class="readings">
+        <div><small>Time constant τ = RC</small><span class="out" id="t5w-tau">–</span></div>
+        <div><small>Capacitor voltage at t</small><span class="out" id="t5w-vc">–</span></div>
+        <div><small>Current at t</small><span class="out" id="t5w-i">–</span></div>
+        <div><small>Time to 99% (≈ 4.6τ)</small><span class="out" id="t5w-t99">–</span></div>
+        <div><small>Energy when full (½CV₀²)</small><span class="out" id="t5w-e">–</span></div>
+      </div>
+      <svg viewBox="0 0 560 230" role="img" aria-label="Plot of capacitor voltage and current against time">
+        <path class="s-line" d="M50 15 V190 H540"/>
+        <path class="s-thin s-dash" d="M50 25 H540"/>
+        <text class="t t-small" x="16" y="29">V₀</text><text class="t t-small" x="34" y="194">0</text>
+        <text class="t t-small" id="t5w-x1" x="140" y="208">τ</text><text class="t t-small" id="t5w-x5" x="510" y="208">5τ</text>
+        <path class="s-red s-dash" id="t5w-ip" d="" style="stroke-width:2"/>
+        <path class="s-accent" id="t5w-vp" d=""/>
+        <path class="s-thin" id="t5w-cur" d=""/>
+        <circle class="f-accent" id="t5w-pt" cx="0" cy="0" r="5"/>
+        <text class="t t-small t-accent" x="330" y="60">v<tspan dy="3" font-size="9">C</tspan></text>
+        <text class="t t-small t-red" x="330" y="176" id="t5w-il">i</text>
+        <text class="t t-small t-muted" x="250" y="224">time</text>
+      </svg>
+    </div>
+    <script>
+    (function(){
+      var $=function(id){return document.getElementById(id);};
+      function fT(s){if(s<1e-6)return (s*1e9).toPrecision(3)+' ns';if(s<1e-3)return (s*1e6).toPrecision(3)+' µs';if(s<1)return (s*1e3).toPrecision(3)+' ms';if(s<60)return s.toPrecision(3)+' s';if(s<3600)return (s/60).toPrecision(3)+' min';if(s<86400)return (s/3600).toPrecision(3)+' h';return (s/86400).toPrecision(3)+' days';}
+      function fR(r){return r>=1e6?(r/1e6).toPrecision(3)+' MΩ':r>=1e3?(r/1e3).toPrecision(3)+' kΩ':r.toPrecision(3)+' Ω';}
+      function fI(i){return i>=1?i.toPrecision(3)+' A':i>=1e-3?(i*1e3).toPrecision(3)+' mA':i>=1e-6?(i*1e6).toPrecision(3)+' µA':(i*1e9).toPrecision(3)+' nA';}
+      function fE(e){return e>=1?e.toPrecision(3)+' J':e>=1e-3?(e*1e3).toPrecision(3)+' mJ':(e*1e6).toPrecision(3)+' µJ';}
+      var X0=50,Y0=190,W=490,H=165;
+      function upd(){
+        var R=Math.pow(10,2+4*(+$('t5w-r').value)/100), C=+$('t5w-c').value, V=+$('t5w-v').value, chg=$('t5w-m').value==='c', k=(+$('t5w-t').value)/100;
+        var tau=R*C, vp='', ip='';
+        for(var n=0;n<=100;n++){var x=n/20, e=Math.exp(-x), v=chg?1-e:e;
+          vp+=(n?' L':'M')+(X0+x/5*W).toFixed(1)+' '+(Y0-v*H).toFixed(1);
+          ip+=(n?' L':'M')+(X0+x/5*W).toFixed(1)+' '+(Y0-e*H).toFixed(1);}
+        $('t5w-vp').setAttribute('d',vp); $('t5w-ip').setAttribute('d',ip);
+        var e=Math.exp(-k), vc=V*(chg?1-e:e), ic=V/R*e, px=X0+k/5*W;
+        $('t5w-cur').setAttribute('d','M'+px.toFixed(1)+' '+(Y0-H-10)+' V'+Y0);
+        $('t5w-pt').setAttribute('cx',px.toFixed(1)); $('t5w-pt').setAttribute('cy',(Y0-(vc/V)*H).toFixed(1));
+        $('t5w-ro').textContent=fR(R); $('t5w-vo').textContent=V.toFixed(1)+' V';
+        $('t5w-to').textContent=fT(k*tau)+' ('+k.toFixed(2)+'τ)';
+        $('t5w-tau').textContent=fT(tau);
+        $('t5w-vc').textContent=vc.toFixed(2)+' V ('+(vc/V*100).toFixed(1)+'%)';
+        $('t5w-i').textContent=fI(ic)+(chg?' into C':' out of C');
+        $('t5w-t99').textContent=fT(4.605*tau);
+        $('t5w-e').textContent=fE(0.5*C*V*V);
+        $('t5w-x1').textContent='τ = '+fT(tau); $('t5w-x5').textContent='5τ';
+        $('t5w-x1').setAttribute('x',X0+W/5-10);
+      }
+      ['t5w-r','t5w-c','t5w-v','t5w-m','t5w-t'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <h3>A surprising energy fact</h3>
+    <p>While charging from 0 to V₀, the supply pushes a total charge Q = CV₀ through its full voltage V₀, so it delivers energy QV₀ = CV₀². The capacitor ends up holding ½CV₀². The other half, ½CV₀², is turned into heat in the resistor. This is true <i>whatever the value of R</i>: a smaller R gives a bigger current for a shorter time, and the heat comes out the same. (You can check it: ∫ i²R dt with i = (V₀/R)e<sup>−t/RC</sup> gives exactly ½CV₀².) It is one reason switch-mode power supplies use inductors to move energy instead of charging capacitors straight from a fixed voltage.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"After one time constant the capacitor is full."</b> After one τ it is only 63% charged. Engineers usually treat 5τ (over 99%) as "fully charged". And a capacitor charged through 1 MΩ is not "slower to hold charge" than one charged through 1 kΩ; it simply fills more slowly to the same final voltage and the same stored energy.</p></div>
+
+    <h2>Why a capacitor "blocks DC and passes AC"</h2>
+    <p>The key equation is the one we used above:</p>
+    <div class="formula">i = C × dv/dt
+      <small>Current flows into a capacitor only while its voltage is <i>changing</i>. The faster the change, the bigger the current.</small></div>
+    <p><b>DC:</b> after about 5τ, the voltage stops changing, so dv/dt = 0 and the current is zero. In steady DC a capacitor is an open circuit. That is why a capacitor in series with a signal "blocks" a DC level, and why a charged smoothing capacitor across a supply draws no current once full (apart from leakage).</p>
+    <p><b>AC:</b> if the voltage across a capacitor is a sine wave, v = V<sub>p</sub> sin(2πft), it is always changing, so current always flows: i = C × dv/dt = 2πfC V<sub>p</sub> cos(2πft). The current is a sine wave too, shifted a quarter cycle ahead of the voltage, and its peak is 2πfC times V<sub>p</sub>. The ratio of voltage to current is the capacitor's <b>reactance</b>:</p>
+    <div class="formula">X<sub>C</sub> = 1 / (2π f C)    (ohms)
+      <small>Large at low frequency, small at high frequency. At DC (f = 0), X<sub>C</sub> is infinite: an open circuit.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Capacitor</th><th>50 Hz</th><th>1 kHz</th><th>1 MHz</th><th>100 MHz</th></tr>
+      <tr><td>10 µF</td><td>318 Ω</td><td>15.9 Ω</td><td>0.016 Ω</td><td>(ideal) 0.00016 Ω</td></tr>
+      <tr><td>100 nF</td><td>31.8 kΩ</td><td>1.59 kΩ</td><td>1.59 Ω</td><td>(ideal) 0.016 Ω</td></tr>
+      <tr><td>1 nF</td><td>3.18 MΩ</td><td>159 kΩ</td><td>159 Ω</td><td>1.59 Ω</td></tr>
+    </table></div>
+    <p>This is why a 100 nF capacitor next to every chip's supply pin works as a <b>decoupling</b> capacitor: to the fast current spikes of a switching chip it looks like a near short circuit to ground, so it supplies those spikes locally instead of making them travel along the supply track. To the steady DC supply it is invisible. Reactance, phase and impedance are developed properly in <a href="t07-ac-fundamentals.html">T07</a>.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"AC current flows through the capacitor."</b> No electrons cross the insulator. During one half-cycle electrons pile onto one plate while the same number leave the other plate; next half-cycle they reverse. Outside the capacitor it looks exactly as if current passed through. Inside, the "current" across the gap is Maxwell's displacement current: the changing electric field. The opposite myth, "a capacitor blocks all current", is also wrong: it blocks only <i>steady</i> current.</p></div>
+
+    <h2>Real capacitors</h2>
+    <h3>The main types</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Typical range</th><th>Polarised?</th><th>Good for</th><th>Watch out for</th></tr>
+      <tr><td>Ceramic C0G/NP0</td><td>1 pF – ~10 nF</td><td>No</td><td>Timing, filters, RF: very stable</td><td>Small values only</td></tr>
+      <tr><td>Ceramic X7R/X5R (MLCC)</td><td>1 nF – 100 µF</td><td>No</td><td>Decoupling, general use</td><td>Capacitance falls with DC voltage and temperature; cracks if the board flexes</td></tr>
+      <tr><td>Film (polyester, polypropylene)</td><td>1 nF – tens of µF</td><td>No</td><td>Audio, timing, snubbers, AC use</td><td>Physically large</td></tr>
+      <tr><td>Aluminium electrolytic</td><td>0.1 µF – 100,000 µF</td><td>Yes</td><td>Bulk smoothing in power supplies</td><td>Polarity, ESR, drying out with heat and age</td></tr>
+      <tr><td>Tantalum</td><td>0.1 µF – ~1,000 µF</td><td>Yes</td><td>Compact, stable bulk capacitance</td><td>Can fail short and burn if over-voltaged or reversed</td></tr>
+      <tr><td>Supercapacitor (EDLC)</td><td>0.1 F – thousands of F</td><td>Usually marked</td><td>Memory backup, short bursts of power</td><td>Low voltage per cell (~2.5–3 V), higher leakage</td></tr>
+    </table></div>
+    <h3>What a real capacitor adds to the ideal one</h3>
+    <ul>
+      <li><b>ESR (equivalent series resistance).</b> The foils, leads and electrolyte have resistance, modelled as a resistor in series. Ripple current through it makes heat: P = I<sub>ripple</sub>² × ESR. A general-purpose 1,000 µF electrolytic may have an ESR of the order of 0.1 Ω; "low-ESR" types made for switch-mode supplies have much less. As an electrolytic ages and its electrolyte dries, ESR rises, it heats more, and it ages faster still.</li>
+      <li><b>ESL (equivalent series inductance).</b> Leads and internal structure add a few nanohenries. Above a certain frequency (the self-resonant frequency) the capacitor behaves like an inductor. That is why decoupling capacitors must be small, close to the pin, with short tracks, and why designers sometimes combine a 10 µF and a 100 nF.</li>
+      <li><b>Leakage current.</b> No dielectric is perfect, so a small DC current leaks through. Ceramics and films leak almost nothing. Electrolytic datasheets often specify a maximum such as 0.01 × C × V µA (C in µF, V in volts) or 3 µA, whichever is larger, after a couple of minutes. For 1,000 µF at 25 V: up to 250 µA.</li>
+      <li><b>Voltage rating.</b> Never exceed it. A common habit is to choose an electrolytic rated about 1.5 to 2 times the working voltage (a 25 V part on a 12 V rail, a 35 V or 50 V part on 24 V). Tantalums are usually derated further.</li>
+      <li><b>DC bias effect in class 2 ceramics.</b> A 10 µF X5R ceramic in a small package may give only a fraction of its rated value with 5 V across it, sometimes less than half. Check the maker's DC-bias curve.</li>
+      <li><b>Temperature and life.</b> Electrolytics are rated for a number of hours at their maximum temperature (for example 2,000 h at 105 °C). A widely used rule of thumb is that life roughly doubles for every 10 °C cooler they run. A capacitor next to a hot heatsink dies first.</li>
+    </ul>
+    <h3>Why electrolytics are polarised</h3>
+    <figure>
+      <svg viewBox="0 0 600 230" role="img" aria-label="Cross-section of an aluminium electrolytic capacitor: etched anode foil, thin oxide dielectric, electrolyte-soaked paper, cathode foil">
+        <rect class="f-grey" x="40" y="30" width="360" height="45" opacity="0.7"/>
+        <path class="f-accent" d="M40 75 L60 75 L65 88 L75 75 L95 75 L100 90 L110 75 L135 75 L140 86 L150 75 L175 75 L180 90 L190 75 L215 75 L220 87 L230 75 L255 75 L260 90 L270 75 L295 75 L300 86 L310 75 L335 75 L340 90 L350 75 L375 75 L380 88 L390 75 L400 75 L400 80 L390 80 L380 94 L370 80 L350 80 L340 96 L330 80 L310 80 L300 92 L290 80 L270 80 L260 96 L250 80 L230 80 L220 93 L210 80 L190 80 L180 96 L170 80 L150 80 L140 92 L130 80 L110 80 L100 96 L90 80 L75 80 L65 94 L55 80 L40 80 Z"/>
+        <rect class="f-theory-soft s-thin" x="40" y="96" width="360" height="60"/>
+        <rect class="f-grey" x="40" y="156" width="360" height="30" opacity="0.7"/>
+        <text class="t t-small t-bold" x="414" y="56">anode foil (+), aluminium,</text><text class="t t-small" x="414" y="72">surface etched for area</text>
+        <text class="t t-small t-accent t-bold" x="414" y="92">oxide layer: the dielectric,</text><text class="t t-small t-accent" x="414" y="108">nanometres thick</text>
+        <text class="t t-small t-bold" x="414" y="134">paper soaked in electrolyte:</text><text class="t t-small" x="414" y="150">the real "− plate"</text>
+        <text class="t t-small t-bold" x="414" y="178">cathode foil (−)</text>
+        <text class="t t-small t-muted" x="40" y="214">The oxide is grown electrochemically on the + foil. Reverse voltage drives that chemistry backwards.</text>
+      </svg>
+      <figcaption>Figure 4. Inside an aluminium electrolytic (not to scale). The dielectric is an oxide only nanometres thick (roughly 1–1.5 nm per volt of rating), on a foil etched to multiply its surface area. Thin d and huge A give a large C in a small can.</figcaption>
+    </figure>
+    <p>The dielectric in an aluminium electrolytic is aluminium oxide that is grown on the anode foil by passing current in one direction through the electrolyte ("forming"). With the correct polarity, the same chemistry keeps the oxide healthy. With reverse voltage, the chemistry runs backwards: the oxide is attacked, leakage current rises sharply, the electrolyte heats and makes gas, the can bulges, and the scored vent on top splits open. A larger reverse voltage can make it burst. So the − stripe on the can and the shorter lead must go to the more negative point. (Bipolar or "non-polarised" electrolytics are two capacitors back-to-back inside one can.)</p>
+    <div class="callout job"><span class="label">On the job</span><p>Swollen or leaking electrolytic capacitors are one of the most common reasons a 12 V CCTV power supply, a DVR or NVR, a network switch or a plug-pack stops working, especially in hot ceiling spaces and outdoor enclosures. Typical signs: the supply output has excess ripple or sags under load, devices reboot randomly, or the unit will not start. You will usually swap the whole power supply on site, but recognising a domed capacitor top tells you why it failed and that the location runs too hot.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>When you replace an electrolytic, match or exceed the capacitance, voltage rating and temperature rating (105 °C rather than 85 °C), and use a low-ESR type in switch-mode supplies. Fit it with the stripe (−) the same way as the original. Mark the board orientation before you remove the old one.</p></div>
+
+    <h2>Supercapacitors</h2>
+    <p>A <b>supercapacitor</b> (electric double-layer capacitor, EDLC) pushes C = εA/d to the extreme. The electrodes are activated carbon, a sponge-like material with a surface area of the order of 1,000–2,000 square metres per gram. When a voltage is applied, ions in the electrolyte line up against the carbon surface, forming a "double layer" with a charge separation d of well under a nanometre. Enormous A and tiny d give capacitances of farads to thousands of farads in a small can.</p>
+    <p>The cost is voltage: the electrolyte starts to break down above about 2.5–3 V per cell. Higher-voltage modules put cells in series, with balancing circuits so each cell shares the voltage evenly.</p>
+    <p>Compare energy. A 100 F, 2.7 V cell stores ½ × 100 × 2.7² ≈ 365 J ≈ 0.1 Wh. An AA alkaline cell stores about 3 Wh (<a href="t03-power-energy-heat.html">T03</a>), about 30 times more. But the supercapacitor can be charged or discharged in seconds, at high current, for hundreds of thousands of cycles, which a battery cannot. Uses: keeping a real-time clock or memory alive during power cuts, buffering bursts of current for radios and motors, energy harvesting, and regenerative braking in some buses and trams.</p>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p07-capacitors-rc.html">Practice P07 · Capacitors: watch an RC charge, smooth a rectifier and decouple a chip</a>
+    <a class="crosslink" href="../practice/p09-555-timer.html">Practice P09 · The 555 timer: timing set by RC</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Power supplies: bulk capacitors, ripple and ESR</a>
+    <a class="crosslink" href="../practice/p15-oscilloscope-logic-analyser.html">Practice P15 · Oscilloscope: measure τ directly on screen</a>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · Diodes and rectifiers: the smoothing capacitor after a bridge</a>
+    <div class="callout aus"><span class="label">In Australia</span><p>Assorted electrolytic, ceramic and film capacitor kits are sold by Jaycar, Altronics, Core Electronics and element14 (~A$10–25). A cheap component tester or a multimeter with a capacitance range (~A$30–60) measures values and, on some models, ESR. Keep all experiments at extra-low voltage; do not salvage capacitors from mains equipment or camera flashes.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Two plates of 20 cm × 20 cm are 0.5 mm apart in air. What is the capacitance? What if the gap is filled with polyester (ε<sub>r</sub> = 3.3)?</summary><div class="answer"><p>A = 0.04 m². C = 8.854 × 10⁻¹² × 0.04 / 0.0005 ≈ 708 pF. With polyester: 3.3 × 708 ≈ 2.3 nF.</p></div></details>
+    <details class="quiz"><summary>Why does inserting a dielectric increase capacitance, in terms of charges?</summary><div class="answer"><p>The field polarises the dielectric: its molecules become aligned dipoles. Bound charges appear on its surfaces, opposite in sign to the nearby plate charge, and partly cancel the field. For the same plate charge Q, the field and therefore the voltage are smaller, so C = Q/V is larger by the factor ε<sub>r</sub>.</p></div></details>
+    <details class="quiz"><summary>How much energy is stored in a 2,200 µF capacitor at 12 V? And at 24 V?</summary><div class="answer"><p>½ × 2.2 × 10⁻³ × 144 ≈ 0.16 J. At 24 V: ½ × 2.2 × 10⁻³ × 576 ≈ 0.63 J, four times as much, because energy goes as V².</p></div></details>
+    <details class="quiz"><summary>R = 47 kΩ and C = 10 µF charge from a 5 V supply. What is τ, and what is the voltage after 1 s?</summary><div class="answer"><p>τ = 47,000 × 10 × 10⁻⁶ = 0.47 s. After 1 s, t/τ = 2.13, so v = 5 × (1 − e<sup>−2.13</sup>) = 5 × (1 − 0.119) ≈ 4.4 V.</p></div></details>
+    <details class="quiz"><summary>At the instant a switch connects an empty capacitor through 1 kΩ to 12 V, what is the current? Why?</summary><div class="answer"><p>12 mA. An empty capacitor has 0 V across it at that instant, so the full 12 V is across the resistor: I = 12/1,000. The current then falls exponentially as the capacitor voltage rises.</p></div></details>
+    <details class="quiz"><summary>What is the reactance of a 100 nF capacitor at 50 Hz and at 100 kHz? What does that tell you about decoupling?</summary><div class="answer"><p>X<sub>C</sub> = 1/(2πfC): about 31.8 kΩ at 50 Hz and 15.9 Ω at 100 kHz. It is almost an open circuit to slow changes and a low impedance to fast ones, so it shunts fast current spikes to ground locally while leaving the DC supply alone. (At very high frequencies its ESL limits this.)</p></div></details>
+    <details class="quiz"><summary>When you charge a capacitor from a fixed supply through a resistor, what fraction of the energy from the supply ends up stored? Does R matter?</summary><div class="answer"><p>Exactly half; the other half becomes heat in the resistor. R does not matter: a smaller R gives larger current for a shorter time, and the total heat is the same ½CV₀².</p></div></details>
+    <details class="quiz"><summary>Why can reversing an aluminium electrolytic make it bulge or vent?</summary><div class="answer"><p>Its dielectric is an oxide layer formed electrochemically on the anode. Reverse voltage drives that chemistry backwards, damaging the oxide. Leakage current then rises sharply, heating the electrolyte and producing gas, which builds pressure until the can bulges or the vent opens.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can derive C = εA/d from the field between parallel plates.</span></li>
+      <li><input type="checkbox"><span>I can explain polarisation and why a dielectric raises capacitance and sets a voltage rating.</span></li>
+      <li><input type="checkbox"><span>I can derive W = ½CV² and say where the energy is stored.</span></li>
+      <li><input type="checkbox"><span>I can derive v = V₀(1 − e<sup>−t/RC</sup>) and use τ = RC to predict charge and discharge times.</span></li>
+      <li><input type="checkbox"><span>I can calculate reactance and explain "blocks DC, passes AC" without saying electrons cross the gap.</span></li>
+      <li><input type="checkbox"><span>I can choose a capacitor type, voltage rating and temperature rating for a job.</span></li>
+      <li><input type="checkbox"><span>I can explain ESR, leakage and why electrolytics are polarised, and recognise a failed one.</span></li>
+      <li><input type="checkbox"><span>I can discharge a capacitor safely and compare a supercapacitor's energy with a battery's.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

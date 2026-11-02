@@ -151,8 +151,8 @@
         <text class="t" x="190" y="139" text-anchor="end">GND</text>
         <rect class="f-wash s-line" x="440" y="20" width="160" height="130" rx="8"/>
         <text class="t t-bold" x="520" y="44" text-anchor="middle">Board B</text>
-        <text class="t" x="450" y="74">RX (D10)</text>
-        <text class="t" x="450" y="109">TX (D11)</text>
+        <text class="t" x="450" y="74">TX (D11)</text>
+        <text class="t" x="450" y="109">RX (D10)</text>
         <text class="t" x="450" y="139">GND</text>
         <path class="s-accent" d="M200 70 C300 70 340 105 440 105"/>
         <path class="s-blue" d="M200 105 C300 105 340 70 440 70"/>
@@ -198,8 +198,8 @@ void loop() {
       <svg viewBox="0 0 680 250" role="img" aria-label="I2C bus with pull-up resistors, a controller and three devices">
         <text class="t t-small" x="100" y="20" text-anchor="middle">5 V or 3.3 V</text>
         <line class="s-line" x1="70" y1="26" x2="200" y2="26"/>
-        <path class="s-accent" d="M110 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v38"/>
-        <path class="s-accent" d="M160 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v68"/>
+        <path class="s-accent" d="M110 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v42"/>
+        <path class="s-accent" d="M160 26 v6 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4 v72"/>
         <text class="t t-small t-accent" x="62" y="62" text-anchor="end">4.7 kΩ</text>
         <text class="t t-small t-accent" x="176" y="56">4.7 kΩ</text>
         <line class="s-blue" x1="40" y1="110" x2="650" y2="110"/>
@@ -271,7 +271,7 @@ void loop() {}                              // nothing to repeat</code></pre>
     <h2>SPI: fast, simple, more wires</h2>
     <p><b>SPI</b> (serial peripheral interface) uses four wires: <b>SCK</b> (clock, from the controller), <b>MOSI</b> (controller out, peripheral in; also called COPI), <b>MISO</b> (controller in, peripheral out; also called CIPO), and one <b>CS</b> (chip select, also called SS) per device. CS is <b>active LOW</b>: the controller pulls one device's CS low to talk to it, and the others ignore the bus. Data goes both ways at once, one bit in each direction per clock. Lines are actively driven both HIGH and LOW (no pull-ups), so SPI can run at many megahertz.</p>
     <figure>
-      <svg viewBox="0 0 680 230" role="img" aria-label="SPI controller with two peripherals sharing SCK, MOSI and MISO, each with its own chip select">
+      <svg viewBox="0 0 680 245" role="img" aria-label="SPI controller with two peripherals sharing SCK, MOSI and MISO, each with its own chip select">
         <rect class="f-accent-soft s-accent" x="20" y="40" width="140" height="160" rx="8"/>
         <text class="t t-bold" x="90" y="30" text-anchor="middle">Uno (controller)</text>
         <text class="t t-small" x="150" y="74" text-anchor="end">D13 SCK</text>
@@ -308,7 +308,7 @@ void loop() {}                              // nothing to repeat</code></pre>
         <text class="t t-small" x="10" y="54">A</text>
         <text class="t t-small" x="10" y="104">B</text>
         <polyline class="s-blue" points="40,40 120,40 120,80 220,80 220,40 300,40 300,80 380,80 380,40 600,40"/>
-        <polyline class="s-amber" points="40,80 120,80 120,40 220,40 220,80 300,80 300,40 380,80 380,80 600,80"/>
+        <polyline class="s-amber" points="40,80 120,80 120,40 220,40 220,80 300,80 300,40 380,40 380,80 600,80"/>
         <path class="s-red" d="M440 28 l6 20 l6 -30 l6 34 l6 -24 l6 10"/>
         <text class="t t-small t-red" x="480" y="30">noise spike hits</text>
         <text class="t t-small t-red" x="480" y="46">both wires equally</text>
@@ -496,7 +496,7 @@ void loop() {}                              // nothing to repeat</code></pre>
         var rl; if(fc===3||fc===4) rl=5+2*q; else if(fc===1||fc===2) rl=5+Math.ceil(q/8); else rl=8;
         $('p14-rl').textContent=(sa===0?'none (broadcast)':rl+' bytes'+((fc<=4&&((fc>=3&&q>125)||(fc<=2&&q>2000)))?' (too many!)':''));
         var base={1:1,2:10001,3:40001,4:30001,5:1,6:40001}[fc];
-        $('p14-cn').textContent=(ad+base<=(base+9998))?String(ad+base):'(6-digit) '+(fc===3||fc===6?400001:(fc===4?300001:(fc===2?100001:1))+ad);
+        $('p14-cn').textContent=(ad+base<=(base+9998))?String(ad+base):'(6-digit) '+(((fc===3||fc===6)?400001:(fc===4?300001:(fc===2?100001:1)))+ad);
       }
       function conv(){
         var n=+$('p14-rn').value, t='', six=n>99999;
