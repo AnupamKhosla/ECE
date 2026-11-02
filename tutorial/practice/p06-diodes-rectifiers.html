@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P06 · Diodes on the bench: rectifiers and protection</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
+    <span class="eyebrow">Practice · Lab P06</span>
+    <h1>Diodes on the bench: rectifiers and protection</h1>
+    <p class="lede">By the end of this lab you will test a diode with your meter, watch an LED flicker at 50 Hz on a low-voltage AC plug-pack, turn AC into DC with one diode and then with a bridge, predict every reading before you take it, protect a circuit from reversed wires, and design a Zener regulator.</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Beginner+</span><span><b>Kit cost</b> ~A$35 (plus the AC plug-pack)</span><span><b>Theory</b> T11, T11+, T07</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>AC plug-pack, 9–12 V AC, 0.5–1 A</b><small>~A$20–30 · Jaycar or Altronics. It must say "AC" on the label and output. A DC plug-pack will not show you AC.</small></li>
+      <li><b>1N4007 rectifier diodes ×10</b><small>~A$2 · 1 A, 1000 V, black body with a grey band</small></li>
+      <li><b>1N4148 small-signal diodes ×5</b><small>~A$1 · glass body, black band</small></li>
+      <li><b>1N5819 Schottky diodes ×2</b><small>~A$1 · 1 A, low forward drop</small></li>
+      <li><b>Bridge rectifier module, 1–2 A</b><small>~A$1–3 · small round or 4-pin inline package marked ~ ~ + −</small></li>
+      <li><b>5.1 V Zener diodes ×3</b><small>~A$1 · 1 W type (1N4733A) or 0.5 W type</small></li>
+      <li><b>LEDs, mixed colours, 5 mm</b><small>~A$5 for a bag: red, green, yellow, blue, white, plus one infrared if you can</small></li>
+      <li><b>Resistors</b><small>220 Ω, 470 Ω, 1 kΩ (0.5 W if you have it), 1.5 kΩ, 10 kΩ</small></li>
+      <li><b>9 V battery and snap</b><small>~A$6 · for the Zener lab</small></li>
+      <li><b>Screw-terminal or barrel adaptor</b><small>~A$3 · to get the plug-pack wires into the breadboard without cutting the plug</small></li>
+      <li><b>Multimeter with diode test</b><small>Your meter from P03</small></li>
+      <li><b>Phone with slow-motion video</b><small>Any phone that films at 120 or 240 frames per second</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety: stay on the low-voltage side</span><p>The plug-pack is a factory-sealed, approved appliance. You plug it into the wall and work only on its thin low-voltage output lead. Never open a plug-pack, never wire a bare transformer to 230 V, and never measure inside anything mains-powered. In Australia, mains wiring is legally limited to licensed electricians. A 12 V AC plug-pack peaks near 17–20 V, which is well inside the extra-low-voltage (ELV) limit of 50 V AC.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Plug-packs sold here must meet the Electrical Equipment Safety System and should carry the RCM mark (a tick inside a triangle). Cheap no-name AC adaptors from overseas marketplaces sometimes do not. Buy the AC plug-pack locally from Jaycar or Altronics. AC plug-packs are less common than they were, so ask for "AC output plugpack" or "AC adaptor". If your state regulator publishes recalls, check them; rules and enforcement differ by state, so confirm with your state's electrical safety regulator.</p></div>
+
+    <h2>1 · Read a diode with your meter</h2>
+    <p>A diode lets conventional current flow one way only: from the <b>anode</b> (A) to the <b>cathode</b> (K). On the part, the cathode end has a painted band. On the symbol, the cathode is the bar, and the triangle points the way current is allowed to flow.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="A 1N4007 diode body with its cathode band, the diode symbol, and two meter readings">
+        <defs><marker id="p6-arr1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="24">The part (1N4007)</text>
+        <line class="s-line" x1="30" y1="62" x2="110" y2="62"/>
+        <rect class="f-ink" x="110" y="48" width="90" height="28" rx="5"/>
+        <rect class="f-grey" x="180" y="48" width="12" height="28"/>
+        <line class="s-line" x1="200" y1="62" x2="280" y2="62"/>
+        <text class="t t-small" x="30" y="96">anode (A)</text>
+        <text class="t t-small" x="170" y="96">cathode (K) = band end</text>
+        <text class="t t-bold" x="20" y="134">The symbol</text>
+        <line class="s-line" x1="30" y1="172" x2="132" y2="172"/>
+        <polygon class="f-ink" points="132,156 132,188 160,172"/>
+        <line class="s-line" x1="160" y1="154" x2="160" y2="190"/>
+        <line class="s-line" x1="160" y1="172" x2="280" y2="172"/>
+        <text class="t t-bold" x="112" y="152">A</text>
+        <text class="t t-bold" x="168" y="152">K</text>
+        <path class="s-red" d="M100 214 h110" marker-end="url(#p6-arr1)"/>
+        <text class="t t-small t-red" x="96" y="234">conventional current flows A → K</text>
+        <rect class="f-wash s-thin" x="340" y="30" width="270" height="80" rx="8"/>
+        <text class="t t-small t-muted" x="356" y="54">Diode test: red probe on A, black on K</text>
+        <text class="t t-bold" x="356" y="90" style="font-size:26px">0.55–0.65 V</text>
+        <rect class="f-wash s-thin" x="340" y="130" width="270" height="80" rx="8"/>
+        <text class="t t-small t-muted" x="356" y="154">Probes swapped (red on K)</text>
+        <text class="t t-bold" x="356" y="190" style="font-size:26px">OL</text>
+        <text class="t t-small t-muted" x="460" y="190">"open loop": no current</text>
+      </svg>
+      <figcaption>Figure 1. The band marks the cathode. In diode-test mode the meter pushes about 1 mA through the part and shows the voltage across it, so a good silicon diode reads roughly 0.5–0.7 V one way and OL the other.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><p><b>Set the meter to diode test</b> (the symbol looks like the diode in Figure 1, often shared with continuity). Touch the probes together: it should read close to 0.000 and may beep.</p></li>
+      <li><p><b>Test a 1N4007 forward.</b> Red probe on the anode (plain end), black probe on the band. Expect about 0.55–0.65 V. Write your number down; you will use it later.</p></li>
+      <li><p><b>Reverse it.</b> Swap the probes. Expect <code>OL</code>. A good diode blocks.</p></li>
+      <li><p><b>Test a 1N4148 and a 1N5819.</b> The 1N4148 reads about the same as the 1N4007 (both silicon p–n junctions). The 1N5819 Schottky reads lower, about 0.15–0.30 V at this tiny current. That is why Schottkys are used where every tenth of a volt matters.</p></li>
+      <li><p><b>Test the LEDs.</b> Red probe on the long leg (anode). A red LED usually reads about 1.6–1.9 V and may glow faintly. Blue and white LEDs need 2.6–3 V. Some meters cannot push that much, so they show <code>OL</code> even for a good blue LED. That is a meter limit, not a dead LED.</p></li>
+      <li><p><b>Find the bad-diode signatures.</b> A shorted diode reads near 0 V both ways (and the meter beeps). An open diode reads <code>OL</code> both ways. A leaky diode reads something both ways. Shorted is the common failure in rectifiers after a surge.</p></li>
+    </ol>
+
+    <h3>Expected readings: diode test</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Part</th><th>Forward (red on anode)</th><th>Reverse</th><th>If it's way off</th></tr>
+      <tr><td>1N4007 silicon rectifier</td><td>0.55–0.65 V</td><td>OL</td><td>~0 V both ways: shorted. OL both ways: open.</td></tr>
+      <tr><td>1N4148 signal diode</td><td>0.55–0.70 V</td><td>OL</td><td>Same as above</td></tr>
+      <tr><td>1N5819 Schottky</td><td>0.15–0.30 V</td><td>OL (may show a small reading: Schottkys leak more)</td><td>Reads like silicon? It is not a Schottky.</td></tr>
+      <tr><td>Red LED</td><td>1.6–1.9 V, faint glow</td><td>OL</td><td>Reversed legs, or a dead LED</td></tr>
+      <tr><td>Blue or white LED</td><td>2.5–3.0 V or OL</td><td>OL</td><td>OL forward is often just the meter's limit</td></tr>
+      <tr><td>Bridge module, ~ to + (two pairs)</td><td>0.5–0.65 V</td><td>OL</td><td>Each of the 4 internal diodes can be tested this way</td></tr>
+    </table></div>
+
+    <div class="callout why"><span class="label">Why it works</span><p>Joining p-type and n-type silicon leaves a thin depletion layer with a built-in voltage across it, about 0.7 V for silicon. Forward bias pushes against that barrier and current rises steeply once you approach it. Reverse bias makes the barrier taller, so almost no current flows. A Schottky uses a metal–semiconductor junction with a lower barrier, so it turns on at a lower voltage. The LED's higher voltage comes from its wider band gap, which is also what sets its colour.</p></div>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family</a>
+    <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Theory T11+ · Deep dive: why a diode has polarity</a>
+
+    <h2>2 · An LED on AC: see 50 Hz with your own eyes</h2>
+    <p>Mains in Australia alternates at 50 Hz: 50 full cycles per second. The plug-pack's transformer steps it down, but the frequency stays at 50 Hz. If you drive an LED from that low-voltage AC, it can only light on the half-cycle that forward-biases it. So it switches on and off 50 times every second. Your eyes blur that into steady light, but a phone can catch it.</p>
+
+    <h3>The circuit and the numbers</h3>
+    <p>First measure your plug-pack with the meter on <b>V AC</b>. A "12 V AC" plug-pack often reads 13–15 V with no load, because a simple transformer's rated voltage is at full load. Use your measured number.</p>
+    <div class="formula">V<sub>peak</sub> = 1.414 × V<sub>rms</sub> = 1.414 × 12 ≈ 17 V
+      <small>The meter's AC reading is the RMS value (the "heating-equivalent" value). A sine wave's peak is √2 ≈ 1.414 times bigger. The LED and resistor see the peak, so design for the peak.</small></div>
+    <div class="formula">I<sub>peak</sub> = (V<sub>peak</sub> − V<sub>LED</sub>) / R = (17 − 2) / 1000 = 15 mA
+      <small>15 mA at the very top of each wave is safe for a 5 mm LED rated at 20 mA. The average current is much lower, about 4–5 mA, because the LED is off half the time and below peak most of the rest.</small></div>
+    <p>The resistor is in the circuit for both half-cycles, so it sees nearly the full 12 V RMS: P ≈ 11² / 1000 ≈ 0.12 W. A 0.25 W resistor survives but runs warm; a 0.5 W resistor or a 1.5 kΩ value runs cool.</p>
+    <p>There is one more problem. On the reverse half-cycle, the LED would see about 17 V backwards. Most LEDs are only rated for <b>5 V reverse</b>. So we put an ordinary diode <b>anti-parallel</b> across the LED: same two points, pointing the opposite way. On the reverse half-cycle that diode conducts and holds the LED's reverse voltage to about 0.7 V.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="AC plug-pack, 1 kilohm resistor, LED and an anti-parallel protection diode">
+        <defs>
+          <marker id="p6-arrR" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="p6-arrB" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="p6-arrL" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-amber" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- source -->
+        <circle class="s-line f-panel" cx="80" cy="135" r="28"/>
+        <path class="s-line" d="M62 135 C68 118, 74 118, 80 135 S92 152, 98 135"/>
+        <path class="s-line" d="M80 107 V50 H190"/>
+        <path class="s-line" d="M190 50 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10"/>
+        <path class="s-line" d="M262 50 H470 V115"/>
+        <path class="s-line" d="M330 50 V115"/>
+        <path class="s-line" d="M80 163 V220 H470 V137"/>
+        <path class="s-line" d="M330 137 V220"/>
+        <!-- LED pointing down -->
+        <polygon class="f-red" points="318,115 342,115 330,137"/>
+        <line class="s-line" x1="318" y1="137" x2="342" y2="137"/>
+        <path class="s-amber" d="M314 118 l-16 -10" marker-end="url(#p6-arrL)"/>
+        <path class="s-amber" d="M314 130 l-16 -10" marker-end="url(#p6-arrL)"/>
+        <!-- protection diode pointing up -->
+        <polygon class="f-ink" points="458,137 482,137 470,115"/>
+        <line class="s-line" x1="458" y1="115" x2="482" y2="115"/>
+        <circle class="f-ink" cx="330" cy="50" r="3.5"/><circle class="f-ink" cx="330" cy="220" r="3.5"/>
+        <!-- labels -->
+        <text class="t t-small" x="30" y="190">9–12 V AC</text>
+        <text class="t t-small" x="30" y="206">plug-pack</text>
+        <text class="t t-small" x="196" y="30">1 kΩ, 0.5 W</text>
+        <text class="t t-small" x="352" y="122">LED</text>
+        <text class="t t-small" x="352" y="138">(anode up)</text>
+        <text class="t t-small" x="492" y="122">1N4148 or</text>
+        <text class="t t-small" x="492" y="138">1N4007</text>
+        <text class="t t-small t-muted" x="492" y="154">(reverse guard)</text>
+        <path class="s-red" d="M120 72 h50" marker-end="url(#p6-arrR)"/>
+        <text class="t t-small t-red" x="110" y="90">top wire +: LED lights</text>
+        <path class="s-blue" d="M420 240 h-50" marker-end="url(#p6-arrB)"/>
+        <text class="t t-small t-blue" x="300" y="260">bottom wire +: guard diode conducts, LED dark</text>
+      </svg>
+      <figcaption>Figure 2. LED on low-voltage AC. On one half-cycle (red) current flows through the LED. On the other (blue) it flows through the guard diode, which keeps the LED's reverse voltage near 0.7 V instead of 17 V.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><p><b>Build it unpowered.</b> Plug-pack output to a screw-terminal adaptor, then into the breadboard rails. Resistor in series with the top wire. LED and guard diode across the bottom of the resistor and the other wire, pointing opposite ways.</p></li>
+      <li><p><b>Power up and look.</b> The LED lights, maybe a little dimmer than on DC with the same resistor (it is only on part of the time).</p></li>
+      <li><p><b>Wave it.</b> In a dim room, move the breadboard quickly from side to side, or flick your eyes past the LED. You see a dotted line instead of a smooth streak. Each dot is one 10 ms "on" pulse.</p></li>
+      <li><p><b>Film it in slow motion.</b> Set the phone to slow-mo (120 or 240 frames per second) and film the LED close up. At 240 fps you get about 4–5 frames per 20 ms cycle, so on playback the LED visibly blinks on and off. Even normal video often shows dark bands rolling across the LED: that is the camera's line-by-line (rolling) shutter catching the flicker.</p></li>
+      <li><p><b>Measure.</b> Meter on V AC across the plug-pack: about 12–15 V. Meter on V DC across the LED: a small, odd number. A DC meter averages, and the LED voltage is +2 V for half the cycle and −0.7 V for the other half, so you get something like 0.5–0.8 V. That number is not wrong; it is an average of a shape the meter was not designed for.</p></li>
+    </ol>
+
+    <div class="callout try"><span class="label">Try this: a two-colour AC indicator</span><p>Replace the guard diode with a second LED of a different colour, also anti-parallel. Now a red LED lights on one half-cycle and a green one on the other, each protecting the other. On DC only one colour lights, which way round depends on polarity. Film it in slow motion: the two colours alternate. This is how some "AC/DC present" indicator lamps work.</p></div>
+
+    <h2>3 · Half-wave rectifier: one diode</h2>
+    <p>A <b>rectifier</b> turns AC into DC that flows one way. The simplest version is a single diode in series with the load. It passes the positive half-cycles and blocks the negative ones.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Half-wave rectifier: AC source, 1N4007 diode, 1 kilohm load resistor and a meter">
+        <circle class="s-line f-panel" cx="80" cy="125" r="28"/>
+        <path class="s-line" d="M62 125 C68 108, 74 108, 80 125 S92 142, 98 125"/>
+        <path class="s-line" d="M80 97 V50 H220"/>
+        <polygon class="f-ink" points="220,34 220,66 248,50"/>
+        <line class="s-line" x1="248" y1="32" x2="248" y2="68"/>
+        <path class="s-line" d="M248 50 H400 V90"/>
+        <path class="s-line" d="M400 90 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-10 6 V200"/>
+        <path class="s-line" d="M80 153 V200 H520"/>
+        <path class="s-line" d="M400 50 H520 V100"/>
+        <circle class="s-line f-panel" cx="520" cy="125" r="24"/>
+        <text class="t t-bold" x="512" y="131">V</text>
+        <path class="s-line" d="M520 149 V200"/>
+        <circle class="f-ink" cx="400" cy="50" r="3.5"/><circle class="f-ink" cx="400" cy="200" r="3.5"/>
+        <!-- ground -->
+        <path class="s-line" d="M300 200 V216 M284 216 H316 M290 223 H310 M296 230 H304"/>
+        <text class="t t-small" x="30" y="185">12 V AC</text>
+        <text class="t t-small" x="200" y="88">1N4007</text>
+        <text class="t t-small" x="418" y="132">1 kΩ load</text>
+        <text class="t t-small" x="552" y="120">meter on</text>
+        <text class="t t-small" x="552" y="136">V DC</text>
+        <text class="t t-small" x="400" y="40">+</text>
+        <text class="t t-small t-muted" x="322" y="236">0 V (call this ground)</text>
+      </svg>
+      <figcaption>Figure 3. Half-wave rectifier. The 1 kΩ load matters: with no load, the diode's tiny leakage and the meter's own input can give confusing readings.</figcaption>
+    </figure>
+
+    <h3>Predict before you measure</h3>
+    <p>Two ideas give you every number.</p>
+    <ul>
+      <li><b>Peak:</b> the output peak is the AC peak minus one diode drop. With 12 V AC: 17.0 − 0.7 ≈ 16.3 V.</li>
+      <li><b>What the DC meter shows:</b> a DC meter shows the <b>average</b> voltage over time, not the peak. A half-wave output is a hump for 10 ms then zero for 10 ms. The average of one sine hump is 2/π of its peak, and it is "on" only half the time, so the average is 1/π ≈ 0.318 of the peak.</li>
+    </ul>
+    <div class="formula">V<sub>DC meter</sub> ≈ V<sub>peak,out</sub> / π = 16.3 / 3.14 ≈ 5.2 V
+      <small>The load "feels" pulses up to 16 V, but the meter averages them to about 5 V. Neither number is the 12 V written on the plug-pack. Learn to ask "which 12 V?" whenever someone quotes an AC voltage.</small></div>
+
+    <h2>4 · Full-wave bridge rectifier: four diodes</h2>
+    <p>The half-wave rectifier wastes every second half-cycle. A <b>bridge</b> of four diodes steers both half-cycles through the load in the same direction. On each half-cycle, two diodes conduct and two block. Current always goes through two diodes in series, so you lose two diode drops (about 1.4 V) instead of one.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 320" role="img" aria-label="Bridge rectifier: four diodes in a diamond, AC on the left and right corners, DC plus at the top and minus at the bottom">
+        <path class="s-line" d="M230 140 L320 50 L410 140 L320 230 Z"/>
+        <g transform="translate(275,95) rotate(-45)"><polygon class="f-red" points="-11,-11 -11,11 11,0"/><line class="s-line" x1="11" y1="-12" x2="11" y2="12"/></g>
+        <g transform="translate(365,95) rotate(-135)"><polygon class="f-blue" points="-11,-11 -11,11 11,0"/><line class="s-line" x1="11" y1="-12" x2="11" y2="12"/></g>
+        <g transform="translate(275,185) rotate(-135)"><polygon class="f-blue" points="-11,-11 -11,11 11,0"/><line class="s-line" x1="11" y1="-12" x2="11" y2="12"/></g>
+        <g transform="translate(365,185) rotate(-45)"><polygon class="f-red" points="-11,-11 -11,11 11,0"/><line class="s-line" x1="11" y1="-12" x2="11" y2="12"/></g>
+        <text class="t t-small t-bold" x="240" y="88">D1</text>
+        <text class="t t-small t-bold" x="384" y="88">D2</text>
+        <text class="t t-small t-bold" x="240" y="206">D3</text>
+        <text class="t t-small t-bold" x="384" y="206">D4</text>
+        <!-- AC source -->
+        <circle class="s-line f-panel" cx="80" cy="170" r="26"/>
+        <path class="s-line" d="M63 170 C69 154, 74 154, 80 170 S91 186, 97 170"/>
+        <path class="s-line" d="M80 144 V140 H230"/>
+        <path class="s-line" d="M80 196 V295 H470 V140 H410"/>
+        <!-- DC out -->
+        <path class="s-line" d="M320 50 V24 H570 V110"/>
+        <path class="s-line" d="M570 110 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-10 6 V270"/>
+        <path class="s-line" d="M320 230 V270 H462 a8 8 0 0 1 16 0 H570"/>
+        <circle class="f-ink" cx="230" cy="140" r="3.5"/><circle class="f-ink" cx="410" cy="140" r="3.5"/>
+        <circle class="f-ink" cx="320" cy="50" r="3.5"/><circle class="f-ink" cx="320" cy="230" r="3.5"/>
+        <text class="t t-bold" x="206" y="132">~</text>
+        <text class="t t-bold" x="420" y="132">~</text>
+        <text class="t t-bold" x="328" y="44">+</text>
+        <text class="t t-bold" x="330" y="252">−</text>
+        <text class="t t-small" x="30" y="220">12 V AC</text>
+        <text class="t t-small" x="588" y="146">1 kΩ</text>
+        <text class="t t-small" x="588" y="162">load</text>
+        <text class="t t-small t-red" x="40" y="40">Red pair (D1, D4): left wire positive</text>
+        <text class="t t-small t-blue" x="40" y="60">Blue pair (D2, D3): right wire positive</text>
+        <text class="t t-small t-muted" x="490" y="290">wires cross, not joined</text>
+      </svg>
+      <figcaption>Figure 4. Bridge rectifier. Follow the red pair: left AC wire → D1 → + → load → − → D4 → right AC wire. On the next half-cycle the blue pair carries the current, still from + to − through the load. The load never sees reversed current.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><p><b>Build the bridge from four 1N4007s</b> exactly as Figure 4 (bands toward the + corner for D1 and D2, bands toward the AC corners for D3 and D4). Or use a bridge module: its pins are marked ~, ~, + and −.</p></li>
+      <li><p><b>Check it unpowered.</b> Diode test from − to each ~ pin, and from each ~ pin to +: four readings of about 0.6 V. Reverse each: OL.</p></li>
+      <li><p><b>Add a 1 kΩ load</b> between + and −, then power up.</p></li>
+      <li><p><b>Measure V DC across the load.</b> Compare with the table below.</p></li>
+      <li><p><b>Swap the two AC wires.</b> The DC reading does not change sign. That is the whole point of a bridge: the output polarity no longer depends on how the input is connected.</p></li>
+    </ol>
+
+    <h3>See the shapes</h3>
+    <figure>
+      <svg viewBox="0 0 640 330" role="img" aria-label="Three waveforms over 40 milliseconds: AC sine, half-wave rectified, full-wave rectified, with dashed average lines">
+        <text class="t t-small t-bold" x="10" y="64">AC in</text>
+        <text class="t t-small t-bold" x="10" y="164">Half-wave</text>
+        <text class="t t-small t-bold" x="10" y="274">Full-wave</text>
+        <line class="s-thin" x1="90" y1="60" x2="615" y2="60"/>
+        <line class="s-thin" x1="90" y1="170" x2="615" y2="170"/>
+        <line class="s-thin" x1="90" y1="280" x2="615" y2="280"/>
+        <path class="s-blue" d="M90.0 60.0 L94.3 56.4 L98.7 52.9 L103.0 49.5 L107.3 46.2 L111.7 43.0 L116.0 40.0 L120.3 37.2 L124.7 34.7 L129.0 32.5 L133.3 30.6 L137.7 28.9 L142.0 27.7 L146.3 26.7 L150.7 26.2 L155.0 26.0 L159.3 26.2 L163.7 26.7 L168.0 27.7 L172.3 28.9 L176.7 30.6 L181.0 32.5 L185.3 34.7 L189.7 37.2 L194.0 40.0 L198.3 43.0 L202.7 46.2 L207.0 49.5 L211.3 52.9 L215.7 56.4 L220.0 60.0 L224.3 63.6 L228.7 67.1 L233.0 70.5 L237.3 73.8 L241.7 77.0 L246.0 80.0 L250.3 82.8 L254.7 85.3 L259.0 87.5 L263.3 89.4 L267.7 91.1 L272.0 92.3 L276.3 93.3 L280.7 93.8 L285.0 94.0 L289.3 93.8 L293.7 93.3 L298.0 92.3 L302.3 91.1 L306.7 89.4 L311.0 87.5 L315.3 85.3 L319.7 82.8 L324.0 80.0 L328.3 77.0 L332.7 73.8 L337.0 70.5 L341.3 67.1 L345.7 63.6 L350.0 60.0 L354.3 56.4 L358.7 52.9 L363.0 49.5 L367.3 46.2 L371.7 43.0 L376.0 40.0 L380.3 37.2 L384.7 34.7 L389.0 32.5 L393.3 30.6 L397.7 28.9 L402.0 27.7 L406.3 26.7 L410.7 26.2 L415.0 26.0 L419.3 26.2 L423.7 26.7 L428.0 27.7 L432.3 28.9 L436.7 30.6 L441.0 32.5 L445.3 34.7 L449.7 37.2 L454.0 40.0 L458.3 43.0 L462.7 46.2 L467.0 49.5 L471.3 52.9 L475.7 56.4 L480.0 60.0 L484.3 63.6 L488.7 67.1 L493.0 70.5 L497.3 73.8 L501.7 77.0 L506.0 80.0 L510.3 82.8 L514.7 85.3 L519.0 87.5 L523.3 89.4 L527.7 91.1 L532.0 92.3 L536.3 93.3 L540.7 93.8 L545.0 94.0 L549.3 93.8 L553.7 93.3 L558.0 92.3 L562.3 91.1 L566.7 89.4 L571.0 87.5 L575.3 85.3 L579.7 82.8 L584.0 80.0 L588.3 77.0 L592.7 73.8 L597.0 70.5 L601.3 67.1 L605.7 63.6 L610.0 60.0"/>
+        <path class="s-accent" d="M90.0 170.0 L94.3 169.4 L98.7 165.9 L103.0 162.5 L107.3 159.2 L111.7 156.0 L116.0 153.0 L120.3 150.2 L124.7 147.7 L129.0 145.5 L133.3 143.6 L137.7 141.9 L142.0 140.7 L146.3 139.7 L150.7 139.2 L155.0 139.0 L159.3 139.2 L163.7 139.7 L168.0 140.7 L172.3 141.9 L176.7 143.6 L181.0 145.5 L185.3 147.7 L189.7 150.2 L194.0 153.0 L198.3 156.0 L202.7 159.2 L207.0 162.5 L211.3 165.9 L215.7 169.4 L220.0 170.0 L350.0 170.0 L354.3 169.4 L358.7 165.9 L363.0 162.5 L367.3 159.2 L371.7 156.0 L376.0 153.0 L380.3 150.2 L384.7 147.7 L389.0 145.5 L393.3 143.6 L397.7 141.9 L402.0 140.7 L406.3 139.7 L410.7 139.2 L415.0 139.0 L419.3 139.2 L423.7 139.7 L428.0 140.7 L432.3 141.9 L436.7 143.6 L441.0 145.5 L445.3 147.7 L449.7 150.2 L454.0 153.0 L458.3 156.0 L462.7 159.2 L467.0 162.5 L471.3 165.9 L475.7 169.4 L480.0 170.0 L610.0 170.0"/>
+        <path class="s-accent" d="M90.0 280.0 L94.3 280.0 L98.7 277.9 L103.0 274.5 L107.3 271.2 L111.7 268.0 L116.0 265.0 L120.3 262.2 L124.7 259.7 L129.0 257.5 L133.3 255.6 L137.7 253.9 L142.0 252.7 L146.3 251.7 L150.7 251.2 L155.0 251.0 L159.3 251.2 L163.7 251.7 L168.0 252.7 L172.3 253.9 L176.7 255.6 L181.0 257.5 L185.3 259.7 L189.7 262.2 L194.0 265.0 L198.3 268.0 L202.7 271.2 L207.0 274.5 L211.3 277.9 L215.7 280.0 L224.3 280.0 L228.7 277.9 L233.0 274.5 L237.3 271.2 L241.7 268.0 L246.0 265.0 L250.3 262.2 L254.7 259.7 L259.0 257.5 L263.3 255.6 L267.7 253.9 L272.0 252.7 L276.3 251.7 L280.7 251.2 L285.0 251.0 L289.3 251.2 L293.7 251.7 L298.0 252.7 L302.3 253.9 L306.7 255.6 L311.0 257.5 L315.3 259.7 L319.7 262.2 L324.0 265.0 L328.3 268.0 L332.7 271.2 L337.0 274.5 L341.3 277.9 L345.7 280.0 L354.3 280.0 L358.7 277.9 L363.0 274.5 L367.3 271.2 L371.7 268.0 L376.0 265.0 L380.3 262.2 L384.7 259.7 L389.0 257.5 L393.3 255.6 L397.7 253.9 L402.0 252.7 L406.3 251.7 L410.7 251.2 L415.0 251.0 L419.3 251.2 L423.7 251.7 L428.0 252.7 L432.3 253.9 L436.7 255.6 L441.0 257.5 L445.3 259.7 L449.7 262.2 L454.0 265.0 L458.3 268.0 L462.7 271.2 L467.0 274.5 L471.3 277.9 L475.7 280.0 L484.3 280.0 L488.7 277.9 L493.0 274.5 L497.3 271.2 L501.7 268.0 L506.0 265.0 L510.3 262.2 L514.7 259.7 L519.0 257.5 L523.3 255.6 L527.7 253.9 L532.0 252.7 L536.3 251.7 L540.7 251.2 L545.0 251.0 L549.3 251.2 L553.7 251.7 L558.0 252.7 L562.3 253.9 L566.7 255.6 L571.0 257.5 L575.3 259.7 L579.7 262.2 L584.0 265.0 L588.3 268.0 L592.7 271.2 L597.0 274.5 L601.3 277.9 L605.7 280.0 L610.0 280.0"/>
+        <line class="s-amber s-dash" x1="90" y1="160" x2="610" y2="160"/>
+        <line class="s-amber s-dash" x1="90" y1="261" x2="610" y2="261"/>
+        <text class="t t-small t-muted" x="560" y="22">+17 V</text>
+        <text class="t t-small t-muted" x="560" y="108">−17 V</text>
+        <text class="t t-small t-muted" x="150" y="132">16.3 V</text>
+        <text class="t t-small t-muted" x="150" y="244">15.6 V</text>
+        <text class="t t-small" x="490" y="154">average ≈ 5.2 V</text>
+        <text class="t t-small" x="490" y="300">average ≈ 9.9 V</text>
+        <text class="t t-small t-muted" x="86" y="322">0</text>
+        <text class="t t-small t-muted" x="208" y="322">10 ms</text>
+        <text class="t t-small t-muted" x="338" y="322">20 ms</text>
+        <text class="t t-small t-muted" x="468" y="322">30 ms</text>
+        <text class="t t-small t-muted" x="596" y="322">40 ms</text>
+      </svg>
+      <figcaption>Figure 5. Two cycles (40 ms) of 50 Hz. Half-wave keeps one hump per cycle (50 Hz pulses). Full-wave flips the negative humps up, so it pulses at 100 Hz. The dashed lines are what a DC meter shows. Notice the small flat gaps near zero: the diodes do not conduct until the AC climbs past their drop.</figcaption>
+    </figure>
+
+    <h2>5 · Expected readings, and why the meter reads less than the peak</h2>
+    <p>Use your own measured AC voltage in the calculator below. The table assumes 12.0 V AC and a 1 kΩ load.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Meter setting</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Plug-pack output, no load</td><td>V AC</td><td>12–15 V</td><td>0 V: dead pack or bad adaptor. Very low on V DC: correct, AC averages to 0.</td></tr>
+      <tr><td>Half-wave across 1 kΩ</td><td>V DC</td><td>≈ 5.0–5.5 V</td><td>≈ 10 V: you built a bridge by accident. Negative: diode reversed.</td></tr>
+      <tr><td>Bridge across 1 kΩ</td><td>V DC</td><td>≈ 9.5–10.5 V</td><td>≈ 5 V: one diode open (it has become half-wave).</td></tr>
+      <tr><td>Bridge, after swapping the AC wires</td><td>V DC</td><td>Same as above, same sign</td><td>Sign flips: you measured on the AC side.</td></tr>
+      <tr><td>Each conducting diode</td><td>(calculated)</td><td>0.7–0.9 V drop at 10–20 mA</td><td>—</td></tr>
+      <tr><td>Bridge with a big capacitor added (P07)</td><td>V DC</td><td>≈ 15–16 V (near peak)</td><td>The capacitor holds the peaks. That is next chapter.</td></tr>
+    </table></div>
+
+    <div class="widget" id="p6w-rect">
+      <span class="label">Interactive · Rectifier reading predictor</span>
+      <label>Measured AC voltage (RMS) <span class="out" id="p6r-vout">12.0 V</span><input type="range" id="p6r-v" min="6" max="24" step="0.5" value="12"></label>
+      <label>Diode type <select id="p6r-d"><option value="0.7">Silicon (1N4007), ~0.7 V</option><option value="0.4">Schottky (1N5819), ~0.4 V</option></select></label>
+      <div class="readings">
+        <div><small>AC peak (1.414 × RMS)</small><span class="out" id="p6r-pk">—</span></div>
+        <div><small>Half-wave peak</small><span class="out" id="p6r-hp">—</span></div>
+        <div><small>Half-wave, DC meter</small><span class="out" id="p6r-ha">—</span></div>
+        <div><small>Bridge peak</small><span class="out" id="p6r-fp">—</span></div>
+        <div><small>Bridge, DC meter</small><span class="out" id="p6r-fa">—</span></div>
+        <div><small>Bridge + big capacitor</small><span class="out" id="p6r-fc">—</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var v=document.getElementById('p6r-v'),d=document.getElementById('p6r-d');
+      function s(id,x){document.getElementById(id).textContent=x.toFixed(1)+' V';}
+      function upd(){
+        var vr=+v.value,vd=+d.value,vp=vr*Math.SQRT2;
+        document.getElementById('p6r-vout').textContent=vr.toFixed(1)+' V';
+        var hp=Math.max(0,vp-vd),fp=Math.max(0,vp-2*vd);
+        s('p6r-pk',vp);s('p6r-hp',hp);s('p6r-ha',hp/Math.PI);s('p6r-fp',fp);s('p6r-fa',2*fp/Math.PI);
+        document.getElementById('p6r-fc').textContent='≈ '+(fp*0.95).toFixed(1)+'–'+fp.toFixed(1)+' V';
+      }
+      v.oninput=upd;d.onchange=upd;upd();
+    })();
+    </script>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A 12 V AC supply gives 12 V DC after a rectifier." <b>Right:</b> the 12 V is an RMS value. The peak is about 17 V. After a bridge you get pulses that peak near 15.6 V and average about 10 V. Add a big capacitor and the DC sits near the peak, about 15–16 V with a light load. So a "12 V AC" plug-pack can easily give 16 V DC, which can damage a 12 V device that has no regulator. Always measure, and always ask which kind of voltage a number means: RMS, peak or average.</p></div>
+
+    <div class="callout why"><span class="label">Why the meter reads low</span><p>On V DC, a meter measures the average voltage over many cycles. A rectified sine spends only a moment at its peak and lots of time lower down, so its average is 0.637 of the peak for full-wave and 0.318 for half-wave. On V AC, a cheap "average-responding" meter assumes a pure sine and scales its reading; on a rectified shape that guess is wrong. A "True RMS" meter calculates RMS from the actual shape. For pulsing waveforms, a scope (P15) is the honest tool.</p></div>
+    <a class="crosslink" href="../theory/t07-ac-fundamentals.html">Theory T07 · AC: sine waves, RMS, phase and impedance</a>
+
+    <div class="callout job"><span class="label">On the job</span><p>Many access-control and security devices are labelled "12–24 V AC/DC". Inside is a bridge rectifier, so you can connect either polarity and either AC or DC, and you lose about 1.4 V in the bridge. Electric door strikes are often sold this way. In HVAC, many controllers and actuators run from 24 V AC and use a single half-wave diode inside, with one side of the 24 V AC tied to their signal common. If several such devices share one transformer and you swap the two 24 V wires on just one of them, you can short the transformer through their internal diodes. That is why manuals insist the "24 V common" (often labelled G0, COM or ⊥) goes to the same transformer leg on every device.</p></div>
+
+    <h2>6 · Reverse-polarity protection</h2>
+    <p>On site, someone will connect + and − the wrong way round. It happens with 12 V cameras, readers, sensors and the batteries in alarm panels. Electronics can be destroyed in under a second. A protection part sits at the power input and stops current flowing the wrong way. Each method has a cost: the voltage it drops, the heat it makes, and the parts it adds.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Two reverse polarity protection circuits: a series diode, and a P-channel MOSFET in the positive line">
+        <defs><marker id="p6-arrP" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-bold" x="20" y="24">(a) Series diode</text>
+        <text class="t t-small" x="20" y="72">+12 V in</text>
+        <path class="s-line" d="M20 80 H110"/>
+        <polygon class="f-ink" points="110,64 110,96 136,80"/>
+        <line class="s-line" x1="136" y1="62" x2="136" y2="98"/>
+        <path class="s-line" d="M136 80 H230 V100"/>
+        <rect class="f-accent-soft s-accent" x="200" y="100" width="60" height="50" rx="4"/>
+        <text class="t t-small" x="210" y="130">LOAD</text>
+        <path class="s-line" d="M230 150 V180 M20 180 H230"/>
+        <text class="t t-small" x="20" y="200">0 V</text>
+        <text class="t t-small" x="88" y="120">1N5819 or 1N4007</text>
+        <text class="t t-small t-muted" x="20" y="232">Costs 0.4–1 V and</text>
+        <text class="t t-small t-muted" x="20" y="250">P = V<tspan baseline-shift="sub" font-size="9">F</tspan> × I in heat</text>
+
+        <text class="t t-bold" x="330" y="24">(b) P-channel MOSFET</text>
+        <text class="t t-small" x="330" y="52">+12 V in</text>
+        <path class="s-line" d="M330 60 H418 V84"/>
+        <!-- channel segments (enhancement type) -->
+        <line class="s-line" x1="412" y1="84" x2="424" y2="84"/>
+        <line class="s-line" x1="430" y1="84" x2="446" y2="84"/>
+        <line class="s-line" x1="452" y1="84" x2="464" y2="84"/>
+        <!-- gate plate -->
+        <line class="s-line" x1="410" y1="96" x2="466" y2="96"/>
+        <path class="s-line" d="M438 96 V128"/>
+        <!-- body arrow points out of the channel: P-channel -->
+        <path class="s-line" d="M438 84 V72" marker-end="url(#p6-arrP)"/>
+        <path class="s-line" d="M438 72 H458"/>
+        <path class="s-line" d="M458 84 V60 H560 V100"/>
+        <!-- body diode -->
+        <path class="s-thin s-dash" d="M418 60 V40 H428"/>
+        <polygon class="f-grey" points="428,32 428,48 444,40"/>
+        <line class="s-thin" x1="444" y1="32" x2="444" y2="48"/>
+        <path class="s-thin s-dash" d="M444 40 H480 V60"/>
+        <text class="t t-small t-muted" x="488" y="44">body diode</text>
+        <text class="t t-small" x="400" y="80">D</text>
+        <text class="t t-small" x="468" y="80">S</text>
+        <text class="t t-small" x="446" y="118">G</text>
+        <!-- gate resistor to ground -->
+        <path class="s-line" d="M438 128 V138 l-8 4 l16 8 l-16 8 l16 8 l-16 8 l8 4 V180"/>
+        <text class="t t-small" x="452" y="166">10 kΩ</text>
+        <rect class="f-accent-soft s-accent" x="530" y="100" width="60" height="50" rx="4"/>
+        <text class="t t-small" x="540" y="130">LOAD</text>
+        <path class="s-line" d="M560 150 V180 M330 180 H560"/>
+        <circle class="f-ink" cx="438" cy="180" r="3.5"/>
+        <text class="t t-small" x="330" y="200">0 V</text>
+        <text class="t t-small t-muted" x="330" y="232">Costs I² × R<tspan baseline-shift="sub" font-size="9">DS(on)</tspan>: a few tens of mV.</text>
+        <text class="t t-small t-muted" x="330" y="250">Above ~15 V add a Zener (about 12 V)</text>
+        <text class="t t-small t-muted" x="330" y="268">from gate to source to protect the gate.</text>
+      </svg>
+      <figcaption>Figure 6. (a) A series diode simply blocks reversed current but always drops its forward voltage. (b) A P-channel MOSFET in the + line, drain toward the input. Connected correctly, the body diode conducts first, the source rises, the gate (held at 0 V) is now well below the source, and the MOSFET turns fully on, bypassing its own diode. Connected backwards, the body diode is reversed and the gate cannot turn the MOSFET on.</figcaption>
+    </figure>
+
+    <h3>Worked example: a 1 A load on 12 V</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Method</th><th>Voltage lost at 1 A</th><th>Heat in the part</th><th>Load gets</th><th>Notes</th></tr>
+      <tr><td>1N4007 in series</td><td>≈ 0.9–1.0 V</td><td>≈ 1 W (hot to touch)</td><td>≈ 11.0 V</td><td>Cheap and simple; fine for small currents</td></tr>
+      <tr><td>1N5819 Schottky in series</td><td>≈ 0.45 V</td><td>≈ 0.45 W</td><td>≈ 11.5 V</td><td>Better; Schottkys leak more when hot</td></tr>
+      <tr><td>P-MOSFET, R<sub>DS(on)</sub> = 0.05 Ω</td><td>0.05 V</td><td>0.05 W</td><td>≈ 11.95 V</td><td>Best for battery and high-current gear</td></tr>
+      <tr><td>Reverse diode across the supply + fuse</td><td>0 V (only the fuse)</td><td>≈ 0 W normally</td><td>12 V</td><td>Reversed: the diode conducts hard and blows the fuse. You must replace the fuse.</td></tr>
+    </table></div>
+    <div class="formula">P<sub>diode</sub> = V<sub>F</sub> × I = 0.95 V × 1 A ≈ 0.95 W     P<sub>MOSFET</sub> = I² × R<sub>DS(on)</sub> = 1² × 0.05 = 0.05 W
+      <small>Diode heat grows in proportion to current. MOSFET heat grows with the square of current, but from a tiny starting point, so it stays far lower at normal currents.</small></div>
+
+    <ol class="steps">
+      <li><p><b>Build (a)</b> with a 1N4007, a 9 V battery and a 470 Ω resistor plus an LED as the "load". Measure the battery and then the voltage after the diode. Difference: about 0.7 V at this small current.</p></li>
+      <li><p><b>Reverse the battery.</b> The LED stays off and the meter after the diode reads 0 V. Nothing was damaged.</p></li>
+      <li><p><b>Swap in a 1N5819</b> and measure again. Expect about 0.3 V lost instead of 0.7 V.</p></li>
+      <li><p><b>Optional: build (b)</b> with a small P-channel MOSFET rated for at least 20 V drain–source and a gate threshold of about −1 to −2.5 V (for example a common SOT-23 part on a breakout board). Expect only a few millivolts lost.</p></li>
+    </ol>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>A "12 V" device fed through a series diode from a 12 V supply gets about 11.3 V. If the device also sits at the end of a long cable, that lost 0.7 V adds to the cable drop (P10). Many cameras stop working reliably below about 11 V. A Schottky or a MOSFET buys that margin back.</p></div>
+
+    <h2>7 · A Zener shunt regulator</h2>
+    <p>A <b>Zener diode</b> is made to break down at a known reverse voltage, such as 5.1 V. Below that voltage it blocks. At that voltage it conducts as much current as needed to stop the voltage rising further. Put a resistor in series to limit the current, and you have a simple <b>shunt regulator</b>: the Zener "shunts" (diverts) extra current to ground so the output stays near V<sub>Z</sub>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Zener shunt regulator: 9 V battery, series resistor, 5.1 V Zener to ground, and a load resistor">
+        <defs><marker id="p6-arrZ" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <!-- battery -->
+        <line class="s-line" x1="64" y1="110" x2="96" y2="110"/>
+        <line class="s-line" x1="72" y1="122" x2="88" y2="122"/>
+        <line class="s-line" x1="64" y1="134" x2="96" y2="134"/>
+        <line class="s-line" x1="72" y1="146" x2="88" y2="146"/>
+        <path class="s-line" d="M80 110 V50 H170"/>
+        <path class="s-line" d="M80 146 V200 H520"/>
+        <text class="t t-small" x="104" y="116">+</text>
+        <text class="t t-small" x="20" y="176">9 V battery</text>
+        <!-- series R -->
+        <path class="s-line" d="M170 50 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H520 V95"/>
+        <text class="t t-small" x="172" y="30">R = 220 Ω</text>
+        <!-- zener, cathode up -->
+        <path class="s-line" d="M360 50 V100"/>
+        <polygon class="f-ink" points="348,124 372,124 360,102"/>
+        <path class="s-line" d="M344 96 L348 102 H372 L376 108"/>
+        <path class="s-line" d="M360 124 V200"/>
+        <text class="t t-small" x="384" y="112">5.1 V Zener</text>
+        <text class="t t-small t-muted" x="384" y="128">(band at top)</text>
+        <!-- load -->
+        <path class="s-line" d="M520 95 l-10 6 l20 10 l-20 10 l20 10 l-20 10 l20 10 l-10 6 V200"/>
+        <text class="t t-small" x="540" y="130">load</text>
+        <text class="t t-small" x="540" y="146">R<tspan baseline-shift="sub" font-size="9">L</tspan></text>
+        <circle class="f-ink" cx="360" cy="50" r="3.5"/><circle class="f-ink" cx="360" cy="200" r="3.5"/>
+        <text class="t t-small t-bold" x="440" y="40">V<tspan baseline-shift="sub" font-size="9">OUT</tspan> ≈ 5.1 V</text>
+        <path class="s-red" d="M250 70 h60" marker-end="url(#p6-arrZ)"/>
+        <text class="t t-small t-red" x="232" y="88">I<tspan baseline-shift="sub" font-size="9">R</tspan> = I<tspan baseline-shift="sub" font-size="9">Z</tspan> + I<tspan baseline-shift="sub" font-size="9">L</tspan></text>
+        <path class="s-red" d="M340 140 v40" marker-end="url(#p6-arrZ)"/>
+        <text class="t t-small t-red" x="300" y="164">I<tspan baseline-shift="sub" font-size="9">Z</tspan></text>
+        <path class="s-red" d="M500 140 v40" marker-end="url(#p6-arrZ)"/>
+        <text class="t t-small t-red" x="476" y="164">I<tspan baseline-shift="sub" font-size="9">L</tspan></text>
+        <text class="t t-small t-muted" x="100" y="232">The resistor current splits: whatever the load does not take, the Zener takes.</text>
+      </svg>
+      <figcaption>Figure 7. Zener shunt regulator. The Zener is connected "backwards" on purpose: cathode (band) to the positive side. The current through R is almost fixed by (V<sub>in</sub> − V<sub>Z</sub>)/R, and the Zener and load share it.</figcaption>
+    </figure>
+
+    <h3>Design it by hand</h3>
+    <p>Design rule: at the lowest input voltage and the highest load current, the Zener must still get a few milliamps to stay in regulation. Then check the worst case for heat: highest input voltage with the load disconnected, when the Zener takes everything.</p>
+    <div class="formula">R = (V<sub>in,min</sub> − V<sub>Z</sub>) / (I<sub>L,max</sub> + I<sub>Z,min</sub>) = (9 − 5.1) / (0.010 + 0.005) = 260 Ω → use 220 Ω
+      <small>Round down to a standard value so the current is slightly higher than needed (never round up, or the Zener may starve). With 220 Ω: I<sub>R</sub> = 3.9 / 220 = 17.7 mA.</small></div>
+    <div class="formula">P<sub>R</sub> = (V<sub>in</sub> − V<sub>Z</sub>) × I<sub>R</sub> = 3.9 × 0.0177 ≈ 0.07 W     P<sub>Z,worst</sub> = V<sub>Z</sub> × I<sub>R</sub> = 5.1 × 0.0177 ≈ 0.09 W
+      <small>Both are comfortable for 0.25 W resistors and a 0.5 W or 1 W Zener. Rule of thumb: run parts at no more than half their power rating.</small></div>
+
+    <h3>Bench test and expected readings (fresh 9 V battery, 220 Ω, 5.1 V Zener)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Load R<sub>L</sub></th><th>Load current</th><th>Zener current</th><th>Expected V<sub>OUT</sub></th><th>What it shows</th></tr>
+      <tr><td>none</td><td>0</td><td>≈ 18 mA</td><td>4.9–5.2 V</td><td>Zener takes all the current</td></tr>
+      <tr><td>1 kΩ</td><td>≈ 5 mA</td><td>≈ 13 mA</td><td>4.9–5.2 V</td><td>Still regulating</td></tr>
+      <tr><td>470 Ω</td><td>≈ 11 mA</td><td>≈ 7 mA</td><td>4.8–5.1 V</td><td>Near the edge</td></tr>
+      <tr><td>220 Ω</td><td>would need 23 mA</td><td>0</td><td>≈ 4.5 V</td><td>Dropped out: it is just a divider now (9 × 220/440)</td></tr>
+    </table></div>
+    <p>Your no-load reading may be 0.1–0.3 V below 5.1 V. That is normal. The Zener voltage on the datasheet is quoted at a specific test current (for the 1 W 5.1 V type, tens of milliamps). At lower currents, the knee of the curve is softer and the voltage is a little lower.</p>
+
+    <div class="widget" id="p6w-zener">
+      <span class="label">Interactive · Zener shunt regulator designer</span>
+      <label>Nominal input voltage <span class="out" id="p6z-vino">12.0 V</span><input type="range" id="p6z-vin" min="5" max="30" step="0.5" value="12"></label>
+      <label>Input variation (±) <span class="out" id="p6z-tolo">10 %</span><input type="range" id="p6z-tol" min="0" max="25" step="1" value="10"></label>
+      <label>Zener voltage <select id="p6z-vz"><option>3.3</option><option>4.7</option><option selected>5.1</option><option>6.2</option><option>9.1</option><option>12</option><option>15</option></select></label>
+      <label>Maximum load current <span class="out" id="p6z-ilo">20 mA</span><input type="range" id="p6z-il" min="1" max="100" step="1" value="20"></label>
+      <label>Minimum Zener current <span class="out" id="p6z-izo">5 mA</span><input type="range" id="p6z-iz" min="1" max="20" step="1" value="5"></label>
+      <div class="readings">
+        <div><small>Calculated R</small><span class="out" id="p6z-rc">—</span></div>
+        <div><small>Use (E12, rounded down)</small><span class="out" id="p6z-r">—</span></div>
+        <div><small>Resistor power, worst</small><span class="out" id="p6z-pr">—</span></div>
+        <div><small>Zener power, load removed</small><span class="out" id="p6z-pz">—</span></div>
+        <div><small>Efficiency at full load</small><span class="out" id="p6z-eff">—</span></div>
+      </div>
+      <p id="p6z-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var E12=[1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+      function e12Below(r){var d=Math.pow(10,Math.floor(Math.log(r)/Math.LN10)),m=r/d,b=E12[0];for(var i=0;i<E12.length;i++){if(E12[i]<=m+1e-9)b=E12[i];}return b*d;}
+      function fR(r){return r>=1000?(+(r/1000).toFixed(2))+' kΩ':Math.round(r)+' Ω';}
+      function fP(p){return p<1?(p*1000).toFixed(0)+' mW':p.toFixed(2)+' W';}
+      function pick(p,list){for(var i=0;i<list.length;i++){if(list[i]>=2*p)return list[i]+' W';}return null;}
+      function upd(){
+        var vin=+$('p6z-vin').value,tol=+$('p6z-tol').value/100,vz=+$('p6z-vz').value,il=+$('p6z-il').value/1000,iz=+$('p6z-iz').value/1000;
+        $('p6z-vino').textContent=vin.toFixed(1)+' V';$('p6z-tolo').textContent=Math.round(tol*100)+' %';
+        $('p6z-ilo').textContent=Math.round(il*1000)+' mA';$('p6z-izo').textContent=Math.round(iz*1000)+' mA';
+        var vmin=vin*(1-tol),vmax=vin*(1+tol),note=$('p6z-note');
+        if(vmin-vz<1){['p6z-rc','p6z-r','p6z-pr','p6z-pz','p6z-eff'].forEach(function(k){$(k).textContent='—';});
+          note.textContent='Not enough headroom: the lowest input ('+vmin.toFixed(1)+' V) must be at least about 1 V above the Zener voltage. Raise the input or choose a lower Zener.';return;}
+        var rc=(vmin-vz)/(il+iz),r=e12Below(rc),irmax=(vmax-vz)/r,pr=(vmax-vz)*irmax,pz=vz*irmax,irn=(vin-vz)/r,eff=vz*il/(vin*irn)*100;
+        $('p6z-rc').textContent=fR(rc);$('p6z-r').textContent=fR(r);$('p6z-pr').textContent=fP(pr);$('p6z-pz').textContent=fP(pz);$('p6z-eff').textContent=eff.toFixed(0)+' %';
+        var rr=pick(pr,[0.25,0.5,1,2,3,5,10]),zr=pick(pz,[0.5,1,5]);
+        var t='Buy: a '+fR(r)+' resistor rated '+(rr||'over 10 W')+' and a '+vz+' V Zener rated '+(zr||'over 5 W')+' (each at least twice its worst-case power). ';
+        if(!zr||pz>1)t+='This much Zener heat is a sign to use a linear regulator such as a 7805 or LM317 instead (P10). ';
+        if(eff<40)t+='Efficiency is low: a Zener shunt wastes power all the time, even with no load. Fine for references and small loads, poor for anything bigger.';
+        note.textContent=t;
+      }
+      ['p6z-vin','p6z-tol','p6z-il','p6z-iz'].forEach(function(k){$(k).oninput=upd;});$('p6z-vz').onchange=upd;upd();
+    })();
+    </script>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "Remove the load and the regulator relaxes and runs cooler." <b>Right:</b> in a shunt regulator, the resistor current hardly changes. Remove the load and the Zener must absorb all of it, so the Zener is <i>hottest</i> with no load. That is the opposite of a series regulator like the 7805, which runs coolest with no load.</p></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>You will rarely build a Zener regulator to power something on site. You will meet Zeners inside equipment as voltage references, as clamps on input terminals (stopping a spike from reaching a chip), and in "transient voltage suppressor" (TVS) form across power inputs and data lines. A TVS is a fast, rugged Zener-like diode made to absorb short surges. When a camera or controller input is "dead short" after a lightning storm, a failed TVS or protection diode across the input is a common cause.</p></div>
+
+    <h2>8 · LED colours and forward voltages</h2>
+    <p>An LED's forward voltage is not random. Light comes out when an electron drops across the band gap and gives its energy to one photon. Bigger gap → more energy per photon → shorter wavelength (bluer light) → higher forward voltage. A handy conversion: photon energy in electron-volts ≈ 1240 ÷ wavelength in nanometres.</p>
+    <div class="formula">Red, 630 nm: 1240 / 630 ≈ 1.97 eV → V<sub>F</sub> ≈ 2.0 V     Blue, 470 nm: 1240 / 470 ≈ 2.64 eV → V<sub>F</sub> ≈ 3.0 V
+      <small>The forward voltage is a little above the photon energy (in volts) because of resistance in the chip and its layers. A white LED is a blue LED with a yellow phosphor coating, so it has a blue LED's voltage.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Colour</th><th>Typical wavelength</th><th>Typical V<sub>F</sub> at 20 mA</th><th>Notes</th></tr>
+      <tr><td>Infrared</td><td>850 nm or 940 nm</td><td>1.2–1.6 V</td><td>CCTV night illuminators, remote controls. 850 nm shows a faint red glow; 940 nm is invisible to the eye.</td></tr>
+      <tr><td>Red</td><td>620–635 nm</td><td>1.8–2.2 V</td><td>Cheapest, the lowest visible V<sub>F</sub></td></tr>
+      <tr><td>Orange / amber</td><td>590–610 nm</td><td>1.9–2.2 V</td><td>Warning indicators</td></tr>
+      <tr><td>Yellow</td><td>585–595 nm</td><td>1.9–2.2 V</td><td></td></tr>
+      <tr><td>Yellow-green (older type)</td><td>565–570 nm</td><td>1.9–2.3 V</td><td>The dull green on old equipment</td></tr>
+      <tr><td>True green</td><td>520–530 nm</td><td>2.8–3.4 V</td><td>Bright green, same material family as blue</td></tr>
+      <tr><td>Blue</td><td>460–475 nm</td><td>2.8–3.4 V</td><td></td></tr>
+      <tr><td>White</td><td>blue + phosphor</td><td>2.8–3.4 V</td><td>Often marked "cool" or "warm" white</td></tr>
+      <tr><td>UV</td><td>395–405 nm</td><td>3.0–3.6 V</td><td>Do not stare into it</td></tr>
+    </table></div>
+    <p>These are typical ranges. The datasheet for your exact LED wins. When you are unsure, use 2 V for red/yellow and 3 V for blue/white/true green in resistor calculations.</p>
+
+    <div class="callout try"><span class="label">Try this: see infrared</span><p>Point a TV remote or a CCTV camera's IR LEDs at your phone's front (selfie) camera and press a button. Many phone cameras show the IR as a purple-white flash that your eye cannot see. Some rear cameras have IR filters, so try both. On a job, this is a quick check that a camera's night illuminators are actually working.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>LED on AC does not light at all</td><td>LED and guard diode both in the same direction (guard shorts the LED's forward half), or plug-pack is DC</td><td>Check that they point opposite ways. Check the plug-pack label says AC output.</td></tr>
+      <tr><td>Rectifier output reads 0 V</td><td>Diode backwards, open breadboard contact, or meter on V AC</td><td>Diode-test each diode in place (power off). Move to V DC.</td></tr>
+      <tr><td>Bridge output is about half what you expected</td><td>One diode open or one reversed, so only half-wave remains</td><td>Diode-test all four. A reversed diode in a bridge can also short the supply on one half-cycle.</td></tr>
+      <tr><td>A bridge diode gets hot or fails at once</td><td>A reversed diode is shorting the AC source through its partner</td><td>Power off. Re-check the bands against Figure 4.</td></tr>
+      <tr><td>Reading jumps around on V DC</td><td>Meter averaging a pulsing waveform</td><td>Normal for unsmoothed DC. Add a capacitor (P07) or read it on a scope.</td></tr>
+      <tr><td>Zener output well below V<sub>Z</sub></td><td>Load takes more than the resistor can supply, or Zener reversed (then it reads ~0.7 V)</td><td>Recalculate R; check the band goes to the positive side.</td></tr>
+      <tr><td>Zener very hot</td><td>Input too high or R too small; worst with no load</td><td>Check P = V<sub>Z</sub> × I<sub>R</sub>; increase R or use a regulator.</td></tr>
+      <tr><td>Two scope grounds and the bridge stops working or a diode dies</td><td>The two ground clips are joined through the scope's earth, shorting part of the bridge</td><td>Use one ground clip only, or a differential probe.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Your plug-pack reads 13.5 V AC. Predict the bridge output peak and the DC meter reading with a resistor load.</summary><div class="answer"><p>Peak AC = 1.414 × 13.5 ≈ 19.1 V. Two diode drops: 19.1 − 1.4 ≈ 17.7 V peak. The DC meter shows the average of a full-wave shape, 0.637 × 17.7 ≈ 11.3 V. With a large smoothing capacitor and a light load, the output would sit near 17 V.</p></div></details>
+    <details class="quiz"><summary>Why does the LED on AC need a diode connected anti-parallel across it?</summary><div class="answer"><p>On the reverse half-cycle the LED would see the full AC peak backwards (about 17 V on a 12 V AC pack). Most LEDs are rated for only about 5 V reverse. The anti-parallel diode conducts on that half-cycle and limits the LED's reverse voltage to about 0.7 V. The resistor still limits the current in both directions.</p></div></details>
+    <details class="quiz"><summary>Why does the ripple from a full-wave rectifier on Australian mains have a frequency of 100 Hz, not 50 Hz?</summary><div class="answer"><p>Mains is 50 Hz: one positive and one negative half-cycle every 20 ms. The bridge flips each negative half up, so there are two humps every 20 ms, one every 10 ms. That is 100 humps per second. A half-wave rectifier keeps only one hump per cycle, so its ripple is 50 Hz. This matters for smoothing capacitors in P07.</p></div></details>
+    <details class="quiz"><summary>In diode-test mode a part reads 0.004 V in both directions and the meter beeps. What does that tell you?</summary><div class="answer"><p>The diode is shorted. A good diode reads about 0.6 V one way and OL the other. Shorted is the usual failure after a surge or overload. In a bridge, a shorted diode often blows the supply's fuse, because on one half-cycle it puts the AC source straight across another conducting diode.</p></div></details>
+    <details class="quiz"><summary>A 12 V, 1 A camera is protected with a 1N4007 in series. How much voltage and power does that protection cost, and what would you use instead?</summary><div class="answer"><p>At 1 A a 1N4007 drops about 0.9–1 V, so the camera sees about 11 V and the diode dissipates about 1 W, which is hot for a small diode at its full rating. A 1N5819 Schottky halves the loss (about 0.45 V, 0.45 W). A P-channel MOSFET with 0.05 Ω on-resistance loses only 0.05 V and 0.05 W.</p></div></details>
+    <details class="quiz"><summary>In the Zener regulator, when is the Zener hottest, and why?</summary><div class="answer"><p>At the highest input voltage with the load disconnected. The resistor current is set by (V<sub>in</sub> − V<sub>Z</sub>)/R and barely depends on the load. Whatever the load does not take, the Zener must take. With no load, it takes all of it: P = V<sub>Z</sub> × I<sub>R</sub>.</p></div></details>
+    <details class="quiz"><summary>Why must you not clip two oscilloscope ground leads onto a bridge rectifier, one on an AC terminal and one on DC −?</summary><div class="answer"><p>A mains-powered scope's ground clips are all joined together inside the scope and to mains earth. Two clips at two different points join those points with a wire. Joining an AC terminal to DC − shorts one of the bridge diodes. On the half-cycle when the opposite diode conducts, the AC source is shorted through a single diode, and large current flows. Use one ground clip, measure relative to it, or use a differential probe.</p></div></details>
+    <details class="quiz"><summary>A blue LED will not light from your meter's diode test, but a red one glows faintly. Is the blue LED dead?</summary><div class="answer"><p>Probably not. Blue LEDs need about 2.8–3 V to conduct because their band gap is wider (blue photons carry more energy, about 2.6 eV). Many meters' diode-test supply cannot reach that, so they show OL. Test it with a 9 V battery and a 1 kΩ resistor instead.</p></div></details>
+
+    <details class="more"><summary>Go deeper (optional): why a "12 V AC" plug-pack reads high with no load</summary><p>A transformer has resistance in its copper windings. When current flows, some voltage is lost in that resistance, so the output falls as you load it. A small, unregulated plug-pack is labelled with its voltage at full rated current. With no load there is no loss, so you read the higher no-load voltage, often 10–25% above the label. The ratio of no-load to full-load voltage is called regulation. Small transformers have poor regulation; big ones are better. This is another reason to design for the voltage you measure, under the load you will actually draw.</p></details>
+    <a class="crosslink" href="../theory/t08-transformers.html">Theory T08 · Transformers</a>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can identify a diode's anode and cathode from the part and from the symbol.</span></li>
+      <li><input type="checkbox"><span>I can diode-test silicon, Schottky and LED parts and recognise shorted and open diodes.</span></li>
+      <li><input type="checkbox"><span>I can drive an LED from a low-voltage AC plug-pack safely, with a series resistor and a reverse guard diode, and show its 50 Hz flicker on slow-motion video.</span></li>
+      <li><input type="checkbox"><span>I can convert RMS to peak (× 1.414) and predict half-wave and bridge outputs, including diode drops.</span></li>
+      <li><input type="checkbox"><span>I can explain why a DC meter on rectified AC reads the average, not the peak.</span></li>
+      <li><input type="checkbox"><span>I can build and check a bridge rectifier from four diodes or a module.</span></li>
+      <li><input type="checkbox"><span>I can compare series-diode, Schottky and P-MOSFET reverse-polarity protection by voltage lost and heat.</span></li>
+      <li><input type="checkbox"><span>I can design a Zener shunt regulator and size the resistor and Zener power ratings for the worst case.</span></li>
+      <li><input type="checkbox"><span>I can estimate an LED's forward voltage from its colour.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

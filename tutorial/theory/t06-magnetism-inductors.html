@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T06 · Magnetism and inductors</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 2 · Magnetism and AC</div>
+    <span class="eyebrow">Theory · T06</span>
+    <h1>Magnetism and inductors</h1>
+    <p class="lede">A current makes a magnetic field, and a changing magnetic field makes a voltage. These two facts explain relays, motors, transformers, buck converters and the voltage spike that kills transistors. By the end you will be able to calculate that spike and explain exactly why one cheap diode stops it.</p>
+    <div class="meta"><span><b>Read</b> 60 min</span><span><b>Level</b> Class 12 refresher → practical</span><span><b>Maths</b> rates of change, e<sup>−t/τ</sup></span><span><b>Practice</b> P08, P10, P13, P15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>A short history: from a twitching compass to the henry</h2>
+    <p>In April 1820, in Copenhagen, <b>Hans Christian Ørsted</b> (often written Oersted) was giving a lecture with a battery and a wire. A compass needle lying near the wire swung when the current flowed. Until then, electricity and magnetism were thought to be separate subjects. One twitching needle showed that <b>a current makes a magnetic field</b>. Within weeks, <b>André-Marie Ampère</b> in Paris showed that two parallel wires carrying current attract or repel each other.</p>
+    <p>If electricity makes magnetism, can magnetism make electricity? Many people tried by putting a strong magnet next to a coil and waiting. Nothing happened. In August 1831, <b>Michael Faraday</b> in London wound two separate coils on one iron ring. He connected a battery to one coil and a galvanometer (a sensitive current meter) to the other. The needle kicked <i>only at the moment he connected or disconnected the battery</i>. While the current was steady, the needle sat at zero. This was the key discovery: <b>a changing magnetic field makes a voltage; a steady one does not</b>.</p>
+    <p>In the USA, <b>Joseph Henry</b> found the same effect at about the same time. He also noticed that a single coil gives a large spark when its own circuit is broken: the coil induces a voltage in <i>itself</i>. This is <b>self-induction</b>, and the SI unit of inductance, the <b>henry (H)</b>, is named after him. In 1834 <b>Heinrich Lenz</b> stated the rule for the <i>direction</i> of the induced current. Faraday pictured the space around magnets filled with "lines of force". Thirty years later <b>James Clerk Maxwell</b> turned that picture into equations, and those equations predicted radio waves and explained light. That story continues in <a href="t10-em-waves-antennas-fibre.html">T10</a>.</p>
+
+    <h2>The magnetic field around a current</h2>
+    <p>A magnetic field is a condition of space around moving charges. We describe it with the <b>magnetic flux density B</b>, measured in <b>tesla (T)</b>. You can feel it as a force on another moving charge or on a compass needle. One tesla is large. Useful reference numbers:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Source</th><th>Typical B</th></tr>
+      <tr><td>Earth's field (most of Australia)</td><td>about 50–60 µT</td></tr>
+      <tr><td>10 A in a straight wire, 1 cm away</td><td>200 µT</td></tr>
+      <tr><td>Fridge magnet at its surface</td><td>a few mT</td></tr>
+      <tr><td>Inside a ferrite inductor core, near its limit</td><td>0.3–0.5 T</td></tr>
+      <tr><td>Inside a mains transformer's steel core</td><td>about 1–1.7 T</td></tr>
+      <tr><td>Hospital MRI scanner</td><td>1.5–3 T</td></tr>
+    </table></div>
+
+    <h3>Right-hand grip rule</h3>
+    <p>Field lines around a straight wire are closed circles centred on the wire. To get the direction, grip the wire with your right hand with your thumb pointing along the conventional current. Your fingers curl the way the field points. For a coil, use the same hand the other way round: curl your fingers along the current in the turns, and your thumb points to the coil's <b>north end</b> (where field lines come out).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 275" role="img" aria-label="Circular field lines around a wire carrying current out of the page, and the field of a solenoid">
+        <defs>
+          <marker id="t06f1-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="40" y="22">Straight wire, current out of the page</text>
+        <circle class="s-blue" cx="160" cy="145" r="32"/>
+        <circle class="s-blue" cx="160" cy="145" r="64"/>
+        <circle class="s-blue" cx="160" cy="145" r="96"/>
+        <line class="s-blue" x1="167" y1="113" x2="155" y2="113" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="167" y1="81" x2="155" y2="81" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="167" y1="49" x2="155" y2="49" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="153" y1="177" x2="165" y2="177" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="153" y1="209" x2="165" y2="209" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="153" y1="241" x2="165" y2="241" marker-end="url(#t06f1-arr)"/>
+        <circle class="f-panel s-line" cx="160" cy="145" r="11"/>
+        <circle class="f-ink" cx="160" cy="145" r="3.5"/>
+        <text class="t t-small t-muted" x="178" y="150">I (⊙ = towards you)</text>
+        <text class="t t-blue" x="262" y="80">B</text>
+        <text class="t t-small" x="40" y="268">B = μ₀I / 2πr : weaker further out</text>
+
+        <text class="t t-bold" x="372" y="22">Solenoid: the turns' fields add up</text>
+        <path class="s-blue" d="M575,135 C635,55 310,55 370,135"/>
+        <path class="s-blue" d="M575,155 C635,235 310,235 370,155"/>
+        <line class="s-blue" x1="478" y1="75" x2="466" y2="75" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="478" y1="215" x2="466" y2="215" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="370" y1="133" x2="575" y2="133" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="370" y1="145" x2="575" y2="145" marker-end="url(#t06f1-arr)"/>
+        <line class="s-blue" x1="370" y1="157" x2="575" y2="157" marker-end="url(#t06f1-arr)"/>
+        <ellipse class="s-accent" cx="400" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="420" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="440" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="460" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="480" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="500" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="520" cy="145" rx="7" ry="36"/>
+        <ellipse class="s-accent" cx="540" cy="145" rx="7" ry="36"/>
+        <text class="t t-bold" x="347" y="150">S</text>
+        <text class="t t-bold" x="590" y="150">N</text>
+        <text class="t t-small" x="380" y="268">Inside: B ≈ μ₀ n I (n = turns per metre)</text>
+      </svg>
+      <figcaption>Figure 1. Left: field circles around a wire, anticlockwise when the current comes towards you (right-hand grip). The field gets weaker as 1/r. Right: in a coil the fields of many turns point the same way inside, so the field is strong and nearly uniform there. Field lines are always closed loops: they come out of N, go round the outside and return through the inside.</figcaption>
+    </figure>
+
+    <h3>How strong? Two formulas you will use</h3>
+    <div class="formula">Straight wire: B = μ₀ I / (2π r)      Long coil: B = μ₀ n I
+      <small>μ₀ = 4π × 10⁻⁷ H/m ≈ 1.26 × 10⁻⁶ H/m is the <b>permeability of free space</b>, a constant that sets how much field a current makes in vacuum or air. I is current in amperes, r the distance from the wire in metres, n the number of turns per metre of coil.</small></div>
+    <p><b>Worked example, wire.</b> A 10 A cable, measured 1 cm from its centre: B = (1.26 × 10⁻⁶ × 10) / (2π × 0.01) = 2.0 × 10⁻⁴ T = 200 µT. That is about four times Earth's field, which is why a compass near a car's battery cable gives nonsense. Why mains cables in a wall do not disturb compasses much: active and neutral sit side by side with equal and opposite currents, so their fields almost cancel a few centimetres away. (That cancellation is also exactly how an RCD works; see <a href="t09-mains-earthing-safety.html">T09</a>.)</p>
+    <p><b>Worked example, coil.</b> A coil wound with 1000 turns per metre carries 0.5 A. B = 1.26 × 10⁻⁶ × 1000 × 0.5 = 0.63 mT. Small. Put a steel or ferrite core inside and the field becomes hundreds or thousands of times bigger, because the core's atoms line up their own tiny magnets with the field. That multiplication factor is the <b>relative permeability μ<sub>r</sub></b>. More on cores later.</p>
+
+    <h3>Flux: how much field passes through a loop</h3>
+    <p>Induction depends on how much field <i>threads through</i> a loop of wire. We call this the <b>magnetic flux Φ</b> (Greek "phi"). For a uniform field straight through a flat loop of area A:</p>
+    <div class="formula">Φ = B × A     (unit: weber, Wb = T·m²)
+      <small>If the field is tilted at angle θ to the loop's axis, only the perpendicular part counts: Φ = B A cos θ. For a coil of N turns, the same flux threads every turn, so the <b>flux linkage</b> is NΦ.</small></div>
+    <p>A useful way to remember the weber: <b>1 Wb = 1 volt × 1 second</b>. You will see why in the next section.</p>
+
+    <h2>Faraday's law and Lenz's law</h2>
+    <p>Faraday's discovery, in one sentence: <b>when the flux through a loop changes, a voltage (EMF) appears around the loop, equal to the rate of change of flux</b>. For a coil of N turns:</p>
+    <div class="formula">ε = − N dΦ/dt
+      <small>ε (epsilon) is the induced EMF in volts. dΦ/dt is how fast the flux changes, in webers per second. The minus sign is Lenz's law: the induced voltage pushes current in the direction that fights the change.</small></div>
+    <p>Now the unit makes sense: if flux changes by 1 Wb in 1 s through one turn, you get 1 V. A weber is a volt-second.</p>
+    <p>It does not matter <i>how</i> the flux changes. You can move a magnet, move the coil, change the current in a nearby coil (a transformer), change the current in the same coil (self-inductance), or rotate the coil in a field (a generator, <a href="t07-ac-fundamentals.html">T07</a>). Only the rate of change matters.</p>
+    <p><b>Worked example.</b> A pickup coil has 200 turns and an area of 4 cm² (4 × 10⁻⁴ m²). A magnet brings the field through it from 0 to 0.5 T in 10 ms. Change of flux per turn: ΔΦ = 0.5 × 4 × 10⁻⁴ = 2 × 10⁻⁴ Wb. EMF ≈ N ΔΦ / Δt = 200 × 2 × 10⁻⁴ / 0.01 = <b>4 V</b> while the magnet moves. Move it ten times faster and you get 40 V. Hold it still and you get 0 V. This is how a bicycle dynamo, a guitar pickup and a car's magnetic wheel-speed sensor all work.</p>
+
+    <h3>Lenz's law: nature opposes the change</h3>
+    <p>The direction of the induced current is always such that its own magnetic field <b>opposes the change in flux</b> that caused it. Push a magnet's north pole into a coil and the coil's near end becomes a north pole, pushing back. Pull the magnet out and the near end becomes a south pole, pulling it back.</p>
+    <p>Why must it be this way? <b>Energy conservation.</b> If the induced current <i>helped</i> the change, pushing a magnet in slightly would induce a current that pulls it in harder, which induces more current, and so on: free energy forever. That does not happen. Because the induced current opposes you, you must do work to move the magnet, and that work is exactly the electrical energy delivered to the circuit. A bike dynamo feels harder to pedal when the light is on for this reason.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 225" role="img" aria-label="A bar magnet pushed into a coil, with the induced current making the near end of the coil a north pole">
+        <defs>
+          <marker id="t06f2-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t06f2-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-theory-soft s-line" x="40" y="82" width="75" height="46"/>
+        <rect class="f-warn-soft s-line" x="115" y="82" width="75" height="46"/>
+        <text class="t t-bold" x="70" y="111">S</text>
+        <text class="t t-bold" x="146" y="111">N</text>
+        <line class="s-line" x1="90" y1="58" x2="180" y2="58" marker-end="url(#t06f2-k)"/>
+        <text class="t t-small" x="62" y="46">magnet pushed in</text>
+        <ellipse class="s-accent" cx="260" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="280" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="300" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="320" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="340" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="360" cy="105" rx="8" ry="40"/>
+        <ellipse class="s-accent" cx="380" cy="105" rx="8" ry="40"/>
+        <line class="s-red" x1="372" y1="105" x2="238" y2="105" marker-end="url(#t06f2-r)"/>
+        <text class="t t-small t-red" x="282" y="96">induced B</text>
+        <text class="t t-bold t-red" x="226" y="78">N</text>
+        <path class="s-line" d="M260,145 V188 H304"/>
+        <path class="s-line" d="M380,145 V188 H336"/>
+        <circle class="f-panel s-line" cx="320" cy="188" r="16"/>
+        <text class="t t-small t-bold" x="315" y="193">A</text>
+        <text class="t t-small" x="430" y="60">Flux through the coil is rising.</text>
+        <text class="t t-small" x="430" y="82">The induced current makes a field</text>
+        <text class="t t-small" x="430" y="104">pointing back at the magnet:</text>
+        <text class="t t-small" x="430" y="126">N faces N, so the coil repels it.</text>
+        <text class="t t-small t-muted" x="430" y="156">Your push does the work that</text>
+        <text class="t t-small t-muted" x="430" y="178">becomes electrical energy.</text>
+      </svg>
+      <figcaption>Figure 2. Lenz's law. The induced current's field opposes the <i>change</i>: the coil's near end becomes N while the magnet's N approaches. Stop the magnet and the meter returns to zero, even though the magnet is still inside the coil.</figcaption>
+    </figure>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Lenz's law says the induced field opposes the magnet's field."</b> Not quite. It opposes the <i>change</i> in flux. When you pull the magnet <i>out</i>, the flux is falling, so the induced field points the <i>same</i> way as the magnet's field, trying to keep the flux up. The coil is not anti-magnet; it is anti-change. Keep that phrase: <b>anti-change</b>. It is the whole personality of an inductor.</p></div>
+
+    <div class="callout try"><span class="label">Try this</span><p>Drop a strong neodymium magnet down a copper or aluminium pipe (a 30 cm length of 15 mm copper plumbing pipe from Bunnings works). It falls slowly, as if through honey, even though copper is not magnetic. The falling magnet changes the flux through each ring of the pipe, rings of current (<b>eddy currents</b>) flow, and by Lenz's law they brake the magnet. The magnet's lost potential energy becomes a tiny amount of heat in the pipe.</p></div>
+
+    <h2>Self-inductance: a coil that fights its own changes</h2>
+    <p>A coil carrying current makes flux through its <i>own</i> turns. If you change the current, you change that flux, and by Faraday's law a voltage appears across the coil. By Lenz's law that voltage pushes against the change. This is <b>self-inductance</b>. The amount of flux linkage per ampere is the coil's <b>inductance L</b>:</p>
+    <div class="formula">L = NΦ / I     →     V<sub>L</sub> = L · di/dt
+      <small>L is in henries (H). 1 H means a current changing at 1 A per second produces 1 V across the coil. di/dt is the rate of change of current in amperes per second. The voltage across an ideal inductor depends only on how fast the current is changing, not on how big the current is.</small></div>
+    <p>For a coil, the flux per turn is proportional to N (more turns, more field), and the flux linkage is N times that, so <b>L grows as N²</b>. For a long solenoid:</p>
+    <div class="formula">L ≈ μ₀ μ<sub>r</sub> N² A / ℓ
+      <small>A is the cross-section area of the coil (m²), ℓ its length (m), μ<sub>r</sub> the relative permeability of the core (1 for air).</small></div>
+    <p><b>Worked example.</b> 100 turns of wire on a 1 cm diameter former, 2 cm long, air core. A = π × (0.005)² = 7.85 × 10⁻⁵ m². L = 1.26 × 10⁻⁶ × 100² × 7.85 × 10⁻⁵ / 0.02 ≈ 4.9 × 10⁻⁵ H ≈ <b>49 µH</b>. Double the turns to 200 and L becomes about 200 µH (four times). Put the same winding on a closed ferrite core with an effective μ<sub>r</sub> of a few hundred and you reach several millihenries. That is why real inductors are wound on cores: you get the inductance you need with fewer turns, so less copper resistance.</p>
+
+    <h3>The best mental model: an inductor is inertia for current</h3>
+    <p>Compare V = L di/dt with Newton's second law, F = m dv/dt. Voltage plays the role of force, current the role of velocity, and inductance the role of <b>mass</b>. A heavy flywheel does not resist <i>spinning</i>; it resists <i>changes</i> in spin. Once it is spinning steadily, it needs no force to keep going (apart from friction). Try to stop it suddenly and it pushes back with an enormous force.</p>
+    <p>An inductor is the same. Once current is flowing steadily, the inductor has no voltage across it (apart from its wire resistance). Try to stop the current suddenly and it produces whatever voltage it needs to keep the current flowing. That is the relay kick you will meet below.</p>
+    <div class="compare">
+      <div><h4>Capacitor (T05)</h4><p>I = C dV/dt. Resists sudden changes of <b>voltage</b>. Stores energy in the <b>electric field</b>: ½CV². At DC steady state it is an <b>open circuit</b>.</p></div>
+      <div><h4>Inductor</h4><p>V = L di/dt. Resists sudden changes of <b>current</b>. Stores energy in the <b>magnetic field</b>: ½LI². At DC steady state it is a <b>short circuit</b> (just its wire resistance).</p></div>
+    </div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"An inductor resists current, like a resistor."</b> No. An inductor resists the <i>change</i> of current. A 10 mH coil with 2 Ω of copper resistance on 12 V DC settles at 12 / 2 = 6 A, exactly as a 2 Ω resistor would. The inductance only decides <i>how long it takes</i> to get there. At AC, where the current is always changing, the inductor does limit current, and we call that opposition <b>reactance</b> (<a href="t07-ac-fundamentals.html">T07</a>). But it comes from the change, not from the current.</p></div>
+
+    <h2>Energy stored in the magnetic field</h2>
+    <p>To build up current in an inductor you must push against its back-EMF. The power you put in is p = v·i = L i di/dt. Add it up (integrate) from zero current to a final current I:</p>
+    <div class="formula">W = ∫ L i di = ½ L I²
+      <small>The energy does not go into heat (for an ideal coil). It sits in the magnetic field, with energy density B² / 2μ₀ joules per cubic metre. When the current falls, the field gives the energy back.</small></div>
+    <p><b>Worked example, relay coil.</b> A 12 V relay coil of 0.1 H draws 50 mA. W = ½ × 0.1 × 0.05² = 1.25 × 10⁻⁴ J = <b>125 µJ</b>. That sounds tiny, and it is: a 5 mm LED uses more energy than that in a few milliseconds. But if that energy is released in 1 µs, the power is 125 µJ / 1 µs = 125 W, concentrated in one small transistor junction. Energy is not the problem; <b>how fast it is forced out</b> is the problem.</p>
+    <p><b>Worked example, buck converter inductor.</b> A 22 µH inductor carrying 3 A stores ½ × 22 × 10⁻⁶ × 9 ≈ 99 µJ. In a 500 kHz converter, the inductor takes in and hands back a fraction of this energy half a million times a second. A small part refilled very often is how a pea-sized inductor can move tens of watts.</p>
+    <div class="callout tip"><span class="label">Where the energy really sits</span><p>In a ferrite inductor with a small air gap in its core, most of the stored energy is in the <b>gap</b>, not in the ferrite. The ferrite has high permeability, so it needs only a small H to carry the flux, and energy density is ½BH. The gap has the same B but needs a big H. Designers add a gap on purpose: it stores the energy and stops the core saturating.</p></div>
+
+    <h2>RL circuits and the time constant</h2>
+    <p>Connect a coil with inductance L and total resistance R to a DC supply V through a switch. At the moment you close the switch, the current is zero. The inductor will not let it jump, so the whole supply voltage appears across the inductor: di/dt = V / L. As current builds, more voltage is dropped across R, less is left for L, and the current rises more slowly. The result is the same shape as a charging capacitor:</p>
+    <div class="formula">i(t) = (V/R) · (1 − e<sup>−t/τ</sup>)      τ = L / R
+      <small>τ (tau) is the <b>time constant</b> in seconds. After 1 τ the current is 63 % of its final value V/R; after 3 τ, 95 %; after 5 τ, more than 99 %: call it finished. When the supply is removed and the current has a path, it decays as i = I₀ e<sup>−t/τ</sup>.</small></div>
+    <p><b>Worked example.</b> A 12 V relay coil has R = 240 Ω (so it draws 12 / 240 = 50 mA) and L = 0.1 H. τ = 0.1 / 240 ≈ 0.42 ms. The current reaches 63 % (32 mA) after 0.42 ms and is essentially full after about 2 ms. Add the mechanical time for the armature to move and a small relay pulls in after roughly 5–15 ms. Notice that L/R being small is why relays still feel "instant".</p>
+    <p>Note the duality with T05: for RC, τ = RC (more R makes it <i>slower</i>). For RL, τ = L/R (more R makes it <i>faster</i>), because more resistance means a smaller final current, which the inductor reaches sooner.</p>
+
+    <div class="widget" id="t06-rl">
+      <span class="label">Interactive · RL current rise, switch-off and kick</span>
+      <p style="font-size:15px;margin:0 0 6px">The switch closes at 0 ms and opens at 10 ms. After it opens, the current freewheels through a flyback diode (0.7 V drop). Change L and R and watch the curve.</p>
+      <label>Supply voltage V <span class="out" id="t06-vo">12 V</span><input type="range" id="t06-v" min="1" max="24" step="1" value="12"></label>
+      <label>Coil resistance R <span class="out" id="t06-ro">240 Ω</span><input type="range" id="t06-r" min="10" max="1000" step="10" value="240"></label>
+      <label>Inductance L <span class="out" id="t06-lo">100 mH</span><input type="range" id="t06-l" min="-3" max="0" step="0.05" value="-1"></label>
+      <label>If there were <b>no diode</b>, the switch stops the current in <select id="t06-t"><option value="0.1">0.1 µs (fast MOSFET)</option><option value="1" selected>1 µs (transistor)</option><option value="10">10 µs</option><option value="100">100 µs</option></select></label>
+      <svg id="t06-plot" viewBox="0 0 600 240" role="img" aria-label="Plot of inductor current against time">
+        <line class="s-thin" x1="50" y1="200" x2="580" y2="200"/>
+        <line class="s-thin" x1="50" y1="20" x2="50" y2="200"/>
+        <line class="s-thin s-dash" x1="315" y1="20" x2="315" y2="200"/>
+        <line class="s-thin s-dash" id="t06-final" x1="50" y1="40" x2="580" y2="40"/>
+        <text class="t t-small t-muted" x="52" y="218">0</text>
+        <text class="t t-small t-muted" x="296" y="218">10 ms</text>
+        <text class="t t-small t-muted" x="550" y="218">20 ms</text>
+        <text class="t t-small t-muted" x="322" y="34">switch opens</text>
+        <text class="t t-small t-muted" x="60" y="34" id="t06-flabel">V/R</text>
+        <text class="t t-small t-muted" x="8" y="120">i</text>
+        <path class="s-accent" id="t06-curve" d=""/>
+      </svg>
+      <div class="readings">
+        <div><small>Time constant τ = L/R</small><span class="out" id="t06-tau">–</span></div>
+        <div><small>Final current V/R</small><span class="out" id="t06-if">–</span></div>
+        <div><small>Current at switch-off</small><span class="out" id="t06-i1">–</span></div>
+        <div><small>Energy ½LI² at switch-off</small><span class="out" id="t06-e">–</span></div>
+        <div><small>Kick with no diode ≈ L·I/Δt</small><span class="out" id="t06-kick">–</span></div>
+        <div><small>Freewheel time with diode</small><span class="out" id="t06-fw">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var sv=$('t06-v'), sr=$('t06-r'), sl=$('t06-l'), st=$('t06-t');
+      function fT(s){ if(s>=1) return s.toFixed(2)+' s'; if(s>=1e-3) return (s*1e3).toPrecision(3)+' ms'; if(s>=1e-6) return (s*1e6).toPrecision(3)+' µs'; return (s*1e9).toPrecision(3)+' ns'; }
+      function fI(a){ if(a>=1) return a.toFixed(2)+' A'; if(a>=1e-3) return (a*1e3).toPrecision(3)+' mA'; return (a*1e6).toPrecision(3)+' µA'; }
+      function fL(h){ if(h>=0.995) return h.toFixed(2)+' H'; if(h>=1e-3) return (h*1e3).toPrecision(3)+' mH'; return (h*1e6).toPrecision(3)+' µH'; }
+      function fE(j){ if(j>=1) return j.toPrecision(3)+' J'; if(j>=1e-3) return (j*1e3).toPrecision(3)+' mJ'; return (j*1e6).toPrecision(3)+' µJ'; }
+      function fV(v){ if(v>=1e3) return (v/1e3).toPrecision(3)+' kV'; return v.toPrecision(3)+' V'; }
+      function upd(){
+        var V=+sv.value, R=+sr.value, L=Math.pow(10,+sl.value), dt=(+st.value)*1e-6, Vd=0.7;
+        var tau=L/R, If=V/R, ton=10e-3, T=20e-3;
+        var i1=If*(1-Math.exp(-ton/tau));
+        var x0=50, x1=580, yb=200, yt=40, N=500, d='';
+        for(var k=0;k<=N;k++){
+          var t=T*k/N, i;
+          if(t<=ton){ i=If*(1-Math.exp(-t/tau)); }
+          else { i=(i1+Vd/R)*Math.exp(-(t-ton)/tau)-Vd/R; if(i<0) i=0; }
+          var x=x0+(x1-x0)*t/T, y=yb-(yb-yt)*(i/If);
+          d+=(k?' L':'M')+x.toFixed(1)+','+y.toFixed(1);
+        }
+        $('t06-curve').setAttribute('d',d);
+        $('t06-flabel').textContent='V/R = '+fI(If);
+        $('t06-vo').textContent=V+' V';
+        $('t06-ro').textContent=R+' Ω';
+        $('t06-lo').textContent=fL(L);
+        $('t06-tau').textContent=fT(tau);
+        $('t06-if').textContent=fI(If);
+        $('t06-i1').textContent=fI(i1);
+        $('t06-e').textContent=fE(0.5*L*i1*i1);
+        $('t06-kick').textContent=fV(L*i1/dt);
+        $('t06-fw').textContent=fT(tau*Math.log(1+i1*R/Vd));
+      }
+      [sv,sr,sl,st].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+    <p>Things to try in the widget: set L = 1 H and R = 10 Ω. τ is 100 ms, so in the 10 ms window the current barely rises; the inductor is "heavy". Then set L = 1 mH: the curve becomes a sharp step. Look at the kick figure for the default relay: 0.1 H × 50 mA / 1 µs = 5 kV. That is the next section.</p>
+
+    <h2>The relay-coil kick and the flyback diode</h2>
+    <p>Here is the situation you will build in <a href="../practice/p08-transistor-switches.html">P08</a>: a microcontroller pin drives an NPN transistor, and the transistor switches a 12 V relay coil to ground. When the transistor turns on, current builds up in the coil gently, with τ = 0.42 ms, and nothing dramatic happens. The trouble is when it turns <b>off</b>.</p>
+    <h3>Worked example: how big is the spike?</h3>
+    <p>The coil carries 50 mA. A transistor turns off in about 1 µs. If the current really fell from 50 mA to zero in 1 µs:</p>
+    <div class="formula">V = L · di/dt = 0.1 H × (0.05 A / 1 × 10⁻⁶ s) = 5000 V
+      <small>The coil produces this voltage in the direction that tries to keep the current flowing, so the transistor's collector is driven far above the 12 V supply.</small></div>
+    <p>In real life the voltage does not reach 5000 V, because something gives way first. The collector voltage rises until <i>something</i> conducts: the transistor's collector–base junction breaks down (avalanche), or a spark jumps across a mechanical switch's contacts, or the coil's own stray capacitance absorbs the energy and rings. We can estimate the last case. If all ½LI² goes into a stray capacitance C of about 100 pF, then ½CV² = ½LI², so</p>
+    <div class="formula">V<sub>peak</sub> = I √(L/C) = 0.05 × √(0.1 / 100 × 10⁻¹²) ≈ 1600 V</div>
+    <p>A small-signal transistor such as a BC337 or 2N2222 is rated for only about 40–45 V between collector and emitter. Each switch-off pushes it into breakdown and dumps the coil's energy into a tiny spot of silicon. It may survive tens or thousands of times, then fail short. On top of that, a spike of hundreds of volts couples into nearby wiring and resets microcontrollers. This is the most common "my circuit works for a while and then dies" fault in hobby and field electronics.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"The spike can't be bigger than the supply, because the supply is only 12 V."</b> The spike does not come from the supply. It comes from the energy stored in the coil's field, and the inductor will produce <i>any</i> voltage needed to keep its current flowing. A 5 V relay can produce hundreds of volts. An inductor is a current source for a short moment, not a voltage source.</p></div>
+
+    <h3>The fix: give the current somewhere to go</h3>
+    <p>The inductor's demand is simple: "my current must keep flowing for a moment". So give it a path. Put a diode across the coil, with its <b>cathode (band) to the +12 V end</b> and its anode to the transistor end. In normal operation the diode is reverse biased and does nothing. At switch-off the coil's voltage reverses, the diode becomes forward biased, and the coil's current circulates round the little loop of coil and diode. The collector only rises to 12 V + 0.7 V = 12.7 V. The stored 125 µJ is burned slowly as heat in the coil's own 240 Ω resistance and in the diode. This diode is called a <b>flyback</b>, <b>freewheeling</b> or <b>snubber</b> diode. A 1N4007 (~A$0.10) or 1N4148 is enough for small relays.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 320" role="img" aria-label="NPN transistor driving a relay coil with a flyback diode, and a graph of collector voltage with and without the diode">
+        <defs>
+          <marker id="t06f3-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t06f3-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t06f3-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <text class="t t-bold" x="56" y="24">+12 V</text>
+        <line class="s-line" x1="105" y1="30" x2="300" y2="30"/>
+        <path class="s-line" d="M220,30 V70"/>
+        <path class="s-line" d="M220,70 a6,6 0 0 1 0,12 a6,6 0 0 1 0,12 a6,6 0 0 1 0,12 a6,6 0 0 1 0,12 a6,6 0 0 1 0,12"/>
+        <path class="s-line" d="M220,130 V185"/>
+        <text class="t t-small" x="236" y="94">relay coil</text>
+        <text class="t t-small t-muted" x="236" y="110">0.1 H, 240 Ω</text>
+        <path class="s-line" d="M220,50 H140 V92"/>
+        <polygon class="f-ink" points="131,110 149,110 140,92"/>
+        <line class="s-line" x1="129" y1="92" x2="151" y2="92"/>
+        <path class="s-line" d="M140,110 V150 H220"/>
+        <text class="t t-small" x="40" y="96">flyback</text>
+        <text class="t t-small" x="40" y="112">diode</text>
+        <path class="s-blue s-dash" d="M160,64 H200 V138 H160 V72" marker-end="url(#t06f3-b)"/>
+        <path class="s-red" d="M260,40 V60" marker-end="url(#t06f3-r)"/>
+        <line class="s-line" x1="205" y1="192" x2="205" y2="232"/>
+        <line class="s-line" x1="205" y1="202" x2="220" y2="187"/>
+        <line class="s-line" x1="205" y1="222" x2="220" y2="237" marker-end="url(#t06f3-k)"/>
+        <path class="s-line" d="M220,237 V268"/>
+        <line class="s-line" x1="205" y1="268" x2="235" y2="268"/>
+        <line class="s-line" x1="210" y1="274" x2="230" y2="274"/>
+        <line class="s-line" x1="215" y1="280" x2="225" y2="280"/>
+        <path class="s-line" d="M205,212 H175"/>
+        <rect class="f-panel s-line" x="125" y="204" width="50" height="16"/>
+        <path class="s-line" d="M125,212 H90"/>
+        <circle class="f-ink" cx="88" cy="212" r="3"/>
+        <text class="t t-small" x="30" y="200">MCU pin</text>
+        <text class="t t-small t-muted" x="128" y="240">1 kΩ</text>
+        <text class="t t-small" x="236" y="215">NPN</text>
+        <text class="t t-small t-red" x="270" y="56">ON</text>
+        <text class="t t-small t-blue" x="40" y="168">OFF: current</text>
+        <text class="t t-small t-blue" x="40" y="184">circulates</text>
+        <text class="t t-small t-muted" x="236" y="180">collector</text>
+
+        <text class="t t-bold" x="372" y="24">Collector voltage at switch-off</text>
+        <line class="s-thin" x1="380" y1="290" x2="625" y2="290"/>
+        <line class="s-thin" x1="380" y1="290" x2="380" y2="40"/>
+        <line class="s-thin s-dash" x1="380" y1="250" x2="625" y2="250"/>
+        <text class="t t-small t-muted" x="338" y="254">12 V</text>
+        <text class="t t-small t-muted" x="350" y="294">0</text>
+        <path class="s-red" d="M380,287 H470 L473,48 L478,250 Q484,236 490,262 Q497,240 504,256 Q510,246 516,251 H625"/>
+        <path class="s-blue" d="M380,288 H470 V246 H540 Q548,246 552,250 H625"/>
+        <text class="t t-small t-red" x="482" y="62">no diode: hundreds of volts</text>
+        <text class="t t-small t-red" x="482" y="78">until the transistor breaks</text>
+        <text class="t t-small t-red" x="482" y="94">down or a spark jumps</text>
+        <text class="t t-small t-blue" x="482" y="232">with diode: 12.7 V</text>
+        <text class="t t-small t-muted" x="400" y="310">transistor on (≈0 V)</text>
+        <text class="t t-small t-muted" x="560" y="310">off</text>
+      </svg>
+      <figcaption>Figure 3. Left: the relay driver. Red: while the transistor is on, current flows down through the coil. Blue dashed: after switch-off the coil keeps its current flowing round the coil–diode loop. Right: what an oscilloscope on the collector shows. Without the diode, a narrow spike far above the supply (drawn not to scale); with the diode, the collector stops at one diode drop above +12 V.</figcaption>
+    </figure>
+    <a class="crosslink" href="pn-junction-deep-dive.html">Deep dive: why a diode conducts one way only</a>
+
+    <h3>The price of the simple diode: slow release</h3>
+    <p>With only a diode, the voltage across the coil during freewheeling is small: the coil's own drop I·R plus 0.7 V. So the current falls slowly: di/dt = −(I·R + 0.7) / L = −(12 + 0.7) / 0.1 ≈ −127 A/s at the start, and it takes about a millisecond for the field to collapse. The relay contacts open later and more slowly, which can increase arcing on the contacts when switching heavy loads.</p>
+    <p>To release faster, let the coil voltage rise higher, but to a <b>controlled</b> level. Put a Zener diode (say 24 V) in series with the flyback diode. Now the freewheel voltage is 12 + 24.7 ≈ 37 V across the coil and di/dt is about three times larger, so the field collapses about three times faster. The collector now reaches 12 + 24.7 ≈ 37 V, so the transistor must be rated above that. A TVS (transient voltage suppressor) diode does the same job. This is a general rule: <b>a higher clamp voltage gives a faster current decay</b>, because the inductor's di/dt equals the voltage across it divided by L.</p>
+
+    <div class="callout warn"><span class="label">Safety</span><p>The kick is real even on ELV circuits. A 12 V coil interrupted by hand (pulling a wire off) can give you a sharp, harmless-but-painful tingle across your fingers and will pit the contacts. Large inductors (motor windings, big chokes) store far more energy. Always make sure an inductive load has a path for its current before you break it.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>The inductive loads you will meet on Australian building jobs mostly run on extra-low voltage: BMS relays and actuators on 24 V AC or 24 V DC, electric door strikes and magnetic locks on 12 V or 24 V DC, solenoid valves, and the coils of contactors in plant rooms. Relay modules sold by Jaycar, Altronics and Core Electronics normally already include the flyback diode; bare relays do not. The mains side of a contactor (the 230/400 V it switches) is electricians' work, but the 24 V coil circuit is often yours.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Access control installers fit a diode (or the suppressor supplied in the box) across every electric strike and maglock, as close to the lock as practical. Forget it, and the spike at each door release wears the controller's relay contacts, resets the controller, or corrupts reader data. For an <b>AC</b> coil (for example a 24 V AC contactor) a plain diode cannot be used, because it would short every other half-cycle; there you use an RC snubber or a varistor (MOV), which clamp in both directions.</p></div>
+
+    <h2>Inductors in buck converters</h2>
+    <p>Suppose you need 5 V at 3 A from a 24 V DC building supply. A linear regulator (like a 7805) would drop the extra 19 V as heat: 19 V × 3 A = 57 W of heat to make 15 W of output. A <b>buck converter</b> does it at about 90 % efficiency by using an inductor as a temporary energy store. This is why your USB car charger stays cool. You will build both in <a href="../practice/p10-power-supplies.html">P10</a>.</p>
+    <p>A transistor switch connects the inductor to 24 V for a short part of each cycle, then disconnects it. While connected, the inductor has (24 − 5) = 19 V across it and its current ramps up. When the switch opens, the inductor does exactly what the relay coil did: it insists on keeping its current flowing. This time we <i>want</i> that. A diode (or a second transistor, in a "synchronous" buck) gives it a path from ground, and the inductor keeps feeding the load while its current ramps down with −5 V across it. The output capacitor smooths the small ripple that remains.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Buck converter schematic and triangular inductor current waveform">
+        <path class="s-line" d="M50,60 V96"/>
+        <line class="s-line" x1="34" y1="96" x2="66" y2="96"/>
+        <line class="s-line" x1="42" y1="106" x2="58" y2="106"/>
+        <path class="s-line" d="M50,106 V160"/>
+        <text class="t t-small" x="6" y="88">24 V</text>
+        <text class="t t-small t-muted" x="70" y="92">+</text>
+        <path class="s-line" d="M50,60 H110"/>
+        <line class="s-line" x1="110" y1="60" x2="146" y2="44"/>
+        <circle class="f-ink" cx="110" cy="60" r="3"/>
+        <circle class="f-ink" cx="150" cy="60" r="3"/>
+        <text class="t t-small" x="96" y="34">switch (MOSFET)</text>
+        <path class="s-line" d="M150,60 H220"/>
+        <circle class="f-ink" cx="180" cy="60" r="3"/>
+        <path class="s-line" d="M180,60 V95"/>
+        <polygon class="f-ink" points="171,113 189,113 180,95"/>
+        <line class="s-line" x1="169" y1="95" x2="191" y2="95"/>
+        <path class="s-line" d="M180,113 V160"/>
+        <text class="t t-small t-muted" x="196" y="110">diode</text>
+        <path class="s-line" d="M220,60 a6,6 0 0 1 12,0 a6,6 0 0 1 12,0 a6,6 0 0 1 12,0 a6,6 0 0 1 12,0 a6,6 0 0 1 12,0"/>
+        <text class="t t-small" x="222" y="40">L = 22 µH</text>
+        <path class="s-line" d="M280,60 H450"/>
+        <path class="s-line" d="M360,60 V100"/>
+        <line class="s-line" x1="344" y1="100" x2="376" y2="100"/>
+        <line class="s-line" x1="344" y1="108" x2="376" y2="108"/>
+        <path class="s-line" d="M360,108 V160"/>
+        <text class="t t-small t-muted" x="382" y="110">C out</text>
+        <path class="s-line" d="M450,60 V84"/>
+        <rect class="f-panel s-line" x="440" y="84" width="20" height="50"/>
+        <path class="s-line" d="M450,134 V160"/>
+        <text class="t t-small" x="468" y="114">load</text>
+        <text class="t t-bold" x="468" y="66">5 V, 3 A</text>
+        <path class="s-line" d="M50,160 H450"/>
+        <text class="t t-small t-muted" x="230" y="178">0 V</text>
+
+        <line class="s-thin" x1="60" y1="285" x2="610" y2="285"/>
+        <line class="s-thin" x1="60" y1="285" x2="60" y2="195"/>
+        <text class="t t-small t-muted" x="20" y="200">i<tspan class="t-small">L</tspan></text>
+        <line class="s-thin s-dash" x1="60" y1="240" x2="610" y2="240"/>
+        <path class="s-accent" d="M60,260 L85,220 L180,260 L205,220 L300,260 L325,220 L420,260 L445,220 L540,260 L565,220 L610,239"/>
+        <text class="t t-small" x="455" y="210">ΔI ≈ 0.36 A peak-to-peak</text>
+        <text class="t t-small t-muted" x="186" y="236">average = load current 3 A</text>
+        <text class="t t-small t-red" x="64" y="208">up: +19 V across L</text>
+        <text class="t t-small t-blue" x="240" y="278">down: −5 V across L</text>
+      </svg>
+      <figcaption>Figure 4. Buck converter. While the switch is on, 19 V across the inductor ramps its current up; while it is off, the inductor's current flows on through the diode, and −5 V across it ramps it down. The inductor's current never stops; it just wobbles around the load current.</figcaption>
+    </figure>
+
+    <h3>The maths in two lines</h3>
+    <p>In steady operation the inductor current must end each cycle where it started, so the "volt-seconds" up must equal the volt-seconds down. If the switch is on for a fraction D of the period (the <b>duty cycle</b>):</p>
+    <div class="formula">(V<sub>in</sub> − V<sub>out</sub>) · D = V<sub>out</sub> · (1 − D)   →   V<sub>out</sub> = D · V<sub>in</sub>
+      <small>For 24 V → 5 V, D = 5/24 ≈ 0.21. The controller chip adjusts D continuously to hold 5 V as the load and input change.</small></div>
+    <p><b>Ripple.</b> At 500 kHz the period is 2 µs, so the switch is on for 0.21 × 2 µs ≈ 0.42 µs. ΔI = V<sub>L</sub> × t<sub>on</sub> / L = 19 × 0.42 × 10⁻⁶ / 22 × 10⁻⁶ ≈ <b>0.36 A</b> peak-to-peak. A smaller inductor gives more ripple; a higher switching frequency gives less, which is why modern converters switch fast and use tiny inductors.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Buying a replacement inductor? Check three numbers on the datasheet: <b>inductance</b>, <b>saturation current</b> (I<sub>sat</sub>, where inductance has dropped by a set amount, often 20–30 %), and <b>rated or RMS current</b> (I<sub>rms</sub>, the current that warms it by about 40 °C). The peak current (average plus half the ripple) must stay below I<sub>sat</sub>. A same-value inductor with a lower I<sub>sat</sub> can make a converter fail.</p></div>
+
+    <h2>Cores, ferrite and saturation</h2>
+    <p>Iron, nickel, cobalt and certain ceramics are <b>ferromagnetic</b>. Inside them, groups of atoms called <b>domains</b> are already tiny magnets. Normally the domains point in random directions and cancel out. A small applied field (from the coil's current) swings them into line, and their fields add to the coil's. This is why a core multiplies inductance by μ<sub>r</sub>.</p>
+    <p>Engineers describe this with two quantities. <b>H</b>, the "magnetising force", is what the coil's current provides: H = N·I / ℓ, in ampere-turns per metre. <b>B</b> is the resulting flux density. In air, B = μ₀H. In a core, B = μ₀μ<sub>r</sub>H, but only up to a limit.</p>
+    <h3>Saturation</h3>
+    <p>Once nearly all domains are aligned, there is nothing left to line up. B stops rising steeply and only grows at the tiny air rate. The core is <b>saturated</b>. Its effective μ<sub>r</sub> falls towards 1, so the inductance collapses. In a circuit this is dramatic: in the buck converter above, if the peak current pushes the core into saturation, L suddenly drops, di/dt = V/L shoots up, and the current spikes until the switch or fuse fails. Typical saturation flux densities: <b>ferrite about 0.3–0.5 T</b>, <b>silicon steel about 1.5–2 T</b>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 285" role="img" aria-label="B-H curve of a magnetic core showing saturation and a hysteresis loop">
+        <defs><marker id="t06f5-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <line class="s-thin" x1="60" y1="140" x2="600" y2="140" marker-end="url(#t06f5-k)"/>
+        <line class="s-thin" x1="320" y1="250" x2="320" y2="20" marker-end="url(#t06f5-k)"/>
+        <text class="t t-small" x="520" y="160">H (from N·I)</text>
+        <text class="t t-small" x="330" y="26">B (tesla)</text>
+        <path class="s-thin s-dash" d="M320,140 C338,134 350,94 395,72 S500,55 570,52"/>
+        <path class="s-accent" d="M80,228 C200,226 268,214 296,192 S334,104 380,76 S480,55 570,52"/>
+        <path class="s-blue" d="M570,52 C440,54 372,66 344,88 S306,176 260,204 S160,226 80,228"/>
+        <text class="t t-small t-red" x="430" y="44">saturation: B levels off</text>
+        <text class="t t-small t-muted" x="326" y="100">remanence</text>
+        <text class="t t-small t-muted" x="226" y="160">coercivity</text>
+        <text class="t t-small t-muted" x="400" y="110">steep part: high μ</text>
+        <text class="t t-small t-muted" x="400" y="126">(the useful region)</text>
+        <text class="t t-small" x="70" y="268">Loop area = energy lost as heat each cycle (hysteresis loss). Dashed: first magnetisation.</text>
+      </svg>
+      <figcaption>Figure 5. B against H for a core material. The steep middle is where the core multiplies the field. At the ends the core saturates and behaves almost like air. The loop shows hysteresis: the core "remembers" its last direction, and going round the loop costs energy every cycle.</figcaption>
+    </figure>
+
+    <h3>Losses in cores: hysteresis and eddy currents</h3>
+    <p><b>Hysteresis loss.</b> Flipping domains back and forth is not perfectly reversible; it costs a little energy each cycle, equal to the area of the loop in Figure 5. More cycles per second means more heat, so loss grows with frequency. "Soft" magnetic materials have thin loops.</p>
+    <p><b>Eddy currents.</b> A changing flux inside a solid lump of iron induces circulating currents in the iron itself (the copper-pipe experiment, inside the core). They waste power as I²R heat. At 50 Hz the cure is to build the core from thin insulated sheets, called <b>laminations</b>, which break up the current loops (<a href="t08-transformers.html">T08</a>). At tens of kHz to MHz, even laminations are too thick, so we use <b>ferrite</b>: a ceramic of iron oxide mixed with manganese–zinc or nickel–zinc. It is magnetic but has very high electrical resistance, so eddy currents can hardly flow.</p>
+
+    <div class="table-wrap"><table>
+      <tr><th>Inductor type</th><th>Core</th><th>Where you will see it</th></tr>
+      <tr><td>Air-core coil</td><td>none (μ<sub>r</sub> = 1)</td><td>RF circuits, antennas matching; no saturation, small L</td></tr>
+      <tr><td>Drum / shielded SMD power inductor</td><td>ferrite</td><td>buck and boost converters, PoE devices, chargers</td></tr>
+      <tr><td>Toroid</td><td>ferrite or powdered iron ring</td><td>power filters; a closed ring keeps the field inside, so little interference</td></tr>
+      <tr><td>Ferrite bead or clip-on ferrite</td><td>ferrite</td><td>on USB and video cables; turns high-frequency noise into heat</td></tr>
+      <tr><td>Common-mode choke</td><td>ferrite toroid, two windings</td><td>power inputs, Ethernet magnetics; blocks noise that flows the same way in both wires</td></tr>
+      <tr><td>Iron-cored choke, relay coil, solenoid</td><td>laminated or solid steel</td><td>50 Hz filters, relays, door strikes, valves</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"More core material is always better."</b> A high-μ core gives more inductance per turn, but it also saturates at a lower current for a given winding. For energy-storage inductors (bucks, flyback transformers), designers deliberately <i>reduce</i> the effective permeability with an air gap or use powdered-iron cores with a "distributed gap", so the inductor can carry more current without saturating.</p></div>
+
+    <h2>See it on the bench</h2>
+    <p>Every idea in this chapter turns up in a Practice lab. When you do these labs, come back here and match what you see with the physics.</p>
+    <a class="crosslink" href="../practice/p08-transistor-switches.html">Practice P08 · Transistors as switches: drive a relay and fit the flyback diode</a>
+    <a class="crosslink" href="../practice/p13-actuators-motors.html">Practice P13 · Actuators: motors, solenoids and relays as inductive loads</a>
+    <a class="crosslink" href="../practice/p10-power-supplies.html">Practice P10 · Power supplies: build and measure a buck converter</a>
+    <a class="crosslink" href="../practice/p15-oscilloscope-logic-analyser.html">Practice P15 · Oscilloscope: capture the relay kick with and without the diode</a>
+    <div class="callout try"><span class="label">Try this (ELV only)</span><p>On a 12 V supply, wire a relay coil through a pushbutton, with no diode. Put an oscilloscope probe across the coil (×10 probe setting) and trigger on a rising edge. Release the button and you will see a spike of tens to hundreds of volts with ringing. Now add a 1N4007 across the coil, band to +12 V, and repeat: the spike disappears and the relay releases slightly later. Keep your fingers off the coil terminals during the no-diode test.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A coil of 10 mH and 2 Ω copper resistance sits on a 12 V DC supply for a long time. What current flows, and what voltage is across the inductance?</summary><div class="answer"><p>6 A (12 / 2). In steady DC, di/dt = 0, so the voltage across the inductance part is L × 0 = 0 V; all 12 V is across the copper resistance. Inductance sets how fast you get to 6 A (τ = L/R = 5 ms), not how much flows at the end.</p></div></details>
+    <details class="quiz"><summary>Why does breaking an inductive circuit cause a spark, but making it does not?</summary><div class="answer"><p>When you close the switch, the current starts at zero and rises at a rate set by V/L: the inductor's voltage can never exceed the supply. When you open it, you are trying to force the current from its full value to zero almost instantly. The inductor produces V = L di/dt, which is huge for a large di/dt, so the voltage across the opening gap rises until the air breaks down and an arc carries the current.</p></div></details>
+    <details class="quiz"><summary>Someone fits the flyback diode the wrong way round (band to the transistor side). What happens?</summary><div class="answer"><p>When the transistor turns on, its collector drops to about 0 V. The reversed diode is now forward biased straight from +12 V to the collector, bypassing the coil, so it shorts the supply through the diode and transistor. Something overheats or the supply limits/fuses. Correct orientation: cathode (band) to the positive supply, so the diode is reverse biased in normal operation.</p></div></details>
+    <details class="quiz"><summary>A relay with a flyback diode drops out too slowly. Why, and how could you speed it up?</summary><div class="answer"><p>During freewheeling, the voltage across the coil is only I·R + 0.7 V, so the current decays slowly (di/dt = V/L is small). To speed it up, allow a higher but controlled voltage: add a Zener (e.g. 24 V) in series with the diode, or use a TVS. The current then decays faster. The transistor must be rated above the supply plus the clamp voltage.</p></div></details>
+    <details class="quiz"><summary>You double the number of turns on the same core. What happens to the inductance?</summary><div class="answer"><p>It becomes about four times bigger. Twice the turns make twice the flux for the same current, and that flux links twice as many turns: L ∝ N². (Copper resistance also roughly doubles, and saturation now happens at half the current, because H = N·I/ℓ doubles.)</p></div></details>
+    <details class="quiz"><summary>A magnet falls slowly through a copper pipe. Copper is not magnetic. Where does the braking force come from, and where does the energy go?</summary><div class="answer"><p>The falling magnet changes the flux through each ring of the pipe, inducing eddy currents (Faraday). By Lenz's law, the eddy currents' fields oppose the change, which means they push up on the magnet as it approaches and pull up on it as it leaves. The magnet's lost gravitational energy becomes I²R heat in the copper.</p></div></details>
+    <details class="quiz"><summary>Why can't you put a plain diode across a 24 V AC contactor coil?</summary><div class="answer"><p>With AC, the coil voltage reverses every half-cycle. A diode across it would be forward biased on every other half-cycle and short-circuit the supply. For AC coils use a component that only conducts above a voltage in both directions (a varistor/MOV or bidirectional TVS) or an RC snubber, which gives the current a path without shorting the normal AC.</p></div></details>
+    <details class="quiz"><summary>A buck converter works at 1 A but fails at 3 A, even though the inductor's "rated current" is 4 A. What should you check?</summary><div class="answer"><p>The saturation current I<sub>sat</sub>. If the peak current (load plus half the ripple) exceeds I<sub>sat</sub>, the core saturates, L collapses, and current spikes. Rated (RMS) current is about heating, not saturation. Choose an inductor with I<sub>sat</sub> above the peak current with some margin.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can use the right-hand grip rule to find the field direction around a wire and the N end of a coil.</span></li>
+      <li><input type="checkbox"><span>I can state Faraday's law (EMF = −N dΦ/dt) and explain Lenz's law as "anti-change", with the energy argument.</span></li>
+      <li><input type="checkbox"><span>I can explain why an inductor resists change of current, not current, using the flywheel analogy.</span></li>
+      <li><input type="checkbox"><span>I can calculate stored energy ½LI² and the RL time constant τ = L/R.</span></li>
+      <li><input type="checkbox"><span>I can estimate the switch-off spike of a relay coil and draw a flyback diode the right way round.</span></li>
+      <li><input type="checkbox"><span>I know why AC coils need an MOV or RC snubber instead of a diode.</span></li>
+      <li><input type="checkbox"><span>I can explain how a buck converter uses an inductor, and calculate D = V<sub>out</sub>/V<sub>in</sub> and the ripple current.</span></li>
+      <li><input type="checkbox"><span>I can explain saturation, eddy currents and why ferrite is used at high frequency.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

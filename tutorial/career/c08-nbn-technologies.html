@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C08 · The NBN and access networks</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part III · Telecommunications</div>
+    <span class="eyebrow">Career · C08</span>
+    <h1>The NBN and access networks</h1>
+    <p class="lede">By the end you will be able to explain each NBN access technology from the exchange to the wall, say why a long copper line is slow, and know which field roles exist, what tickets they ask for, and what an interviewer will test you on.</p>
+    <div class="meta"><span><b>Time</b> 60 min read</span><span><b>Level</b> Beginner to job-ready</span><span><b>Builds on</b> T10, T16, C07</span><span><b>Roles</b> Installer, splicer, network tech</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What the NBN is, in one page</h2>
+    <p>The <b>NBN</b> (National Broadband Network) is Australia's wholesale broadband network. It is owned by a government business, NBN Co. NBN Co does not sell internet to homes. It sells <b>wholesale access</b> to <b>RSPs</b> (retail service providers, the internet companies a customer pays each month). The RSP buys capacity from NBN Co at a <b>POI</b> (point of interconnect), a handful of big sites around the country where the RSP's own network meets the NBN.</p>
+    <p>Between the POI and the customer is the <b>access network</b>. People also call it the "last mile". This is the part that differs from street to street. Your house might have fibre to the wall, or a copper phone line from a street cabinet, or a coaxial cable from the old pay-TV network, or an antenna pointed at a tower, or a dish pointed at a satellite. The access network is where most of the field work happens, so it is where most of the field jobs are.</p>
+
+    <div class="table-wrap"><table>
+      <tr><th>Term</th><th>Plain meaning</th></tr>
+      <tr><td>Access network</td><td>Everything between the local NBN site and the customer's wall.</td></tr>
+      <tr><td>Backhaul / transit</td><td>Big fibre links joining local sites to the POI. Customers never see it.</td></tr>
+      <tr><td>RSP</td><td>The retail company the customer pays. They log faults with NBN Co, and NBN Co sends a field tech.</td></tr>
+      <tr><td>NTD / connection box</td><td>The NBN-owned box inside the premises where the NBN ends and the customer's router plugs in.</td></tr>
+      <tr><td>Lead-in / drop</td><td>The final cable from the street pit or pole to the building.</td></tr>
+      <tr><td>Pit</td><td>An underground concrete or plastic box under a lid in the footpath. Cables are joined and stored there.</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "NBN" is one technology, and "NBN speed" is a property of the network. <b>Right:</b> the NBN is a mix of six access technologies. The speed a customer can get depends on the technology at their address, the plan they buy, and, for copper, the length and condition of their line. Two houses on the same street can have different technologies.</p></div>
+
+    <h2>The six access technologies end to end</h2>
+    <p>Here are all six side by side. Read each row from left (network) to right (customer). Notice two things. First, every technology uses fibre somewhere, because fibre is the only medium that carries huge data rates over kilometres cheaply. Second, the technologies differ in <i>how close the fibre gets</i> to the customer, and what carries the signal for the last stretch.</p>
+
+    <figure>
+      <svg viewBox="0 0 760 470" role="img" aria-label="Six NBN access technologies compared from network to premises">
+        <defs>
+          <marker id="c08a-pwr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <!-- legend -->
+        <line class="s-green" x1="20" y1="20" x2="60" y2="20"/><text class="t t-small" x="66" y="24">fibre</text>
+        <line class="s-amber" x1="120" y1="20" x2="160" y2="20"/><text class="t t-small" x="166" y="24">copper pair</text>
+        <line class="s-blue" x1="250" y1="20" x2="290" y2="20"/><text class="t t-small" x="296" y="24">coaxial</text>
+        <line class="s-accent s-dash" x1="360" y1="20" x2="400" y2="20"/><text class="t t-small" x="406" y="24">radio</text>
+        <text class="t t-small t-muted" x="500" y="24">Network side ← → Premises</text>
+
+        <!-- Row 1 FTTP -->
+        <text class="t t-bold" x="10" y="78">FTTP</text>
+        <rect class="f-wash s-line" x="90" y="58" width="110" height="36" rx="5"/><text class="t t-small" x="104" y="80">OLT at local site</text>
+        <line class="s-green" x1="200" y1="76" x2="340" y2="76"/>
+        <rect class="f-wash s-line" x="340" y="58" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="80">Passive splitter</text>
+        <line class="s-green" x1="460" y1="76" x2="600" y2="76"/>
+        <rect class="f-career-soft s-accent" x="600" y="58" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="80">Connection box (NTD)</text>
+        <text class="t t-small t-muted" x="210" y="100">fibre all the way, no power in the street</text>
+
+        <!-- Row 2 FTTC -->
+        <text class="t t-bold" x="10" y="148">FTTC</text>
+        <rect class="f-wash s-line" x="90" y="128" width="110" height="36" rx="5"/><text class="t t-small" x="104" y="150">Local site</text>
+        <line class="s-green" x1="200" y1="146" x2="340" y2="146"/>
+        <rect class="f-wash s-line" x="340" y="128" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="150">DPU in the pit</text>
+        <line class="s-amber" x1="460" y1="146" x2="600" y2="146"/>
+        <rect class="f-career-soft s-accent" x="600" y="128" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="150">NCD (modem, powers DPU)</text>
+        <path class="s-red" d="M590 172 H470" marker-end="url(#c08a-pwr)"/><text class="t t-small t-red" x="472" y="186">DC power fed back up the pair</text>
+
+        <!-- Row 3 FTTN -->
+        <text class="t t-bold" x="10" y="226">FTTN</text>
+        <rect class="f-wash s-line" x="90" y="206" width="110" height="36" rx="5"/><text class="t t-small" x="104" y="228">Local site</text>
+        <line class="s-green" x1="200" y1="224" x2="340" y2="224"/>
+        <rect class="f-wash s-line" x="340" y="206" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="228">Node cabinet</text>
+        <line class="s-amber" x1="460" y1="224" x2="600" y2="224"/>
+        <rect class="f-career-soft s-accent" x="600" y="206" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="228">VDSL2 modem</text>
+        <text class="t t-small t-muted" x="470" y="254">copper, hundreds of m to km</text>
+
+        <!-- Row 4 HFC -->
+        <text class="t t-bold" x="10" y="296">HFC</text>
+        <rect class="f-wash s-line" x="90" y="276" width="110" height="36" rx="5"/><text class="t t-small" x="98" y="298">CMTS / headend</text>
+        <line class="s-green" x1="200" y1="294" x2="340" y2="294"/>
+        <rect class="f-wash s-line" x="340" y="276" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="298">Optical node</text>
+        <line class="s-blue" x1="460" y1="294" x2="600" y2="294"/>
+        <polygon class="f-blue" points="520,286 520,302 534,294"/>
+        <rect class="f-career-soft s-accent" x="600" y="276" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="298">Cable modem NTD</text>
+        <text class="t t-small t-muted" x="470" y="324">coax with amplifiers and taps</text>
+
+        <!-- Row 5 Fixed Wireless -->
+        <text class="t t-bold" x="10" y="362">Fixed</text><text class="t t-bold" x="10" y="378">Wireless</text>
+        <rect class="f-wash s-line" x="90" y="348" width="110" height="36" rx="5"/><text class="t t-small" x="104" y="370">Local site</text>
+        <line class="s-green" x1="200" y1="366" x2="340" y2="366"/>
+        <rect class="f-wash s-line" x="340" y="348" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="370">Tower base station</text>
+        <path class="s-accent s-dash" d="M460 366 Q530 340 600 366"/>
+        <rect class="f-career-soft s-accent" x="600" y="348" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="370">Roof antenna + NTD</text>
+
+        <!-- Row 6 Satellite -->
+        <text class="t t-bold" x="10" y="436">Satellite</text>
+        <rect class="f-wash s-line" x="90" y="416" width="110" height="36" rx="5"/><text class="t t-small" x="98" y="438">Ground station</text>
+        <path class="s-accent s-dash" d="M200 430 Q270 400 340 430"/>
+        <rect class="f-wash s-line" x="340" y="416" width="120" height="36" rx="5"/><text class="t t-small" x="350" y="438">Satellite (GEO)</text>
+        <path class="s-accent s-dash" d="M460 430 Q530 400 600 430"/>
+        <rect class="f-career-soft s-accent" x="600" y="416" width="150" height="36" rx="5"/><text class="t t-small" x="610" y="438">Dish + NTD</text>
+        <text class="t t-small t-muted" x="215" y="464">~36,000 km up, each way</text>
+      </svg>
+      <figcaption>Figure 1. The six access technologies. Green is fibre. The closer the green line gets to the premises, the higher the speed the line can support and the less the speed depends on distance.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Technology</th><th>Last-stretch medium</th><th>Box at the premises</th><th>Speed depends on distance?</th><th>Typical field work</th></tr>
+      <tr><td>FTTP</td><td>Single-mode fibre</td><td>Connection box (NTD)</td><td>No (within design reach)</td><td>Lead-in hauling, splicing, NTD install, light-level tests</td></tr>
+      <tr><td>FTTC</td><td>Short copper pair from the pit</td><td>NCD (powers the DPU)</td><td>A little (short copper)</td><td>DPU install in pits, copper jointing, NCD set-up</td></tr>
+      <tr><td>FTTN</td><td>Existing copper pair from a cabinet</td><td>Customer's VDSL2 modem</td><td>Yes, strongly</td><td>Copper fault-finding, jointing, cabinet work</td></tr>
+      <tr><td>HFC</td><td>Coaxial cable</td><td>Cable modem NTD</td><td>Not much; capacity is shared per node</td><td>Coax drops, connectors, noise (ingress) hunting</td></tr>
+      <tr><td>Fixed Wireless</td><td>Radio from a tower</td><td>Outdoor antenna + NTD</td><td>Yes, plus line of sight and tower load</td><td>Roof antenna mounting and alignment, tower work</td></tr>
+      <tr><td>Satellite</td><td>Radio via a geostationary satellite</td><td>Dish + NTD</td><td>No, but high latency</td><td>Dish install and pointing, roof work in rural areas</td></tr>
+    </table></div>
+
+    <h2>FTTP: fibre to the premises (GPON)</h2>
+    <p><b>FTTP</b> means the fibre goes all the way into the building. Most NBN FTTP uses <b>GPON</b> (Gigabit Passive Optical Network). "Passive" is the key word. Between the local site and the house there is <i>no powered equipment</i>. There are only glass fibres, joints and <b>passive optical splitters</b>, which are small glass chips that divide light from one fibre into many.</p>
+
+    <h3>The parts</h3>
+    <ul>
+      <li><b>OLT</b> (optical line terminal). A rack of electronics at the local NBN site (you will hear it called a FAN site, fibre access node). One OLT port serves one PON.</li>
+      <li><b>Feeder and distribution fibre</b>. Cables with many fibres running from the site out to the streets.</li>
+      <li><b>Splitter</b>. Typically in a street cabinet or hub (you may hear "FDH", fibre distribution hub). One fibre in, many out, commonly up to 32 customers per PON.</li>
+      <li><b>Local fibre and drop</b>. Through pits and conduits, or on poles, to the building. The drop ends at a small weatherproof box on the outside wall (often called the PCD, premises connection device).</li>
+      <li><b>Connection box (NTD)</b>. The ONT (optical network terminal) inside. It turns light into Ethernet. The customer's router plugs into a UNI-D port (an Ethernet port on the box).</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 760 330" role="img" aria-label="GPON tree: one OLT port, a 1 to 32 splitter, many ONTs, with downstream 1490 nm and upstream 1310 nm">
+        <defs>
+          <marker id="c08b-dn" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="c08b-up" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-wash s-line" x="20" y="130" width="120" height="70" rx="6"/>
+        <text class="t t-bold" x="58" y="160">OLT</text>
+        <text class="t t-small t-muted" x="32" y="182">at the local site</text>
+        <line class="s-green" x1="140" y1="165" x2="330" y2="165"/>
+        <text class="t t-small" x="170" y="155">one feeder fibre</text>
+        <text class="t t-small t-muted" x="170" y="190">up to ~20 km design reach</text>
+        <!-- splitter -->
+        <polygon class="f-career-soft s-accent" points="330,140 330,190 400,215 400,115"/>
+        <text class="t t-small t-bold" x="336" y="170">1:32</text>
+        <text class="t t-small t-muted" x="318" y="240">passive splitter</text>
+        <text class="t t-small t-muted" x="318" y="256">(no power)</text>
+        <!-- drops -->
+        <path class="s-green" d="M400 125 L560 45"/>
+        <path class="s-green" d="M400 145 L560 105"/>
+        <path class="s-green" d="M400 165 L560 165"/>
+        <path class="s-green" d="M400 185 L560 225"/>
+        <path class="s-green" d="M400 205 L560 285"/>
+        <text class="t t-muted" x="590" y="200">⋮</text>
+        <g>
+          <rect class="f-panel s-line" x="560" y="30" width="100" height="30" rx="4"/><text class="t t-small" x="572" y="50">ONT house 1</text>
+          <rect class="f-panel s-line" x="560" y="90" width="100" height="30" rx="4"/><text class="t t-small" x="572" y="110">ONT house 2</text>
+          <rect class="f-panel s-line" x="560" y="150" width="100" height="30" rx="4"/><text class="t t-small" x="572" y="170">ONT house 3</text>
+          <rect class="f-panel s-line" x="560" y="210" width="100" height="30" rx="4"/><text class="t t-small" x="566" y="230">ONT house 31</text>
+          <rect class="f-panel s-line" x="560" y="270" width="100" height="30" rx="4"/><text class="t t-small" x="566" y="290">ONT house 32</text>
+        </g>
+        <!-- direction arrows -->
+        <path class="s-blue" d="M160 100 H300" marker-end="url(#c08b-dn)"/>
+        <text class="t t-small t-blue" x="150" y="80">Downstream 1490 nm: everyone</text>
+        <text class="t t-small t-blue" x="150" y="94">receives all of it, each ONT keeps its own</text>
+        <path class="s-red" d="M300 225 H160" marker-end="url(#c08b-up)"/>
+        <text class="t t-small t-red" x="150" y="250">Upstream 1310 nm: ONTs take turns</text>
+        <text class="t t-small t-red" x="150" y="264">in time slots the OLT assigns (TDMA)</text>
+        <text class="t t-small t-muted" x="676" y="50">each gets</text>
+        <text class="t t-small t-muted" x="676" y="66">~1/32 of</text>
+        <text class="t t-small t-muted" x="676" y="82">the light</text>
+      </svg>
+      <figcaption>Figure 2. A GPON tree. One OLT port lights one fibre. A passive splitter shares that light among up to 32 premises. Down and up travel on the same fibre at different wavelengths, so they do not collide.</figcaption>
+    </figure>
+
+    <h3>How 32 houses share one fibre</h3>
+    <p>Downstream (to the customer), GPON runs at about 2.5 Gb/s on 1490 nm light. The splitter sends a copy of everything to every house. Each ONT only keeps the frames addressed to it, and the traffic is encrypted, so neighbours cannot read each other's data. Upstream (from the customer), the line runs at about 1.25 Gb/s on 1310 nm. If two ONTs transmitted at the same moment their light would add together in the splitter and garble both. So the OLT gives each ONT tiny time slots to transmit in. This is <b>TDMA</b> (time division multiple access).</p>
+    <p>The price of a splitter is light loss. Splitting light 32 ways means each output gets about 1/32 of the power, which is 10·log<sub>10</sub>(32) ≈ 15 dB. Real splitters add excess loss, so a 1:32 splitter is commonly budgeted at around 17 dB. You will do this sum properly in the next chapter.</p>
+    <div class="formula">Ideal split loss = 10 · log<sub>10</sub>(N) = 10 · log<sub>10</sub>(32) ≈ 15.1 dB  →  budget ≈ 17 dB with excess loss
+      <small>N is the number of outputs. Each doubling of N costs about 3 dB. The extra ~2 dB covers real-world imperfections in the splitter and its joints.</small></div>
+    <p>Newer standards such as <b>XGS-PON</b> run at about 10 Gb/s and use different wavelengths, so they can share the same fibre and splitters with GPON. Network owners around the world, including in Australia, are upgrading PON networks this way. The field skills (clean, splice, test light levels) stay the same.</p>
+    <a class="crosslink" href="c09-fibre-splicing-otdr.html">Career C09 · Fibre optics in the field: splicing, connectors and OTDR</a>
+
+    <div class="callout job"><span class="label">On the job</span><p>An FTTP install tech checks the light level at the premises before and after fitting the connection box. Your employer will give you the pass window they use. As a rough guide, GPON receivers work between about −8 dBm and −27 dBm. A reading of "no light" or a level far below the window usually means a dirty connector, a tight bend, a bad splice, or the wrong fibre in the pit. Cleaning and re-testing fixes a surprising share of these.</p></div>
+
+    <h2>FTTC: fibre to the curb</h2>
+    <p><b>FTTC</b> takes fibre to a pit right outside the premises. In the pit sits a small sealed box called a <b>DPU</b> (distribution point unit). The DPU converts light to a VDSL2 signal and sends it over the <i>existing short copper lead-in</i> (often tens of metres) into the building. The copper is short, so the speed is much better than FTTN.</p>
+    <p>The clever part is power. A pit has no mains supply. So the DPU is <b>reverse powered</b>: the <b>NCD</b> (NBN connection device) inside the house, which is plugged into a power point, sends DC power <i>back up the copper pair</i> to run the DPU. If the customer unplugs the NCD and their neighbour on the same DPU does not, the DPU can still run; if nobody powers it, it is dark. This is why "the customer turned the box off" is a real FTTC fault cause.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Because the NCD puts DC on the pair, a phone-line tester or a meter on the line will show a voltage that a plain copper phone line would not have. Do not assume every voltage on a pair is a fault. Know which technology you are on before you measure. Practise safe meter use first in <a href="../practice/p03-multimeter-mastery.html">P03 Multimeter mastery</a>.</p></div>
+
+    <h2>FTTN: fibre to the node</h2>
+    <p><b>FTTN</b> takes fibre to a powered street <b>node cabinet</b>. The node holds VDSL2 line cards (a DSLAM). From there, the signal runs over the old telephone copper to each premises. That copper can be a few hundred metres or well over a kilometre long. The customer supplies a VDSL2 modem.</p>
+    <p>FTTN speed falls with distance. A house 200 m from the node and a house 1.2 km from the node on the same plan can see very different speeds. Copper joints in pits, corrosion, water ingress, old in-house wiring and extra phone sockets all make it worse. Much of FTTN field work is copper fault-finding: testing pairs, finding bad joints, and swapping to a better pair.</p>
+
+    <h2>HFC: hybrid fibre-coaxial</h2>
+    <p><b>HFC</b> reuses the coaxial cable networks first built for pay TV. Fibre runs to an <b>optical node</b> serving a neighbourhood. From there, coaxial cable runs down the street, with <b>amplifiers</b> to make up for loss and <b>taps</b> where each house's drop cable connects. The data system is <b>DOCSIS</b> (Data Over Cable Service Interface Specification). At the network end a <b>CMTS</b> (cable modem termination system) talks to the cable modem NTD in each home. DOCSIS 3.0 bonds several TV-sized channels together. DOCSIS 3.1 uses OFDM (many narrow sub-carriers, like VDSL2 and Wi-Fi) for higher speed.</p>
+    <p>All homes on one node share the same coax spectrum, like GPON shares a fibre. Coax is shielded, so speed barely depends on distance (amplifiers top the signal up). The classic HFC enemy is <b>ingress</b>: outside radio noise leaking in through a loose or corroded F-connector, a cheap splitter or a damaged drop. Noise that enters at one house travels upstream and can upset the whole node. Tightening, replacing and weatherproofing connectors is real, valued work.</p>
+
+    <h2>Fixed Wireless and satellite</h2>
+    <h3>Fixed Wireless</h3>
+    <p>Where houses are too spread out for cables, <b>Fixed Wireless</b> uses mobile-network radio technology (LTE, and 5G-based upgrades) from a tower to a <b>fixed outdoor antenna</b> on the house. "Fixed" means the antenna does not move and points at one particular tower. The installer mounts the antenna, runs a cable inside to the NTD, and <b>aligns the antenna</b> for the best signal readings. Signal falls with distance, trees and hills get in the way, and a busy tower is shared by all its users.</p>
+    <h3>Satellite</h3>
+    <p>For the most remote premises, the NBN uses <b>geostationary satellites</b> (the service is called Sky Muster). A geostationary satellite sits about 35,786 km above the equator and appears fixed in the sky, so a dish can be pointed once and left. The installer mounts the dish, points it accurately, and connects the NTD.</p>
+    <div class="formula">Minimum delay for a request and reply = 4 legs × 35,786 km ÷ 300,000 km/s ≈ 0.48 s
+      <small>Your request goes up to the satellite and down to the ground station (2 legs). The reply comes back up and down (2 more legs). That is physics, not a slow network. Real round-trip times are higher once processing is added. Low Earth orbit services, which fly much lower, have much lower delay for this reason.</small></div>
+    <div class="callout job"><span class="label">On the job</span><p>Wireless and satellite installs are roof jobs. Expect ladders, roof edges, heat, and long drives in regional areas. Employers will ask about working-at-heights training, a clean driving record, and whether you are comfortable alone on rural sites.</p></div>
+
+    <h2>Why copper gets slow with length</h2>
+    <p>VDSL2 sends data on thousands of small radio-frequency carriers called <b>tones</b>, spaced 4.3125 kHz apart, up to about 17.7 MHz (the "17a" profile). Each tone carries a number of bits per symbol, from 0 up to 15. The modem measures each tone's <b>signal-to-noise ratio</b> (SNR) when the line trains, then loads more bits onto clean tones and none onto noisy ones. Line speed is the sum over all tones. Two physical effects decide that SNR.</p>
+    <h3>1. Attenuation grows with length and with frequency</h3>
+    <p>A twisted pair loses signal as heat in the copper and the insulation. Loss in decibels grows in proportion to length: twice the length means twice the dB. It also grows with frequency, roughly with √f, because at high frequency the current crowds to the outside skin of the wire (the <b>skin effect</b>), which raises the resistance. So a long line does not just lose a bit of everything. It loses the high tones completely. The high tones are where most of the bits live.</p>
+    <figure>
+      <svg viewBox="0 0 560 300" role="img" aria-label="Received signal level versus frequency for 300 m, 800 m and 1500 m of copper, with the noise floor">
+        <!-- axes -->
+        <line class="s-line" x1="70" y1="30" x2="70" y2="250"/>
+        <line class="s-line" x1="70" y1="250" x2="470" y2="250"/>
+        <text class="t t-small t-muted" x="14" y="34">−60</text>
+        <text class="t t-small t-muted" x="14" y="132">−100</text>
+        <text class="t t-small t-muted" x="14" y="254">−150</text>
+        <text class="t t-small t-muted" x="66" y="268">0</text>
+        <text class="t t-small t-muted" x="174" y="268">4.4</text>
+        <text class="t t-small t-muted" x="276" y="268">8.8</text>
+        <text class="t t-small t-muted" x="364" y="268">13.2</text>
+        <text class="t t-small t-muted" x="452" y="268">17.7</text>
+        <text class="t t-small" x="200" y="290">Frequency (MHz)</text>
+        <text class="t t-small" x="14" y="18">Received level (dBm/Hz)</text>
+        <!-- noise floor -->
+        <line class="s-red s-dash" x1="70" y1="225.6" x2="470" y2="225.6"/>
+        <text class="t t-small t-red" x="380" y="242">noise floor</text>
+        <path class="s-green" d="M73.1,35.8 L83.0,41.9 L93.0,45.9 L102.9,49.1 L112.8,51.9 L122.7,54.4 L132.7,56.6 L142.6,58.7 L152.5,60.7 L162.4,62.6 L172.3,64.4 L182.3,66.1 L192.2,67.8 L202.1,69.3 L212.0,70.9 L222.0,72.4 L231.9,73.8 L241.8,75.2 L251.7,76.6 L261.6,77.9 L271.6,79.2 L281.5,80.5 L291.4,81.7 L301.3,83.0 L311.2,84.2 L321.2,85.4 L331.1,86.5 L341.0,87.7 L350.9,88.8 L360.9,89.9 L370.8,91.0 L380.7,92.1 L390.6,93.1 L400.5,94.2 L410.5,95.2 L420.4,96.3 L430.3,97.3 L440.2,98.3 L450.2,99.3 L460.1,100.2 L470.0,101.2"/>
+        <path class="s-amber" d="M73.1,45.4 L83.0,61.7 L93.0,72.4 L102.9,80.9 L112.8,88.3 L122.7,94.9 L132.7,101.0 L142.6,106.7 L152.5,111.9 L162.4,117.0 L172.3,121.7 L182.3,126.3 L192.2,130.7 L202.1,134.9 L212.0,139.0 L222.0,142.9 L231.9,146.8 L241.8,150.5 L251.7,154.2 L261.6,157.7 L271.6,161.2 L281.5,164.6 L291.4,168.0 L301.3,171.2 L311.2,174.5 L321.2,177.6 L331.1,180.7 L341.0,183.8 L350.9,186.8 L360.9,189.7 L370.8,192.7 L380.7,195.5 L390.6,198.4 L400.5,201.2 L410.5,203.9 L420.4,206.7 L430.3,209.4 L440.2,212.0 L450.2,214.7 L460.1,217.3 L470.0,219.9"/>
+        <path class="s-blue" d="M73.1,58.9 L83.0,89.5 L93.0,109.4 L102.9,125.5 L112.8,139.3 L122.7,151.8 L132.7,163.2 L142.6,173.7 L152.5,183.7 L162.4,193.0 L172.3,202.0 L182.3,210.5 L192.2,218.8 L202.1,226.7 L212.0,234.3 L222.0,241.8 L231.9,249.0"/>
+        <text class="t t-small t-green" x="480" y="104">300 m</text>
+        <text class="t t-small" x="480" y="222">800 m</text>
+        <text class="t t-small t-blue" x="200" y="214">1.5 km</text>
+        <text class="t t-small t-muted" x="96" y="200">gap = SNR</text>
+        <line class="s-thin" x1="150" y1="113" x2="150" y2="224"/>
+      </svg>
+      <figcaption>Figure 3. Indicative received level on 0.4 mm copper (illustrative model). The gap between a curve and the noise floor is the SNR available on each tone. At 1.5 km, everything above about 6 MHz is lost in the noise, so most of the VDSL2 band carries nothing.</figcaption>
+    </figure>
+    <h3>2. Crosstalk from neighbouring pairs</h3>
+    <p>Phone cables hold dozens to hundreds of pairs packed together. Each pair's signal couples a little into its neighbours, like hearing the conversation through a thin wall. <b>FEXT</b> (far-end crosstalk) is the main VDSL2 problem: signals from other modems on the same cable leak into your pair and arrive at your receiver as noise. Crosstalk coupling grows with frequency, so it also hits the high tones hardest. <b>Vectoring</b> is a technique where the node knows what every pair is sending, works out the leakage, and pre-cancels it. It can remove most of the crosstalk, which is why vectored lines get much closer to their attenuation-only limit.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>Bits per tone follow Shannon's idea: capacity ≈ log<sub>2</sub>(1 + SNR). Every 3 dB more SNR buys about one extra bit on that tone. Attenuation lowers the signal; crosstalk raises the noise; both shrink the SNR. Decibels, SNR and noise are explained in the Theory book, and why loss grows with frequency in the waves chapter.</p></div>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre</a>
+
+    <div class="widget" id="c08-w">
+      <span class="label">Interactive · VDSL2 speed vs line length (indicative model)</span>
+      <p style="font-size:14.5px;color:var(--muted)">This is a teaching model built from the physics above (√f attenuation, a noise floor, simple crosstalk, Shannon bit-loading on 17a tones). It is <b>indicative only</b>. It is not NBN's figures and does not predict any real line, which also depends on joints, cable condition, in-home wiring and the plan.</p>
+      <label>Line length from node <span class="out" id="c08-lo">800 m</span><input type="range" id="c08-len" min="50" max="2500" step="25" value="800"></label>
+      <label>Copper gauge <select id="c08-g"><option value="0.4">0.4 mm (common in street cables)</option><option value="0.64">0.64 mm (thicker, less loss)</option></select></label>
+      <label>Crosstalk <select id="c08-x"><option value="vec">Vectored (crosstalk cancelled)</option><option value="typ" selected>Not vectored, ~10 active neighbours</option><option value="busy">Not vectored, ~30 active neighbours</option></select></label>
+      <div class="readings">
+        <div><small>Downstream (model)</small><span class="out" id="c08-r">–</span></div>
+        <div><small>Highest usable tone</small><span class="out" id="c08-f">–</span></div>
+        <div><small>Loss at 8 MHz</small><span class="out" id="c08-a">–</span></div>
+      </div>
+      <svg id="c08-plot" viewBox="0 0 560 240" role="img" aria-label="Indicative downstream rate versus length" style="margin-top:12px">
+        <line class="s-line" x1="60" y1="20" x2="60" y2="200"/>
+        <line class="s-line" x1="60" y1="200" x2="540" y2="200"/>
+        <text class="t t-small t-muted" x="22" y="24">160</text>
+        <text class="t t-small t-muted" x="28" y="114">80</text>
+        <text class="t t-small t-muted" x="36" y="204">0</text>
+        <text class="t t-small t-muted" x="56" y="218">0</text>
+        <text class="t t-small t-muted" x="244" y="218">1 km</text>
+        <text class="t t-small t-muted" x="436" y="218">2 km</text>
+        <text class="t t-small" x="200" y="236">Line length</text>
+        <text class="t t-small" x="66" y="14">Mb/s (model)</text>
+        <path id="c08-cv" class="s-thin s-dash" d=""/>
+        <path id="c08-ct" class="s-thin s-dash" d=""/>
+        <path id="c08-cb" class="s-thin s-dash" d=""/>
+        <path id="c08-cur" class="s-accent" d=""/>
+        <circle id="c08-dot" class="f-red" r="5" cx="0" cy="0"/>
+      </svg>
+    </div>
+    <script>
+    (function(){
+      var len=document.getElementById('c08-len'),g=document.getElementById('c08-g'),x=document.getElementById('c08-x');
+      function rate(Lm,mode,gauge){
+        var L=Lm/1000,k=gauge==0.4?21:13.5,tot=0,top=0;
+        for(var i=32;i<4096;i++){
+          var fm=i*0.0043125;
+          if(!((fm>=0.138&&fm<3.75)||(fm>=5.2&&fm<8.5)||(fm>=12&&fm<17.664)))continue;
+          var att=k*Math.sqrt(fm)*L+0.5*fm*L, rx=-60-att;
+          var nx=mode==='vec'?-400:(mode==='typ'?-44:-41.1);
+          var fext=rx+nx+20*Math.log10(fm)+10*Math.log10(Math.max(L,0.01));
+          var noise=10*Math.log10(Math.pow(10,-14)+Math.pow(10,fext/10));
+          var snr=rx-noise, b=Math.log(1+Math.pow(10,(snr-12.8)/10))/Math.LN2;
+          if(b>15)b=15; if(b<1)b=0;
+          if(b>0)top=fm; tot+=b;
+        }
+        return {r:tot*4000*0.9/1e6,top:top,a8:k*Math.sqrt(8)*L+4*L};
+      }
+      function X(m){return 60+480*m/2500;} function Y(r){return 200-180*Math.min(r,160)/160;}
+      function curve(mode,gauge){var d='';for(var m=50;m<=2500;m+=50){var r=rate(m,mode,gauge).r;d+=(d?' L':'M')+X(m).toFixed(1)+','+Y(r).toFixed(1);}return d;}
+      var cache={};
+      function upd(){
+        var m=+len.value,gg=+g.value,mode=x.value,res=rate(m,mode,gg);
+        document.getElementById('c08-lo').textContent=(m>=1000?(m/1000).toFixed(2)+' km':m+' m');
+        document.getElementById('c08-r').textContent='~'+Math.round(res.r)+' Mb/s';
+        document.getElementById('c08-f').textContent=res.top.toFixed(1)+' MHz';
+        document.getElementById('c08-a').textContent=Math.round(res.a8)+' dB';
+        var key=gg;
+        if(!cache[key]){cache[key]={vec:curve('vec',gg),typ:curve('typ',gg),busy:curve('busy',gg)};}
+        document.getElementById('c08-cv').setAttribute('d',cache[key].vec);
+        document.getElementById('c08-ct').setAttribute('d',cache[key].typ);
+        document.getElementById('c08-cb').setAttribute('d',cache[key].busy);
+        document.getElementById('c08-cur').setAttribute('d',cache[key][mode]);
+        var dot=document.getElementById('c08-dot');dot.setAttribute('cx',X(m));dot.setAttribute('cy',Y(res.r));
+      }
+      len.oninput=upd;g.onchange=upd;x.onchange=upd;upd();
+    })();
+    </script>
+    <p><b>What to notice.</b> Drag from 300 m to 1.5 km. The model rate falls steeply, and the "highest usable tone" drops from the top of the band to a few MHz. Switch on vectoring: short lines gain the most, because on short lines crosstalk, not attenuation, was the limit. On very long lines vectoring helps little, because the signal itself has faded below the noise floor. This is exactly why the network moved fibre closer to homes (FTTC, and upgrades from FTTN to FTTP) rather than just tuning the copper.</p>
+
+    <div class="callout try"><span class="label">Try this</span><p>Find the length where the "Not vectored, 10 neighbours" curve drops to half its short-line value. Then switch to 0.64 mm copper and find it again. Thicker copper has less resistance per metre, so the loss in dB per km is lower and the half-speed point moves out. Write both numbers down and explain the difference in one sentence. That sentence is a good interview answer.</p></div>
+
+    <h2>Who does the work</h2>
+    <p>NBN Co owns the network, but most physical field work is done by <b>contractors</b>. NBN Co engages large <b>delivery partners</b> (big construction, telecom-services and engineering firms) to build and maintain areas of the network. Those partners often sub-contract to smaller companies and to individual technicians, some of whom work as sole traders with their own ABN (Australian Business Number) and vehicle. Some roles are direct employees with a company vehicle and tools; others are paid per job. Ask about this in every interview, because it changes your income, insurance and tax.</p>
+    <div class="cards">
+      <div class="card"><h4>Installation technician</h4><p>Connects new premises: hauls or fits the lead-in, mounts the outside box and the connection box or NCD, tests, activates and explains to the customer. Lots of customer contact.</p></div>
+      <div class="card"><h4>Fibre splicer / jointer</h4><p>Joins fibres in pits, cabinets and joint enclosures with a fusion splicer, then tests with a power meter or OTDR. Methodical, indoor-and-outdoor, high skill. See C09.</p></div>
+      <div class="card"><h4>Cable hauler / civil crew</h4><p>Pulls cable through conduits, rods blocked ducts, works with pits, poles and trenches. Physical. A common first job that leads to splicing.</p></div>
+      <div class="card"><h4>Network / assurance technician</h4><p>Fixes faults: no light, low sync, dropouts, noisy HFC. Uses testers to find where the problem is, then repairs or escalates.</p></div>
+      <div class="card"><h4>Copper jointer</h4><p>Finds and fixes faults on copper pairs for FTTN and FTTC: wet joints, corrosion, split pairs, using pair testers and TDRs.</p></div>
+      <div class="card"><h4>Mobile network field tech</h4><p>Works for or with the mobile carriers: base station equipment, antennas, fibre to sites, power and batteries, tower work for riggers. Also in-building coverage.</p></div>
+    </div>
+
+    <h3>An FTTP install, step by step</h3>
+    <p>This is a typical flow. Your employer's procedure, forms and apps come first.</p>
+    <ol class="steps">
+      <li><p><b>Read the work order.</b> Address, technology, what is already built, any notes. Check the site for hazards before you unload: dogs, traffic, overhead power lines, asbestos warnings on older pits.</p></li>
+      <li><p><b>Meet the customer and agree the box location.</b> Show where the outside box and the inside connection box will go, and how the cable will run. Agree before drilling. Note any existing damage.</p></li>
+      <li><p><b>Make the pit safe.</b> Barricade, lift the lid with proper lifting keys and posture, check for water, gas and pests. Some pits may need a gas test or are treated as confined spaces; follow your employer's assessment.</p></li>
+      <li><p><b>Haul or fit the lead-in.</b> Rod the conduit to the house, pull the drop fibre (or fit a pre-connectorised drop). Respect the minimum bend radius. Do not kink it.</p></li>
+      <li><p><b>Fit the outside box and run the fibre inside.</b> Drill neatly, seal the hole, use proper clips. Inside, mount the connection box near a power point.</p></li>
+      <li><p><b>Join and clean.</b> Splice or connect as the job requires. Inspect every connector end-face with a scope and clean it before mating.</p></li>
+      <li><p><b>Test.</b> Measure received light with an optical power meter and record it. Power up, check the ONT lights, confirm the service activates.</p></li>
+      <li><p><b>Hand over and tidy.</b> Show the customer which port the router uses. Clean up, close the pit, photograph the work if required, close the job in the app.</p></li>
+    </ol>
+    <div class="callout warn"><span class="label">Safety</span><p>Never look into a fibre or a connector, even if you think it is dark. Network lasers are infrared and invisible. Fibre glass offcuts can go into your skin and eyes; collect them in a marked container. The connection box power supply plugs into a normal power point, which is fine; but never open, extend or rewire mains wiring. Mains work in Australia is for licensed electricians only.</p></div>
+
+    <h3>Tools and brands you will see</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Tool</th><th>What it does</th><th>Brands you may see</th></tr>
+      <tr><td>Optical power meter + light source</td><td>Measures received light in dBm; light source + meter measures loss</td><td>EXFO, VIAVI, Kingfisher, Fluke Networks, many cheap generic units</td></tr>
+      <tr><td>Fibre inspection scope</td><td>Shows the connector end-face for dirt and damage</td><td>VIAVI, EXFO, Fluke Networks</td></tr>
+      <tr><td>Visual fault locator (VFL)</td><td>Red laser that glows at breaks and tight bends</td><td>Many brands, often built into a power meter</td></tr>
+      <tr><td>Fusion splicer + cleaver</td><td>Welds two fibres with an electric arc</td><td>Fujikura, Sumitomo, INNO and others</td></tr>
+      <tr><td>Copper test set / TDR</td><td>Finds distance to opens, shorts and bad joints on pairs</td><td>Vendor test sets, often supplied by the employer</td></tr>
+      <tr><td>Signal meter (HFC, wireless, satellite)</td><td>Reads RF levels and quality for coax, antenna and dish alignment</td><td>Supplied by employer to suit the network</td></tr>
+      <tr><td>Hand tools</td><td>Rods, fish tape, pit keys, drill, cable clips, labeller</td><td>Klein, Knipex, generic trade brands from Bunnings</td></tr>
+    </table></div>
+    <p>Many employers supply the expensive test sets. Sub-contractors may need to buy their own, so ask. You do not need to own a fusion splicer to get your first job.</p>
+
+    <h2>Tickets, training and getting in</h2>
+    <p>Telecom field jobs in Australia ask for a stack of small "tickets" (cards and certificates). The exact list depends on the employer and the network. Treat this as a checklist to ask about, not a legal rule.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Ticket</th><th>Why they ask</th></tr>
+      <tr><td><b>ACMA cabling registration</b> (open registration) with the right <b>endorsements</b></td><td>Customer cabling work in Australia must be done by a registered cabler. Endorsements cover areas such as structured cabling, optical fibre, coaxial, aerial and underground work. See <a href="c07-telecom-cabling-acma.html">C07</a>.</td></tr>
+      <tr><td><b>White Card</b> (general construction induction)</td><td>Needed to work on construction sites, including new estates and buildings.</td></tr>
+      <tr><td>Working at heights</td><td>Ladders, roofs, poles and building risers.</td></tr>
+      <tr><td>EWP (elevating work platform)</td><td>Boom lifts and scissor lifts for aerial cable and in-building work. Larger booms need a high-risk work licence.</td></tr>
+      <tr><td>Confined space entry, gas detection</td><td>Some pits, manholes and tunnels count as confined spaces.</td></tr>
+      <tr><td>First aid and CPR</td><td>Commonly required for field staff.</td></tr>
+      <tr><td>Driver's licence</td><td>Almost always. A clean record matters; some vans are manual.</td></tr>
+      <tr><td>Traffic control / work zone awareness</td><td>For work in or near roads.</td></tr>
+      <tr><td>Police check, and network inductions</td><td>You enter homes. Delivery partners also run their own inductions and accreditations before you touch the network.</td></tr>
+    </table></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Cabling registration is regulated by the <b>ACMA</b> (Australian Communications and Media Authority) under the cabling provider rules, and is issued through ACMA-accredited registrars. Work health and safety tickets (White Card, high-risk work licences such as larger boom EWPs) are regulated by your state's WHS regulator, for example SafeWork NSW or WorkSafe Victoria. Mobile repeaters (boosters) need the carrier's permission in Australia; unauthorised ones are illegal because they interfere with the network. These rules change and some differ by state: <b>confirm the current requirements with the ACMA, your state regulator and the employer</b> before you pay for any course.</p></div>
+    <p>Formal training: TAFEs and private RTOs (registered training organisations) run telecommunications cabling and network courses at Certificate II–IV level, and the cabling registration courses. Many delivery partners also train new starters in-house. A realistic entry route is: White Card + registration-ready cabling course + driver's licence, then a hauler or trainee installer role, then splicing and testing as you prove yourself. For the full licence picture see <a href="c11-licences-pathways.html">C11 Licences, tickets and pathways</a>.</p>
+
+    <h2>In-building mobile coverage (DAS)</h2>
+    <p>Big buildings (shopping centres, hospitals, tunnels, stadiums, office towers) block mobile signals with concrete and coated glass. The fix is a <b>DAS</b> (distributed antenna system). A <b>head end</b> in a comms room takes signal from the carriers' base station equipment. It distributes that signal through the building to many small ceiling antennas, either over coaxial cable with passive splitters (<b>passive DAS</b>) or over fibre to powered remote units near the antennas (<b>active DAS</b>). Carriers must approve and connect their services, so this work is done by specialist integrators under carrier rules.</p>
+    <p>DAS work is a strong fit for someone with cabling skills: coax and fibre installation, connector termination, labelling, sweep and PIM (passive intermodulation) testing, and lots of ceiling space work. Your RF and decibel knowledge from <a href="../theory/t10-em-waves-antennas-fibre.html">T10</a> and <a href="../theory/t16-signals-noise-loops.html">T16</a> pays off here.</p>
+    <div class="callout job"><span class="label">On the job</span><p>On a DAS project, you might spend a week pulling and terminating coax runs in ceilings, then a day with a test set measuring the loss of each run against the design. A run that measures 3 dB worse than design usually means a bad connector. Neat labelling matches the design drawing so the RF engineer can trust your results.</p></div>
+
+    <h2>Typical interview questions</h2>
+    <p>Practise saying these answers out loud. Short, clear and safety-first wins.</p>
+    <details class="more"><summary>"What is the difference between FTTP and FTTN?"</summary><p>FTTP runs fibre all the way to an NBN box in the premises; speed does not depend on distance and there is no powered equipment in the street. FTTN runs fibre to a powered street cabinet, then uses the old copper pair with VDSL2; speed drops with copper length and condition.</p></details>
+    <details class="more"><summary>"An FTTP customer has no service. What do you check?"</summary><p>Lights on the connection box first. Then measure light at the box with a power meter. If there is no or low light, inspect and clean connectors, check the fibre for tight bends with a VFL, then work back towards the pit and splitter. Record readings at each point. Escalate if it is a network-side fault.</p></details>
+    <details class="more"><summary>"Why would a long copper line sync slower?"</summary><p>Loss in dB grows with length and with frequency, so the high VDSL2 tones fade into the noise. Crosstalk from other pairs adds noise. Less SNR per tone means fewer bits per tone, so lower sync speed.</p></details>
+    <details class="more"><summary>"How do you make a pit safe before you work in it?"</summary><p>Set up barriers and signage for pedestrians and traffic, lift the lid with the right keys and technique, look for water, damage, spiders and snakes, test the air if the procedure says so, never enter a confined space without the ticket and permit, and keep the area tidy so nobody falls in.</p></details>
+    <details class="more"><summary>"A customer wants the box somewhere you think is a bad idea. What do you do?"</summary><p>Explain politely why (no power point, cable damage risk, rules), offer two good alternatives, and record what was agreed. Do not install somewhere unsafe or non-compliant just to please them.</p></details>
+    <details class="more"><summary>"What does 1:32 mean and what does it cost?"</summary><p>One fibre is split into 32. Ideal loss is 10·log(32) ≈ 15 dB, about 17 dB in practice. It uses a big chunk of the loss budget, so every dirty connector matters.</p></details>
+    <details class="more"><summary>"Do you have your White Card, licence and registration?"</summary><p>Answer honestly and say what you are working on and when it will be done. Bring copies of every card.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why is GPON called "passive"?</summary><div class="answer"><p>Because there is no powered equipment between the OLT at the local site and the ONT at the premises. The splitters are glass components that need no power. This makes the street network cheap to run and reliable in power cuts (although the customer's box still needs power).</p></div></details>
+    <details class="quiz"><summary>Two FTTP houses share a splitter. Why can't they both transmit upstream at any time they like?</summary><div class="answer"><p>Their light would combine in the splitter and arrive at the OLT on top of each other, corrupting both. The OLT assigns each ONT time slots (TDMA). Downstream does not have this problem because only the OLT transmits.</p></div></details>
+    <details class="quiz"><summary>An FTTC service drops out every night at 10 pm. What simple cause should you ask about?</summary><div class="answer"><p>Whether the customer switches the NCD off at night. The NCD reverse-powers the DPU in the pit. If it is the only one powering that DPU, the DPU goes dark and the service drops. (Other causes exist, but this one costs nothing to check.)</p></div></details>
+    <details class="quiz"><summary>Line A is 400 m and line B is 1.2 km, same cable. Roughly how does their loss at 8 MHz compare?</summary><div class="answer"><p>Loss in dB is proportional to length, so B has about 3 times the dB loss of A. With the indicative 0.4 mm figure of ~21·√8 ≈ 59 dB/km, A loses about 24 dB and B about 71 dB at 8 MHz. That 47 dB difference wipes out the upper tones on B.</p></div></details>
+    <details class="quiz"><summary>Why does vectoring help short FTTN lines more than long ones?</summary><div class="answer"><p>On short lines the signal is strong, so crosstalk is the main noise; cancelling it raises SNR a lot. On long lines the signal is already below the background noise floor at high frequencies; removing crosstalk cannot bring back a signal that is not there.</p></div></details>
+    <details class="quiz"><summary>Why does geostationary satellite internet feel laggy even on a fast plan?</summary><div class="answer"><p>The satellite is about 35,786 km up. A request and reply need four trips up or down, about 143,000 km in total, which takes about 0.48 s at the speed of light before any processing. Bandwidth (Mb/s) and latency (delay) are different things.</p></div></details>
+    <details class="quiz"><summary>On HFC, why can one bad connector at one house affect the neighbours?</summary><div class="answer"><p>All homes on a node share the coax spectrum and the upstream path. Radio noise that leaks in (ingress) through a loose or damaged connector travels upstream and adds noise for everyone on that node.</p></div></details>
+    <details class="quiz"><summary>What should you confirm before paying for a telecom course in Australia?</summary><div class="answer"><p>That it leads to the ACMA cabling registration and endorsements the job needs, that the RTO is genuine, and which other tickets (White Card, heights, EWP, confined space, first aid) the employers you are targeting actually require. Confirm current rules with the ACMA and your state WHS regulator.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the six NBN access technologies and draw each one from local site to premises.</span></li>
+      <li><input type="checkbox"><span>I can explain GPON: OLT, passive splitter, ONT, 1490/1310 nm, and why upstream uses time slots.</span></li>
+      <li><input type="checkbox"><span>I can calculate ideal splitter loss for 1:8, 1:16 and 1:32.</span></li>
+      <li><input type="checkbox"><span>I can explain FTTC reverse power and why the NCD matters.</span></li>
+      <li><input type="checkbox"><span>I can explain, with attenuation and crosstalk, why FTTN speed falls with distance.</span></li>
+      <li><input type="checkbox"><span>I can explain why satellite latency is high using the distance and the speed of light.</span></li>
+      <li><input type="checkbox"><span>I can list the field roles and the tickets employers commonly ask for, and I know to confirm them with the ACMA and my state regulator.</span></li>
+      <li><input type="checkbox"><span>I can answer the seven interview questions above out loud in under a minute each.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

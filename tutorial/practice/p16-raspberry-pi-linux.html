@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P16 · Raspberry Pi and the Linux you need</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .term-out{min-height:220px;max-height:360px;overflow:auto;white-space:pre;margin:0 0 8px}
+  .term-in{display:flex;gap:8px;align-items:center;font:14px var(--mono)}
+  .term-in input{flex:1;font:14px var(--mono);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+  .chips button{font:13px var(--mono);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:4px 8px;border-radius:6px;cursor:pointer}
+  #pin-svg g{cursor:pointer}
+  #pin-svg g:focus{outline:none}
+  #pin-svg g.sel circle{stroke-width:4}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P16</span>
+    <h1>Raspberry Pi and the Linux you need</h1>
+    <p class="lede">By the end you will flash a Raspberry Pi with no screen or keyboard, log in to it over the network with SSH, move around a Linux system with confidence, read logs and services, check the network, and know which header pins are safe to touch.</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Beginner → Intermediate</span><span><b>Kit cost</b> ~A$110–180</span><span><b>Theory</b> T15, T10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Computer or microcontroller?</h2>
+    <p>In P11–P15 you used an Arduino. An Arduino board carries a <b>microcontroller</b>: one chip that holds a small processor, its program memory (flash), a little working memory (RAM) and the input/output hardware. It runs exactly one program, your sketch, from the moment power arrives. There is no operating system. When the sketch says "turn pin 13 on", the pin turns on within a microsecond, every time.</p>
+    <p>A Raspberry Pi is a <b>single-board computer</b>. Its main chip is a <b>system on a chip</b> (SoC): several fast processor cores, a graphics unit, USB, Ethernet and more. RAM is a separate chip. The program storage is a microSD card (or an SSD), and on it sits a full <b>operating system</b>: Linux. Linux runs many programs at once, called <b>processes</b>, and shares the processor between them thousands of times a second. That gives you networking, a file system, a web server, Python, databases and remote login — but it also means your program can be paused for a few milliseconds while Linux does something else.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Block diagram comparing an Arduino microcontroller with a Raspberry Pi computer">
+        <text class="t t-bold" x="20" y="24">Arduino Uno: microcontroller</text>
+        <rect class="f-wash s-thin" x="20" y="36" width="270" height="200" rx="10"/>
+        <rect class="f-accent-soft s-accent" x="40" y="56" width="230" height="120" rx="6"/>
+        <text class="t t-small t-bold" x="52" y="76">ATmega328P — ONE chip</text>
+        <rect class="f-panel s-line" x="52" y="88" width="62" height="34" rx="3"/><text class="t t-small" x="62" y="110">CPU</text>
+        <rect class="f-panel s-line" x="122" y="88" width="62" height="34" rx="3"/><text class="t t-small" x="128" y="104">Flash</text><text class="t t-small t-muted" x="128" y="118">32 kB</text>
+        <rect class="f-panel s-line" x="192" y="88" width="66" height="34" rx="3"/><text class="t t-small" x="198" y="104">RAM</text><text class="t t-small t-muted" x="198" y="118">2 kB</text>
+        <rect class="f-panel s-line" x="52" y="130" width="206" height="34" rx="3"/><text class="t t-small" x="62" y="152">GPIO · ADC · timers · UART</text>
+        <text class="t t-small" x="40" y="198">No operating system.</text>
+        <text class="t t-small" x="40" y="216">Your sketch is the only program.</text>
+        <text class="t t-small t-muted" x="20" y="262">5 V logic (Uno), boots in ~0.1 s,</text>
+        <text class="t t-small t-muted" x="20" y="280">microsecond-exact timing.</text>
+
+        <text class="t t-bold" x="340" y="24">Raspberry Pi: computer</text>
+        <rect class="f-wash s-thin" x="340" y="36" width="280" height="200" rx="10"/>
+        <rect class="f-theory-soft s-blue" x="356" y="52" width="140" height="70" rx="6"/>
+        <text class="t t-small t-bold" x="366" y="72">SoC</text>
+        <text class="t t-small" x="366" y="90">4 × ARM cores</text>
+        <text class="t t-small" x="366" y="108">GPU, USB, Ethernet</text>
+        <rect class="f-panel s-line" x="508" y="52" width="96" height="34" rx="3"/><text class="t t-small" x="518" y="74">RAM 1–16 GB</text>
+        <rect class="f-panel s-line" x="508" y="92" width="96" height="30" rx="3"/><text class="t t-small" x="518" y="112">microSD</text>
+        <rect class="f-career-soft s-green" x="356" y="134" width="248" height="88" rx="6"/>
+        <text class="t t-small t-bold" x="366" y="154">Linux (Raspberry Pi OS)</text>
+        <text class="t t-small" x="366" y="174">sshd · python3 · web server ·</text>
+        <text class="t t-small" x="366" y="192">your logger · systemd · ...</text>
+        <text class="t t-small t-muted" x="366" y="212">many processes, time-shared</text>
+        <text class="t t-small t-muted" x="340" y="262">3.3 V logic, boots in ~20–40 s,</text>
+        <text class="t t-small t-muted" x="340" y="280">must be shut down properly.</text>
+      </svg>
+      <figcaption>Figure 1. The Arduino's chip is the whole computer and runs one program. The Pi is a real computer: Linux juggles many programs, which gives you networking and files but not microsecond timing.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Arduino (microcontroller)</th><th>Raspberry Pi (computer)</th></tr>
+      <tr><td>Best at</td><td>Exact timing, reading pins fast, very low power, instant start</td><td>Networking, storage, web pages, databases, heavy maths, cameras</td></tr>
+      <tr><td>Power</td><td>~0.1–0.5 W</td><td>~2–12 W depending on model and load</td></tr>
+      <tr><td>Pull the power?</td><td>Fine</td><td>Risky: can corrupt the SD card. Shut down first.</td></tr>
+      <tr><td>Analogue inputs</td><td>Yes (ADC built in)</td><td>No — add an ADC chip over I²C or SPI</td></tr>
+      <tr><td>Logic level</td><td>5 V (Uno) or 3.3 V</td><td>3.3 V only</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The Pi is just a faster Arduino." No. It is a different kind of machine. Use a Pi when the job is mostly <i>software and networking</i> (log, serve, talk to the cloud, run a broker). Use a microcontroller when the job is mostly <i>pins and timing</i> (count pulses, drive a stepper, wake every 10 minutes on a battery). Real building systems use both: small controllers at the plant, and a Linux box (a supervisor or gateway) that collects their data.</p></div>
+    <div class="callout why"><span class="label">Why it works</span><p>A microcontroller executes instructions straight from flash in a fixed loop, so the time from "instruction" to "pin changes" is a known number of clock cycles. On the Pi, your Python program asks the Linux kernel to change the pin, and the kernel's scheduler decides when your process runs. That is why the Pi is excellent at "every minute, read the sensor and log it" but poor at "generate an exact 38 kHz signal".</p></div>
+    <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic and how a microcontroller works</a>
+
+    <h2>Which Pi, and which power supply</h2>
+    <div class="cards">
+      <div class="card"><h4>Raspberry Pi 4 Model B</h4><p>Quad-core 64-bit ARM, 1–8 GB RAM, Gigabit Ethernet, Wi-Fi, 2 × USB 3, 2 × micro-HDMI. Power: USB-C, 5.1 V 3 A (15.3 W) official supply. Still a great, cheaper bench machine.</p></div>
+      <div class="card"><h4>Raspberry Pi 5</h4><p>About two to three times faster than a Pi 4, with a power button, real-time clock connector and a PCIe connector for an SSD. Power: the official 27 W USB-C supply (5.1 V 5 A). On a 3 A supply it runs but limits USB current.</p></div>
+      <div class="card"><h4>Raspberry Pi Zero 2 W</h4><p>Tiny (65 × 30 mm), quad-core, 512 MB RAM, 2.4 GHz Wi-Fi only, no Ethernet. Power: micro-USB, 5.1 V 2.5 A supply. Ideal for one sensor in a cupboard.</p></div>
+    </div>
+
+    <h3>What you need</h3>
+    <ul class="kit">
+      <li><b>Raspberry Pi 4 (2–4 GB) or Pi 5 (4 GB)</b><small>~A$75–130 · Core Electronics, element14, Altronics, Jaycar</small></li>
+      <li><b>Official power supply for that model</b><small>~A$15–25 · AU plug version</small></li>
+      <li><b>microSD card, 32 GB, "A1" or "A2" rated</b><small>~A$12–20 · a known brand</small></li>
+      <li><b>Case with a heatsink or fan</b><small>~A$10–25 · Pi 5 needs cooling under load</small></li>
+      <li><b>Ethernet patch lead</b><small>~A$5 · optional but makes first login easy</small></li>
+      <li><b>Laptop on the same network</b><small>Windows 10/11, macOS or Linux</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>Use the official supply or another supply that carries the Australian <b>RCM</b> (Regulatory Compliance Mark). The plug-pack is the only part of this lab that touches 230 V mains, and it is sealed. Never open a plug-pack, never cut and rewire a mains lead, and never power the Pi from anything you built that connects to mains. Everything on the Pi side is 5 V and 3.3 V — extra-low voltage.</p></div>
+
+    <h3>Why the power supply matters so much</h3>
+    <p>The Pi needs 5 V at its input, but a cheap phone charger and a thin USB cable often deliver less when the Pi draws a burst of current. Every cable has resistance. A worked example: a thin 1 m cable might have 0.25 Ω total (out and back). At 2.5 A that drops V = I × R = 2.5 × 0.25 = <b>0.63 V</b>, so a 5.0 V charger gives the Pi only about 4.4 V. Below about 4.63 V the Pi flags <b>under-voltage</b> and slows itself down. That is why the official supply is 5.1 V with a thick, short cable.</p>
+    <div class="formula">V<sub>Pi</sub> = V<sub>supply</sub> − I × R<sub>cable</sub> = 5.0 − 2.5 × 0.25 ≈ 4.4 V  (too low)
+      <small>R<sub>cable</sub> is the round-trip resistance of both conductors. The official 5.1 V supply with a heavier cable keeps the Pi above the 4.63 V warning threshold.</small></div>
+    <p>You can ask the Pi whether it has ever been short of power with <code>vcgencmd get_throttled</code>. <code>throttled=0x0</code> means all good. Anything else is a bit-field: for example <code>0x50005</code> means "under-voltage right now, throttled right now, and both have happened since boot". Fix the supply before you trust any test result.</p>
+
+    <h2>Flash the card with Raspberry Pi Imager</h2>
+    <p>A <b>headless</b> Pi is one with no screen, keyboard or mouse. Most Pis in the field are headless: they sit in a cabinet and you reach them over the network. Raspberry Pi Imager lets you pre-set everything needed for that before the first boot.</p>
+    <ol class="steps">
+      <li><p><b>Install Imager</b> on your laptop from raspberrypi.com (free, Windows/macOS/Linux).</p></li>
+      <li><p><b>Choose device</b> (Pi 4, Pi 5 or Zero 2 W), then <b>choose OS</b>. Pick <i>Raspberry Pi OS (64-bit)</i>. For a headless logger, <i>Raspberry Pi OS Lite (64-bit)</i> is even better: no desktop, less to update, faster boot. Zero 2 W: Lite only.</p></li>
+      <li><p><b>Choose storage</b>: your microSD card. Check the size shown — you do not want to wipe your laptop's backup drive.</p></li>
+      <li><p><b>OS customisation</b> (Imager asks "Would you like to apply OS customisation settings?" → Edit settings). Set:
+        hostname <code>plantpi</code>; username <code>tech</code> and a strong password; wireless LAN SSID and password; <b>wireless LAN country: AU</b>; locale/time zone (e.g. Australia/Sydney) and keyboard <code>us</code>; on the Services tab <b>Enable SSH</b> → "Use password authentication" for now.</p></li>
+      <li><p><b>Write</b>, wait for verification, then put the card in the Pi. Plug in Ethernet (if you have it), then power. The first boot takes 1–2 minutes because the Pi expands the file system and applies your settings. The green activity LED flickers while it works.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>There is no default <code>pi</code> user with password <code>raspberry</code> any more (that changed in 2022). If you skip the customisation step on a headless Pi, you cannot log in. Re-flash with settings — it is quicker than troubleshooting.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Set the Wi-Fi country to <b>AU</b>. It selects the Australian radio rules (allowed channels and power), which are set by the ACMA. A wrong or missing country code can stop 5 GHz Wi-Fi from working at all.</p></div>
+
+    <h2>Log in headless with SSH</h2>
+    <p><b>SSH</b> (Secure Shell) gives you an encrypted text terminal on another machine over the network, on TCP port 22. Windows 10/11, macOS and Linux all have an <code>ssh</code> client built in: open PowerShell (Windows) or Terminal (macOS) and type:</p>
+<pre><code>ssh tech@plantpi.local</code></pre>
+    <p><code>tech</code> is the user, <code>plantpi.local</code> is the host. The <code>.local</code> ending uses <b>mDNS</b> (multicast DNS): the Pi announces its own name on the local network, so you do not need to know its IP address. The first time, SSH shows a "fingerprint" and asks if you trust it. Type <code>yes</code>, then the password (nothing appears while you type — that is normal).</p>
+<pre><code>The authenticity of host 'plantpi.local (192.168.1.42)' can't be established.
+ED25519 key fingerprint is SHA256:Xq3v0m9...kQ.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+tech@plantpi.local's password:
+Linux plantpi 6.12.x-v8+ #1 SMP PREEMPT aarch64
+...
+tech@plantpi:~ $</code></pre>
+    <p>The prompt <code>tech@plantpi:~ $</code> means: user <code>tech</code>, on host <code>plantpi</code>, in folder <code>~</code> (your home folder, <code>/home/tech</code>), as a normal user (<code>$</code>; root shows <code>#</code>).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Laptop connects through a router to the Pi over SSH port 22, using mDNS to find plantpi.local">
+        <defs>
+          <marker id="p16-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="p16-arrb" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-panel s-line" x="20" y="70" width="140" height="80" rx="6"/>
+        <text class="t t-bold" x="34" y="94">Laptop</text>
+        <text class="t t-small" x="34" y="114">192.168.1.20</text>
+        <text class="t t-small t-muted" x="34" y="134">ssh client</text>
+        <rect class="f-wash s-line" x="250" y="80" width="140" height="60" rx="6"/>
+        <text class="t t-bold" x="262" y="104">Router / AP</text>
+        <text class="t t-small" x="262" y="124">DHCP, 192.168.1.1</text>
+        <rect class="f-accent-soft s-accent" x="480" y="70" width="140" height="80" rx="6"/>
+        <text class="t t-bold" x="494" y="94">plantpi</text>
+        <text class="t t-small" x="494" y="114">192.168.1.42</text>
+        <text class="t t-small t-muted" x="494" y="134">sshd on port 22</text>
+        <line class="s-line" x1="160" y1="110" x2="250" y2="110"/>
+        <line class="s-line s-dash" x1="390" y1="110" x2="480" y2="110"/>
+        <text class="t t-small t-muted" x="406" y="102">Wi-Fi</text>
+        <path class="s-blue" d="M90 66 C 150 10, 480 10, 540 64" marker-end="url(#p16-arrb)"/>
+        <text class="t t-small t-blue" x="200" y="30">1. "Who is plantpi.local?" (mDNS)  →  "Me, 192.168.1.42"</text>
+        <path class="s-accent" d="M90 154 C 150 214, 480 214, 540 156" marker-end="url(#p16-arr)"/>
+        <text class="t t-small t-accent" x="170" y="212">2. Encrypted SSH session to 192.168.1.42 : 22</text>
+      </svg>
+      <figcaption>Figure 2. Headless login. The name lookup and the SSH session are two separate steps. If <code>ssh plantpi.local</code> fails, try the IP address from your router's DHCP list: if that works, only the name lookup is broken.</figcaption>
+    </figure>
+
+    <h3>If <code>plantpi.local</code> is not found</h3>
+    <ul>
+      <li>Wait two minutes after first power-on, then try again.</li>
+      <li>Log in to your home router's web page and look at the DHCP client list for <code>plantpi</code>. Then <code>ssh tech@192.168.1.42</code> (your number will differ).</li>
+      <li>From the laptop, <code>ping plantpi.local</code>. "Could not find host" means mDNS is blocked (common on guest Wi-Fi and some corporate networks).</li>
+      <li>Wi-Fi details wrong? Plug in Ethernet — it needs no settings.</li>
+    </ul>
+
+    <h3>Use a key instead of a password</h3>
+    <p>A password can be guessed. An SSH key pair cannot be, in practice. You keep the private key on your laptop and copy only the public key to the Pi:</p>
+<pre><code># on the laptop (PowerShell or Terminal) — press Enter to accept the defaults
+ssh-keygen -t ed25519 -C "tech-laptop"
+
+# macOS / Linux: copy the public key to the Pi
+ssh-copy-id tech@plantpi.local
+
+# Windows PowerShell (no ssh-copy-id): append the key by hand
+type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh tech@plantpi.local "mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys"</code></pre>
+    <p>Now <code>ssh tech@plantpi.local</code> logs in without asking for the Pi's password. Never share the private key file (<code>id_ed25519</code>, without <code>.pub</code>).</p>
+
+    <h2>The Linux commands you will actually use</h2>
+    <p>Linux keeps everything in one tree of folders starting at <code>/</code> (called "root"). Your files live in <code>/home/tech</code>. Settings live in <code>/etc</code>. Logs are managed by the journal. Programs live in <code>/usr/bin</code>. On current Raspberry Pi OS the boot settings file is <code>/boot/firmware/config.txt</code>.</p>
+
+    <h3>Moving around and reading files</h3>
+<pre><code>tech@plantpi:~ $ pwd                 # print working directory: where am I?
+/home/tech
+tech@plantpi:~ $ ls -l               # list, long format
+total 8
+drwxr-xr-x 2 tech tech 4096 Nov  2 09:20 logger
+-rw-r--r-- 1 tech tech  220 Nov  2 09:10 notes.txt
+tech@plantpi:~ $ cd logger           # change directory
+tech@plantpi:~/logger $ cd ..        # up one level
+tech@plantpi:~ $ cd /etc             # absolute path (starts with /)
+tech@plantpi:/etc $ cd               # cd alone = back home
+tech@plantpi:~ $ cat notes.txt       # print a whole (short) file
+Plant room Pi. Sensor on GPIO4.
+tech@plantpi:~ $ less /var/log/dpkg.log   # page through a long file: Space = next, / = search, q = quit
+tech@plantpi:~ $ nano notes.txt      # edit: Ctrl+O then Enter = save, Ctrl+X = exit</code></pre>
+    <p><code>ls -a</code> also shows hidden files (names starting with a dot, such as <code>.ssh</code>). Press <kbd>Tab</kbd> to auto-complete file names and <kbd>↑</kbd> to recall earlier commands — this saves more time than any other habit. <kbd>Ctrl</kbd>+<kbd>C</kbd> stops a running command.</p>
+
+    <h3>Admin rights: <code>sudo</code>, and updating</h3>
+    <p>Normal users cannot change system files. <code>sudo</code> ("superuser do") runs one command as <b>root</b>, the all-powerful admin user. Use it only when needed.</p>
+<pre><code>tech@plantpi:~ $ sudo apt update          # refresh the list of available packages
+Hit:1 http://deb.debian.org/debian ... InRelease
+Get:2 http://archive.raspberrypi.com/debian ... InRelease
+...
+Reading package lists... Done
+14 packages can be upgraded. Run 'apt list --upgradable' to see them.
+tech@plantpi:~ $ sudo apt full-upgrade -y  # install the upgrades
+tech@plantpi:~ $ sudo apt install -y htop  # install one program
+tech@plantpi:~ $ sudo reboot               # restart cleanly
+tech@plantpi:~ $ sudo shutdown -h now      # stop cleanly, wait for the green LED to stop, then unplug</code></pre>
+    <p><code>apt update</code> only downloads the list; <code>apt full-upgrade</code> actually installs. Run both, in that order, every time you start work on a Pi that has been sitting for a while.</p>
+
+    <h3>Services and logs: <code>systemctl</code> and <code>journalctl</code></h3>
+    <p>A <b>service</b> (also called a daemon) is a program that runs in the background from boot, such as the SSH server. On modern Linux, <b>systemd</b> starts and watches services. You talk to it with <code>systemctl</code>:</p>
+<pre><code>tech@plantpi:~ $ systemctl status ssh
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-11-02 09:14:03 AEDT; 2h 3min ago
+       Docs: man:sshd(8)
+   Main PID: 655 (sshd)
+      Tasks: 1 (limit: 3910)
+     CGroup: /system.slice/ssh.service
+             └─655 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+tech@plantpi:~ $ sudo systemctl restart ssh     # stop + start
+tech@plantpi:~ $ sudo systemctl enable ssh      # start automatically at boot
+tech@plantpi:~ $ sudo systemctl disable ssh     # do not start at boot
+tech@plantpi:~ $ systemctl --failed             # list anything that crashed</code></pre>
+    <p>Read it like a tech: <b>Loaded … enabled</b> = it will start at boot; <b>Active: active (running)</b> = it is running now; anything in red such as <b>failed</b> = look at its log. The logs are in the journal:</p>
+<pre><code>tech@plantpi:~ $ journalctl -u ssh -n 20        # last 20 lines for one unit
+tech@plantpi:~ $ journalctl -u ssh -f           # follow live (Ctrl+C to stop)
+tech@plantpi:~ $ journalctl -b -p err           # only errors since this boot
+tech@plantpi:~ $ journalctl --since "10 min ago"</code></pre>
+
+    <h3>Network checks</h3>
+<pre><code>tech@plantpi:~ $ ip a                     # my interfaces and addresses
+2: eth0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc mq state DOWN ...
+    link/ether dc:a6:32:12:34:56 brd ff:ff:ff:ff:ff:ff
+3: wlan0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP ...
+    link/ether dc:a6:32:12:34:57 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.42/24 brd 192.168.1.255 scope global dynamic noprefixroute wlan0
+tech@plantpi:~ $ ip route                 # where does traffic go? "default via" = the gateway
+default via 192.168.1.1 dev wlan0 proto dhcp src 192.168.1.42 metric 600
+tech@plantpi:~ $ ping -c 4 192.168.1.1    # can I reach the router? (-c 4 = stop after 4)
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=3.21 ms
+...
+4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+tech@plantpi:~ $ sudo ss -tulpn           # which programs are listening on which ports?
+Netid State  Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+udp   UNCONN 0      0            0.0.0.0:5353      0.0.0.0:*     users:(("avahi-daemon",pid=412,fd=12))
+tcp   LISTEN 0      128          0.0.0.0:22        0.0.0.0:*     users:(("sshd",pid=655,fd=3))</code></pre>
+    <p>How to read <code>ip a</code>: <b>state UP / LOWER_UP</b> means the link is connected; <b>NO-CARRIER</b> on <code>eth0</code> means no cable (or a dead port at the other end). <code>inet 192.168.1.42/24</code> is the IPv4 address and subnet size (P19 explains /24). <code>link/ether</code> is the MAC address. In <code>ss -tulpn</code>: t = TCP, u = UDP, l = listening, p = show process (needs sudo), n = numbers not names. Port 5353 is mDNS — that is what makes <code>plantpi.local</code> work.</p>
+    <p>Network settings on current Raspberry Pi OS are handled by NetworkManager. <code>nmcli dev status</code> lists interfaces, <code>nmcli con show</code> lists saved connections, and <code>sudo nmtui</code> gives a simple menu for Wi-Fi and static addresses. On a site, prefer a <b>DHCP reservation</b> on the router (the router always gives this MAC the same IP) over a static address typed into the Pi.</p>
+
+    <h3>Health checks: disk, memory, CPU</h3>
+<pre><code>tech@plantpi:~ $ df -h            # disk free, human-readable sizes
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk0p2   29G  4.1G   24G  15% /
+/dev/mmcblk0p1  510M   72M  439M  15% /boot/firmware
+tech@plantpi:~ $ free -h          # memory
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       412Mi       2.6Gi        12Mi       812Mi       3.3Gi
+tech@plantpi:~ $ vcgencmd measure_temp
+temp=48.2'C
+tech@plantpi:~ $ htop             # live CPU/memory per process; F6 sort, F9 kill, q quit</code></pre>
+    <p>A disk at 100 % is a classic field fault: logs fill the card, then the logger, the database and even SSH logins start failing in odd ways. <code>df -h</code> is the first thing to run when "it just stopped working". <code>/dev/mmcblk0p2</code> is partition 2 of the SD card.</p>
+
+    <div class="widget" id="w-term">
+      <span class="label">Interactive · practise on a pretend Pi</span>
+      <p style="font-size:15px;margin-bottom:8px">This is a simulated terminal on <code>plantpi</code>. Nothing is sent anywhere. Type a command and press Enter, or click a chip. Try <code>help</code> first.</p>
+      <pre class="term-out" id="term-out" aria-live="polite"></pre>
+      <div class="term-in"><span id="term-prompt">tech@plantpi:~ $</span><input id="term-cmd" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Command"></div>
+      <div class="chips" id="term-chips"></div>
+    </div>
+    <script>
+    (function(){
+      var out=document.getElementById('term-out'),inp=document.getElementById('term-cmd'),pr=document.getElementById('term-prompt'),chips=document.getElementById('term-chips');
+      var cwd='/home/tech',hist=[],hi=0;
+      function short(){return cwd==='/home/tech'?'~':(cwd.indexOf('/home/tech/')===0?'~'+cwd.slice(10):cwd);}
+      function prompt(){return 'tech@plantpi:'+short()+' $';}
+      var fs={'/':['bin','boot','dev','etc','home','lib','proc','sys','tmp','usr','var'],'/home':['tech'],'/home/tech':['logger','notes.txt'],'/home/tech/logger':['plantroom.py','data'],'/etc':['hostname','hosts','os-release','ssh','systemd','mosquitto'],'/boot':['firmware'],'/var':['log','lib']};
+      var R={
+        'help':'Commands here: pwd, ls, ls -l, ls -a, cd DIR, cat notes.txt, cat /etc/hostname, whoami,\nhostname -I, ip a, ip route, ping -c 4 192.168.1.1, ping -c 2 10.9.9.9, df -h, free -h,\nuptime, systemctl status ssh, systemctl status plantroom, journalctl -u plantroom -n 5,\nsudo ss -tulpn, ss -tulpn, vcgencmd get_throttled, vcgencmd measure_temp,\nsudo apt update, groups, uname -a, cat /etc/os-release, clear',
+        'whoami':'tech',
+        'groups':'tech adm dialout cdrom sudo audio video plugdev games users input render netdev gpio i2c spi',
+        'hostname -I':'192.168.1.42',
+        'cat /etc/hostname':'plantpi',
+        'uname -a':'Linux plantpi 6.12.47+rpt-rpi-v8 #1 SMP PREEMPT Debian aarch64 GNU/Linux',
+        'cat /etc/os-release':'PRETTY_NAME="Debian GNU/Linux (Raspberry Pi OS)"\nNAME="Debian GNU/Linux"\nID=debian\nHOME_URL="https://www.debian.org/"',
+        'uptime':' 11:17:42 up  2:03,  1 user,  load average: 0.08, 0.05, 0.01',
+        'ip a':'1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000\n    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n    inet 127.0.0.1/8 scope host lo\n       valid_lft forever preferred_lft forever\n2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN group default qlen 1000\n    link/ether dc:a6:32:12:34:56 brd ff:ff:ff:ff:ff:ff\n3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\n    link/ether dc:a6:32:12:34:57 brd ff:ff:ff:ff:ff:ff\n    inet 192.168.1.42/24 brd 192.168.1.255 scope global dynamic noprefixroute wlan0\n       valid_lft 85912sec preferred_lft 85912sec',
+        'ip route':'default via 192.168.1.1 dev wlan0 proto dhcp src 192.168.1.42 metric 600\n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.42 metric 600',
+        'ping -c 4 192.168.1.1':'PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.\n64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=3.21 ms\n64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=2.87 ms\n64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=4.12 ms\n64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=3.40 ms\n\n--- 192.168.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 2.874/3.402/4.118/0.462 ms',
+        'ping -c 2 10.9.9.9':'PING 10.9.9.9 (10.9.9.9) 56(84) bytes of data.\n\n--- 10.9.9.9 ping statistics ---\n2 packets transmitted, 0 received, 100% packet loss, time 1027ms\n\n(No reply: wrong address, device off, wrong subnet, or it blocks ping.)',
+        'df -h':'Filesystem      Size  Used Avail Use% Mounted on\nudev            1.6G     0  1.6G   0% /dev\ntmpfs           380M  1.2M  379M   1% /run\n/dev/mmcblk0p2   29G  4.1G   24G  15% /\ntmpfs           1.9G     0  1.9G   0% /dev/shm\n/dev/mmcblk0p1  510M   72M  439M  15% /boot/firmware',
+        'free -h':'               total        used        free      shared  buff/cache   available\nMem:           3.7Gi       412Mi       2.6Gi        12Mi       812Mi       3.3Gi\nSwap:          511Mi          0B       511Mi',
+        'systemctl status ssh':'● ssh.service - OpenBSD Secure Shell server\n     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; preset: enabled)\n     Active: active (running) since Mon 2026-11-02 09:14:03 AEDT; 2h 3min ago\n       Docs: man:sshd(8)\n             man:sshd_config(5)\n   Main PID: 655 (sshd)\n      Tasks: 1 (limit: 3910)\n        CPU: 312ms\n     CGroup: /system.slice/ssh.service\n             └─655 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"',
+        'systemctl status plantroom':'× plantroom.service - Plant-room temperature logger and web page\n     Loaded: loaded (/etc/systemd/system/plantroom.service; enabled; preset: enabled)\n     Active: failed (Result: exit-code) since Mon 2026-11-02 11:02:11 AEDT; 15min ago\n    Process: 1022 ExecStart=/usr/bin/python3 /home/tech/logger/plantroom.py (code=exited, status=1/FAILURE)\n   Main PID: 1022 (code=exited, status=1/FAILURE)\n\n(It failed. Next step: read its log with journalctl -u plantroom -n 5)',
+        'journalctl -u plantroom -n 5':'Nov 02 11:02:10 plantpi python3[1022]: Traceback (most recent call last):\nNov 02 11:02:10 plantpi python3[1022]:   File "/home/tech/logger/plantroom.py", line 6, in <module>\nNov 02 11:02:10 plantpi python3[1022]:     from flask import Flask, render_template_string\nNov 02 11:02:10 plantpi python3[1022]: ModuleNotFoundError: No module named \'flask\'\nNov 02 11:02:11 plantpi systemd[1]: plantroom.service: Failed with result \'exit-code\'.\n\n(Diagnosis: Flask is not installed. Fix: sudo apt install python3-flask, then sudo systemctl restart plantroom)',
+        'sudo ss -tulpn':'Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:Port Process\nudp   UNCONN 0      0            0.0.0.0:5353       0.0.0.0:*     users:(("avahi-daemon",pid=412,fd=12))\nudp   UNCONN 0      0               [::]:5353          [::]:*     users:(("avahi-daemon",pid=412,fd=13))\ntcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*     users:(("sshd",pid=655,fd=3))\ntcp   LISTEN 0      128             [::]:22            [::]:*     users:(("sshd",pid=655,fd=4))',
+        'ss -tulpn':'Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:Port Process\nudp   UNCONN 0      0            0.0.0.0:5353       0.0.0.0:*\ntcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*\n\n(Process column is empty without sudo.)',
+        'vcgencmd get_throttled':'throttled=0x0\n\n(0x0 = never short of power, never throttled. Good supply.)',
+        'vcgencmd measure_temp':'temp=48.2\'C',
+        'sudo apt update':'Hit:1 http://deb.debian.org/debian stable InRelease\nHit:2 http://deb.debian.org/debian-security stable-security InRelease\nHit:3 http://archive.raspberrypi.com/debian stable InRelease\nReading package lists... Done\nBuilding dependency tree... Done\nReading state information... Done\n14 packages can be upgraded. Run \'apt list --upgradable\' to see them.'
+      };
+      var files={'/home/tech/notes.txt':'Plant room Pi. Sensor on GPIO4.\nAlarm LED on GPIO17. Ack button on GPIO27.','/etc/hostname':'plantpi','/etc/hosts':'127.0.0.1\tlocalhost\n::1\t\tlocalhost ip6-localhost ip6-loopback\n127.0.1.1\tplantpi'};
+      function resolve(p){if(!p||p==='~')return '/home/tech';if(p.indexOf('~/')===0)p='/home/tech/'+p.slice(2);if(p.charAt(0)!=='/')p=(cwd==='/'?'':cwd)+'/'+p;var parts=[],a=p.split('/');for(var i=0;i<a.length;i++){if(!a[i]||a[i]==='.')continue;if(a[i]==='..')parts.pop();else parts.push(a[i]);}return '/'+parts.join('/');}
+      function print(s){out.textContent+=s+'\n';out.scrollTop=out.scrollHeight;}
+      function run(c){
+        c=c.trim().replace(/\s+/g,' ');print(prompt()+' '+c);if(!c)return;
+        if(c==='clear'){out.textContent='';return;}
+        if(c==='pwd'){print(cwd);return;}
+        if(c==='cd'||c.indexOf('cd ')===0){var t=resolve(c.slice(3).trim());if(fs[t]){cwd=t;pr.textContent=prompt();}else print('-bash: cd: '+c.slice(3)+': No such file or directory');return;}
+        if(c==='ls'||c==='ls -a'||c==='ls -l'){var L=fs[cwd]||[];if(!L.length){print('');return;}
+          if(c==='ls -a'){print(['.','..'].concat(cwd==='/home/tech'?['.bash_history','.bashrc','.profile','.ssh']:[]).concat(L).join('  '));return;}
+          if(c==='ls -l'){print('total '+(L.length*4));L.forEach(function(n){var f=/\./.test(n)&&n!=='data';print((f?'-rw-r--r-- 1 tech tech  ':'drwxr-xr-x 2 tech tech ')+(f?' 220':'4096')+' Nov  2 09:20 '+n);});return;}
+          print(L.join('  '));return;}
+        if(c.indexOf('cat ')===0){var p=resolve(c.slice(4).trim());if(files[p]){print(files[p]);return;}if(R[c]){print(R[c]);return;}print('cat: '+c.slice(4)+': '+(fs[p]?'Is a directory':'No such file or directory'));return;}
+        if(c.indexOf('sudo ')===0&&!R[c]&&c!=='sudo ss -tulpn'){print('(simulator) In real life this would run as root. Only "sudo apt update" and "sudo ss -tulpn" are simulated here.');return;}
+        if(R[c]){print(R[c]);return;}
+        if(c==='htop'||c.indexOf('nano')===0||c.indexOf('less')===0){print('(simulator) '+c.split(' ')[0]+' is a full-screen program; try it on a real Pi.');return;}
+        print('-bash: '+c.split(' ')[0]+': command not found   (type help for the list)');
+      }
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'){hist.push(inp.value);hi=hist.length;run(inp.value);inp.value='';}
+        else if(e.key==='ArrowUp'){if(hi>0){hi--;inp.value=hist[hi];}e.preventDefault();}
+        else if(e.key==='ArrowDown'){if(hi<hist.length-1){hi++;inp.value=hist[hi];}else{hi=hist.length;inp.value='';}e.preventDefault();}
+      });
+      ['help','pwd','ls -l','ip a','ping -c 4 192.168.1.1','df -h','systemctl status ssh','systemctl status plantroom','journalctl -u plantroom -n 5','sudo ss -tulpn','vcgencmd get_throttled'].forEach(function(c){var b=document.createElement('button');b.type='button';b.textContent=c;b.onclick=function(){run(c);};chips.appendChild(b);});
+      print('Linux plantpi 6.12.47+rpt-rpi-v8 aarch64\nLast login: Mon Nov  2 09:20:31 2026 from 192.168.1.20');
+    })();
+    </script>
+
+    <h2>File permissions, in plain words</h2>
+    <p>Every file and folder has an <b>owner</b> (a user), a <b>group</b>, and three sets of permissions: for the owner, for members of the group, and for everyone else ("others"). Each set says whether you can <b>r</b>ead, <b>w</b>rite, or e<b>x</b>ecute (run the file; for a folder, enter it).</p>
+    <figure>
+      <svg viewBox="0 0 640 210" role="img" aria-label="Breakdown of the permission string -rwxr-xr-x into type, owner, group and others">
+        <text class="t t-bold" x="40" y="60" style="font-family:var(--mono);font-size:30px">-</text>
+        <text class="t t-bold t-red" x="80" y="60" style="font-family:var(--mono);font-size:30px">rwx</text>
+        <text class="t t-bold t-blue" x="170" y="60" style="font-family:var(--mono);font-size:30px">r-x</text>
+        <text class="t t-bold t-green" x="260" y="60" style="font-family:var(--mono);font-size:30px">r-x</text>
+        <text class="t" x="360" y="58" style="font-family:var(--mono)">1 tech tech 512 backup.sh</text>
+        <path class="s-thin" d="M44 72 v14"/><text class="t t-small t-muted" x="20" y="104">type</text>
+        <text class="t t-small t-muted" x="20" y="120">- file</text><text class="t t-small t-muted" x="20" y="136">d folder</text>
+        <path class="s-red" d="M80 72 v8 h56 v-8"/><text class="t t-small t-red" x="84" y="104">owner</text><text class="t t-small" x="84" y="120">r+w+x</text><text class="t t-small" x="84" y="136">4+2+1 = 7</text>
+        <path class="s-blue" d="M170 72 v8 h56 v-8"/><text class="t t-small t-blue" x="174" y="104">group</text><text class="t t-small" x="174" y="120">r+x</text><text class="t t-small" x="174" y="136">4+1 = 5</text>
+        <path class="s-green" d="M260 72 v8 h56 v-8"/><text class="t t-small t-green" x="264" y="104">others</text><text class="t t-small" x="264" y="120">r+x</text><text class="t t-small" x="264" y="136">4+1 = 5</text>
+        <path class="s-thin" d="M410 70 v14"/><text class="t t-small t-muted" x="392" y="102">owner</text>
+        <path class="s-thin" d="M458 70 v14"/><text class="t t-small t-muted" x="442" y="102">group</text>
+        <text class="t t-bold" x="40" y="182">Octal: 755  →  chmod 755 backup.sh   (644 = rw-r--r--, 600 = rw-------)</text>
+      </svg>
+      <figcaption>Figure 3. Read the ten characters as type + three groups of three. Each letter has a value: r = 4, w = 2, x = 1. Add them per group to get the three-digit "octal" form used by <code>chmod</code>.</figcaption>
+    </figure>
+<pre><code>tech@plantpi:~ $ nano backup.sh                 # write a small script
+tech@plantpi:~ $ ./backup.sh
+-bash: ./backup.sh: Permission denied             # no x bit yet
+tech@plantpi:~ $ chmod +x backup.sh             # add execute for everyone (or: chmod 755)
+tech@plantpi:~ $ chmod 600 ~/.ssh/authorized_keys   # only I can read/write: SSH insists on this
+tech@plantpi:~ $ sudo chown tech:tech /home/tech/logger/data   # change owner:group
+tech@plantpi:~ $ groups                          # which groups am I in?
+tech adm dialout sudo ... gpio i2c spi
+tech@plantpi:~ $ sudo usermod -aG dialout tech   # add me to a group (log out and in to take effect)</code></pre>
+    <p>The groups matter for hardware. Members of <code>gpio</code> can use the header pins, <code>i2c</code> and <code>spi</code> the buses, and <code>dialout</code> the serial ports (USB-to-RS-485 adapters for Modbus, P14). "Permission denied" on <code>/dev/ttyUSB0</code> nearly always means the user is not in <code>dialout</code>.</p>
+    <div class="callout warn"><span class="label">Safety (for your data)</span><p>Never "fix" a permission error with <code>chmod 777</code> or by running everything with <code>sudo</code>. It hides the real problem and lets any program change any file. Find the right owner or group instead. And be very careful with <code>sudo rm -r</code>: Linux has no recycle bin.</p></div>
+
+    <h2>The 40-pin header</h2>
+    <p>All current full-size Pis (and the Zero 2 W, once you solder a header on) share the same 40-pin <b>GPIO header</b>. GPIO means general-purpose input/output: pins your program can switch on and off or read. Some pins also have special jobs (I²C, SPI, UART, PWM). Pins are numbered two ways, and mixing them up is the number one beginner mistake:</p>
+    <ul>
+      <li><b>Physical (board) numbers</b> 1–40: odd numbers on the row nearer the board's centre, pin 1 at the end nearest the SD card slot. Pin 1 has a square solder pad underneath.</li>
+      <li><b>GPIO (BCM) numbers</b> such as GPIO17: the chip's own names. Python libraries such as gpiozero use these. GPIO17 is on <i>physical</i> pin 11.</li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety · 3.3 V only</span><p><b>The Pi's GPIO pins are 3.3 V logic and are NOT 5 V tolerant.</b> Putting 5 V on any GPIO pin — from an Arduino output, a 5 V sensor, or a slip of a probe onto pin 2 or 4 — can permanently kill that pin or the whole SoC, and there is no fuse to save it. Use a level shifter or a resistor divider (e.g. 10 kΩ over 20 kΩ turns 5 V into 3.3 V) for 5 V signals. Each GPIO pin can only source or sink a few milliamps (keep it under ~8 mA; ~16 mA is the absolute limit) — drive relays and motors through a transistor (P08). And never connect the 5 V pins to the 3.3 V pins or to a GPIO.</p></div>
+
+    <div class="widget" id="w-pins">
+      <span class="label">Interactive · pinout explorer</span>
+      <p style="font-size:15px;margin-bottom:8px">Click or tab to any pin. Colours: <span class="pill">red 5 V</span> <span class="pill">amber 3.3 V</span> <span class="pill">black GND</span> <span class="pill">green GPIO</span> <span class="pill">blue I²C / 1-Wire / ID</span> <span class="pill">orange SPI / UART</span></p>
+      <figure style="margin:8px 0">
+        <svg id="pin-svg" viewBox="0 0 600 600" role="img" aria-label="Raspberry Pi 40-pin GPIO header pinout"></svg>
+        <figcaption>Figure 4. The 40-pin header, viewed from above with the SD card end at the top. Odd pins are on the left column, even pins on the right.</figcaption>
+      </figure>
+      <div class="readings"><div><small>Physical pin</small><span class="out" id="pin-n">11</span></div><div><small>Name</small><span class="out" id="pin-name">GPIO17</span></div></div>
+      <p id="pin-note" style="margin-top:10px;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var P=[null,
+        ['3V3','p3','3.3 V supply output. Fine for sensors (a few hundred mA total shared with the board). Never connect 5 V here.'],
+        ['5V','p5','5 V straight from the power input. Can power a 5 V device, but NEVER connect it to a GPIO pin.'],
+        ['GPIO2 · SDA','i2c','I²C data (bus 1). Has a fixed 1.8 kΩ pull-up to 3.3 V on the board. Used by the BME280 in P17.'],
+        ['5V','p5','5 V supply. Same as pin 2.'],
+        ['GPIO3 · SCL','i2c','I²C clock (bus 1). Fixed 1.8 kΩ pull-up to 3.3 V.'],
+        ['GND','g','Ground (0 V). All grounds are joined.'],
+        ['GPIO4 · 1-Wire','i2c','General GPIO. The default pin for the 1-Wire bus (DS18B20 sensor in P17).'],
+        ['GPIO14 · TXD','u','UART transmit (serial out). 3.3 V levels — a USB-serial adapter must be set to 3.3 V.'],
+        ['GND','g','Ground.'],
+        ['GPIO15 · RXD','u','UART receive (serial in). 3.3 V only — a 5 V Arduino TX will damage it.'],
+        ['GPIO17','gp','Plain GPIO. Used for the alarm LED in P17.'],
+        ['GPIO18 · PWM0','gp','GPIO with hardware PWM channel 0. Good for dimming or a servo signal.'],
+        ['GPIO27','gp','Plain GPIO. Used for the acknowledge button in P17.'],
+        ['GND','g','Ground.'],
+        ['GPIO22','gp','Plain GPIO.'],
+        ['GPIO23','gp','Plain GPIO.'],
+        ['3V3','p3','3.3 V supply. Same rail as pin 1.'],
+        ['GPIO24','gp','Plain GPIO.'],
+        ['GPIO10 · MOSI','u','SPI0 data out (controller → device).'],
+        ['GND','g','Ground.'],
+        ['GPIO9 · MISO','u','SPI0 data in (device → controller).'],
+        ['GPIO25','gp','Plain GPIO.'],
+        ['GPIO11 · SCLK','u','SPI0 clock.'],
+        ['GPIO8 · CE0','u','SPI0 chip-enable 0 (select device 0).'],
+        ['GND','g','Ground.'],
+        ['GPIO7 · CE1','u','SPI0 chip-enable 1 (select device 1).'],
+        ['ID_SD','i2c','Reserved: I²C for the add-on board (HAT) ID EEPROM. Leave unconnected.'],
+        ['ID_SC','i2c','Reserved: HAT ID EEPROM clock. Leave unconnected.'],
+        ['GPIO5','gp','Plain GPIO.'],
+        ['GND','g','Ground.'],
+        ['GPIO6','gp','Plain GPIO.'],
+        ['GPIO12 · PWM0','gp','GPIO with hardware PWM channel 0 (alternative pin).'],
+        ['GPIO13 · PWM1','gp','GPIO with hardware PWM channel 1.'],
+        ['GND','g','Ground.'],
+        ['GPIO19','gp','GPIO (also PWM1 / audio PCM / SPI1 MISO).'],
+        ['GPIO16','gp','Plain GPIO (also SPI1 CE2).'],
+        ['GPIO26','gp','Plain GPIO.'],
+        ['GPIO20','gp','GPIO (also SPI1 MOSI / PCM).'],
+        ['GND','g','Ground.'],
+        ['GPIO21','gp','GPIO (also SPI1 SCLK / PCM).']
+      ];
+      var S={p5:['s-red','t-red'],p3:['s-amber',''],g:['s-line','t-muted'],gp:['s-green','t-green'],i2c:['s-blue','t-blue'],u:['s-accent','t-accent']};
+      var svg=document.getElementById('pin-svg'),NS='http://www.w3.org/2000/svg';
+      function mk(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+      mk('rect',{x:244,y:28,width:112,height:556,rx:8,'class':'f-wash s-line'});
+      mk('text',{x:300,y:20,'class':'t t-small t-muted','text-anchor':'middle'},'↑ SD-card end of the board');
+      var sel=null,groups=[];
+      function show(n){var p=P[n];document.getElementById('pin-n').textContent=n;document.getElementById('pin-name').textContent=p[0].split(' · ')[0];document.getElementById('pin-note').textContent=p[0]+': '+p[2];if(sel)sel.classList.remove('sel');sel=groups[n];sel.classList.add('sel');}
+      for(var n=1;n<=40;n++){
+        var row=Math.floor((n-1)/2),odd=n%2===1,cx=odd?276:324,cy=52+row*27,st=S[P[n][1]];
+        var g=document.createElementNS(NS,'g');g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label','Pin '+n+' '+P[n][0]);svg.appendChild(g);groups[n]=g;
+        var c=document.createElementNS(NS,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',11);c.setAttribute('class',st[0]+' f-panel');if(n===1){c=document.createElementNS(NS,'rect');c.setAttribute('x',cx-11);c.setAttribute('y',cy-11);c.setAttribute('width',22);c.setAttribute('height',22);c.setAttribute('class',st[0]+' f-panel');}g.appendChild(c);
+        var t=document.createElementNS(NS,'text');t.setAttribute('x',cx);t.setAttribute('y',cy+4);t.setAttribute('text-anchor','middle');t.setAttribute('class','t t-small t-bold');t.textContent=n;g.appendChild(t);
+        var l=document.createElementNS(NS,'text');l.setAttribute('x',odd?232:368);l.setAttribute('y',cy+5);l.setAttribute('text-anchor',odd?'end':'start');l.setAttribute('class','t t-small '+st[1]);l.textContent=P[n][0];g.appendChild(l);
+        (function(k){g.addEventListener('click',function(){show(k);});g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();show(k);}});})(n);
+      }
+      show(11);
+    })();
+    </script>
+
+    <h3>A first GPIO test from the shell</h3>
+    <p>Before Python (P17), prove a pin works with the <code>pinctrl</code> tool that ships with current Raspberry Pi OS. Wire an LED and a 330 Ω resistor in series from physical pin 11 (GPIO17) to pin 9 (GND), long LED leg towards the pin.</p>
+<pre><code>tech@plantpi:~ $ pinctrl set 17 op dh    # GPIO17: output, drive high → LED on
+tech@plantpi:~ $ pinctrl set 17 dl       # drive low → LED off
+tech@plantpi:~ $ pinctrl get 17
+17: op dl pd | lo // GPIO17 = output</code></pre>
+    <p>Current check: I = (3.3 − 2.0) / 330 ≈ <b>3.9 mA</b> for a red LED — comfortably inside the pin's limit. Measure the pin with your meter: about 3.3 V when high, 0 V when low.</p>
+
+    <h3>Expected readings</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>Pin 1 or 17 to GND (pin 6)</td><td>3.28–3.34 V</td><td>Below 3.2 V: overload on the 3.3 V rail, or a short</td></tr>
+      <tr><td>Pin 2 or 4 to GND</td><td>4.9–5.2 V</td><td>Below 4.7 V: weak supply or thin cable (check <code>vcgencmd get_throttled</code>)</td></tr>
+      <tr><td>GPIO17 high, LED + 330 Ω attached</td><td>~3.2 V at the pin, ~3.9 mA</td><td>0 V: wrong pin (physical vs GPIO number)</td></tr>
+      <tr><td><code>vcgencmd measure_temp</code> at idle</td><td>40–55 °C in a case</td><td>Over 80 °C: Pi throttles; add a heatsink/fan</td></tr>
+      <tr><td><code>ping</code> to router on Wi-Fi</td><td>1–10 ms, 0 % loss</td><td>High or lossy: weak Wi-Fi, metal cabinet — use Ethernet</td></tr>
+    </table></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr>
+      <tr><td>Red LED on, green LED never flickers</td><td>No OS on card, bad card, or card not seated</td><td>Re-flash with Imager and verify; try another card</td></tr>
+      <tr><td><code>ssh: Could not resolve hostname plantpi.local</code></td><td>mDNS blocked or Pi not on network</td><td>Find the IP in the router's DHCP list; use Ethernet</td></tr>
+      <tr><td><code>Connection refused</code></td><td>Pi is up but SSH is not enabled</td><td>Re-flash with "Enable SSH" ticked</td></tr>
+      <tr><td><code>Connection timed out</code></td><td>Wrong IP, different network/VLAN, or firewall</td><td><code>ping</code> the IP first; check both are on the same subnet (P19)</td></tr>
+      <tr><td><code>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED</code></td><td>You re-flashed, so the Pi has new host keys</td><td>If you know you re-flashed: <code>ssh-keygen -R plantpi.local</code>. If you did not, stop and investigate.</td></tr>
+      <tr><td>Random crashes, corrupted files</td><td>Under-voltage or power pulled while writing</td><td>Official supply; always <code>sudo shutdown -h now</code></td></tr>
+      <tr><td>"Permission denied" on a device</td><td>User not in the right group</td><td><code>groups</code>, then <code>sudo usermod -aG dialout tech</code> and log in again</td></tr>
+      <tr><td>Everything fails strangely, can't save files</td><td>Disk full</td><td><code>df -h</code>; clear old logs; <code>sudo journalctl --vacuum-size=100M</code></td></tr>
+    </table></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>Field technicians log in to Linux boxes far more often than they expect. Many network video recorders, BMS supervisory controllers and IoT gateways, 4G routers and Modbus-to-BACnet gateways run embedded Linux under the hood, and some give you SSH or a similar console for diagnostics. The questions you ask are always the same: is it powered properly, is the disk full, is the service running, what does its log say, what is its IP, can it reach the gateway, and which port is it listening on? That is <code>vcgencmd</code>/<code>df -h</code>/<code>systemctl</code>/<code>journalctl</code>/<code>ip a</code>/<code>ping</code>/<code>ss</code> — this chapter. See <a href="../career/c01-bms-fundamentals.html">C01 BMS fundamentals</a> and <a href="../career/c05-cctv-ip-cameras.html">C05 CCTV and IP cameras</a>.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>On a customer's device, read before you change. Run <code>systemctl status</code>, <code>journalctl</code>, <code>df -h</code> and <code>ip a</code>, write down what you see, and only then restart things. A restart can wipe the evidence of what went wrong. And never update or reboot a live building controller without the site's permission.</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>Unplug the Ethernet cable while running <code>ping 192.168.1.1</code> (no <code>-c</code>) over a Wi-Fi SSH session in another window, then run <code>ip a</code> — watch <code>eth0</code> switch to NO-CARRIER. Then deliberately use a cheap thin USB cable and a phone charger, run a CPU load with <code>yes &gt; /dev/null &amp;</code> four times, and check <code>vcgencmd get_throttled</code>. Stop the load with <code>killall yes</code>.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>You need to count pulses from a water meter at up to 5 kHz and also show a web dashboard. Pi, Arduino, or both?</summary><div class="answer"><p>Both, or a microcontroller feeding a Pi. Counting fast pulses needs exact timing that a microcontroller's hardware counter does well; Linux may miss pulses while it schedules other processes. The Pi is ideal for the dashboard and logging. This "small controller + Linux supervisor" split is exactly how BMS systems are built.</p></div></details>
+    <details class="quiz"><summary><code>ssh tech@plantpi.local</code> says "could not resolve hostname", but <code>ssh tech@192.168.1.42</code> works. What is broken?</summary><div class="answer"><p>Only the name lookup (mDNS). The Pi, its network connection and SSH are all fine. Typical causes: a guest or corporate network that blocks multicast, or a laptop on a different subnet/VLAN. Use the IP or set up a DHCP reservation.</p></div></details>
+    <details class="quiz"><summary>What do <code>Loaded: … enabled</code> and <code>Active: inactive (dead)</code> together mean?</summary><div class="answer"><p>The service is set to start at boot (enabled), but it is not running right now — it was stopped, or it exited. Check <code>journalctl -u NAME</code> to see why, then <code>sudo systemctl start NAME</code>.</p></div></details>
+    <details class="quiz"><summary>What does <code>-rw-r-----</code> mean, and what is it in octal?</summary><div class="answer"><p>A file (first <code>-</code>). Owner can read and write (rw- = 4+2 = 6). Group can read (r-- = 4). Others have nothing (--- = 0). Octal 640. Typical for a password file that one service group needs to read.</p></div></details>
+    <details class="quiz"><summary>Your 5 V Arduino's TX pin must talk to the Pi's RXD (GPIO15). Can you connect them directly?</summary><div class="answer"><p>No. The Arduino drives its TX to 5 V for a logic high, and the Pi's GPIO is not 5 V tolerant. Use a level shifter or a divider such as 10 kΩ (top) and 20 kΩ (bottom): 5 × 20/(10+20) = 3.33 V. The Pi's TX → Arduino RX direction is usually fine because 3.3 V reads as a high on a 5 V Uno.</p></div></details>
+    <details class="quiz"><summary><code>vcgencmd get_throttled</code> returns <code>0x50000</code>. Is there a problem right now?</summary><div class="answer"><p>Not right now (the low bits are 0), but bits 16 and 18 are set: under-voltage and throttling have <i>occurred</i> since boot. The supply or cable is marginal under load. Fix it before trusting the system.</p></div></details>
+    <details class="quiz"><summary>Which command shows whether a web server on the Pi is actually listening on port 8080?</summary><div class="answer"><p><code>sudo ss -tulpn</code> (or <code>sudo ss -tlnp | grep 8080</code>). If nothing listens on 8080, the problem is the program, not the network. If it listens on <code>127.0.0.1:8080</code> only, it is reachable from the Pi itself but not from your laptop.</p></div></details>
+    <details class="quiz"><summary>GPIO17 in your Python code is which physical pin, and why does it matter?</summary><div class="answer"><p>Physical pin 11. Libraries like gpiozero use GPIO (BCM) numbers; the header is labelled physically 1–40. Mixing them puts your wire on the wrong pin — at best nothing happens, at worst you short a power pin.</p></div></details>
+
+    <details class="more"><summary>Go deeper (optional)</summary><p>Read <code>man ssh_config</code> and create <code>~/.ssh/config</code> on your laptop with a <code>Host plantpi</code> entry (HostName, User, IdentityFile) so <code>ssh plantpi</code> is enough. Then turn off password logins on the Pi by setting <code>PasswordAuthentication no</code> in a file under <code>/etc/ssh/sshd_config.d/</code> and restarting <code>ssh</code> — only after you have proven your key works, or you will lock yourself out. Finally, look at <code>/boot/firmware/config.txt</code>: this is where overlays like <code>dtoverlay=w1-gpio</code> (P17) turn header pins into buses.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain when to choose a microcontroller and when to choose a Linux computer.</span></li>
+      <li><input type="checkbox"><span>I can flash Raspberry Pi OS with hostname, user, Wi-Fi (country AU) and SSH pre-set.</span></li>
+      <li><input type="checkbox"><span>I can SSH into a headless Pi by name and by IP, and set up key login.</span></li>
+      <li><input type="checkbox"><span>I can move around with <code>pwd</code>, <code>ls</code>, <code>cd</code>, and read and edit files with <code>cat</code>, <code>less</code> and <code>nano</code>.</span></li>
+      <li><input type="checkbox"><span>I can update a system with <code>sudo apt update</code> and <code>sudo apt full-upgrade</code>, and shut it down cleanly.</span></li>
+      <li><input type="checkbox"><span>I can check a service with <code>systemctl status</code> and read its log with <code>journalctl -u</code>.</span></li>
+      <li><input type="checkbox"><span>I can check the network with <code>ip a</code>, <code>ip route</code>, <code>ping</code> and <code>ss -tulpn</code>, and health with <code>df -h</code>, <code>free -h</code> and <code>htop</code>.</span></li>
+      <li><input type="checkbox"><span>I can read and set file permissions (<code>rwx</code>, 755/644/600) and fix group membership.</span></li>
+      <li><input type="checkbox"><span>I can find any pin on the 40-pin header by physical and GPIO number, and I never put 5 V on a GPIO.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

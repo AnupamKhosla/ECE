@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P11 · Arduino first steps</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P11</span>
+    <h1>Arduino first steps</h1>
+    <p class="lede">Install the Arduino software, make an LED blink, read a push button the right way with a pull-up resistor, print to the Serial Monitor, and debounce a button without freezing your program. You will also learn the two rules that keep microcontroller pins alive: respect the logic voltage and respect the current limit.</p>
+    <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$20–50</span><span><b>Theory</b> T15</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What a microcontroller board is</h2>
+    <p>A <b>microcontroller</b> is a whole small computer on one chip: a processor (CPU), memory for the program, memory for variables, and many <b>pins</b> that can read or set voltages. It runs one program, forever, from the moment it gets power. There is no operating system and no screen.</p>
+    <p>The <b>Arduino Uno</b> is a small circuit board built around one microcontroller, the <b>ATmega328P</b>. The board adds the parts you need to use the chip easily: a USB connection for programming, a voltage regulator, a 16 MHz crystal (the clock), a reset button, an LED, and header sockets so you can push jumper wires into the pins.</p>
+    <p>A genuine Uno costs roughly A$35–50 in Australia. Compatible <b>clones</b> cost roughly A$12–25 and work the same for this course. Most clones replace the USB chip with a cheaper one called the <b>CH340</b>, which sometimes needs a driver (see Troubleshooting).</p>
+
+    <figure>
+      <svg viewBox="0 0 680 310" role="img" aria-label="Block diagram of an Arduino Uno board">
+        <defs><marker id="p11-arr1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="20" y="40" width="100" height="56" rx="6"/>
+        <text class="t" x="70" y="64" text-anchor="middle">USB socket</text>
+        <text class="t t-small t-muted" x="70" y="82" text-anchor="middle">data + 5 V</text>
+        <rect class="f-wash s-line" x="160" y="40" width="170" height="56" rx="6"/>
+        <text class="t" x="245" y="64" text-anchor="middle">USB–serial chip</text>
+        <text class="t t-small t-muted" x="245" y="82" text-anchor="middle">16U2 or CH340</text>
+        <line class="s-line" x1="120" y1="68" x2="156" y2="68" marker-end="url(#p11-arr1)"/>
+        <line class="s-line" x1="330" y1="68" x2="376" y2="68" marker-end="url(#p11-arr1)"/>
+        <text class="t t-small" x="353" y="58" text-anchor="middle">TX/RX</text>
+        <rect class="f-accent-soft s-accent" x="380" y="30" width="200" height="150" rx="8"/>
+        <text class="t t-bold" x="480" y="56" text-anchor="middle">ATmega328P</text>
+        <text class="t t-small" x="480" y="82" text-anchor="middle">8-bit CPU, 16 MHz clock</text>
+        <text class="t t-small" x="480" y="104" text-anchor="middle">32 KB flash: your sketch</text>
+        <text class="t t-small" x="480" y="126" text-anchor="middle">2 KB RAM: variables</text>
+        <text class="t t-small" x="480" y="148" text-anchor="middle">1 KB EEPROM: saved settings</text>
+        <line class="s-line" x1="480" y1="180" x2="480" y2="198"/>
+        <rect class="f-panel s-line" x="380" y="200" width="200" height="36" rx="5"/>
+        <text class="t t-small" x="480" y="223" text-anchor="middle">Digital pins D0–D13</text>
+        <rect class="f-panel s-line" x="380" y="250" width="200" height="36" rx="5"/>
+        <text class="t t-small" x="480" y="273" text-anchor="middle">Analogue inputs A0–A5</text>
+        <line class="s-line" x1="580" y1="218" x2="618" y2="218"/>
+        <polygon class="f-amber" points="618,208 618,228 636,218"/>
+        <line class="s-line" x1="636" y1="208" x2="636" y2="228"/>
+        <text class="t t-small t-muted" x="628" y="250" text-anchor="middle">LED "L"</text>
+        <text class="t t-small t-muted" x="628" y="265" text-anchor="middle">on D13</text>
+        <rect class="f-wash s-line" x="20" y="150" width="100" height="56" rx="6"/>
+        <text class="t" x="70" y="174" text-anchor="middle">DC jack</text>
+        <text class="t t-small t-muted" x="70" y="192" text-anchor="middle">7–12 V</text>
+        <line class="s-line" x1="120" y1="178" x2="156" y2="178" marker-end="url(#p11-arr1)"/>
+        <rect class="f-wash s-line" x="160" y="150" width="170" height="56" rx="6"/>
+        <text class="t" x="245" y="174" text-anchor="middle">5 V regulator</text>
+        <text class="t t-small t-muted" x="245" y="192" text-anchor="middle">makes the 5 V rail</text>
+        <path class="s-line" d="M330 178 H352 V150 H376" marker-end="url(#p11-arr1)"/>
+        <path class="s-thin s-dash" d="M70 96 V126 H352 V150"/>
+        <text class="t t-small t-muted" x="200" y="120" text-anchor="middle">USB 5 V (through a fuse)</text>
+        <line class="s-line" x1="245" y1="206" x2="245" y2="226" marker-end="url(#p11-arr1)"/>
+        <rect class="f-wash s-line" x="160" y="230" width="170" height="56" rx="6"/>
+        <text class="t" x="245" y="254" text-anchor="middle">3.3 V regulator</text>
+        <text class="t t-small t-muted" x="245" y="272" text-anchor="middle">3V3 pin, ~50 mA max</text>
+      </svg>
+      <figcaption>Figure 1. Inside an Uno. Your program lives in the microcontroller's flash memory. The USB–serial chip turns USB into the simple serial signal the microcontroller understands, both for uploading and for the Serial Monitor. Power comes from USB (5 V) or the DC jack (7–12 V, through the regulator).</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Uno feature</th><th>Value</th><th>What it means for you</th></tr>
+      <tr><td>Logic voltage</td><td>5 V</td><td>A pin set HIGH gives about 5 V. An input above about 3 V reads HIGH.</td></tr>
+      <tr><td>Digital pins</td><td>D0–D13 (14 pins)</td><td>D0 and D1 are the serial port to USB. Avoid them for now.</td></tr>
+      <tr><td>PWM pins</td><td>D3, D5, D6, D9, D10, D11 (marked ~)</td><td>Can fake an "in-between" voltage with fast pulses (P09, P13).</td></tr>
+      <tr><td>Analogue inputs</td><td>A0–A5, 10-bit</td><td>Measure 0–5 V as a number 0–1023 (next lab, P12).</td></tr>
+      <tr><td>Current per pin</td><td>20 mA recommended, 40 mA absolute maximum</td><td>Enough for an LED. Not enough for a motor, relay or buzzer coil.</td></tr>
+      <tr><td>Program memory</td><td>32 KB flash</td><td>Your compiled sketch must fit here. The IDE tells you how much you used.</td></tr>
+    </table></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p>"An Arduino is a tiny computer like a Raspberry Pi." Not quite. A Raspberry Pi runs Linux, has gigabytes of RAM and boots for half a minute. An Uno has 2 KB of RAM, no operating system, and starts running your program a fraction of a second after power-up. That makes a microcontroller simple, cheap, low-power and very predictable in timing, which is exactly why the controllers inside building plant, alarm panels and door controllers are microcontrollers too.</p></div>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Arduino Uno or compatible</b><small>~A$15–50 · genuine or clone</small></li>
+      <li><b>USB cable that carries data</b><small>USB-B for most Unos; some clones use micro-USB or USB-C</small></li>
+      <li><b>Breadboard and jumper wires</b><small>From P02 · male-to-male jumpers</small></li>
+      <li><b>LEDs ×3</b><small>5 mm red or green</small></li>
+      <li><b>Resistors 220 Ω and 330 Ω</b><small>A few of each, plus 10 kΩ ×2</small></li>
+      <li><b>Tactile push buttons ×2</b><small>6 mm, 4-leg, fits a breadboard</small></li>
+      <li><b>Multimeter</b><small>From P03</small></li>
+      <li><b>A computer</b><small>Windows, macOS or Linux</small></li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Core Electronics, Jaycar and Altronics sell genuine boards and their own compatible boards, plus starter kits with breadboard, LEDs, buttons and sensors. element14 and RS Components stock genuine boards. AliExpress clones are cheapest but take weeks to arrive. A starter kit (~A$50–100) is good value because you will need most of its sensors in P12 and P13.</p></div>
+
+    <h2>Install the IDE and talk to the board</h2>
+    <p>The <b>IDE</b> (Integrated Development Environment) is the program where you type code, compile it into machine code, and upload it to the board. Arduino IDE 2 is free from the official arduino.cc website for Windows, macOS and Linux.</p>
+    <ol class="steps">
+      <li><p><b>Install Arduino IDE 2.</b> Download it from arduino.cc (the "Software" page), install it, and open it. Accept the driver prompts on Windows.</p></li>
+      <li><p><b>Plug in the board.</b> The green ON LED should light. On a new board the "L" LED often already blinks, because the factory loaded the Blink example.</p></li>
+      <li><p><b>Select the board.</b> Use the drop-down at the top of the window (or <i>Tools › Board</i>) and choose <b>Arduino Uno</b>. Clones of the Uno also use "Arduino Uno".</p></li>
+      <li><p><b>Select the port.</b> <i>Tools › Port</i>. On Windows it is a COM port, such as COM3. On macOS it looks like <code>/dev/cu.usbmodem…</code> (genuine) or <code>/dev/cu.usbserial…</code> (CH340 clone). On Linux it is <code>/dev/ttyACM0</code> or <code>/dev/ttyUSB0</code>. Trick: unplug the board and see which port disappears.</p></li>
+      <li><p><b>Open Blink.</b> <i>File › Examples › 01.Basics › Blink</i>.</p></li>
+      <li><p><b>Upload.</b> Click the right-arrow button. The IDE first <i>compiles</i> (translates your code into machine code) and then <i>uploads</i>. The TX/RX LEDs flicker. The output panel ends with "Done uploading" or a message showing how much flash the sketch used.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Half of all "my Arduino is dead" problems are a charge-only USB cable. These cables have power wires but no data wires, so the board lights up but no port appears. Keep one known-good data cable labelled with tape.</p></div>
+
+    <h2>Blink: the shape of every sketch</h2>
+    <p>An Arduino program is called a <b>sketch</b>. Every sketch has two functions. <code>setup()</code> runs once after power-up or reset. <code>loop()</code> then runs again and again, forever, as fast as the chip can go.</p>
+<pre><code>// Blink: turn the on-board LED on and off, once per second.
+
+void setup() {                      // setup() runs ONCE, after power-up or reset
+  pinMode(LED_BUILTIN, OUTPUT);     // make pin 13 (called LED_BUILTIN on an Uno) an output
+}
+
+void loop() {                       // loop() runs again and again, forever
+  digitalWrite(LED_BUILTIN, HIGH);  // drive the pin to 5 V: LED on
+  delay(1000);                      // wait 1000 ms = 1 s (the CPU does nothing else meanwhile)
+  digitalWrite(LED_BUILTIN, LOW);   // drive the pin to 0 V: LED off
+  delay(1000);                      // wait another second, then loop() starts again
+}</code></pre>
+    <h3>The three functions you just used</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Function</th><th>What it does physically</th></tr>
+      <tr><td><code>pinMode(pin, OUTPUT)</code></td><td>Switches on the pin's output transistors. The pin can now push current out (HIGH) or pull current in (LOW).</td></tr>
+      <tr><td><code>pinMode(pin, INPUT)</code></td><td>Output transistors off. The pin only "listens". It draws almost no current (under 1 µA).</td></tr>
+      <tr><td><code>pinMode(pin, INPUT_PULLUP)</code></td><td>Input, plus an internal resistor of about 20–50 kΩ connected from the pin to 5 V.</td></tr>
+      <tr><td><code>digitalWrite(pin, HIGH)</code></td><td>Connects the pin to 5 V through a small transistor (a few tens of ohms).</td></tr>
+      <tr><td><code>digitalWrite(pin, LOW)</code></td><td>Connects the pin to 0 V (GND) through a small transistor.</td></tr>
+      <tr><td><code>delay(ms)</code></td><td>Waits that many milliseconds. The chip does nothing else useful while it waits.</td></tr>
+    </table></div>
+    <div class="callout try"><span class="label">Try this</span><p>Change both delays to 100. Upload. Then try 10, then 5. Somewhere below about 20 ms per flash your eye stops seeing the flicker and the LED looks dimly lit all the time. That is persistence of vision, and it is the idea behind PWM dimming in P09 and P13.</p></div>
+
+    <h2>An external LED with a resistor</h2>
+    <p>Now drive your own LED from pin D8. You already know from P02 that an LED needs a series resistor to set its current. The Arduino pin is just a 5 V source that you can switch on and off from code.</p>
+    <ol class="steps">
+      <li><p><b>Wire it.</b> Jumper from D8 to a breadboard row. 220 Ω resistor from that row to the LED's long leg (anode). LED's short leg (cathode) to the blue GND rail. Jumper from the GND rail to a GND pin on the Uno.</p></li>
+      <li><p><b>Upload the sketch below.</b> The LED should give a short blip once per second.</p></li>
+      <li><p><b>Measure.</b> Change the sketch so the LED stays on (<code>digitalWrite(LED_PIN, HIGH);</code> in <code>setup()</code> and an empty <code>loop()</code>). Measure the pin voltage, the LED voltage and the resistor voltage. Fill in the table.</p></li>
+    </ol>
+<pre><code>const int LED_PIN = 8;              // the external LED (through 220 Ω) is on D8
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);         // D8 becomes an output
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH);      // LED on
+  delay(200);                       // stay on for 200 ms
+  digitalWrite(LED_PIN, LOW);       // LED off
+  delay(800);                       // stay off for 800 ms: one short blip per second
+}</code></pre>
+
+    <div class="formula">I = (V<sub>pin</sub> − V<sub>LED</sub>) / R = (4.8 − 2.0) / 220 ≈ 12.7 mA
+      <small>V<sub>pin</sub> is a little under 5 V because the pin's output transistor has some resistance (roughly 25 Ω), so it loses a few tenths of a volt at 10–20 mA. V<sub>LED</sub> is about 2.0 V for red and about 3 V for blue or white. 12.7 mA is well inside the recommended 20 mA per pin.</small></div>
+
+    <h3>Expected readings (LED held on)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Measurement</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td>D8 to GND</td><td>4.6–4.9 V</td><td>0 V: wrong pin number in code, or code not uploaded</td></tr>
+      <tr><td>Across red LED</td><td>1.8–2.1 V</td><td>~4.8 V and dark: LED reversed or open</td></tr>
+      <tr><td>Across 220 Ω</td><td>2.6–3.0 V</td><td>0 V: resistor not in the circuit (wrong row)</td></tr>
+      <tr><td>Current (V<sub>R</sub>/220)</td><td>12–14 mA</td><td>Over 20 mA: resistor too small</td></tr>
+    </table></div>
+
+    <figure>
+      <svg viewBox="0 0 640 290" role="img" aria-label="Schematic: LED with resistor on D8, push button on D2 with internal pull-up">
+        <defs><marker id="p11-arr2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-wash s-line" x="20" y="20" width="170" height="250" rx="8"/>
+        <text class="t t-bold" x="105" y="44" text-anchor="middle">Arduino Uno</text>
+        <text class="t" x="182" y="74" text-anchor="end">D8</text>
+        <circle class="f-ink" cx="190" cy="80" r="3.5"/>
+        <text class="t" x="182" y="174" text-anchor="end">D2</text>
+        <circle class="f-ink" cx="190" cy="180" r="3.5"/>
+        <text class="t" x="182" y="234" text-anchor="end">GND</text>
+        <circle class="f-ink" cx="190" cy="240" r="3.5"/>
+        <!-- internal pull-up -->
+        <text class="t t-small" x="110" y="96" text-anchor="middle">5 V</text>
+        <line class="s-line" x1="110" y1="100" x2="110" y2="108"/>
+        <path class="s-accent s-dash" d="M110 108 l9 5 l-18 10 l18 10 l-18 10 l18 10 l-9 5"/>
+        <line class="s-line" x1="110" y1="158" x2="110" y2="180"/>
+        <line class="s-line" x1="110" y1="180" x2="190" y2="180"/>
+        <circle class="f-ink" cx="110" cy="180" r="3"/>
+        <text class="t t-small t-accent" x="34" y="128">pull-up</text>
+        <text class="t t-small t-accent" x="30" y="143">20–50 kΩ</text>
+        <text class="t t-small t-muted" x="105" y="208" text-anchor="middle">switched on by</text>
+        <text class="t t-small t-muted" x="105" y="223" text-anchor="middle">INPUT_PULLUP</text>
+        <!-- LED branch -->
+        <line class="s-line" x1="190" y1="80" x2="240" y2="80"/>
+        <path class="s-line" d="M240 80 h8 l5 -9 l10 18 l10 -18 l10 18 l10 -18 l10 18 l5 -9 h8"/>
+        <text class="t t-small" x="278" y="62" text-anchor="middle">220 Ω</text>
+        <line class="s-line" x1="316" y1="80" x2="360" y2="80"/>
+        <polygon class="f-red" points="360,68 360,92 382,80"/>
+        <line class="s-line" x1="382" y1="66" x2="382" y2="94"/>
+        <path class="s-red" d="M370 62 l10 -14" marker-end="url(#p11-arr2)"/>
+        <path class="s-red" d="M380 64 l10 -14" marker-end="url(#p11-arr2)"/>
+        <text class="t t-small" x="371" y="114" text-anchor="middle">LED</text>
+        <path class="s-line" d="M382 80 H540 V240"/>
+        <path class="s-red" d="M205 100 h40" marker-end="url(#p11-arr2)"/>
+        <text class="t t-small t-red" x="200" y="118">≈ 12 mA</text>
+        <!-- button branch -->
+        <line class="s-line" x1="190" y1="180" x2="300" y2="180"/>
+        <circle class="f-panel s-line" cx="304" cy="180" r="4"/>
+        <circle class="f-panel s-line" cx="352" cy="180" r="4"/>
+        <line class="s-line" x1="306" y1="168" x2="350" y2="168"/>
+        <line class="s-line" x1="328" y1="168" x2="328" y2="148"/>
+        <line class="s-line" x1="316" y1="148" x2="340" y2="148"/>
+        <text class="t t-small" x="328" y="138" text-anchor="middle">push button</text>
+        <path class="s-line" d="M356 180 H430 V240"/>
+        <!-- ground rail -->
+        <line class="s-line" x1="190" y1="240" x2="600" y2="240"/>
+        <line class="s-line" x1="600" y1="240" x2="600" y2="252"/>
+        <line class="s-line" x1="586" y1="252" x2="614" y2="252"/>
+        <line class="s-line" x1="591" y1="258" x2="609" y2="258"/>
+        <line class="s-line" x1="596" y1="264" x2="604" y2="264"/>
+        <text class="t t-small t-muted" x="470" y="230">GND rail</text>
+      </svg>
+      <figcaption>Figure 2. The circuit for this lab. D8 drives the LED through 220 Ω. D2 reads a button that connects it to GND; the pull-up resistor inside the chip (dashed) holds D2 at 5 V when the button is not pressed. Every part shares one ground.</figcaption>
+    </figure>
+
+    <h2>Reading a push button: floating inputs and pull-ups</h2>
+    <p>Here is the most important idea in this lab. An input pin is a <b>voltmeter with almost infinite resistance</b>. It draws less than a microamp. That is good, because it does not disturb what it measures. But it also means that if nothing firmly connects the pin to a voltage, the pin's voltage is <b>undefined</b>. We say the pin is <b>floating</b>.</p>
+    <p>A floating pin acts like a tiny antenna and a tiny capacitor. It picks up mains hum from nearby wiring, static from your hand, and switching noise from the next pin. <code>digitalRead()</code> then returns random 1s and 0s. Touch the wire with your finger and the readings change. Beginners often think the board is faulty. It is not; the circuit is incomplete.</p>
+    <p>The fix is a <b>pull-up resistor</b>: a resistor from the pin to 5 V. When the button is open, no current flows through the resistor (the pin draws nothing), so there is no voltage drop across it, and the pin sits firmly at 5 V: HIGH. When you press the button, it connects the pin straight to GND. Now current flows from 5 V, through the resistor, through the button to GND. The resistor drops the whole 5 V, and the pin sits at 0 V: LOW. The resistor's job is to hold the pin HIGH gently, but lose the argument to the button.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="Comparison of a floating input and an input with a pull-up resistor">
+        <text class="t t-bold" x="155" y="22" text-anchor="middle">No pull-up: floating</text>
+        <text class="t t-bold" x="485" y="22" text-anchor="middle">With pull-up resistor</text>
+        <line class="s-thin" x1="320" y1="10" x2="320" y2="260"/>
+        <!-- left circuit -->
+        <rect class="f-wash s-line" x="20" y="50" width="60" height="40" rx="4"/>
+        <text class="t t-small" x="50" y="75" text-anchor="middle">D2</text>
+        <line class="s-line" x1="80" y1="70" x2="160" y2="70"/>
+        <circle class="f-panel s-line" cx="164" cy="70" r="4"/>
+        <circle class="f-panel s-line" cx="204" cy="70" r="4"/>
+        <line class="s-line" x1="166" y1="66" x2="200" y2="52"/>
+        <path class="s-line" d="M208 70 H240 V96"/>
+        <line class="s-line" x1="228" y1="96" x2="252" y2="96"/>
+        <line class="s-line" x1="233" y1="102" x2="247" y2="102"/>
+        <line class="s-line" x1="238" y1="108" x2="242" y2="108"/>
+        <path class="s-amber" d="M100 36 q5 -8 10 0 t10 0 t10 0"/>
+        <path class="s-amber" d="M100 104 q5 -8 10 0 t10 0 t10 0"/>
+        <text class="t t-small t-muted" x="150" y="40">hum, static,</text>
+        <text class="t t-small t-muted" x="150" y="122">nearby wires</text>
+        <!-- left graph -->
+        <line class="s-thin" x1="30" y1="150" x2="30" y2="240"/>
+        <line class="s-thin" x1="30" y1="240" x2="300" y2="240"/>
+        <text class="t t-small t-muted" x="8" y="160">5 V</text>
+        <text class="t t-small t-muted" x="8" y="244">0 V</text>
+        <polyline class="s-amber" points="30,200 45,170 58,215 70,180 84,232 96,160 108,205 122,190 134,228 148,165 160,210 174,176 188,236 200,172 214,198 228,224 240,158 254,214 268,184 282,230 296,170"/>
+        <text class="t t-small" x="165" y="262" text-anchor="middle">digitalRead: 1 0 1 0 0 1 1 0 … random</text>
+        <!-- right circuit -->
+        <rect class="f-wash s-line" x="350" y="80" width="60" height="40" rx="4"/>
+        <text class="t t-small" x="380" y="105" text-anchor="middle">D2</text>
+        <text class="t t-small" x="460" y="40" text-anchor="middle">5 V</text>
+        <line class="s-line" x1="460" y1="44" x2="460" y2="50"/>
+        <path class="s-accent" d="M460 50 l7 4 l-14 7 l14 7 l-14 7 l14 7 l-7 4"/>
+        <text class="t t-small t-accent" x="474" y="72">10 kΩ</text>
+        <line class="s-line" x1="460" y1="86" x2="460" y2="100"/>
+        <line class="s-line" x1="410" y1="100" x2="530" y2="100"/>
+        <circle class="f-ink" cx="460" cy="100" r="3"/>
+        <circle class="f-panel s-line" cx="534" cy="100" r="4"/>
+        <circle class="f-panel s-line" cx="574" cy="100" r="4"/>
+        <line class="s-line" x1="536" y1="96" x2="570" y2="82"/>
+        <path class="s-line" d="M578 100 H600 V120"/>
+        <line class="s-line" x1="588" y1="120" x2="612" y2="120"/>
+        <line class="s-line" x1="593" y1="126" x2="607" y2="126"/>
+        <line class="s-line" x1="598" y1="132" x2="602" y2="132"/>
+        <!-- right graph -->
+        <line class="s-thin" x1="360" y1="150" x2="360" y2="240"/>
+        <line class="s-thin" x1="360" y1="240" x2="630" y2="240"/>
+        <polyline class="s-accent" points="360,160 450,160 450,236 540,236 540,160 628,160"/>
+        <text class="t t-small t-muted" x="405" y="152" text-anchor="middle">released: HIGH</text>
+        <text class="t t-small t-muted" x="495" y="228" text-anchor="middle">pressed: LOW</text>
+        <text class="t t-small" x="495" y="262" text-anchor="middle">digitalRead: 1 1 1 0 0 0 1 1 1</text>
+      </svg>
+      <figcaption>Figure 3. Left: with the button open, nothing defines the pin voltage, so it wanders with picked-up noise. Right: the pull-up resistor holds the pin at 5 V until the button connects it firmly to 0 V. Note the logic is inverted: pressed reads LOW.</figcaption>
+    </figure>
+
+    <h3>Internal or external pull-up?</h3>
+    <p>The ATmega328P has a pull-up resistor inside every pin, roughly 20–50 kΩ. <code>pinMode(pin, INPUT_PULLUP)</code> switches it on. For a button on a short wire, that is all you need: no extra parts. For long cables or noisy places, add an external 4.7–10 kΩ resistor. A smaller resistor holds the pin more firmly against noise, but wastes more current while the button is held: 5 V / 10 kΩ = 0.5 mA; 5 V / 1 kΩ = 5 mA.</p>
+    <p>You can also wire it the other way: a <b>pull-down</b> resistor to GND and a button to 5 V, so pressed reads HIGH. The Uno has no internal pull-downs, and wiring buttons to GND is the industry habit (a short to ground is harmless), so this course uses pull-ups.</p>
+
+    <div class="widget" id="p11-pu">
+      <span class="label">Interactive · Pull-up resistor explorer</span>
+      <label>Pull-up choice
+        <select id="p11-mode">
+          <option value="none">None: pin floating</option>
+          <option value="int" selected>Internal pull-up (INPUT_PULLUP, ~35 kΩ)</option>
+          <option value="ext">External resistor (use the slider)</option>
+        </select></label>
+      <label>External resistor <span class="out" id="p11-rv">10 kΩ</span><input type="range" id="p11-r" min="0" max="100" value="49"></label>
+      <label><input type="checkbox" id="p11-btn"> Button held down</label>
+      <label><input type="checkbox" id="p11-noise"> Long cable running next to noisy wiring</label>
+      <svg id="p11-trace" viewBox="0 0 600 140" role="img" aria-label="Pin voltage over time">
+        <rect class="f-wash" x="40" y="10" width="550" height="110"/>
+        <line class="s-thin s-dash" x1="40" y1="54" x2="590" y2="54"/>
+        <line class="s-thin s-dash" x1="40" y1="76" x2="590" y2="76"/>
+        <text class="t t-small t-muted" x="4" y="16">5 V</text>
+        <text class="t t-small t-muted" x="4" y="58">3.0</text>
+        <text class="t t-small t-muted" x="4" y="80">1.5</text>
+        <text class="t t-small t-muted" x="4" y="122">0 V</text>
+        <text class="t t-small t-muted" x="590" y="50" text-anchor="end">above 3.0 V reads HIGH</text>
+        <text class="t t-small t-muted" x="590" y="90" text-anchor="end">below 1.5 V reads LOW</text>
+        <polyline id="p11-line" class="s-accent" points=""/>
+        <text class="t t-small t-muted" x="315" y="136" text-anchor="middle">time → (one reading every 0.12 s)</text>
+      </svg>
+      <div class="readings">
+        <div><small>Pin voltage now</small><span class="out" id="p11-v">5.00 V</span></div>
+        <div><small>digitalRead()</small><span class="out" id="p11-d">HIGH</span></div>
+        <div><small>Current while pressed</small><span class="out" id="p11-i">0.14 mA</span></div>
+        <div><small>Wrong reads (last 60)</small><span class="out" id="p11-g">0</span></div>
+      </div>
+      <p id="p11-verdict" style="margin-top:12px;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var mode=document.getElementById('p11-mode'), rs=document.getElementById('p11-r'), btn=document.getElementById('p11-btn'), nz=document.getElementById('p11-noise');
+      var hist=[], floatV=2.5, N=60;
+      function rVal(){ if(mode.value==='int') return 35000; return 470*Math.pow(10, (+rs.value/100)*Math.log10(1e6/470)); }
+      function fmtR(r){ return r>=1e6?(r/1e6).toFixed(2)+' MΩ':r>=1000?(r/1000).toFixed(r<1e4?2:1)+' kΩ':Math.round(r)+' Ω'; }
+      function readOf(v){ return v>=3.0?1:(v<=1.5?0:(Math.random()<0.5?0:1)); }
+      function sample(){
+        var r=rVal(), v;
+        if(mode.value==='none'){ floatV+= (Math.random()-0.5)*(btn.checked?0:3.2); floatV=Math.max(0,Math.min(5,floatV)); v=btn.checked?0:floatV; }
+        else {
+          var base = btn.checked ? 5*0.1/(r+0.1) : 5 - 1e-6*r;
+          var amp = nz.checked ? 4*r/(r+150000) : 0.02;
+          v = base + (Math.random()-0.5)*2*amp; v=Math.max(0,Math.min(5,v));
+        }
+        return v;
+      }
+      function tick(){
+        var v=sample(); var expect=btn.checked?0:1; var d=readOf(v);
+        hist.push({v:v,bad:(mode.value==='none'&&!btn.checked)?1:(d!==expect?1:0)}); if(hist.length>N) hist.shift();
+        var pts=hist.map(function(h,i){ return (40+i*(550/(N-1))).toFixed(1)+','+(120-h.v*22).toFixed(1); }).join(' ');
+        document.getElementById('p11-line').setAttribute('points',pts);
+        document.getElementById('p11-v').textContent=v.toFixed(2)+' V';
+        document.getElementById('p11-d').textContent=d?'HIGH':'LOW';
+        var bad=0; hist.forEach(function(h){bad+=h.bad;});
+        document.getElementById('p11-g').textContent=mode.value==='none'&&!btn.checked?'all random':bad;
+      }
+      function upd(){
+        var r=rVal(); rs.disabled=(mode.value!=='ext');
+        document.getElementById('p11-rv').textContent=mode.value==='ext'?fmtR(r):(mode.value==='int'?'internal ~35 kΩ':'none');
+        var i=mode.value==='none'?0:5/r*1000;
+        document.getElementById('p11-i').textContent=mode.value==='none'?'—':(i<1?(i*1000).toFixed(0)+' µA':i.toFixed(1)+' mA');
+        var t;
+        if(mode.value==='none') t='Floating. With the button open the pin reads whatever noise it picks up. Never leave an input floating.';
+        else if(r<1500) t='Very strong pull-up. It works, but wastes '+i.toFixed(1)+' mA (and '+(5*i).toFixed(0)+' mW) every moment the button is held. Fine for a short test, wasteful on batteries.';
+        else if(r<=50000) t='Good range. The pin is held firmly HIGH, and pressing costs only '+(i<1?(i*1000).toFixed(0)+' µA':i.toFixed(1)+' mA')+'. Turn on the noisy cable: smaller resistors in this range resist it better.';
+        else t='Weak pull-up. It works on a short wire, but with the noisy cable ticked the pin wanders past the thresholds and you get false reads. Use 4.7–10 kΩ for long cables.';
+        document.getElementById('p11-verdict').textContent=t;
+      }
+      [mode,rs,btn,nz].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd(); for(var k=0;k<N;k++) tick(); setInterval(tick,120);
+    })();
+    </script>
+
+    <h3>Build and test the button</h3>
+    <ol class="steps">
+      <li><p><b>Place the button</b> across the centre gap of the breadboard. A 4-leg tactile button has its legs joined in pairs inside. Pins on the <i>same side of the gap</i> that face each other across the button body are usually the switched pair; if in doubt, use the meter's continuity mode: the switched pair beeps only when pressed.</p></li>
+      <li><p><b>Wire it:</b> one side of the button to D2, the other side to GND. Keep the LED on D8 from before.</p></li>
+      <li><p><b>Upload the sketch below</b>, then open the <b>Serial Monitor</b> (magnifying-glass icon, top right, or <i>Tools › Serial Monitor</i>). Set its speed to <b>9600 baud</b> to match <code>Serial.begin(9600)</code>.</p></li>
+    </ol>
+<pre><code>const int BUTTON_PIN = 2;           // push button between D2 and GND
+const int LED_PIN = 8;              // LED + 220 Ω on D8
+
+void setup() {
+  pinMode(BUTTON_PIN, INPUT_PULLUP);    // input, with the internal pull-up resistor switched on
+  pinMode(LED_PIN, OUTPUT);             // LED pin is an output
+  Serial.begin(9600);                   // start the serial port at 9600 baud (bits per second)
+  Serial.println("Button test ready");  // printed once, so you can see when the board resets
+}
+
+void loop() {
+  int state = digitalRead(BUTTON_PIN);  // HIGH (1) = not pressed, LOW (0) = pressed
+  if (state == LOW) {                   // pressed: the button connects the pin to GND
+    digitalWrite(LED_PIN, HIGH);        // so light the LED
+  } else {                              // not pressed
+    digitalWrite(LED_PIN, LOW);         // LED off
+  }
+  Serial.println(state);                // print 1 or 0 on its own line
+  delay(100);                           // slow down: about 10 lines per second
+}</code></pre>
+    <p>You should see a column of <code>1</code>s that turns into <code>0</code>s while you hold the button, and the LED lights while pressed. Now experiment: change <code>INPUT_PULLUP</code> to <code>INPUT</code>, upload, and release the button. Wave your hand near the D2 wire. The readings go random. You have just seen a floating input.</p>
+
+    <div class="callout why"><span class="label">Why it works</span><p>An input pin is the gate of a CMOS transistor pair, which is an insulated plate. It reacts to voltage but draws almost no current, so a few picoamps of stray charge can move it. A pull-up gives that charge an easy path to 5 V, so stray charge cannot build up. Inside the chip, the input then compares the pin voltage with two thresholds: above about 0.6 × V<sub>CC</sub> (3.0 V) it is a guaranteed 1, below about 0.3 × V<sub>CC</sub> (1.5 V) it is a guaranteed 0, and in between the result is not guaranteed.</p></div>
+    <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic and how a microcontroller works</a>
+
+    <h2>The Serial Monitor: your window into the chip</h2>
+    <p>The Uno has no screen, so the <b>Serial Monitor</b> is how you see what your program is doing. <code>Serial.begin(9600)</code> starts the chip's UART (serial port) at 9600 bits per second. The USB–serial chip passes those bits to your computer, and the IDE shows them as text. You will learn exactly how those bits look on a wire in P14.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Code</th><th>Prints</th></tr>
+      <tr><td><code>Serial.print("T=");</code></td><td>The text, with no new line after it</td></tr>
+      <tr><td><code>Serial.println(23);</code></td><td>The number 23, then a new line</td></tr>
+      <tr><td><code>Serial.println(3.14159, 3);</code></td><td>3.142 (3 decimal places)</td></tr>
+      <tr><td><code>Serial.println(millis());</code></td><td>Milliseconds since the board started</td></tr>
+    </table></div>
+    <p>Also try <i>Tools › Serial Plotter</i>. It draws a live graph of any numbers you print, one per line. That is very handy with sensors in P12.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Opening the Serial Monitor resets an Uno (the USB chip pulses the reset line). That is why "Button test ready" appears again each time you open it. It is normal, and useful: you always see your program start from the beginning.</p></div>
+
+    <h2>Debouncing, millis() and why delay() blocks</h2>
+    <h3>Contacts bounce</h3>
+    <p>A push button is two pieces of springy metal. When they touch, they bounce apart and back several times before they settle, over roughly 1–10 ms. To you it is one press. To a chip that checks the pin millions of times per second, it is five or ten presses. If your code counts presses or toggles an LED on each press, it will skip and miscount.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Voltage on a button pin showing contact bounce and a debounce window">
+        <line class="s-thin" x1="60" y1="30" x2="60" y2="180"/>
+        <line class="s-thin" x1="60" y1="180" x2="620" y2="180"/>
+        <text class="t t-small t-muted" x="20" y="54">5 V</text>
+        <text class="t t-small t-muted" x="20" y="164">0 V</text>
+        <rect class="f-practice-soft" x="150" y="36" width="150" height="138"/>
+        <polyline class="s-accent" points="60,50 150,50 150,160 156,160 156,50 162,50 162,160 170,160 170,70 175,70 175,160 182,160 182,90 186,90 186,160 470,160 470,50 474,50 474,160 479,160 479,50 620,50"/>
+        <text class="t t-small" x="150" y="28" text-anchor="middle">press</text>
+        <text class="t t-small" x="470" y="28" text-anchor="middle">release</text>
+        <text class="t t-small t-red" x="200" y="112">bounce, ~1–10 ms</text>
+        <path class="s-thin" d="M150 196 V204 H300 V196"/>
+        <text class="t t-small" x="225" y="220" text-anchor="middle">wait until steady for 50 ms</text>
+        <text class="t t-small t-muted" x="385" y="150" text-anchor="middle">steady LOW: accept "pressed"</text>
+        <text class="t t-small t-muted" x="560" y="216" text-anchor="middle">time →</text>
+      </svg>
+      <figcaption>Figure 4. What the pin really does when you press a button (time stretched for clarity). A debounce routine waits for the reading to stay the same for a short "quiet time", often 20–50 ms, before it believes the change. You can capture real bounce with a scope in P15.</figcaption>
+    </figure>
+
+    <h3>Why delay() is a trap</h3>
+    <p><code>delay(1000)</code> makes the chip spin in a waiting loop for one second. During that second it cannot read buttons, check sensors or update anything else. If you blink an LED with <code>delay()</code> and also want to read a button, a short press during the delay is simply missed.</p>
+    <p>The professional way is to never wait. Instead, <b>check the clock</b> each time through <code>loop()</code> and act only when enough time has passed. <code>millis()</code> returns the number of milliseconds since the board started, as an <code>unsigned long</code> (a 32-bit number). Your <code>loop()</code> now runs thousands of times per second and can do many jobs "at the same time".</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"The Arduino can do two things at once with delay() if I put them in the right order." It cannot. One CPU does one instruction at a time, and <code>delay()</code> fills that time with nothing. The right mental model is a <b>juggler who never holds a ball</b>: loop() quickly visits each job, asks "is it time yet?", does a tiny bit of work if so, and moves on. That pattern is called a <b>non-blocking</b> loop, and it is how real controllers run many control loops at once.</p></div>
+
+    <h3>Sketch: blink without delay, while watching a button</h3>
+<pre><code>const int LED_PIN = 8;                  // external LED
+const int BUTTON_PIN = 2;               // button to GND
+const unsigned long INTERVAL_MS = 500;  // LED changes state every 500 ms
+
+unsigned long lastToggle = 0;           // millis() value when we last flipped the LED
+bool ledOn = false;                     // the LED's current state
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_BUILTIN, OUTPUT);         // on-board LED will mirror the button
+}
+
+void loop() {
+  unsigned long now = millis();         // read the clock once per pass
+  if (now - lastToggle &gt;= INTERVAL_MS) {  // has 500 ms passed since the last flip?
+    lastToggle = now;                   // yes: remember this moment
+    ledOn = !ledOn;                     // flip the state
+    digitalWrite(LED_PIN, ledOn ? HIGH : LOW);
+  }
+  // Nothing above ever waits, so this runs thousands of times per second:
+  digitalWrite(LED_BUILTIN, digitalRead(BUTTON_PIN) == LOW ? HIGH : LOW);
+}</code></pre>
+    <p>Press the button at any moment: the on-board LED responds instantly, while the external LED keeps blinking on time.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Always write the time test as <code>now - lastToggle &gt;= INTERVAL_MS</code>. Never as <code>now &gt;= lastToggle + INTERVAL_MS</code>. <code>millis()</code> rolls over to zero after about 49.7 days (2<sup>32</sup> ms). Because unsigned subtraction wraps around too, the first form still gives the right answer across the rollover. The second form fails once every 50 days, which is exactly the kind of bug that appears on a site long after you have left.</p></div>
+
+    <h3>Sketch: a debounced toggle switch</h3>
+    <p>Each clean press toggles the LED and prints a count. Try it first with <code>DEBOUNCE_MS</code> set to 0: some presses will count twice or toggle twice. Then set it back to 50.</p>
+<pre><code>const int BUTTON_PIN = 2;
+const int LED_PIN = 8;
+const unsigned long DEBOUNCE_MS = 50;   // the reading must be steady this long to count
+
+int stableState = HIGH;                 // the last state we trusted (HIGH = released)
+int lastRawState = HIGH;                // the last raw reading, bounces included
+unsigned long lastChangeTime = 0;       // when the raw reading last changed (ms)
+bool ledOn = false;                     // LED state
+unsigned long pressCount = 0;           // clean presses counted so far
+
+void setup() {
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int raw = digitalRead(BUTTON_PIN);    // may bounce: 0,1,0,1,0 within a few ms
+  unsigned long now = millis();
+
+  if (raw != lastRawState) {            // the raw reading changed...
+    lastChangeTime = now;               // ...so restart the quiet-time timer
+    lastRawState = raw;
+  }
+
+  // Accept the new state only if it has been steady for DEBOUNCE_MS
+  if ((now - lastChangeTime) &gt;= DEBOUNCE_MS &amp;&amp; raw != stableState) {
+    stableState = raw;                  // it is real: remember it
+    if (stableState == LOW) {           // act on the press only (HIGH to LOW), not the release
+      ledOn = !ledOn;                   // toggle the LED
+      digitalWrite(LED_PIN, ledOn ? HIGH : LOW);
+      pressCount++;                     // count it
+      Serial.print("Press number ");
+      Serial.println(pressCount);
+    }
+  }
+}</code></pre>
+    <div class="callout try"><span class="label">Try this</span><p>Hardware debounce: put a 100 nF capacitor from D2 to GND. With the 35 kΩ internal pull-up, the time constant is RC = 35 000 × 100 × 10<sup>−9</sup> ≈ 3.5 ms, which smooths the bounce. Now test with <code>DEBOUNCE_MS = 0</code> again. Fewer double counts? That is the RC charging you met in P07.</p></div>
+
+    <h2>5 V and 3.3 V logic levels</h2>
+    <p>The Uno is a <b>5 V</b> board. Many newer boards are <b>3.3 V</b> boards: the ESP32 (P18), the Raspberry Pi (P16), and many sensors. Each family has its own idea of what "HIGH" means, and its own maximum.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 270" role="img" aria-label="Input voltage thresholds for a 5 V Uno and a 3.3 V board">
+        <text class="t t-bold" x="150" y="20" text-anchor="middle">Uno input (5 V logic)</text>
+        <text class="t t-bold" x="450" y="20" text-anchor="middle">3.3 V board input (ESP32, Pi)</text>
+        <rect class="f-theory-soft s-thin" x="120" y="170" width="60" height="60"/>
+        <rect class="f-wash s-thin s-dash" x="120" y="110" width="60" height="60"/>
+        <rect class="f-practice-soft s-thin" x="120" y="30" width="60" height="80"/>
+        <text class="t t-small" x="110" y="234" text-anchor="end">0 V</text>
+        <text class="t t-small" x="110" y="174" text-anchor="end">1.5 V</text>
+        <text class="t t-small" x="110" y="114" text-anchor="end">3.0 V</text>
+        <text class="t t-small" x="110" y="34" text-anchor="end">5.0 V</text>
+        <text class="t t-small" x="190" y="204">LOW</text>
+        <text class="t t-small t-muted" x="190" y="144">not guaranteed</text>
+        <text class="t t-small" x="190" y="74">HIGH</text>
+        <rect class="f-theory-soft s-thin" x="420" y="198" width="60" height="32"/>
+        <rect class="f-wash s-thin s-dash" x="420" y="130" width="60" height="68"/>
+        <rect class="f-practice-soft s-thin" x="420" y="98" width="60" height="32"/>
+        <rect class="f-warn-soft s-red" x="420" y="30" width="60" height="56"/>
+        <text class="t t-small" x="410" y="234" text-anchor="end">0 V</text>
+        <text class="t t-small" x="410" y="202" text-anchor="end">~0.8 V</text>
+        <text class="t t-small" x="410" y="134" text-anchor="end">~2.5 V</text>
+        <text class="t t-small" x="410" y="102" text-anchor="end">3.3 V</text>
+        <text class="t t-small" x="410" y="90" text-anchor="end">~3.6 V</text>
+        <text class="t t-small" x="410" y="34" text-anchor="end">5.0 V</text>
+        <text class="t t-small" x="490" y="218">LOW</text>
+        <text class="t t-small t-muted" x="490" y="168">not guaranteed</text>
+        <text class="t t-small" x="490" y="118">HIGH</text>
+        <text class="t t-small t-red" x="490" y="56">damage zone:</text>
+        <text class="t t-small t-red" x="490" y="72">5 V kills pins</text>
+        <text class="t t-small t-muted" x="320" y="262" text-anchor="middle">Thresholds are approximate; check each chip's datasheet.</text>
+      </svg>
+      <figcaption>Figure 5. A 3.3 V output into the Uno (3.3 V is above 3.0 V) usually reads HIGH, with little margin. A 5 V output into a 3.3 V board is in the damage zone. Never connect an Uno output pin directly to an ESP32 or Raspberry Pi input.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th>Direction</th><th>Safe?</th><th>What to do</th></tr>
+      <tr><td>3.3 V output → Uno input</td><td>Usually works</td><td>Fine for most signals. For noisy or critical lines, use a level shifter.</td></tr>
+      <tr><td>Uno 5 V output → 3.3 V input</td><td><b>No</b></td><td>Use a resistor divider (e.g. 1 kΩ over 2 kΩ gives 3.33 V) or a level-shifter module.</td></tr>
+      <tr><td>Two-way lines (I²C)</td><td>Needs care</td><td>Use a bidirectional level-shifter module (small MOSFET boards, ~A$3–6).</td></tr>
+    </table></div>
+
+    <h2>How not to kill a pin</h2>
+    <p>An output pin is two small transistors: one to 5 V, one to GND. They are designed for signals and LEDs, not power. The ATmega328P datasheet gives an <b>absolute maximum</b> of 40 mA per pin. "Absolute maximum" means "beyond this, damage may happen", not "safe to run here". Design for <b>20 mA or less</b> per pin, and keep the total for the whole chip under about 200 mA.</p>
+    <div class="callout warn"><span class="label">Safety: pin killers</span><p>
+      1. <b>Output shorted to GND or 5 V.</b> A pin set HIGH and wired straight to GND tries to pass 100+ mA. It gets hot and dies, sometimes in seconds. Put a resistor (220 Ω–1 kΩ) in series with any wire that goes off the board while you experiment.<br>
+      2. <b>Driving a coil directly.</b> Motors, relays, solenoids and buzzers need more current than a pin can give, and they kick back a voltage spike when switched off. Use a transistor or driver and a flyback diode (P08, P13).<br>
+      3. <b>Voltage above 5 V or below 0 V on any pin.</b> A 12 V signal on an input destroys it. Use a divider or an opto-isolator.<br>
+      4. <b>Back-powering.</b> Connecting 5 V to a pin while the board is unpowered feeds the chip through its protection diodes.<br>
+      Everything in this lab runs from USB at 5 V, well inside the extra-low-voltage (ELV) limit. Never connect an Arduino to mains wiring.</p></div>
+    <div class="callout warn"><span class="label">Safety: the 5 V and Vin pins</span><p>The 5 V pin on USB power can supply only what your computer's USB port allows (500 mA on USB 2.0, protected by a resettable fuse on the board). The DC jack wants 7–12 V. Never feed 12 V into the 5 V pin: it bypasses the regulator and kills the board.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>No port appears in Tools › Port</td><td>Charge-only cable; CH340 driver missing</td><td>Swap cable. For CH340 clones on older Windows or macOS, install the CH340 driver from the chip maker's site.</td></tr>
+      <tr><td>Upload error "programmer is not responding" or "not in sync"</td><td>Wrong board or port selected; something wired to D0/D1</td><td>Check board and port. Unplug wires from D0 and D1 during upload.</td></tr>
+      <tr><td>Serial Monitor shows garbage characters</td><td>Baud rate mismatch</td><td>Set the Monitor speed to the number in <code>Serial.begin()</code>.</td></tr>
+      <tr><td>Button reads random values</td><td>Floating input: used <code>INPUT</code> without a resistor</td><td>Use <code>INPUT_PULLUP</code>, or add 10 kΩ to 5 V.</td></tr>
+      <tr><td>Button always reads 0</td><td>Button rotated 90°, so its pins are always connected</td><td>Rotate the button, or check pairs with the continuity tester.</td></tr>
+      <tr><td>One press counts as several</td><td>Contact bounce</td><td>Use the millis() debounce sketch.</td></tr>
+      <tr><td>LED does not light, pin reads 4.8 V</td><td>LED reversed, or LED and resistor in the same breadboard row</td><td>Long leg towards the resistor. Each part must bridge two different rows.</td></tr>
+      <tr><td>Board resets when something switches on</td><td>Supply dip (brown-out)</td><td>Load is too big for USB power. See P13.</td></tr>
+      <tr><td>Error "expected ';' before…"</td><td>Missing semicolon on the line above</td><td>Every statement ends with <code>;</code>. Braces <code>{ }</code> must pair.</td></tr>
+    </table></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>The button-and-pull-up idea is everywhere in building systems. A BMS controller's <b>digital input</b> (DI) reads a "dry contact" (a plain switch with no voltage of its own) from a pump's run relay or a filter pressure switch. The controller supplies a small "wetting" voltage through an internal resistor, exactly like INPUT_PULLUP. Alarm panels and door controllers read door reed switches and request-to-exit buttons the same way, and they add <b>end-of-line resistors</b> so the panel can tell "closed", "open", "cut" and "shorted" apart (C04, C06). When a site tech says a DI "is chattering", they mean bounce or a floating input, and you now know both causes.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>You wire a button between D4 and GND and use pinMode(4, INPUT). Released, the Serial Monitor shows a mix of 1s and 0s. Why?</summary><div class="answer"><p>D4 is floating. With the button open, nothing connects the pin to any voltage, and an input draws almost no current, so stray charge and picked-up noise set its voltage. Use <code>INPUT_PULLUP</code> (or an external 10 kΩ to 5 V) so it sits firmly at 5 V when released.</p></div></details>
+    <details class="quiz"><summary>With INPUT_PULLUP, does a pressed button read HIGH or LOW, and why?</summary><div class="answer"><p>LOW. Pressing connects the pin directly to GND. The pull-up resistor then has 5 V across it and passes a small current (about 5 V / 35 kΩ ≈ 0.14 mA), but the pin itself is at 0 V. The logic is inverted: pressed = LOW.</p></div></details>
+    <details class="quiz"><summary>An LED with a 100 Ω resistor on a 5 V pin: is that safe for the pin?</summary><div class="answer"><p>I ≈ (4.7 − 2.0) / 100 ≈ 27 mA. That is under the 40 mA absolute maximum but above the 20 mA recommended level, and the pin voltage sags. It is not a good design. Use 220–330 Ω for about 9–13 mA.</p></div></details>
+    <details class="quiz"><summary>Your sketch blinks an LED with delay(2000) and also reads a button. Short presses are often missed. Why, and what is the fix?</summary><div class="answer"><p><code>delay()</code> blocks: for 2 seconds the CPU only waits and never reaches the <code>digitalRead()</code>. A press that starts and ends inside the delay is never seen. Fix: use <code>millis()</code> timing so <code>loop()</code> never waits and checks the button thousands of times per second.</p></div></details>
+    <details class="quiz"><summary>Why write (now − last) &gt;= interval rather than now &gt;= last + interval?</summary><div class="answer"><p><code>millis()</code> is a 32-bit unsigned number and wraps to 0 after about 49.7 days. Unsigned subtraction also wraps, so <code>now − last</code> is still the true elapsed time across the rollover. <code>last + interval</code> can overflow to a small number, making the test true or false at the wrong moment.</p></div></details>
+    <details class="quiz"><summary>Can you connect a 5 V Uno output directly to a Raspberry Pi GPIO input?</summary><div class="answer"><p>No. Pi GPIO is 3.3 V logic and not 5 V tolerant; 5 V pushes current through the input's protection diodes and can destroy the pin or the chip. Use a divider (1 kΩ top, 2 kΩ bottom gives 3.33 V) or a level-shifter module.</p></div></details>
+    <details class="quiz"><summary>Why does a smaller pull-up resistor resist noise better?</summary><div class="answer"><p>Noise arrives as tiny currents coupled through stray capacitance. The voltage it causes is roughly that current times the resistance holding the pin. With 10 kΩ instead of 100 kΩ, the same noise current makes one-tenth of the voltage disturbance. The price is more current while the button is pressed (0.5 mA instead of 0.05 mA).</p></div></details>
+    <details class="quiz"><summary>Why does every opening of the Serial Monitor print your "ready" message again?</summary><div class="answer"><p>On an Uno, opening the serial port toggles a control line that the board uses to reset the microcontroller (this is how uploads start automatically). So the sketch restarts and <code>setup()</code> runs again.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can install Arduino IDE 2, select the board and port, and upload Blink.</span></li>
+      <li><input type="checkbox"><span>I can explain what setup(), loop(), pinMode(), digitalWrite() and delay() do.</span></li>
+      <li><input type="checkbox"><span>I can drive an external LED from a pin and calculate its current.</span></li>
+      <li><input type="checkbox"><span>I can explain a floating input and fix it with INPUT_PULLUP or an external resistor.</span></li>
+      <li><input type="checkbox"><span>I can print values to the Serial Monitor and use the Serial Plotter.</span></li>
+      <li><input type="checkbox"><span>I can explain contact bounce and write a non-blocking millis() debounce.</span></li>
+      <li><input type="checkbox"><span>I know the 5 V and 3.3 V logic thresholds and how to shift levels safely.</span></li>
+      <li><input type="checkbox"><span>I keep pin currents under 20 mA and never drive coils or motors directly from a pin.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
