@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T10 · Electromagnetic waves, antennas and optical fibre</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › Part 2 · Magnetism and AC</div>
+    <span class="eyebrow">Theory · T10</span>
+    <h1>Electromagnetic waves, antennas and optical fibre</h1>
+    <p class="lede">Radio, Wi-Fi, 4G and 5G, and the light in an NBN fibre are all the same thing: electric and magnetic fields that keep each other going as they travel at the speed of light. This chapter takes you from Maxwell's idea to antenna lengths, dBm and path loss, and then into glass, where total internal reflection traps light for tens of kilometres.</p>
+    <div class="meta"><span><b>Read</b> 65 min</span><span><b>Level</b> Class 12 refresher → practical</span><span><b>Maths</b> c = fλ, logs (dB), Snell's law</span><span><b>Practice</b> P18, P19 · Job track C08, C09</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>A short history: from equations to the NBN</h2>
+    <p>By the 1860s, Faraday had shown that a changing magnetic field makes an electric field (<a href="t06-magnetism-inductors.html">T06</a>). <b>James Clerk Maxwell</b> noticed that the equations were lopsided, and in 1865 he added the missing half: a <b>changing electric field makes a magnetic field</b>, even in empty space. Put the two together and something remarkable falls out of the maths: a disturbance in the fields can travel by itself, as a wave, at a speed fixed by two constants of nature. When Maxwell calculated that speed, he got the measured speed of light. Light, he concluded, is an electromagnetic wave.</p>
+    <p>Nobody had made such waves on purpose until <b>Heinrich Hertz</b> did it in 1887–88 with a spark gap and a loop of wire with a tiny gap across the room. A spark at the transmitter made a tiny spark at the receiver. He measured their wavelength, showed they reflect and refract like light, and remarked that they had no practical use. Within a decade <b>Guglielmo Marconi</b> was sending wireless telegraph messages, and in 1901 across the Atlantic. The SI unit of frequency, the hertz, honours Hertz.</p>
+    <p>Light in glass took longer. In 1966 <b>Charles Kao</b> and George Hockham argued that glass fibres could carry communications over long distances if the impurities that absorb light were removed, aiming for a loss below 20 dB per kilometre. In 1970 Corning made fibre that met that target. Modern fibre loses only about 0.2 dB per kilometre at 1550 nm. Kao received the Nobel Prize in Physics in 2009. Every NBN fibre connection rests on his idea.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Australia has its own place in this story: research at CSIRO in the 1990s led to a patent covering techniques that made fast wireless LANs practical, and it became part of the Wi-Fi standards used worldwide. In Australia, the radio spectrum is managed by the <b>ACMA</b> (Australian Communications and Media Authority), and limits on human exposure to radio waves are set by <b>ARPANSA</b> (Australian Radiation Protection and Nuclear Safety Agency).</p></div>
+
+    <h2>Maxwell's idea: fields that sustain each other</h2>
+    <p>Picture a charge that suddenly moves. Its electric field cannot change everywhere at once. Near the charge, the field changes; that <i>changing E</i> makes a magnetic field around it (Maxwell). That magnetic field is itself changing, so it makes an electric field a little further out (Faraday). That makes a magnetic field further out still. The disturbance leapfrogs outward, each field regenerating the other. No medium is needed: the fields are the wave.</p>
+    <ul>
+      <li>E and B are <b>perpendicular to each other</b> and to the direction of travel. The wave is <b>transverse</b>.</li>
+      <li>E and B rise and fall <b>together</b> (in phase) in a travelling wave in free space.</li>
+      <li>The direction of E is the wave's <b>polarisation</b>. A vertical antenna sends vertically polarised waves and receives them best.</li>
+    </ul>
+    <div class="formula">c = 1 / √(μ₀ ε₀) = 1 / √(1.257 × 10⁻⁶ × 8.854 × 10⁻¹²) ≈ 3.00 × 10⁸ m/s
+      <small>μ₀ is the magnetic constant (T06) and ε₀ the electric constant (T05). Maxwell computed this speed from electrical measurements alone, with no light involved, and got the speed of light.</small></div>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Electromagnetic wave with electric field vertical and magnetic field horizontal, travelling to the right">
+        <defs>
+          <marker id="t10f1-k" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <line class="s-thin" x1="60" y1="120" x2="600" y2="120" marker-end="url(#t10f1-k)"/>
+        <line class="s-thin s-dash" x1="70" y1="120" x2="20" y2="156"/>
+        <path class="s-red" d="M70,120 78,108 86,97 93,87 101,78 109,70 117,65 125,61 132,60 140,61 148,65 156,70 164,78 172,87 179,97 187,108 195,120 203,132 211,143 218,153 226,162 234,170 242,175 250,179 258,180 265,179 273,175 281,170 289,162 297,153 304,143 312,132 320,120 328,108 336,97 343,87 351,78 359,70 367,65 375,61 382,60 390,61 398,65 406,70 414,78 422,87 429,97 437,108 445,120 453,132 461,143 468,153 476,162 484,170 492,175 500,179 508,180 515,179 523,175 531,170 539,162 547,153 554,143 562,132 570,120"/>
+        <path class="s-blue" d="M70,120 71,125 73,129 75,133 78,137 82,140 86,142 92,144 100,144 108,144 118,142 128,140 140,137 153,133 167,129 181,125 195,120 209,115 223,111 237,107 250,103 262,100 272,98 282,96 290,96 298,96 304,98 308,100 312,103 315,107 317,111 319,115 320,120 321,125 323,129 325,133 328,137 332,140 336,142 342,144 350,144 358,144 368,142 378,140 390,137 403,133 417,129 431,125 445,120 459,115 473,111 487,107 500,103 512,100 522,98 532,96 540,96 548,96 554,98 558,100 562,103 565,107 567,111 569,115 570,120"/>
+        <line class="s-red s-thin" x1="132" y1="120" x2="132" y2="60"/>
+        <line class="s-red s-thin" x1="382" y1="120" x2="382" y2="60"/>
+        <text class="t t-small t-red" x="120" y="50">E (electric field)</text>
+        <text class="t t-small t-blue" x="86" y="164">B (magnetic field)</text>
+        <text class="t t-small" x="560" y="110">travel, c</text>
+        <line class="s-line" x1="132" y1="206" x2="382" y2="206"/>
+        <line class="s-line" x1="132" y1="200" x2="132" y2="212"/>
+        <line class="s-line" x1="382" y1="200" x2="382" y2="212"/>
+        <text class="t t-small" x="222" y="224">one wavelength λ</text>
+      </svg>
+      <figcaption>Figure 1. A snapshot of a plane electromagnetic wave. The electric field (red, vertical here, so "vertically polarised") and magnetic field (blue, drawn in perspective coming towards you) are at right angles and peak together. The whole pattern moves right at c. One wavelength passes a point in one period, so c = fλ.</figcaption>
+    </figure>
+
+    <h2>c = fλ: one equation, many scales</h2>
+    <p>In one period T, the wave moves one wavelength λ. Speed = distance / time = λ / T = fλ.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Signal</th><th>Frequency</th><th>Wavelength λ = c/f</th><th>What the size tells you</th></tr>
+      <tr><td>Mains power</td><td>50 Hz</td><td>3 × 10⁸ / 50 = <b>6000 km</b></td><td>Building wiring is tiny compared with λ, so mains does not radiate usefully. Circuit theory works.</td></tr>
+      <tr><td>FM radio</td><td>100 MHz</td><td>3 × 10⁸ / 10⁸ = <b>3 m</b></td><td>A car whip or rooftop FM antenna is about a metre long.</td></tr>
+      <tr><td>Wi-Fi 2.4 GHz</td><td>2.4 GHz</td><td>3 × 10⁸ / 2.4 × 10⁹ = <b>12.5 cm</b></td><td>Antennas a few cm long fit inside a router or an ESP32 board.</td></tr>
+      <tr><td>Wi-Fi 5 GHz</td><td>5.5 GHz</td><td>about <b>5.5 cm</b></td><td>Even smaller antennas; more easily blocked.</td></tr>
+      <tr><td>Fibre, O-band</td><td>≈ 229 THz</td><td><b>1310 nm</b></td><td>Infrared light, invisible to the eye.</td></tr>
+      <tr><td>Fibre, C-band</td><td>3 × 10⁸ / 1.55 × 10⁻⁶ ≈ <b>193 THz</b></td><td><b>1550 nm</b></td><td>Lowest-loss window in silica glass.</td></tr>
+    </table></div>
+    <p>Inside glass the wave travels slower: v = c/n, where n is the <b>refractive index</b>. For fibre, n ≈ 1.47, so v ≈ 2.04 × 10⁸ m/s. A useful field number: light in fibre takes about <b>5 µs per kilometre</b>. A 1000 km fibre route adds about 5 ms of one-way delay before any equipment delay is added.</p>
+
+    <h3>The spectrum</h3>
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-label="The electromagnetic spectrum from power frequencies to gamma rays on a log scale">
+        <rect class="f-wash s-thin" x="20" y="40" width="70" height="44"/>
+        <rect class="f-theory-soft s-thin" x="90" y="40" width="150" height="44"/>
+        <rect class="f-career-soft s-thin" x="240" y="40" width="90" height="44"/>
+        <rect class="f-practice-soft s-thin" x="330" y="40" width="90" height="44"/>
+        <rect class="f-amber" x="420" y="40" width="12" height="44"/>
+        <rect class="f-warn-soft s-thin" x="432" y="40" width="60" height="44"/>
+        <rect class="f-wash s-thin" x="492" y="40" width="128" height="44"/>
+        <text class="t t-small" x="26" y="66">power</text>
+        <text class="t t-small" x="110" y="58">radio: AM, FM,</text>
+        <text class="t t-small" x="110" y="74">TV, mobile, Wi-Fi</text>
+        <text class="t t-small" x="248" y="58">microwave,</text>
+        <text class="t t-small" x="248" y="74">radar, 5G mmW</text>
+        <text class="t t-small" x="338" y="58">infrared:</text>
+        <text class="t t-small" x="338" y="74">fibre, remotes</text>
+        <text class="t t-small" x="436" y="66">UV</text>
+        <text class="t t-small" x="498" y="66">X-ray, gamma</text>
+        <text class="t t-small t-muted" x="20" y="104">50 Hz</text>
+        <text class="t t-small t-muted" x="90" y="104">~500 kHz</text>
+        <text class="t t-small t-muted" x="200" y="104">3 GHz</text>
+        <text class="t t-small t-muted" x="300" y="104">300 GHz</text>
+        <text class="t t-small t-muted" x="396" y="122">visible 400–700 nm</text>
+        <line class="s-thin" x1="426" y1="86" x2="426" y2="110"/>
+        <text class="t t-small t-muted" x="20" y="24">longer wavelength, lower photon energy</text>
+        <text class="t t-small t-muted" x="380" y="24">shorter wavelength, higher energy →</text>
+        <line class="s-red s-dash" x1="440" y1="34" x2="440" y2="150"/>
+        <text class="t t-small t-red" x="448" y="148">ionising (breaks chemical bonds) → </text>
+        <text class="t t-small t-muted" x="20" y="148">non-ionising: radio, Wi-Fi, mobile, infrared, visible</text>
+      </svg>
+      <figcaption>Figure 2. The electromagnetic spectrum on a logarithmic scale (not to scale in detail). Everything from mains to light is the same kind of wave; only the frequency changes. Photon energy E = hf rises with frequency; only from the ultraviolet upward is it enough to break chemical bonds.</figcaption>
+    </figure>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Wi-Fi and 5G are radiation, like X-rays."</b> The word "radiation" covers both, but the physics differs completely. Each photon carries energy E = hf. At 3.5 GHz, E ≈ 6.6 × 10⁻³⁴ × 3.5 × 10⁹ ≈ 2.3 × 10⁻²⁴ J ≈ 0.000 014 eV. Breaking a chemical bond takes a few eV, roughly a hundred thousand to a million times more. Radio waves cannot ionise atoms no matter how many photons arrive; their established effect at high power is heating, and exposure limits (set in Australia by ARPANSA) are set well below levels that cause measurable heating. Being near a high-power antenna on a rooftop is still a real hazard, which is why such sites have signs and exclusion zones.</p></div>
+
+    <h2>Antennas: turning current into waves</h2>
+    <p>Any <b>accelerating</b> charge radiates. A steady DC current does not radiate; an AC current does, because its charges are constantly speeding up and slowing down. But a short wire radiates very weakly. An antenna is a conductor shaped so that the currents add up efficiently into a travelling wave. The simplest and most important is the <b>half-wave dipole</b>: two rods, end to end, fed at the centre, with a total length of about half a wavelength.</p>
+    <p>Why half a wavelength? At that length the antenna is <b>resonant</b> (<a href="t07-ac-fundamentals.html">T07</a>): a wave of current travelling out to each end reflects and arrives back in step with the next push from the transmitter, so a large standing wave of current builds up, maximum at the centre and zero at the open ends. At resonance the antenna looks like a pure resistance of about 73 Ω to the cable, so power flows in without reflection.</p>
+    <div class="formula">L ≈ 0.95 × λ / 2
+      <small>The factor of about 0.95 (the "end effect") accounts for the rod's thickness and the field at the ends; it varies a little with design.</small></div>
+    <p><b>Worked examples.</b></p>
+    <ul>
+      <li><b>FM at 100 MHz:</b> λ = 3 m, λ/2 = 1.5 m, L ≈ 0.95 × 1.5 ≈ <b>1.43 m</b> tip to tip (about 71 cm per side).</li>
+      <li><b>Wi-Fi at 2.44 GHz:</b> λ ≈ 12.3 cm, λ/2 ≈ 6.15 cm, L ≈ <b>5.8 cm</b>.</li>
+      <li><b>Quarter-wave monopole:</b> one rod of λ/4 over a metal ground plane, which acts as a mirror for the missing half. At 2.44 GHz: about <b>3 cm</b>. This is what the stubby antenna on a router or the zig-zag trace on an ESP32 board is approximating.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-label="Half-wave dipole with current distribution and its figure-eight radiation pattern">
+        <line class="s-line" x1="120" y1="40" x2="120" y2="112" style="stroke-width:5"/>
+        <line class="s-line" x1="120" y1="128" x2="120" y2="200" style="stroke-width:5"/>
+        <path class="s-line" d="M120,112 H70 M120,128 H70"/>
+        <text class="t t-small" x="14" y="124">feed cable</text>
+        <path class="s-red" d="M120,40 125,47 130,53 135,60 140,67 144,73 148,80 152,87 155,93 157,100 159,107 160,113 160,120 160,127 159,133 157,140 155,147 152,153 148,160 144,167 140,173 135,180 130,187 125,193 120,200"/>
+        <text class="t t-small t-red" x="168" y="96">current:</text>
+        <text class="t t-small t-red" x="168" y="112">max at centre,</text>
+        <text class="t t-small t-red" x="168" y="128">zero at the ends</text>
+        <line class="s-thin" x1="40" y1="40" x2="40" y2="200"/>
+        <line class="s-thin" x1="34" y1="40" x2="46" y2="40"/><line class="s-thin" x1="34" y1="200" x2="46" y2="200"/>
+        <text class="t t-small" x="16" y="224">≈ λ/2</text>
+        <line class="s-line" x1="420" y1="70" x2="420" y2="170" style="stroke-width:4"/>
+        <path class="s-accent" d="M420,120 421,112 423,105 426,98 431,91 436,86 442,81 450,78 457,76 465,75 473,76 480,78 488,81 494,86 499,91 504,98 507,105 509,112 510,120 509,128 507,135 504,142 499,149 494,154 488,159 480,162 473,164 465,165 457,164 450,162 442,159 436,154 431,149 426,143 423,135 421,128 420,120 419,128 417,135 414,142 409,149 404,154 398,159 390,162 383,164 375,165 367,164 360,162 353,159 346,154 341,149 336,142 333,135 331,128 330,120 331,112 333,105 336,98 341,91 346,86 352,81 360,78 367,76 375,75 383,76 390,78 397,81 404,86 409,91 414,98 417,105 419,112 420,120"/>
+        <text class="t t-small" x="520" y="116">strongest</text>
+        <text class="t t-small" x="520" y="132">broadside</text>
+        <text class="t t-small t-muted" x="430" y="56">no radiation</text>
+        <text class="t t-small t-muted" x="430" y="196">off the ends</text>
+        <text class="t t-small t-muted" x="330" y="224">side view of the pattern: a doughnut in 3D</text>
+      </svg>
+      <figcaption>Figure 3. Left: a half-wave dipole and the standing wave of current on it. Right: its radiation pattern seen from the side: strongest at right angles to the rods, zero along them. In three dimensions the pattern is a doughnut around the antenna. Mount a vertical dipole and it radiates evenly in all horizontal directions.</figcaption>
+    </figure>
+
+    <h3>Gain and dBi: antennas focus, they do not amplify</h3>
+    <p>An antenna is passive; it cannot create power. What it can do is <b>redistribute</b> it, like the reflector in a torch. The dipole squeezes the energy that would go up and down into the horizontal directions, so in those directions it is stronger than an imaginary antenna that radiates equally in all directions (an <b>isotropic</b> radiator). That ratio, in decibels, is the gain in <b>dBi</b> (dB relative to isotropic).</p>
+    <div class="table-wrap"><table>
+      <tr><th>Antenna</th><th>Typical gain</th><th>Beam</th></tr>
+      <tr><td>Half-wave dipole</td><td>2.15 dBi</td><td>Doughnut</td></tr>
+      <tr><td>Router "rubber duck" whip</td><td>about 2–5 dBi</td><td>Flatter doughnut</td></tr>
+      <tr><td>Patch / panel</td><td>about 6–14 dBi</td><td>One direction, tens of degrees wide</td></tr>
+      <tr><td>Dish (point-to-point link)</td><td>about 20–30+ dBi</td><td>A few degrees wide: must be aimed carefully</td></tr>
+    </table></div>
+    <p>A higher-gain omni antenna is not "stronger everywhere": it flattens the doughnut, so it reaches further horizontally but covers less above and below. Mount a high-gain omni on the ceiling of a multi-storey building and the floors above and below may get worse coverage.</p>
+
+    <h2>Decibels, dBm and free-space path loss</h2>
+    <p>Radio power levels span enormous ranges, from watts at a transmitter to a billionth of a milliwatt at a receiver. Decibels turn multiplication into addition. A ratio in dB is 10 log₁₀(P₂/P₁). <b>dBm</b> is power relative to 1 mW:</p>
+    <div class="formula">P(dBm) = 10 log₁₀( P / 1 mW )
+      <small>0 dBm = 1 mW. +3 dB ≈ ×2. +10 dB = ×10. 20 dBm = 100 mW. −30 dBm = 1 µW. −70 dBm = 0.1 nW.</small></div>
+    <div class="table-wrap"><table>
+      <tr><th>Wi-Fi received signal</th><th>Rule-of-thumb meaning</th></tr>
+      <tr><td>−30 to −50 dBm</td><td>Excellent (close to the access point)</td></tr>
+      <tr><td>about −67 dBm</td><td>A common design target for reliable voice, video and cameras</td></tr>
+      <tr><td>about −75 to −80 dBm</td><td>Usable for light data; drop-outs likely</td></tr>
+      <tr><td>below about −85 to −90 dBm</td><td>Near the noise floor; unreliable</td></tr>
+    </table></div>
+    <h3>Free-space path loss: the intuition</h3>
+    <p>A transmitter's power spreads out over the surface of an ever-growing sphere, of area 4πd². Double the distance and the same power covers four times the area: the power density drops to a quarter, which is −6 dB. That is the <b>inverse-square law</b>, and it is the main reason signals weaken, even in perfect empty space. The standard formula, with d in metres and f in MHz:</p>
+    <div class="formula">FSPL (dB) = 20 log₁₀(d) + 20 log₁₀(f) − 27.55
+      <small>Each doubling of distance adds 6 dB of loss; each tenfold increase adds 20 dB.</small></div>
+    <p><b>Worked example.</b> 2.4 GHz at 10 m: 20 log(10) + 20 log(2400) − 27.55 = 20 + 67.6 − 27.55 ≈ <b>60 dB</b>. At 5 GHz the same distance gives about 66.4 dB: about 6 dB more. Link budget: an access point transmits 20 dBm with a 3 dBi antenna; the client has a 2 dBi antenna. At 10 m in free space: 20 + 3 − 60 + 2 = <b>−35 dBm</b>, excellent. Add an internal brick wall and a concrete floor (very roughly 10–25 dB more, depending on construction and frequency) and you may be down near −60 dBm.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>"Free space absorbs high frequencies more."</b> Empty space absorbs nothing at any frequency. The frequency term in the formula appears because the formula assumes antennas of fixed <i>gain</i>; a fixed-gain antenna at a higher frequency is physically smaller and so collects less of the passing power (its effective area scales with λ²). Real buildings do absorb more at higher frequencies: walls, glass coatings, people and foliage all hurt 5 GHz and millimetre-wave more than 2.4 GHz or 700 MHz.</p></div>
+
+    <div class="widget" id="t10-fspl">
+      <span class="label">Interactive · Link budget in free space</span>
+      <label>Frequency <select id="t10-f">
+        <option value="700">700 MHz (4G low band)</option>
+        <option value="2440" selected>2.44 GHz (Wi-Fi 2.4)</option>
+        <option value="3500">3.5 GHz (5G mid band)</option>
+        <option value="5500">5.5 GHz (Wi-Fi 5)</option>
+      </select></label>
+      <label>Distance <span class="out" id="t10-do">10 m</span><input type="range" id="t10-d" min="0" max="4" step="0.02" value="1"></label>
+      <label>Transmit power <span class="out" id="t10-po">20 dBm</span><input type="range" id="t10-p" min="0" max="30" step="1" value="20"></label>
+      <label>Antenna gains (transmit + receive) <span class="out" id="t10-go">5 dBi</span><input type="range" id="t10-g" min="0" max="50" step="1" value="5"></label>
+      <label>Extra losses: walls, floors, cable <span class="out" id="t10-lo">0 dB</span><input type="range" id="t10-l" min="0" max="40" step="1" value="0"></label>
+      <div class="readings">
+        <div><small>Wavelength</small><span class="out" id="t10-wl">–</span></div>
+        <div><small>Free-space path loss</small><span class="out" id="t10-fs">–</span></div>
+        <div><small>Received power</small><span class="out" id="t10-rx">–</span></div>
+        <div><small>Rule-of-thumb verdict</small><span class="out" id="t10-vd" style="font-size:15px">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var f=$('t10-f'), d=$('t10-d'), p=$('t10-p'), g=$('t10-g'), l=$('t10-l');
+      function upd(){
+        var F=+f.value, D=Math.pow(10,+d.value), P=+p.value, G=+g.value, L=+l.value;
+        var fs=20*Math.log10(D)+20*Math.log10(F)-27.55, rx=P+G-fs-L, wl=3e8/(F*1e6);
+        $('t10-do').textContent=D>=1000?(D/1000).toFixed(2)+' km':D.toFixed(D<10?1:0)+' m';
+        $('t10-po').textContent=P+' dBm ('+(Math.pow(10,P/10)).toFixed(P<10?1:0)+' mW)';
+        $('t10-go').textContent=G+' dBi'; $('t10-lo').textContent=L+' dB';
+        $('t10-wl').textContent=(wl*100).toFixed(1)+' cm';
+        $('t10-fs').textContent=fs.toFixed(1)+' dB';
+        $('t10-rx').textContent=rx.toFixed(1)+' dBm';
+        var v= rx>=-50?'Excellent': rx>=-67?'Good: video and cameras OK': rx>=-80?'Fair: light data only': 'Poor: near noise floor';
+        $('t10-vd').textContent=v;
+      }
+      [f,d,p,g,l].forEach(function(e){e.addEventListener('input',upd);e.addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h2>Wi-Fi: 2.4 GHz vs 5 GHz (and 6 GHz)</h2>
+    <div class="compare">
+      <div><h4>2.4 GHz</h4><p>Longer range and better through walls. Only three non-overlapping 20 MHz channels (1, 6 and 11), shared with Bluetooth, many IoT devices and microwave ovens, so it is crowded. Slower top speeds. Most ESP32 boards and many cheap cameras and smart devices only support 2.4 GHz.</p></div>
+      <div><h4>5 GHz</h4><p>Many more channels and wider channels (40, 80, 160 MHz), so much faster and less crowded. Shorter range and weaker through walls and floors. Some channels require radar detection (DFS) and may move if radar is detected. Best for laptops, phones and dense offices.</p></div>
+    </div>
+    <p>Newer Wi-Fi 6E and Wi-Fi 7 equipment can also use the <b>6 GHz</b> band, which Australia has opened in part for Wi-Fi; check ACMA for the current rules. In all these bands, Wi-Fi in Australia operates under ACMA's Low Interference Potential Devices (LIPD) class licence, which sets maximum transmit power. Using illegal high-power amplifiers or out-of-band settings can interfere with other services and is an offence.</p>
+    <div class="callout job"><span class="label">On the job</span><p>CCTV and access control installers meet radio constantly: wireless bridges to reach a camera on a car-park light pole (often 5 GHz point-to-point with high-gain panel or dish antennas, carefully aligned), Wi-Fi cameras that drop out because they sit at −80 dBm, and IoT sensors in BMS retrofits. A site survey with a phone app or a proper survey tool, measuring dBm at the device location, beats guessing. For anything critical, run a cable.</p></div>
+
+    <h2>Mobile networks in brief: 4G and 5G</h2>
+    <p>A mobile network divides an area into <b>cells</b>, each served by a base station with sector antennas (usually three, each covering 120°). Neighbouring cells use frequencies and codes arranged so they do not interfere, and the same frequencies are reused further away. As you move, your phone is handed over from cell to cell.</p>
+    <ul>
+      <li><b>4G (LTE)</b> uses OFDM: the channel is split into thousands of narrow sub-carriers, each carrying a slice of data, which copes well with reflections in cities.</li>
+      <li><b>5G (NR)</b> uses the same basic idea with more flexibility. <b>Low bands</b> (hundreds of MHz) travel far and through buildings: coverage. <b>Mid bands</b> (around 3.4–3.7 GHz in Australia) balance range and speed: most 5G capacity. <b>Millimetre-wave</b> (around 26 GHz) gives very high speeds over short distances with clear line of sight.</li>
+      <li>The physics trade-off is always the same: lower frequency, longer reach and better penetration; higher frequency, more bandwidth (more data) but shorter reach.</li>
+    </ul>
+    <div class="callout aus"><span class="label">In Australia</span><p>Australia's 3G mobile networks were switched off during 2023–2024. Many older alarm communicators, lift emergency phones, gate openers and M2M modems used 3G and had to be replaced with 4G or 5G devices. Security and building technicians did much of that replacement work, and some older sites may still have dead 3G devices. NBN's fixed wireless service also uses LTE/5G-type radio technology from towers to an antenna on the customer's roof (<a href="../career/c08-nbn-technologies.html">C08</a>).</p></div>
+
+    <h2>Optical fibre: light trapped in glass</h2>
+    <h3>Refraction and Snell's law</h3>
+    <p>Light slows down in a material, to v = c/n. When a wave crosses a boundary at an angle, the part of the wavefront that enters the slower material first slows first, so the wavefront swings round: the ray bends. It bends <b>towards the normal</b> (the line at right angles to the surface) when entering a slower (higher n) material, and <b>away from the normal</b> when entering a faster one. The rule is Snell's law:</p>
+    <div class="formula">n₁ sin θ₁ = n₂ sin θ₂
+      <small>θ₁ and θ₂ are measured from the normal. n = 1.00 for air, about 1.33 for water, about 1.5 for ordinary glass, and about 1.46–1.47 for the silica glass in fibre.</small></div>
+    <h3>Total internal reflection and the critical angle</h3>
+    <p>Going from a higher n to a lower n, the ray bends away from the normal. As θ₁ grows, θ₂ reaches 90°: the refracted ray skims along the surface. That θ₁ is the <b>critical angle</b> θ<sub>c</sub>. Beyond it, Snell's law would need sin θ₂ &gt; 1, which is impossible, so no light gets out: all of it is reflected. This is <b>total internal reflection (TIR)</b>, and it is genuinely total, far better than any mirror.</p>
+    <div class="formula">sin θ<sub>c</sub> = n₂ / n₁   (only when n₁ &gt; n₂)</div>
+    <p><b>Worked example 1: glass to air.</b> n₁ = 1.50, n₂ = 1.00. sin θ<sub>c</sub> = 0.667, θ<sub>c</sub> ≈ <b>41.8°</b>. This is why a glass prism can act as a perfect mirror at 45°.</p>
+    <p><b>Worked example 2: fibre core to cladding.</b> In a typical single-mode fibre, the core is about 1.468 and the cladding about 1.463 (the core has a little germanium added to raise its index). sin θ<sub>c</sub> = 1.463 / 1.468 ≈ 0.9966, θ<sub>c</sub> ≈ <b>85.3°</b>. So only rays travelling within about 4.7° of the fibre's axis are trapped. That small acceptance is described by the <b>numerical aperture</b>: NA = √(n₁² − n₂²) = √(1.468² − 1.463²) ≈ <b>0.12</b>, giving an acceptance half-angle in air of about sin⁻¹(0.12) ≈ 7°.</p>
+
+    <div class="widget" id="t10-snell">
+      <span class="label">Interactive · Snell's law and critical angle explorer</span>
+      <label>Preset <select id="t10-pre">
+        <option value="1.000|1.500">Air → glass</option>
+        <option value="1.500|1.000" selected>Glass → air</option>
+        <option value="1.330|1.000">Water → air</option>
+        <option value="1.000|1.330">Air → water</option>
+        <option value="1.468|1.463">Fibre core → cladding</option>
+      </select></label>
+      <label>n₁ (top) <span class="out" id="t10-n1o">1.500</span><input type="range" id="t10-n1" min="1" max="2" step="0.001" value="1.5"></label>
+      <label>n₂ (bottom) <span class="out" id="t10-n2o">1.000</span><input type="range" id="t10-n2" min="1" max="2" step="0.001" value="1"></label>
+      <label>Angle of incidence θ₁ <span class="out" id="t10-ao">35.0°</span><input type="range" id="t10-a" min="0" max="89.9" step="0.1" value="35"></label>
+      <svg viewBox="0 0 600 320" role="img" aria-label="Ray diagram showing refraction or total internal reflection at a boundary">
+        <defs>
+          <marker id="t10w-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="t10w-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker>
+        </defs>
+        <rect class="f-wash" x="0" y="0" width="600" height="160"/>
+        <rect class="f-theory-soft" x="0" y="160" width="600" height="160"/>
+        <line class="s-line" x1="0" y1="160" x2="600" y2="160"/>
+        <line class="s-thin s-dash" x1="300" y1="10" x2="300" y2="310"/>
+        <text class="t t-small" x="12" y="24" id="t10-l1">medium 1: n₁ = 1.500</text>
+        <text class="t t-small" x="12" y="304" id="t10-l2">medium 2: n₂ = 1.000</text>
+        <text class="t t-small t-muted" x="306" y="24">normal</text>
+        <line class="s-red" id="t10-ri" x1="0" y1="0" x2="300" y2="160" marker-end="url(#t10w-a)"/>
+        <line class="s-blue" id="t10-rt" x1="300" y1="160" x2="400" y2="300" marker-end="url(#t10w-b)"/>
+        <line class="s-thin s-dash" id="t10-rr" x1="300" y1="160" x2="400" y2="20"/>
+        <text class="t t-small t-bold" id="t10-st" x="380" y="190">refraction</text>
+      </svg>
+      <div class="readings">
+        <div><small>Refraction angle θ₂</small><span class="out" id="t10-o2">–</span></div>
+        <div><small>Critical angle θ<sub>c</sub></small><span class="out" id="t10-oc">–</span></div>
+        <div><small>Numerical aperture √(n₁² − n₂²)</small><span class="out" id="t10-na">–</span></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      function $(id){return document.getElementById(id);}
+      var n1=$('t10-n1'), n2=$('t10-n2'), a=$('t10-a'), pre=$('t10-pre');
+      var cx=300, cy=160, L=170, D=Math.PI/180;
+      function upd(){
+        var N1=+n1.value, N2=+n2.value, t1=(+a.value)*D;
+        $('t10-n1o').textContent=N1.toFixed(3); $('t10-n2o').textContent=N2.toFixed(3);
+        $('t10-ao').textContent=(+a.value).toFixed(1)+'°';
+        $('t10-l1').textContent='medium 1: n₁ = '+N1.toFixed(3);
+        $('t10-l2').textContent='medium 2: n₂ = '+N2.toFixed(3);
+        var ri=$('t10-ri'), rt=$('t10-rt'), rr=$('t10-rr'), st=$('t10-st');
+        ri.setAttribute('x1',(cx-L*Math.sin(t1)).toFixed(1)); ri.setAttribute('y1',(cy-L*Math.cos(t1)).toFixed(1));
+        rr.setAttribute('x2',(cx+L*Math.sin(t1)).toFixed(1)); rr.setAttribute('y2',(cy-L*Math.cos(t1)).toFixed(1));
+        var s=N1*Math.sin(t1)/N2;
+        if(s<=1){
+          var t2=Math.asin(s);
+          rt.style.display='';
+          rt.setAttribute('x2',(cx+L*Math.sin(t2)).toFixed(1)); rt.setAttribute('y2',(cy+L*Math.cos(t2)).toFixed(1));
+          rr.setAttribute('class','s-thin s-dash');
+          st.textContent='refraction (plus a weak partial reflection)';
+          $('t10-o2').textContent=(t2/D).toFixed(1)+'°';
+        } else {
+          rt.style.display='none';
+          rr.setAttribute('class','s-accent');
+          st.textContent='TOTAL INTERNAL REFLECTION';
+          $('t10-o2').textContent='none (TIR)';
+        }
+        st.setAttribute('x', s<=1 ? 330 : 320); st.setAttribute('y', s<=1 ? 190 : 140);
+        if(N1>N2){
+          $('t10-oc').textContent=(Math.asin(N2/N1)/D).toFixed(1)+'°';
+          $('t10-na').textContent=Math.sqrt(N1*N1-N2*N2).toFixed(3);
+        } else {
+          $('t10-oc').textContent='none (n₁ ≤ n₂)';
+          $('t10-na').textContent='–';
+        }
+      }
+      pre.addEventListener('change',function(){ var v=pre.value.split('|'); n1.value=v[0]; n2.value=v[1]; if(+v[0]===1.468) a.value=86; upd(); });
+      [n1,n2,a].forEach(function(e){e.addEventListener('input',upd);});
+      upd();
+    })();
+    </script>
+    <p>Try it: choose "Glass → air" and sweep the angle past 41.8°; the transmitted ray vanishes and the reflection becomes total. Then choose "Fibre core → cladding": the critical angle is about 85°, so only nearly grazing rays (that is, rays almost parallel to the fibre's axis) are trapped.</p>
+
+    <h3>Core, cladding and the two kinds of fibre</h3>
+    <p>A fibre is a thin <b>core</b> of slightly higher-index glass surrounded by <b>cladding</b> of lower-index glass, both 125 µm across in total (about the thickness of a human hair), with a protective plastic coating to 250 µm (or a 900 µm buffer). Light launched along the core stays in by total internal reflection at the core–cladding boundary. The cladding matters: the boundary is inside clean glass, so dirt and fingerprints on the outside cannot spoil the reflection.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Fibre with core and cladding, rays trapped by total internal reflection, and cross-sections of single-mode and multimode fibre">
+        <rect class="f-wash s-thin" x="20" y="40" width="420" height="120"/>
+        <rect class="f-theory-soft s-thin" x="20" y="78" width="420" height="44"/>
+        <text class="t t-small t-muted" x="26" y="58">cladding n ≈ 1.463</text>
+        <text class="t t-small" x="26" y="94">core n ≈ 1.468</text>
+        <path class="s-red" d="M20,112 L90,80 L160,120 L230,80 L300,120 L370,80 L440,112"/>
+        <path class="s-amber" d="M60,100 L440,100"/>
+        <path class="s-thin s-dash" d="M300,120 L340,160"/>
+        <text class="t t-small t-muted" x="314" y="176">steep ray escapes</text>
+        <text class="t t-small t-muted" x="314" y="192">(tight bend, wrong angle)</text>
+        <text class="t t-small t-red" x="150" y="148">rays bounce by TIR (multimode idea)</text>
+        <text class="t t-small t-amber" x="150" y="30">single mode: one path, straight down the core</text>
+        <circle class="f-wash s-line" cx="510" cy="70" r="50"/>
+        <circle class="f-theory-soft s-line" cx="510" cy="70" r="4"/>
+        <text class="t t-small" x="566" y="66">single-mode</text>
+        <text class="t t-small t-muted" x="566" y="82">core ≈ 9 µm</text>
+        <circle class="f-wash s-line" cx="510" cy="190" r="50"/>
+        <circle class="f-theory-soft s-line" cx="510" cy="190" r="20"/>
+        <text class="t t-small" x="566" y="186">multimode</text>
+        <text class="t t-small t-muted" x="566" y="202">core 50 or 62.5 µm</text>
+        <text class="t t-small t-muted" x="458" y="252">both 125 µm cladding</text>
+      </svg>
+      <figcaption>Figure 4. Left: inside a fibre (angles hugely exaggerated). Rays at shallow angles to the axis reflect totally at the core–cladding boundary; a ray that meets the boundary too steeply, for example at a tight bend, leaks out. Right: cross-sections to scale. A single-mode core is so small that light effectively travels in one way only.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>Single-mode (e.g. OS2)</th><th>Multimode (e.g. OM3, OM4)</th></tr>
+      <tr><td>Core diameter</td><td>about 8–9 µm</td><td>50 µm (older: 62.5 µm)</td></tr>
+      <tr><td>Wavelengths</td><td>1310 nm and 1550 nm (lasers)</td><td>850 nm (VCSEL lasers or LEDs)</td></tr>
+      <tr><td>Reach</td><td>Tens of km and more; with amplifiers, across continents</td><td>Hundreds of metres at 10 Gb/s and above (e.g. 10GBASE-SR: about 300 m on OM3, 400 m on OM4)</td></tr>
+      <tr><td>Where</td><td>NBN, telco networks, campus backbones</td><td>Inside buildings and data centres; cheaper optics</td></tr>
+      <tr><td>Jacket colour (common convention)</td><td>Yellow</td><td>Aqua (OM3/OM4), sometimes violet (OM4) or lime (OM5)</td></tr>
+    </table></div>
+    <p>A <b>mode</b> is one of the allowed patterns in which light can travel down the core. In ray language, each mode is a different zig-zag angle. A multimode core is wide enough for hundreds of modes; a single-mode core is so narrow (only a few wavelengths across) that only one mode can travel.</p>
+
+    <h3>Attenuation: how much light is lost</h3>
+    <p>Fibre loss is quoted in <b>dB/km</b>. Typical values for modern fibre (indicative; check the cable's datasheet):</p>
+    <div class="table-wrap"><table>
+      <tr><th>Fibre and wavelength</th><th>Typical attenuation</th></tr>
+      <tr><td>Single-mode at 1310 nm</td><td>about 0.32–0.35 dB/km (cabled specs often allow up to about 0.4)</td></tr>
+      <tr><td>Single-mode at 1550 nm</td><td>about 0.18–0.22 dB/km (cabled specs often allow up to about 0.3)</td></tr>
+      <tr><td>Multimode at 850 nm</td><td>about 2.5–3.5 dB/km</td></tr>
+    </table></div>
+    <p>Why is 1550 nm best? Two effects compete. <b>Rayleigh scattering</b> from tiny density fluctuations frozen into the glass falls as 1/λ⁴, so longer wavelengths scatter far less (the same physics makes the sky blue). But beyond about 1600 nm, the glass starts to <b>absorb</b> infrared as molecular vibrations. The minimum sits near 1550 nm. Older fibre also had a water absorption peak near 1383 nm; modern "low water peak" fibre has almost removed it.</p>
+    <p><b>Worked loss budget.</b> A 20 km single-mode link at 1310 nm with 2 connectors and 6 fusion splices: fibre 20 × 0.35 = 7.0 dB; connectors 2 × 0.5 = 1.0 dB; splices 6 × 0.1 = 0.6 dB; total ≈ <b>8.6 dB</b>. If the transmitter launches −3 dBm, the receiver gets about −11.6 dBm. Compare with the receiver's sensitivity, keep a few dB of margin for repairs and ageing, and the link is good. In an NBN-style passive optical network, a 1:32 optical splitter shares the light 32 ways: ideally 10 log₁₀(32) ≈ 15 dB, about 17 dB in practice. The detailed field version of this is in <a href="../career/c09-fibre-splicing-otdr.html">C09</a>.</p>
+
+    <h3>Dispersion: why pulses smear</h3>
+    <p>Digital data is a stream of light pulses. If the pulses spread out as they travel, neighbours overlap and the receiver cannot tell 1s from 0s. That spreading is <b>dispersion</b>.</p>
+    <ul>
+      <li><b>Modal dispersion</b> (multimode only): different modes take different zig-zag paths, so some arrive late, like runners taking different routes through a park. "Graded-index" multimode fibre, whose index falls smoothly from centre to edge, speeds up the longer paths to reduce this, but it still limits multimode to hundreds of metres at high speed. Single-mode has only one path, so there is no modal dispersion.</li>
+      <li><b>Chromatic dispersion</b>: the refractive index depends slightly on wavelength, and every laser pulse contains a small spread of wavelengths, so the colours in a pulse arrive at slightly different times. Standard single-mode fibre has almost zero chromatic dispersion near 1310 nm and about 17 ps per nm per km at 1550 nm. At 10 Gb/s and above over long links, this is managed with narrow-linewidth lasers, compensating fibre or electronics.</li>
+    </ul>
+    <p>The design trade-off in one line: <b>1310 nm has less dispersion, 1550 nm has less loss</b>. Long-haul systems use 1550 nm and manage the dispersion; erbium-doped fibre amplifiers, which work in the 1550 nm band, boost the light without converting it to electricity.</p>
+    <div class="callout warn"><span class="label">Safety</span><p>The light in telecom fibre is <b>infrared and invisible</b>, and amplified systems can be powerful. Never look into a fibre end, a connector or an optical port, even if you think it is dark; use a power meter or a video inspection scope. Fibre offcuts are tiny glass needles that work into skin and eyes: put them in a marked offcut container, keep food and drink away from the work area, and wear safety glasses when cleaving.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>Most fibre faults are bends and dirt, both explained by this chapter. A tight bend makes rays hit the core boundary more steeply than the critical angle, so light leaks out ("macrobend loss"), worst at 1550 nm. A <b>visual fault locator</b> (a red laser pen for fibre) makes the leak glow visibly at the bend or break. A speck of dust on a 9 µm core blocks a big fraction of it, which is why technicians inspect and clean every connector before mating it. Bend-insensitive fibre is used in NBN drop cables and inside homes to tolerate tighter routing.</p></div>
+
+    <h2>See it on the bench</h2>
+    <a class="crosslink" href="../practice/p18-esp32-iot-mqtt.html">Practice P18 · ESP32 and IoT: read RSSI in dBm and see path loss as you walk away</a>
+    <a class="crosslink" href="../practice/p19-networking-hands-on.html">Practice P19 · Networking hands-on: Wi-Fi bands, channels and cameras on PoE</a>
+    <a class="crosslink" href="../career/c09-fibre-splicing-otdr.html">Job track C09 · Fibre optics in the field: splicing, connectors, loss budgets and OTDR</a>
+    <a class="crosslink" href="../career/c08-nbn-technologies.html">Job track C08 · The NBN and access networks: FTTP, HFC, fixed wireless and satellite</a>
+    <a class="crosslink" href="../career/c05-cctv-ip-cameras.html">Job track C05 · CCTV and IP cameras, including wireless links</a>
+    <div class="callout try"><span class="label">Try this</span><p><b>Radio:</b> install a Wi-Fi analyser app on a phone, stand next to your router and note the dBm, then walk away and note the distances where it falls by 6 dB and by 12 dB. Indoors you will see faster falls than the free-space rule because of walls. <b>Light:</b> shine a laser pointer (Class 2 or lower, never at eyes) through the side of a clear plastic tub of water with a little milk in it, aiming up at the water's surface. Steepen and flatten the angle until the beam stops escaping and reflects totally from the underside of the surface. Water to air: critical angle ≈ 48.8°.</p></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>In Maxwell's picture, why can an electromagnetic wave travel through empty space with no medium?</summary><div class="answer"><p>Because each field generates the other: a changing magnetic field creates an electric field (Faraday) and a changing electric field creates a magnetic field (Maxwell). The pair regenerates itself as it moves, so it needs no material to carry it. The speed comes out as 1/√(μ₀ε₀) = c.</p></div></details>
+    <details class="quiz"><summary>What is the wavelength at 50 Hz, 100 MHz and 2.4 GHz, and why does the 50 Hz answer matter for wiring?</summary><div class="answer"><p>6000 km, 3 m and 12.5 cm. Because building wiring is tiny compared with 6000 km, mains circuits do not radiate significantly and ordinary circuit theory applies. At GHz frequencies a few centimetres of track is a significant fraction of a wavelength, so PCB tracks act like antennas and transmission lines.</p></div></details>
+    <details class="quiz"><summary>How long should a half-wave dipole for 2.44 GHz be, and a quarter-wave monopole?</summary><div class="answer"><p>λ = 3 × 10⁸ / 2.44 × 10⁹ ≈ 12.3 cm. Half-wave ≈ 6.15 cm × 0.95 ≈ 5.8 cm tip to tip. Quarter-wave monopole over a ground plane ≈ 3 cm.</p></div></details>
+    <details class="quiz"><summary>An access point transmits 20 dBm. What is that in milliwatts, and what does a +3 dB antenna do to the power radiated in its best direction?</summary><div class="answer"><p>20 dBm = 100 mW. A 3 dB gain doubles the power density in the antenna's favoured direction (equivalent to about 200 mW from an isotropic antenna), but only by taking power away from other directions. The antenna does not add energy.</p></div></details>
+    <details class="quiz"><summary>A camera works at 10 m from the access point. Roughly how much weaker is the signal at 40 m in free space?</summary><div class="answer"><p>40 m is two doublings of 10 m. Each doubling adds 6 dB of loss, so about 12 dB weaker (one-sixteenth of the power). Walls would add more.</p></div></details>
+    <details class="quiz"><summary>Calculate the critical angle for glass (n = 1.5) to air, and for a fibre core of 1.468 to cladding of 1.463.</summary><div class="answer"><p>Glass–air: sin θ<sub>c</sub> = 1/1.5, θ<sub>c</sub> ≈ 41.8°. Core–cladding: sin θ<sub>c</sub> = 1.463/1.468 ≈ 0.9966, θ<sub>c</sub> ≈ 85.3°. Only rays within about 4.7° of the fibre axis are guided.</p></div></details>
+    <details class="quiz"><summary>Why do long-distance fibre links use 1550 nm, and why do short multimode links use 850 nm?</summary><div class="answer"><p>Silica glass has its lowest loss near 1550 nm (about 0.2 dB/km), since Rayleigh scattering falls as 1/λ⁴ and infrared absorption only rises beyond about 1600 nm. Short multimode links use 850 nm because cheap VCSEL lasers work there; higher loss (about 3 dB/km) and modal dispersion do not matter over a few hundred metres.</p></div></details>
+    <details class="quiz"><summary>A technician coils a patch lead very tightly and the link fails. Explain with total internal reflection.</summary><div class="answer"><p>In a tight bend, light travelling along the core meets the core–cladding boundary at an angle steeper than the critical angle (measured from the normal, the angle becomes smaller than θ<sub>c</sub>), so it is no longer totally reflected and leaks into the cladding and out. Longer wavelengths (1550 nm) are affected most. Respect the cable's minimum bend radius.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain how changing E and B fields sustain each other, and where c = 1/√(μ₀ε₀) comes from.</span></li>
+      <li><input type="checkbox"><span>I can use c = fλ for mains, radio, Wi-Fi and fibre wavelengths, and estimate fibre delay (about 5 µs/km).</span></li>
+      <li><input type="checkbox"><span>I can explain why radio waves are non-ionising, using photon energy E = hf.</span></li>
+      <li><input type="checkbox"><span>I can calculate the length of a half-wave dipole and a quarter-wave monopole.</span></li>
+      <li><input type="checkbox"><span>I can convert between mW and dBm, explain dBi, and do a simple link budget with free-space path loss.</span></li>
+      <li><input type="checkbox"><span>I can compare 2.4 GHz and 5 GHz Wi-Fi and explain the 4G/5G low/mid/high band trade-off.</span></li>
+      <li><input type="checkbox"><span>I can apply Snell's law and calculate a critical angle and numerical aperture.</span></li>
+      <li><input type="checkbox"><span>I can compare single-mode and multimode fibre, explain attenuation at 1310 and 1550 nm, and describe modal and chromatic dispersion.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -56,7 +56,7 @@
       });
     });
     var cur = side.querySelector(".current");
-    if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: "center" });
+    if (cur) side.scrollTop = Math.max(0, cur.offsetTop - side.clientHeight / 2);
 
     if (!document.querySelector(".menu-btn")) {
       var mb = el("button", "menu-btn", "☰ Chapters");
