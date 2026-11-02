@@ -31,7 +31,7 @@
     <h2>How to use this chapter</h2>
     <p>You do not need to read this chapter in one sitting. Read the first four sections now (prefixes, notation, significant figures and rearranging formulas). You will use them in every lab from <a href="../practice/p02-breadboard-first-led.html">P02</a> onwards. Come back to the later sections (exponentials, decibels, sine waves, phasors) when a chapter sends you here.</p>
     <p>Each section follows the same pattern: first the <b>intuition</b> (what the idea means in plain words), then the <b>rule</b>, then a <b>circuit example</b> with numbers. Keep a scientific calculator next to you and do the examples yourself. Maths you only read does not stay; maths you press into a calculator does.</p>
-    <div class="callout tip"><span class="label">Bench tip</span><p>A cheap scientific calculator (Casio fx-82 style, around A$25 from Officeworks or Big W) is better than a phone on the bench. It has real keys, it shows the whole expression, and it never locks the screen while your hands hold probes. Your phone calculator turns into a scientific one when you rotate it sideways.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>A cheap scientific calculator (Casio fx-82 style, around A$25 from Officeworks or Big W) is better than a phone on the bench. It has real keys, it shows the whole expression, and it never locks the screen while your hands hold probes. Most phone calculators turn into scientific ones when you rotate the phone sideways.</p></div>
 
     <h2>SI units and prefixes</h2>
     <h3>Intuition</h3>
@@ -161,7 +161,7 @@
     <div class="formula">4.7  [×10ˣ]  [(−)]  9
       <small>Use the <b>(−)</b> negative key for the exponent, not the minus (subtract) key. The screen may show 4.7E-9 or 4.7×10⁻⁹. Both mean the same thing.</small></div>
     <p>Now the trap. To enter 1 kΩ (1 × 10³) you type <kbd>1</kbd> <kbd>×10ˣ</kbd> <kbd>3</kbd>. Many people type <kbd>10</kbd> <kbd>×10ˣ</kbd> <kbd>3</kbd>, because they think "ten to the three". That is 10 × 10³ = 10 000, which is ten times too big. The key already contains the "× 10".</p>
-    <p>Most Casio-style calculators also have an <kbd>ENG</kbd> key. Press it after an answer and the display shifts to engineering notation. An answer of 0.0047 becomes 4.7×10⁻³, which you read straight off as 4.7 m (milli). Press it again to step the exponent by three.</p>
+    <p>Most Casio-style calculators also have an <kbd>ENG</kbd> key. Press it after an answer and the display shifts to engineering notation. An answer of 0.0047 becomes 4.7×10⁻³, which you read straight off as 4.7 m (milli). Press it again (or <kbd>SHIFT</kbd> + <kbd>ENG</kbd>) to move to the next prefix.</p>
     <h3>Circuit example</h3>
     <p>An RC timing circuit uses R = 47 kΩ and C = 220 nF. The <b>time constant</b> is τ = R × C (you will meet it properly below).</p>
     <div class="formula">τ = 47 × 10³ × 220 × 10⁻⁹ = (47 × 220) × 10³⁻⁹ = 10 340 × 10⁻⁶ s ≈ 10.3 ms
@@ -501,13 +501,13 @@
         <defs><marker id="t00-ph-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker>
         <marker id="t00-ph-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
         <marker id="t00-ph-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker></defs>
-        <line class="s-red" x1="60" y1="40" x2="216" y2="40" marker-end="url(#t00-ph-r)"/>
-        <line class="s-blue" x1="220" y1="40" x2="220" y2="196" marker-end="url(#t00-ph-b)"/>
-        <line class="s-accent" x1="60" y1="40" x2="217.6" y2="196.8" marker-end="url(#t00-ph-a)"/>
-        <path class="s-amber" d="M100 40 A40 40 0 0 1 88.3 68.3"/>
-        <text class="t t-small" x="104" y="64">φ = −53°</text>
-        <text class="t t-red" x="80" y="30">R = 3 kΩ  (V<tspan baseline-shift="sub" font-size="10">R</tspan> = 6 V)</text>
-        <text class="t t-blue" x="228" y="120">X<tspan baseline-shift="sub" font-size="10">C</tspan> = 4 kΩ  (V<tspan baseline-shift="sub" font-size="10">C</tspan> = 8 V)</text>
+        <line class="s-red" x1="60" y1="40" x2="176" y2="40" marker-end="url(#t00-ph-r)"/>
+        <line class="s-blue" x1="180" y1="40" x2="180" y2="196" marker-end="url(#t00-ph-b)"/>
+        <line class="s-accent" x1="60" y1="40" x2="177.6" y2="196.8" marker-end="url(#t00-ph-a)"/>
+        <path class="s-amber" d="M100 40 A40 40 0 0 1 84 72"/>
+        <text class="t t-small" x="104" y="66">φ = −53°</text>
+        <text class="t t-red" x="62" y="28">R = 3 kΩ  (V<tspan baseline-shift="sub" font-size="10">R</tspan> = 6 V)</text>
+        <text class="t t-blue" x="190" y="120">X<tspan baseline-shift="sub" font-size="10">C</tspan> = 4 kΩ  (V<tspan baseline-shift="sub" font-size="10">C</tspan> = 8 V)</text>
         <text class="t t-accent t-bold" x="40" y="160">Z = 5 kΩ</text>
         <text class="t t-small t-accent" x="40" y="178">(V<tspan baseline-shift="sub" font-size="9">supply</tspan> = 10 V)</text>
         <text class="t t-small t-muted" x="300" y="200">10 V RMS ÷ 5 kΩ = 2 mA</text>
@@ -515,7 +515,7 @@
       </svg>
       <figcaption>Figure 6. A 3 kΩ resistor in series with a capacitor whose reactance is 4 kΩ (about 40 nF at 1 kHz). The impedance is the diagonal, 5 kΩ. With 10 V RMS applied, 2 mA flows; the resistor drops 6 V and the capacitor 8 V. They add as arrows to 10 V.</figcaption>
     </figure>
-    <div class="callout try"><span class="label">Try this</span><p>With a 12 V AC plug-pack (ELV only), put a 1.5 kΩ resistor in series with a 2.2 µF <b>film</b> (non-polarised) capacitor rated 63 V or more. At 50 Hz, X<sub>C</sub> = 1 / (2π × 50 × 2.2 µF) ≈ 1.45 kΩ. Measure the AC voltage across the resistor, then across the capacitor. You should read roughly 8 V and 8 V, which add to 16 V, yet the supply is only 12 V. Square them, add, and take the square root: about 12 V. (Plug-packs read a little high with a light load, so expect the numbers to scale up slightly.)</p></div>
+    <div class="callout try"><span class="label">Try this</span><p>With a 12 V AC plug-pack (ELV only), put a 1.5 kΩ resistor in series with a 2.2 µF <b>film</b> (non-polarised) capacitor rated 63 V or more. At 50 Hz, X<sub>C</sub> = 1 / (2π × 50 × 2.2 µF) ≈ 1.45 kΩ. Measure the AC voltage across the resistor, then across the capacitor. You should read roughly 8.6 V and 8.3 V, which add to about 17 V, yet the supply is only 12 V. Square them, add, and take the square root: about 12 V. (Plug-packs read a little high with a light load, so expect the numbers to scale up slightly.)</p></div>
 
     <h2>Estimation and sanity checks</h2>
     <h3>Intuition</h3>

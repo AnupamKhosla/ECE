@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px}
+  .widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:220px}
+  .poe-row{display:grid;grid-template-columns:1fr 80px 90px 90px;gap:8px;align-items:center;font-size:14.5px;padding:4px 0;border-bottom:1px dashed var(--line)}
+  .poe-row input{max-width:80px!important}
+  .poe-row small{color:var(--muted)}
+  .bar{height:16px;background:var(--wash);border-radius:99px;overflow:hidden;margin:10px 0 4px}
+  .bar i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
+  .bar.amber i{background:var(--amber)} .bar.red i{background:var(--red)}
+  .sn-ok{color:var(--green);font-weight:700} .sn-bad{color:var(--warn);font-weight:700}
+</style>
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part D</div>
+    <span class="eyebrow">Practice · Lab P19</span>
+    <h1>Networking hands-on: IP, subnets, switches, PoE, VLANs</h1>
+    <p class="lede">You will read and plan IPv4 addresses and subnets, find every device on a network, set a laptop's static IP to reach a camera that ships with a fixed default address, budget PoE power for a switch, and separate cameras from office PCs with VLANs — the networking every CCTV and BMS job ad assumes you know.</p>
+    <div class="meta"><span><b>Time</b> 3 h</span><span><b>Level</b> Beginner → Intermediate</span><span><b>Kit cost</b> ~A$0–80</span><span><b>Theory</b> T10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>Laptop with an Ethernet port</b><small>or a USB-Ethernet adapter, ~A$20</small></li>
+      <li><b>Your home router</b><small>you will read its DHCP list</small></li>
+      <li><b>Raspberry Pi from P16</b><small>a device to find and ping</small></li>
+      <li><b>Optional: small managed switch with VLANs</b><small>~A$40–80 · "smart managed" 5- or 8-port</small></li>
+      <li><b>Optional: PoE injector or PoE switch + an IP camera</b><small>~A$40–150 · second-hand cameras are fine for practice</small></li>
+      <li><b>Patch leads</b><small>~A$5 each · you will make your own in P20</small></li>
+    </ul>
+    <div class="callout warn"><span class="label">Safety</span><p>Ethernet and PoE are extra-low voltage (PoE runs at about 44–57 V DC, below the 120 V DC ELV limit), so they are safe to handle. The switch, NVR and router are powered from mains plug-packs or IEC leads — never open them. On a customer's network, never change settings, unplug things or scan without permission: you can take a business offline, and unauthorised scanning can breach policy or the law.</p></div>
+
+    <h2>IPv4 addresses, masks and gateways</h2>
+    <p>Every device on an IP network needs four settings. Learn them as a set, because a camera "not working" is very often one of these four wrong:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Setting</th><th>Example</th><th>What it means</th></tr>
+      <tr><td><b>IP address</b></td><td><code>192.168.1.64</code></td><td>This device's address. 32 bits, written as four numbers 0–255 ("dotted decimal").</td></tr>
+      <tr><td><b>Subnet mask</b></td><td><code>255.255.255.0</code> = <code>/24</code></td><td>Which part of the address is the <i>network</i> and which is the <i>host</i>. Devices on the same network talk directly.</td></tr>
+      <tr><td><b>Default gateway</b></td><td><code>192.168.1.1</code></td><td>The router: where to send traffic for any address outside this network.</td></tr>
+      <tr><td><b>DNS server</b></td><td><code>192.168.1.1</code></td><td>Turns names like <code>example.com</code> into IP addresses.</td></tr>
+    </table></div>
+    <p>The mask is easiest to see in binary. A <code>/24</code> mask is 24 ones followed by 8 zeros. Where the mask has ones, the address bits are the network part; where it has zeros, they are the host part.</p>
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-label="IP address 192.168.1.64 with a /24 mask: first 24 bits network, last 8 bits host">
+        <text class="t t-small t-muted" x="20" y="40">address</text>
+        <text class="t t-small t-muted" x="20" y="88">mask /24</text>
+        <text class="t t-small t-muted" x="20" y="136">network</text>
+        <g style="font-family:var(--mono)">
+          <rect class="f-theory-soft s-blue" x="90" y="20" width="390" height="30" rx="4"/>
+          <rect class="f-practice-soft s-accent" x="484" y="20" width="136" height="30" rx="4"/>
+          <text class="t t-small" x="98" y="40" style="font-family:var(--mono)">11000000 . 10101000 . 00000001 .</text>
+          <text class="t t-small" x="494" y="40" style="font-family:var(--mono)">01000000</text>
+          <rect class="f-theory-soft s-blue" x="90" y="68" width="390" height="30" rx="4"/>
+          <rect class="f-practice-soft s-accent" x="484" y="68" width="136" height="30" rx="4"/>
+          <text class="t t-small" x="98" y="88" style="font-family:var(--mono)">11111111 . 11111111 . 11111111 .</text>
+          <text class="t t-small" x="494" y="88" style="font-family:var(--mono)">00000000</text>
+          <text class="t t-small" x="98" y="136" style="font-family:var(--mono)">192      . 168      . 1        .</text>
+          <text class="t t-small" x="494" y="136" style="font-family:var(--mono)">0 (host part zeroed)</text>
+        </g>
+        <path class="s-blue" d="M90 160 H480"/><text class="t t-small t-blue" x="200" y="180">network part: 24 bits = 192.168.1</text>
+        <path class="s-accent" d="M484 160 H620"/><text class="t t-small t-accent" x="484" y="180">host part: 8 bits</text>
+        <text class="t t-small" x="20" y="208">8 host bits → 2⁸ = 256 addresses: .0 = network, .255 = broadcast, .1 to .254 = 254 usable hosts</text>
+      </svg>
+      <figcaption>Figure 1. 192.168.1.64/24. The mask's ones cover the network part. Two devices are on the same network only if their network parts are identical.</figcaption>
+    </figure>
+    <div class="formula">usable hosts = 2<sup>(32 − prefix)</sup> − 2
+      <small>/24 → 2⁸ − 2 = 254. /26 → 2⁶ − 2 = 62. /16 → 65 534. The "−2" removes the network address (all host bits 0) and the broadcast address (all host bits 1).</small></div>
+    <p><b>Worked example.</b> A site has 40 cameras, one NVR and room to grow. A /26 gives 62 hosts — enough. Starting at 192.168.20.0, a /26 runs from .0 to .63: network 192.168.20.0, usable .1–.62, broadcast .63. Most sites simply use a /24 per system (254 hosts) because it is easy to read; you should still be able to do the maths.</p>
+    <p><b>Private ranges.</b> Inside buildings you use addresses that are not routed on the internet: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code> and <code>192.168.0.0/16</code>. The router translates them to the public address (NAT) when traffic goes out.</p>
+
+    <h3>DHCP or static?</h3>
+    <p><b>DHCP</b> (Dynamic Host Configuration Protocol) hands out the four settings automatically. A new device shouts "anyone have an address for me?" and the DHCP server (usually the router) answers with a lease. Laptops and phones use DHCP. A <b>static</b> address is typed into the device by hand and never changes. Cameras, NVRs, BMS controllers, printers and switches are normally static (or a <b>DHCP reservation</b>, which ties one MAC address to one IP), because other devices need to find them at a fixed address.</p>
+    <p>If a device is set to DHCP and no DHCP server answers, Windows, macOS and many devices give themselves a <b>169.254.x.x</b> address (link-local). Seeing 169.254 on <code>ipconfig</code> means "DHCP failed" — check the cable, the switch port, or the VLAN.</p>
+
+    <h3>MAC addresses</h3>
+    <p>A <b>MAC address</b> is the 48-bit hardware address burned into each network interface, written like <code>dc:a6:32:12:34:56</code> or <code>DC-A6-32-12-34-56</code>. The first three bytes (the <b>OUI</b>) identify the manufacturer. Switches deliver frames by MAC; IP addresses are for getting between networks. When you find an unknown device, look up its OUI online and you often learn "this is a camera from brand X".</p>
+
+    <h2>Switch, router, access point</h2>
+    <div class="cards">
+      <div class="card"><h4>Switch (layer 2)</h4><p>Connects devices on <i>one</i> network. It learns which MAC address lives on which port and sends each frame only there. Unmanaged switches have no settings; managed switches add VLANs, PoE control, port statistics.</p></div>
+      <div class="card"><h4>Router (layer 3)</h4><p>Connects <i>different</i> networks and decides the path by IP address. The default gateway is a router interface. Also does NAT to the internet and often firewalling.</p></div>
+      <div class="card"><h4>Access point</h4><p>A bridge between Wi-Fi and wired Ethernet. It does not route; Wi-Fi clients land on the same network as its cable (or on a VLAN per SSID).</p></div>
+    </div>
+    <p>Your home "modem router" is all three in one box, plus a DHCP server, DNS forwarder and firewall. On commercial sites they are separate devices, which is why you must understand each job.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="Small site network: internet to router, router to PoE switch, switch to cameras, NVR, laptop and access point">
+        <rect class="f-wash s-thin" x="20" y="20" width="110" height="40" rx="20"/><text class="t t-small" x="44" y="45">Internet</text>
+        <rect class="f-theory-soft s-blue" x="20" y="100" width="110" height="56" rx="6"/><text class="t t-small t-bold" x="30" y="122">Router</text><text class="t t-small t-muted" x="30" y="142">192.168.1.1</text>
+        <path class="s-line" d="M75 60 V100"/>
+        <rect class="f-accent-soft s-accent" x="200" y="100" width="170" height="56" rx="6"/><text class="t t-small t-bold" x="210" y="122">PoE switch (8 ports)</text><text class="t t-small t-muted" x="210" y="142">layer 2, budget 120 W</text>
+        <path class="s-line" d="M130 128 H200"/>
+        <rect class="f-panel s-line" x="440" y="20" width="180" height="36" rx="6"/><text class="t t-small" x="450" y="43">Camera 1 · 192.168.1.64</text>
+        <rect class="f-panel s-line" x="440" y="66" width="180" height="36" rx="6"/><text class="t t-small" x="450" y="89">Camera 2 · 192.168.1.65</text>
+        <rect class="f-panel s-line" x="440" y="112" width="180" height="36" rx="6"/><text class="t t-small" x="450" y="135">NVR · 192.168.1.200</text>
+        <rect class="f-panel s-line" x="440" y="158" width="180" height="36" rx="6"/><text class="t t-small" x="450" y="181">Access point (Wi-Fi)</text>
+        <rect class="f-panel s-line" x="440" y="204" width="180" height="36" rx="6"/><text class="t t-small" x="450" y="227">Laptop · DHCP .1.23</text>
+        <path class="s-red" d="M370 112 C 400 112, 410 38, 440 38"/>
+        <path class="s-red" d="M370 120 C 400 120, 410 84, 440 84"/>
+        <path class="s-line" d="M370 128 H440"/>
+        <path class="s-red" d="M370 136 C 400 136, 410 176, 440 176"/>
+        <path class="s-line" d="M370 144 C 400 144, 410 222, 440 222"/>
+        <text class="t t-small t-red" x="230" y="190">red = PoE: data + power on one cable</text>
+        <text class="t t-small t-muted" x="230" y="210">all on 192.168.1.0/24</text>
+      </svg>
+      <figcaption>Figure 2. A typical small CCTV site. The switch joins everything on one network; the router is the way out. PoE ports power the cameras and the access point over the same Cat6 that carries their data.</figcaption>
+    </figure>
+
+    <h2>Finding devices on a network</h2>
+    <p>On a job you often arrive at a cabinet full of boxes and no documentation. These are the tools, from simplest to most powerful. Your own laptop's settings come first:</p>
+<pre><code>C:\&gt; ipconfig /all              (Windows)
+Ethernet adapter Ethernet:
+   Physical Address. . . . . . . . . : 3C-52-82-AA-BB-CC
+   DHCP Enabled. . . . . . . . . . . : Yes
+   IPv4 Address. . . . . . . . . . . : 192.168.1.23(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.1.1
+   DNS Servers . . . . . . . . . . . : 192.168.1.1
+
+$ ip a        (Linux / Pi)      $ ifconfig   or   ipconfig getifaddr en0   (macOS)</code></pre>
+    <ol class="steps">
+      <li><p><b>ping</b> asks "are you there?" using ICMP echo. A reply proves the address is alive and reachable. No reply does not always mean dead — some devices and Windows PCs block ping.</p>
+<pre><code>C:\&gt; ping 192.168.1.64
+Pinging 192.168.1.64 with 32 bytes of data:
+Reply from 192.168.1.64: bytes=32 time=1ms TTL=64
+Reply from 192.168.1.64: bytes=32 time&lt;1ms TTL=64
+...
+C:\&gt; ping 192.168.1.99
+Reply from 192.168.1.23: Destination host unreachable.</code></pre></li>
+      <li><p><b>arp -a</b> lists the IP → MAC pairs your laptop has recently talked to (its ARP cache). Ping a whole range first and the cache fills up.</p>
+<pre><code>C:\&gt; arp -a
+Interface: 192.168.1.23 --- 0x7
+  Internet Address      Physical Address      Type
+  192.168.1.1           f4-92-bf-11-22-33     dynamic
+  192.168.1.42          dc-a6-32-12-34-57     dynamic
+  192.168.1.64          bc-ad-28-44-55-66     dynamic
+  192.168.1.255         ff-ff-ff-ff-ff-ff     static</code></pre></li>
+      <li><p><b>An IP scanner</b> pings a whole range and shows names, MACs and vendors. Free options: Advanced IP Scanner (Windows), Angry IP Scanner (all platforms), or <code>nmap</code> on the Pi:</p>
+<pre><code>tech@plantpi:~ $ sudo apt install -y nmap
+tech@plantpi:~ $ sudo nmap -sn 192.168.1.0/24
+Nmap scan report for 192.168.1.1
+Host is up (0.0021s latency).
+MAC Address: F4:92:BF:11:22:33 (vendor shown here)
+Nmap scan report for 192.168.1.64
+Host is up (0.0018s latency).
+...
+Nmap done: 256 IP addresses (6 hosts up) scanned in 2.41 seconds</code></pre></li>
+      <li><p><b>The camera vendor's discovery tool.</b> Each major brand has a free tool that finds its own devices <i>even when they are on a different subnet</i>, using broadcast or multicast at layer 2. Examples: Hikvision SADP, Dahua ConfigTool, Axis IP Utility / Axis Device Manager, Hanwha (Wisenet) Device Manager. They show the model, firmware, MAC and current IP, and usually let you change the IP and set the first password. Install the ones for brands you work with.</p></li>
+    </ol>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Write down every IP, MAC, model and serial as you find them, and photograph labels before devices go up a pole. A one-page IP schedule (device, location, IP, MAC, VLAN, switch port) is what every commissioning and handover pack needs.</p></div>
+
+    <h2>Reach a camera with a default IP: set a static IP on your laptop</h2>
+    <p>Many cameras and controllers ship with a fixed default address, for example 192.168.1.64 (common on Hikvision), 192.168.1.108 (common on Dahua) or 192.168.0.90 (Axis, when no DHCP server answers). Newer firmware often uses DHCP first, and may need "activating" with a new password before anything else. If your laptop is on 10.0.5.x, it cannot talk to 192.168.1.64 directly: they are on different networks, and your laptop will send the traffic to its gateway, which knows nothing about the camera. The fix is to put the laptop on the camera's network.</p>
+    <figure>
+      <svg viewBox="0 0 640 200" role="img" aria-label="Laptop set to static 192.168.1.10/24 connected directly or via PoE injector to a camera at 192.168.1.64">
+        <rect class="f-panel s-line" x="20" y="60" width="170" height="80" rx="6"/>
+        <text class="t t-small t-bold" x="30" y="82">Laptop (static)</text><text class="t t-small" x="30" y="102">IP 192.168.1.10</text><text class="t t-small" x="30" y="120">mask 255.255.255.0</text><text class="t t-small t-muted" x="30" y="136">gateway: blank</text>
+        <rect class="f-accent-soft s-accent" x="250" y="80" width="130" height="40" rx="6"/><text class="t t-small" x="262" y="98">PoE injector</text><text class="t t-small t-muted" x="262" y="114">or PoE switch</text>
+        <rect class="f-panel s-line" x="450" y="60" width="170" height="80" rx="6"/>
+        <text class="t t-small t-bold" x="460" y="82">Camera (default)</text><text class="t t-small" x="460" y="102">IP 192.168.1.64</text><text class="t t-small" x="460" y="120">mask 255.255.255.0</text>
+        <path class="s-line" d="M190 100 H250"/><text class="t t-small t-muted" x="196" y="92">data</text>
+        <path class="s-red" d="M380 100 H450"/><text class="t t-small t-red" x="386" y="92">data+PoE</text>
+        <text class="t t-small t-green" x="20" y="175">Same network part (192.168.1) + different host part (.10 vs .64) = they can talk directly.</text>
+      </svg>
+      <figcaption>Figure 3. Bench set-up for a new camera. Pick a laptop address in the camera's subnet that nothing else uses. The gateway can stay blank because you are not leaving this network.</figcaption>
+    </figure>
+    <h3>Windows 10/11</h3>
+    <p>Settings → Network &amp; internet → Ethernet → IP assignment → Edit → Manual → IPv4 on → IP address <code>192.168.1.10</code>, Subnet mask <code>255.255.255.0</code> (or prefix length 24), Gateway and DNS blank → Save. Or, from an <i>administrator</i> Command Prompt (use your adapter's name from <code>ipconfig</code>):</p>
+<pre><code>netsh interface ipv4 set address name="Ethernet" static 192.168.1.10 255.255.255.0
+ping 192.168.1.64
+REM ...open http://192.168.1.64 in a browser, configure the camera...
+netsh interface ipv4 set address name="Ethernet" source=dhcp      &lt;-- put it back afterwards!</code></pre>
+    <h3>macOS and Linux</h3>
+    <p>macOS: System Settings → Network → (your Ethernet adapter) → Details → TCP/IP → Configure IPv4: Manually → IP address, subnet mask, leave router blank. Linux/Pi: <code>sudo nmtui</code> → Edit a connection → IPv4 configuration: Manual.</p>
+    <ol class="steps">
+      <li><p><b>Plan the address.</b> Same network part as the camera, a host number nothing else uses (avoid .1, often a router; avoid the camera's own .64).</p></li>
+      <li><p><b>Set it and check</b> with <code>ipconfig</code>: the new address must show. Then <code>ping 192.168.1.64</code>.</p></li>
+      <li><p><b>Browse</b> to <code>http://192.168.1.64</code> (or use the vendor tool). Set a strong password, then the camera's <i>final</i> IP, mask, gateway and DNS from the IP schedule, plus the time server.</p></li>
+      <li><p><b>Change your laptop to the camera's new subnet</b> if you moved it, confirm it answers, then set the laptop back to DHCP before you leave.</p></li>
+    </ol>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"If they're on the same switch, they can talk." Not with IP. Two devices on the same switch but in different subnets (192.168.1.x and 10.0.5.x) will not reach each other without a router, because each one decides "not my network — send it to the gateway". Physical connection is layer 1–2; the subnet decision is layer 3. Always check both.</p></div>
+
+    <div class="widget" id="w-subnet">
+      <span class="label">Interactive · subnet calculator</span>
+      <div class="wgrid">
+        <label>IP address<input type="text" id="sn-ip" value="192.168.20.37" spellcheck="false"></label>
+        <label>Prefix length<select id="sn-pre"></select></label>
+        <label>Second device (same subnet?)<input type="text" id="sn-ip2" value="192.168.20.70" spellcheck="false"></label>
+      </div>
+      <div class="readings">
+        <div><small>Subnet mask</small><span class="out" id="sn-mask">–</span></div>
+        <div><small>Network address</small><span class="out" id="sn-net">–</span></div>
+        <div><small>Broadcast</small><span class="out" id="sn-bc">–</span></div>
+        <div><small>First usable</small><span class="out" id="sn-first">–</span></div>
+        <div><small>Last usable</small><span class="out" id="sn-last">–</span></div>
+        <div><small>Usable hosts</small><span class="out" id="sn-hosts">–</span></div>
+      </div>
+      <p id="sn-msg" style="margin-top:12px;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var pre=document.getElementById('sn-pre');for(var p=8;p<=32;p++){var o=document.createElement('option');o.value=p;o.textContent='/'+p;if(p===26)o.selected=true;pre.appendChild(o);}
+      function parse(s){var m=/^\s*(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s*$/.exec(s);if(!m)return null;var n=0;for(var i=1;i<=4;i++){var v=+m[i];if(v>255)return null;n=n*256+v;}return n>>>0;}
+      function fmt(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');}
+      function set(id,t){document.getElementById(id).textContent=t;}
+      function upd(){
+        var ip=parse(document.getElementById('sn-ip').value),p=+pre.value,ip2=parse(document.getElementById('sn-ip2').value),msg=document.getElementById('sn-msg');
+        if(ip===null){['sn-mask','sn-net','sn-bc','sn-first','sn-last','sn-hosts'].forEach(function(i){set(i,'–');});msg.innerHTML='<span class="sn-bad">Enter a valid IPv4 address (four numbers 0–255).</span>';return;}
+        var mask=p===0?0:((0xFFFFFFFF<<(32-p))>>>0),net=(ip&mask)>>>0,bc=(net|(~mask>>>0))>>>0,hosts,first,last;
+        if(p===32){hosts=1;first=last=ip;}else if(p===31){hosts=2;first=net;last=bc;}else{hosts=Math.pow(2,32-p)-2;first=net+1;last=bc-1;}
+        set('sn-mask',fmt(mask));set('sn-net',fmt(net)+'/'+p);set('sn-bc',p>=31?'(none)':fmt(bc));set('sn-first',fmt(first));set('sn-last',fmt(last));set('sn-hosts',hosts.toLocaleString());
+        var note='';
+        if(p<31&&ip===net)note=' <span class="sn-bad">Careful: '+fmt(ip)+' is the network address itself, not usable by a device.</span>';
+        else if(p<31&&ip===bc)note=' <span class="sn-bad">Careful: '+fmt(ip)+' is the broadcast address, not usable by a device.</span>';
+        if(ip2===null){msg.innerHTML='Second device: enter an address to compare.'+note;return;}
+        var same=((ip2&mask)>>>0)===net;
+        msg.innerHTML=(same?'<span class="sn-ok">Same subnet</span> — '+fmt(ip)+' and '+fmt(ip2)+' can talk directly through a switch.':'<span class="sn-bad">Different subnet</span> — '+fmt(ip2)+' is in '+fmt((ip2&mask)>>>0)+'/'+p+'. Traffic must go via a router (gateway), or change one device\'s address.')+note;
+      }
+      ['sn-ip','sn-ip2'].forEach(function(i){document.getElementById(i).oninput=upd;});pre.onchange=upd;upd();
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Keep 192.168.20.37 and 192.168.20.70. At /26 they are in different subnets (.0–.63 and .64–.127). Change to /25 and they are together. Now try your laptop's real address and the Pi's from P16. Then set the first box to 192.168.1.64 at /24 and the second to 10.0.5.20 — the "camera on the bench" problem from above.</p></div>
+
+    <h2>Power over Ethernet (PoE)</h2>
+    <p><b>PoE</b> sends DC power down the same Cat5e/Cat6 cable as the data, so a camera on a pole or an access point on a ceiling needs only one cable. The switch (or injector) supplying power is the <b>PSE</b> (power sourcing equipment); the camera is the <b>PD</b> (powered device). Standard PoE is safe for non-PoE devices: the PSE first checks for a special 25 kΩ "signature" resistance in the PD and only applies power if it finds one.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Standard</th><th>Common name</th><th>Power at the switch port (PSE)</th><th>Guaranteed at the device (PD)</th><th>Typical use</th></tr>
+      <tr><td>IEEE 802.3af (Type 1)</td><td>PoE</td><td>15.4 W</td><td>12.95 W</td><td>Fixed cameras, phones, readers</td></tr>
+      <tr><td>IEEE 802.3at (Type 2)</td><td>PoE+</td><td>30 W</td><td>25.5 W</td><td>PTZ cameras (small), Wi-Fi APs, IR cameras</td></tr>
+      <tr><td>IEEE 802.3bt Type 3</td><td>PoE++ / 4PPoE</td><td>60 W</td><td>51 W</td><td>Large PTZs, multi-sensor cameras</td></tr>
+      <tr><td>IEEE 802.3bt Type 4</td><td>PoE++ / 4PPoE</td><td>90 W</td><td>about 71 W</td><td>Heated outdoor PTZs, displays</td></tr>
+    </table></div>
+    <p>Why less arrives at the device than leaves the switch: the cable's copper has resistance and turns some power into heat. Worked example for 802.3af at the worst case: the standard allows up to 20 Ω of loop resistance over 100 m and a current of 350 mA. Loss = I²R = 0.35² × 20 ≈ <b>2.45 W</b>. 15.4 − 2.45 = 12.95 W — exactly the number in the table. That is also why bundles of PoE cables run warm, and why higher-power PoE uses all four pairs (halving the current per pair).</p>
+    <div class="formula">P<sub>loss</sub> = I² × R<sub>loop</sub> = 0.35² × 20 ≈ 2.45 W  →  15.4 − 2.45 = 12.95 W at the camera
+      <small>I is the current per pair-set, R<sub>loop</sub> the out-and-back resistance of the 100 m cable. Shorter cables lose less.</small></div>
+    <p>A PoE switch has a total <b>PoE budget</b> (e.g. "8 ports, 120 W"), which is often less than all ports at full power (8 × 30 = 240 W). Many switches also <b>reserve power by class</b>: a camera announcing class 3 gets 15.4 W reserved even if it only draws 6 W. Plan with the device datasheet's <i>maximum</i> power (with IR on and heater on, at night in winter), not the typical figure, and keep about 20–25 % spare.</p>
+
+    <div class="widget" id="w-poe">
+      <span class="label">Interactive · PoE budget calculator</span>
+      <div class="wgrid">
+        <label>Switch PoE budget (W)<input type="number" id="poe-budget" value="120" min="0" step="5"></label>
+        <label>PoE ports on the switch<input type="number" id="poe-ports" value="8" min="1" step="1"></label>
+        <label>Switch reserves power by<select id="poe-mode"><option value="class">device class (worst case)</option><option value="max">datasheet maximum</option><option value="typ">typical draw (optimistic)</option></select></label>
+      </div>
+      <div style="margin-top:10px">
+        <div class="poe-row"><b>Device</b><b>Count</b><b>Class / W</b><b>Max / typ W</b></div>
+        <div id="poe-rows"></div>
+      </div>
+      <div class="bar" id="poe-bar"><i></i></div>
+      <div class="readings">
+        <div><small>Power reserved</small><span class="out" id="poe-total">–</span></div>
+        <div><small>% of budget</small><span class="out" id="poe-pct">–</span></div>
+        <div><small>Ports used</small><span class="out" id="poe-pu">–</span></div>
+        <div><small>Spare (W)</small><span class="out" id="poe-spare">–</span></div>
+      </div>
+      <p id="poe-msg" style="margin-top:10px;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var D=[['Fixed dome camera (af)',4,'3',15.4,7,5],['IR bullet camera (af)',2,'3',15.4,10,7],['PTZ camera (at / PoE+)',1,'4',30,25,18],['Wi-Fi 6 access point (at)',1,'4',30,22,14],['Door intercom (af)',0,'3',15.4,9,6],['VoIP desk phone (af)',0,'2',7,5,3.5]];
+      var rows=document.getElementById('poe-rows');
+      D.forEach(function(d,i){var r=document.createElement('div');r.className='poe-row';
+        r.innerHTML='<span>'+d[0]+'</span><input type="number" min="0" step="1" value="'+d[1]+'" id="poe-c'+i+'" aria-label="count"><small>class '+d[2]+' · '+d[3]+' W</small><small>'+d[4]+' / '+d[5]+' W</small>';rows.appendChild(r);});
+      function upd(){
+        var b=+document.getElementById('poe-budget').value||0,ports=+document.getElementById('poe-ports').value||0,mode=document.getElementById('poe-mode').value,tot=0,n=0,needAt=0;
+        D.forEach(function(d,i){var c=Math.max(0,Math.floor(+document.getElementById('poe-c'+i).value||0));n+=c;tot+=c*(mode==='class'?d[3]:mode==='max'?d[4]:d[5]);if(d[2]==='4')needAt+=c;});
+        var pct=b>0?tot/b*100:Infinity,bar=document.getElementById('poe-bar');
+        bar.querySelector('i').style.width=Math.min(100,isFinite(pct)?pct:100)+'%';bar.className='bar'+(pct>100?' red':pct>80?' amber':'');
+        document.getElementById('poe-total').textContent=tot.toFixed(1)+' W';document.getElementById('poe-pct').textContent=isFinite(pct)?pct.toFixed(0)+' %':'–';
+        document.getElementById('poe-pu').textContent=n+' / '+ports;document.getElementById('poe-spare').textContent=(b-tot).toFixed(1)+' W';
+        var m=[];
+        if(n>ports)m.push('Not enough ports: '+n+' devices on '+ports+' PoE ports.');
+        if(pct>100)m.push('Over budget: some devices will not power up, or will drop out at night when IR and heaters switch on. Use a bigger switch or split across two.');
+        else if(pct>80)m.push('Under budget but with less than 20 % spare. Fine today; no room for one more camera or for winter heater load.');
+        else m.push('OK with '+(100-pct).toFixed(0)+' % spare.');
+        if(needAt>0)m.push(needAt+' device(s) need 802.3at (PoE+) ports: check the datasheet that those ports support 30 W.');
+        if(mode==='typ')m.push('Typical draw is the optimistic case — never size a job on it alone.');
+        document.getElementById('poe-msg').textContent=m.join(' ');
+      }
+      document.getElementById('w-poe').addEventListener('input',upd);document.getElementById('poe-mode').onchange=upd;upd();
+    })();
+    </script>
+    <p>The device figures in the calculator are indicative examples. Always use the real datasheet: an IR bullet camera can double its draw when the infrared LEDs come on at dusk, and outdoor cameras with heaters peak on cold nights — the classic "cameras reboot every night at 2 am in winter" fault is a PoE budget problem.</p>
+    <div class="callout warn"><span class="label">Safety and equipment</span><p>Beware <b>passive PoE</b> (cheap injectors that put a fixed 24 V or 48 V on the cable with no detection). It can damage a laptop or device that does not expect power. Use 802.3af/at/bt-compliant equipment. PoE is ELV, but a PoE bundle in a hot ceiling is a real heat source; follow cable manufacturers' bundle-size guidance.</p></div>
+
+    <h2>VLANs: keep cameras away from office PCs</h2>
+    <p>A <b>VLAN</b> (virtual LAN) splits one physical switch into several separate networks. Ports in VLAN 20 cannot exchange a single frame with ports in VLAN 10, exactly as if they were on different switches. Traffic between VLANs must go through a router or firewall, where you write rules about what is allowed.</p>
+    <ul>
+      <li>An <b>access port</b> belongs to one VLAN and carries plain, <b>untagged</b> frames. Cameras, PCs and printers plug into access ports and do not know VLANs exist.</li>
+      <li>A <b>trunk port</b> carries several VLANs on one cable. Each frame gets a 4-byte <b>802.1Q tag</b> with its VLAN number (1–4094). Trunks link switches to each other and to the router/firewall.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="One switch with VLAN 10 office ports and VLAN 20 camera ports, trunk to firewall with rules">
+        <rect class="f-wash s-line" x="150" y="120" width="340" height="60" rx="6"/>
+        <text class="t t-small t-bold" x="270" y="140">managed switch</text>
+        <g>
+          <rect class="f-theory-soft s-blue" x="160" y="150" width="20" height="20"/><rect class="f-theory-soft s-blue" x="184" y="150" width="20" height="20"/><rect class="f-theory-soft s-blue" x="208" y="150" width="20" height="20"/><rect class="f-theory-soft s-blue" x="232" y="150" width="20" height="20"/>
+          <rect class="f-practice-soft s-accent" x="300" y="150" width="20" height="20"/><rect class="f-practice-soft s-accent" x="324" y="150" width="20" height="20"/><rect class="f-practice-soft s-accent" x="348" y="150" width="20" height="20"/><rect class="f-practice-soft s-accent" x="372" y="150" width="20" height="20"/>
+          <rect class="f-career-soft s-green" x="460" y="150" width="20" height="20"/>
+        </g>
+        <text class="t t-small t-blue" x="160" y="200">ports 1–4: VLAN 10</text>
+        <text class="t t-small t-accent" x="300" y="200">ports 5–8: VLAN 20</text>
+        <text class="t t-small t-green" x="430" y="200">24: trunk</text>
+        <rect class="f-panel s-blue" x="20" y="230" width="120" height="50" rx="6"/><text class="t t-small t-bold" x="30" y="250">Office PCs</text><text class="t t-small t-muted" x="30" y="268">10.0.10.0/24</text>
+        <path class="s-blue" d="M140 255 H195 V170"/>
+        <rect class="f-panel s-accent" x="250" y="230" width="190" height="50" rx="6"/><text class="t t-small t-bold" x="260" y="250">Cameras + NVR</text><text class="t t-small t-muted" x="260" y="268">10.0.20.0/24, PoE</text>
+        <path class="s-accent" d="M345 230 V170"/>
+        <rect class="f-career-soft s-green" x="400" y="20" width="220" height="80" rx="6"/>
+        <text class="t t-small t-bold" x="410" y="40">Firewall / router</text>
+        <text class="t t-small" x="410" y="58">VLAN 10 → NVR :443  allow</text>
+        <text class="t t-small" x="410" y="74">VLAN 20 → internet   deny</text>
+        <text class="t t-small" x="410" y="90">VLAN 20 → VLAN 10    deny</text>
+        <path class="s-green" d="M470 150 V100"/>
+        <text class="t t-small t-green" x="478" y="128">tagged 10 + 20</text>
+        <path class="s-red s-dash" d="M240 215 L300 215"/><text class="t t-small t-red" x="180" y="226">✗</text>
+        <text class="t t-small t-red" x="20" y="110">No direct path between VLANs:</text>
+        <text class="t t-small t-red" x="20" y="128">only what the firewall allows.</text>
+      </svg>
+      <figcaption>Figure 4. One switch, two isolated networks. Office PCs can only reach the NVR's web/app port through the firewall; cameras cannot reach the internet or the office at all. If a camera is compromised, the attacker is stuck in VLAN 20.</figcaption>
+    </figure>
+    <p>Why bother? (1) <b>Security</b>: cameras and IoT devices often run old firmware; they must not be able to reach PCs, servers or the internet freely. (2) <b>Performance</b>: dozens of cameras streaming 4–8 Mbit/s each make a lot of traffic, which stays in its own VLAN. (3) <b>Order</b>: each system gets its own address range, and faults are easier to isolate. On most building sites you will see separate VLANs for corporate, CCTV, access control, BMS, VoIP and guest Wi-Fi.</p>
+    <h3>Bench exercise with a smart managed switch</h3>
+    <ol class="steps">
+      <li><p>Log in to the switch's web page (default IP and password are on its label or manual — change the password).</p></li>
+      <li><p>Create VLAN 20. Set ports 5–8 as <b>untagged</b> members of VLAN 20 and set their <b>PVID</b> (the VLAN for untagged incoming frames) to 20. Remove them from VLAN 1.</p></li>
+      <li><p>Plug the Pi into port 5 and your laptop into port 1. Give them both static IPs in the same subnet (e.g. 192.168.50.10 and .11). Ping: it should <b>fail</b>, even though the IPs match — they are on different VLANs.</p></li>
+      <li><p>Move the laptop to port 6. Ping now works. You have proved that VLAN membership, not just the IP, decides who can talk.</p></li>
+    </ol>
+
+    <h3>Expected readings</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Test</th><th>Expected</th><th>If it's way off</th></tr>
+      <tr><td><code>ping</code> on the same switch, wired</td><td>&lt;1–2 ms, 0 % loss</td><td>Loss or 10+ ms: bad cable/termination (P20), duplex mismatch</td></tr>
+      <tr><td>Laptop IP after plugging into a DHCP network</td><td>Address in the router's range</td><td>169.254.x.x: DHCP failed (cable, port, VLAN)</td></tr>
+      <tr><td>Link light / speed on switch</td><td>1 Gb/s for Cat6 to a gigabit device</td><td>100 Mb/s: one pair broken or a bad termination — test the cable</td></tr>
+      <tr><td>PoE camera power (switch PoE page)</td><td>Near the datasheet value, rising at night with IR</td><td>"Denied" or "overload": budget exceeded or port class limit</td></tr>
+      <tr><td>Ping across VLANs without a firewall rule</td><td>Fails</td><td>Works: port in the wrong VLAN, or inter-VLAN routing wide open</td></tr>
+    </table></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr>
+      <tr><td>New camera not found by browser</td><td>Laptop and camera in different subnets</td><td>Vendor discovery tool shows its IP; set laptop static in that subnet</td></tr>
+      <tr><td>Two devices randomly drop out</td><td><b>IP conflict</b>: same address on both</td><td><code>arp -a</code> shows the MAC changing; ping with one unplugged</td></tr>
+      <tr><td>Camera reachable on site but not from the office</td><td>Wrong or missing gateway on the camera, or firewall rule</td><td>Camera network settings; can it ping its gateway?</td></tr>
+      <tr><td>Camera reboots at night</td><td>PoE budget or port limit exceeded when IR/heater turns on</td><td>Switch PoE log; recalc with max power</td></tr>
+      <tr><td>Works by IP, not by name</td><td>DNS setting wrong</td><td><code>nslookup name</code>; check DNS server address</td></tr>
+      <tr><td>No link light at all</td><td>Cable open, wrong port, device unpowered</td><td>Cable tester (P20), try a known-good patch lead</td></tr>
+    </table></div>
+
+    <div class="callout job"><span class="label">On the job</span><p>Every CCTV and BMS install uses these exact skills, usually in this order: find the device (vendor tool or scanner), set your laptop to its default subnet, log in, set a password and the final static IP/mask/gateway/DNS/NTP from the IP schedule, confirm it is on the right VLAN, check its PoE draw, and record it all. Employers expect a new tech to do this without supervision within weeks. See <a href="../career/c05-cctv-ip-cameras.html">C05 CCTV and IP cameras</a>, <a href="../career/c06-access-control-alarms.html">C06 Access control</a> and <a href="../career/c02-bms-protocols-commissioning.html">C02 BMS commissioning</a>.</p></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Configuring IP settings and switches is not licensed work, but installing the fixed cabling behind them is: cabling connected to the telecommunications network must be done by an ACMA-registered cabler (P20 and <a href="../career/c07-telecom-cabling-acma.html">C07</a>). Security installation work (CCTV, access control, alarms) also needs a security licence in most states, issued by the state regulator — see <a href="../career/c11-licences-pathways.html">C11</a> and confirm the current rules with your state's regulator.</p></div>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>How many usable hosts in a /27, and what are the network and broadcast addresses for 10.0.20.77/27?</summary><div class="answer"><p>2⁵ − 2 = 30 hosts. /27 blocks are 32 addresses: .64–.95 contains .77. Network 10.0.20.64, broadcast 10.0.20.95, usable .65–.94.</p></div></details>
+    <details class="quiz"><summary>Your laptop shows 169.254.12.7. What happened?</summary><div class="answer"><p>It is set to DHCP but no DHCP server answered, so it gave itself a link-local address. Check the cable and link light, the switch port's VLAN, and whether a DHCP server exists on that network (camera VLANs often have none — use static).</p></div></details>
+    <details class="quiz"><summary>Laptop 192.168.1.10/24, camera 192.168.0.90/24, same switch. Why can't they talk, and what are two fixes?</summary><div class="answer"><p>Different network parts (192.168.1 vs 192.168.0) at /24, so each sends the traffic to its gateway. Fix: set the laptop to 192.168.0.x/24 temporarily, or use the vendor tool to change the camera's IP into 192.168.1.x.</p></div></details>
+    <details class="quiz"><summary>An 8-port PoE+ switch has a 65 W budget. Can it run four PTZ cameras that each need 24 W max?</summary><div class="answer"><p>No. 4 × 24 = 96 W, well over 65 W — and if the switch reserves by class 4 (30 W each), it can reserve only two. The port count is not the limit; the budget is. Use a switch with a 150 W+ budget or split the load.</p></div></details>
+    <details class="quiz"><summary>Why does an 802.3af camera only get 12.95 W when the switch sends 15.4 W?</summary><div class="answer"><p>Cable loss. At the worst-case 20 Ω loop resistance and 350 mA, I²R = 0.35² × 20 ≈ 2.45 W is lost as heat in the 100 m of copper.</p></div></details>
+    <details class="quiz"><summary>What is the difference between a switch and a router, in one sentence each?</summary><div class="answer"><p>A switch forwards frames between devices on the same network using MAC addresses. A router forwards packets between different networks using IP addresses (and is the default gateway).</p></div></details>
+    <details class="quiz"><summary>Two devices are in the same subnet but on ports in VLAN 10 and VLAN 20. Can they ping each other?</summary><div class="answer"><p>No. VLANs are separate layer-2 networks; frames never cross between them inside the switch. Matching IPs do not help. They need to be in the same VLAN, or routed through a firewall (and then they should be in different subnets).</p></div></details>
+    <details class="quiz"><summary>Which tool finds a camera of a known brand even when it is on an unknown subnet?</summary><div class="answer"><p>The vendor's discovery tool (e.g. SADP, ConfigTool, Axis IP Utility). It uses layer-2 broadcast/multicast, which reaches every device on the same switch/VLAN regardless of IP settings. Ping and IP scanners only search the subnet you tell them.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the four IP settings and explain what each one does.</span></li>
+      <li><input type="checkbox"><span>I can convert a prefix (/24, /26) to a mask and work out network, broadcast and usable hosts.</span></li>
+      <li><input type="checkbox"><span>I can explain DHCP vs static vs reservation, and recognise a 169.254 address.</span></li>
+      <li><input type="checkbox"><span>I can find devices with ping, arp -a, an IP scanner and a vendor discovery tool.</span></li>
+      <li><input type="checkbox"><span>I can set and remove a static IP on a laptop to reach a camera on its default address.</span></li>
+      <li><input type="checkbox"><span>I can quote the PoE standards and budget a PoE switch using maximum power and spare capacity.</span></li>
+      <li><input type="checkbox"><span>I can explain access vs trunk ports and set up a VLAN on a smart switch.</span></li>
+      <li><input type="checkbox"><span>I can write an IP schedule for a small CCTV job.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
