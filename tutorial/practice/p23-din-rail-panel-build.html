@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P23 · Build a DIN-rail control panel (12/24 V)</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part E</div>
+    <span class="eyebrow">Practice · P23</span>
+    <h1>Build a DIN-rail control panel (12/24 V)</h1>
+    <p class="lede">Build a small control panel the way a technician does: a DIN rail, a fused 24 V DC feed, numbered terminals, ferruled and labelled wires. It watches a door contact, sounds a buzzer, and holds the alarm on until you press reset. You finish with a test sheet, a marked-up drawing and a handover photo.</p>
+    <div class="meta"><span><b>Time</b> 6–8 h over two sessions</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$250–450</span><span><b>Theory</b> T03, T06</span><span><b>Builds on</b> P05, P08, P10, P22</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Read this first: what you wire and what you never touch</h2>
+    <p>A real control panel has two halves. The <b>230 V side</b> brings mains power in and feeds a power supply. The <b>24 V DC side</b> takes that supply's output and runs the relays, controllers and field devices. This lab builds only the second half.</p>
+    <p>Your panel runs from a <b>24 V DC plug-pack</b>: a sealed supply with a moulded mains plug, built and tested by its maker. You never open it. You wire only its low-voltage DC lead. It stands in for the DIN-rail power supply you will meet on a real job.</p>
+
+    <div class="callout warn"><span class="label">Safety · no mains terminals, ever</span><p>A DIN-rail power supply has screw terminals for the 230 V input. Wiring those terminals is mains work, and in Australia it must be done by a <b>licensed electrician</b>. So on the bench you use a plug-pack that feeds the DC side, and you do not buy a bare DIN-rail supply for this lab. Never connect a mains cable to one "just to test". On a real job the electrician wires and tests the supply's mains side, and you start at its 24 V DC output terminals. Everything in this chapter stays at extra-low voltage (ELV): at most 50 V AC or 120 V ripple-free DC.</p></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>Buy a plug-pack with the <b>RCM</b> mark (Regulatory Compliance Mark) from a normal Australian supplier. Choose a <b>regulated</b> 24 V DC type rated 1 A or more. An unregulated "wall wart" can give 30 V or more with no load, which is outside the 24 V ±10 % that most relay coils and lamps are made for. Licensing rules differ by state, so confirm the current rule with your state's electrical safety regulator. The legal meaning of ELV, and why the licensing line sits where it does, is in <a href="../theory/t09-mains-earthing-safety.html">T09</a>.</p></div>
+
+    <h2>What you need</h2>
+    <p>Prices are approximate Australian dollars. Compare Jaycar, Altronics, element14, RS Components and Core Electronics. Buy the ferrules and tools once: you will use them for years.</p>
+    <ul class="kit">
+      <li><b>35 mm top-hat DIN rail, 1 m</b><small>~A$10–20 · steel, 7.5 mm deep. Cut into three pieces of about 200 mm with a hacksaw and file off the burrs.</small></li>
+      <li><b>Enclosure with back plate</b><small>~A$40–100 · plastic wall box, roughly 250 × 300 mm inside and at least 100 mm deep. Or screw the rails to a ply board (~A$10) for a bench-only build.</small></li>
+      <li><b>Feed-through terminal blocks, 2.5 mm², ×30</b><small>~A$1–2 each · screw type, one series, plus the matching label strips</small></li>
+      <li><b>Fused terminal block ×1, with fuses</b><small>~A$6–12 · takes 5 × 20 mm fuses and has a lever to open the circuit. Fuses of 0.5 A and 1 A, ~A$1 each.</small></li>
+      <li><b>Polyfuse (PTC), 0.5 A hold</b><small>~A$1–2 · the resettable alternative to try in place of the fuse</small></li>
+      <li><b>Earth (PE, protective earth) terminal ×2</b><small>~A$2–4 each · green/yellow</small></li>
+      <li><b>End stops ×6 and end plates ×6</b><small>~A$1–3 each · same maker and series as the terminals</small></li>
+      <li><b>Jumper (bridge) bars</b><small>~A$10–15 · 2-way, 3-way and 10-way, same series as the terminals. Cut them to length.</small></li>
+      <li><b>24 V DC relay with DIN socket ×3</b><small>~A$15–35 each · two changeover contacts. Choose a type with a built-in coil diode and LED if you can; if not, fit a 1N4007-type diode across each coil (stripe end to A1). K3 is for the optional lock demo.</small></li>
+      <li><b>DIN timer relay (optional)</b><small>~A$30–80 · on-delay, 12–24 V DC</small></li>
+      <li><b>24 V LED indicator ×2</b><small>~A$5–12 each · 22 mm panel type with a built-in resistor, or a DIN-rail LED indicator</small></li>
+      <li><b>Push-buttons ×2</b><small>~A$6–15 each · momentary. One with a normally closed contact (reset), one normally open (optional).</small></li>
+      <li><b>Reed-switch door contact with magnet</b><small>~A$5–10 · the surface-mount kind sold for alarms</small></li>
+      <li><b>24 V DC buzzer</b><small>~A$5–10 · continuous tone, polarised</small></li>
+      <li><b>24 V DC plug-pack, regulated, 1–2 A</b><small>~A$25–45 · RCM-marked. Plus a DC barrel-jack-to-screw-terminal adapter, ~A$3–6.</small></li>
+      <li><b>Ferrule assortment with twin ferrules</b><small>~A$20–35 · 0.5 to 2.5 mm², several hundred pieces</small></li>
+      <li><b>Ratchet crimper for ferrules</b><small>~A$25–60 · square or trapezoid profile. Skip the cheapest squeeze-type tools: they give weak crimps.</small></li>
+      <li><b>Flexible hookup wire, 0.5 and 0.75 mm²</b><small>~A$15–25 · red, black, white and yellow, about 10 m each. Multi-strand, not solid.</small></li>
+      <li><b>2-core alarm cable, 10 m</b><small>~A$10 · for the field runs C1 to C4</small></li>
+      <li><b>Wire duct 25 × 25 mm with cover, 1 m</b><small>~A$8–15</small></li>
+      <li><b>Cable ties, adhesive bases, marker sleeves or labels</b><small>~A$10–25 · a label printer is optional (~A$40–100)</small></li>
+      <li><b>Tools from earlier labs</b><small>Multimeter (P03), wire strippers and side cutters (P05), and a small slotted screwdriver whose blade fills the terminal slot (often 3 to 3.5 mm)</small></li>
+    </ul>
+    <p>A tight-budget build (ply board instead of an enclosure, two relays, no timer) costs about A$250. A fully loaded build with the enclosure, three relays and the timer is nearer A$450.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Buy terminals, jumper bars, end stops, end plates and marker strips from <b>one maker and one series</b>. Parts from different makers often do not fit, and an almost-fitting jumper bar is a fault waiting to happen.</p></div>
+
+    <h2>The panel you will build</h2>
+    <p>The panel is called <b>CP-01</b>. It watches a door and raises an alarm that stays on until someone presses reset. It is a tiny version of the alarm and monitoring panels in security and building-management work.</p>
+    <h3>What it must do</h3>
+    <ol>
+      <li><b>Door shut:</b> relay K1 is energised through the door contact. No alarm.</li>
+      <li><b>Door opens:</b> K1 drops out. Relay K2 pulls in, locks itself on, and switches the buzzer B1 and lamp H1.</li>
+      <li><b>Door shuts again:</b> the alarm stays on. It is <b>latched</b>.</li>
+      <li><b>Reset button S2:</b> clears the alarm only if the door is shut. If the door is still open, the alarm comes straight back.</li>
+      <li><b>A cut door-contact wire</b> counts as an open door.</li>
+      <li><b>A power failure</b> clears the latch (a relay has no memory without power). At power-up with the door open, the alarm starts again.</li>
+    </ol>
+    <h3>Device tags and the points list</h3>
+    <p>A <b>relay</b> is an electromagnetic switch: a small current in its <b>coil</b> pulls a metal arm that moves its <b>contacts</b> (see <a href="p08-transistor-switches.html">P08</a>). A <b>changeover</b> contact has one common terminal that joins either the normally closed (NC) side or the normally open (NO) side. Every part gets a short tag, a letter for what it is and a number. This is the same scheme you met in <a href="p22-reading-drawings.html">P22</a>.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Tag</th><th>Device</th><th>Where it sits</th></tr>
+      <tr><td>G1</td><td>24 V DC plug-pack, outside the box. Its DC lead enters through a gland (a rubber-sealed cable entry).</td><td>Off the rail. Leads go to X1:1 and X1:6.</td></tr>
+      <tr><td>F1</td><td>Fused terminal with a 0.5 A 5 × 20 mm fuse</td><td>X1:1</td></tr>
+      <tr><td>K1</td><td>Relay, 24 V DC coil: <b>monitors the door loop</b></td><td>DIN socket on rail B</td></tr>
+      <tr><td>K2</td><td>Relay, same type: <b>alarm latch</b> and output</td><td>DIN socket on rail B</td></tr>
+      <tr><td>K3, KT</td><td>Optional: relay for the lock demo; timer relay for a door-held-open delay</td><td>Rail B, spare space</td></tr>
+      <tr><td>S1, S2, S3</td><td>S1 door reed switch; S2 reset button (normally closed); S3 access button (normally open, optional)</td><td>Field, or on the lid</td></tr>
+      <tr><td>H1, H2, B1</td><td>H1 alarm lamp; H2 lock-state lamp (optional); B1 buzzer</td><td>Field</td></tr>
+      <tr><td>X1, X2, X3</td><td>Terminal strips: X1 power, X2 inputs, X3 outputs</td><td>Rails A and C</td></tr>
+    </table></div>
+    <p>A <b>points list</b> says what signals a panel handles. Yours is short:</p>
+    <div class="table-wrap"><table>
+      <tr><th>Point</th><th>Type</th><th>Terminals</th><th>Device</th><th>Note</th></tr>
+      <tr><td>DI-1</td><td>Digital input (closed loop)</td><td>X2:1, X2:4</td><td>S1 door reed</td><td>Closed = door shut</td></tr>
+      <tr><td>DI-2</td><td>Digital input (button)</td><td>X2:2, X2:5</td><td>S2 reset</td><td>Normally closed contact</td></tr>
+      <tr><td>DI-3</td><td>Digital input (optional)</td><td>X2:3, X2:6</td><td>S3 access button</td><td>Normally open contact</td></tr>
+      <tr><td>DO-1</td><td>Output, switched +24 V</td><td>X3:1, X3:4</td><td>B1 buzzer</td><td>Via K2 contact 21–24</td></tr>
+      <tr><td>DO-2</td><td>Output, switched +24 V</td><td>X3:2, X3:5</td><td>H1 lamp</td><td>Via K2 contact 21–24</td></tr>
+      <tr><td>DO-3</td><td>Output (optional)</td><td>X3:3, X3:6</td><td>H2 lock-state lamp</td><td>Via K3</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Relay sockets number their pins in different ways. This chapter uses <b>A1/A2</b> for the coil, <b>11-12-14</b> for the first changeover contact (11 common, 12 normally closed, 14 normally open) and <b>21-22-24</b> for the second. If your socket is marked differently, write your own numbers on the drawing before you wire anything.</p></div>
+
+    <h2>Layout planning: power at the top, field at the bottom</h2>
+    <p>A <b>DIN rail</b> is a standard 35 mm steel top-hat strip that terminals, relays and power supplies clip onto, so parts from many makers fit the same rail. Plan on paper before you drill or snap anything onto it. A bad layout stays bad for twenty years, and everyone who opens the panel pays for it.</p>
+
+    <figure>
+      <svg viewBox="0 0 680 492" role="img" aria-label="Panel layout: a power strip at the top, relays in the middle, field terminals at the bottom, wire duct between the rows and spare space at the right of each rail">
+        <defs><marker id="p23-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-panel s-line" x="10" y="24" width="660" height="368" rx="8"/>
+        <circle class="f-panel s-line" cx="190" cy="24" r="5"/>
+        <text class="t t-small t-muted" x="202" y="18">DC lead in (gland)</text>
+        <path class="s-line" d="M190 30 V46" marker-end="url(#p23-ar)"/>
+        <!-- ducts -->
+        <rect class="f-wash s-thin" x="30" y="36" width="620" height="18"/>
+        <text class="t t-small t-muted" x="570" y="49">wire duct</text>
+        <rect class="f-wash s-thin" x="30" y="130" width="620" height="18"/>
+        <text class="t t-small t-muted" x="570" y="143">wire duct</text>
+        <rect class="f-wash s-thin" x="30" y="240" width="620" height="18"/>
+        <text class="t t-small t-muted" x="570" y="253">wire duct</text>
+        <rect class="f-wash s-thin" x="30" y="330" width="620" height="18"/>
+        <text class="t t-small t-muted" x="570" y="343">wire duct</text>
+        <!-- rails -->
+        <rect class="f-wash s-thin" x="124" y="84" width="526" height="12"/>
+        <rect class="f-wash s-thin" x="124" y="186" width="526" height="12"/>
+        <rect class="f-wash s-thin" x="124" y="286" width="526" height="12"/>
+        <!-- band A -->
+        <text class="t t-small t-bold" x="34" y="76">1 POWER</text>
+        <text class="t t-small t-muted" x="34" y="92">strip X1</text>
+        <text class="t t-small t-muted" x="34" y="108">fuse + bus</text>
+        <rect class="f-panel s-thin s-dash" x="130" y="60" width="106" height="64" rx="4"/>
+        <text class="t t-small t-bold" x="138" y="76">PSU spot</text>
+        <text class="t t-small" x="138" y="92">real job:</text>
+        <text class="t t-small" x="138" y="106">electrician</text>
+        <text class="t t-small" x="138" y="120">wires mains</text>
+        <rect class="f-grey" x="244" y="64" width="8" height="56"/>
+        <rect class="f-wash s-line" x="254" y="60" width="26" height="64"/>
+        <rect class="f-amber" x="262" y="72" width="10" height="24"/>
+        <text class="t t-small t-bold" x="259" y="116">F1</text>
+  <rect class="f-panel s-thin" x="280" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="289" y="96">2</text>
+  <rect class="f-panel s-thin" x="298" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="307" y="96">3</text>
+  <rect class="f-panel s-thin" x="316" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="325" y="96">4</text>
+  <rect class="f-panel s-thin" x="334" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="343" y="96">5</text>
+  <rect class="f-panel s-thin" x="352" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="361" y="96">6</text>
+  <rect class="f-panel s-thin" x="370" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="379" y="96">7</text>
+  <rect class="f-panel s-thin" x="388" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="397" y="96">8</text>
+  <rect class="f-panel s-thin" x="406" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="415" y="96">9</text>
+  <rect class="f-panel s-thin" x="424" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="433" y="96">10</text>
+  <rect class="f-panel s-thin" x="442" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="451" y="96">11</text>
+  <rect class="f-panel s-thin" x="460" y="60" width="18" height="64"/>
+  <text class="t t-small" text-anchor="middle" x="469" y="96">PE</text>
+  <rect class="f-red" x="254" y="60" width="98" height="6"/>
+  <rect class="f-ink" x="352" y="60" width="108" height="6"/>
+  <rect class="f-green" x="460" y="60" width="18" height="6"/>
+  <rect class="f-amber" x="460" y="66" width="18" height="4"/>
+        <rect class="f-grey" x="478" y="64" width="4" height="56"/>
+        <rect class="f-grey" x="484" y="64" width="8" height="56"/>
+        <rect class="f-none s-thin s-dash" x="506" y="60" width="144" height="64" rx="4"/>
+        <text class="t t-small t-bold" x="514" y="76">SPARE ≥ 20 %</text>
+        <text class="t t-small t-muted" x="514" y="118">for new terminals</text>
+        <!-- band B -->
+        <text class="t t-small t-bold" x="34" y="172">2 CONTROL</text>
+        <text class="t t-small t-muted" x="34" y="188">relays on</text>
+        <text class="t t-small t-muted" x="34" y="204">DIN sockets</text>
+        <rect class="f-grey" x="130" y="158" width="8" height="72"/>
+        <rect class="f-panel s-line" x="140" y="154" width="60" height="80" rx="3"/>
+        <rect class="f-panel s-line" x="202" y="154" width="60" height="80" rx="3"/>
+        <rect class="f-panel s-thin s-dash" x="264" y="154" width="60" height="80" rx="3"/>
+        <rect class="f-panel s-thin s-dash" x="326" y="154" width="70" height="80" rx="3"/>
+        <rect class="f-grey" x="398" y="158" width="8" height="72"/>
+        <path class="s-thin" d="M146 160 h8 M166 160 h8 M186 160 h8 M208 160 h8 M228 160 h8 M248 160 h8 M270 160 h8 M290 160 h8 M310 160 h8 M332 160 h8 M357 160 h8 M382 160 h8"/>
+        <path class="s-thin" d="M146 228 h8 M166 228 h8 M186 228 h8 M208 228 h8 M228 228 h8 M248 228 h8 M270 228 h8 M290 228 h8 M310 228 h8 M332 228 h8 M357 228 h8 M382 228 h8"/>
+        <text class="t t-bold" text-anchor="middle" x="170" y="182">K1</text>
+        <text class="t t-small" text-anchor="middle" x="170" y="198">monitor</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="170" y="214">2-pole</text>
+        <text class="t t-bold" text-anchor="middle" x="232" y="182">K2</text>
+        <text class="t t-small" text-anchor="middle" x="232" y="198">latch</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="232" y="214">2-pole</text>
+        <text class="t t-bold" text-anchor="middle" x="294" y="182">K3</text>
+        <text class="t t-small" text-anchor="middle" x="294" y="198">lock</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="294" y="214">opt.</text>
+        <text class="t t-bold" text-anchor="middle" x="361" y="182">KT</text>
+        <text class="t t-small" text-anchor="middle" x="361" y="198">timer</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="361" y="214">opt.</text>
+        <rect class="f-none s-thin s-dash" x="420" y="154" width="230" height="80" rx="4"/>
+        <text class="t t-small t-bold" x="432" y="172">SPARE ≥ 20 %</text>
+        <text class="t t-small t-muted" x="432" y="226">room for K4, K5 …</text>
+        <!-- band C -->
+        <text class="t t-small t-bold" x="34" y="282">3 FIELD</text>
+        <text class="t t-small t-muted" x="34" y="298">X2 inputs</text>
+        <text class="t t-small t-muted" x="34" y="314">X3 outputs</text>
+        <rect class="f-grey" x="130" y="268" width="8" height="52"/>
+  <rect class="f-panel s-thin" x="140" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="149" y="298">1</text>
+  <rect class="f-panel s-thin" x="158" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="167" y="298">2</text>
+  <rect class="f-panel s-thin" x="176" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="185" y="298">3</text>
+  <rect class="f-panel s-thin" x="194" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="203" y="298">4</text>
+  <rect class="f-panel s-thin" x="212" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="221" y="298">5</text>
+  <rect class="f-panel s-thin" x="230" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="239" y="298">6</text>
+  <rect class="f-red" x="140" y="264" width="54" height="6"/>
+  <rect class="f-panel s-thin" x="280" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="289" y="298">1</text>
+  <rect class="f-panel s-thin" x="298" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="307" y="298">2</text>
+  <rect class="f-panel s-thin" x="316" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="325" y="298">3</text>
+  <rect class="f-panel s-thin" x="334" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="343" y="298">4</text>
+  <rect class="f-panel s-thin" x="352" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="361" y="298">5</text>
+  <rect class="f-panel s-thin" x="370" y="264" width="18" height="60"/>
+  <text class="t t-small" text-anchor="middle" x="379" y="298">6</text>
+  <rect class="f-amber" x="280" y="264" width="36" height="6"/>
+  <rect class="f-ink" x="334" y="264" width="54" height="6"/>
+        <rect class="f-grey" x="250" y="268" width="8" height="52"/>
+        <rect class="f-grey" x="270" y="268" width="8" height="52"/>
+        <rect class="f-grey" x="390" y="268" width="8" height="52"/>
+        <rect class="f-none s-thin s-dash" x="420" y="264" width="230" height="60" rx="4"/>
+        <text class="t t-small t-bold" x="432" y="282">SPARE ≥ 20 %</text>
+        <text class="t t-small t-muted" x="432" y="316">extra I/O terminals</text>
+        <text class="t t-small t-bold" text-anchor="middle" x="194" y="343">X2</text>
+        <text class="t t-small t-bold" text-anchor="middle" x="334" y="343">X3</text>
+        <!-- cable entries -->
+        <circle class="f-panel s-line" cx="190" cy="392" r="5"/>
+        <circle class="f-panel s-line" cx="330" cy="392" r="5"/>
+        <circle class="f-panel s-line" cx="470" cy="392" r="5"/>
+        <path class="s-line" d="M190 386 V356" marker-end="url(#p23-ar)"/>
+        <path class="s-line" d="M330 386 V356" marker-end="url(#p23-ar)"/>
+        <path class="s-line" d="M470 386 V356" marker-end="url(#p23-ar)"/>
+        <text class="t t-small t-muted" x="200" y="412">field cables enter by glands at the bottom</text>
+        <!-- power flow arrow -->
+        <path class="s-thin" d="M661 70 V320" marker-end="url(#p23-ar)"/>
+        <!-- legend -->
+        <path class="s-line" d="M30 436 H90" marker-end="url(#p23-ar)"/>
+        <text class="t t-small" x="98" y="440">signal flow: left to right</text>
+        <path class="s-thin" d="M300 426 V450" marker-end="url(#p23-ar)"/>
+        <text class="t t-small" x="312" y="442">power flow: top to bottom</text>
+        <rect class="f-none s-thin s-dash" x="500" y="430" width="22" height="14"/>
+        <text class="t t-small" x="530" y="442">optional or spare</text>
+        <text class="t t-small t-muted" x="30" y="466">Not to scale: a terminal is about 5 mm wide, a 2-pole relay and socket about 15 mm.</text>
+        <text class="t t-small t-muted" x="30" y="484">Mains, if a real job had any, goes in its own compartment away from this wiring.</text>
+      </svg>
+      <figcaption>Figure 1. Panel CP-01 on three rails. Power comes in at the top, control relays sit in the middle, and every field cable lands on a terminal strip at the bottom. The pale bar under each row is the 35 mm DIN rail. Dashed boxes are the place for the real-job power supply, optional parts and spare space. The coloured tabs on the terminals show the wire group: red +24 V, black 0 V, amber switched +24 V.</figcaption>
+    </figure>
+
+    <h3>The five layout rules</h3>
+    <ol class="steps">
+      <li><p><b>Power at the top.</b> Supply, fuse and the 0 V and +24 V distribution come first. Mains (if any) enters at the top, and everything else is fed from there. It also matches the way you read a schematic: supply rail on top, 0 V at the bottom.</p></li>
+      <li><p><b>Flow left to right.</b> Inputs on the left, logic in the middle, outputs on the right, the same order as the ladder diagram in Figure 4. Anyone tracing a signal can follow it with their eyes.</p></li>
+      <li><p><b>Field terminals at the bottom.</b> Every cable from outside lands on a terminal first, never straight on a relay. Then you can unplug the field side to test the panel alone, replace a relay without touching a field cable, and half-split a fault at the terminal strip (<a href="p21-fault-finding.html">P21</a>).</p></li>
+      <li><p><b>About 20 % spare.</b> Leave at least a fifth of every rail and of the duct empty, and fit a few spare terminals. Jobs change. A full panel means a new panel.</p></li>
+      <li><p><b>Room to work.</b> Leave about 20 to 25 mm between a device row and the duct so a screwdriver can reach, and place labels where you can read them with the cover closed. Duct should be about half full, no more.</p></li>
+    </ol>
+
+    <h3>Worked example: how long a rail?</h3>
+    <p>Typical widths: a 2.5 mm² feed-through terminal is about 5.2 mm, a fused terminal about 8.2 mm, a 2-pole relay with socket about 15.5 mm, a small timer 17.5 mm, an end stop about 9 mm and an end plate about 2 mm. Check your own data sheets.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Rail</th><th>Parts</th><th>Length needed</th><th>+ 20 %</th></tr>
+      <tr><td>A power (X1)</td><td>F1 8.2 + 11 × 5.2 + 2 end stops 18 + end plate 2</td><td>≈ 86 mm</td><td>≈ 103 mm</td></tr>
+      <tr><td>B control</td><td>3 relays 3 × 15.5 + timer 17.5 + 2 end stops 18</td><td>≈ 82 mm</td><td>≈ 98 mm</td></tr>
+      <tr><td>C field (X2 + X3)</td><td>12 × 5.2 + 4 end stops 36</td><td>≈ 98 mm</td><td>≈ 118 mm</td></tr>
+    </table></div>
+    <p>The longest row needs about 118 mm, so a 150 or 200 mm rail is right. A 200 mm cut gives roughly 100 mm of spare, so you have more than the minimum 20 %.</p>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Heat rises. In this cool little ELV panel it does not matter, but on a real job a power supply or drive at the top of a sealed box bakes the parts above and around it. The layout drawing and the data sheets decide the spacing, and a panel in a hot plant room or a roof space needs the derating figures read.</p></div>
+
+    <h2>Terminal numbers and wire numbers</h2>
+    <p>Three kinds of number are in play, and mixing them up is the commonest beginner error (<a href="p22-reading-drawings.html">P22</a> covers this in detail). The <b>terminal number</b> belongs to a place: X1:3 is strip X1, terminal 3. The <b>wire number</b> belongs to a node: every wire joined to the same point carries the same number. The <b>cable number</b> belongs to a multi-core cable between two places: C1, C2.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 472" role="img" aria-label="Three terminal strips with their wire numbers: X1 power strip, X2 input strip and X3 output strip, with jumper bars and the destination of each wire">
+        <text class="t t-bold" x="56" y="30">X1 · power strip</text>
+        <rect class="f-grey" x="56" y="68" width="10" height="36"/>
+        <rect class="f-panel s-line" x="66" y="64" width="50" height="44"/>
+        <rect class="f-amber" x="83" y="70" width="16" height="12"/>
+        <text class="t t-bold" text-anchor="middle" x="91" y="100">F1</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="80" y="56">1</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="104" y="56">2</text>
+        <text class="t t-small" text-anchor="middle" x="91" y="138">G1 +</text>
+        <rect class="f-panel s-line" x="116" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="138" y="91">2</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="138" y="56">2</text>
+        <text class="t t-small" text-anchor="middle" x="138" y="138">X2:1</text>
+        <rect class="f-panel s-line" x="160" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="182" y="91">3</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="182" y="56">2</text>
+        <text class="t t-small" text-anchor="middle" x="182" y="138">K2:21</text>
+        <rect class="f-panel s-line" x="204" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="226" y="91">4</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="226" y="56">2</text>
+        <text class="t t-small" text-anchor="middle" x="226" y="138">K1:21</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="226" y="154">stage 3</text>
+        <rect class="f-panel s-line" x="248" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="270" y="91">5</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="270" y="56">2</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="270" y="138">K3:11</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="270" y="154">opt.</text>
+        <rect class="f-panel s-line" x="292" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="314" y="91">6</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="314" y="56">0</text>
+        <text class="t t-small" text-anchor="middle" x="314" y="138">G1 −</text>
+        <rect class="f-panel s-line" x="336" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="358" y="91">7</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="358" y="56">0</text>
+        <text class="t t-small" text-anchor="middle" x="358" y="138">K1:A2</text>
+        <rect class="f-panel s-line" x="380" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="402" y="91">8</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="402" y="56">0</text>
+        <text class="t t-small" text-anchor="middle" x="402" y="138">K2:A2</text>
+        <rect class="f-panel s-line" x="424" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="446" y="91">9</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="446" y="56">0</text>
+        <text class="t t-small" text-anchor="middle" x="446" y="138">X3:4</text>
+        <rect class="f-panel s-line" x="468" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="490" y="91">10</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="490" y="56">0</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="490" y="138">K3:A2</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="490" y="154">opt.</text>
+        <rect class="f-panel s-line" x="512" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="534" y="91">11</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="534" y="56">0</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="534" y="138">KT:A2</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="534" y="154">opt.</text>
+        <rect class="f-panel s-line" x="556" y="64" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="578" y="91">PE</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="578" y="138">none</text>
+        <rect class="f-grey" x="600" y="68" width="4" height="36"/>
+        <rect class="f-grey" x="606" y="68" width="10" height="36"/>
+        <rect class="f-red" x="70" y="110" width="218" height="6"/>
+        <rect class="f-ink" x="296" y="110" width="256" height="6"/>
+        <rect class="f-green" x="560" y="68" width="36" height="6"/>
+        <rect class="f-amber" x="560" y="74" width="36" height="4"/>
+        <text class="t t-bold" x="56" y="206">X2 · inputs</text>
+        <text class="t t-bold" x="390" y="206">X3 · outputs</text>
+        <rect class="f-grey" x="56" y="244" width="10" height="36"/>
+        <rect class="f-panel s-line" x="66" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="88" y="267">1</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="88" y="232">2</text>
+        <text class="t t-small" text-anchor="middle" x="88" y="314">S1</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="88" y="330">C1</text>
+        <rect class="f-panel s-line" x="110" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="132" y="267">2</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="132" y="232">2</text>
+        <text class="t t-small" text-anchor="middle" x="132" y="314">S2:11</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="132" y="330">C2</text>
+        <rect class="f-panel s-line" x="154" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="176" y="267">3</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="176" y="232">2</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="176" y="314">S3:13</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="176" y="330">C5</text>
+        <rect class="f-panel s-line" x="198" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="220" y="267">4</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="220" y="232">3</text>
+        <text class="t t-small" text-anchor="middle" x="220" y="314">S1</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="220" y="330">C1</text>
+        <rect class="f-panel s-line" x="242" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="264" y="267">5</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="264" y="232">4</text>
+        <text class="t t-small" text-anchor="middle" x="264" y="314">S2:12</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="264" y="330">C2</text>
+        <rect class="f-panel s-line" x="286" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="308" y="267">6</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="308" y="232">7</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="308" y="314">S3:14</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="308" y="330">C5</text>
+        <rect class="f-grey" x="330" y="244" width="4" height="36"/>
+        <rect class="f-grey" x="336" y="244" width="10" height="36"/>
+        <rect class="f-red" x="70" y="286" width="124" height="6"/>
+        <rect class="f-grey" x="380" y="244" width="10" height="36"/>
+        <rect class="f-panel s-line" x="390" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="412" y="267">1</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="412" y="232">6</text>
+        <text class="t t-small" text-anchor="middle" x="412" y="314">B1 +</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="412" y="330">C3</text>
+        <rect class="f-panel s-line" x="434" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="456" y="267">2</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="456" y="232">6</text>
+        <text class="t t-small" text-anchor="middle" x="456" y="314">H1 +</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="456" y="330">C4</text>
+        <rect class="f-panel s-line" x="478" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="500" y="267">3</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="500" y="232">8</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="500" y="314">H2 +</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="500" y="330">C6</text>
+        <rect class="f-panel s-line" x="522" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="544" y="267">4</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="544" y="232">0</text>
+        <text class="t t-small" text-anchor="middle" x="544" y="314">B1 −</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="544" y="330">C3</text>
+        <rect class="f-panel s-line" x="566" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="588" y="267">5</text>
+        <text class="t t-small t-blue t-bold" text-anchor="middle" x="588" y="232">0</text>
+        <text class="t t-small" text-anchor="middle" x="588" y="314">H1 −</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="588" y="330">C4</text>
+        <rect class="f-panel s-line" x="610" y="240" width="44" height="44"/>
+        <text class="t t-bold" text-anchor="middle" x="632" y="267">6</text>
+        <text class="t t-small t-blue" text-anchor="middle" x="632" y="232">0</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="632" y="314">H2 −</text>
+        <text class="t t-small t-muted" text-anchor="middle" x="632" y="330">C6</text>
+        <rect class="f-grey" x="654" y="244" width="4" height="36"/>
+        <rect class="f-grey" x="660" y="244" width="10" height="36"/>
+        <rect class="f-amber" x="394" y="286" width="80" height="6"/>
+        <rect class="f-ink" x="526" y="286" width="124" height="6"/>
+        <text class="t t-small t-bold" x="56" y="372">How to read the strips</text>
+        <text class="t t-small" x="56" y="390">Blue number above = wire number on the marker sleeve of the wire.</text>
+        <text class="t t-small" x="56" y="406">Number inside = terminal number. X1:3 means strip X1, terminal 3.</text>
+        <text class="t t-small" x="56" y="422">Text below = the other end of the wire (X1) or the field device and cable (X2, X3).</text>
+        <text class="t t-small" x="56" y="438">Red bar = jumper on +24 V. Amber = switched +24 V. Black = jumper on 0 V.</text>
+        <text class="t t-small t-muted" x="56" y="454">Grey text = optional or temporary. One jumper bar = one wire number only.</text>
+      </svg>
+      <figcaption>Figure 2. The terminal strips of CP-01. F1 is a fused terminal: wire 1 goes in, wire 2 comes out onto the red jumper bar and feeds terminals 2 to 5. A second jumper bar joins the 0 V terminals. X2 brings +24 V to the field on three bridged terminals, and each input returns on its own terminal. Terminal 12 (PE) is for a cable screen on a real job; nothing connects to it on the bench.</figcaption>
+    </figure>
+
+    <h3>Numbering rules</h3>
+    <ul>
+      <li><b>One strip, one purpose.</b> X1 is power, X2 inputs, X3 outputs. Never mix a 24 V supply terminal into an input strip.</li>
+      <li><b>Number from 1, left to right, no gaps and no repeats</b> inside a strip. Print or write the number on the terminal's label strip.</li>
+      <li><b>Wire numbers are node numbers.</b> Wire 2 is +24 V after the fuse, wire 0 is 0 V. If you find wire 1 anywhere except the plug-pack and F1, someone has bypassed the fuse.</li>
+      <li><b>Both ends of every wire carry a marker.</b> Fit the sleeve before you crimp the ferrule, and print the number so it reads from left to right.</li>
+      <li><b>Name the spares.</b> A spare terminal is numbered and labelled "spare". A blank, unlabelled terminal makes the next person wonder if it is a mistake.</li>
+      <li><b>Draw it.</b> The drawing set for CP-01 is Figure 4 (schematic), Figure 2 (terminals) and the wire list below. If the wiring and the drawing ever disagree, one of them is wrong, and you fix it before you leave.</li>
+    </ul>
+
+    <h3>The wire list</h3>
+    <p>This is your build sheet. Tick each line as you wire it and tug it. Sizes are in mm², colours follow the table in the next section.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Wire</th><th>From</th><th>To</th><th>Colour, size</th><th>Note</th></tr>
+      <tr><td>1</td><td>G1 + (adapter)</td><td>X1:1 (F1 in)</td><td>red 0.75</td><td>The only unfused +24 V wire. Keep it short.</td></tr>
+      <tr><td>0</td><td>G1 − (adapter)</td><td>X1:6</td><td>black 0.75</td><td></td></tr>
+      <tr><td>2</td><td>X1:2</td><td>X2:1</td><td>red 0.5</td><td>X2:1 to X2:3 are bridged</td></tr>
+      <tr><td>2</td><td>X1:3</td><td>K2:21</td><td>red 0.5</td><td>Output contact common</td></tr>
+      <tr><td>2</td><td>X1:4</td><td>K1:21</td><td>red 0.5</td><td>Stage 3 buzzer test; the timer option uses it again</td></tr>
+      <tr><td>0</td><td>X1:7</td><td>K1:A2</td><td>black 0.5</td><td>K1 coil −</td></tr>
+      <tr><td>0</td><td>X1:8</td><td>K2:A2</td><td>black 0.5</td><td>K2 coil −</td></tr>
+      <tr><td>0</td><td>X1:9</td><td>X3:4</td><td>black 0.5</td><td>X3:4 to X3:6 are bridged</td></tr>
+      <tr><td>3</td><td>X2:4</td><td>K1:A1</td><td>white 0.5</td><td>Door loop return, K1 coil +</td></tr>
+      <tr><td>4</td><td>X2:5</td><td>K1:11</td><td>white 0.5</td><td>After the reset button</td></tr>
+      <tr><td>4</td><td>X2:5</td><td>K2:11</td><td>white 0.5</td><td>Twin ferrule at X2:5</td></tr>
+      <tr><td>5</td><td>K1:12</td><td>K2:A1</td><td>white 0.5</td><td>Trigger. Stage 4.</td></tr>
+      <tr><td>5</td><td>K2:14</td><td>K2:A1</td><td>white 0.5</td><td>Self-hold. Twin ferrule at K2:A1.</td></tr>
+      <tr><td>6</td><td>K2:24</td><td>X3:1</td><td>yellow 0.5</td><td>X3:1 and X3:2 are bridged. Stage 4.</td></tr>
+      <tr><td>6</td><td>K1:22</td><td>X3:1</td><td>yellow 0.5</td><td>Stage 3 only. Remove in Stage 4.</td></tr>
+    </table></div>
+    <p>Field cables use 2-core alarm cable. <b>C1</b>: X2:1 and X2:4 to the door reed S1. <b>C2</b>: X2:2 to S2:11 and X2:5 to S2:12 (the reset button). <b>C3</b>: X3:1 to B1 + and X3:4 to B1 −. <b>C4</b>: X3:2 to H1 + and X3:5 to H1 −. The optional parts add C5 (S3) and C6 (H2), and the wires in the options section.</p>
+    <div class="callout job"><span class="label">On the job</span><p>In building-management and security work the points list and the terminal schedule arrive as part of the drawing set. The technician's job is to make the panel match them, test it, and mark up any difference. A panel that is easy to read from the drawings is the mark of a tradie who gets called back for the next job. See <a href="../career/c01-bms-fundamentals.html">C01</a> for the points a BMS controller handles.</p></div>
+
+    <h2>Wire colours for ELV DC control</h2>
+    <p>Mains wiring has colour rules written into standards. <b>ELV DC control wiring does not have one rule for every job.</b> What you see is common practice, and it varies by site, by company and by the project specification. The first thing to do on any job is read the spec and copy its colours. If it is silent, ask, or pick a scheme, write it on the drawing, and use it everywhere.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Circuit</th><th>Colours you will meet</th><th>Used in this lab</th></tr>
+      <tr><td>+24 V DC, before and after the fuse</td><td>Red is common in security and building-services panels. Machine-control panels built to the machinery standard AS 60204.1 (IEC 60204-1) often use blue for DC control circuits.</td><td>Red</td></tr>
+      <tr><td>0 V (DC negative)</td><td>Black is common. Blue or dark blue on machine-style panels.</td><td>Black</td></tr>
+      <tr><td>Signals, door loop, coil feeds</td><td>Whatever the spec gives: white, grey, violet, brown, and so on. Tell them apart by wire number.</td><td>White</td></tr>
+      <tr><td>Switched +24 V outputs</td><td>Often a different colour from the supply, so nobody mistakes it for permanent +24 V: yellow, orange, white.</td><td>Yellow</td></tr>
+      <tr><td>Circuits that stay live when the panel supply is off (another source)</td><td>Orange is the usual warning colour in machine standards, and many sites copy it.</td><td>None in this lab</td></tr>
+      <tr><td>Earth (PE), cable screens and drains</td><td>Green/yellow, and <b>only</b> for earth. Never use green/yellow for anything else.</td><td>None used</td></tr>
+      <tr><td>230 V mains</td><td>Not in this panel. Colours are set by AS/NZS 3000 and the cable standards, and it is electricians' work. Red, white, blue and black all appear in mains wiring too.</td><td>None</td></tr>
+    </table></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "It is a red wire, so it is a safe 24 V wire." <b>Right:</b> a colour is a hint, not a test. Red and black are also used for mains conductors, old panels have been rewired by many hands, and colours fade. The wire number and a meter tell you what a wire really is. Measure before you touch anything you did not wire yourself.</p></div>
+
+    <h2>Ferrules, tightness and segregation</h2>
+    <h3>Why ferrule every wire</h3>
+    <p>A <b>ferrule</b> (also called a bootlace ferrule or cord end) is a small metal tube with a plastic collar, crimped on the end of a stranded wire. A screw terminal then clamps one neat block of copper instead of thirty loose strands. Without it, the screw squashes the strands sideways, a few escape to touch the next terminal, and the clamp slowly loosens as the strands relax. Spring and push-in terminals work best with a ferrule too. (Do not confuse it with a <b>ferrule marker</b>, the printed sleeve with the wire number: see <a href="p22-reading-drawings.html">P22</a>.)</p>
+    <div class="table-wrap"><table>
+      <tr><th>Wire size</th><th>0.5 mm²</th><th>0.75 mm²</th><th>1.0 mm²</th><th>1.5 mm²</th><th>2.5 mm²</th></tr>
+      <tr><td>Common collar colour</td><td>white</td><td>grey</td><td>red</td><td>black</td><td>blue</td></tr>
+    </table></div>
+    <p>That colour code is common in Australia (it follows the DIN 46228 style), but brands differ, so check the pack. The size on the pack is what matters, not the colour.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 330" role="img" aria-label="Four ferrule crimps side by side: one correct, and three wrong: strip too short, strip too long with strands showing, and ferrule too big for the wire">
+        <!-- panel 1 correct -->
+        <rect class="f-panel s-thin" x="10" y="10" width="155" height="240" rx="6"/>
+        <text class="t t-bold t-green" x="18" y="32">DO</text>
+        <rect class="f-wash s-line" x="90" y="100" width="50" height="20"/>
+        <rect class="f-brown" x="78" y="104" width="64" height="12"/>
+        <rect class="f-red s-thin" x="70" y="94" width="20" height="32" rx="2"/>
+        <rect class="f-panel s-line" x="16" y="98" width="62" height="24" rx="3"/>
+        <path class="s-thin" d="M112 96 v4 M126 96 v4 M112 120 v4 M126 120 v4"/>
+        <text class="t t-small" x="18" y="176">Insulation reaches</text>
+        <text class="t t-small" x="18" y="192">the collar. Copper</text>
+        <text class="t t-small" x="18" y="208">ends flush with the</text>
+        <text class="t t-small" x="18" y="224">sleeve end.</text>
+        <!-- panel 2 short -->
+        <rect class="f-panel s-thin" x="185" y="10" width="155" height="240" rx="6"/>
+        <text class="t t-bold t-red" x="193" y="32">DON'T</text>
+        <rect class="f-wash s-line" x="265" y="100" width="50" height="20"/>
+        <rect class="f-brown" x="309" y="104" width="4" height="12"/>
+        <rect class="f-red s-thin" x="245" y="94" width="20" height="32" rx="2"/>
+        <rect class="f-panel s-line" x="191" y="98" width="118" height="24" rx="3"/>
+        <path class="s-thin" d="M287 96 v4 M301 96 v4 M287 120 v4 M301 120 v4"/>
+        <text class="t t-small" x="193" y="176">Strip too short.</text>
+        <text class="t t-small" x="193" y="192">Insulation trapped</text>
+        <text class="t t-small" x="193" y="208">in the sleeve: poor</text>
+        <text class="t t-small" x="193" y="224">contact, pulls out.</text>
+        <!-- panel 3 long -->
+        <rect class="f-panel s-thin" x="360" y="10" width="155" height="240" rx="6"/>
+        <text class="t t-bold t-red" x="368" y="32">DON'T</text>
+        <rect class="f-wash s-line" x="440" y="100" width="50" height="20"/>
+        <rect class="f-brown" x="396" y="104" width="104" height="12"/>
+        <rect class="f-red s-thin" x="420" y="94" width="20" height="32" rx="2"/>
+        <rect class="f-panel s-line" x="366" y="98" width="30" height="24" rx="3"/>
+        <path class="s-brown" d="M500 106 L510 98 M500 110 L512 110 M500 114 L510 122"/>
+        <text class="t t-small" x="368" y="176">Strip too long:</text>
+        <text class="t t-small" x="368" y="192">bare copper shows</text>
+        <text class="t t-small" x="368" y="208">and strands poke</text>
+        <text class="t t-small" x="368" y="224">out: a short risk.</text>
+        <!-- panel 4 too big -->
+        <rect class="f-panel s-thin" x="535" y="10" width="155" height="240" rx="6"/>
+        <text class="t t-bold t-red" x="543" y="32">DON'T</text>
+        <rect class="f-wash s-line" x="615" y="94" width="50" height="32"/>
+        <rect class="f-brown" x="603" y="106" width="64" height="8"/>
+        <rect class="f-red s-thin" x="595" y="90" width="20" height="40" rx="2"/>
+        <rect class="f-panel s-line" x="541" y="102" width="62" height="16" rx="3"/>
+        <path class="s-thin" d="M637 90 v4 M651 90 v4 M637 126 v4 M651 126 v4"/>
+        <text class="t t-small" x="543" y="176">Ferrule too big:</text>
+        <text class="t t-small" x="543" y="192">wire is loose in</text>
+        <text class="t t-small" x="543" y="208">the sleeve. Match</text>
+        <text class="t t-small" x="543" y="224">size to the wire.</text>
+        <text class="t t-small t-bold" x="10" y="278">Strip length = the metal sleeve length (8 or 10 mm are common). Check your pack.</text>
+        <text class="t t-small" x="10" y="298">Tug test: pull each crimped wire firmly by hand. It must not move at all.</text>
+        <text class="t t-small" x="10" y="318">Then tighten it in the terminal and tug again. Square or trapezoid crimp, not oval.</text>
+      </svg>
+      <figcaption>Figure 3. Side views of a ferrule on a wire (insulation at the left, copper in brown, plastic collar in red, metal sleeve in the middle). Only the first is right. The wrong ones fail in the field months later, as an intermittent fault that is very hard to find.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li><p><b>Pick the size from the wire,</b> not from the terminal. A 0.5 mm² wire gets a 0.5 mm² ferrule, even though the terminal can take 2.5 mm².</p></li>
+      <li><p><b>Strip to the sleeve length.</b> Set the stripper to the wire and cut cleanly without nicking strands. Twist the strands lightly in the direction they already lie.</p></li>
+      <li><p><b>Slide on the marker sleeve first,</b> then the ferrule, until the insulation touches the collar and the copper is flush with the end of the sleeve or sticks out no more than about 1 mm.</p></li>
+      <li><p><b>Crimp in the matching die.</b> A ratchet crimper will not let go until the crimp is complete. The sleeve should be squared, not split.</p></li>
+      <li><p><b>Inspect, then tug.</b> No strands outside, no insulation inside the sleeve. Pull firmly and steadily by hand. If the wire moves, cut the ferrule off and do it again. A bad ferrule costs 50 cents; a call-back costs hours.</p></li>
+      <li><p><b>Terminate.</b> Open the screw fully, push the ferrule in until it touches the back of the clamp, tighten, and tug again.</p></li>
+    </ol>
+
+    <h3>How tight is tight</h3>
+    <p>Terminal makers give a tightening torque in newton-metres (N·m). For small 2.5 mm² screw terminals it is typically around 0.5 to 0.8 N·m, but <b>read the data sheet of your terminal</b>: it also tells you the right blade width. Too loose, and the joint wobbles, heats, or opens at random. Too tight, and you strip the screw, crack the housing or crush the ferrule. A torque screwdriver (about A$40–150) gives repeatable results, and many tradies mark a finished screw with a dab of paint (a <b>torque stripe</b>) so that any later movement shows. Without one, tighten until firm, stop, and tug. Re-check every screw once after the panel has run for a while, because brass and copper relax a little as they warm and cool.</p>
+
+    <div class="callout why"><span class="label">Why it works</span><p>A bad joint has some extra resistance, and the heat it makes is I²R. In this panel the relay coil takes about 20 mA. Put 0.5 Ω of bad joint in that circuit and the loss is 0.02² × 0.5 = 0.0002 W: harmless, but the contact is also unstable, so the relay can drop out at random. That is the nightmare "intermittent" fault. Now put the same 0.5 Ω in a 10 A power circuit: 10² × 0.5 = 50 W of heat in a terminal smaller than your thumbnail, and that is how fires start. The habit is the same; the stakes are not. Learn it at 24 V.</p></div>
+    <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat (I²R)</a>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A neatly twisted bare wire in a screw terminal is just as good as a ferrule." <b>Right:</b> it holds on day one. Strands splay, the screw cuts into them, and under vibration or temperature swings the joint loosens. Many specifications require ferrules on every stranded wire, and spring and push-in terminals work best with them. It costs 50 cents and ten seconds.</p></div>
+
+    <h3>Keep ELV away from mains</h3>
+    <p>Extra-low voltage wiring and mains wiring (low voltage, or LV: above ELV and up to 1000 V AC in Australian rules) must not share a wire duct, a cable or a terminal strip. In a real panel they are separated by distance, by a barrier or by separate compartments, and any mains terminals are shrouded and labelled. Why:</p>
+    <ul>
+      <li><b>One fault can undo ELV.</b> If a damaged mains conductor touches an "ELV" wire, that wire is suddenly at 230 V, and a person or a device expecting 24 V meets mains.</li>
+      <li><b>Noise.</b> A mains cable running alongside a signal wire couples 50 Hz hum into it, and a sensitive input can trigger falsely.</li>
+      <li><b>Expectation.</b> A technician working on an ELV loom does not expect a live mains wire hidden among the cores. A wire that is only "probably" safe is not safe.</li>
+      <li><b>Rules.</b> AS/NZS 3000 and the assembly standards (AS/NZS 61439 for switchboards and control gear) set separation requirements. Your bench panel is not a certified assembly, but the habits are the same. Confirm the current requirements and the project spec for any real job.</li>
+    </ul>
+    <p>In CP-01 there is no mains inside the box at all, which is exactly the point of using a plug-pack.</p>
+
+    <h2>Size the feed: load, fuse and cable</h2>
+    <p>Before you power the panel, work out three things: how much current it draws, which fuse protects it, and how much voltage is lost on the way to the far device.</p>
+    <p><b>The fuse protects the wire, not the devices.</b> It must be bigger than the normal load (or it nuisance-blows) and smaller than the wire and the supply can safely carry. For this lab the working rule is:</p>
+    <div class="formula">fuse ≥ 1.5 × total running current     supply ≥ 1.25 × total current
+      <small>Take the next standard size up. The 1.25 gives the supply about 25 % headroom, so it runs at 80 % of its rating or less. Keep the fuse well below the supply's rating so that a short circuit really does blow it. In this lab: 0.5 A fuse, 1 A plug-pack.</small></div>
+    <p>A <b>polyfuse</b> (a resettable PTC fuse, see <a href="p10-power-supplies.html">P10</a>) is chosen by its <b>hold current</b>: the current it carries without tripping. Aim for a hold current at least 1.25 times the load, because heat in a warm box lowers the true hold current. It trips at roughly twice the hold current and is slow, so it is a weaker protector than a fuse, but it resets itself.</p>
+
+    <div class="widget" id="p23-w-feed">
+      <span class="label">Interactive · 24 V DC panel load, fuse and cable calculator (indicative)</span>
+      <p>Add every device that can be on at the same time. The currents are typical figures at 24 V: replace them with the numbers from your data sheets. Then set the cable run to the farthest device.</p>
+      <label>Device <select id="p23-dev"></select></label>
+      <label>Current each, mA <input type="number" id="p23-ma" min="1" max="5000" step="1" value="20"></label>
+      <label>Quantity <input type="number" id="p23-qty" min="1" max="50" step="1" value="1"></label>
+      <p>
+        <button type="button" id="p23-add" style="font:600 14px var(--sans);padding:7px 14px;border:none;border-radius:6px;background:var(--accent);color:var(--bg);cursor:pointer">Add device</button>
+        <button type="button" id="p23-lab" style="font:600 14px var(--sans);padding:7px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer">Load the CP-01 panel</button>
+        <button type="button" id="p23-clr" style="font:600 14px var(--sans);padding:7px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer">Clear list</button>
+      </p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Device</th><th>mA each</th><th>Qty</th><th>mA</th><th></th></tr></thead>
+        <tbody id="p23-rows"></tbody>
+      </table></div>
+      <label>Supply voltage <select id="p23-vs"><option value="24" selected>24 V DC</option><option value="12">12 V DC</option></select></label>
+      <label>One-way cable length <span class="out" id="p23-lo">40 m</span><input type="range" id="p23-len" min="1" max="200" step="1" value="40"></label>
+      <label>Conductor size <select id="p23-cs"><option value="0.22">0.22 mm² (alarm cable 7/0.20)</option><option value="0.5" selected>0.5 mm²</option><option value="0.75">0.75 mm²</option><option value="1">1.0 mm²</option><option value="1.5">1.5 mm²</option><option value="2.5">2.5 mm²</option></select></label>
+      <label>Current in this cable, mA (blank = use the total) <input type="number" id="p23-run" min="0" step="1" placeholder="total"></label>
+      <div class="readings">
+        <div><small>Total current, all on</small><span class="out" id="p23-tot">—</span></div>
+        <div><small>Smallest sensible fuse</small><span class="out" id="p23-fuse">—</span></div>
+        <div><small>Polyfuse hold current</small><span class="out" id="p23-poly">—</span></div>
+        <div><small>Supply size, +25 % headroom</small><span class="out" id="p23-psu">—</span></div>
+        <div><small>Loop resistance</small><span class="out" id="p23-rl">—</span></div>
+        <div><small>Voltage drop</small><span class="out" id="p23-dv">—</span></div>
+        <div><small>Voltage at the far device</small><span class="out" id="p23-vd">—</span></div>
+      </div>
+      <p id="p23-note" style="margin:12px 0 0;font-size:15px"></p>
+      <p style="margin:10px 0 0;font-size:14px;color:var(--muted)">Indicative only. It uses copper at 0.0172 Ω·mm²/m (20 °C), assumes the stated supply voltage at the panel, and ignores connection resistance, temperature and surge currents. The data sheets and the project specification decide the real answer.</p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var P=[
+        {n:'Relay coil, small (24 V DC)',ma:20},
+        {n:'Relay coil, larger power relay',ma:40},
+        {n:'LED indicator lamp, 24 V',ma:15},
+        {n:'Buzzer, 24 V continuous',ma:30},
+        {n:'DIN timer relay (powered)',ma:20},
+        {n:'Small siren or beacon, 24 V',ma:150},
+        {n:'Door strike or maglock, 24 V',ma:250},
+        {n:'Small I/O module or controller',ma:150},
+        {n:'Panel fan, small, 24 V',ma:100},
+        {n:'Other device (type the mA)',ma:50}
+      ];
+      var FUSES=[0.1,0.125,0.16,0.2,0.25,0.315,0.4,0.5,0.63,0.8,1,1.25,1.6,2,2.5,3.15,4,5,6.3,8,10];
+      var HOLDS=[0.1,0.2,0.3,0.5,0.75,1.1,1.5,1.85,2.5,3];
+      var PSUS=[0.5,1,1.5,2,2.5,3,4,5,7.5,10];
+      var list=[];
+      var BS='font:600 13px var(--sans);padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer';
+      function nextUp(arr,x){for(var i=0;i<arr.length;i++){if(arr[i]>=x-1e-9)return arr[i];}return null;}
+      function fmtA(a){if(a===null)return 'above range';return a<1?Math.round(a*1000)+' mA':(+a.toFixed(2))+' A';}
+      var sel=$('p23-dev');
+      P.forEach(function(p,i){var o=document.createElement('option');o.value=String(i);o.textContent=p.n+' · '+p.ma+' mA';sel.appendChild(o);});
+      sel.onchange=function(){$('p23-ma').value=P[+sel.value].ma;};
+      function add(n,ma,q){list.push({n:n,ma:ma,q:q});}
+      function loadLab(){
+        list=[];
+        add('Relay coil, small (K1, K2, K3)',20,3);
+        add('LED indicator lamp (H1, H2)',15,2);
+        add('Buzzer (B1)',30,1);
+        add('DIN timer relay (KT)',20,1);
+        render();
+      }
+      function render(){
+        var tb=$('p23-rows');tb.innerHTML='';
+        list.forEach(function(d,i){
+          var tr=document.createElement('tr');
+          [d.n,d.ma,d.q,d.ma*d.q].forEach(function(v){var td=document.createElement('td');td.textContent=String(v);tr.appendChild(td);});
+          var td=document.createElement('td');var b=document.createElement('button');b.type='button';b.textContent='Remove';b.setAttribute('aria-label','Remove '+d.n);b.style.cssText=BS;
+          b.onclick=function(){list.splice(i,1);render();};
+          td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+        });
+        if(!list.length){var r=document.createElement('tr');var c=document.createElement('td');c.colSpan=5;c.textContent='No devices yet. Add some, or load the CP-01 panel.';r.appendChild(c);tb.appendChild(r);}
+        calc();
+      }
+      function calc(){
+        var tot=0;list.forEach(function(d){tot+=d.ma*d.q;});
+        var A=tot/1000;
+        var V=+$('p23-vs').value,L=+$('p23-len').value,cs=+$('p23-cs').value;
+        $('p23-lo').textContent=L+' m';
+        var rv=$('p23-run').value;
+        var run=(rv===''||isNaN(+rv))?A:Math.max(0,+rv)/1000;
+        var R=2*L*0.0172/cs,dv=run*R,pct=100*dv/V,vd=V-dv;
+        var f=nextUp(FUSES,1.5*A),h=nextUp(HOLDS,1.25*A),s=nextUp(PSUS,1.25*A);
+        $('p23-tot').textContent=tot>0?tot+' mA':'—';
+        $('p23-fuse').textContent=tot>0?fmtA(f):'—';
+        $('p23-poly').textContent=tot>0?fmtA(h):'—';
+        $('p23-psu').textContent=tot>0?fmtA(s):'—';
+        $('p23-rl').textContent=R.toFixed(2)+' Ω';
+        $('p23-dv').textContent=dv.toFixed(2)+' V ('+pct.toFixed(1)+' %)';
+        $('p23-vd').textContent=vd.toFixed(1)+' V';
+        var m=[];
+        if(tot===0){m.push('Add at least one device to see the fuse and supply sizes.');}
+        else{
+          m.push('The fuse shown is the smallest sensible size. Fit the next size up if you expect to add devices, but keep it well below the supply rating. This lab uses 0.5 A with a 1 A plug-pack.');
+          if(f===null||f>2){m.push('Above 2 A: the 0.5 and 0.75 mm² wire used in this lab is not meant for that. Split the load into separate fused outputs, or use heavier wire and check the cable data sheet.');}
+          if(h===null){m.push('The load is above the usual range of small polyfuses. Use a fuse.');}
+        }
+        if(pct<=5){m.push('Cable: good, under 5 % drop.');}
+        else if(pct<=10){m.push('Cable: check it. A drop of 5 to 10 % leaves little margin. Most 24 V relay coils pull in at about 80 % of rated volts or less, but cold joints and a sagging supply eat the margin. Go up a cable size.');}
+        else{m.push('Cable: poor, over 10 % drop. Use heavier cable, a shorter run, a higher supply voltage, or move the supply closer.');}
+        if(V===12){m.push('At 12 V the same power needs twice the current, and the percentage drop is four times worse than at 24 V for the same cable. Enter the 12 V currents from the data sheets.');}
+        $('p23-note').textContent=m.join(' ');
+      }
+      $('p23-add').onclick=function(){
+        var q=Math.max(1,Math.floor(+$('p23-qty').value||1)),ma=+$('p23-ma').value;
+        if(!(ma>0)){$('p23-note').textContent='Enter a current above 0 mA.';return;}
+        add(P[+sel.value].n.replace(/ \(type the mA\)/,''),ma,q);render();
+      };
+      $('p23-lab').onclick=loadLab;
+      $('p23-clr').onclick=function(){list=[];render();};
+      ['p23-len'].forEach(function(k){$(k).oninput=calc;});
+      ['p23-vs','p23-cs'].forEach(function(k){$(k).onchange=calc;});
+      $('p23-run').oninput=calc;
+      loadLab();
+    })();
+    </script>
+
+    <h3>Worked example: the door strike at the end of a long run</h3>
+    <p>A 24 V door strike draws 250 mA. It is 60 m from the panel on 0.5 mm² two-core cable. Loop resistance = 2 × 60 × 0.0344 = 4.13 Ω. The drop is 0.25 × 4.13 = 1.03 V, which is 4.3 % of 24 V. That works. Now run the same job at 12 V: the same power needs 0.5 A, the drop is 0.5 × 4.13 = 2.06 V, and that is 17 % of 12 V. A 12 V strike at the end of that cable fails to open the door on a cold morning.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>For the same power, doubling the voltage halves the current. The drop in the cable is I × R, so it halves too, and as a share of the (now doubled) supply voltage it falls to a quarter. That is why 24 V is common for long control runs, and why PoE uses a much higher voltage still.</p></div>
+    <a class="crosslink" href="../theory/t02-resistance-ohms-law.html">Theory T02 · Resistance and Ohm's law, physically</a>
+
+    <h2>Build the circuit in stages</h2>
+    <p>Figure 4 is the schematic of the control logic, drawn as a <b>ladder diagram</b>: two vertical power rails and horizontal rungs, each rung one circuit. +24 V (wire 2) is on the left, 0 V (wire 0) on the right. Read each rung from left to right. This is the diagram electricians and PLC programmers use for relay logic.</p>
+
+    <figure>
+      <svg viewBox="0 0 700 476" role="img" aria-label="Ladder diagram: rung 1 door contact S1 to relay K1; rung 2 reset button S2 in series with K1 normally closed contact in parallel with K2 self-hold contact, then relay K2; rung 3 K2 contact feeding lamp H1 and buzzer B1 in parallel">
+        <path class="s-line" d="M50 50 V420 M660 50 V420"/>
+        <text class="t t-small t-bold" x="30" y="38">+24 V fused (wire 2)</text>
+        <text class="t t-small t-bold" text-anchor="end" x="680" y="38">0 V (wire 0)</text>
+        <text class="t t-small t-muted" x="20" y="94">1</text>
+        <text class="t t-small t-muted" x="20" y="214">2</text>
+        <text class="t t-small t-muted" x="20" y="354">3</text>
+        <!-- rung 1 -->
+        <path class="s-line" d="M50 90 H146 M166 90 H404 M436 90 H660"/>
+        <path class="s-line" d="M146 78 V102 M166 78 V102"/>
+        <circle class="f-panel s-line" cx="420" cy="90" r="16"/>
+        <text class="t t-bold" text-anchor="middle" x="420" y="95">K1</text>
+        <text class="t t-small" x="110" y="66">S1 door reed</text>
+        <text class="t t-small t-muted" x="96" y="122">closed when door shut</text>
+        <text class="t t-small t-blue t-bold" x="290" y="82">3</text>
+        <text class="t t-small t-bold" x="368" y="62">K1 door monitor</text>
+        <text class="t t-small t-muted" x="372" y="128">contacts: 11–12 (rung 2)</text>
+        <text class="t t-small t-muted" x="372" y="144">21–22 (stage 3 only)</text>
+        <!-- rung 2 -->
+        <path class="s-line" d="M50 210 H116 M136 210 H196 M196 210 H244 M264 210 H380 M380 210 H504 M536 210 H660"/>
+        <path class="s-line" d="M196 210 V262 H244 M264 262 H380 V210"/>
+        <path class="s-line" d="M116 198 V222 M136 198 V222"/>
+        <path class="s-line" d="M110 226 L142 194"/>
+        <path class="s-line" d="M244 198 V222 M264 198 V222"/>
+        <path class="s-line" d="M238 226 L270 194"/>
+        <path class="s-line" d="M244 250 V274 M264 250 V274"/>
+        <circle class="f-ink" cx="196" cy="210" r="3.5"/>
+        <circle class="f-ink" cx="380" cy="210" r="3.5"/>
+        <circle class="f-panel s-line" cx="520" cy="210" r="16"/>
+        <text class="t t-bold" text-anchor="middle" x="520" y="215">K2</text>
+        <text class="t t-small" x="64" y="176">S2 reset (NC)</text>
+        <text class="t t-small t-blue t-bold" x="160" y="202">4</text>
+        <text class="t t-small" x="222" y="184">K1 11–12 (NC)</text>
+        <text class="t t-small" x="222" y="294">K2 11–14 (NO)</text>
+        <text class="t t-small t-muted" x="222" y="310">self-hold</text>
+        <text class="t t-small t-blue t-bold" x="440" y="202">5</text>
+        <text class="t t-small t-bold" x="470" y="178">K2 alarm latch</text>
+        <text class="t t-small t-muted" x="440" y="248">contacts: 11–14 hold,</text>
+        <text class="t t-small t-muted" x="440" y="264">21–24 output (rung 3)</text>
+        <!-- rung 3 -->
+        <path class="s-line" d="M50 350 H116 M136 350 H404 M436 350 H660"/>
+        <path class="s-line" d="M116 338 V362 M136 338 V362"/>
+        <path class="s-line" d="M196 350 V398 H394 M446 398 H660"/>
+        <circle class="f-ink" cx="196" cy="350" r="3.5"/>
+        <circle class="f-panel s-line" cx="420" cy="350" r="16"/>
+        <path class="s-line" d="M409 339 L431 361 M431 339 L409 361"/>
+        <rect class="f-panel s-line" x="394" y="386" width="52" height="24" rx="3"/>
+        <text class="t t-bold" text-anchor="middle" x="420" y="403">B1</text>
+        <text class="t t-small" x="96" y="322">K2 21–24 (NO)</text>
+        <text class="t t-small t-blue t-bold" x="160" y="342">6</text>
+        <text class="t t-small" x="462" y="342">H1 alarm lamp</text>
+        <text class="t t-small" x="462" y="390">B1 buzzer</text>
+        <text class="t t-small t-muted" x="30" y="446">Contacts are drawn at rest: door open (magnet away), button not pressed, coils off.</text>
+        <text class="t t-small t-muted" x="30" y="464">Blue numbers are wire numbers. A relay's coil and contacts share its tag (K1, K2).</text>
+      </svg>
+      <figcaption>Figure 4. The CP-01 ladder diagram. Rung 1: with the door shut, the reed switch closes and K1 pulls in. Rung 2: when the door opens, K1 drops out and its normally closed contact feeds K2. K2's own contact 11–14 then holds K2 on, in parallel with the trigger. Only the reset button S2, in series before both paths, can break the loop. Rung 3: K2's second contact switches the lamp and buzzer. Each coil has a flyback diode across it (see P08), usually built into the relay module. If yours has none, add one.</figcaption>
+    </figure>
+
+    <div class="callout why"><span class="label">Why it works</span><p>The self-hold is memory made from feedback. Once K2 pulls in, its own contact 11–14 closes and powers its own coil, so the trigger can disappear and K2 stays on. Only breaking the supply (the reset button) lets it go. Relays also have hysteresis: they usually pull in at roughly 70–80 % of rated coil voltage and drop out far lower, so the latch is firm. It is the relay version of the set–reset flip-flop in logic.</p></div>
+    <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic (the latch idea)</a>
+    <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors (why a relay coil needs a diode)</a>
+
+    <h3>Stage 1 · Mount, bridge and label (no power)</h3>
+    <ol class="steps">
+      <li><p><b>Mount the rails.</b> Cut the DIN rail to length, file off the burrs, and fix it with M4 screws about every 100 mm. Fit the wire duct between the rows as in Figure 1.</p></li>
+      <li><p><b>Clip on the relay sockets and snap on the terminals in order.</b> Sockets go on rail B. X1: F1, then 2–5, then 6–11, then PE. X2 and X3 each get six. Fit end stops at both ends of each group, and an end plate where a group ends.</p></li>
+      <li><p><b>Fit the jumper bars.</b> Red bar: F1 out to X1:5. Black bar: X1:6 to X1:11. X2: bridge 1–3. X3: bridge 1–2, and bridge 4–6. One bar, one wire number.</p></li>
+      <li><p><b>Print the labels.</b> Number each terminal, tag each device, and label each strip X1, X2, X3. Fit the relays into their sockets.</p></li>
+    </ol>
+
+    <h3>Stage 2 · Power and fuse (first power-up, no loads)</h3>
+    <ol class="steps">
+      <li><p><b>Find the polarity first.</b> With the adapter not yet wired to anything, plug the plug-pack into the wall and measure across the adapter's screw terminals with the meter on DC volts (<a href="p03-multimeter-mastery.html">P03</a>). A positive reading with the red probe on a terminal means that terminal is +. Mark it, then unplug the plug-pack.</p></li>
+      <li><p><b>Wire G1 to X1.</b> Adapter + to X1:1 (wire 1, red), − to X1:6 (wire 0, black).</p></li>
+      <li><p><b>Fuse out, plug in.</b> Leave the F1 lever open. Plug the plug-pack in. Measure X1:1 to X1:6 on the volts range. You should read +24 V, within about ±5 % (22.8 to 25.2 V), with the red probe on X1:1.</p></li>
+      <li><p><b>Close F1</b> and measure X1:2 to X1:6. It should match to within 0.1 V. Unplug the plug-pack before doing any more wiring.</p></li>
+    </ol>
+
+    <h3>Stage 3 · Door loop, K1 and a buzzer (not yet latched)</h3>
+    <ol class="steps">
+      <li><p><b>Wire the loop.</b> X1:2 to X2:1 (wire 2). Cable C1 from X2:1 and X2:4 to the reed switch S1. Wire 3 from X2:4 to K1:A1. Wire 0 from X1:7 to K1:A2.</p></li>
+      <li><p><b>Wire the buzzer test.</b> Wire 2 from X1:4 to K1:21. Wire 6 from K1:22 to X3:1. Wire 0 from X1:9 to X3:4. Cable C3 from X3:1 and X3:4 to B1 (+ to X3:1).</p></li>
+      <li><p><b>Run the pre-power checks</b> (see the "Test before power" section) for what you have wired so far, then power up. With the magnet at the reed, K1's LED lights and the buzzer is silent. Pull the magnet away: K1 drops out, and K1's normally closed contact 21–22 closes and the buzzer sounds.</p></li>
+    </ol>
+
+    <h3>Stage 4 · The latch: K2 and reset</h3>
+    <ol class="steps">
+      <li><p><b>Add the reset button.</b> Cable C2 from X2:2 and X2:5 to S2 (11 and 12). Wire 4 from X2:5 to K1:11 and to K2:11 (a twin ferrule at X2:5).</p></li>
+      <li><p><b>Add K2.</b> Wire 5 from K1:12 to K2:A1, and from K2:14 to K2:A1 (twin ferrule at A1). Wire 0 from X1:8 to K2:A2. Wire 2 from X1:3 to K2:21.</p></li>
+      <li><p><b>Move the output.</b> Unplug the Stage 3 test wires from K1:21 and K1:22 (the wires from X1:4 and to X3:1). Wire 6 from K2:24 to X3:1. Add C4 for the lamp H1 (X3:2 and X3:5).</p></li>
+      <li><p><b>Test</b> every row of the test sheet below. Press reset with the door open and watch the alarm return: that is the circuit working, not failing.</p></li>
+    </ol>
+
+    <div class="callout warn"><span class="label">Safety · polarity on relays and lamps</span><p>Relays and lamps with a built-in LED or coil diode are <b>polarised</b>. Put 24 V on one the wrong way and the diode conducts like a short circuit. At best the fuse blows. At worst the part is damaged. Check A1 = +, A2 = −, and the + mark on lamps and the buzzer, before you power up. That is also why F1 is there.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A relay marked 10 A can switch any 10 A load." <b>Right:</b> contact ratings depend on the supply. AC current passes through zero 100 times a second, which snuffs out the arc as contacts open. DC never does, so the same contact is rated for much less at DC, and a coil or solenoid load is worse again. Read the DC rating on the data sheet and fit a diode across any inductive load. At 24 V and 20 mA you are safe here, but the habit matters on a 2 A siren.</p></div>
+
+    <div class="callout tip"><span class="label">Bench tip</span><p>Always do a <b>wiggle test</b> before power-up: grip each wire a few centimetres from its terminal and gently wiggle it. A good joint does not move. A bad one shows itself now instead of at 2 am on site. Build the wiring list in order and tick as you go.</p></div>
+
+    <h2>Options: timer relay and a fail-safe lock demo</h2>
+    <h3>Option A · Door-held-open delay with a timer relay</h3>
+    <p>A DIN <b>timer relay</b> delays a contact after its coil is energised. Used as an <b>on-delay</b>, it lets the door stay open for, say, 10 seconds before the alarm latches. This is the idea behind "entry delay" on alarm panels. On many timers the contacts are numbered 15 (common), 16 (normally closed) and 18 (normally open); read the label on yours.</p>
+    <ol>
+      <li>Remove the wire from K1:12 to K2:A1.</li>
+      <li>Wire 2 again: X1:4 to K1:21. Wire 9: K1:22 to KT:A1, so the timer is powered while the door is open (K1 off, its normally closed contact 21–22 closed). Wire 0: KT:A2 to X1:11.</li>
+      <li>Wire 10: K1:12 to KT:15. Wire 5: KT:18 to K2:A1.</li>
+      <li>Set the delay to about 5 to 10 s. Open the door: nothing happens until the delay is up, then the alarm latches. Close the door before it finishes: no alarm.</li>
+    </ol>
+
+    <h3>Option B · Fail-safe versus fail-secure</h3>
+    <p>Electric door locks come in two kinds. A <b>fail-safe</b> lock (a magnetic lock is always one) is locked while it has power and <b>unlocks when power is lost</b>. A <b>fail-secure</b> lock (an electric strike) is locked with no power and <b>stays locked</b> when power is lost; it unlocks when energised. Lamp H2 stands in for the lock coil: on means the coil has power.</p>
+    <figure>
+      <svg viewBox="0 0 700 330" role="img" aria-label="Two ladder rungs side by side: fail-safe lock wired through a normally closed relay contact, and fail-secure lock wired through a normally open relay contact, both driven by relay K3 from button S3">
+        <text class="t t-bold" x="20" y="26">Fail-safe (maglock style)</text>
+        <text class="t t-bold" x="370" y="26">Fail-secure (strike style)</text>
+        <path class="s-line" d="M40 50 V222 M320 50 V222 M380 50 V222 M660 50 V222"/>
+        <text class="t t-small t-bold" x="30" y="44">+24 V</text>
+        <text class="t t-small t-bold" text-anchor="end" x="330" y="44">0 V</text>
+        <text class="t t-small t-bold" x="370" y="44">+24 V</text>
+        <text class="t t-small t-bold" text-anchor="end" x="670" y="44">0 V</text>
+        <!-- left rung A -->
+        <path class="s-line" d="M40 90 H90 M110 90 H220 M252 90 H320"/>
+        <path class="s-line" d="M90 78 V102 M110 78 V102"/>
+        <circle class="f-panel s-line" cx="236" cy="90" r="16"/>
+        <text class="t t-bold" text-anchor="middle" x="236" y="95">K3</text>
+        <text class="t t-small" x="46" y="66">S3 access button</text>
+        <!-- left rung B -->
+        <path class="s-line" d="M40 190 H90 M110 190 H220 M252 190 H320"/>
+        <path class="s-line" d="M90 178 V202 M110 178 V202"/>
+        <path class="s-line" d="M84 206 L116 174"/>
+        <circle class="f-panel s-line" cx="236" cy="190" r="16"/>
+        <path class="s-line" d="M225 179 L247 201 M247 179 L225 201"/>
+        <text class="t t-small" x="46" y="158">K3 11–12 (NC)</text>
+        <text class="t t-small" x="190" y="158">H2 = lock coil</text>
+        <!-- right rung A -->
+        <path class="s-line" d="M380 90 H430 M450 90 H560 M592 90 H660"/>
+        <path class="s-line" d="M430 78 V102 M450 78 V102"/>
+        <circle class="f-panel s-line" cx="576" cy="90" r="16"/>
+        <text class="t t-bold" text-anchor="middle" x="576" y="95">K3</text>
+        <text class="t t-small" x="386" y="66">S3 access button</text>
+        <!-- right rung B -->
+        <path class="s-line" d="M380 190 H430 M450 190 H560 M592 190 H660"/>
+        <path class="s-line" d="M430 178 V202 M450 178 V202"/>
+        <circle class="f-panel s-line" cx="576" cy="190" r="16"/>
+        <path class="s-line" d="M565 179 L587 201 M587 179 L565 201"/>
+        <text class="t t-small" x="386" y="158">K3 11–14 (NO)</text>
+        <text class="t t-small" x="530" y="158">H2 = lock coil</text>
+        <!-- notes -->
+        <text class="t t-small" x="46" y="246">Normal: lamp ON = locked.</text>
+        <text class="t t-small" x="46" y="266">S3 pressed: contact opens, lock releases.</text>
+        <text class="t t-small" x="46" y="286">Power fails: lock releases.</text>
+        <text class="t t-small" x="386" y="246">Normal: lamp OFF = locked.</text>
+        <text class="t t-small" x="386" y="266">S3 pressed: contact closes, strike opens.</text>
+        <text class="t t-small" x="386" y="286">Power fails: stays locked.</text>
+        <text class="t t-small t-muted" x="20" y="316">H2 stands in for the lock coil. A real coil needs a flyback diode across it.</text>
+      </svg>
+      <figcaption>Figure 5. The same relay and button, wired two ways. Fail-safe takes the lock coil through K3's normally closed contact (11–12); fail-secure takes it through the normally open contact (11–14). Only the contact you land the wire on changes.</figcaption>
+    </figure>
+    <ol>
+      <li>Add K3: wire 2 from X1:5 to K3:11, wire 0 from X1:10 to K3:A2. Button S3 on C5: X2:3 to S3:13, X2:6 to S3:14; wire 7 from X2:6 to K3:A1. Lamp H2 on C6: X3:3 (+) and X3:6 (−); wire 8 from K3:12 to X3:3.</li>
+      <li>Fail-safe test: H2 is on (locked). Press S3: H2 goes out (unlocked). Release S3: H2 comes back on. Now lift the F1 lever: H2 goes out. The lock releases in a power cut.</li>
+      <li>Fail-secure test: move wire 8 from K3:12 to K3:14. H2 is off. Press S3: H2 lights (unlocked). Lift F1: H2 off, still "locked".</li>
+    </ol>
+    <div class="callout job"><span class="label">On the job</span><p>Which lock type goes on a door is a design decision, not a preference. Doors that are part of an exit path must always open from the inside, and the National Construction Code (NCC) sets the rules. Fail-safe maglocks are usually wired through a fire-alarm release relay as well. Real systems also have a battery, so a "power cut" holds the door locked until the battery runs down (<a href="p10-power-supplies.html">P10</a>). See <a href="../career/c06-access-control-alarms.html">C06 · Access control and intruder alarms</a> for fail-safe and fail-secure in full, and <a href="p08-transistor-switches.html">P08</a> for relays and flyback diodes.</p></div>
+    <a class="crosslink" href="../career/c06-access-control-alarms.html">Career C06 · Access control and intruder alarms</a>
+    <a class="crosslink" href="p08-transistor-switches.html">Practice P08 · Transistors as switches: BJT, MOSFET, relays</a>
+
+    <div class="callout try"><span class="label">Try this</span><p>With the door shut and the panel running, pull the wire off X2:4. The alarm starts, because an open loop looks like an open door. Put it back and press reset. Now think about the opposite design, where the door would <i>close</i> a circuit to raise the alarm: a cut cable would look like a shut door, and nobody would ever know. That is why alarm loops are wired closed.</p></div>
+
+    <h2>Test before power</h2>
+    <p>Do these checks with the plug-pack <b>unplugged from the wall</b>. Use your meter on the ohms and continuity ranges, and write your results beside each line.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Check</th><th>How</th><th>Expect</th></tr>
+      <tr><td>1 · Visual against the wire list</td><td>Go down the list, wire by wire, with the drawing in hand</td><td>Every wire present, right terminal, the same number both ends</td></tr>
+      <tr><td>2 · Tug test</td><td>Gently but firmly pull every wire at its terminal</td><td>Nothing moves</td></tr>
+      <tr><td>3 · Strands and copper</td><td>Torch the terminals and the ferrules</td><td>No stray strands, no bare copper outside a terminal</td></tr>
+      <tr><td>4 · Continuity, each wire end to end</td><td>Continuity (beep) range, one probe on each end</td><td>Beep, under about 1 Ω for panel wires</td></tr>
+      <tr><td>5 · No short, +24 V to 0 V</td><td>F1 closed, plug-pack out: ohms between X1:2 and X1:7</td><td>High or open. Coil diodes can make it vary, but if it is under about 200 Ω, stop and find the short.</td></tr>
+      <tr><td>6 · Unfused feed</td><td>Plug-pack lead off the adapter, F1 open: ohms from X1:1 to X1:6</td><td>Open (OL). Wire 1 must not touch 0 V anywhere.</td></tr>
+      <tr><td>7 · Circuits vs rail and screens</td><td>Highest ohms range: every wire group to the DIN rail and to PE</td><td>OL, or above 1 MΩ</td></tr>
+      <tr><td>8 · Field cables</td><td>Far end open: core to core and core to screen</td><td>OL, or above 1 MΩ</td></tr>
+      <tr><td>9 · Polarity markings</td><td>You proved the plug-pack polarity in Stage 2. Now compare every polarised part with the drawing</td><td>A1 = +, A2 = −, and the + marks on the lamps and buzzer match the drawing</td></tr>
+    </table></div>
+    <div class="callout warn"><span class="label">Safety · never a megger on this panel</span><p>The "insulation test" here uses the ohms range of a multimeter, which tests at only about 0.5–3 V. It finds a stray strand, a nipped cable or a damp, leaky joint between circuits that should be separate. It is <b>not</b> a proper insulation-resistance test. A real insulation tester (a "megger") applies 250 V to 1000 V DC, which destroys the LEDs, diodes, timer and relay electronics in this panel. Insulation testing of mains circuits is licensed electricians' work. Never connect one to your panel.</p></div>
+
+    <h2>Power-up and the functional test</h2>
+    <p>When the checks pass, plug in the plug-pack, close the F1 lever, and run the test sheet. Fill in the "Result" and "Pass" columns. Photograph the finished sheet.</p>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Do this</th><th>Expect</th><th>Result</th><th>Pass</th></tr>
+      <tr><td>1</td><td>F1 open. Measure X1:1 to X1:6</td><td>+24 V ±5 % (22.8–25.2 V), X1:1 positive</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>2</td><td>Close F1. Measure X1:2 to X1:6</td><td>Within 0.1 V of test 1</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>3</td><td>Magnet at the reed (door shut). Look at K1. Measure K1:A1 to A2</td><td>K1 LED on (or a click), about 24 V, buzzer silent</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>4</td><td>Pull the magnet away (door open)</td><td>K1 off; K2 on, latched; buzzer and H1 on</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>5</td><td>Measure X3:1 to X3:4 during the alarm</td><td>At least 22 V</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>6</td><td>Close the door (magnet back)</td><td>Alarm stays on (latched)</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>7</td><td>Press and release reset</td><td>Alarm stops and stays off</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>8</td><td>Door open, alarm on. Press and hold reset, then release</td><td>Alarm drops while held, returns on release</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>9</td><td>Door shut and armed. Pull one wire off X2:4</td><td>Alarm starts (a cut loop counts as open). Refit the wire and reset.</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>10</td><td>Open the door to latch the alarm, then shut it. Open the F1 lever for 5 s, then close it</td><td>Alarm is off (latch memory lost)</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>11</td><td>Open the F1 lever, open the door, then close the lever</td><td>Alarm comes on again at power-up</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>12</td><td>Optional: Option A or B tests</td><td>As described in the options section</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    </table></div>
+    <p>Write the date, your initials and the panel number (CP-01) at the bottom of the sheet. A test sheet with measured values is the proof that you did the job; "tested OK" with no numbers proves nothing.</p>
+
+    <h2>As-built marking and the handover photo</h2>
+    <p>No build matches its drawing exactly. You moved a wire, swapped a terminal, or added a jumper. The <b>as-built</b> drawing records what you really did, so the next person can trust it. Marking-up rules are in <a href="p22-reading-drawings.html">P22</a>; here they are applied.</p>
+    <ol class="steps">
+      <li><p><b>Redline the drawings.</b> Print Figure 4, Figure 2 and the wire list. Cross out each wire that changed and write the new one beside it, with the date and your initials. If there is no company colour scheme, use red for additions and changes and green for deletions.</p></li>
+      <li><p><b>Update the points list and wire list</b> to match, including which optional parts you fitted and which terminals are now spare.</p></li>
+      <li><p><b>Check every label</b> against the drawing, at both ends.</p></li>
+      <li><p><b>Take the handover photo.</b> Open the panel, remove the cover from the duct, turn on the room light and switch off the flash. Stand square on to the panel so the rails run straight across the picture, close enough that the terminal numbers and wire markers can be read when you zoom in. One shot of the whole panel, one close-up of X1, and one of the test sheet.</p></li>
+      <li><p><b>Name the files</b> like <code>CP-01_front_rev-A.jpg</code>, and keep them with the drawings. Do not photograph anything that shows a client's name or site address.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <tr><th>Handover pack</th><th>What it must show</th></tr>
+      <tr><td>As-built drawings</td><td>Schematic, terminal schedule and wire list, redlined and dated</td></tr>
+      <tr><td>Test sheet</td><td>Every row filled with real readings, signed and dated</td></tr>
+      <tr><td>Photos</td><td>Whole panel, terminals close-up, test sheet</td></tr>
+      <tr><td>Notes</td><td>Fuse rating and load, supply rating, spare terminals, anything unusual</td></tr>
+    </table></div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Handover and documentation requirements come from the project specification and the contract, and some systems (fire, telecommunications cabling) have their own documentation and labelling rules. Ask for the spec on day one, and confirm any statutory requirement with the relevant regulator. Your own build also makes a strong portfolio piece: see <a href="../career/c12-portfolio-study-plan.html">C12</a>.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>This is what panel work looks like in building management, access control and instrumentation: a fused 24 V feed, numbered terminals, ferruled wires, labels that match the drawings, a test sheet and a marked-up as-built. Supervisors judge a technician's panel in seconds from how tidy and readable it is. See <a href="../career/c10-plc-instrumentation.html">C10 · PLCs and industrial instrumentation</a> for the same habits in a bigger panel.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <p>Use half-splitting (<a href="p21-fault-finding.html">P21</a>): measure at the supply, then at X1:2, then at the terminal for the failing circuit, then at the device. Move toward the fault by halves.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr>
+      <tr><td>Nothing happens at all</td><td>Plug-pack off, F1 open, fuse blown, wrong polarity</td><td>Volts at X1:1–X1:6, then X1:2–X1:6</td></tr>
+      <tr><td>K1 LED stays off with the door shut</td><td>Reed not closing (magnet too far, wrong side), wire 3 or C1 loose, loop open</td><td>Continuity across S1 with the magnet; volts at X2:4</td></tr>
+      <tr><td>K1 on, buzzer silent</td><td>Wrong relay pins, buzzer reversed or the wrong voltage, wire 6 missing</td><td>Volts at X3:1 to X3:4 during the alarm</td></tr>
+      <tr><td>Alarm on at power-up and will not reset</td><td>Door really open, or loop open, or the reed is the wrong type</td><td>K1 LED: if it is off the loop is open</td></tr>
+      <tr><td>Alarm stops when the door shuts (no latch)</td><td>Self-hold wire 5 from K2:14 to A1 missing or on the wrong pin</td><td>Continuity K2:14 to K2:A1 with K2 pulled in</td></tr>
+      <tr><td>Reset button does nothing</td><td>S2 wired as normally open, or wired in parallel so it does not break the loop</td><td>Is S2 in series, before the K1 and K2 contacts?</td></tr>
+      <tr><td>Relay chatters or buzzes</td><td>Coil volts too low (supply sag, drop), loose joint on A1 or A2, AC relay on DC</td><td>Volts at the coil while the relay is chattering</td></tr>
+      <tr><td>Fuse blows at power-up</td><td>Diode-fitted part reversed, stray strand shorting rails, wrong supply</td><td>Test 5 (no short), check polarity before refitting</td></tr>
+      <tr><td>Random dropouts</td><td>Loose terminal, poor crimp, strand touching the next terminal</td><td>Wiggle test; re-tug every ferrule</td></tr>
+      <tr><td>Contacts burnt or stuck</td><td>An inductive load switched with no diode, or over the DC rating</td><td>Fit a diode across the load; check the DC contact rating</td></tr>
+    </table></div>
+
+    <h2>Common mistakes</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Mistake</th><th>What happens</th><th>The habit that prevents it</th></tr>
+      <tr><td>No ferrules, or the wrong size</td><td>Loose strands, shorts, intermittent faults</td><td>Match ferrule to wire; tug every one</td></tr>
+      <tr><td>Screws too loose or too tight</td><td>Heat, drop-outs, or a cracked terminal</td><td>Use the data sheet torque; re-check once</td></tr>
+      <tr><td>Mixing terminal series, jumper bars or labels</td><td>Poor fit, a bridge that is not making contact</td><td>One maker, one series</td></tr>
+      <tr><td>No spare space</td><td>The first change means a new panel</td><td>20 % free on every rail and in the duct</td></tr>
+      <tr><td>Labels on one end only, or hand-written and smudged</td><td>Hours lost finding the far end</td><td>Marker sleeves at both ends, printed, readable</td></tr>
+      <tr><td>12 V lamps or relays on a 24 V rail</td><td>Burnt lamp, hot coil</td><td>Read the voltage on every part before wiring</td></tr>
+      <tr><td>Reset in the wrong place</td><td>Latch never clears, or clears while the door is open</td><td>Reset normally closed, in series, before the parallel pair</td></tr>
+      <tr><td>Powering up before the pre-power checks</td><td>A short blows the fuse, or kills the plug-pack</td><td>Do the table, in order, every time</td></tr>
+      <tr><td>Not updating the drawing</td><td>The next technician trusts a wrong drawing</td><td>Redline the same day; sign and date</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why can't you buy a DIN-rail power supply and wire its mains terminals for this lab? What do you use instead?</summary><div class="answer"><p>Those terminals take 230 V fixed wiring. In Australia that is licensed electricians' work, and a mistake can kill. The bench version uses a sealed 24 V DC plug-pack with a moulded plug, and you wire only its low-voltage DC lead. On a real job the electrician installs and tests the mains side, and you start at the 24 V DC output terminals.</p></div></details>
+    <details class="quiz"><summary>The widest row of devices needs 98 mm. How long should the rail be, and why add the margin?</summary><div class="answer"><p>98 × 1.2 ≈ 118 mm, so a 150 mm or 200 mm rail. The margin is for new terminals or relays later, for finger and screwdriver room, and so you do not need a new panel for the first change.</p></div></details>
+    <details class="quiz"><summary>Why is a door contact wired as a closed loop (closed when the door is shut)?</summary><div class="answer"><p>So that faults look like alarms. An opened door, a cut cable, a loose terminal or a broken reed all open the loop, and the panel sees "door open". If the contact closed when the door opened, a cut cable would look like a shut door and the failure would be silent.</p></div></details>
+    <details class="quiz"><summary>The alarm is latched and the door is still open. You press reset. The alarm stops while you hold the button and comes back when you let go. Is the panel faulty?</summary><div class="answer"><p>No, it works as designed. Holding S2 breaks the supply to K2, so K2 drops out. When you release S2, the supply comes back and K1's normally closed contact (the door is still open) energises K2, which latches again. An alarm should not clear while the fault is present. Close the door first.</p></div></details>
+    <details class="quiz"><summary>You crimp a 0.75 mm² wire in a ferrule with an 8 mm sleeve. What strip length do you use, and what do you inspect afterwards?</summary><div class="answer"><p>Strip about 8 mm, the length of the metal sleeve. After crimping, check that the insulation reaches the collar, the copper is flush with the end of the sleeve (not more than about 1 mm out), and no strand is outside. Then tug it. If it moves, cut it off and redo it.</p></div></details>
+    <details class="quiz"><summary>Why should you never connect a megger to this panel? What do you do instead?</summary><div class="answer"><p>A megger applies 250 V to 1000 V DC, far more than the 24 V electronics (LEDs, diodes, timer, relay base electronics) can take, so it would destroy them. Use the ohms range of a multimeter (test voltage about 0.5–3 V) to look for unintended low-resistance paths: expect OL or above 1 MΩ between the rails, the circuits and the DIN rail, and between cable cores. It is a check for stray strands and damaged cable, not a proper insulation-resistance test.</p></div></details>
+    <details class="quiz"><summary>A 24 V door strike draws 250 mA, 60 m away on 0.5 mm² two-core cable. What is the voltage drop? What happens at 12 V?</summary><div class="answer"><p>Loop resistance = 2 × 60 × 0.0344 = 4.13 Ω. Drop = 0.25 × 4.13 = 1.03 V, which is 4.3 % of 24 V: fine. At 12 V the same power needs 0.5 A, so the drop is 2.06 V, or 17 % of 12 V: it will probably fail. Double the voltage, half the current, a quarter of the percentage drop.</p></div></details>
+    <details class="quiz"><summary>What does a fail-safe lock do when power is lost? What does a fail-secure lock do? Which suits a doorway on an exit path?</summary><div class="answer"><p>Fail-safe: unlocks (locked while powered). Fail-secure: stays locked (unlocked while powered). A door on an exit path must open from the inside, and the National Construction Code and the fire design decide how, so a fail-safe lock or a fail-secure lock with free mechanical exit is used. Never decide it yourself: follow the design and the spec (see C06).</p></div></details>
+    <details class="more"><summary>Go deeper (optional): why panels have a 0 V bus and not a single "ground"</summary><p>In a DC control panel, 0 V is the reference every voltage is measured from. A bus bar or bridged terminals carry it to every device, each with its own short wire, so one loose joint cannot disconnect all of them. Whether 0 V is tied to earth at one point (and where) is a design decision in the spec, and for mains-powered systems it belongs with the electrician. On the bench the plug-pack floats, so 0 V is only a reference, not earth.</p></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain why I never wire mains terminals, and what the plug-pack stands in for.</span></li>
+      <li><input type="checkbox"><span>I can plan a rail layout: power at the top, flow left to right, field terminals at the bottom, about 20 % spare.</span></li>
+      <li><input type="checkbox"><span>I can make a terminal schedule and wire list that match a drawing (P22).</span></li>
+      <li><input type="checkbox"><span>I can name ELV DC wire colours as common practice and I check the project spec before choosing.</span></li>
+      <li><input type="checkbox"><span>I can choose a ferrule, strip to length, crimp with a ratchet tool and tug-test.</span></li>
+      <li><input type="checkbox"><span>I tighten terminals to the data sheet and re-check them.</span></li>
+      <li><input type="checkbox"><span>I can explain why ELV and mains wiring are kept apart.</span></li>
+      <li><input type="checkbox"><span>I can read a ladder diagram and explain the self-hold (latch) and the reset.</span></li>
+      <li><input type="checkbox"><span>I can size a fuse, a supply (with headroom) and the voltage drop in a cable run.</span></li>
+      <li><input type="checkbox"><span>I can do continuity, short-circuit, polarity and ELV isolation checks before power.</span></li>
+      <li><input type="checkbox"><span>I can run a functional test sheet and record real readings.</span></li>
+      <li><input type="checkbox"><span>I can explain fail-safe and fail-secure locks.</span></li>
+      <li><input type="checkbox"><span>I can mark up an as-built and take a handover photo.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
