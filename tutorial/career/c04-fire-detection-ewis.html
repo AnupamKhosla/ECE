@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C04 · Fire detection and EWIS basics</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-career">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Part I · Building services</div>
+    <span class="eyebrow">Job Track · C04</span>
+    <h1>Fire detection and EWIS basics</h1>
+    <p class="lede">Fire detection is life-safety electronics: detectors, supervised circuits and a panel that must never miss a fire and must always report its own faults. This chapter explains the fire indicator panel, detector types, conventional zones and addressable loops, end-of-line supervision, the links to HVAC, lifts and the fire brigade, and emergency warning systems, with the Australian standards and entry roles around them.</p>
+    <div class="meta"><span><b>Reading</b> 55 min</span><span><b>Level</b> Beginner</span><span><b>Roles</b> fire alarm test / service tech</span><span><b>Builds on</b> P04, C01</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What a fire detection system must do</h2>
+    <p>A fire detection and alarm system has three jobs: <b>detect</b> a fire early, <b>warn</b> the people in the building so they can leave, and <b>call</b> the fire brigade. It also <b>controls</b> other building systems so they help instead of spreading smoke: air handling units stop or switch to smoke control, lifts return to a safe floor, doors held open by magnets close.</p>
+    <p>Because lives depend on it, the design philosophy is different from a BMS. Every wire is <b>supervised</b>: the panel constantly checks that each circuit is intact, and raises a <b>fault</b> if a wire breaks or shorts. A failure must never be silent. The system has its own battery backup. And the fire system is always the <b>master</b>: it tells the BMS what to do, never the reverse.</p>
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A fire alarm system is just smoke alarms wired together."<br><b>Right:</b> the battery or 230 V smoke alarms in a house (to AS 3786) are self-contained alarms. A commercial system is built around a <b>fire indicator panel</b> that supervises every detector circuit, records events, signals the brigade, and drives interfaces to other systems. They are different products under different standards.</p></div>
+
+    <h2>The fire indicator panel (FIP)</h2>
+    <p>The FIP is the brain. It is usually near the main entrance, where the fire brigade arrives, with a <b>block plan</b> (a simple floor plan showing zones) mounted beside it. Its main functions:</p>
+    <ul>
+      <li><b>Monitor</b> detector circuits (zones or loops) and manual call points, and show alarms and faults on its display and indicators.</li>
+      <li><b>Signal</b> the fire brigade (or a monitoring centre) through alarm signalling equipment.</li>
+      <li><b>Drive outputs</b>: warning devices, the EWIS or occupant warning system, and relay outputs to other systems.</li>
+      <li><b>Allow control</b>: acknowledge, silence alarms, reset, and <b>isolate</b> (disable) a zone, a device or an output for testing or maintenance.</li>
+      <li><b>Log events</b> with time and date, which is evidence after an incident.</li>
+    </ul>
+    <p>The FIP runs from a dedicated 230 V circuit (installed by an electrician) and has <b>standby batteries</b>, typically two 12 V sealed lead-acid batteries in series for 24 V. If mains fails, the batteries must run the system in standby for a set time and then still sound the alarm for a set time.</p>
+    <div class="formula">Battery Ah ≈ (I<sub>standby</sub> × t<sub>standby</sub> + I<sub>alarm</sub> × t<sub>alarm</sub>) × margin
+      <small>Worked example with illustrative numbers: standby current 0.35 A for 24 h = 8.4 Ah; alarm current 2.0 A for 0.5 h = 1.0 Ah; total 9.4 Ah; with a 25 % ageing margin, 11.75 Ah, so you would fit 2 × 12 V batteries of the next standard size up (for example 12 Ah or larger). Use the standby and alarm times required by the current standard and the panel manual, not these example figures. A battery calculation is part of every commissioning file.</small></div>
+    <div class="callout warn"><span class="label">Safety</span><p>The FIP's mains terminals and power supply are 230 V: licensed electrician work only. The 24 V batteries are ELV but can deliver hundreds of amps into a short circuit, enough to melt a spanner and burn you; disconnect them with insulated tools and never short the terminals. Detector testing often means ladders or elevated work platforms; boom-type platforms of 11 m or more need a high risk work licence in Australia.</p></div>
+
+    <h2>Detectors and call points</h2>
+    <h3>Photoelectric smoke detectors</h3>
+    <p>The most common detector in Australian buildings. Inside a dark plastic chamber, an infrared LED sends a beam across, and a photodiode sits at an angle where it cannot see the beam directly. Clean air: almost no light reaches the photodiode. Smoke: particles <b>scatter</b> the light, some of it into the photodiode, and the signal rises. When it passes a threshold (and stays there long enough), the detector goes into alarm.</p>
+    <figure>
+      <svg viewBox="0 0 760 300" role="img" aria-label="Inside a photoelectric smoke detector: LED, labyrinth chamber, photodiode and scattered light">
+        <defs><marker id="c4p-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <circle class="f-wash s-line" cx="300" cy="150" r="120"/>
+        <g class="s-thin">
+          <path d="M200 90 l20 12 M190 130 l22 6 M190 170 l22 -6 M200 210 l20 -12 M240 245 l12 -20 M300 268 v-22 M360 245 l-12 -20 M400 210 l-20 -12 M410 170 l-22 -6 M410 130 l-22 6 M400 90 l-20 12 M360 55 l-12 20 M300 32 v22 M240 55 l12 20"/>
+        </g>
+        <text class="t t-small t-muted" x="300" y="22" text-anchor="middle">labyrinth: lets smoke in, keeps light out</text>
+        <!-- LED -->
+        <polygon class="f-red" points="180,140 180,160 198,150"/><line class="s-line" x1="198" y1="140" x2="198" y2="160"/>
+        <text class="t t-small" x="150" y="186">IR LED</text>
+        <path class="s-red s-dash" d="M204 150 H410" marker-end="url(#c4p-r)"/>
+        <text class="t t-small t-red" x="320" y="142">direct beam</text>
+        <!-- photodiode -->
+        <g transform="rotate(-50 330 230)"><polygon class="f-blue" points="320,222 320,238 334,230"/><line class="s-line" x1="334" y1="222" x2="334" y2="238"/></g>
+        <text class="t t-small" x="340" y="262">photodiode</text>
+        <!-- smoke particles -->
+        <g class="f-grey"><circle cx="290" cy="152" r="4"/><circle cx="268" cy="146" r="3"/><circle cx="312" cy="156" r="3.5"/></g>
+        <path class="s-amber s-dash" d="M290 152 L322 220 M312 156 L326 216" marker-end="url(#c4p-r)"/>
+        <text class="t t-small t-muted" x="232" y="200">smoke scatters</text>
+        <text class="t t-small t-muted" x="232" y="214">light sideways</text>
+        <!-- right side explanation -->
+        <text class="t t-bold" x="460" y="80">Clean air</text>
+        <text class="t t-small t-muted" x="460" y="98">beam passes, photodiode sees ~nothing</text>
+        <text class="t t-bold" x="460" y="140">Smoke</text>
+        <text class="t t-small t-muted" x="460" y="158">scattered light reaches the photodiode;</text>
+        <text class="t t-small t-muted" x="460" y="174">photocurrent rises with smoke density</text>
+        <text class="t t-bold" x="460" y="216">Dust, steam, insects</text>
+        <text class="t t-small t-muted" x="460" y="234">also scatter light: false alarms,</text>
+        <text class="t t-small t-muted" x="460" y="250">so location and cleaning matter</text>
+      </svg>
+      <figcaption>Figure 1. A photoelectric (light-scattering) smoke detector. The LED is pulsed briefly every few seconds to save power, and the electronics compare the photodiode signal with a threshold. It is the same LED-and-photodiode physics as in the Theory book.</figcaption>
+    </figure>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family (LEDs and photodiodes)</a>
+    <h3>Other detector types</h3>
+    <div class="cards">
+      <div class="card"><h4>Heat detectors</h4><p><b>Fixed temperature</b> types alarm above a set temperature; <b>rate-of-rise</b> types alarm when temperature climbs quickly. Used where smoke detectors would false alarm: kitchens, car parks, plant rooms, dusty areas.</p></div>
+      <div class="card"><h4>Multi-criteria</h4><p>Combine smoke and heat sensing (some add other sensors) and use an algorithm to decide. Better at rejecting false alarms from steam or cooking fumes while still catching real fires.</p></div>
+      <div class="card"><h4>Aspirating (ASD)</h4><p>A fan draws air through a network of pipes with small holes to a very sensitive detector. Used in data centres, comms rooms, warehouses, heritage buildings and cold stores. Often known by a well-known brand name, VESDA.</p></div>
+      <div class="card"><h4>Beam detectors</h4><p>A light beam across a large open space (atrium, warehouse); smoke reduces the received light.</p></div>
+      <div class="card"><h4>Ionisation (legacy)</h4><p>Older detectors that use a tiny radioactive source. Rarely installed now. When removed, they must be disposed of according to the applicable rules, not thrown in a bin.</p></div>
+      <div class="card"><h4>Manual call points</h4><p>The red "break glass" or push-in point near exits. Anyone can raise the alarm by hand. Often resettable with a key.</p></div>
+    </div>
+    <p>The FIP also monitors other fire equipment: <b>sprinkler flow switches</b> (water flowing means a sprinkler head has opened), valve monitoring switches, and suppression systems.</p>
+
+    <h2>Conventional zones and end-of-line supervision</h2>
+    <p>The older and simpler arrangement is the <b>conventional</b> system. The building is divided into <b>zones</b> (for example "Level 3 east"). Each zone is a pair of wires running from the panel past every detector on that zone, all connected <b>in parallel</b>, ending at an <b>end-of-line (EOL) resistor</b>. The panel knows only which zone is in alarm, not which detector.</p>
+    <figure>
+      <svg viewBox="0 0 760 260" role="img" aria-label="Conventional zone: panel, detectors in parallel, end-of-line resistor">
+        <rect class="f-accent-soft s-accent" x="20" y="50" width="130" height="150" rx="8"/>
+        <text class="t t-bold" x="85" y="80" text-anchor="middle">FIP</text>
+        <text class="t t-small t-muted" x="85" y="98" text-anchor="middle">zone input</text>
+        <text class="t t-small t-muted" x="85" y="114" text-anchor="middle">measures the</text>
+        <text class="t t-small t-muted" x="85" y="130" text-anchor="middle">zone resistance</text>
+        <text class="t t-small" x="140" y="96" text-anchor="end">Z+</text>
+        <text class="t t-small" x="140" y="176" text-anchor="end">Z−</text>
+        <line class="s-line" x1="150" y1="90" x2="690" y2="90"/>
+        <line class="s-line" x1="150" y1="170" x2="690" y2="170"/>
+        <!-- detectors -->
+        <g class="f-panel s-line">
+          <circle cx="250" cy="130" r="22"/><circle cx="370" cy="130" r="22"/><circle cx="490" cy="130" r="22"/>
+          <rect x="586" y="112" width="34" height="36" rx="3"/>
+        </g>
+        <path class="s-line" d="M250 90 V108 M250 152 V170 M370 90 V108 M370 152 V170 M490 90 V108 M490 152 V170 M603 90 V112 M603 148 V170"/>
+        <text class="t t-small" x="250" y="134" text-anchor="middle">S</text><text class="t t-small" x="370" y="134" text-anchor="middle">S</text><text class="t t-small" x="490" y="134" text-anchor="middle">H</text><text class="t t-small" x="603" y="134" text-anchor="middle">MCP</text>
+        <text class="t t-small t-muted" x="250" y="210" text-anchor="middle">smoke</text><text class="t t-small t-muted" x="370" y="210" text-anchor="middle">smoke</text><text class="t t-small t-muted" x="490" y="210" text-anchor="middle">heat</text><text class="t t-small t-muted" x="603" y="210" text-anchor="middle">call point</text>
+        <!-- EOL -->
+        <path class="s-line" d="M690 90 V112 M690 148 V170"/>
+        <rect class="f-panel s-red" x="680" y="112" width="20" height="36"/>
+        <text class="t t-small t-red t-bold" x="708" y="128">EOL</text>
+        <text class="t t-small t-red" x="708" y="144">4.7 kΩ</text>
+        <text class="t t-small t-muted" x="160" y="250">example values only: the EOL value is set by the panel maker</text>
+        <text class="t t-small t-muted" x="160" y="40">every device is in parallel; the EOL must be at the far end, after the last device</text>
+      </svg>
+      <figcaption>Figure 2. A conventional zone. In normal state the panel sees mostly the EOL resistor. A detector in alarm switches in a much lower resistance in parallel. A broken wire removes the EOL (resistance goes very high); a short makes it near zero. Four different resistances, four different panel states.</figcaption>
+    </figure>
+    <h3>How the panel tells normal, alarm and fault apart</h3>
+    <p>This is just Ohm's law and parallel resistors, which you proved on the bench in <a href="../practice/p04-series-parallel-dividers.html">Practice P04</a>. In our example panel (values vary between makers):</p>
+    <div class="table-wrap"><table>
+      <tr><th>State</th><th>What is connected</th><th>Resistance the panel sees</th><th>Panel shows</th></tr>
+      <tr><td>Normal</td><td>EOL 4.7 kΩ (plus tiny detector standby currents)</td><td>about 4.7 kΩ</td><td>Normal</td></tr>
+      <tr><td>Detector alarm</td><td>EOL ∥ detector's alarm load (example 680 Ω)</td><td>4,700 × 680 / 5,380 ≈ 594 Ω</td><td>FIRE</td></tr>
+      <tr><td>Open circuit</td><td>Wire broken: EOL disconnected</td><td>very high (tens of kΩ or more)</td><td>FAULT (open)</td></tr>
+      <tr><td>Short circuit</td><td>Wires touching</td><td>a few ohms (cable only)</td><td>FAULT (short) on most modern panels</td></tr>
+    </table></div>
+    <p>Notice two important facts. First, <b>the EOL must be at the end</b>. If it is fitted at the panel "to clear a fault", a break anywhere on the cable would leave the EOL still connected: the panel would show normal while half the detectors were cut off. Second, a detector in alarm <b>latches</b>: it keeps drawing its alarm current until the panel resets the zone by briefly removing power.</p>
+    <div class="callout why"><span class="label">Why it works</span><p>The panel drives the zone through a known series resistance and measures the zone voltage, exactly a voltage divider. Each state gives a distinct voltage band. Cable resistance (about 24 Ω per kilometre of loop for 1.5 mm² two-core) is tiny compared with the kΩ values, so a long zone still reads correctly.</p></div>
+    <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
+
+    <div class="widget" id="w-c04">
+      <span class="label">Interactive · Conventional zone simulator</span>
+      <p style="margin:0 0 6px;font-size:15px">Example panel: 24 V through a 470 Ω series resistor. It expects a 4.7 kΩ EOL. Thresholds (example only): above 8 kΩ = open-circuit fault, 3–8 kΩ = normal, 100 Ω–2 kΩ = fire, below 100 Ω = short-circuit fault, anything else = fault.</p>
+      <div id="c04-states" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 18px">
+        <label>Detectors on zone <span class="out" id="c04-no">8</span><input type="range" id="c04-n" min="1" max="20" step="1" value="8"></label>
+        <label>Cable length <span class="out" id="c04-lo">200</span> m<input type="range" id="c04-l" min="10" max="1000" step="10" value="200"></label>
+        <label>EOL fitted<select id="c04-eol"><option value="4700">4.7 kΩ (correct)</option><option value="3300">3.3 kΩ</option><option value="10000">10 kΩ</option><option value="0">none (forgotten)</option></select></label>
+      </div>
+      <svg viewBox="0 0 620 150" role="img" aria-label="Zone drawing showing detectors, faults and EOL" style="margin-top:6px"><g id="c04-svg"></g></svg>
+      <div class="readings">
+        <div><small>Resistance seen</small><span class="out" id="c04-r">–</span></div>
+        <div><small>Zone voltage</small><span class="out" id="c04-v">–</span></div>
+        <div><small>Zone current</small><span class="out" id="c04-i">–</span></div>
+        <div><small>Panel shows</small><span class="out" id="c04-s">–</span></div>
+      </div>
+      <p id="c04-note" style="margin-top:10px;font-size:15px;color:var(--muted)"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var bs="font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer";
+      var states=[["normal","Normal"],["det","Detector alarm"],["mcp","Call point alarm"],["open","Wire broken mid-zone"],["short","Short circuit"]];
+      var st="normal",btns={};
+      states.forEach(function(s){var b=document.createElement('button');b.type='button';b.textContent=s[1];b.style.cssText=bs;b.onclick=function(){st=s[0];upd();};btns[s[0]]=b;$('c04-states').appendChild(b);});
+      function par(a,b){if(!isFinite(a))return b;if(!isFinite(b))return a;return a*b/(a+b);}
+      function fmtR(r){if(!isFinite(r)||r>1e6)return '> 1 MΩ';return r>=1000?(r/1000).toFixed(2)+' kΩ':r.toFixed(r<10?1:0)+' Ω';}
+      function upd(){
+        var n=+$('c04-n').value,L=+$('c04-l').value,eol=+$('c04-eol').value;
+        $('c04-no').textContent=n;$('c04-lo').textContent=L;
+        Object.keys(btns).forEach(function(k){btns[k].style.background=k===st?'var(--accent-soft)':'var(--bg)';btns[k].style.borderColor=k===st?'var(--accent)':'var(--line)';});
+        var rc=0.0242*L;         // loop resistance of 1.5 mm² pair, ohms
+        var rq1=400000;          // one detector's standby load ≈ 50 µA at 20 V
+        var reol=eol>0?eol:Infinity;
+        var R,note='',brk=Math.ceil(n/2);
+        if(st==='short'){R=rc*0.5;note='The two zone wires touch halfway along. The panel sees only cable resistance. Modern panels report this as a fault; some very old panels treated a short as an alarm.';}
+        else if(st==='open'){R=rc/2+rq1/brk;note='Everything after detector '+brk+' is cut off, including the EOL. The panel sees only the standby current of the '+brk+' detectors before the break: very high resistance, so a FAULT. Note: a fire on the connected part would still be detected.';}
+        else{
+          var load=rq1/n; R=par(load,reol);
+          if(st==='det'){R=par(R,680);note='The detector switches in about 680 Ω (example) in parallel with the EOL. The low resistance means FIRE. It latches until the zone is reset.';}
+          else if(st==='mcp'){R=par(R,470);note='The call point switches in about 470 Ω (example). Same effect as a detector: FIRE.';}
+          else{note=n+' detectors each draw a tiny standby current (modelled as '+(rq1/1000)+' kΩ each), in parallel with the EOL.';}
+          R+=rc;
+        }
+        var I=24/(470+R),V=I*R;
+        var s,col;
+        if(R>8000){s='FAULT · open';col='var(--amber)';}
+        else if(R>=3000){s='NORMAL';col='var(--green)';}
+        else if(R>=100&&R<=2000){s='FIRE';col='var(--red)';}
+        else if(R<100){s='FAULT · short';col='var(--amber)';}
+        else{s='FAULT · range';col='var(--amber)';}
+        if(st==='normal'&&eol===0)note='No EOL fitted: the panel sees only standby currents, so it reports an open-circuit fault, exactly as if a wire were broken. That is the point of the EOL.';
+        if(st==='normal'&&eol===10000&&s!=='NORMAL')note='A 10 kΩ EOL on a panel that expects 4.7 kΩ: with few detectors the resistance is above the open-circuit threshold. Always fit the EOL the panel manual specifies.';
+        if(st==='normal'&&eol===3300)note=(s==='NORMAL')?'3.3 kΩ still falls in this example panel\'s normal window, but it reduces the margin to the fire threshold. Fit the value the manual specifies.':'With many detectors, their standby currents plus a 3.3 kΩ EOL pull the resistance below this panel\'s normal window, so it reports a fault. Fit the value the manual specifies.';
+        $('c04-r').textContent=fmtR(R);$('c04-v').textContent=V.toFixed(2)+' V';$('c04-i').textContent=(I*1000).toFixed(2)+' mA';
+        var so=$('c04-s');so.textContent=s;so.style.color=col;$('c04-note').textContent=note;
+        draw(n,eol,brk);
+      }
+      function draw(n,eol,brk){
+        var g=$('c04-svg'),h='',x0=60,x1=560,sp=(x1-x0)/(n+1);
+        h+='<rect class="f-accent-soft s-accent" x="4" y="30" width="50" height="90" rx="6"/><text class="t t-small t-bold" x="29" y="80" text-anchor="middle">FIP</text>';
+        var endTop=x1;
+        if(st==='open'){var xb=x0+sp*brk+sp/2;h+='<line class="s-line" x1="54" y1="45" x2="'+(xb-6)+'" y2="45"/><line class="s-line" x1="'+(xb+6)+'" y1="45" x2="590" y2="45"/><text class="t t-small t-red t-bold" x="'+(xb-4)+'" y="30">✕</text>';}
+        else h+='<line class="s-line" x1="54" y1="45" x2="590" y2="45"/>';
+        h+='<line class="s-line" x1="54" y1="105" x2="590" y2="105"/>';
+        for(var i=1;i<=n;i++){var x=x0+sp*i;var cls='f-panel s-line';
+          if(st==='det'&&i===Math.max(1,n-1))cls='f-red s-red';
+          if(st==='mcp'&&i===n)cls='f-red s-red';
+          if(st==='open'&&i>brk)cls='f-wash s-thin';
+          h+='<line class="s-thin" x1="'+x+'" y1="45" x2="'+x+'" y2="105"/>';
+          if(i===n&&st==='mcp')h+='<rect class="'+cls+'" x="'+(x-9)+'" y="66" width="18" height="18"/>';
+          else h+='<circle class="'+cls+'" cx="'+x+'" cy="75" r="9"/>';
+        }
+        if(st==='short'){var xs=(54+590)/2;h+='<path class="s-amber" d="M'+xs+' 45 L'+(xs+8)+' 75 L'+(xs-8)+' 80 L'+xs+' 105"/><text class="t t-small t-amber t-bold" x="'+(xs+10)+'" y="128">short</text>';}
+        if(eol>0)h+='<line class="s-line" x1="590" y1="45" x2="590" y2="60"/><line class="s-line" x1="590" y1="90" x2="590" y2="105"/><rect class="f-panel s-red" x="582" y="60" width="16" height="30"/><text class="t t-small t-red" x="560" y="142">EOL '+(eol/1000)+' kΩ</text>';
+        else h+='<text class="t t-small t-red" x="540" y="142">no EOL!</text>';
+        g.innerHTML=h;
+      }
+      ['c04-n','c04-l','c04-eol'].forEach(function(id){$(id).addEventListener('input',upd);$(id).addEventListener('change',upd);});
+      upd();
+    })();
+    </script>
+
+    <h2>Addressable loops</h2>
+    <p>Most new commercial systems are <b>addressable</b>. Instead of radial zones, a <b>loop</b> leaves the panel, passes through every device, and <b>returns to the panel</b>. Each device has its own <b>address</b> (set by DIP switches, a programmer tool or automatically), and the panel polls each one with a digital protocol over the same two wires that power it. The panel shows exactly which device is in alarm ("Detector 2.045, Level 3 meeting room"), and analogue addressable detectors report their smoke level, so the panel can flag a <b>dirty detector</b> before it false alarms.</p>
+    <figure>
+      <svg viewBox="0 0 760 300" role="img" aria-label="Addressable loop with devices, isolators and a short circuit isolated">
+        <rect class="f-accent-soft s-accent" x="20" y="100" width="110" height="100" rx="8"/>
+        <text class="t t-bold" x="75" y="140" text-anchor="middle">FIP</text>
+        <text class="t t-small t-muted" x="75" y="158" text-anchor="middle">loop out</text>
+        <text class="t t-small t-muted" x="75" y="174" text-anchor="middle">loop return</text>
+        <path class="s-line" d="M130 120 H160 V50 H700 V250 H160 V180 H130"/>
+        <!-- isolators -->
+        <g class="f-panel s-line"><rect x="250" y="40" width="34" height="20" rx="3"/><rect x="520" y="40" width="34" height="20" rx="3"/><rect x="690" y="135" width="20" height="34" rx="3"/><rect x="440" y="240" width="34" height="20" rx="3"/></g>
+        <g class="f-warn-soft s-red"><rect x="520" y="40" width="34" height="20" rx="3"/><rect x="690" y="135" width="20" height="34" rx="3"/></g>
+        <text class="t t-small" x="267" y="54" text-anchor="middle">ISO</text><text class="t t-small t-red" x="537" y="54" text-anchor="middle">ISO</text><text class="t t-small t-red" x="700" y="190" text-anchor="middle">ISO</text><text class="t t-small" x="457" y="254" text-anchor="middle">ISO</text>
+        <!-- devices top -->
+        <g class="f-panel s-line"><circle cx="200" cy="50" r="11"/><circle cx="330" cy="50" r="11"/><circle cx="400" cy="50" r="11"/><circle cx="470" cy="50" r="11"/><circle cx="600" cy="50" r="11"/><circle cx="650" cy="50" r="11"/></g>
+        <text class="t t-small t-muted" x="200" y="82" text-anchor="middle">001</text><text class="t t-small t-muted" x="330" y="82" text-anchor="middle">002</text><text class="t t-small t-muted" x="400" y="82" text-anchor="middle">003</text><text class="t t-small t-muted" x="470" y="82" text-anchor="middle">004</text>
+        <text class="t t-small t-red" x="600" y="82" text-anchor="middle">005</text><text class="t t-small t-red" x="650" y="82" text-anchor="middle">006</text>
+        <!-- short between isolators -->
+        <text class="t t-bold t-red" x="616" y="30">✕ short</text>
+        <text class="t t-small t-red" x="560" y="110">only devices between the two</text>
+        <text class="t t-small t-red" x="560" y="126">open isolators are lost</text>
+        <!-- right and bottom devices -->
+        <g class="f-panel s-line"><circle cx="700" cy="215" r="11"/><rect x="590" y="239" width="22" height="22"/><circle cx="530" cy="250" r="11"/><circle cx="380" cy="250" r="11"/><rect x="300" y="239" width="22" height="22"/><circle cx="230" cy="250" r="11"/></g>
+        <text class="t t-small t-muted" x="722" y="219">007</text><text class="t t-small t-muted" x="601" y="282" text-anchor="middle">MCP 008</text><text class="t t-small t-muted" x="530" y="282" text-anchor="middle">009</text><text class="t t-small t-muted" x="380" y="282" text-anchor="middle">010</text><text class="t t-small t-muted" x="311" y="282" text-anchor="middle">I/O 011</text><text class="t t-small t-muted" x="230" y="282" text-anchor="middle">012</text>
+        <text class="t t-small t-muted" x="175" y="215">devices 007–012 still</text>
+        <text class="t t-small t-muted" x="175" y="231">powered from the return end</text>
+      </svg>
+      <figcaption>Figure 3. An addressable loop wired out and back to the panel, with short-circuit isolators (ISO) at intervals. A short between two isolators makes both open; devices on either side keep working, fed from each end of the loop. A single break is also survived, because every device is still reachable from one end.</figcaption>
+    </figure>
+    <div class="compare">
+      <div><h4>Conventional</h4><ul><li>Alarm reported by zone only</li><li>EOL resistor supervision</li><li>Cheap, simple, small buildings</li><li>Many brands of detector work with many panels</li></ul></div>
+      <div><h4>Addressable</h4><ul><li>Each device reported by address and text</li><li>Loop polled digitally, with isolators</li><li>Detector sensitivity and dirt monitoring</li><li>Loop protocol usually belongs to the panel maker, so devices are mostly brand-matched</li></ul></div>
+    </div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>On an addressable loop, an <b>input/output module</b> lets the panel read a contact (a sprinkler flow switch, a fire damper end switch) or drive a relay (to the BMS, a door holder, a lift) at any point on the loop. Many interface faults turn out to be a module programmed with the wrong function or an inverted contact.</p></div>
+
+    <h2>Warning devices and brigade signalling</h2>
+    <p><b>Sounders</b> and <b>strobes</b> (visual warning devices) tell occupants to leave. In larger buildings the warning is given by an EWIS (below) with tones and voice messages. Warning circuits are supervised too, often with EOL resistors and polarity-reversal monitoring: the panel checks the circuit with reverse polarity in standby (blocking diodes in each sounder stop current), and switches to forward polarity to sound them.</p>
+    <p>The <b>alarm signalling equipment (ASE)</b> beside the FIP sends alarm and fault signals to the fire brigade or to a monitoring service, depending on the state and the building. When the brigade arrives, they use the FIP (or a brigade panel) and the block plan to find the fire.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p>Fire services in several states can charge building owners for repeated unwanted (false) alarms. That is why every test must start by telling the monitoring provider and isolating the brigade signal as the site procedure requires, and why detector choice and cleaning matter. Arrangements for brigade monitoring differ by state; check with the state fire service.</p></div>
+
+    <h2>Interfaces: fire mode in the rest of the building</h2>
+    <figure>
+      <svg viewBox="0 0 760 320" role="img" aria-label="Fire indicator panel interfaces to other building systems">
+        <defs><marker id="c4i-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="c4i-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <rect class="f-warn-soft s-red" x="300" y="120" width="160" height="80" rx="10"/>
+        <text class="t t-bold" x="380" y="155" text-anchor="middle">Fire indicator</text>
+        <text class="t t-bold" x="380" y="174" text-anchor="middle">panel (FIP)</text>
+        <g class="f-panel s-line">
+          <rect x="20" y="20" width="200" height="50" rx="6"/><rect x="20" y="135" width="200" height="50" rx="6"/><rect x="20" y="250" width="200" height="50" rx="6"/>
+          <rect x="540" y="20" width="200" height="50" rx="6"/><rect x="540" y="105" width="200" height="50" rx="6"/><rect x="540" y="190" width="200" height="50" rx="6"/><rect x="540" y="265" width="200" height="50" rx="6"/>
+          <rect x="280" y="20" width="200" height="50" rx="6"/><rect x="280" y="250" width="200" height="50" rx="6"/>
+        </g>
+        <text class="t t-small t-bold" x="120" y="42" text-anchor="middle">Detectors, call points</text><text class="t t-small t-muted" x="120" y="59" text-anchor="middle">inputs</text>
+        <text class="t t-small t-bold" x="120" y="157" text-anchor="middle">Sprinkler flow switches</text><text class="t t-small t-muted" x="120" y="174" text-anchor="middle">inputs</text>
+        <text class="t t-small t-bold" x="120" y="272" text-anchor="middle">ASE → brigade / monitoring</text><text class="t t-small t-muted" x="120" y="289" text-anchor="middle">alarm + fault signals</text>
+        <text class="t t-small t-bold" x="380" y="42" text-anchor="middle">EWIS / occupant warning</text><text class="t t-small t-muted" x="380" y="59" text-anchor="middle">alert + evacuate tones, voice</text>
+        <text class="t t-small t-bold" x="380" y="272" text-anchor="middle">Door holders, access control</text><text class="t t-small t-muted" x="380" y="289" text-anchor="middle">release / unlock on alarm</text>
+        <text class="t t-small t-bold" x="640" y="42" text-anchor="middle">MSSB / BMS</text><text class="t t-small t-muted" x="640" y="59" text-anchor="middle">AHUs stop (fire trip)</text>
+        <text class="t t-small t-bold" x="640" y="127" text-anchor="middle">Fire fan control panel</text><text class="t t-small t-muted" x="640" y="144" text-anchor="middle">smoke control fans</text>
+        <text class="t t-small t-bold" x="640" y="212" text-anchor="middle">Lift controllers</text><text class="t t-small t-muted" x="640" y="229" text-anchor="middle">home to designated floor</text>
+        <text class="t t-small t-bold" x="640" y="287" text-anchor="middle">Gas valves, other plant</text><text class="t t-small t-muted" x="640" y="304" text-anchor="middle">shut down as designed</text>
+        <path class="s-line" d="M220 45 L296 135" marker-end="url(#c4i-b)"/><path class="s-line" d="M220 160 H296" marker-end="url(#c4i-b)"/>
+        <path class="s-red" d="M300 185 L224 270" marker-end="url(#c4i-a)"/>
+        <path class="s-red" d="M380 120 V74" marker-end="url(#c4i-a)"/><path class="s-red" d="M380 200 V246" marker-end="url(#c4i-a)"/>
+        <path class="s-red" d="M460 130 L536 50" marker-end="url(#c4i-a)"/><path class="s-red" d="M460 145 L536 132" marker-end="url(#c4i-a)"/>
+        <path class="s-red" d="M460 175 L536 212" marker-end="url(#c4i-a)"/><path class="s-red" d="M460 190 L536 285" marker-end="url(#c4i-a)"/>
+      </svg>
+      <figcaption>Figure 4. The FIP is the master. Inputs (black) come from detectors and sprinklers; outputs (red) tell other systems what to do in fire mode. Each output is usually a supervised relay or module, and each one is tested with the other trade present.</figcaption>
+    </figure>
+    <ul>
+      <li><b>HVAC.</b> On alarm, the fire system sends a "fire trip" to the mechanical services switchboard. Depending on the design, AHUs stop (so they do not spread smoke) or switch to a <b>smoke control</b> mode: stair pressurisation fans start, smoke exhaust fans run, and dampers move. Smoke control in HVAC is covered by AS 1668.1. A <b>fire fan control panel</b> near the FIP lets the brigade override fans manually.</li>
+      <li><b>BMS.</b> The BMS usually receives fire status as a DI (see <a href="c01-bms-fundamentals.html">C01</a>) for monitoring and to put its own logic in a safe state. The BMS must never be the only path that stops a fan in fire mode unless the design says so; the hard-wired fire trip at the MSSB does that.</li>
+      <li><b>Lifts.</b> Lifts are recalled to a designated floor and taken out of normal service, so people do not ride into a fire floor.</li>
+      <li><b>Doors and access control.</b> Magnetic door holders release so fire doors close. Fail-safe electric locks on exit paths unlock (see <a href="c06-access-control-alarms.html">C06</a>).</li>
+    </ul>
+    <div class="callout job"><span class="label">On the job</span><p>"Fire mode testing" is a classic joint test at commissioning and during annual services. The fire tech triggers an alarm; the BMS tech watches AHUs stop on the front end and in the plant room; the lift tech watches lifts home; the security tech checks doors. Then the fire tech resets, and everyone checks that their plant <b>restarts correctly</b>. A BMS tech who understands the fire side is valuable in these tests.</p></div>
+
+    <h2>EWIS: emergency warning and intercommunication</h2>
+    <p>In larger or taller buildings, simple bells are not enough. An <b>EWIS</b> (emergency warning and intercommunication system) gives staged, controlled evacuation:</p>
+    <ul>
+      <li>A <b>master emergency control panel (MECP)</b>, usually near the FIP, where the chief warden or brigade can choose which zones get which signal and make live announcements.</li>
+      <li><b>Speakers</b> in every area, on supervised amplifier circuits, giving two distinct tones: an <b>alert</b> tone (prepare to evacuate) and an <b>evacuate</b> tone (leave now), each followed by recorded voice messages.</li>
+      <li><b>Warden intercommunication points (WIPs)</b>, the red phones on each floor, so floor wardens can talk to the chief warden at the MECP.</li>
+      <li><b>Visual warning devices</b> where needed, for example for people with hearing impairment or in noisy areas.</li>
+    </ul>
+    <p>Typically the fire floor (and sometimes adjacent floors) gets the evacuate signal while other floors get alert, so stairs do not overflow. Simpler buildings may use an <b>occupant warning system</b> with the same tones and messages but without the full intercom. EWIS speaker circuits are often 100 V line audio (a constant-voltage audio system); treat amplifier outputs with respect.</p>
+
+    <h2>Standards and licensing in Australia</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Standard</th><th>What it covers (in plain words)</th></tr>
+      <tr><td>AS 1670.1</td><td>Design, installation and commissioning of fire detection and alarm systems: where detectors go, zones, wiring, interfaces.</td></tr>
+      <tr><td>AS 1670.4</td><td>Emergency sound and intercom systems (EWIS): tones, speakers, intelligibility, the MECP and WIPs.</td></tr>
+      <tr><td>AS 4428 series</td><td>Control and indicating equipment: requirements for fire panels and related equipment.</td></tr>
+      <tr><td>AS 1851</td><td>Routine service of fire protection systems and equipment: what to inspect and test, how often, and what to record.</td></tr>
+      <tr><td>AS 1668.1</td><td>Fire and smoke control in building ventilation and air conditioning systems.</td></tr>
+      <tr><td>AS 3786</td><td>Domestic smoke alarms (separate from FIP-based systems).</td></tr>
+    </table></div>
+    <p>The National Construction Code decides <i>when</i> a building needs detection, EWIS or smoke control; the standards say <i>how</i>. Standards are revised over time, and the NCC calls up particular editions, so always confirm the current edition that applies to your project. Standards are sold by Standards Australia; employers and TAFEs have access.</p>
+    <div class="callout aus"><span class="label">In Australia</span><p><b>Licensing and accreditation differ by state.</b> In <b>Queensland</b>, the QBCC (Queensland Building and Construction Commission) issues fire protection occupational licences, and fire protection work generally needs the right licence class. In <b>NSW</b>, owners must provide an Annual Fire Safety Statement, and certain fire safety assessment and certification work requires an accredited practitioner, for example through the Fire Protection Accreditation Scheme (FPAS) run by Fire Protection Association Australia. <b>Victoria</b> has essential safety measures reporting. Other states have their own rules. Any work on the FIP's 230 V supply needs an electrical licence. These rules change and differ by state, so check with the state regulator before you take on any fire work.</p></div>
+
+    <h2>What a fire alarm technician does on site</h2>
+    <p>Much of the entry-level work is <b>routine testing to AS 1851</b>: visiting buildings on a schedule (for example monthly, six-monthly and yearly routines) and testing a set portion of devices and functions each time, then recording the results in the site logbook and the company's system. A typical test visit:</p>
+    <ol class="steps">
+      <li><p><b>Sign in and notify.</b> Sign the logbook, tell building management, and contact the monitoring provider to put the system "on test" as the procedure requires.</p></li>
+      <li><p><b>Isolate what must not operate.</b> Isolate the brigade signal and any interfaces that should not trip during the test (for example lifts or AHUs), following the site's isolation procedure. Record every isolation.</p></li>
+      <li><p><b>Check the panel.</b> Indicators, display, event log, battery voltage and charger, and that there are no existing faults or forgotten isolations.</p></li>
+      <li><p><b>Test devices.</b> Use a detector tester pole with a smoke cup (test aerosol) or a heat cup on the scheduled detectors; operate call points with the test key; confirm each alarm at the panel. Test warning devices and EWIS speakers in the scheduled areas.</p></li>
+      <li><p><b>Test interfaces</b> scheduled for this visit, with the other trades where needed.</p></li>
+      <li><p><b>Restore and reset.</b> De-isolate everything you isolated, reset the panel, confirm the system is normal with no faults, and tell the monitoring provider the test is complete.</p></li>
+      <li><p><b>Record.</b> Fill in the logbook and report defects (dirty detectors, damaged call points, faults) with clear locations, so they can be quoted and fixed.</p></li>
+    </ol>
+    <div class="callout warn"><span class="label">Safety</span><p>The most dangerous mistake in fire work is leaving a system <b>isolated</b> when you go home. A building with an isolated brigade signal or zone has no protection there. Keep a written list of every isolation you make, and do not leave site until the panel shows no isolations and the monitoring provider confirms normal.</p></div>
+    <h3>Entry roles and training</h3>
+    <ul>
+      <li><b>Fire alarm test technician / trainee</b>: routine AS 1851 testing, under supervision at first. This is the most common way in.</li>
+      <li><b>Fire alarm service technician</b>: fault-finding, repairs, panel programming, defect rectification.</li>
+      <li><b>Installer / commissioning technician</b>: new systems on construction sites (White Card needed); often electricians or electrical apprentices.</li>
+    </ul>
+    <p>Training: there are nationally recognised Certificate II and Certificate III qualifications in fire protection (for example in inspection and testing), often done as a traineeship while working. Search <b>training.gov.au</b> for the current qualification names and codes. Employers value electronics knowledge (Ohm's law, supervised circuits, multimeter skills), a driver's licence, comfort working at heights, and tidy record-keeping.</p>
+    <div class="callout try"><span class="label">Try this</span><p>Build a conventional zone on your breadboard at 12 V: a 470 Ω "panel" resistor feeding a pair of wires, three push-buttons each with a 680 Ω resistor in series (your "detectors"), all in parallel, and a 4.7 kΩ EOL at the far end. Measure the zone voltage in normal, with one button pressed (alarm), with a wire pulled out before the EOL (open), and with the two wires shorted. The 470 Ω series resistor limits the short-circuit current to about 25 mA, but it then dissipates about 0.3 W, so use a 0.5 W (or larger) resistor there. Then program an Arduino to read the zone voltage on an analogue input (through a divider to stay under 5 V) and print NORMAL, FIRE, OPEN or SHORT. Labs: <a href="../practice/p04-series-parallel-dividers.html">P04</a>, <a href="../practice/p12-sensors-adc.html">P12</a>.</p></div>
+
+    <h2>Interview questions</h2>
+    <details class="more"><summary>"What does an end-of-line resistor do?"</summary><p>It gives the panel a known resistance at the far end of a circuit so it can supervise the wiring: normal reads about the EOL value, an open circuit reads very high, a short reads near zero, and an alarm reads a distinct lower value. It must be at the end of the line, after the last device.</p></details>
+    <details class="more"><summary>"What's the difference between a conventional and an addressable system?"</summary><p>Conventional reports alarms by zone using EOL-supervised radial circuits. Addressable puts every device on a polled loop with its own address, reports the exact device, can monitor detector sensitivity, and uses isolators so a single short or break does not disable the loop.</p></details>
+    <details class="more"><summary>"What do you do before testing a fire system?"</summary><p>Sign in, notify building management and the monitoring provider, isolate the brigade signal and interfaces per the site procedure, record the isolations, check the panel for existing faults. After testing, de-isolate, reset, and confirm normal with the monitoring provider.</p></details>
+    <details class="more"><summary>"What happens to the air conditioning in a fire alarm?"</summary><p>The FIP sends a fire trip to the MSSB. Depending on the design, AHUs shut down or go into smoke control mode (stair pressurisation, smoke exhaust) to AS 1668.1, with a fire fan control panel for brigade override.</p></details>
+    <details class="more"><summary>"Which standard covers routine testing?"</summary><p>AS 1851, routine service of fire protection systems and equipment. Design and installation is AS 1670.1; EWIS is AS 1670.4. Always confirm the edition that applies.</p></details>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A zone has a 4.7 kΩ EOL. A detector goes into alarm with a 680 Ω load. What resistance does the panel see (ignoring cable and standby currents)?</summary><div class="answer"><p>Parallel: 4,700 × 680 / (4,700 + 680) = 3,196,000 / 5,380 ≈ <b>594 Ω</b>. Much lower than 4.7 kΩ, so the panel reads FIRE.</p></div></details>
+    <details class="quiz"><summary>An installer fits the EOL resistor at the panel terminals instead of at the last detector. What goes wrong?</summary><div class="answer"><p>The panel always sees the EOL, so it reads normal even if the cable is broken further along. Detectors beyond the break are silently disconnected: exactly the failure supervision is meant to prevent.</p></div></details>
+    <details class="quiz"><summary>Why does the panel need to remove power briefly to reset a conventional zone?</summary><div class="answer"><p>Conventional detectors latch in alarm, drawing alarm current until their supply is interrupted. Removing power clears the latch; if smoke is still present, the detector alarms again.</p></div></details>
+    <details class="quiz"><summary>On an addressable loop with isolators, a short occurs between isolators 2 and 3. What does the panel report and what keeps working?</summary><div class="answer"><p>Isolators 2 and 3 open, cutting out only the section between them; the panel reports a short-circuit fault (and the devices in that section as missing). All other devices keep working, fed from both ends of the loop.</p></div></details>
+    <details class="quiz"><summary>Why are heat detectors used in kitchens instead of photoelectric smoke detectors?</summary><div class="answer"><p>Cooking fumes and steam scatter light in a photoelectric chamber and cause false alarms. A heat detector responds to temperature, which normal cooking does not raise to the alarm point at ceiling level.</p></div></details>
+    <details class="quiz"><summary>A 1.5 mm² zone cable is 500 m long. Roughly what loop resistance does it add, and does it matter?</summary><div class="answer"><p>About 24 Ω per km of loop, so about <b>12 Ω</b>. Compared with a 4.7 kΩ EOL (0.26 %) or a ~600 Ω alarm, it is negligible.</p></div></details>
+    <details class="quiz"><summary>You finish a test and the panel shows "1 isolation active". What do you do?</summary><div class="answer"><p>Find what is isolated (check your isolation list and the panel), confirm it should be restored, de-isolate it, reset, and confirm the panel shows normal with no isolations and no faults before telling the monitoring provider and leaving. If it must stay isolated (a known defect), it must be reported and recorded per the site procedure.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can explain what a FIP does and name its main controls.</span></li>
+      <li><input type="checkbox"><span>I can explain how a photoelectric smoke detector works and when to use heat, multi-criteria or aspirating detectors.</span></li>
+      <li><input type="checkbox"><span>I can calculate the resistance a panel sees in normal, alarm, open and short states.</span></li>
+      <li><input type="checkbox"><span>I can explain why the EOL must be at the end of the line.</span></li>
+      <li><input type="checkbox"><span>I can compare conventional zones with addressable loops and explain loop isolators.</span></li>
+      <li><input type="checkbox"><span>I can describe fire mode interfaces to HVAC, BMS, lifts and doors.</span></li>
+      <li><input type="checkbox"><span>I can describe an EWIS: MECP, alert and evacuate tones, WIPs.</span></li>
+      <li><input type="checkbox"><span>I can name AS 1670.1, AS 1670.4, AS 4428, AS 1851 and know to check current editions and state licensing.</span></li>
+      <li><input type="checkbox"><span>I can describe a safe test visit, including isolation and de-isolation.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
