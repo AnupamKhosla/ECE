@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P10 · Power supplies: regulators, buck converters, batteries</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
+    <span class="eyebrow">Practice · Lab P10</span>
+    <h1>Power supplies: regulators, buck converters, batteries</h1>
+    <p class="lede">You will build a 5 V supply with a 7805 and work out how hot it gets, set any voltage with an LM317, measure why a buck converter runs cool, size a standby battery for an alarm panel, and calculate cable voltage drop for a 12 V camera at the end of a long run: the single most useful sum in security installation.</p>
+    <div class="meta"><span><b>Time</b> 3 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$45</span><span><b>Theory</b> T03, T02</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>What you need</h2>
+    <ul class="kit">
+      <li><b>7805 regulator (TO-220) ×2</b><small>~A$1 each · plus a clip-on or bolt-on TO-220 heatsink, ~A$2</small></li>
+      <li><b>LM317T adjustable regulator ×2</b><small>~A$2 each</small></li>
+      <li><b>Buck converter module</b><small>~A$5–10 · adjustable, LM2596-type or similar, with a multi-turn trim pot</small></li>
+      <li><b>Capacitors</b><small>0.33 µF and 0.1 µF ceramic; 10 µF and 100 µF electrolytic (25 V)</small></li>
+      <li><b>Resistors</b><small>240 Ω, 1.5 kΩ, 5 kΩ trim pot; load resistors 100 Ω 1 W, 22 Ω 5 W, 10 Ω 5 W</small></li>
+      <li><b>12 V DC plug-pack, 1–2 A</b><small>From P08; a 9 V battery and a 4×AA holder too</small></li>
+      <li><b>Inline fuse holder + fuses, and a polyfuse</b><small>~A$5 · 5×20 mm glass or blade type; a 0.5 A PTC resettable fuse</small></li>
+      <li><b>10–20 m of thin two-core cable</b><small>~A$10 · e.g. alarm cable or light figure-8, for the voltage-drop lab</small></li>
+    </ul>
+
+    <div class="callout warn"><span class="label">Safety</span><p>All of this lab is extra-low-voltage DC. Regulators and load resistors get hot enough to burn (80–120 °C) without any warning glow: touch briefly with a fingertip, or not at all. Batteries can deliver huge currents into a short circuit: a 12 V 7 Ah sealed lead-acid battery will melt a thin wire and can start a fire. Fuse every battery lead close to the battery. Lithium-ion cells can catch fire if punctured, shorted or charged wrongly. The 230 V side of any power supply, and wiring a 24 V AC control transformer to mains, is licensed electrician's work.</p></div>
+
+    <h2>1 · The 7805 linear regulator</h2>
+    <p>A <b>linear regulator</b> is a transistor in series with the load that automatically adjusts how much voltage it "throws away" so that the output stays fixed. The 7805 gives 5.0 V out from any input from about 7 V up to its maximum (around 35 V for common versions; check your datasheet).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" role="img" aria-label="7805 regulator: TO-220 pinout input ground output, with 0.33 microfarad input and 0.1 microfarad output capacitors and a load">
+        <!-- TO-220 drawing -->
+        <rect class="f-grey" x="40" y="30" width="90" height="30" rx="3"/>
+        <circle class="f-panel" cx="85" cy="45" r="8"/>
+        <rect class="f-ink" x="40" y="60" width="90" height="70" rx="3"/>
+        <text class="t t-small f-panel" x="62" y="100">7805</text>
+        <line class="s-line" x1="60" y1="130" x2="60" y2="180"/><line class="s-line" x1="85" y1="130" x2="85" y2="180"/><line class="s-line" x1="110" y1="130" x2="110" y2="180"/>
+        <text class="t t-small" x="48" y="198">IN</text><text class="t t-small" x="74" y="198">GND</text><text class="t t-small" x="102" y="198">OUT</text>
+        <text class="t t-small t-muted" x="30" y="222">front view, legs down</text>
+        <text class="t t-small t-muted" x="30" y="238">tab = GND on a 7805</text>
+        <!-- schematic -->
+        <rect class="f-panel s-line" x="330" y="50" width="100" height="56" rx="4"/>
+        <text class="t t-bold" x="358" y="84">7805</text>
+        <path class="s-line" d="M200 78 H330 M430 78 H580"/>
+        <path class="s-line" d="M380 106 V210"/>
+        <path class="s-line" d="M200 210 H580"/>
+        <text class="t t-small t-bold" x="170" y="72">V<tspan baseline-shift="sub" font-size="9">IN</tspan> 9–12 V</text>
+        <text class="t t-small t-bold" x="520" y="72">5.0 V</text>
+        <!-- Cin -->
+        <path class="s-line" d="M270 78 V130"/><line class="s-line" x1="254" y1="130" x2="286" y2="130"/><line class="s-line" x1="254" y1="140" x2="286" y2="140"/><path class="s-line" d="M270 140 V210"/>
+        <text class="t t-small" x="218" y="160">0.33 µF</text>
+        <!-- Cout -->
+        <path class="s-line" d="M480 78 V130"/><line class="s-line" x1="464" y1="130" x2="496" y2="130"/><line class="s-line" x1="464" y1="140" x2="496" y2="140"/><path class="s-line" d="M480 140 V210"/>
+        <text class="t t-small" x="436" y="160">0.1 µF</text>
+        <!-- load -->
+        <path class="s-line" d="M560 78 V110 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l16 6 l-8 4 V210"/>
+        <text class="t t-small" x="576" y="146">load</text>
+        <circle class="f-ink" cx="270" cy="78" r="3.5"/><circle class="f-ink" cx="480" cy="78" r="3.5"/><circle class="f-ink" cx="380" cy="210" r="3.5"/><circle class="f-ink" cx="270" cy="210" r="3.5"/><circle class="f-ink" cx="480" cy="210" r="3.5"/>
+        <text class="t t-small t-red" x="300" y="40">heat = (V<tspan baseline-shift="sub" font-size="9">IN</tspan> − 5 V) × I</text>
+        <path class="s-line" d="M370 230 H390 M374 236 H386 M378 242 H382 M380 210 V230"/>
+      </svg>
+      <figcaption>Figure 1. 7805 pin-out and basic circuit. The small capacitors close to the pins keep the regulator stable (values from the classic datasheet; follow yours). All the voltage between input and output is dropped across the regulator, and that becomes heat.</figcaption>
+    </figure>
+
+    <h3>Two limits: dropout and heat</h3>
+    <p><b>Dropout voltage</b> is the minimum difference between input and output for the regulator to keep working. For a standard 7805 it is about 2 V, so you need at least about 7 V in. Below that, the output simply follows the input down, about 2 V lower. "Low-dropout" (LDO) regulators need only a few hundred millivolts.</p>
+    <p><b>Heat</b> is the bigger limit. The regulator passes the full load current while dropping (V<sub>in</sub> − V<sub>out</sub>) across itself:</p>
+    <div class="formula">P = (V<sub>in</sub> − V<sub>out</sub>) × I = (12 − 5) × 0.5 A = 3.5 W
+      <small>3.5 W is a lot for a part the size of a fingernail. Efficiency is only V<sub>out</sub>/V<sub>in</sub> = 5/12 = 42%: more power is wasted as heat than delivered.</small></div>
+    <h3>Worked example: does it need a heatsink?</h3>
+    <p>Heat flows out of the chip through <b>thermal resistances</b>, measured in °C per watt. A bare TO-220 package in still air is roughly 50–65 °C/W from junction (the silicon) to air. The chip should stay below about 125 °C (the 7805 shuts itself down if it gets too hot, which shows up as the output cutting in and out).</p>
+    <ul>
+      <li>No heatsink: 3.5 W × 60 °C/W = +210 °C. Impossible: it will go into thermal shutdown.</li>
+      <li>Allowed total rise in a 40 °C cabinet: 125 − 40 = 85 °C. Total thermal resistance allowed: 85 / 3.5 = 24 °C/W.</li>
+      <li>Junction-to-case is about 5 °C/W and the thermal pad about 1 °C/W, so the heatsink must be better than about 24 − 6 = 18 °C/W. Choose one rated around 10–15 °C/W for margin.</li>
+      <li>Or reduce the heat: feed it from 9 V instead of 12 V (P = 4 × 0.5 = 2 W), or use a buck converter (section 3).</li>
+    </ul>
+
+    <ol class="steps">
+      <li><p><b>Build Figure 1</b> on the breadboard, capacitors right at the pins. Input from the 9 V battery first.</p></li>
+      <li><p><b>No load:</b> measure output. Expect 4.8–5.2 V (the 7805 is typically ±4%).</p></li>
+      <li><p><b>100 Ω load (50 mA):</b> output barely changes. Regulator heat = (9 − 5) × 0.05 = 0.2 W: slightly warm.</p></li>
+      <li><p><b>Dropout test:</b> swap the input to the 4×AA pack (about 6 V). Output falls to about 4 V. The regulator has run out of headroom.</p></li>
+      <li><p><b>Heat test:</b> 12 V plug-pack input, 22 Ω 5 W load (about 230 mA). P = 7 × 0.23 ≈ 1.6 W. Without a heatsink the tab gets too hot to touch within a minute (+80–100 °C). Power off, fit the heatsink, repeat: much cooler.</p></li>
+    </ol>
+
+    <div class="table-wrap"><table>
+      <tr><th>Input</th><th>Load</th><th>Expected V<sub>out</sub></th><th>Regulator heat</th><th>Feel</th></tr>
+      <tr><td>9 V battery</td><td>none</td><td>4.8–5.2 V</td><td>≈ 0 W (a few mA for the chip itself)</td><td>Cold</td></tr>
+      <tr><td>9 V battery</td><td>100 Ω</td><td>4.8–5.2 V</td><td>≈ 0.2 W</td><td>Barely warm</td></tr>
+      <tr><td>4×AA (≈ 6 V)</td><td>100 Ω</td><td>≈ 3.9–4.3 V</td><td>≈ 0.1 W</td><td>Out of regulation (dropout)</td></tr>
+      <tr><td>12 V plug-pack</td><td>22 Ω 5 W</td><td>4.8–5.2 V</td><td>≈ 1.6 W</td><td>Hot without heatsink; warm with</td></tr>
+    </table></div>
+
+    <div class="callout why"><span class="label">Why it gets hot</span><p>Power is voltage × current. The current through the regulator is the same as the load current, and the voltage across it is everything you are not using. A linear regulator is basically an automatically adjusted resistor: it can only throw voltage away as heat. Energy is conserved, so 12 V × 0.5 A going in must equal 5 V × 0.5 A going to the load plus 3.5 W of heat.</p></div>
+    <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat</a>
+
+    <h2>2 · The LM317: any voltage you like</h2>
+    <p>The LM317 is an adjustable linear regulator. It keeps exactly 1.25 V between its OUT and ADJ pins. Put a resistor R1 across those pins and a fixed 1.25 V / R1 current flows through it, then on down through R2 to ground. The output therefore sits at 1.25 V plus the voltage across R2.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="LM317 circuit: input, output, R1 240 ohm from output to adjust pin, R2 from adjust to ground">
+        <rect class="f-panel s-line" x="250" y="40" width="110" height="56" rx="4"/>
+        <text class="t t-bold" x="276" y="74">LM317</text>
+        <text class="t t-small" x="256" y="56">IN</text><text class="t t-small" x="324" y="56">OUT</text><text class="t t-small" x="292" y="92">ADJ</text>
+        <path class="s-line" d="M90 68 H250 M360 68 H560"/>
+        <text class="t t-small t-bold" x="40" y="62">V<tspan baseline-shift="sub" font-size="9">IN</tspan></text>
+        <text class="t t-small t-bold" x="540" y="56">V<tspan baseline-shift="sub" font-size="9">OUT</tspan></text>
+        <path class="s-line" d="M440 68 V80 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V130 H305 V96"/>
+        <text class="t t-small" x="456" y="104">R1 = 240 Ω</text>
+        <text class="t t-small t-red" x="456" y="120">1.25 V across it</text>
+        <path class="s-line" d="M305 130 V140 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l8 4 V200"/>
+        <text class="t t-small" x="322" y="168">R2</text>
+        <path class="s-line" d="M90 200 H560"/>
+        <path class="s-line" d="M150 68 V110"/><line class="s-line" x1="136" y1="110" x2="164" y2="110"/><line class="s-line" x1="136" y1="118" x2="164" y2="118"/><path class="s-line" d="M150 118 V200"/>
+        <text class="t t-small" x="80" y="140">0.1 µF</text>
+        <path class="s-line" d="M520 68 V108"/><line class="s-line" x1="506" y1="108" x2="534" y2="108"/><path class="s-line" d="M506 122 Q520 112 534 122"/><path class="s-line" d="M520 118 V200"/>
+        <text class="t t-small" x="540" y="122">10 µF</text>
+        <circle class="f-ink" cx="440" cy="68" r="3.5"/><circle class="f-ink" cx="305" cy="130" r="3.5"/><circle class="f-ink" cx="520" cy="68" r="3.5"/><circle class="f-ink" cx="150" cy="68" r="3.5"/>
+        <text class="t t-small t-muted" x="40" y="222">LM317T pin-out, front view, legs down: ADJ, OUT, IN. The tab is OUT.</text>
+      </svg>
+      <figcaption>Figure 2. LM317 adjustable regulator. R1 sets a reference current (1.25 V / 240 Ω ≈ 5.2 mA, which also gives the minimum load the chip needs). The same current through R2 adds its voltage on top of the 1.25 V.</figcaption>
+    </figure>
+
+    <div class="formula">V<sub>out</sub> = 1.25 × (1 + R2 / R1)     R2 = R1 × (V<sub>out</sub> / 1.25 − 1)
+      <small>For 9 V with R1 = 240 Ω: R2 = 240 × (7.2 − 1) = 1488 Ω → 1.5 kΩ gives 9.06 V. A small current also flows out of the ADJ pin (about 50 µA), which adds a few tens of millivolts; ignore it for most work. Watch the TO-220 pin-out: it is different from the 7805, and the tab is OUT, not ground.</small></div>
+
+    <div class="widget" id="p10w-317">
+      <span class="label">Interactive · LM317 output voltage and heat</span>
+      <label>R1 <select id="p10l-r1"><option value="240" selected>240 Ω</option><option value="220">220 Ω</option><option value="120">120 Ω</option></select></label>
+      <label>Target output voltage <span class="out" id="p10l-vto">9.0 V</span><input type="range" id="p10l-vt" min="1.25" max="30" step="0.05" value="9"></label>
+      <label>Input voltage <span class="out" id="p10l-vio">12.0 V</span><input type="range" id="p10l-vi" min="3" max="37" step="0.5" value="12"></label>
+      <label>Load current <span class="out" id="p10l-io">200 mA</span><input type="range" id="p10l-i" min="5" max="1500" step="5" value="200"></label>
+      <div class="readings">
+        <div><small>R2 exact</small><span class="out" id="p10l-r2">—</span></div>
+        <div><small>Nearest E24 R2</small><span class="out" id="p10l-r2s">—</span></div>
+        <div><small>V<sub>out</sub> with that R2</small><span class="out" id="p10l-vo">—</span></div>
+        <div><small>Regulator heat</small><span class="out" id="p10l-p">—</span></div>
+        <div><small>Efficiency</small><span class="out" id="p10l-eff">—</span></div>
+      </div>
+      <p id="p10l-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var E24=[1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+      function near(r){if(r<=0)return 0;var d=Math.pow(10,Math.floor(Math.log(r)/Math.LN10)),m=r/d,b=E24[0],e=9;for(var i=0;i<E24.length;i++){if(Math.abs(E24[i]-m)<e){e=Math.abs(E24[i]-m);b=E24[i];}}if(Math.abs(10-m)<e)b=10;return b*d;}
+      function fR(r){return r>=1000?(+(r/1000).toFixed(2))+' kΩ':Math.round(r)+' Ω';}
+      function upd(){
+        var r1=+$('p10l-r1').value,vt=+$('p10l-vt').value,vi=+$('p10l-vi').value,I=+$('p10l-i').value/1000;
+        $('p10l-vto').textContent=vt.toFixed(2)+' V';$('p10l-vio').textContent=vi.toFixed(1)+' V';$('p10l-io').textContent=I>=1?I.toFixed(2)+' A':Math.round(I*1000)+' mA';
+        var r2=r1*(vt/1.25-1),r2s=near(r2),vo=1.25*(1+r2s/r1);
+        $('p10l-r2').textContent=r2<1?'0 (short ADJ to GND)':fR(r2);$('p10l-r2s').textContent=r2<1?'—':fR(r2s);$('p10l-vo').textContent=(r2<1?1.25:vo).toFixed(2)+' V';
+        vo=r2<1?1.25:vo;var P=Math.max(0,(vi-vo)*I);$('p10l-p').textContent=P<1?(P*1000).toFixed(0)+' mW':P.toFixed(2)+' W';
+        $('p10l-eff').textContent=vi>vo?(100*vo/vi).toFixed(0)+' %':'—';
+        var n=[];
+        if(vi<vo+3)n.push('Input is too close to the output: allow about 3 V of headroom (minimum input ≈ '+(vo+3).toFixed(1)+' V) or the output will sag under load.');
+        if(vi-vo>37)n.push('Input-to-output difference is beyond the LM317 limit (about 40 V).');
+        if(P>15)n.push('Over 15 W: far too much for a TO-220. Use a buck converter.');
+        else if(P>1.5)n.push('Needs a heatsink: a bare TO-220 handles only about 1–1.5 W comfortably.');
+        else if(P>0.5)n.push('Will run warm; a small heatsink is wise.');
+        if(I>1.5)n.push('LM317T is rated about 1.5 A maximum.');
+        if(!n.length)n.push('Fine without a heatsink.');
+        $('p10l-note').textContent=n.join(' ');
+      }
+      ['p10l-vt','p10l-vi','p10l-i'].forEach(function(k){$(k).oninput=upd;});$('p10l-r1').onchange=upd;upd();
+    })();
+    </script>
+
+    <ol class="steps">
+      <li><p><b>Build Figure 2</b> with R1 = 240 Ω and R2 = 1.5 kΩ, input from the 12 V plug-pack. Expect about 9.0–9.2 V.</p></li>
+      <li><p><b>Replace R2 with the 5 kΩ trim pot</b> (wiper and one end). Turn it: the output sweeps from 1.25 V up to about 9–10 V, where it runs out of headroom below the 12 V input.</p></li>
+      <li><p><b>Set exactly 5.00 V</b> with the pot and the meter. You now have a 5 V supply that you can trim, which the 7805 cannot do.</p></li>
+    </ol>
+
+    <h2>3 · Buck converters: why they run cool</h2>
+    <p>A <b>buck converter</b> (step-down switching regulator) does not burn off the extra voltage. A transistor switches the input on and off very fast (about 150 kHz on LM2596-type modules), and an inductor and capacitor smooth the pulses into steady DC. The output voltage is set by the duty cycle (P09): roughly V<sub>out</sub> ≈ D × V<sub>in</sub>. The switch is either fully on (tiny voltage across it) or fully off (no current through it), so it wastes very little. The inductor stores energy while the switch is on and keeps pushing current to the load while it is off.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Buck converter: switch, inductor, diode and capacitor, with current paths when the switch is on and when it is off">
+        <defs><marker id="p10-arrA" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-red" d="M0,0 L8,4 L0,8 z"/></marker>
+        <marker id="p10-arrB" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-blue" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <text class="t t-small t-bold" x="20" y="64">12 V in</text>
+        <path class="s-line" d="M30 80 H120"/>
+        <!-- switch -->
+        <circle class="f-panel s-line" cx="124" cy="80" r="4"/><circle class="f-panel s-line" cx="184" cy="80" r="4"/>
+        <line class="s-line" x1="128" y1="78" x2="178" y2="60"/>
+        <text class="t t-small" x="120" y="50">switch (MOSFET)</text>
+        <path class="s-line" d="M188 80 H260"/>
+        <circle class="f-ink" cx="230" cy="80" r="3.5"/>
+        <!-- inductor -->
+        <path class="s-line" d="M260 80 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 H440"/>
+        <text class="t t-small" x="278" y="58">inductor</text>
+        <!-- diode cathode up -->
+        <path class="s-line" d="M230 80 V120"/>
+        <line class="s-line" x1="218" y1="120" x2="242" y2="120"/>
+        <polygon class="f-ink" points="218,142 242,142 230,120"/>
+        <path class="s-line" d="M230 142 V200"/>
+        <text class="t t-small" x="150" y="140">diode</text>
+        <!-- cap -->
+        <path class="s-line" d="M400 80 V120"/><line class="s-line" x1="386" y1="120" x2="414" y2="120"/><path class="s-line" d="M386 134 Q400 124 414 134"/><path class="s-line" d="M400 130 V200"/>
+        <text class="t t-small" x="420" y="134">C</text>
+        <!-- load -->
+        <path class="s-line" d="M480 80 V100 l-8 4 l16 6 l-16 6 l16 6 l-16 6 l16 6 l-8 4 V200"/>
+        <path class="s-line" d="M440 80 H480"/>
+        <text class="t t-small" x="496" y="130">5 V load</text>
+        <path class="s-line" d="M30 200 H480"/>
+        <text class="t t-small t-bold" x="20" y="194">0 V</text>
+        <circle class="f-ink" cx="400" cy="80" r="3.5"/><circle class="f-ink" cx="230" cy="200" r="3.5"/><circle class="f-ink" cx="400" cy="200" r="3.5"/>
+        <!-- paths -->
+        <path class="s-red" d="M60 96 H200 M250 96 H360" marker-end="url(#p10-arrA)"/>
+        <text class="t t-small t-red" x="60" y="232">Switch ON: input → inductor → load (inductor stores energy)</text>
+        <path class="s-blue s-dash" d="M214 186 V104" marker-end="url(#p10-arrB)"/>
+        <text class="t t-small t-blue" x="60" y="248">Switch OFF: inductor keeps current flowing, through the diode</text>
+      </svg>
+      <figcaption>Figure 3. Buck converter. Red: switch on, current flows from the input through the inductor to the load. Blue: switch off, the inductor (which resists changes in current, exactly like the relay coil in P08) keeps current flowing round through the diode. The capacitor smooths what is left. Many modern chips replace the diode with a second MOSFET for even less loss.</figcaption>
+    </figure>
+
+    <h3>Worked example: 12 V to 5 V at 2 A</h3>
+    <div class="table-wrap"><table>
+      <tr><th></th><th>7805-style linear</th><th>Buck converter at 90%</th></tr>
+      <tr><td>Power to the load</td><td>5 V × 2 A = 10 W</td><td>10 W</td></tr>
+      <tr><td>Power from the 12 V supply</td><td>12 V × 2 A = 24 W</td><td>10 / 0.9 = 11.1 W</td></tr>
+      <tr><td>Input current</td><td>2 A (same as output)</td><td>11.1 / 12 = 0.93 A (<b>less</b> than output)</td></tr>
+      <tr><td>Heat in the regulator</td><td>14 W (needs a big heatsink)</td><td>1.1 W (warm)</td></tr>
+    </table></div>
+    <p>Notice the buck's input current is <i>less</i> than its output current. Power in ≈ power out, so when the voltage steps down, the current steps up. That surprises people the first time they measure it.</p>
+
+    <ol class="steps">
+      <li><p><b>Set the module before connecting a load.</b> 12 V into IN+ and IN−. Meter on OUT. Turn the multi-turn trim pot until the output reads 5.0 V. (These pots can take 10–20 turns to move noticeably; some modules are shipped set near the maximum.)</p></li>
+      <li><p><b>Load it</b> with 10 Ω 5 W (0.5 A, 2.5 W).</p></li>
+      <li><p><b>Measure four numbers:</b> V<sub>in</sub>, I<sub>in</sub> (meter in series with the input), V<sub>out</sub>, I<sub>out</sub>.</p></li>
+      <li><p><b>Calculate efficiency</b> = (V<sub>out</sub> × I<sub>out</sub>) / (V<sub>in</sub> × I<sub>in</sub>). Expect I<sub>in</sub> about 0.23–0.27 A and efficiency about 75–90%.</p></li>
+      <li><p><b>Feel the module.</b> Barely warm. Compare with the 7805 doing the same job: (12 − 5) × 0.5 = 3.5 W.</p></li>
+    </ol>
+
+    <div class="callout tip"><span class="label">Bench tip: cheap modules</span><p>Many low-cost buck modules use cloned chips and small inductors. Treat the headline current ("3 A") as a peak, and plan on about half of it continuously. They also make high-frequency switching noise; keep them away from sensitive analogue inputs, and add the 100 nF decoupling from P07 at the circuit you are powering.</p></div>
+
+    <h2>4 · Plug-packs and building power: 12 V DC, 24 V DC, 24 V AC</h2>
+    <p>Read a plug-pack label before you plug anything in: output voltage, AC or DC, current rating, and the polarity symbol (a dot with + on the centre means centre-positive, the usual for 12 V gear). DC barrels come in 2.1 mm and 2.5 mm centre-pin sizes that look almost identical: a 2.5 mm plug on a 2.1 mm socket gives an intermittent fault. Modern plug-packs are regulated switch-mode supplies; older heavy ones are transformers whose output rises well above the label at light load (P06).</p>
+
+    <figure>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Typical building low-voltage power: a 13.8 V DC security power supply with battery and fused outputs to cameras, reader and lock; and a 24 V AC control transformer feeding HVAC controller and actuators">
+        <text class="t t-bold" x="20" y="24">Security: 12 V DC system with battery backup</text>
+        <rect class="f-accent-soft s-accent" x="20" y="40" width="150" height="90" rx="6"/>
+        <text class="t t-small t-bold" x="32" y="62">Power supply</text>
+        <text class="t t-small" x="32" y="80">13.8 V DC out</text>
+        <text class="t t-small t-muted" x="32" y="98">230 V side: installed</text>
+        <text class="t t-small t-muted" x="32" y="114">by an electrician</text>
+        <rect class="f-panel s-line" x="40" y="160" width="110" height="50" rx="4"/>
+        <text class="t t-small" x="50" y="182">12 V 7 Ah SLA</text>
+        <text class="t t-small t-muted" x="50" y="200">standby battery</text>
+        <path class="s-line" d="M95 130 V160"/>
+        <rect class="f-amber" x="88" y="138" width="14" height="10" rx="2"/>
+        <text class="t t-small" x="108" y="148">fuse</text>
+        <path class="s-line" d="M170 70 H230 M230 50 V190"/>
+        <path class="s-line" d="M230 50 H262 M230 100 H262 M230 150 H262 M230 190 H262"/>
+        <g><rect class="f-amber" x="262" y="44" width="14" height="12" rx="2"/><rect class="f-amber" x="262" y="94" width="14" height="12" rx="2"/><rect class="f-amber" x="262" y="144" width="14" height="12" rx="2"/><rect class="f-amber" x="262" y="184" width="14" height="12" rx="2"/></g>
+        <path class="s-line" d="M276 50 H300 M276 100 H300 M276 150 H300 M276 190 H300"/>
+        <text class="t t-small" x="306" y="54">Camera 1 (0.5 A with IR)</text>
+        <text class="t t-small" x="306" y="104">Camera 2</text>
+        <text class="t t-small" x="306" y="154">Card reader (0.1–0.2 A)</text>
+        <text class="t t-small" x="306" y="194">Door strike or maglock (0.3–0.5 A)</text>
+        <text class="t t-small t-muted" x="236" y="224">one fuse or PTC per output</text>
+
+        <text class="t t-bold" x="20" y="256">HVAC: 24 V AC control transformer → BMS controller, valve and damper actuators, thermostats</text>
+        <rect class="f-theory-soft s-line" x="20" y="268" width="600" height="22" rx="4"/>
+        <text class="t t-small t-muted" x="30" y="284">24 V AC side is ELV. Keep one transformer leg as "common" on every device (P06), and fuse the secondary.</text>
+      </svg>
+      <figcaption>Figure 4. How low-voltage power is typically arranged on site. The security supply sits at 13.8 V so it can float-charge a 12 V lead-acid battery, and it feeds each device through its own fuse or polyfuse. HVAC controls commonly run on 24 V AC from a control transformer.</figcaption>
+    </figure>
+
+    <div class="table-wrap"><table>
+      <tr><th>Supply</th><th>Where you meet it</th><th>Notes</th></tr>
+      <tr><td>12 V DC (13.6–13.8 V when float-charging a battery)</td><td>Intruder alarm panels, PIRs, sirens, non-PoE cameras, card readers, door strikes</td><td>Most security gear accepts about 10.5–14 V; check each data sheet</td></tr>
+      <tr><td>24 V DC</td><td>PLCs and industrial sensors, many fire panels, some access control and maglocks, 4–20 mA loops</td><td>Half the current of 12 V for the same power, so less cable drop</td></tr>
+      <tr><td>24 V AC</td><td>HVAC thermostats, BMS controllers, valve and damper actuators, some PTZ cameras and gate motors</td><td>From a 230/24 V control transformer; mains side is electrician's work</td></tr>
+      <tr><td>PoE (about 48–57 V DC on Ethernet)</td><td>IP cameras, access points, IP phones, some door controllers</td><td>Covered in P19; still ELV</td></tr>
+    </table></div>
+
+    <div class="callout aus"><span class="label">In Australia</span><p>The ELV limit you have been working inside comes from AS/NZS 3000 (the Wiring Rules): up to 50 V AC or 120 V ripple-free DC. Fixed wiring of the 230 V side of any building power supply, transformer or battery charger must be done by a licensed electrician. Battery systems on solar installations have their own standards and accreditation (for example AS/NZS 5139 for battery installations). Confirm requirements with your state's electrical regulator and, for solar, the relevant accreditation body.</p></div>
+
+    <h2>5 · Batteries you will meet</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Nominal voltage</th><th>Full / empty</th><th>Typical capacity</th><th>Where and why</th></tr>
+      <tr><td>Alkaline AA</td><td>1.5 V</td><td>1.6 V / ≈ 0.9–1.0 V</td><td>≈ 2000–2800 mAh at low drain, much less at high drain</td><td>Wireless sensors, remotes. Not rechargeable; can leak when flat.</td></tr>
+      <tr><td>NiMH AA</td><td>1.2 V</td><td>≈ 1.4 V / ≈ 1.0 V</td><td>≈ 1900–2500 mAh</td><td>Rechargeable replacement for AA; flat voltage curve</td></tr>
+      <tr><td>Li-ion 18650</td><td>3.6–3.7 V</td><td>4.2 V / ≈ 2.5–3.0 V</td><td>≈ 2000–3500 mAh</td><td>Power banks, tools, packs. Needs a proper charger and protection circuit.</td></tr>
+      <tr><td>LiFePO4 cell</td><td>3.2 V</td><td>≈ 3.6 V / ≈ 2.5 V</td><td>varies</td><td>Home and solar batteries; four in series make a "12.8 V" pack</td></tr>
+      <tr><td>12 V sealed lead-acid (SLA/VRLA)</td><td>12 V (6 cells)</td><td>≈ 12.7–12.8 V rested; 13.6–13.8 V float; ≈ 10.5 V empty under load</td><td>7 Ah common in alarm panels; 12–18 Ah in access-control PSUs</td><td>Cheap, robust standby power. Capacity is quoted at the 20-hour rate.</td></tr>
+    </table></div>
+    <p><b>Capacity</b> in amp-hours (Ah) is current × time. A 7 Ah SLA can supply 0.35 A for 20 hours (that is the "20-hour rate" it is tested at). At higher currents you get less: perhaps 5–6 Ah at a 1-hour discharge, depending on the battery. Cold reduces capacity; heat shortens life. SLA batteries in panels are typically replaced every few years (often 3–5); follow the manufacturer and the site's maintenance schedule.</p>
+
+    <div class="callout warn"><span class="label">Lithium safety</span><p>Never charge Li-ion cells without a charger made for them, never puncture or crush them, never short them, and do not use unprotected loose cells for projects. Damaged lithium cells can catch fire hours later. Product Safety Australia (run by the ACCC) publishes guidance on lithium-ion battery safety; read it before building anything with 18650s.</p></div>
+
+    <h3>Standby battery sizing</h3>
+    <p>An alarm or access-control system must keep running from its battery for a required <b>standby</b> time after mains fails, and then still have enough left to run in <b>alarm</b> (sirens, strobes, locks) for a required time. The sum is simple:</p>
+    <div class="formula">Ah needed = (I<sub>standby</sub> × T<sub>standby</sub> + I<sub>alarm</sub> × T<sub>alarm</sub>) × derating
+      <small>Currents in amps, times in hours. The derating factor (often 1.25 or more) covers battery ageing, temperature and the fact that a battery is "flat" well before 0 Ah. The required times come from the standard that applies to the system (for example AS/NZS 2201.1 for intruder alarms, AS 1670.1 for fire detection), the client's specification and the panel maker. Confirm the current requirement for each job.</small></div>
+    <p><b>Worked example.</b> An alarm panel with keypad and detectors draws 250 mA in standby. The siren and strobe add up to 800 mA in alarm. Suppose the specification asks for 24 hours standby then 30 minutes of alarm. Ah = (0.25 × 24 + 0.8 × 0.5) × 1.25 = (6 + 0.4) × 1.25 = 8.0 Ah. A 7 Ah battery is <i>not</i> enough; fit a 12 Ah, or reduce the standby load.</p>
+
+    <div class="widget" id="p10w-bat">
+      <span class="label">Interactive · Standby battery calculator</span>
+      <label>Standby current <span class="out" id="p10b-iso">250 mA</span><input type="range" id="p10b-is" min="10" max="3000" step="10" value="250"></label>
+      <label>Standby time <span class="out" id="p10b-tso">24 h</span><input type="range" id="p10b-ts" min="1" max="72" step="1" value="24"></label>
+      <label>Alarm current <span class="out" id="p10b-iao">800 mA</span><input type="range" id="p10b-ia" min="0" max="5000" step="10" value="800"></label>
+      <label>Alarm time <span class="out" id="p10b-tao">30 min</span><input type="range" id="p10b-ta" min="0" max="240" step="5" value="30"></label>
+      <label>Derating factor <span class="out" id="p10b-dfo">1.25</span><input type="range" id="p10b-df" min="1" max="1.6" step="0.05" value="1.25"></label>
+      <div class="readings">
+        <div><small>Standby energy</small><span class="out" id="p10b-es">—</span></div>
+        <div><small>Alarm energy</small><span class="out" id="p10b-ea">—</span></div>
+        <div><small>Battery needed</small><span class="out" id="p10b-ah">—</span></div>
+        <div><small>Standard SLA size</small><span class="out" id="p10b-sz">—</span></div>
+      </div>
+      <p id="p10b-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      var SIZES=[1.2,2.3,7,12,18,26,40,65,100];
+      function fI(a){return a>=1000?(a/1000).toFixed(2)+' A':a+' mA';}
+      function upd(){
+        var is=+$('p10b-is').value,ts=+$('p10b-ts').value,ia=+$('p10b-ia').value,ta=+$('p10b-ta').value,df=+$('p10b-df').value;
+        $('p10b-iso').textContent=fI(is);$('p10b-tso').textContent=ts+' h';$('p10b-iao').textContent=fI(ia);$('p10b-tao').textContent=ta+' min';$('p10b-dfo').textContent=df.toFixed(2);
+        var es=is/1000*ts,ea=ia/1000*ta/60,ah=(es+ea)*df;
+        $('p10b-es').textContent=es.toFixed(2)+' Ah';$('p10b-ea').textContent=ea.toFixed(2)+' Ah';$('p10b-ah').textContent=ah.toFixed(1)+' Ah';
+        var s=null;for(var k=0;k<SIZES.length;k++){if(SIZES[k]>=ah){s=SIZES[k];break;}}
+        $('p10b-sz').textContent=s?s+' Ah':'more than 100 Ah';
+        var n='Choose the next size up, and check the power supply can recharge that battery in the time the standard requires and still run the load.';
+        if(s&&s>18)n='That is a large battery for a security panel. Check whether the standby load can be reduced, or whether the panel and its enclosure can hold and charge it. '+n;
+        if(ia>3*is&&ta>0)n+=' High alarm current: at high discharge rates a lead-acid battery delivers less than its 20-hour capacity, so keep generous derating.';
+        $('p10b-note').textContent=n;
+      }
+      ['p10b-is','p10b-ts','p10b-ia','p10b-ta','p10b-df'].forEach(function(k){$(k).oninput=upd;});upd();
+    })();
+    </script>
+
+    <div class="callout job"><span class="label">On the job</span><p>Battery tests are routine maintenance on alarm and access-control panels. A battery that reads 13.6 V on float can still be dead: its voltage collapses as soon as it carries load. Techs test under load (many panels have a battery test function, and battery testers exist for this) and record the date. Measure the standby current of a panel with the meter in series with the battery lead after mains is switched off at the panel's own supply; the panel's installation manual usually has a battery calculation sheet that does what the widget above does.</p></div>
+
+    <h2>6 · Fuses and polyfuses</h2>
+    <p>A <b>fuse</b> is a thin metal link that melts when too much current flows. Its job is to protect the <b>cable</b> (and prevent fire) when there is a short circuit, not to protect the device. Choose a fuse rating above the normal current (usually about 1.25–1.5 times it) and below what the cable can safely carry.</p>
+    <ul>
+      <li><b>Fast-blow</b> fuses open quickly; use them for electronics that has no switch-on surge.</li>
+      <li><b>Slow-blow</b> (time-delay, "T" marked) fuses tolerate a short inrush, like the capacitor charging in P07 or a motor starting.</li>
+      <li><b>Blade fuses</b> (car type) are common in 12 V distribution because they are cheap and easy to check.</li>
+      <li><b>Polyfuses</b> (PTC resettable fuses) are plastic with carbon particles. Overcurrent heats them, the plastic expands, the carbon paths break, and resistance jumps. They limit current instead of melting, and reset after the power is removed and they cool. They have a <i>hold</i> current (will not trip) and a <i>trip</i> current (about twice the hold), are slower than fuses, and drop a little voltage even when cold. Security power supplies often use one PTC per output.</li>
+    </ul>
+    <ol class="steps">
+      <li><p><b>Fuse test.</b> 12 V plug-pack → inline holder with a 0.5 A fuse → 22 Ω 5 W (0.55 A). The fuse may survive for a while (fuses are slow near their rating). Swap to 10 Ω (1.2 A): it blows within seconds. Check the fuse on continuity.</p></li>
+      <li><p><b>Polyfuse test.</b> Replace the fuse with a 0.5 A hold PTC and the 10 Ω load. After a few seconds the current drops to a few tens of milliamps as it trips (measure it, and feel the PTC: warm). Remove power, wait a minute, re-apply with the 22 Ω: it works again.</p></li>
+    </ol>
+
+    <h2>7 · Cable voltage drop: the 12 V camera at the end of a long run</h2>
+    <p>This is the calculation that separates a reliable installation from a call-back. Every metre of copper has resistance. Current flows <b>out</b> on one conductor and <b>back</b> on the other, so the cable's resistance counts twice: the <b>loop resistance</b>.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Voltage drop: 12 V supply, 50 metre cable shown as two resistors of 1.72 ohm each, camera at the far end receives 10.3 V at 0.5 A">
+        <rect class="f-accent-soft s-accent" x="20" y="60" width="90" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="34" y="104">PSU</text>
+        <text class="t t-small" x="34" y="122">12.0 V</text>
+        <path class="s-line" d="M110 80 H220 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H530"/>
+        <path class="s-line" d="M110 150 H220 l6 -10 l10 20 l10 -20 l10 20 l10 -20 l10 20 l6 -10 H530"/>
+        <text class="t t-small" x="200" y="52">+ conductor: 50 m × 0.0344 Ω/m = 1.72 Ω</text>
+        <text class="t t-small" x="200" y="190">− conductor: another 1.72 Ω</text>
+        <text class="t t-small t-red" x="320" y="104">drops 0.86 V</text>
+        <text class="t t-small t-red" x="320" y="138">drops 0.86 V</text>
+        <rect class="f-panel s-line" x="530" y="60" width="90" height="110" rx="6"/>
+        <text class="t t-small t-bold" x="544" y="98">Camera</text>
+        <text class="t t-small" x="544" y="116">0.5 A</text>
+        <text class="t t-small t-red" x="544" y="134">10.3 V</text>
+        <text class="t t-small t-muted" x="120" y="218">0.5 mm² copper, 50 m run: loop resistance 3.44 Ω, total drop 0.5 × 3.44 = 1.72 V</text>
+      </svg>
+      <figcaption>Figure 5. The supply says 12.0 V; the camera gets 10.3 V. Both conductors drop voltage, so always use twice the run length.</figcaption>
+    </figure>
+
+    <div class="formula">R<sub>loop</sub> = 2 × L × (ρ / A)     V<sub>drop</sub> = I × R<sub>loop</sub>
+      <small>L is the one-way run length in metres. ρ (rho) for copper is about 0.0172 Ω·mm²/m at 20 °C, so resistance per metre = 0.0172 / A, with A in mm². Copper's resistance rises about 0.4% per °C, so a cable in a hot ceiling space is a few percent worse.</small></div>
+
+    <div class="table-wrap"><table>
+      <tr><th>Conductor</th><th>Area</th><th>Ω per metre (one conductor, 20 °C)</th><th>Loop Ω per 10 m of run</th></tr>
+      <tr><td>Cat6 single conductor (23–24 AWG)</td><td>≈ 0.21–0.26 mm²</td><td>≈ 0.066–0.084</td><td>≈ 1.3–1.7</td></tr>
+      <tr><td>Alarm cable 7/0.20 (7 strands of 0.2 mm)</td><td>≈ 0.22 mm²</td><td>≈ 0.078</td><td>≈ 1.6</td></tr>
+      <tr><td>Alarm cable 14/0.20</td><td>≈ 0.44 mm²</td><td>≈ 0.039</td><td>≈ 0.78</td></tr>
+      <tr><td>0.5 mm²</td><td>0.5 mm²</td><td>0.0344</td><td>0.69</td></tr>
+      <tr><td>0.75 mm²</td><td>0.75 mm²</td><td>0.0229</td><td>0.46</td></tr>
+      <tr><td>1.0 mm²</td><td>1.0 mm²</td><td>0.0172</td><td>0.34</td></tr>
+      <tr><td>1.5 mm²</td><td>1.5 mm²</td><td>0.0115</td><td>0.23</td></tr>
+      <tr><td>2.5 mm²</td><td>2.5 mm²</td><td>0.0069</td><td>0.14</td></tr>
+    </table></div>
+    <p>"7/0.20" means 7 strands each 0.20 mm in diameter: area = 7 × π × (0.1 mm)² ≈ 0.22 mm². Cable makers' data sheets give exact resistance; use them when you have them.</p>
+
+    <h3>Worked example: the camera that reboots at night</h3>
+    <p>A 12 V camera draws 0.25 A by day. At night its infrared LEDs switch on and it draws 0.5 A. It is 50 m from the power supply on 0.5 mm² two-core cable. The camera's data sheet says 12 V DC ±10%, so it needs at least 10.8 V.</p>
+    <ul>
+      <li>Loop resistance: 2 × 50 × 0.0344 = 3.44 Ω.</li>
+      <li>Day: drop = 0.25 × 3.44 = 0.86 V → camera gets 11.1 V. Works.</li>
+      <li>Night: drop = 0.5 × 3.44 = 1.72 V → camera gets 10.3 V. Below 10.8 V. The IR switches on, the voltage sags, the camera browns out and reboots, the IR switches off, the voltage recovers, and the cycle repeats. The customer says "the camera goes off at night".</li>
+    </ul>
+    <p>Fixes, from best to worst: use heavier cable (1.5 mm²: loop 1.15 Ω, drop 0.58 V, camera gets 11.4 V); move the power supply closer; use PoE or a 24 V camera; or set an adjustable supply slightly higher, <i>only</i> if every device on that output tolerates the higher voltage when it draws little current.</p>
+
+    <div class="widget" id="p10w-drop">
+      <span class="label">Interactive · Cable voltage drop</span>
+      <label>Supply voltage <span class="out" id="p10d-vso">12.0 V</span><input type="range" id="p10d-vs" min="5" max="28" step="0.1" value="12"></label>
+      <label>Device current <span class="out" id="p10d-io">500 mA</span><input type="range" id="p10d-i" min="10" max="5000" step="10" value="500"></label>
+      <label>One-way run length <span class="out" id="p10d-lo">50 m</span><input type="range" id="p10d-l" min="1" max="200" step="1" value="50"></label>
+      <label>Conductor <select id="p10d-a"><option value="0.205">Cat6 conductor, 24 AWG (0.205 mm²)</option><option value="0.22">Alarm cable 7/0.20 (0.22 mm²)</option><option value="0.44">Alarm cable 14/0.20 (0.44 mm²)</option><option value="0.5" selected>0.5 mm²</option><option value="0.75">0.75 mm²</option><option value="1.0">1.0 mm²</option><option value="1.5">1.5 mm²</option><option value="2.5">2.5 mm²</option></select></label>
+      <label>Device minimum voltage <span class="out" id="p10d-vmo">10.8 V</span><input type="range" id="p10d-vm" min="3" max="26" step="0.1" value="10.8"></label>
+      <div class="readings">
+        <div><small>Loop resistance</small><span class="out" id="p10d-r">—</span></div>
+        <div><small>Voltage drop</small><span class="out" id="p10d-dv">—</span></div>
+        <div><small>Voltage at device</small><span class="out" id="p10d-vd">—</span></div>
+        <div><small>Power lost in cable</small><span class="out" id="p10d-p">—</span></div>
+        <div><small>Longest run that works</small><span class="out" id="p10d-lmax">—</span></div>
+      </div>
+      <p id="p10d-note" style="margin:12px 0 0;font-size:15px"></p>
+    </div>
+    <script>
+    (function(){
+      var $=function(i){return document.getElementById(i);};
+      function upd(){
+        var vs=+$('p10d-vs').value,I=+$('p10d-i').value/1000,L=+$('p10d-l').value,A=+$('p10d-a').value,vm=+$('p10d-vm').value;
+        $('p10d-vso').textContent=vs.toFixed(1)+' V';$('p10d-io').textContent=I>=1?I.toFixed(2)+' A':Math.round(I*1000)+' mA';$('p10d-lo').textContent=L+' m';$('p10d-vmo').textContent=vm.toFixed(1)+' V';
+        var rpm=0.0172/A,R=2*L*rpm,dv=I*R,vd=vs-dv,P=I*I*R,lmax=vs>vm?(vs-vm)/(I*2*rpm):0;
+        $('p10d-r').textContent=R.toFixed(2)+' Ω';$('p10d-dv').textContent=dv.toFixed(2)+' V ('+(100*dv/vs).toFixed(0)+'%)';
+        $('p10d-vd').textContent=vd.toFixed(2)+' V';$('p10d-p').textContent=P<1?(P*1000).toFixed(0)+' mW':P.toFixed(2)+' W';
+        $('p10d-lmax').textContent=lmax>=1000?'over 1 km':Math.floor(lmax)+' m';
+        var n;
+        if(vd>=vm+0.5)n='OK: '+(vd-vm).toFixed(1)+' V of margin above the device minimum.';
+        else if(vd>=vm)n='Marginal: only '+(vd-vm).toFixed(2)+' V of margin. Cold joints, a hot ceiling or extra current will push it under. Go up a cable size.';
+        else{var need=0.0172*2*L*I/(vs-vm);n='Fails: the device gets '+vd.toFixed(1)+' V, below its '+vm.toFixed(1)+' V minimum.'+(vs>vm?' You need at least '+need.toFixed(2)+' mm² conductors, a shorter run, a higher-voltage supply, or PoE.':' The supply itself is below the minimum.');}
+        $('p10d-note').textContent=n;
+      }
+      ['p10d-vs','p10d-i','p10d-l','p10d-vm'].forEach(function(k){$(k).oninput=upd;});$('p10d-a').onchange=upd;upd();
+    })();
+    </script>
+
+    <ol class="steps">
+      <li><p><b>Measure your cable.</b> Twist the two conductors together at the far end of your 10–20 m length. Measure the resistance across the near end on the lowest ohms range (subtract the reading with the probes touching). That is the loop resistance. Compare with the table.</p></li>
+      <li><p><b>Load it.</b> Untwist the far end and connect the 22 Ω 5 W resistor there. Power the near end from the 12 V plug-pack.</p></li>
+      <li><p><b>Measure at both ends.</b> Voltage at the supply end, then at the resistor. The difference is the drop. Check it against I × R<sub>loop</sub> (I ≈ 12 / (22 + R<sub>loop</sub>)).</p></li>
+      <li><p><b>Double the conductors.</b> If the cable has four cores, use two in parallel for + and two for −. Loop resistance halves; so does the drop.</p></li>
+    </ol>
+
+    <div class="callout job"><span class="label">On the job</span><p>Voltage drop explains a large share of "intermittent" faults in CCTV, access control and alarms: cameras that reboot when IR comes on, maglocks that do not hold properly at the end of a long run, readers that beep and reset when the lock fires, and devices that work on the bench but not on site. Measure the voltage <b>at the device terminals, while it is drawing its highest current</b> (IR on, lock energised, siren sounding). This is also why 24 V and PoE are popular for long runs: for the same power, doubling the voltage halves the current, and the percentage drop falls to a quarter.</p></div>
+
+    <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The supply reads 12 V at its terminals, so power is fine." <b>Right:</b> what matters is the voltage at the device while it works hardest. With no load, a long cable drops nothing at all (V = I × R, and I = 0), so a meter on an idle circuit always looks perfect. Measure under load, at the far end.</p></div>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+      <tr><td>7805 output low, about input − 2 V</td><td>Not enough input (dropout)</td><td>Raise the input to at least 7 V, or use an LDO.</td></tr>
+      <tr><td>Regulator output cuts in and out, regulator very hot</td><td>Thermal shutdown</td><td>Calculate P = (V<sub>in</sub> − V<sub>out</sub>) × I; heatsink, lower V<sub>in</sub>, or buck.</td></tr>
+      <tr><td>LM317 output stuck near V<sub>in</sub> or at 1.25 V</td><td>Pin-out mixed up (it differs from the 7805); R1/R2 swapped or open</td><td>Check ADJ–OUT–IN order; check R1 is between OUT and ADJ.</td></tr>
+      <tr><td>Regulator oscillates (output noisy, meter unstable)</td><td>Missing capacitors near the pins</td><td>Fit the datasheet capacitors at the pins.</td></tr>
+      <tr><td>Buck output far higher than expected</td><td>Trim pot not set; set with no load</td><td>Adjust before connecting the load. Some modules ship set near maximum.</td></tr>
+      <tr><td>Fuse blows at switch-on only</td><td>Inrush into capacitors or a motor</td><td>Use a slow-blow (T) fuse of the same rating.</td></tr>
+      <tr><td>Device works on bench, fails on site</td><td>Cable voltage drop under load</td><td>Measure at the device under full load; upsize cable or raise voltage.</td></tr>
+      <tr><td>Panel battery reads 13.6 V but the system dies in a power cut</td><td>Battery voltage is the charger's, not the battery's; battery is worn out</td><td>Load-test the battery; replace on schedule.</td></tr>
+    </table></div>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A 7805 feeds 300 mA from a 15 V input. How much heat, and is a bare TO-220 OK?</summary><div class="answer"><p>P = (15 − 5) × 0.3 = 3 W. At roughly 60 °C/W for a bare TO-220, that is a rise of about 180 °C: far too hot, it will shut down. Use a heatsink of about 15 °C/W or better, a lower input voltage, or a buck converter.</p></div></details>
+    <details class="quiz"><summary>Choose R2 for 12 V out from an LM317 with R1 = 240 Ω. What minimum input do you need?</summary><div class="answer"><p>R2 = 240 × (12 / 1.25 − 1) = 240 × 8.6 = 2064 Ω. Use 2.0 kΩ (11.67 V) or 2.2 kΩ (12.7 V), or 1.8 kΩ plus a 500 Ω trim pot to set it exactly. Allow about 3 V of headroom: input at least 15 V.</p></div></details>
+    <details class="quiz"><summary>A buck converter delivers 5 V at 3 A from 24 V with 88% efficiency. What is the input current?</summary><div class="answer"><p>P<sub>out</sub> = 15 W. P<sub>in</sub> = 15 / 0.88 = 17.0 W. I<sub>in</sub> = 17.0 / 24 = 0.71 A. Less than a quarter of the output current, because power, not current, is (nearly) conserved.</p></div></details>
+    <details class="quiz"><summary>Why do security power supplies output 13.6–13.8 V and not 12.0 V?</summary><div class="answer"><p>Because they also keep a 12 V lead-acid battery charged. A 12 V lead-acid battery has six cells and needs about 2.25–2.3 V per cell to float-charge, which is about 13.5–13.8 V. The connected devices are designed to accept that range.</p></div></details>
+    <details class="quiz"><summary>Size the battery: 400 mA standby for 24 h, 1.2 A alarm for 30 min, derating 1.25.</summary><div class="answer"><p>(0.4 × 24 + 1.2 × 0.5) × 1.25 = (9.6 + 0.6) × 1.25 = 12.75 Ah. A 12 Ah battery is just short; choose 18 Ah or reduce the standby load. (The standby and alarm times must come from the applicable standard and specification.)</p></div></details>
+    <details class="quiz"><summary>A maglock draws 0.5 A at 12 V, 80 m away on 14/0.20 alarm cable. What voltage reaches it?</summary><div class="answer"><p>14/0.20 is about 0.44 mm², so about 0.039 Ω/m. Loop resistance = 2 × 80 × 0.039 ≈ 6.3 Ω. Drop = 0.5 × 6.3 ≈ 3.1 V. The lock gets about 8.9 V and will have reduced holding force. Use heavier cable, double up cores, use a 24 V lock and supply, or put the supply near the door.</p></div></details>
+    <details class="quiz"><summary>What does a fuse protect, and how do you choose its rating?</summary><div class="answer"><p>Mainly the cable and wiring, against overheating and fire in a fault. Choose a rating above the normal running current (about 1.25–1.5 times) and below the safe current of the smallest cable it protects. Use slow-blow where there is inrush.</p></div></details>
+    <details class="quiz"><summary>Why does a meter on an idle long cable show no voltage drop?</summary><div class="answer"><p>Drop = I × R. With no load current (the meter draws almost nothing), the drop is zero whatever the resistance. You must measure while the device draws its normal or maximum current.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can wire a 7805 with its capacitors and explain dropout.</span></li>
+      <li><input type="checkbox"><span>I can calculate regulator heat and decide whether a heatsink is needed.</span></li>
+      <li><input type="checkbox"><span>I can set an LM317 output with R2 = R1 × (V<sub>out</sub>/1.25 − 1) and I know its pin-out.</span></li>
+      <li><input type="checkbox"><span>I can set up a buck module and measure its efficiency, and I can explain why its input current is lower than its output current.</span></li>
+      <li><input type="checkbox"><span>I can read a plug-pack label, including polarity and barrel size.</span></li>
+      <li><input type="checkbox"><span>I know where 12 V DC, 24 V DC and 24 V AC are used in buildings, and why security supplies sit at 13.8 V.</span></li>
+      <li><input type="checkbox"><span>I can compare alkaline, NiMH, Li-ion, LiFePO4 and SLA batteries, and handle lithium cells safely.</span></li>
+      <li><input type="checkbox"><span>I can size a standby battery from standby and alarm currents with derating.</span></li>
+      <li><input type="checkbox"><span>I can choose fuses and polyfuses and explain the difference.</span></li>
+      <li><input type="checkbox"><span>I can calculate cable loop resistance and voltage drop, and I measure at the device under full load.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
