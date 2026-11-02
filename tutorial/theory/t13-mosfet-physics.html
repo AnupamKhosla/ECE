@@ -28,7 +28,7 @@
       <small>For a 50 nm oxide (a typical power-MOSFET gate): C<sub>ox</sub> = 3.9 × 8.85×10<sup>−12</sup> / 50×10<sup>−9</sup> ≈ 6.9×10<sup>−4</sup> F/m², or 0.69 fF per µm². Logic transistors use oxides only a few nanometres thick, so C<sub>ox</sub> is ten or more times larger.</small></div>
     <p>Now raise the gate voltage V<sub>G</sub> (body grounded) and watch the silicon surface go through three stages.</p>
     <figure>
-      <svg viewBox="0 0 660 300" role="img" aria-label="MOS capacitor in accumulation, depletion and inversion">
+      <svg viewBox="0 0 690 300" role="img" aria-label="MOS capacitor in accumulation, depletion and inversion">
         <defs>
           <g id="t13-mc-acc"><rect class="f-panel s-thin" x="-6" y="-6" width="12" height="12"/><text class="t t-small t-red" x="0" y="4" text-anchor="middle">−</text></g>
         </defs>
@@ -229,7 +229,7 @@ Saturation (V<sub>DS</sub> ≥ V<sub>ov</sub>):  I<sub>D</sub> = (k/2) V<sub>ov<
       <li>To block both directions (an AC switch, or the charge/discharge switch in a lithium battery pack's protection board), use <strong>two MOSFETs back to back</strong>, sources joined.</li>
     </ul>
     <figure>
-      <svg viewBox="0 0 640 230" role="img" aria-label="N-channel MOSFET symbol with body diode, and P-channel MOSFET used for reverse polarity protection">
+      <svg viewBox="0 0 640 250" role="img" aria-label="N-channel MOSFET symbol with body diode, and P-channel MOSFET used for reverse polarity protection">
         <defs>
           <marker id="t13-bd-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker>
         </defs>
@@ -261,7 +261,7 @@ Saturation (V<sub>DS</sub> ≥ V<sub>ov</sub>):  I<sub>D</sub> = (k/2) V<sub>ov<
         <rect class="f-panel s-line" x="445" y="150" width="20" height="40"/>
         <text class="t t-small" x="472" y="175">gate to 0 V via resistor</text>
         <path class="s-line" d="M455 190 V205 M440 205 H470 M446 211 H464"/>
-        <text class="t t-small t-muted" x="340" y="225">Correct polarity: body diode conducts first, then the gate (pulled low) turns the channel fully on.</text>
+        <text class="t t-small t-muted" x="340" y="226">Correct polarity: the body diode conducts first,</text><text class="t t-small t-muted" x="340" y="242">then the low gate turns the channel fully on.</text>
       </svg>
       <figcaption>Figure 3. Left: the n-channel symbol. The broken vertical line says "enhancement mode, normally off"; the arrow is the body connection; the body diode is drawn from source to drain. Right: a P-channel MOSFET in the positive lead acting as a near-perfect diode. With the battery reversed, the body diode is reverse-biased and the gate sits at the source voltage, so nothing conducts. (Real designs add a Zener to keep V<sub>GS</sub> inside its rating on higher supplies.)</figcaption>
     </figure>

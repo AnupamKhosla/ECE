@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R02 · Formula sheet with worked numbers</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px 16px}
+  .widget input[type=text]{font:15px var(--sans);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+  .widget select#fc-sel{max-width:100%}
+  .fc-f{font:15px/1.5 var(--mono);background:var(--wash);border-radius:8px;padding:8px 12px;margin:10px 0 6px;overflow-x:auto}
+  .fs td:first-child{font-family:var(--mono);font-size:14.5px;white-space:nowrap}
+  .fs td:nth-child(2){font-size:14.5px}
+  .fs td:nth-child(3){font-size:14.5px}
+</style>
+</head>
+<body class="book-reference">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Reference Shelf</div>
+    <span class="eyebrow">Reference · R02</span>
+    <h1>Formula sheet with worked numbers</h1>
+    <p class="lede">Every formula in the course in one place. Each one shows what the symbols mean, their units, and a worked example with the kind of values you meet on the bench or on site. A calculator at the top does the arithmetic for you.</p>
+    <div class="meta"><span><b>Type</b> Look-up page</span><span><b>Formulas</b> 70+</span><span><b>Calculator</b> 40 formulas</span><span><b>Links to</b> T01–T16, P04–P20, C05–C10</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Units, prefixes and constants</h2>
+    <p>Most mistakes in electronics are unit mistakes, not physics mistakes. Convert everything to base units (volts, amps, ohms, farads, henries, seconds) before you multiply, then convert the answer back to a sensible prefix.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Prefix</th><th>Symbol</th><th>Multiply by</th><th>Example</th></tr>
+      <tr><td>tera</td><td>T</td><td>10<sup>12</sup></td><td>8 TB hard drive</td></tr>
+      <tr><td>giga</td><td>G</td><td>10<sup>9</sup></td><td>2.4 GHz Wi-Fi</td></tr>
+      <tr><td>mega</td><td>M</td><td>10<sup>6</sup></td><td>1 MΩ meter input</td></tr>
+      <tr><td>kilo</td><td>k</td><td>10<sup>3</sup></td><td>4.7 kΩ resistor</td></tr>
+      <tr><td>milli</td><td>m</td><td>10<sup>−3</sup></td><td>20 mA LED</td></tr>
+      <tr><td>micro</td><td>µ (often written u)</td><td>10<sup>−6</sup></td><td>100 µF capacitor</td></tr>
+      <tr><td>nano</td><td>n</td><td>10<sup>−9</sup></td><td>100 nF decoupling capacitor</td></tr>
+      <tr><td>pico</td><td>p</td><td>10<sup>−12</sup></td><td>22 pF crystal capacitor</td></tr>
+    </table></div>
+    <div class="table-wrap"><table>
+      <tr><th>Constant</th><th>Value</th><th>Used in</th></tr>
+      <tr><td>Electron charge, q (or e)</td><td>1.602 × 10<sup>−19</sup> C</td><td>Current, diode equation</td></tr>
+      <tr><td>Boltzmann constant, k</td><td>1.381 × 10<sup>−23</sup> J/K</td><td>Thermal voltage</td></tr>
+      <tr><td>Thermal voltage V<sub>T</sub> = kT/q at 300 K</td><td>25.85 mV (≈ 26 mV)</td><td>Diodes, BJTs</td></tr>
+      <tr><td>Permittivity of free space, ε<sub>0</sub></td><td>8.854 × 10<sup>−12</sup> F/m</td><td>Capacitance</td></tr>
+      <tr><td>Permeability of free space, µ<sub>0</sub></td><td>4π × 10<sup>−7</sup> ≈ 1.257 × 10<sup>−6</sup> H/m</td><td>Inductance</td></tr>
+      <tr><td>Speed of light, c</td><td>2.998 × 10<sup>8</sup> m/s (use 3 × 10<sup>8</sup>)</td><td>Waves, antennas, fibre</td></tr>
+      <tr><td>Resistivity of copper, ρ (20 °C)</td><td>1.72 × 10<sup>−8</sup> Ω·m = 0.0172 Ω·mm²/m</td><td>Cable resistance, voltage drop</td></tr>
+      <tr><td>Temperature coefficient of copper, α</td><td>0.00393 per °C</td><td>Hot windings and cables</td></tr>
+      <tr><td>Resistivity of aluminium, ρ (20 °C)</td><td>2.82 × 10<sup>−8</sup> Ω·m</td><td>Heatsinks, some power cables</td></tr>
+    </table></div>
+
+    <h2>Calculator</h2>
+    <p>Pick a formula, type the values you know, and the answers update as you type. Default values are the worked examples from the tables below, so you can check the calculator against the page.</p>
+    <div class="widget" id="w-fcalc">
+      <span class="label">Interactive · Multi-formula calculator</span>
+      <label>Formula<br><select id="fc-sel" aria-label="Choose a formula"></select></label>
+      <div class="fc-f" id="fc-f"></div>
+      <div class="fc-grid" id="fc-in"></div>
+      <div class="readings" id="fc-out"></div>
+    </div>
+
+    <h2>DC circuits</h2>
+    <p>The working tools for any circuit with batteries, plug-packs, 12 V and 24 V supplies. Every one of these can be checked with a multimeter in the <a href="../practice/p04-series-parallel-dividers.html">P04</a> lab.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>V = I R</td><td>V voltage (V), I current (A), R resistance (Ω)</td><td>12 V across 470 Ω: I = 12/470 = <b>25.5 mA</b></td></tr>
+      <tr><td>P = V I = I²R = V²/R</td><td>P power (W)</td><td>Same resistor: P = 12 × 0.0255 = <b>0.31 W</b>. A 0.25 W resistor would overheat; use 0.5 W or larger.</td></tr>
+      <tr><td>E = P t</td><td>E energy (J or Wh), t time (s or h)</td><td>A 10 W camera for a year: 10 × 8760 h = <b>87.6 kWh</b></td></tr>
+      <tr><td>Q = I t</td><td>Q charge (C), t (s)</td><td>2 A for 30 min: 2 × 1800 = <b>3600 C</b> (= 1 Ah)</td></tr>
+      <tr><td>R = ρ L / A</td><td>ρ resistivity (Ω·m), L length (m), A area (m²)</td><td>100 m of 1.5 mm² copper: 1.72×10<sup>−8</sup> × 100 / 1.5×10<sup>−6</sup> = <b>1.15 Ω</b></td></tr>
+      <tr><td>R<sub>T</sub> = R<sub>0</sub>(1 + αΔT)</td><td>R<sub>0</sub> at reference temperature, α (/°C), ΔT (°C)</td><td>PT100 (α = 0.00385) at 100 °C: 100 × 1.385 = <b>138.5 Ω</b></td></tr>
+      <tr><td>R = R1 + R2 + …</td><td>Series: same current through each</td><td>1 k + 2.2 k + 330 = <b>3.53 kΩ</b></td></tr>
+      <tr><td>1/R = 1/R1 + 1/R2 + …<br>two only: R1R2/(R1+R2)</td><td>Parallel: same voltage across each</td><td>1 k ‖ 2.2 k = 2.2/3.2 k = <b>688 Ω</b>. Two equal: half, 1 k ‖ 1 k = 500 Ω</td></tr>
+      <tr><td>V<sub>out</sub> = V<sub>in</sub> R2/(R1+R2)</td><td>R1 top (to supply), R2 bottom (to 0 V)</td><td>12 V, R1 = 10 k, R2 = 3.3 k: 12 × 3.3/13.3 = <b>2.98 V</b></td></tr>
+      <tr><td>I<sub>1</sub> = I R2/(R1+R2)</td><td>Current divider: current in R1 when R1 ‖ R2 share I</td><td>30 mA into 1 k ‖ 2 k: 1 k gets 30 × 2/3 = <b>20 mA</b>, 2 k gets 10 mA</td></tr>
+      <tr><td>ΣI<sub>in</sub> = ΣI<sub>out</sub></td><td>KCL at any node</td><td>100 mA in, 60 mA out one branch → <b>40 mA</b> in the other</td></tr>
+      <tr><td>ΣV around a loop = 0</td><td>KVL</td><td>12 V supply, 2.0 V across LED → <b>10 V</b> across its resistor</td></tr>
+      <tr><td>V<sub>th</sub> = open-circuit V<br>R<sub>th</sub> = R seen with sources off</td><td>Thevenin: switch voltage sources to shorts, current sources to opens</td><td>Divider above: V<sub>th</sub> = 2.98 V, R<sub>th</sub> = 10 k ‖ 3.3 k = <b>2.48 kΩ</b>. With a 10 kΩ load: 2.98 × 10/12.48 = <b>2.39 V</b></td></tr>
+      <tr><td>I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub></td><td>Norton equivalent current</td><td>2.98 V / 2.48 kΩ = <b>1.2 mA</b></td></tr>
+      <tr><td>Max power when R<sub>L</sub> = R<sub>th</sub></td><td>Maximum power transfer</td><td>Load of 2.48 kΩ gets V<sub>th</sub>²/(4R<sub>th</sub>) = <b>0.9 mW</b></td></tr>
+    </table></div>
+    <figure>
+      <svg viewBox="0 0 560 260" role="img" aria-label="A 12 volt divider with 10 kilohm and 3.3 kilohm resistors, and its Thevenin equivalent of 2.98 volts in series with 2.48 kilohms">
+        <path class="s-line" d="M60 112 V40 H160 V60 M160 110 V140 M160 190 V220 H60 V124 M160 125 H250 M160 220 H250"/>
+        <line class="s-line" x1="44" y1="112" x2="76" y2="112"/>
+        <line class="s-line" x1="52" y1="124" x2="68" y2="124" style="stroke-width:4"/>
+        <text class="t t-small" x="80" y="108">+</text>
+        <text class="t" x="6" y="122">12 V</text>
+        <rect class="f-accent-soft s-accent" x="150" y="60" width="20" height="50"/>
+        <rect class="f-accent-soft s-accent" x="150" y="140" width="20" height="50"/>
+        <text class="t t-small" x="178" y="90">R1 10 kΩ</text>
+        <text class="t t-small" x="178" y="170">R2 3.3 kΩ</text>
+        <circle class="f-ink" cx="160" cy="125" r="3.5"/><circle class="f-ink" cx="160" cy="220" r="3.5"/>
+        <circle class="f-panel s-line" cx="254" cy="125" r="4"/><circle class="f-panel s-line" cx="254" cy="220" r="4"/>
+        <text class="t t-small t-bold" x="228" y="114">A</text><text class="t t-small t-bold" x="228" y="210">B</text>
+        <text class="t t-bold t-accent" x="282" y="130" style="font-size:22px">≡</text>
+        <path class="s-line" d="M360 112 V40 H400 M450 40 H500 V125 M360 124 V220 H500"/>
+        <line class="s-line" x1="344" y1="112" x2="376" y2="112"/>
+        <line class="s-line" x1="352" y1="124" x2="368" y2="124" style="stroke-width:4"/>
+        <text class="t t-small" x="380" y="108">+</text>
+        <text class="t" x="314" y="150">2.98 V</text>
+        <rect class="f-accent-soft s-accent" x="400" y="30" width="50" height="20"/>
+        <text class="t t-small" x="392" y="22">R<tspan baseline-shift="sub" font-size="9">th</tspan> 2.48 kΩ</text>
+        <circle class="f-panel s-line" cx="504" cy="125" r="4"/><circle class="f-panel s-line" cx="504" cy="220" r="4"/>
+        <text class="t t-small t-bold" x="514" y="130">A</text><text class="t t-small t-bold" x="514" y="225">B</text>
+        <text class="t t-small t-muted" x="20" y="252">Seen from A–B, both circuits behave identically for any load.</text>
+      </svg>
+      <figcaption>Figure 1. A divider (left) and its Thevenin equivalent (right). The equivalent makes loading easy: any load across A–B forms a new divider with R<sub>th</sub>.</figcaption>
+    </figure>
+    <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
+
+    <h2>Capacitors and inductors</h2>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>C = ε<sub>0</sub>ε<sub>r</sub>A/d</td><td>C (F), ε<sub>r</sub> relative permittivity (no unit), A plate area (m²), d gap (m)</td><td>1 cm² plates, 0.1 mm air gap: 8.854×10<sup>−12</sup> × 10<sup>−4</sup>/10<sup>−4</sup> = <b>8.85 pF</b>. Fill with a ceramic of ε<sub>r</sub> = 1000 → 8.85 nF</td></tr>
+      <tr><td>Q = C V</td><td>Q charge (C), V (V)</td><td>100 µF at 12 V: <b>1.2 mC</b></td></tr>
+      <tr><td>E = ½ C V²</td><td>E energy (J)</td><td>1000 µF at 25 V: 0.5 × 0.001 × 625 = <b>0.31 J</b></td></tr>
+      <tr><td>i = C dV/dt</td><td>dV/dt rate of voltage change (V/s)</td><td>100 nF, voltage rising 1 V per µs: 100×10<sup>−9</sup> × 10<sup>6</sup> = <b>0.1 A</b>. Why decoupling caps sit next to chips.</td></tr>
+      <tr><td>Parallel: C = C1 + C2<br>Series: 1/C = 1/C1 + 1/C2</td><td>Opposite of resistors</td><td>Two 100 µF in series: <b>50 µF</b>. In parallel: 200 µF</td></tr>
+      <tr><td>τ = R C</td><td>τ time constant (s), R (Ω), C (F)</td><td>10 kΩ × 100 µF = <b>1 s</b></td></tr>
+      <tr><td>V(t) = V<sub>s</sub>(1 − e<sup>−t/τ</sup>)</td><td>Charging from 0 V towards V<sub>s</sub></td><td>5 V, τ = 1 s, t = 2 s: 5 × (1 − 0.135) = <b>4.32 V</b>. 1τ → 63 %, 3τ → 95 %, 5τ → 99.3 %</td></tr>
+      <tr><td>V(t) = V<sub>0</sub> e<sup>−t/τ</sup></td><td>Discharging from V<sub>0</sub></td><td>5 V, after 1τ: <b>1.84 V</b> (37 % left)</td></tr>
+      <tr><td>L = µ<sub>0</sub>µ<sub>r</sub>N²A/l</td><td>N turns, A core area (m²), l coil length (m)</td><td>100 turns, 1 cm², 5 cm long, air core: <b>25 µH</b></td></tr>
+      <tr><td>v = L di/dt</td><td>L (H), di/dt rate of current change (A/s)</td><td>100 mH relay coil, 50 mA stopped in 1 µs: 0.1 × 0.05/10<sup>−6</sup> = <b>5000 V</b> (in theory). The flyback diode prevents this.</td></tr>
+      <tr><td>E = ½ L I²</td><td>E (J)</td><td>100 mH at 50 mA: <b>125 µJ</b></td></tr>
+      <tr><td>τ = L / R</td><td>R total series resistance (Ω)</td><td>100 mH coil with 200 Ω: <b>0.5 ms</b></td></tr>
+      <tr><td>X<sub>C</sub> = 1/(2πfC)</td><td>X<sub>C</sub> capacitive reactance (Ω), f (Hz)</td><td>100 nF: at 50 Hz <b>31.8 kΩ</b>; at 1 MHz only <b>1.59 Ω</b></td></tr>
+      <tr><td>X<sub>L</sub> = 2πfL</td><td>X<sub>L</sub> inductive reactance (Ω)</td><td>10 mH: at 50 Hz <b>3.14 Ω</b>; at 100 kHz <b>6.28 kΩ</b></td></tr>
+    </table></div>
+    <figure>
+      <svg viewBox="0 0 520 250" role="img" aria-label="RC charging and discharging curves over five time constants">
+        <path class="s-thin" d="M60 40 V200 H470"/>
+        <path class="s-thin s-dash" d="M140 40 V200 M60 98.9 H140 M60 141.1 H140"/>
+        <path class="s-accent" d="M60 200 L76 171 L92 147.3 L108 127.8 L124 111.9 L140 98.9 L156 88.2 L172 79.5 L188 72.3 L204 66.4 L220 61.7 L236 57.7 L252 54.5 L268 51.9 L284 49.7 L300 48 L316 46.5 L332 45.3 L348 44.4 L364 43.6 L380 42.9 L396 42.4 L412 42 L428 41.6 L444 41.3 L460 41.1"/>
+        <path class="s-blue" d="M60 40 L76 69 L92 92.7 L108 112.2 L124 128.1 L140 141.1 L156 151.8 L172 160.5 L188 167.7 L204 173.6 L220 178.3 L236 182.3 L252 185.5 L268 188.1 L284 190.3 L300 192 L316 193.5 L332 194.7 L348 195.6 L364 196.4 L380 197.1 L396 197.6 L412 198 L428 198.4 L444 198.7 L460 198.9"/>
+        <text class="t t-small" x="22" y="44">100%</text><text class="t t-small" x="28" y="103">63%</text><text class="t t-small" x="28" y="145">37%</text><text class="t t-small" x="40" y="204">0</text>
+        <text class="t t-small" x="136" y="218">1τ</text><text class="t t-small" x="216" y="218">2τ</text><text class="t t-small" x="296" y="218">3τ</text><text class="t t-small" x="376" y="218">4τ</text><text class="t t-small" x="456" y="218">5τ</text>
+        <text class="t t-small t-accent t-bold" x="300" y="36">charging: Vs(1 − e^(−t/τ))</text>
+        <text class="t t-small t-blue t-bold" x="300" y="180">discharging: V0 e^(−t/τ)</text>
+        <text class="t t-small t-muted" x="200" y="242">time, in time constants τ = RC</text>
+      </svg>
+      <figcaption>Figure 2. The same curve shape for every RC (and L/R) circuit. After one time constant a charging capacitor is at 63 %; a discharging one has 37 % left. After 5τ it is finished for practical purposes.</figcaption>
+    </figure>
+    <a class="crosslink" href="../theory/t05-capacitors-fields.html">Theory T05 · Electric fields and capacitors</a>
+    <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors</a>
+
+    <h2>AC and mains</h2>
+    <div class="callout warn"><span class="label">Safety</span><p>Mains formulas are here so you understand the systems you work around. Never measure or work on 230 V or 400 V circuits: in Australia that is licensed electrical work. You can test every ELV formula here with an AC plug-pack (for example 12–24 V AC).</p></div>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>V<sub>rms</sub> = V<sub>peak</sub>/√2</td><td>Sine waves only. √2 ≈ 1.414</td><td>230 V mains: peak = 230 × 1.414 = <b>325 V</b>; peak-to-peak 650 V. A 24 V AC plug-pack peaks at <b>33.9 V</b>.</td></tr>
+      <tr><td>V<sub>avg</sub> = 0.637 V<sub>peak</sub></td><td>Average of a full-wave rectified sine</td><td>33.9 V peak → <b>21.6 V</b> average (what a meter on DC may show without a capacitor)</td></tr>
+      <tr><td>f = 1/T, ω = 2πf</td><td>f (Hz), T period (s), ω angular frequency (rad/s)</td><td>50 Hz: T = <b>20 ms</b>, ω = <b>314 rad/s</b></td></tr>
+      <tr><td>v(t) = V<sub>peak</sub> sin(ωt + φ)</td><td>φ phase (rad or °)</td><td>At t = 5 ms on 50 Hz mains: 325 × sin(90°) = <b>325 V</b> (the peak)</td></tr>
+      <tr><td>Z = √(R² + (X<sub>L</sub> − X<sub>C</sub>)²)</td><td>Z impedance (Ω) of series R, L, C</td><td>100 Ω with 10 µF at 50 Hz: X<sub>C</sub> = 318 Ω, Z = √(100² + 318²) = <b>334 Ω</b></td></tr>
+      <tr><td>φ = arctan((X<sub>L</sub> − X<sub>C</sub>)/R)</td><td>Phase of voltage relative to current</td><td>Same circuit: arctan(−3.18) = <b>−72.6°</b> (current leads)</td></tr>
+      <tr><td>f<sub>0</sub> = 1/(2π√(LC))</td><td>Resonant frequency, where X<sub>L</sub> = X<sub>C</sub></td><td>10 mH with 100 nF: <b>5.03 kHz</b></td></tr>
+      <tr><td>S = V I<br>P = V I × PF<br>Q = √(S² − P²)</td><td>S apparent (VA), P real (W), Q reactive (var), PF power factor = cos φ for sine waves</td><td>230 V, 2 A, PF 0.8: S = <b>460 VA</b>, P = <b>368 W</b>, Q = <b>276 var</b></td></tr>
+      <tr><td>V<sub>line</sub> = √3 × V<sub>phase</sub></td><td>Three-phase star (Y). √3 ≈ 1.732</td><td>230 × 1.732 = 398 V, called <b>400 V</b></td></tr>
+      <tr><td>P = √3 V<sub>L</sub> I<sub>L</sub> PF</td><td>Total three-phase real power</td><td>400 V, 10 A, PF 0.85: 1.732 × 400 × 10 × 0.85 = <b>5.9 kW</b></td></tr>
+      <tr><td>V<sub>s</sub>/V<sub>p</sub> = N<sub>s</sub>/N<sub>p</sub> = I<sub>p</sub>/I<sub>s</sub></td><td>Ideal transformer: p primary, s secondary, N turns</td><td>230 V to 12 V: ratio <b>19.2 : 1</b>. 1 A from the secondary draws about <b>52 mA</b> from the mains side (ideal).</td></tr>
+      <tr><td>ΔV ≈ I/(2fC)</td><td>Full-wave rectifier ripple, peak-to-peak (V)</td><td>1 A load, 50 Hz, 4700 µF: 1/(2 × 50 × 0.0047) = <b>2.1 V</b> ripple</td></tr>
+    </table></div>
+    <figure>
+      <svg viewBox="0 0 520 250" role="img" aria-label="Three-phase phasors 120 degrees apart, each 230 volts, with 400 volts between two phase tips">
+        <defs><marker id="r02-ph" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+        <circle class="s-thin s-dash" cx="150" cy="135" r="90"/>
+        <line class="s-accent" x1="150" y1="135" x2="150" y2="49" marker-end="url(#r02-ph)"/>
+        <line class="s-accent" x1="150" y1="135" x2="225" y2="178" marker-end="url(#r02-ph)"/>
+        <line class="s-accent" x1="150" y1="135" x2="75" y2="178" marker-end="url(#r02-ph)"/>
+        <line class="s-red s-dash" x1="150" y1="45" x2="228" y2="180"/>
+        <circle class="f-ink" cx="150" cy="135" r="4"/>
+        <text class="t t-small t-bold" x="156" y="40">L1</text><text class="t t-small t-bold" x="232" y="196">L2</text><text class="t t-small t-bold" x="56" y="196">L3</text>
+        <text class="t t-small" x="104" y="96">230 V</text>
+        <text class="t t-small" x="124" y="152">N</text>
+        <text class="t t-small t-red t-bold" x="200" y="104">400 V</text>
+        <text class="t" x="280" y="70">Each phase: 230 V to neutral.</text>
+        <text class="t" x="280" y="96">Phases are 120° apart.</text>
+        <text class="t" x="280" y="122">Between two phase tips:</text>
+        <text class="t t-bold" x="280" y="148">2 × 230 × sin 60° = √3 × 230</text>
+        <text class="t t-bold t-red" x="280" y="174">≈ 400 V</text>
+        <text class="t t-small t-muted" x="280" y="210">Theory only: mains is electricians' work.</text>
+      </svg>
+      <figcaption>Figure 3. Why three-phase is "230/400 V". The line-to-line voltage is the distance between two phasor tips, which geometry makes √3 times the phase voltage.</figcaption>
+    </figure>
+    <a class="crosslink" href="../theory/t07-ac-fundamentals.html">Theory T07 · AC: sine waves, RMS, phase and impedance</a>
+    <a class="crosslink" href="../theory/t09-mains-earthing-safety.html">Theory T09 · Mains, three-phase, earthing and RCDs (Australia)</a>
+
+    <h2>Semiconductors</h2>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>I = I<sub>S</sub>(e<sup>V/(nV<sub>T</sub>)</sup> − 1)</td><td>Shockley diode equation. I<sub>S</sub> saturation current (A, tiny: ~10<sup>−14</sup> A for a small silicon diode), n ideality factor (1–2), V forward voltage (V)</td><td>I<sub>S</sub> = 10<sup>−14</sup> A, n = 1, V = 0.65 V: 10<sup>−14</sup> × e<sup>25.1</sup> ≈ <b>0.83 mA</b>. Each extra 60 mV multiplies current by 10.</td></tr>
+      <tr><td>V<sub>T</sub> = kT/q</td><td>Thermal voltage. T absolute temperature (K)</td><td>300 K: 1.381×10<sup>−23</sup> × 300 / 1.602×10<sup>−19</sup> = <b>25.9 mV</b></td></tr>
+      <tr><td>R = (V<sub>s</sub> − V<sub>f</sub>)/I</td><td>LED series resistor. V<sub>f</sub> LED forward voltage, I LED current</td><td>12 V, white LED 3.0 V at 15 mA: 9/0.015 = 600 Ω → use <b>620 Ω</b> (E24) → 14.5 mA, 0.13 W in the resistor</td></tr>
+      <tr><td>R = (V<sub>in</sub> − V<sub>Z</sub>)/(I<sub>L</sub> + I<sub>Z</sub>)</td><td>Zener regulator. I<sub>L</sub> load current, I<sub>Z</sub> minimum Zener current</td><td>12 V in, 5.1 V Zener, 10 mA load, 5 mA Zener: 6.9/0.015 = 460 Ω → round down to <b>430 Ω</b>. With no load the Zener takes 16 mA × 5.1 V = 82 mW.</td></tr>
+      <tr><td>I<sub>C</sub> = β I<sub>B</sub><br>I<sub>E</sub> = I<sub>C</sub> + I<sub>B</sub></td><td>BJT in its active region. β (h<sub>FE</sub>) current gain, typically 100–300</td><td>I<sub>B</sub> = 50 µA, β = 200: I<sub>C</sub> = <b>10 mA</b>, I<sub>E</sub> = 10.05 mA</td></tr>
+      <tr><td>R<sub>B</sub> = (V<sub>drive</sub> − V<sub>BE</sub>) / (k × I<sub>C</sub>/β<sub>min</sub>)</td><td>BJT as a switch. k overdrive factor 5–10 so it saturates. V<sub>BE</sub> ≈ 0.7 V</td><td>Relay coil 12 V / 400 Ω = 30 mA, β<sub>min</sub> 100, k = 10: I<sub>B</sub> = 3 mA, R<sub>B</sub> = 4.3/0.003 = 1.43 kΩ → use <b>1.2 kΩ</b> from a 5 V pin</td></tr>
+      <tr><td>P = I² R<sub>DS(on)</sub></td><td>MOSFET conduction loss. R<sub>DS(on)</sub> at your actual gate voltage (Ω)</td><td>5 A through 20 mΩ: 25 × 0.02 = <b>0.5 W</b>. In a TO-220 with no heatsink (around 60 °C/W, check the datasheet) that is about 30 °C of rise.</td></tr>
+      <tr><td>T<sub>J</sub> = T<sub>A</sub> + P θ<sub>JA</sub></td><td>Junction temperature. θ<sub>JA</sub> thermal resistance junction-to-air (°C/W)</td><td>7805 dropping 12 V to 5 V at 0.5 A: P = 3.5 W; 3.5 × 60 = 210 °C rise. <b>Needs a heatsink</b> or a buck converter.</td></tr>
+      <tr><td>G = 1 + R<sub>f</sub>/R<sub>g</sub></td><td>Non-inverting op-amp gain</td><td>R<sub>f</sub> = 47 k, R<sub>g</sub> = 10 k: <b>5.7</b></td></tr>
+      <tr><td>G = −R<sub>f</sub>/R<sub>in</sub></td><td>Inverting op-amp gain</td><td>100 k / 10 k: <b>−10</b> (output is flipped)</td></tr>
+    </table></div>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family</a>
+    <a class="crosslink" href="../theory/t12-bjt-physics.html">Theory T12 · How a bipolar transistor really works</a>
+    <a class="crosslink" href="../theory/t13-mosfet-physics.html">Theory T13 · How a MOSFET works</a>
+
+    <h2>555 timer</h2>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>t<sub>high</sub> = 0.693 (R1 + R2) C</td><td>Astable: time output is high (s). R1 from V<sub>CC</sub> to pin 7, R2 from pin 7 to pins 6/2</td><td>R1 = 10 k, R2 = 68 k, C = 10 µF: 0.693 × 78 000 × 10<sup>−5</sup> = <b>0.54 s</b></td></tr>
+      <tr><td>t<sub>low</sub> = 0.693 R2 C</td><td>Astable: time output is low (s)</td><td>0.693 × 68 000 × 10<sup>−5</sup> = <b>0.47 s</b></td></tr>
+      <tr><td>f = 1.44 / ((R1 + 2R2) C)</td><td>Astable frequency (Hz)</td><td>1.44 / (146 000 × 10<sup>−5</sup>) = <b>0.99 Hz</b>: a 1 Hz blinker</td></tr>
+      <tr><td>D = (R1 + R2)/(R1 + 2R2)</td><td>Duty cycle (always above 50 % in this basic circuit)</td><td>78/146 = <b>53 %</b></td></tr>
+      <tr><td>t = 1.1 R C</td><td>Monostable pulse length (s)</td><td>R = 100 k, C = 47 µF: <b>5.2 s</b></td></tr>
+    </table></div>
+    <a class="crosslink" href="../practice/p09-555-timer.html">Practice P09 · The 555 timer: blinkers and PWM</a>
+
+    <h2>Signals and measurement</h2>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>dB = 10 log<sub>10</sub>(P2/P1)</td><td>Power ratio in decibels</td><td>Double the power: <b>+3.0 dB</b>. One thousandth: <b>−30 dB</b></td></tr>
+      <tr><td>dB = 20 log<sub>10</sub>(V2/V1)</td><td>Voltage ratio (same impedance)</td><td>Ten times the voltage: <b>+20 dB</b>. Double: +6.0 dB</td></tr>
+      <tr><td>Total gain = sum of dB</td><td>Gains and losses in a chain just add</td><td>+20 dB amplifier, then −6 dB of cable: <b>+14 dB</b></td></tr>
+      <tr><td>dBm = 10 log<sub>10</sub>(P / 1 mW)<br>P = 10<sup>dBm/10</sup> mW</td><td>Absolute power compared with 1 mW</td><td>0 dBm = 1 mW, +20 dBm = 100 mW, <b>−20 dBm = 10 µW</b>, −3 dBm ≈ 0.5 mW</td></tr>
+      <tr><td>Step = V<sub>ref</sub>/2<sup>n</sup></td><td>ADC resolution. n bits, V<sub>ref</sub> reference (V)</td><td>10-bit on 5 V: <b>4.88 mV</b>. 12-bit on 3.3 V: <b>0.81 mV</b></td></tr>
+      <tr><td>V = code × V<sub>ref</sub>/2<sup>n</sup></td><td>Turning an ADC reading back into volts (some code divides by 2<sup>n</sup> − 1; the difference is one step)</td><td>Reading 512 on a 10-bit, 5 V ADC: <b>2.50 V</b></td></tr>
+      <tr><td>Value = min + (I − 4)/16 × (max − min)</td><td>4–20 mA scaling. I loop current (mA)</td><td>0–10 bar transmitter at 13.6 mA: 9.6/16 × 10 = <b>6.0 bar</b>. A −20 to 80 °C sensor at 8 mA: <b>5 °C</b></td></tr>
+      <tr><td>I = 4 + 16 × (value − min)/(max − min)</td><td>The reverse: what current to expect</td><td>Half scale is always <b>12 mA</b></td></tr>
+      <tr><td>V = I × 250 Ω</td><td>Reading a loop with a voltage input</td><td>4–20 mA → <b>1–5 V</b> across 250 Ω</td></tr>
+      <tr><td>V<sub>supply</sub> ≥ V<sub>tx(min)</sub> + 0.02 × R<sub>loop</sub></td><td>Loop must still work at 20 mA. R<sub>loop</sub> = input resistor + cable</td><td>24 V supply, transmitter needs 12 V: R<sub>loop</sub> up to <b>600 Ω</b></td></tr>
+      <tr><td>f<sub>s</sub> &gt; 2 f<sub>max</sub></td><td>Nyquist: sample rate f<sub>s</sub>, highest signal frequency f<sub>max</sub></td><td>Audio to 20 kHz needs more than 40 kS/s (CDs use <b>44.1 kS/s</b>). In practice sample 5–10× for a clean picture.</td></tr>
+      <tr><td>bytes/s = baud / bits per frame</td><td>UART throughput. 8N1 = 10 bits per byte (start + 8 + stop)</td><td>115 200 baud: <b>11 520 bytes/s</b>, 86.8 µs per byte</td></tr>
+      <tr><td>SNR (dB) = 20 log(V<sub>signal</sub>/V<sub>noise</sub>)</td><td>Signal-to-noise ratio using RMS voltages</td><td>1 V signal, 10 mV noise: <b>40 dB</b></td></tr>
+    </table></div>
+    <figure>
+      <svg viewBox="0 0 520 290" role="img" aria-label="Graph of loop current from 4 to 20 milliamps against percent of range, with fault bands below 3.6 and above 21 milliamps">
+        <rect class="f-warn-soft" x="60" y="204" width="400" height="36"/>
+        <rect class="f-warn-soft" x="60" y="10" width="400" height="20"/>
+        <text class="t t-small t-red" x="300" y="226">fault: ≤ 3.6 mA (wire break)</text>
+        <text class="t t-small t-red" x="300" y="25">fault: ≥ 21 mA</text>
+        <path class="s-thin" d="M60 10 V240 H470"/>
+        <path class="s-thin s-dash" d="M60 120 H260 V240 M60 104 H300 V240"/>
+        <line class="s-accent" x1="60" y1="200" x2="460" y2="40"/>
+        <circle class="f-accent" cx="260" cy="120" r="4"/><circle class="f-red" cx="300" cy="104" r="4"/>
+        <text class="t t-small" x="22" y="204">4 mA</text><text class="t t-small" x="16" y="124">12 mA</text><text class="t t-small" x="16" y="44">20 mA</text><text class="t t-small" x="10" y="108">13.6</text>
+        <text class="t t-small" x="54" y="256">0%</text><text class="t t-small" x="248" y="256">50%</text><text class="t t-small" x="290" y="272">60%</text><text class="t t-small" x="444" y="256">100%</text>
+        <text class="t t-small t-red t-bold" x="310" y="100">13.6 mA → 60 % → 6 bar on 0–10 bar</text>
+        <text class="t t-small t-muted" x="150" y="286">measured value, percent of range</text>
+      </svg>
+      <figcaption>Figure 4. 4–20 mA is a straight line with a "live zero". The 4 mA offset means a broken wire (0 mA) can never be mistaken for a real reading. Fault thresholds shown follow the common NAMUR NE 43 convention; check the device manual.</figcaption>
+    </figure>
+    <a class="crosslink" href="../theory/t16-signals-noise-loops.html">Theory T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>
+
+    <h2>Waves and fibre</h2>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>c = f λ</td><td>c speed of light (m/s), f (Hz), λ wavelength (m)</td><td>2.4 GHz Wi-Fi: 3×10<sup>8</sup>/2.4×10<sup>9</sup> = <b>12.5 cm</b>; quarter-wave antenna ≈ 3.1 cm. 50 Hz mains: 6000 km.</td></tr>
+      <tr><td>v = c / n</td><td>v speed in a material, n refractive index</td><td>Fibre core n ≈ 1.468: <b>2.04 × 10<sup>8</sup> m/s</b>, about 4.9 µs per km</td></tr>
+      <tr><td>n<sub>1</sub> sin θ<sub>1</sub> = n<sub>2</sub> sin θ<sub>2</sub></td><td>Snell's law. Angles from the normal (°)</td><td>Air to glass (n = 1.5) at 30°: sin θ<sub>2</sub> = 0.5/1.5 → <b>19.5°</b></td></tr>
+      <tr><td>sin θ<sub>c</sub> = n<sub>2</sub>/n<sub>1</sub></td><td>Critical angle (only when n<sub>1</sub> &gt; n<sub>2</sub>). Beyond it: total internal reflection</td><td>Glass to air: <b>41.8°</b>. Core 1.468 to cladding 1.463: <b>85.3°</b> (light must travel nearly along the fibre)</td></tr>
+      <tr><td>NA = √(n<sub>1</sub>² − n<sub>2</sub>²)</td><td>Numerical aperture: how wide a cone the fibre accepts</td><td>Same fibre: <b>0.12</b>, typical of single-mode</td></tr>
+      <tr><td>d = c t / (2n)</td><td>OTDR distance. t round-trip time (s)</td><td>Reflection after 10 µs: 3×10<sup>8</sup> × 10<sup>−5</sup>/(2 × 1.468) = <b>1.02 km</b></td></tr>
+      <tr><td>Loss = Lα + N<sub>c</sub>L<sub>c</sub> + N<sub>s</sub>L<sub>s</sub></td><td>Loss budget (dB). α fibre loss (dB/km), N<sub>c</sub> connector pairs, N<sub>s</sub> splices</td><td>2 km single-mode at 1310 nm (0.35 dB/km) = 0.7, 2 connector pairs × 0.5 = 1.0, 4 splices × 0.1 = 0.4: <b>2.1 dB</b></td></tr>
+      <tr><td>Margin = (P<sub>tx</sub> − S<sub>rx</sub>) − Loss</td><td>P<sub>tx</sub> transmit power (dBm), S<sub>rx</sub> receiver sensitivity (dBm)</td><td>−5 dBm transmitter, −25 dBm receiver: 20 dB available, 2.1 used → <b>17.9 dB</b> margin</td></tr>
+      <tr><td>FSPL = 20 log d<sub>km</sub> + 20 log f<sub>MHz</sub> + 32.44</td><td>Free-space radio path loss (dB)</td><td>2.4 GHz over 100 m: −20 + 67.6 + 32.44 = <b>80 dB</b></td></tr>
+    </table></div>
+    <a class="crosslink" href="../theory/t10-em-waves-antennas-fibre.html">Theory T10 · Electromagnetic waves, antennas and optical fibre</a>
+    <a class="crosslink" href="../career/c09-fibre-splicing-otdr.html">Job Track C09 · Fibre optics in the field: splicing, connectors and OTDR</a>
+
+    <h2>Practical installer maths</h2>
+    <p>The sums you will actually do on site, usually on your phone, before you pull cable or order parts.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Formula</th><th>Symbols (units)</th><th>Worked example</th></tr>
+      <tr><td>V<sub>drop</sub> = 2 L I ρ / A</td><td>DC cable drop. L one-way length (m), I (A), ρ = 0.0172 Ω·mm²/m for copper, A conductor area (mm²). The 2 is for the go and return wires.</td><td>24 V lock, 0.5 A, 50 m of 0.75 mm²: 2 × 50 × 0.5 × 0.0172/0.75 = <b>1.15 V</b> (4.8 %). A 12 V camera at 1 A over 30 m of 0.5 mm²: <b>2.1 V</b> drop, leaving 9.9 V. It may reboot at night when the IR turns on.</td></tr>
+      <tr><td>L<sub>max</sub> = (V<sub>allowed</sub> × A) / (2 I ρ)</td><td>Longest run for an allowed drop</td><td>12 V, 1 A, 0.5 mm², 5 % (0.6 V): 0.6 × 0.5/(2 × 0.0172) = <b>8.7 m</b>. Use thicker cable, 24 V, or PoE.</td></tr>
+      <tr><td>Ah = (I<sub>s</sub>t<sub>s</sub> + I<sub>a</sub>t<sub>a</sub>) × k</td><td>Battery standby. I<sub>s</sub> standby current, t<sub>s</sub> standby hours, I<sub>a</sub> alarm current, t<sub>a</sub> alarm hours, k ageing factor (often 1.25)</td><td>Panel 0.35 A for 24 h + 1.2 A for 0.5 h = 9.0 Ah × 1.25 = <b>11.3 Ah</b> → fit a 12 Ah battery. The required times come from the standard and site spec for that system.</td></tr>
+      <tr><td>Wh = V × Ah<br>hours ≈ Wh × usable fraction / W</td><td>Battery energy and runtime</td><td>12.8 V 100 Ah LiFePO4 = <b>1.28 kWh</b>; at 80 % usable with a 60 W load: <b>17 h</b></td></tr>
+      <tr><td>Σ (devices × W allocated) ≤ budget</td><td>PoE budget. Budget by class for a worst case: class 3 = 15.4 W, class 4 = 30 W at the switch port</td><td>6 class-3 cameras (92.4 W) + 1 class-4 PTZ (30 W) = <b>122.4 W</b>: over a 120 W switch, even though actual draw may be near 60 W</td></tr>
+      <tr><td>TB = Mb/s × 3600 × h × days × cams / 8 / 10<sup>6</sup></td><td>CCTV storage. Bitrate in megabits per second; divide by 8 for bytes</td><td>16 cameras at 4 Mb/s, 24 h, 30 days: 64 Mb/s → 8 MB/s → 691 GB/day → <b>20.7 TB</b> (+10 % margin ≈ 23 TB)</td></tr>
+      <tr><td>Hosts = 2<sup>(32 − prefix)</sup> − 2</td><td>Usable IPv4 addresses in a subnet</td><td>/24 (255.255.255.0): <b>254</b>. /26: 62. /23: 510</td></tr>
+      <tr><td>kWh = W × h / 1000</td><td>Energy use; cost = kWh × price</td><td>30 W NVR all year: <b>263 kWh</b>, about A$79 at an indicative 30 c/kWh</td></tr>
+      <tr><td>kWh/day ≈ kW × PSH × derating</td><td>Rough solar yield. PSH peak sun hours (site and season)</td><td>6.6 kW × 4.5 h × 0.8 = <b>23.8 kWh/day</b> (indicative)</td></tr>
+      <tr><td>P<sub>in</sub> = P<sub>out</sub>/η</td><td>Converter input power. η efficiency (0–1)</td><td>5 V 2 A buck (10 W) at 90 % from 12 V: 11.1 W, <b>0.93 A</b> input</td></tr>
+    </table></div>
+    <div class="table-wrap"><table>
+      <tr><th>Copper size</th><th>Resistance per metre, one conductor (≈)</th><th>Where you see it</th></tr>
+      <tr><td>Cat6 conductor (23 AWG, ≈ 0.26 mm²)</td><td>0.067 Ω/m</td><td>PoE, Cat6 used for low-current DC</td></tr>
+      <tr><td>0.5 mm²</td><td>0.034 Ω/m</td><td>Alarm and access cable, sensor cable</td></tr>
+      <tr><td>0.75 mm²</td><td>0.023 Ω/m</td><td>Lock power, small 24 V loads</td></tr>
+      <tr><td>1.0 mm²</td><td>0.017 Ω/m</td><td>24 V DC distribution</td></tr>
+      <tr><td>1.5 mm²</td><td>0.011 Ω/m</td><td>12 V camera and lighting runs</td></tr>
+      <tr><td>2.5 mm²</td><td>0.0069 Ω/m</td><td>Battery and supply leads</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>These are values for solid copper at 20 °C from R = ρL/A. Stranded cable and hot cable are a little worse, so the cable maker's datasheet figure wins. Always double the length for a two-wire DC run.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>The voltage drop, PoE budget and storage sums are what a CCTV or access-control quote is built on. A tech who can do them quickly, and explain them to a customer, gets trusted with design work.</p></div>
+    <a class="crosslink" href="../career/c05-cctv-ip-cameras.html">Job Track C05 · CCTV and IP camera installation</a>
+    <a class="crosslink" href="../practice/p19-networking-hands-on.html">Practice P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A 24 V AC plug-pack feeds a bridge rectifier and a big capacitor. Roughly what DC voltage will you measure with no load?</summary><div class="answer"><p>About <b>32 V</b>. The capacitor charges to the peak, not the RMS: 24 × 1.414 = 33.9 V, minus two diode drops (about 1.4 V) in the bridge. This is why "24 V AC" equipment needs parts rated well above 24 V.</p></div></details>
+    <details class="quiz"><summary>A sensor sends 4–20 mA for 0–50 °C. The PLC sees 16 mA. What is the temperature?</summary><div class="answer"><p>(16 − 4)/16 = 0.75 of the span, so 0.75 × 50 = <b>37.5 °C</b>.</p></div></details>
+    <details class="quiz"><summary>Why does a −3 dB fibre connector loss mean you have lost half the light?</summary><div class="answer"><p>For power, dB = 10 log(P2/P1). 10 log(0.5) = −3.0 dB. So −3 dB is half the power, −10 dB a tenth, −20 dB a hundredth.</p></div></details>
+    <details class="quiz"><summary>You double the length of a 12 V camera cable. What happens to the voltage drop?</summary><div class="answer"><p>It doubles. The drop is I × R and R is proportional to length. To keep the same drop you need double the cross-section (for example 0.75 mm² → 1.5 mm²), or a higher supply voltage, which needs less current for the same power.</p></div></details>
+    <details class="quiz"><summary>An RC circuit has R = 47 kΩ and C = 22 µF. About how long until the capacitor is effectively charged?</summary><div class="answer"><p>τ = 47 000 × 22×10<sup>−6</sup> = 1.03 s. Effectively full after 5τ ≈ <b>5.2 s</b>.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I convert prefixes (k, m, µ, n) to base units before I calculate.</span></li>
+      <li><input type="checkbox"><span>I can size an LED resistor and check its power rating.</span></li>
+      <li><input type="checkbox"><span>I can work out a DC cable voltage drop and the longest allowed run.</span></li>
+      <li><input type="checkbox"><span>I can scale a 4–20 mA signal to engineering units and back.</span></li>
+      <li><input type="checkbox"><span>I can turn a ratio into dB and dBm into milliwatts.</span></li>
+      <li><input type="checkbox"><span>I can estimate CCTV storage, a PoE budget and battery standby capacity.</span></li>
+    </ul>
+  </main>
+</div>
+<script>
+(function(){
+  var E24=[10,11,12,13,15,16,18,20,22,24,27,30,33,36,39,43,47,51,56,62,68,75,82,91];
+  function e24up(r){var dec=Math.pow(10,Math.floor(Math.log10(r)));for(var k=0;k<2;k++)for(var i=0;i<E24.length;i++){var v=E24[i]/10*dec*Math.pow(10,k);if(v>=r*0.9999)return v;}return r;}
+  function e24down(r){var dec=Math.pow(10,Math.floor(Math.log10(r))),best=dec;for(var i=0;i<E24.length;i++){var v=E24[i]/10*dec;if(v<=r*1.0001)best=v;}return best;}
+  function sig(v,n){if(!isFinite(v))return '—';var s=+v.toPrecision(n||4);return Math.abs(s)>=1e4?s.toLocaleString('en-AU',{maximumFractionDigits:2}):String(s);}
+  var PRE=[[1e12,'T'],[1e9,'G'],[1e6,'M'],[1e3,'k'],[1,''],[1e-3,'m'],[1e-6,'µ'],[1e-9,'n'],[1e-12,'p']];
+  function eng(x,u){if(!isFinite(x))return '—';if(x===0)return '0 '+u;var a=Math.abs(x);for(var i=0;i<PRE.length;i++){if(a>=PRE[i][0]*0.99995||i===PRE.length-1)return sig(x/PRE[i][0],4)+' '+PRE[i][1]+u;}}
+  function num(x,u){return sig(x,4)+(u?' '+u:'');}
+  function parseVal(t){var m=String(t).trim().replace(/Ω/g,'').match(/^(\d+(?:\.\d+)?)\s*([kKMmRr]?)(\d*)$/);if(!m)return NaN;var mult={k:1e3,K:1e3,M:1e6,m:1e-3,R:1,r:1,'':1}[m[2]];var s=m[1];if(m[3]){if(!m[2]||s.indexOf('.')>=0)return NaN;s=s+'.'+m[3];}return parseFloat(s)*mult;}
+  function nextSize(ah){var s=[1.2,2.3,3.3,7.2,9,12,18,26,40,65,100];for(var i=0;i<s.length;i++)if(s[i]>=ah)return s[i]+' Ah';return 'Over 100 Ah: use several in parallel';}
+  var C=[
+  {g:'DC circuits',n:"Ohm's law and power (leave one box empty)",f:'V = I × R,   P = V × I',in:[['V','Voltage V','V',12,1],['I','Current I','mA','',1],['R','Resistance R','Ω',470,1]],
+   c:function(v){var V=v.V,I=v.I,R=v.R,b=[V,I,R].filter(function(x){return x===null;}).length;if(b!==1)throw 'Leave exactly one of the three boxes empty.';if(V===null)V=I/1000*R;else if(I===null)I=V/R*1000;else R=V/(I/1000);var A=I/1000;return [['Voltage',eng(V,'V')],['Current',eng(A,'A')],['Resistance',eng(R,'Ω')],['Power',eng(V*A,'W')]];}},
+  {g:'DC circuits',n:'Series and parallel resistors',f:'Series: R = R1 + R2 + …     Parallel: 1/R = 1/R1 + 1/R2 + …',in:[['L','Values, separated by commas (k and M allowed, e.g. 4k7)','Ω','1k, 2.2k, 330',0,'text']],
+   c:function(v){var a=String(v.L).split(/[,;\s]+/).filter(Boolean).map(parseVal);if(a.length<2||a.some(function(x){return !(x>0);}))throw 'Enter two or more positive values, e.g. 1k, 2.2k, 330.';var s=0,p=0;a.forEach(function(x){s+=x;p+=1/x;});return [['Series total',eng(s,'Ω')],['Parallel total',eng(1/p,'Ω')]];}},
+  {g:'DC circuits',n:'Voltage divider and Thevenin equivalent',f:'Vout = Vin × R2/(R1 + R2),   Rth = R1 ‖ R2',in:[['Vin','Input voltage Vin','V',12],['R1','Top resistor R1','Ω',10000],['R2','Bottom resistor R2','Ω',3300],['RL','Load RL (0 = no load)','Ω',10000]],
+   c:function(v){var Vth=v.Vin*v.R2/(v.R1+v.R2),Rth=v.R1*v.R2/(v.R1+v.R2),o=[['Vout, no load',eng(Vth,'V')],['Thevenin resistance',eng(Rth,'Ω')],['Divider current',eng(v.Vin/(v.R1+v.R2),'A')]];if(v.RL>0)o.push(['Vout with load',eng(Vth*v.RL/(Rth+v.RL),'V')]);return o;}},
+  {g:'DC circuits',n:'Wire resistance from resistivity',f:'R = ρ L / A',in:[['L','Conductor length L','m',100],['A','Cross-section A','mm²',1.5],['rho','Resistivity ρ (Cu 1.72e-8, Al 2.82e-8)','Ω·m',1.72e-8]],
+   c:function(v){var R=v.rho*v.L/(v.A*1e-6);return [['Resistance',eng(R,'Ω')],['Per metre',eng(R/v.L,'Ω/m')]];}},
+  {g:'DC circuits',n:'Resistance vs temperature (incl. PT100)',f:'RT = R0 × (1 + α ΔT)',in:[['R0','R0 at reference temperature','Ω',100],['a','α (Cu 0.00393, PT100 0.00385)','/°C',0.00385],['dT','Temperature change ΔT','°C',100]],
+   c:function(v){return [['New resistance',eng(v.R0*(1+v.a*v.dT),'Ω')]];}},
+  {g:'Capacitors and inductors',n:'Parallel-plate capacitance',f:'C = ε0 εr A / d',in:[['er','Relative permittivity εr (air = 1)','',1],['A','Plate area A','cm²',1],['d','Gap d','mm',0.1]],
+   c:function(v){return [['Capacitance',eng(8.854e-12*v.er*v.A*1e-4/(v.d*1e-3),'F')]];}},
+  {g:'Capacitors and inductors',n:'Capacitor charge and energy',f:'Q = C V,   E = ½ C V²',in:[['C','Capacitance','µF',1000],['V','Voltage','V',25]],
+   c:function(v){var c=v.C*1e-6;return [['Charge Q',eng(c*v.V,'C')],['Energy E',eng(0.5*c*v.V*v.V,'J')]];}},
+  {g:'Capacitors and inductors',n:'RC charging and discharging',f:'τ = RC,   V(t) = Vs(1 − e^(−t/τ))',in:[['R','Resistance R','kΩ',10],['C','Capacitance C','µF',100],['Vs','Supply Vs','V',5],['t','Time t','s',2]],
+   c:function(v){var tau=v.R*1e3*v.C*1e-6,x=Math.exp(-v.t/tau);return [['Time constant τ',eng(tau,'s')],['Charging: V at t',eng(v.Vs*(1-x),'V')],['Discharging: V at t',eng(v.Vs*x,'V')],['Effectively done (5τ)',eng(5*tau,'s')]];}},
+  {g:'Capacitors and inductors',n:'Inductor: τ, energy and switch-off spike',f:'τ = L/R,   E = ½ L I²,   v = L ΔI/Δt',in:[['L','Inductance L','mH',100],['R','Coil resistance R','Ω',200],['I','Current I','mA',50],['dt','Switch-off time Δt','µs',1]],
+   c:function(v){var L=v.L/1000,I=v.I/1000;return [['Time constant τ',eng(L/v.R,'s')],['Stored energy',eng(0.5*L*I*I,'J')],['Spike with no flyback diode',eng(L*I/(v.dt*1e-6),'V')]];}},
+  {g:'Capacitors and inductors',n:'Reactance and resonance',f:'XC = 1/(2πfC),   XL = 2πfL,   f0 = 1/(2π√(LC))',in:[['f','Frequency f','Hz',50],['C','Capacitance C','µF',0.1],['L','Inductance L','mH',10]],
+   c:function(v){var c=v.C*1e-6,L=v.L/1000,w=2*Math.PI*v.f;return [['XC',eng(1/(w*c),'Ω')],['XL',eng(w*L,'Ω')],['Resonant f0',eng(1/(2*Math.PI*Math.sqrt(L*c)),'Hz')]];}},
+  {g:'AC and mains',n:'RMS, peak and period',f:'Vpeak = √2 × Vrms,   T = 1/f',in:[['V','RMS voltage','V',230],['f','Frequency','Hz',50]],
+   c:function(v){return [['Peak',eng(v.V*Math.SQRT2,'V')],['Peak-to-peak',eng(2*v.V*Math.SQRT2,'V')],['Period T',eng(1/v.f,'s')],['ω = 2πf',num(2*Math.PI*v.f,'rad/s')]];}},
+  {g:'AC and mains',n:'Series R–L–C impedance',f:'Z = √(R² + (XL − XC)²),   φ = atan((XL − XC)/R)',in:[['R','Resistance R','Ω',100],['L','Inductance L (0 = none)','mH',0],['C','Capacitance C (0 = none)','µF',10],['f','Frequency f','Hz',50]],
+   c:function(v){var w=2*Math.PI*v.f,XL=w*v.L/1000,XC=v.C>0?1/(w*v.C*1e-6):0,X=XL-XC;return [['XL',eng(XL,'Ω')],['XC',eng(XC,'Ω')],['Impedance Z',eng(Math.sqrt(v.R*v.R+X*X),'Ω')],['Phase φ',num(Math.atan2(X,v.R)*180/Math.PI,'°')]];}},
+  {g:'AC and mains',n:'AC power and power factor',f:'S = V I,   P = S × PF,   Q = √(S² − P²)',in:[['V','RMS voltage','V',230],['I','RMS current','A',2],['pf','Power factor (0–1)','',0.8]],
+   c:function(v){var S=v.V*v.I,P=S*v.pf;return [['Apparent S',eng(S,'VA')],['Real P',eng(P,'W')],['Reactive Q',eng(Math.sqrt(Math.max(0,S*S-P*P)),'var')],['Phase angle',num(Math.acos(Math.min(1,Math.max(0,v.pf)))*180/Math.PI,'°')]];}},
+  {g:'AC and mains',n:'Three-phase (theory only)',f:'V_line = √3 × V_phase,   P = √3 × V_L × I_L × PF',in:[['Vp','Phase voltage (to neutral)','V',230],['I','Line current','A',10],['pf','Power factor','',0.85]],
+   c:function(v){var VL=Math.sqrt(3)*v.Vp;return [['Line voltage',eng(VL,'V')],['Real power',eng(Math.sqrt(3)*VL*v.I*v.pf,'W')],['Apparent power',eng(Math.sqrt(3)*VL*v.I,'VA')]];}},
+  {g:'AC and mains',n:'Ideal transformer',f:'Vs/Vp = Ns/Np = Ip/Is',in:[['Vp','Primary voltage','V',230],['Vs','Secondary voltage','V',12],['Is','Secondary current','A',1]],
+   c:function(v){return [['Turns ratio Np : Ns',sig(v.Vp/v.Vs,3)+' : 1'],['Primary current (ideal)',eng(v.Is*v.Vs/v.Vp,'A')],['Power',eng(v.Vs*v.Is,'VA')]];}},
+  {g:'AC and mains',n:'Smoothing capacitor ripple (full-wave)',f:'ΔV ≈ I / (2 f C)',in:[['I','Load current','A',1],['f','Supply frequency','Hz',50],['C','Capacitance','µF',4700]],
+   c:function(v){return [['Ripple, peak-to-peak',eng(v.I/(2*v.f*v.C*1e-6),'V')]];}},
+  {g:'Semiconductors',n:'Diode equation (Shockley)',f:'I = Is (e^(V/(n·VT)) − 1),   VT = kT/q',in:[['Is','Saturation current Is','A',1e-14],['n','Ideality factor n','',1],['V','Forward voltage V','V',0.65],['T','Temperature','°C',27]],
+   c:function(v){var VT=1.380649e-23*(v.T+273.15)/1.602177e-19,I=v.Is*(Math.exp(v.V/(v.n*VT))-1);return [['Thermal voltage VT',eng(VT,'V')],['Diode current',eng(I,'A')],['Extra volts for 10× current',eng(v.n*VT*Math.LN10,'V')]];}},
+  {g:'Semiconductors',n:'LED series resistor',f:'R = (Vs − Vf) / I',in:[['Vs','Supply voltage','V',12],['Vf','LED forward voltage','V',3.0],['I','LED current','mA',15]],
+   c:function(v){if(v.Vs<=v.Vf)throw 'The supply must be higher than the LED voltage.';var R=(v.Vs-v.Vf)/(v.I/1000),Re=e24up(R),Ia=(v.Vs-v.Vf)/Re;return [['Exact R',eng(R,'Ω')],['Next E24 value up',eng(Re,'Ω')],['Actual current',eng(Ia,'A')],['Resistor power',eng(Ia*(v.Vs-v.Vf),'W')]];}},
+  {g:'Semiconductors',n:'Zener shunt regulator',f:'R = (Vin − Vz) / (IL + Iz)',in:[['Vin','Input voltage','V',12],['Vz','Zener voltage','V',5.1],['IL','Load current','mA',10],['Iz','Minimum Zener current','mA',5]],
+   c:function(v){if(v.Vin<=v.Vz)throw 'Input must be above the Zener voltage.';var R=(v.Vin-v.Vz)/((v.IL+v.Iz)/1000),Rd=e24down(R),It=(v.Vin-v.Vz)/Rd;return [['Exact R',eng(R,'Ω')],['E24 value down',eng(Rd,'Ω')],['Resistor power',eng(It*(v.Vin-v.Vz),'W')],['Zener power with no load',eng(It*v.Vz,'W')]];}},
+  {g:'Semiconductors',n:'BJT switch base resistor',f:'IB = k × IC/βmin,   RB = (Vdrive − VBE)/IB',in:[['Vd','Drive voltage (e.g. Arduino pin)','V',5],['Ic','Load (collector) current','mA',30],['b','Minimum β from datasheet','',100],['k','Overdrive factor (5–10)','',10],['Vbe','VBE','V',0.7]],
+   c:function(v){var Ib=v.Ic/1000/v.b*v.k,R=(v.Vd-v.Vbe)/Ib,Rd=e24down(R);return [['Base current wanted',eng(Ib,'A')],['Exact RB',eng(R,'Ω')],['E24 value down',eng(Rd,'Ω')],['Base current with it',eng((v.Vd-v.Vbe)/Rd,'A')]];}},
+  {g:'Semiconductors',n:'MOSFET loss and temperature rise',f:'P = I² × RDS(on),   ΔT = P × θ',in:[['I','Drain current','A',5],['R','RDS(on) at your gate voltage','mΩ',20],['th','Thermal resistance θ (junction to air)','°C/W',62]],
+   c:function(v){var P=v.I*v.I*v.R/1000;return [['Power lost',eng(P,'W')],['Temperature rise',num(P*v.th,'°C')]];}},
+  {g:'Semiconductors',n:'Linear regulator heat',f:'P = (Vin − Vout) × I,   ΔT = P × θ',in:[['Vin','Input voltage','V',12],['Vo','Output voltage','V',5],['I','Load current','A',0.5],['th','Thermal resistance θ','°C/W',60]],
+   c:function(v){var P=(v.Vin-v.Vo)*v.I;return [['Heat in regulator',eng(P,'W')],['Temperature rise',num(P*v.th,'°C')],['Efficiency',num(100*v.Vo/v.Vin,'%')]];}},
+  {g:'Semiconductors',n:'Buck converter input current',f:'Pin = Pout / η,   Iin = Pin / Vin',in:[['Vin','Input voltage','V',12],['Vo','Output voltage','V',5],['Io','Output current','A',2],['eta','Efficiency η','%',90]],
+   c:function(v){var Po=v.Vo*v.Io,Pi=Po/(v.eta/100);return [['Output power',eng(Po,'W')],['Input power',eng(Pi,'W')],['Input current',eng(Pi/v.Vin,'A')],['Heat',eng(Pi-Po,'W')]];}},
+  {g:'Semiconductors',n:'Op-amp gain',f:'Non-inverting G = 1 + Rf/Rg,   inverting G = −Rf/Rg',in:[['Rf','Feedback resistor Rf','Ω',47000],['Rg','Rg (to ground, or input)','Ω',10000]],
+   c:function(v){var gn=1+v.Rf/v.Rg;return [['Non-inverting gain',sig(gn,4)+' ('+num(20*Math.log10(gn),'dB')+')'],['Inverting gain',sig(-v.Rf/v.Rg,4)]];}},
+  {g:'555 timer',n:'555 astable',f:'t_high = 0.693(R1 + R2)C,   t_low = 0.693 R2 C',in:[['R1','R1','kΩ',10],['R2','R2','kΩ',68],['C','C','µF',10]],
+   c:function(v){var c=v.C*1e-6,th=0.693*(v.R1+v.R2)*1e3*c,tl=0.693*v.R2*1e3*c;return [['Time high',eng(th,'s')],['Time low',eng(tl,'s')],['Frequency',eng(1/(th+tl),'Hz')],['Duty cycle',num(100*th/(th+tl),'%')]];}},
+  {g:'555 timer',n:'555 monostable',f:'t = 1.1 R C',in:[['R','R','kΩ',100],['C','C','µF',47]],
+   c:function(v){return [['Pulse length',eng(1.1*v.R*1e3*v.C*1e-6,'s')]];}},
+  {g:'Signals',n:'Decibels from two values',f:'Power: dB = 10 log(P2/P1)     Voltage: dB = 20 log(V2/V1)',in:[['a','First value (P1 or V1)','',1],['b','Second value (P2 or V2)','',2]],
+   c:function(v){var r=v.b/v.a;if(!(r>0))throw 'Both values must be positive.';return [['Ratio',sig(r,4)+' ×'],['If these are powers',num(10*Math.log10(r),'dB')],['If these are voltages',num(20*Math.log10(r),'dB')]];}},
+  {g:'Signals',n:'dBm ↔ milliwatts (fill one box)',f:'dBm = 10 log(P / 1 mW),   P = 10^(dBm/10) mW',in:[['d','Power in dBm','dBm',-3,1],['p','Power in mW','mW','',1]],
+   c:function(v){if((v.d===null)===(v.p===null))throw 'Fill exactly one of the two boxes.';if(v.d!==null)return [['Power',eng(Math.pow(10,v.d/10)/1000,'W')]];if(!(v.p>0))throw 'Power must be positive.';return [['Power level',num(10*Math.log10(v.p),'dBm')]];}},
+  {g:'Signals',n:'ADC resolution and reading',f:'Step = Vref / 2^n,   V = code × Vref / 2^n',in:[['n','ADC bits n','bits',10],['Vr','Reference voltage','V',5],['code','ADC reading (code)','',512]],
+   c:function(v){var N=Math.pow(2,v.n);return [['Levels',num(N,'')],['Step (1 LSB)',eng(v.Vr/N,'V')],['Voltage for this code',eng(v.code*v.Vr/N,'V')],['Highest code',num(N-1,'')]];}},
+  {g:'Signals',n:'4–20 mA scaling',f:'Value = min + (I − 4)/16 × (max − min)',in:[['lo','Range minimum (at 4 mA)','',0],['hi','Range maximum (at 20 mA)','',10],['I','Loop current','mA',13.6]],
+   c:function(v){var p=(v.I-4)/16,o=[['Measured value',num(v.lo+p*(v.hi-v.lo),'')],['Percent of span',num(p*100,'%')],['Volts across 250 Ω',eng(v.I/1000*250,'V')]];if(v.I<=3.6||v.I>=21)o.push(['Status','Fault level: check wiring and device']);return o;}},
+  {g:'Signals',n:'4–20 mA loop supply check',f:'V left = Vsupply − 0.020 A × (Rsense + Rcable)',in:[['Vs','Loop supply','V',24],['Vt','Transmitter minimum voltage','V',12],['Rs','Input (sense) resistor','Ω',250],['Rc','Cable loop resistance','Ω',20]],
+   c:function(v){var left=v.Vs-0.02*(v.Rs+v.Rc);return [['Left for transmitter at 20 mA',eng(left,'V')],['Max total loop resistance',eng((v.Vs-v.Vt)/0.02,'Ω')],['Verdict',left>=v.Vt?'OK':'Not enough voltage']];}},
+  {g:'Signals',n:'Nyquist sample rate',f:'fs > 2 × fmax',in:[['f','Highest frequency in the signal','Hz',1000]],
+   c:function(v){return [['Absolute minimum',eng(2*v.f,'S/s')],['Comfortable (5–10×)',eng(5*v.f,'S/s')+' – '+eng(10*v.f,'S/s')]];}},
+  {g:'Signals',n:'UART throughput',f:'bytes/s = baud / bits per frame   (8N1 = 10)',in:[['b','Baud rate','baud',115200],['f','Bits per frame','bits',10]],
+   c:function(v){return [['Bytes per second',num(v.b/v.f,'B/s')],['Time per byte',eng(v.f/v.b,'s')]];}},
+  {g:'Waves and fibre',n:'Wavelength and antenna length',f:'λ = c / f',in:[['f','Frequency','MHz',2400]],
+   c:function(v){var l=2.998e8/(v.f*1e6);return [['Wavelength λ',eng(l,'m')],['Half-wave',eng(l/2,'m')],['Quarter-wave',eng(l/4,'m')]];}},
+  {g:'Waves and fibre',n:'Snell, critical angle and NA',f:'n1 sin θ1 = n2 sin θ2,   sin θc = n2/n1',in:[['n1','Index n1 (light starts here)','',1.468],['n2','Index n2','',1.463],['a','Angle of incidence θ1 from the normal','°',87]],
+   c:function(v){var s=v.n1*Math.sin(v.a*Math.PI/180)/v.n2,o=[['Refracted angle θ2',s>1?'Total internal reflection':num(Math.asin(s)*180/Math.PI,'°')]];if(v.n1>v.n2){o.push(['Critical angle θc',num(Math.asin(v.n2/v.n1)*180/Math.PI,'°')]);o.push(['Numerical aperture',sig(Math.sqrt(v.n1*v.n1-v.n2*v.n2),3)]);}else o.push(['Critical angle','None (n1 ≤ n2)']);return o;}},
+  {g:'Waves and fibre',n:'Free-space path loss (radio)',f:'FSPL = 20 log d(km) + 20 log f(MHz) + 32.44',in:[['d','Distance','m',100],['f','Frequency','MHz',2400]],
+   c:function(v){return [['Path loss',num(20*Math.log10(v.d/1000)+20*Math.log10(v.f)+32.44,'dB')]];}},
+  {g:'Waves and fibre',n:'OTDR event distance',f:'d = c t / (2 n)',in:[['t','Round-trip time','µs',10],['n','Group index of the fibre','',1.468]],
+   c:function(v){return [['Distance to event',eng(2.998e8*v.t*1e-6/(2*v.n),'m')]];}},
+  {g:'Waves and fibre',n:'Fibre loss budget',f:'Loss = L×α + connectors + splices;   margin = (Tx − Rx sensitivity) − loss',in:[['L','Length','km',2],['a','Fibre loss α','dB/km',0.35],['nc','Connector pairs','',2],['lc','Loss per connector pair','dB',0.5],['ns','Splices','',4],['ls','Loss per splice','dB',0.1],['tx','Transmit power','dBm',-5],['rx','Receiver sensitivity','dBm',-25]],
+   c:function(v){var loss=v.L*v.a+v.nc*v.lc+v.ns*v.ls,av=v.tx-v.rx;return [['Expected link loss',num(loss,'dB')],['Budget available',num(av,'dB')],['Margin left',num(av-loss,'dB')],['Expected received power',num(v.tx-loss,'dBm')]];}},
+  {g:'Practical installer maths',n:'DC cable voltage drop',f:'Vdrop = 2 × L × I × 0.0172 / A   (copper, A in mm²)',in:[['V','Supply voltage','V',12],['I','Load current','A',1],['L','One-way cable length','m',30],['A','Conductor size','mm²',0.5],['pct','Allowed drop','%',5]],
+   c:function(v){var R=2*v.L*0.0172/v.A,d=v.I*R;return [['Loop resistance',eng(R,'Ω')],['Voltage drop',eng(d,'V')+' ('+num(100*d/v.V,'%')+')'],['Voltage at the load',eng(v.V-d,'V')],['Longest run for allowed drop',eng(v.pct/100*v.V*v.A/(2*v.I*0.0172),'m')]];}},
+  {g:'Practical installer maths',n:'Battery standby capacity',f:'Ah = (Istandby × tstandby + Ialarm × talarm) × factor',in:[['Is','Standby current','A',0.35],['ts','Standby time','h',24],['Ia','Alarm current','A',1.2],['ta','Alarm time','h',0.5],['k','Ageing / safety factor','',1.25]],
+   c:function(v){var ah=(v.Is*v.ts+v.Ia*v.ta)*v.k;return [['Capacity needed',num(ah,'Ah')],['Next common SLA size',nextSize(ah)]];}},
+  {g:'Practical installer maths',n:'Battery energy and runtime',f:'Wh = V × Ah,   hours ≈ Wh × usable / load W',in:[['V','Battery voltage','V',12.8],['Ah','Capacity','Ah',100],['u','Usable fraction','%',80],['P','Load','W',60]],
+   c:function(v){var wh=v.V*v.Ah;return [['Stored energy',eng(wh,'Wh')],['Runtime',num(wh*v.u/100/v.P,'h')]];}},
+  {g:'Practical installer maths',n:'PoE budget',f:'Total = Σ (devices × watts allocated) ≤ switch budget',in:[['n1','Group 1: devices','',6],['w1','Group 1: watts each','W',15.4],['n2','Group 2: devices','',1],['w2','Group 2: watts each','W',30],['B','Switch PoE budget','W',120]],
+   c:function(v){var t=v.n1*v.w1+v.n2*v.w2;return [['Total needed',eng(t,'W')],['Headroom',eng(v.B-t,'W')],['Budget used',num(100*t/v.B,'%')],['Verdict',t>v.B?'Over budget':(t>0.8*v.B?'Tight: under 20 % spare':'OK')]];}},
+  {g:'Practical installer maths',n:'CCTV storage',f:'TB = Mb/s × 3600 × hours × days × cameras / 8 / 10^6',in:[['n','Cameras','',16],['b','Average bitrate per camera','Mb/s',4],['h','Recording hours per day','h',24],['d','Days to keep','days',30],['o','Margin','%',10]],
+   c:function(v){var tb=v.b*3600*v.h*v.d*v.n/8/1e6*(1+v.o/100);return [['Storage needed',num(tb,'TB')],['Per day',num(tb/v.d,'TB')],['Total network load',num(v.n*v.b,'Mb/s')]];}},
+  {g:'Practical installer maths',n:'Subnet size from prefix',f:'Usable hosts = 2^(32 − prefix) − 2',in:[['p','Prefix length (24 for /24)','',24]],
+   c:function(v){var p=Math.round(v.p);if(p<1||p>30)throw 'Use a prefix from 1 to 30.';var m=[],b=p;for(var i=0;i<4;i++){var x=Math.min(8,Math.max(0,b));m.push(256-Math.pow(2,8-x));b-=8;}return [['Subnet mask',m.join('.')],['Usable host addresses',num(Math.pow(2,32-p)-2,'')]];}},
+  {g:'Practical installer maths',n:'Energy use and running cost',f:'kWh = W × hours / 1000,   cost = kWh × price',in:[['W','Power','W',30],['h','Hours per day','h',24],['c','Price (indicative)','c/kWh',30]],
+   c:function(v){var y=v.W*v.h*365/1000;return [['Energy per year',num(y,'kWh')],['Cost per year (indicative)','A$'+sig(y*v.c/100,3)]];}},
+  {g:'Practical installer maths',n:'Solar energy per day (rough)',f:'kWh/day ≈ kW × peak sun hours × derating',in:[['kw','Array size','kW',6.6],['psh','Peak sun hours (site, season)','h',4.5],['dr','Derating (heat, dust, inverter)','%',80]],
+   c:function(v){return [['Energy per day',num(v.kw*v.psh*v.dr/100,'kWh')]];}}
+  ];
+  var sel=document.getElementById('fc-sel'),box=document.getElementById('fc-in'),out=document.getElementById('fc-out'),fx=document.getElementById('fc-f'),groups={};
+  C.forEach(function(c,i){if(!groups[c.g]){groups[c.g]=document.createElement('optgroup');groups[c.g].label=c.g;sel.appendChild(groups[c.g]);}var o=document.createElement('option');o.value=i;o.textContent=c.n;groups[c.g].appendChild(o);});
+  function calc(){
+    var c=C[sel.value],v={},err=null;
+    [].forEach.call(box.querySelectorAll('input'),function(inp,i){var d=c.in[i];if(d[5]==='text'){v[d[0]]=inp.value;return;}var s=inp.value.trim();if(s===''){if(d[4])v[d[0]]=null;else if(!err)err='Enter a value for "'+d[1]+'".';return;}var x=parseFloat(s);if(!isFinite(x)&&!err)err='"'+d[1]+'" must be a number.';v[d[0]]=x;});
+    out.innerHTML='';
+    if(!err){try{c.c(v).forEach(function(p){var dv=document.createElement('div'),sm=document.createElement('small'),sp=document.createElement('span');sm.textContent=p[0];sp.className='out';sp.textContent=p[1];dv.appendChild(sm);dv.appendChild(sp);out.appendChild(dv);});return;}catch(e){err=typeof e==='string'?e:'Check the inputs.';}}
+    var d=document.createElement('div');d.textContent=err;out.appendChild(d);
+  }
+  function build(){
+    var c=C[sel.value];fx.textContent=c.f;box.innerHTML='';
+    c.in.forEach(function(d){var lab=document.createElement('label');lab.appendChild(document.createTextNode(d[1]+(d[2]?' ('+d[2]+')':'')));lab.appendChild(document.createElement('br'));var inp=document.createElement('input');inp.type=d[5]==='text'?'text':'number';if(inp.type==='number')inp.step='any';inp.value=d[3];inp.addEventListener('input',calc);lab.appendChild(inp);box.appendChild(lab);});
+    calc();
+  }
+  sel.addEventListener('change',build);build();
+})();
+</script>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
