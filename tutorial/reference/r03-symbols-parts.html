@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R03 · Schematic symbols and part identification</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:14px 0 22px}
+  .sym{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:8px 10px 12px;text-align:center}
+  .sym svg{display:block;width:100%;height:auto;margin:0 auto 4px}
+  .sym b{display:block;font-size:15px;line-height:1.3}
+  .sym small{display:block;color:var(--muted);font-size:13px;line-height:1.4;margin-top:3px}
+  .fs td:first-child{font-family:var(--mono);font-size:14.5px}
+  .fs td,.fs th{font-size:14.5px}
+  .cb{display:inline-block;width:20px;height:20px;border-radius:5px;border:1px solid var(--muted);vertical-align:-5px;margin-right:8px}
+  .cb-black{background:#1a1a1a}.cb-brown{background:#7b4a1e}.cb-red{background:#d32f2f}.cb-orange{background:#f57c00}.cb-yellow{background:#f9d71c}
+  .cb-green{background:#2e9d4a}.cb-blue{background:#1e5fd6}.cb-violet{background:#8e44ad}.cb-grey{background:#8c8c8c}.cb-white{background:#f5f5f5}
+  .cb-gold{background:#c9a227}.cb-silver{background:#b8bcc2}.cb-none{background:transparent;border-style:dashed}
+  .eia td,.eia th{padding:5px 8px;font-size:13.5px;white-space:nowrap}
+  .eia td:nth-child(even){font-family:var(--mono);color:var(--muted)}
+  .rd-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+  .rd-tabs button{font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer}
+  .rd-tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+  .rd-pane[hidden],.rd-svg[hidden]{display:none!important}
+  .rd-svg{display:block;width:100%;max-width:460px;height:auto;margin:4px auto 12px}
+  .rd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:2px 14px}
+  .rd-grid select{max-width:100%}
+  .widget input[type=text]{font:15px var(--sans);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:260px}
+  .widget .out.rd-s{font-size:15px;line-height:1.45}
+  .rd-ex{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 4px;font-size:14px;color:var(--muted)}
+  .rd-ex button{font:600 13.5px var(--mono);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:3px 9px;border-radius:6px;cursor:pointer}
+  #rd-note{font-size:15px;color:var(--muted);margin:12px 0 0;min-height:1.5em}
+</style>
+</head>
+<body class="book-reference">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Reference Shelf</div>
+    <span class="eyebrow">Reference · R03</span>
+    <h1>Schematic symbols and part identification</h1>
+    <p class="lede">Read a schematic, name a part from its body, and decode resistor, capacitor and chip markings. Symbols are shown in the international (IEC) style and the older US style side by side. A decoder near the end reads colour bands and chip codes for you.</p>
+    <div class="meta"><span><b>Type</b> Look-up page</span><span><b>Symbols</b> 39 in 6 grids</span><span><b>Widget</b> Resistor decoder</span><span><b>Links to</b> P02, P03, P22, R01, R02</span></div>
+
+    <nav class="otp" data-auto></nav>
+
+    <h2>Read the legend first</h2>
+    <p>A schematic shows how parts connect, not what they look like. Each part is drawn as a <b>symbol</b>. The same part can have more than one symbol, because different standards and different countries chose different pictures.</p>
+    <div class="compare">
+      <div><h4>IEC style (international)</h4><p>Based on IEC 60617. A resistor is a plain rectangle. This is the style on most current drawings and in most manufacturer manuals outside the USA.</p></div>
+      <div><h4>US style (older ANSI/IEEE)</h4><p>A resistor is a zig-zag. You will meet it in US datasheets, hobby sites, older manuals and imported equipment.</p></div>
+    </div>
+    <div class="callout aus"><span class="label">In Australia</span><p>Older Australian drawings may cite <b>AS 1102</b> (graphical symbols for electrotechnical documentation). Most drawings now use IEC 60617-style symbols. Standards are revised and replaced, so a standard number on an old drawing can be out of date. If a job or contract cites a standard, ask for the edition that applies and confirm it with Standards Australia.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p><b>Always read the drawing's legend or symbol list.</b> Symbols differ by drafter and by country. If there is no legend, use the label next to the symbol (R12, K3, F1) and the parts list, and ask before you guess.</p></div>
+    <div class="callout myth"><span class="label">Common misconception</span><p>"A symbol always means one fixed part." It does not. A plain rectangle is a resistor in IEC style, but it can also be a relay coil, and with a line through it, a fuse. The legend and the label decide, not the shape alone.</p></div>
+    <a class="crosslink" href="../practice/p22-reading-drawings.html">Practice P22 · Reading drawings: schematics, wiring diagrams and as-builts</a>
+
+    <h2>Symbol grids</h2>
+    <p>Each cell shows the IEC symbol on the left and the US symbol on the right when they differ. A cell with one drawing means both styles use it. The letters in each caption are the usual <b>reference letters</b> printed next to the symbol, like R5 or Q2.</p>
+
+    <h3>Resistors, capacitors, inductors and transformers</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Resistor symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-20 M20 0 H45"/><rect class="s-line" x="-20" y="-9" width="40" height="18"/></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-30 L-24 -10 L-12 10 L0 -10 L12 10 L24 -10 L30 0 H45"/></g></svg><b>Resistor</b><small>R. IEC is a plain box, US is a zig-zag.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Variable resistor (rheostat) symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-20 M20 0 H45"/><rect class="s-line" x="-20" y="-9" width="40" height="18"/><line class="s-line" style="stroke-width:1.5" x1="-24" y1="22" x2="19.9" y2="-18.2"/><polygon class="f-ink" points="24,-22 20.8,-15.1 16.9,-19.4"/></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-30 L-24 -10 L-12 10 L0 -10 L12 10 L24 -10 L30 0 H45"/><line class="s-line" style="stroke-width:1.5" x1="-24" y1="22" x2="19.9" y2="-18.2"/><polygon class="f-ink" points="24,-22 20.8,-15.1 16.9,-19.4"/></g></svg><b>Variable resistor (rheostat)</b><small>R or RV. The arrow through it means adjustable. Two terminals.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Potentiometer (pot) symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-20 M20 0 H45"/><rect class="s-line" x="-20" y="-9" width="40" height="18"/><line class="s-line" style="stroke-width:1.5" x1="0" y1="-36" x2="0" y2="-14.6"/><polygon class="f-ink" points="0,-9 -2.9,-16 2.9,-16"/><text class="t t-small t-muted" x="8" y="-28" text-anchor="start">W</text></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-30 L-24 -10 L-12 10 L0 -10 L12 10 L24 -10 L30 0 H45"/><line class="s-line" style="stroke-width:1.5" x1="0" y1="-36" x2="0" y2="-15.6"/><polygon class="f-ink" points="0,-10 -2.9,-17 2.9,-17"/><text class="t t-small t-muted" x="8" y="-28" text-anchor="start">W</text></g></svg><b>Potentiometer (pot)</b><small>RV or VR. The arrow is the wiper (W), the third terminal.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Capacitor (non-polar) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-4 M4 0 H45"/><path class="s-line" style="stroke-width:3" d="M-4 -17 V17 M4 -17 V17"/></g></svg><b>Capacitor (non-polar)</b><small>C. Two plates. Ceramic and film types, either way round.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Capacitor (electrolytic) symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-5 M9 0 H45"/><path class="s-line" style="stroke-width:3" d="M-5 -17 V17"/><rect class="s-line" x="3" y="-17" width="6" height="34"/><text class="t t-small t-bold" x="-19" y="-8" text-anchor="middle">+</text></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-5 M4.5 0 H45"/><path class="s-line" style="stroke-width:3" d="M-5 -17 V17"/><path class="s-line" d="M9 -17 Q0 0 9 17"/><text class="t t-small t-bold" x="-19" y="-8" text-anchor="middle">+</text></g></svg><b>Capacitor (electrolytic)</b><small>C. Mark + is the positive side. IEC draws one plate as a narrow box, US as a curved plate.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Inductor (coil) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-30 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 H45"/></g></svg><b>Inductor (coil)</b><small>L. Loops. Some IEC drawings use a solid bar instead.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Transformer symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><circle class="s-line" cx="-10" cy="0" r="17"/><circle class="s-line" cx="10" cy="0" r="17"/><path class="s-line" d="M-10 -17 V-34 M-10 17 V34 M10 -17 V-34 M10 17 V34"/></g><g transform="translate(165 62)"><path class="s-line" d="M-12 -24 a6 6 0 0 0 0 12 a6 6 0 0 0 0 12 a6 6 0 0 0 0 12 a6 6 0 0 0 0 12 M-12 -24 H-36 M-12 24 H-36"/><path class="s-line" d="M12 -24 a6 6 0 0 1 0 12 a6 6 0 0 1 0 12 a6 6 0 0 1 0 12 a6 6 0 0 1 0 12 M12 -24 H36 M12 24 H36"/><path class="s-line" d="M-3 -28 V28 M3 -28 V28"/></g></svg><b>Transformer</b><small>T or TR. IEC: two overlapping circles. US: two coils with core lines between.</small></div>
+</div>
+
+    <h3>Diodes and LEDs</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Diode symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-16 M12 0 H45"/><polygon class="s-line" points="-16,-15 -16,15 12,0"/><path class="s-line" style="stroke-width:3" d="M12 -15 V15"/><text class="t t-small t-muted" x="-33" y="17" text-anchor="middle">A</text><text class="t t-small t-muted" x="33" y="17" text-anchor="middle">K</text></g></svg><b>Diode</b><small>D. Current flows with the arrow, anode (A) to cathode (K). The bar is the band on the part.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Zener diode symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-16 M12 0 H45"/><polygon class="s-line" points="-16,-15 -16,15 12,0"/><path class="s-line" style="stroke-width:2.5" d="M6 15 H12 V-15 H18"/><text class="t t-small t-muted" x="-33" y="17" text-anchor="middle">A</text><text class="t t-small t-muted" x="33" y="17" text-anchor="middle">K</text></g></svg><b>Zener diode</b><small>D or ZD. Bent bar. Used in reverse to hold a fixed voltage.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="LED symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-16 M12 0 H45"/><polygon class="s-line" points="-16,-15 -16,15 12,0"/><path class="s-line" style="stroke-width:3" d="M12 -15 V15"/><line class="s-line" style="stroke-width:1.5" x1="-5" y1="-12" x2="4.3" y2="-26"/><polygon class="f-ink" points="7,-30 5.8,-23.6 1.6,-26.4"/><line class="s-line" style="stroke-width:1.5" x1="5" y1="-9" x2="14.3" y2="-23"/><polygon class="f-ink" points="17,-27 15.8,-20.6 11.6,-23.4"/><text class="t t-small t-muted" x="-33" y="17" text-anchor="middle">A</text><text class="t t-small t-muted" x="33" y="17" text-anchor="middle">K</text></g></svg><b>LED</b><small>D or LED. Arrows leaving the diode: it gives out light.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Schottky diode symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-16 M12 0 H45"/><polygon class="s-line" points="-16,-15 -16,15 12,0"/><path class="s-line" style="stroke-width:2.5" d="M6 -9 V-15 H12 V15 H18 V9"/><text class="t t-small t-muted" x="-33" y="17" text-anchor="middle">A</text><text class="t t-small t-muted" x="33" y="17" text-anchor="middle">K</text></g></svg><b>Schottky diode</b><small>D. S-shaped bar. Low voltage drop, very fast.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Photodiode symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-16 M12 0 H45"/><polygon class="s-line" points="-16,-15 -16,15 12,0"/><path class="s-line" style="stroke-width:3" d="M12 -15 V15"/><line class="s-line" style="stroke-width:1.5" x1="-24" y1="-34" x2="-14.8" y2="-20.9"/><polygon class="f-ink" points="-12,-17 -17.5,-20.4 -13.4,-23.4"/><line class="s-line" style="stroke-width:1.5" x1="-8" y1="-34" x2="1.4" y2="-19.1"/><polygon class="f-ink" points="4,-15 -1.3,-18.7 2.9,-21.4"/><text class="t t-small t-muted" x="-33" y="17" text-anchor="middle">A</text><text class="t t-small t-muted" x="33" y="17" text-anchor="middle">K</text></g></svg><b>Photodiode</b><small>D or PD. Arrows pointing in: it senses light.</small></div>
+</div>
+    <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family</a>
+    <a class="crosslink" href="../practice/p06-diodes-rectifiers.html">Practice P06 · Diodes on the bench: rectifiers and protection</a>
+
+    <h3>Transistors and the op-amp</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="NPN transistor (BJT) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><circle class="s-line" cx="6" cy="0" r="26"/><path class="s-line" d="M-45 0 H-8"/><path class="s-line" style="stroke-width:3" d="M-8 -14 V14"/><path class="s-line" d="M-8 -6 L12 -18 V-40"/><path class="s-line" d="M-8 6 L12 18 V40"/><polygon class="f-ink" points="11.3,17.6 2.7,16.4 6.2,10.6"/><text class="t t-small t-muted" x="-38" y="-6" text-anchor="middle">B</text><text class="t t-small t-muted" x="21" y="-32" text-anchor="start">C</text><text class="t t-small t-muted" x="21" y="38" text-anchor="start">E</text></g></svg><b>NPN transistor (BJT)</b><small>Q. Emitter arrow points out ("Not Pointing iN"). B base, C collector, E emitter. The circle is often left out.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="PNP transistor (BJT) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><circle class="s-line" cx="6" cy="0" r="26"/><path class="s-line" d="M-45 0 H-8"/><path class="s-line" style="stroke-width:3" d="M-8 -14 V14"/><path class="s-line" d="M-8 -6 L12 -18 V-40"/><path class="s-line" d="M-8 6 L12 18 V40"/><polygon class="f-ink" points="-6.2,6.5 2.4,7.7 -1.1,13.5"/><text class="t t-small t-muted" x="-38" y="-6" text-anchor="middle">B</text><text class="t t-small t-muted" x="21" y="-32" text-anchor="start">C</text><text class="t t-small t-muted" x="21" y="38" text-anchor="start">E</text></g></svg><b>PNP transistor (BJT)</b><small>Q. Emitter arrow points in toward the base.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="N-channel MOSFET symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-18"/><path class="s-line" style="stroke-width:3" d="M-18 -17 V17"/><path class="s-line" style="stroke-width:3" d="M-10 -20 V-10 M-10 -5 V5 M-10 10 V20"/><path class="s-line" d="M-10 -18 H12 V-40"/><path class="s-line" d="M-10 18 H12 V40"/><path class="s-line" d="M-10 0 H12 V18"/><polygon class="f-ink" points="-10,0 -2,-3.4 -2,3.4"/><text class="t t-small t-muted" x="21" y="-32" text-anchor="start">D</text><text class="t t-small t-muted" x="21" y="38" text-anchor="start">S</text><text class="t t-small t-muted" x="-38" y="-6" text-anchor="middle">G</text></g></svg><b>N-channel MOSFET</b><small>Q. Arrow on the body line points toward the channel. G gate, D drain, S source.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="P-channel MOSFET symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-18"/><path class="s-line" style="stroke-width:3" d="M-18 -17 V17"/><path class="s-line" style="stroke-width:3" d="M-10 -20 V-10 M-10 -5 V5 M-10 10 V20"/><path class="s-line" d="M-10 -18 H12 V-40"/><path class="s-line" d="M-10 18 H12 V40"/><path class="s-line" d="M-10 0 H12 V-18"/><polygon class="f-ink" points="1,0 -7,3.4 -7,-3.4"/><text class="t t-small t-muted" x="21" y="-32" text-anchor="start">S</text><text class="t t-small t-muted" x="21" y="38" text-anchor="start">D</text><text class="t t-small t-muted" x="-38" y="-6" text-anchor="middle">G</text></g></svg><b>P-channel MOSFET</b><small>Q. Arrow points away from the channel. Source is usually drawn on top.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Op-amp symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 -15 H-24 M-45 15 H-24 M24 0 H45"/><rect class="s-line" x="-24" y="-30" width="48" height="60"/><polygon class="s-line" style="stroke-width:1.5" points="-6,-12 -6,12 14,0"/><text class="t t-bold" x="-18" y="-9" text-anchor="middle">−</text><text class="t t-bold" x="-18" y="21" text-anchor="middle">+</text></g><g transform="translate(165 62)"><path class="s-line" d="M-45 -15 H-24 M-45 15 H-24 M28 0 H45"/><polygon class="s-line" points="-24,-30 -24,30 28,0"/><text class="t t-bold" x="-18" y="-9" text-anchor="middle">−</text><text class="t t-bold" x="-18" y="21" text-anchor="middle">+</text></g></svg><b>Op-amp</b><small>U. Inverting input (−) on top, non-inverting (+) below. Power pins are often not drawn. IEC uses a box with a small triangle.</small></div>
+</div>
+    <a class="crosslink" href="../theory/t12-bjt-physics.html">Theory T12 · How a bipolar transistor really works</a>
+    <a class="crosslink" href="../theory/t13-mosfet-physics.html">Theory T13 · How a MOSFET works</a>
+
+    <h3>Switches, relays and fuses</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Switch (SPST) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-20 M24 0 H45 M-20 0 L20 -20"/><circle class="f-ink" cx="-20" cy="0" r="2.5"/><circle class="f-ink" cx="24" cy="0" r="2.5"/></g></svg><b>Switch (SPST)</b><small>S or SW. One blade, one path. Shown open (off).</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Changeover switch (SPDT) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-22 M-22 0 L24 -14 M24 -14 H45 M24 14 H45"/><circle class="f-ink" cx="-22" cy="0" r="2.5"/><circle class="f-ink" cx="24" cy="-14" r="2.5"/><circle class="f-ink" cx="24" cy="14" r="2.5"/><text class="t t-small t-muted" x="-44" y="-6" text-anchor="start">COM</text><text class="t t-small t-muted" x="30" y="-19" text-anchor="start">NC</text><text class="t t-small t-muted" x="30" y="9" text-anchor="start">NO</text></g></svg><b>Changeover switch (SPDT)</b><small>S or SW. COM joins either NC or NO. Same idea as a relay changeover contact.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Push-button, normally open symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-14 M14 0 H45"/><path class="s-line" style="stroke-width:2.5" d="M-16 -9 H16"/><path class="s-line" d="M0 -9 V-24 M-9 -24 H9"/><circle class="f-ink" cx="-14" cy="0" r="2.5"/><circle class="f-ink" cx="14" cy="0" r="2.5"/></g></svg><b>Push-button, normally open</b><small>S or PB. Makes the circuit while pressed.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Push-button, normally closed symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-14 V-9 M45 0 H14 V-9"/><path class="s-line" style="stroke-width:2.5" d="M-14 -9 H14"/><path class="s-line" d="M0 -9 V-24 M-9 -24 H9"/></g></svg><b>Push-button, normally closed</b><small>S or PB. Breaks the circuit while pressed. Typical for a "stop" button.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Relay coil symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-20 M20 0 H45"/><rect class="s-line" x="-20" y="-12" width="40" height="24"/><text class="t t-small" x="0" y="5" text-anchor="middle">K1</text><text class="t t-small t-muted" x="-33" y="-6" text-anchor="middle">A1</text><text class="t t-small t-muted" x="33" y="-6" text-anchor="middle">A2</text></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-30 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 a7.5 7.5 0 0 1 15 0 H45"/></g></svg><b>Relay coil</b><small>K. IEC box with A1 and A2 terminals. US often a coil, or a circle in ladder diagrams.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Relay contact, normally open symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-16 M16 0 H45 M-16 0 L16 -18"/><circle class="f-ink" cx="-16" cy="0" r="2.5"/><circle class="f-ink" cx="16" cy="0" r="2.5"/></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-6 M6 0 H45"/><path class="s-line" style="stroke-width:2.5" d="M-6 -14 V14 M6 -14 V14"/></g></svg><b>Relay contact, normally open</b><small>K1. Drawn away from its coil and matched by the label. Shown with the coil off.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Relay contact, normally closed symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><path class="s-line" d="M-45 0 H-16 M45 0 H16 V-18 M-16 0 L16 -18"/><circle class="f-ink" cx="-16" cy="0" r="2.5"/></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-6 M6 0 H45"/><path class="s-line" style="stroke-width:2.5" d="M-6 -14 V14 M6 -14 V14"/><path class="s-line" d="M-13 14 L13 -14"/></g></svg><b>Relay contact, normally closed</b><small>K1. Closed with the coil off, opens when the coil is energised.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Fuse symbol, IEC style on the left and US style on the right"><text class="t t-small t-muted" x="55" y="13" text-anchor="middle">IEC</text><text class="t t-small t-muted" x="165" y="13" text-anchor="middle">US</text><path class="s-thin s-dash" d="M110 20 V102"/><g transform="translate(55 62)"><rect class="s-line" x="-18" y="-8" width="36" height="16"/><path class="s-line" d="M-45 0 H45"/></g><g transform="translate(165 62)"><path class="s-line" d="M-45 0 H-20 C-12 -14 -4 -14 0 0 S12 14 20 0 H45"/></g></svg><b>Fuse</b><small>F. IEC: box with a line through it. US: an S-curve.</small></div>
+</div>
+    <p>A relay is drawn in two places. The <b>coil</b> is one symbol. Its <b>contacts</b> are separate symbols, often on a different part of the drawing, and share a label with the coil (K1 coil, K1 contacts). Contacts are always drawn with the coil off.</p>
+    <a class="crosslink" href="../practice/p08-transistor-switches.html">Practice P08 · Transistors as switches: BJT, MOSFET, relays</a>
+
+    <h3>Sources, grounds and loads</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Cell symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-5 M5 0 H45"/><path class="s-line" style="stroke-width:3" d="M-5 -18 V18"/><path class="s-line" style="stroke-width:4" d="M5 -9 V9"/><text class="t t-small t-bold" x="-20" y="-8" text-anchor="middle">+</text><text class="t t-small t-bold" x="20" y="-8" text-anchor="middle">−</text></g></svg><b>Cell</b><small>BT or B. The long plate is positive.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Battery (3 cells) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-15 M15 0 H45"/><path class="s-line" style="stroke-width:2.5" d="M-15 -18 V18 M-3 -18 V18 M9 -18 V18"/><path class="s-line" style="stroke-width:3.5" d="M-9 -9 V9 M3 -9 V9 M15 -9 V9"/><text class="t t-small t-bold" x="-28" y="-8" text-anchor="middle">+</text><text class="t t-small t-bold" x="29" y="-8" text-anchor="middle">−</text></g></svg><b>Battery (3 cells)</b><small>BT or B. Several cells in series. Long plates are positive.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Earth (ground) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M0 -34 V-4 M-17 -4 H17 M-11 4 H11 M-5 12 H5"/></g></svg><b>Earth (ground)</b><small>Connection to the ground or earth system.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Chassis (frame) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M0 -34 V-8 M-18 -8 H18 M-12 -8 L-18 4 M0 -8 L-6 4 M12 -8 L6 4"/></g></svg><b>Chassis (frame)</b><small>Connection to the metal case or frame.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Signal ground (0 V) symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M0 -34 V-8"/><polygon class="s-line" points="-14,-8 14,-8 0,12"/></g></svg><b>Signal ground (0 V)</b><small>The 0 V reference of the circuit. May or may not be connected to earth.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Lamp symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-15 M15 0 H45 M-10.6 -10.6 L10.6 10.6 M-10.6 10.6 L10.6 -10.6"/><circle class="s-line" cx="0" cy="0" r="15"/></g></svg><b>Lamp</b><small>Circle with a cross. An indicator or filament lamp.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Motor symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-18 M18 0 H45"/><circle class="s-line" cx="0" cy="0" r="18"/><text class="t t-bold" x="0" y="6.5" text-anchor="middle" style="font-size:18px">M</text></g></svg><b>Motor</b><small>M. Circle with M. DC and AC motors add extra marks, so read the label.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Loudspeaker symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 -6 H-14 M-45 6 H-14"/><rect class="s-line" x="-14" y="-12" width="12" height="24"/><polygon class="s-line" points="-2,-12 16,-24 16,24 -2,12"/></g></svg><b>Loudspeaker</b><small>LS or SP. Box and cone.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Buzzer symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 -8 H-8 M-45 8 H-8 M-8 -16 A16 16 0 0 1 -8 16 Z"/><text class="t t-small t-bold" x="-38" y="-12" text-anchor="middle">+</text></g></svg><b>Buzzer</b><small>BZ. A + marks the lead that goes to positive.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Crystal symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-45 0 H-14 M14 0 H45"/><path class="s-line" style="stroke-width:3" d="M-14 -14 V14 M14 -14 V14"/><rect class="s-line" x="-8" y="-12" width="16" height="24"/></g></svg><b>Crystal</b><small>Y or X. Plates around a box. Sets the clock frequency of a circuit.</small></div>
+</div>
+    <div class="callout warn"><span class="label">Safety</span><p>"Earth", "chassis" and "0 V" are not the same thing. Do not join them because they look alike on a drawing. The protective earth conductor is a safety system, and mains wiring is licensed electrical work in Australia. You work at extra-low voltage only (at most 50 V AC or 120 V ripple-free DC).</p></div>
+
+    <h3>Wires and connections</h3>
+    <div class="sym-grid">
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Wires joined symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-34 0 H34 M0 -34 V34"/><circle class="f-ink" cx="0" cy="0" r="4"/></g></svg><b>Wires joined</b><small>A dot means the wires are connected.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Wires crossing, not joined symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-34 0 H34 M0 -34 V34"/></g></svg><b>Wires crossing, not joined</b><small>No dot: the wires only cross on the page.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Crossing with a hop symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M-34 0 H-8 a8 8 0 0 1 16 0 H34 M0 -34 V34"/></g></svg><b>Crossing with a hop</b><small>Older style for "not connected". A dot is still a join.</small></div>
+<div class="sym"><svg viewBox="0 0 220 110" role="img" aria-label="Supply rail marker symbol"><text class="t t-small t-muted" x="110" y="13" text-anchor="middle">IEC and US same</text><g transform="translate(110 62)"><path class="s-line" d="M0 34 V-8 M-16 -8 H16"/><text class="t t-small" x="0" y="-16" text-anchor="middle">+12 V</text></g></svg><b>Supply rail marker</b><small>A bar with a voltage label is a supply. Every bar with the same label is joined.</small></div>
+</div>
+
+    <h3>Reference letters you will see</h3>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Letter</th><th>Part</th><th>Notes</th></tr>
+      <tr><td>R, RV (VR)</td><td>Resistor, variable resistor or pot</td><td>RV is the usual letter for a pot</td></tr>
+      <tr><td>C</td><td>Capacitor</td><td>Electrolytics also show a + mark</td></tr>
+      <tr><td>L</td><td>Inductor, coil, choke</td><td></td></tr>
+      <tr><td>D (LED)</td><td>Diode, Zener, LED, Schottky</td><td>Some drawings use LED for LEDs and ZD for Zeners</td></tr>
+      <tr><td>Q</td><td>Transistor, MOSFET</td><td>Some drawings use TR or VT</td></tr>
+      <tr><td>U, IC</td><td>Integrated circuit</td><td>Op-amps, timers, microcontrollers</td></tr>
+      <tr><td>K</td><td>Relay or contactor</td><td>Coil and contacts share the same label</td></tr>
+      <tr><td>S, SW</td><td>Switch or push-button</td><td>PB is also common</td></tr>
+      <tr><td>F</td><td>Fuse</td><td></td></tr>
+      <tr><td>T, TR</td><td>Transformer</td><td></td></tr>
+      <tr><td>Y, X</td><td>Crystal</td><td>On IEC drawings X often means a terminal or connector instead. Check the legend.</td></tr>
+      <tr><td>J, P</td><td>Connector</td><td>J is usually the fixed socket, P the plug</td></tr>
+      <tr><td>BT (B)</td><td>Battery</td><td></td></tr>
+      <tr><td>M, LS, BZ</td><td>Motor, loudspeaker, buzzer</td><td></td></tr>
+      <tr><td>TP</td><td>Test point</td><td>A pad or pin where you put the meter probe</td></tr>
+    </table></div>
+
+    <h3>How to read an unfamiliar schematic</h3>
+    <ol class="steps">
+      <li><p><b>Legend and title.</b> Read the title block, revision and legend first. Note which standard the symbols follow.</p></li>
+      <li><p><b>Power.</b> Find the supply. By habit, positive rails run along the top and 0 V (ground) along the bottom.</p></li>
+      <li><p><b>Signal direction.</b> By habit, inputs are on the left and outputs on the right. Follow one signal at a time.</p></li>
+      <li><p><b>Net names.</b> A label such as "+12V" or "RESET" joins every point with the same name, even with no wire drawn between them.</p></li>
+    </ol>
+    <div class="callout job"><span class="label">On the job</span><p>On site you read symbols on panel drawings, wiring diagrams and as-built sets: fuses, relay coils and contacts, terminals, earth bars and 12/24 V rails. Techs who can read a legend quickly find the fault faster. See P22 for the drawing types.</p></div>
+
+    <h2>Identifying parts by their body</h2>
+    <h3>Packages</h3>
+    <p>A <b>package</b> is the shape of the plastic or metal body around a part. The package tells you how it mounts and roughly how much power it handles. Sizes below are approximate; the datasheet has the exact drawing.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Package</th><th>Pins</th><th>Approx. size</th><th>Pin spacing</th><th>Typical parts and notes</th></tr>
+      <tr><td>TO-92</td><td>3</td><td>Half-round body about 5 mm across and 5 mm tall</td><td>1.27 mm (often bent to fit 2.54 mm holes)</td><td>Small transistors, 78L05 regulator, TL431. Pin order differs between types.</td></tr>
+      <tr><td>TO-220</td><td>3 (some 2, 4, 5)</td><td>About 10 mm wide, 4.5 mm thick, 15 mm tall, plus legs; metal tab with a hole</td><td>2.54 mm</td><td>7805-type regulators, power transistors and MOSFETs. The tab is usually joined to the middle pin.</td></tr>
+      <tr><td>SOT-23</td><td>3 (SOT-23-5 and -6 have more)</td><td>Body about 3 mm long and 1.3 mm wide; about 2.4 mm across the legs</td><td>0.95 mm</td><td>Small SMD transistors, MOSFETs, diodes. Printed code is 1 to 3 characters.</td></tr>
+      <tr><td>SOT-223</td><td>4 (3 and a wide tab)</td><td>Body about 6.5 × 3.5 mm</td><td>2.3 mm</td><td>SMD regulators and small power transistors. The wide tab carries heat into the copper.</td></tr>
+      <tr><td>DIP-8, DIP-14, DIP-16</td><td>8, 14, 16</td><td>DIP-8 body about 9.5 × 6.4 mm; 7.62 mm between the rows</td><td>2.54 mm</td><td>555 timers, op-amps, logic. Fits a breadboard across the centre gap.</td></tr>
+      <tr><td>SOIC-8</td><td>8 (also 14, 16)</td><td>Body about 4.9 × 3.9 mm; about 6 mm wide with legs</td><td>1.27 mm</td><td>SMD op-amps, regulators, memory. Adapter boards turn it into DIP.</td></tr>
+      <tr><td>DO-41 (axial)</td><td>2</td><td>Body about 5 × 2.7 mm, legs out each end</td><td>Legs bent to suit the board</td><td>1N4001–1N4007 rectifier diodes. The band marks the cathode.</td></tr>
+      <tr><td>SMA (DO-214AC)</td><td>2</td><td>Body about 4.3 × 2.6 mm</td><td>Flat tabs underneath</td><td>SMD rectifier, Schottky and Zener diodes. The band marks the cathode.</td></tr>
+    </table></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>The same package does not mean the same pinout. A BC547 and a 2N3904 both come in TO-92. With the flat face toward you and the legs down, the BC547 reads C-B-E left to right, and the 2N3904 reads E-B-C. Always check the datasheet for that exact part, or find the base with the diode-test mode (P03).</p></div>
+
+    <h3>Chip sizes (SMD resistors and capacitors)</h3>
+    <p>Chip parts are named by size, not by value. The size code is the length and width in hundredths of an inch (imperial) or tenths of a millimetre (metric). Datasheets and shops usually use the imperial code.</p>
+    <figure>
+      <svg viewBox="0 0 760 200" role="img" aria-label="Chip resistor and capacitor sizes 0402, 0603, 0805, 1206, 1210 and 2512 drawn to the same scale"><rect class="s-line f-wash" x="30" y="96" width="28" height="14" rx="1"/><rect class="f-grey" x="30" y="96" width="4.5" height="14"/><rect class="f-grey" x="53.5" y="96" width="4.5" height="14"/><text class="t t-small t-bold" x="44" y="134" text-anchor="middle">0402</text><text class="t t-small t-muted" x="44" y="150" text-anchor="middle">1.0 × 0.5</text><rect class="s-line f-wash" x="98" y="87.6" width="44.8" height="22.4" rx="1"/><rect class="f-grey" x="98" y="87.6" width="7.2" height="22.4"/><rect class="f-grey" x="135.6" y="87.6" width="7.2" height="22.4"/><text class="t t-small t-bold" x="120.4" y="134" text-anchor="middle">0603</text><text class="t t-small t-muted" x="120.4" y="150" text-anchor="middle">1.6 × 0.8</text><rect class="s-line f-wash" x="182.8" y="75" width="56" height="35" rx="1"/><rect class="f-grey" x="182.8" y="75" width="9" height="35"/><rect class="f-grey" x="229.8" y="75" width="9" height="35"/><text class="t t-small t-bold" x="210.8" y="134" text-anchor="middle">0805</text><text class="t t-small t-muted" x="210.8" y="150" text-anchor="middle">2.0 × 1.25</text><rect class="s-line f-wash" x="278.8" y="65.2" width="89.6" height="44.8" rx="1"/><rect class="f-grey" x="278.8" y="65.2" width="14.3" height="44.8"/><rect class="f-grey" x="354.1" y="65.2" width="14.3" height="44.8"/><text class="t t-small t-bold" x="323.6" y="134" text-anchor="middle">1206</text><text class="t t-small t-muted" x="323.6" y="150" text-anchor="middle">3.2 × 1.6</text><rect class="s-line f-wash" x="408.4" y="40" width="89.6" height="70" rx="1"/><rect class="f-grey" x="408.4" y="40" width="14.3" height="70"/><rect class="f-grey" x="483.7" y="40" width="14.3" height="70"/><text class="t t-small t-bold" x="453.2" y="134" text-anchor="middle">1210</text><text class="t t-small t-muted" x="453.2" y="150" text-anchor="middle">3.2 × 2.5</text><rect class="s-line f-wash" x="538" y="20.4" width="176.4" height="89.6" rx="1"/><rect class="f-grey" x="538" y="20.4" width="28.2" height="89.6"/><rect class="f-grey" x="686.2" y="20.4" width="28.2" height="89.6"/><text class="t t-small t-bold" x="626.2" y="134" text-anchor="middle">2512</text><text class="t t-small t-muted" x="626.2" y="150" text-anchor="middle">6.3 × 3.2</text><path class="s-line" d="M30 180 H170 M30 174 V186 M170 174 V186"/><text class="t t-small t-muted" x="180" y="184" text-anchor="start">5 mm, same scale as the chips</text></svg>
+      <figcaption>Figure 1. Common chip sizes drawn to the same scale. The end caps are the solder terminals. A size tells you nothing about the value: a 0805 can be a resistor, a ceramic capacitor or an LED.</figcaption>
+    </figure>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Imperial</th><th>Metric</th><th>Size (mm)</th><th>Typical resistor power</th><th>By hand</th></tr>
+      <tr><td>0402</td><td>1005</td><td>1.0 × 0.5</td><td>1/16 W (0.063 W)</td><td>Hard. Tweezers, flux and good light.</td></tr>
+      <tr><td>0603</td><td>1608</td><td>1.6 × 0.8</td><td>1/10 W (0.1 W)</td><td>Possible with practice.</td></tr>
+      <tr><td>0805</td><td>2012</td><td>2.0 × 1.25</td><td>1/8 W (0.125 W)</td><td>A good size to learn on.</td></tr>
+      <tr><td>1206</td><td>3216</td><td>3.2 × 1.6</td><td>1/4 W (0.25 W)</td><td>Easy.</td></tr>
+      <tr><td>1210</td><td>3225</td><td>3.2 × 2.5</td><td>1/2 W (0.5 W)</td><td>Easy.</td></tr>
+      <tr><td>2512</td><td>6432</td><td>6.3 × 3.2</td><td>1 W, sometimes 2 W</td><td>Easy. Used for current-sense resistors.</td></tr>
+    </table></div>
+    <div class="callout warn"><span class="label">Watch out</span><p>Power ratings are typical, not guaranteed: read the datasheet. And beware the metric trap. A "0603" given in metric codes is only 0.6 × 0.3 mm, which is the imperial 0201, much smaller than the 1.6 × 0.8 mm imperial 0603 above. Check which system the list uses.</p></div>
+
+    <h3>Finding pin 1</h3>
+    <p>On an integrated circuit (IC), all pins look alike, so a mark shows where to start counting. Pin numbers run <b>anticlockwise</b> when you look at the top.</p>
+    <figure>
+      <svg viewBox="0 0 720 240" role="img" aria-label="Top and front views of DIP-8, SOIC-8, SOT-23, TO-92 and TO-220 packages with pin 1 and pin numbering marked"><text class="t t-small" x="80" y="28" text-anchor="middle">notch</text><path class="s-thin" d="M80 32 V50"/><path class="s-line f-wash" d="M50 50 H68 a12 12 0 0 0 24 0 H110 V162 H50 Z"/><rect class="f-grey" x="38" y="60" width="12" height="8"/><rect class="f-grey" x="110" y="60" width="12" height="8"/><rect class="f-grey" x="38" y="86" width="12" height="8"/><rect class="f-grey" x="110" y="86" width="12" height="8"/><rect class="f-grey" x="38" y="112" width="12" height="8"/><rect class="f-grey" x="110" y="112" width="12" height="8"/><rect class="f-grey" x="38" y="138" width="12" height="8"/><rect class="f-grey" x="110" y="138" width="12" height="8"/><text class="t t-small" x="30" y="68" text-anchor="end">1</text><text class="t t-small" x="30" y="94" text-anchor="end">2</text><text class="t t-small" x="30" y="120" text-anchor="end">3</text><text class="t t-small" x="30" y="146" text-anchor="end">4</text><text class="t t-small" x="130" y="68" text-anchor="start">8</text><text class="t t-small" x="130" y="94" text-anchor="start">7</text><text class="t t-small" x="130" y="120" text-anchor="start">6</text><text class="t t-small" x="130" y="146" text-anchor="start">5</text><circle class="f-ink" cx="60" cy="73" r="3.5"/><text class="t t-small t-muted" x="80" y="188" text-anchor="middle">DIP-8, top view</text><text class="t t-small t-muted" x="80" y="206" text-anchor="middle">pins count</text><text class="t t-small t-muted" x="80" y="222" text-anchor="middle">anticlockwise</text><text class="t t-small" x="200" y="28" text-anchor="middle">dot at pin 1</text><path class="s-thin" d="M188 32 V66"/><rect class="s-line f-wash" x="178" y="56" width="44" height="86" rx="2"/><rect class="f-grey" x="168" y="63" width="10" height="6"/><rect class="f-grey" x="222" y="63" width="10" height="6"/><rect class="f-grey" x="168" y="83" width="10" height="6"/><rect class="f-grey" x="222" y="83" width="10" height="6"/><rect class="f-grey" x="168" y="103" width="10" height="6"/><rect class="f-grey" x="222" y="103" width="10" height="6"/><rect class="f-grey" x="168" y="123" width="10" height="6"/><rect class="f-grey" x="222" y="123" width="10" height="6"/><circle class="f-ink" cx="188" cy="68" r="3"/><text class="t t-small" x="162" y="70" text-anchor="end">1</text><text class="t t-small" x="162" y="90" text-anchor="end">2</text><text class="t t-small" x="162" y="110" text-anchor="end">3</text><text class="t t-small" x="162" y="130" text-anchor="end">4</text><text class="t t-small" x="238" y="70" text-anchor="start">8</text><text class="t t-small" x="238" y="90" text-anchor="start">7</text><text class="t t-small" x="238" y="110" text-anchor="start">6</text><text class="t t-small" x="238" y="130" text-anchor="start">5</text><text class="t t-small t-muted" x="200" y="188" text-anchor="middle">SOIC-8, top view</text><text class="t t-small" x="320" y="28" text-anchor="middle">markings upright</text><rect class="s-line f-wash" x="296" y="84" width="48" height="26" rx="2"/><rect class="f-grey" x="317" y="74" width="6" height="10"/><rect class="f-grey" x="301" y="110" width="6" height="10"/><rect class="f-grey" x="333" y="110" width="6" height="10"/><text class="t t-small" x="304" y="136" text-anchor="middle">1</text><text class="t t-small" x="336" y="136" text-anchor="middle">2</text><text class="t t-small" x="320" y="68" text-anchor="middle">3</text><text class="t t-small t-muted" x="320" y="188" text-anchor="middle">SOT-23, top view</text><text class="t t-small t-muted" x="320" y="206" text-anchor="middle">pin 1 bottom left</text><text class="t t-small" x="470" y="28" text-anchor="middle">flat face toward you</text><path class="s-line f-wash" d="M444 150 V94 A26 26 0 0 1 496 94 V150 Z"/><path class="s-line" d="M454 150 V190 M470 150 V190 M486 150 V190"/><text class="t t-small" x="454" y="206" text-anchor="middle">1</text><text class="t t-small" x="470" y="206" text-anchor="middle">2</text><text class="t t-small" x="486" y="206" text-anchor="middle">3</text><text class="t t-small t-muted" x="470" y="226" text-anchor="middle">TO-92, pins down</text><text class="t t-small" x="625" y="22" text-anchor="middle">printed side</text><text class="t t-small" x="625" y="36" text-anchor="middle">toward you</text><rect class="s-line f-grey" x="593" y="44" width="64" height="34" rx="2"/><circle class="s-line f-panel" cx="625" cy="60" r="7"/><rect class="s-line f-wash" x="593" y="78" width="64" height="72"/><path class="s-line" d="M609 150 V190 M625 150 V190 M641 150 V190"/><text class="t t-small" x="609" y="206" text-anchor="middle">1</text><text class="t t-small" x="625" y="206" text-anchor="middle">2</text><text class="t t-small" x="641" y="206" text-anchor="middle">3</text><text class="t t-small t-muted" x="625" y="226" text-anchor="middle">TO-220, pins down</text></svg>
+      <figcaption>Figure 2. Pin 1 and the numbering direction. Hold a DIP with the notch at the top: pin 1 is top left, you count down the left side, then up the right side. TO-92 and TO-220 are numbered left to right with the printed or flat face toward you and the legs down.</figcaption>
+    </figure>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Package</th><th>Mark</th><th>How to read it</th></tr>
+      <tr><td>DIP</td><td>Half-moon notch at one end; often a dot by pin 1</td><td>Notch up, pin 1 is top left. Pin 8 (on a DIP-8) is top right.</td></tr>
+      <tr><td>SOIC, SSOP, TSSOP</td><td>Dot or dimple in one corner; sometimes a bevelled edge</td><td>Pin 1 is next to the dot. Count anticlockwise.</td></tr>
+      <tr><td>QFP, QFN (square chips)</td><td>Dot, bevelled corner or notched corner</td><td>Pin 1 at the mark. Count anticlockwise round the edge.</td></tr>
+      <tr><td>SOT-23</td><td>No pin mark. Use the printed code, upright.</td><td>Pins 1 and 2 along the bottom, pin 3 on top. The datasheet says which function each one is.</td></tr>
+      <tr><td>TO-92</td><td>Flat face</td><td>Flat face toward you, legs down: pin 1 is on the left.</td></tr>
+      <tr><td>TO-220</td><td>Printed side</td><td>Printed side toward you, legs down: pin 1 is on the left.</td></tr>
+      <tr><td>Connectors, headers</td><td>Square pad on the board, "1" in the silkscreen, or a triangle on the housing</td><td>Pin 1 is the square pad. Check the datasheet or the board's silkscreen.</td></tr>
+    </table></div>
+
+    <h3>Polarity: which way round</h3>
+    <figure>
+      <svg viewBox="0 0 720 240" role="img" aria-label="Polarity marks: diode band is the cathode, LED flat side and short leg are the cathode, electrolytic stripe is negative, SMD tantalum stripe is positive"><text class="t t-small t-bold" x="115" y="24" text-anchor="middle">Axial diode</text><path class="s-line" d="M30 70 H200"/><rect class="s-line f-wash" x="68" y="54" width="90" height="32" rx="5"/><rect class="f-ink" x="136" y="54" width="12" height="32"/><text class="t t-small t-muted" x="142" y="108" text-anchor="middle">K</text><text class="t t-small t-muted" x="40" y="62" text-anchor="middle">A</text><path class="s-line" d="M60 150 H92 M120 150 H170"/><polygon class="s-line" points="92,136 92,164 120,150"/><path class="s-line" style="stroke-width:3" d="M120 136 V164"/><text class="t t-small t-muted" x="115" y="190" text-anchor="middle">band = cathode (K)</text><text class="t t-small t-muted" x="115" y="208" text-anchor="middle">matches the symbol bar</text><text class="t t-small t-bold" x="295" y="24" text-anchor="middle">5 mm LED</text><path class="s-line f-wash" d="M311 61.5 A26 26 0 1 0 311 102.5 Z"/><text class="t t-small t-muted" x="318" y="85" text-anchor="start">flat</text><path class="s-line" d="M283 108 V176 M307 108 V150"/><text class="t t-small t-bold" x="283" y="192" text-anchor="middle">+</text><text class="t t-small t-bold" x="307" y="192" text-anchor="middle">−</text><text class="t t-small" x="295" y="212" text-anchor="middle">flat side = cathode</text><text class="t t-small" x="295" y="228" text-anchor="middle">long leg = anode (+)</text><text class="t t-small t-bold" x="460" y="24" text-anchor="middle">Electrolytic</text><rect class="s-line f-wash" x="428" y="44" width="64" height="86" rx="6"/><rect class="f-ink" x="428" y="44" width="16" height="86" rx="4"/><text class="t t-bold f-panel" x="436" y="70" text-anchor="middle">−</text><text class="t t-bold f-panel" x="436" y="92" text-anchor="middle">−</text><text class="t t-bold f-panel" x="436" y="114" text-anchor="middle">−</text><path class="s-line" d="M436 130 V170 M484 130 V190"/><text class="t t-small t-bold" x="436" y="188" text-anchor="middle">−</text><text class="t t-small t-bold" x="484" y="208" text-anchor="middle">+</text><text class="t t-small" x="460" y="228" text-anchor="middle">stripe = negative</text><text class="t t-small t-bold" x="625" y="24" text-anchor="middle">SMD tantalum</text><rect class="s-line f-wash" x="582" y="60" width="86" height="44" rx="4"/><rect class="f-ink" x="582" y="60" width="16" height="44" rx="3"/><text class="t t-small t-bold" x="574" y="86" text-anchor="end">+</text><text class="t t-small t-red t-bold" x="625" y="130" text-anchor="middle">stripe = POSITIVE</text><text class="t t-small" x="625" y="150" text-anchor="middle">opposite to an</text><text class="t t-small" x="625" y="166" text-anchor="middle">electrolytic!</text></svg>
+      <figcaption>Figure 3. Four polarity marks. The first three agree: the marked side is the negative or cathode side. SMD tantalum is the odd one out. Its stripe marks the positive end.</figcaption>
+    </figure>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Part</th><th>Mark</th><th>Meaning</th></tr>
+      <tr><td>Diode (axial or SMD)</td><td>Band at one end</td><td>Band = cathode (K). Current flows from anode to cathode when forward-biased. It matches the bar in the symbol.</td></tr>
+      <tr><td>LED, through-hole</td><td>Flat spot on the rim; one leg shorter</td><td>Flat and short leg = cathode (−). Long leg = anode (+). Inside the lens, the larger metal flag is the cathode.</td></tr>
+      <tr><td>LED, SMD</td><td>Dot, notch, green mark or cut corner. No common rule.</td><td>Check the datasheet. Or use the diode-test mode (P03): the LED glows faintly when the red probe is on the anode.</td></tr>
+      <tr><td>Aluminium electrolytic, through-hole</td><td>Stripe with − signs down the sleeve</td><td>Stripe side = negative leg. On a new part the positive leg is longer, but trust the stripe once the legs are trimmed.</td></tr>
+      <tr><td>Aluminium electrolytic, SMD</td><td>Dark mark on top; cut corner on the base</td><td>Dark mark = negative. The cut (bevelled) corner of the base is the positive side.</td></tr>
+      <tr><td>Tantalum, SMD (moulded)</td><td>Stripe or bevel at one end</td><td>Stripe = <b>positive</b>. This is the opposite of an electrolytic can. Check the board silkscreen.</td></tr>
+      <tr><td>Tantalum, through-hole (bead)</td><td>+ printed on the body</td><td>The + leg goes to positive.</td></tr>
+      <tr><td>Ceramic, film, resistors, inductors</td><td>None</td><td>Non-polar: either way round.</td></tr>
+      <tr><td>Buzzer (active)</td><td>+ on the top; one leg longer</td><td>The + lead goes to positive. A passive buzzer has no polarity.</td></tr>
+    </table></div>
+    <div class="callout warn"><span class="label">Safety</span><p>An electrolytic or tantalum capacitor fitted backwards, or used above its voltage rating, can vent, burst or overheat. Match the polarity, choose a voltage rating comfortably above the circuit voltage (at least 1.5 times), and keep your face back when you first power a new build. Large capacitors can hold their charge after the power is off. Discharge them through a resistor, not a screwdriver. Everything on this page assumes extra-low voltage only.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Part numbers are printed on most through-hole parts. A four-digit date code such as 2315 often means year 23, week 15, but that is not universal. SMD parts often carry only a short code. A code like "1AM" does not name one part; look it up in the maker's marking list or datasheet before you replace it.</p></div>
+    <div class="callout job"><span class="label">On the job</span><p>The part you replace most is the fuse, followed by electrolytic capacitors in power supplies and relays. Before you fit one, check polarity and rating. A flyback diode across a relay coil has its band toward the positive side. Photograph the old part and its position before you remove it.</p></div>
+
+    <h2>Resistor codes: colour bands and chip markings</h2>
+    <h3>Colour bands (through-hole)</h3>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Colour</th><th>Digit</th><th>Multiplier</th><th>Tolerance</th></tr>
+      <tr><td><span class="cb cb-black"></span>Black</td><td>0</td><td>× 1</td><td>—</td></tr>
+      <tr><td><span class="cb cb-brown"></span>Brown</td><td>1</td><td>× 10</td><td>± 1 %</td></tr>
+      <tr><td><span class="cb cb-red"></span>Red</td><td>2</td><td>× 100</td><td>± 2 %</td></tr>
+      <tr><td><span class="cb cb-orange"></span>Orange</td><td>3</td><td>× 1 k</td><td>—</td></tr>
+      <tr><td><span class="cb cb-yellow"></span>Yellow</td><td>4</td><td>× 10 k</td><td>—</td></tr>
+      <tr><td><span class="cb cb-green"></span>Green</td><td>5</td><td>× 100 k</td><td>± 0.5 %</td></tr>
+      <tr><td><span class="cb cb-blue"></span>Blue</td><td>6</td><td>× 1 M</td><td>± 0.25 %</td></tr>
+      <tr><td><span class="cb cb-violet"></span>Violet</td><td>7</td><td>× 10 M</td><td>± 0.1 %</td></tr>
+      <tr><td><span class="cb cb-grey"></span>Grey</td><td>8</td><td>× 100 M</td><td>± 0.05 %</td></tr>
+      <tr><td><span class="cb cb-white"></span>White</td><td>9</td><td>× 1 G</td><td>—</td></tr>
+      <tr><td><span class="cb cb-gold"></span>Gold</td><td>—</td><td>× 0.1</td><td>± 5 %</td></tr>
+      <tr><td><span class="cb cb-silver"></span>Silver</td><td>—</td><td>× 0.01</td><td>± 10 %</td></tr>
+      <tr><td><span class="cb cb-none"></span>No band</td><td>—</td><td>—</td><td>± 20 %</td></tr>
+    </table></div>
+    <p>Easy way to remember the digits: black is 0, brown is 1, then the rainbow in order for 2 to 7 (red, orange, yellow, green, blue, violet), then grey 8 and white 9. A rhyme if you like one: <i>Better Be Right Or Your Great Big Venture Goes Wrong</i>.</p>
+    <ol class="steps">
+      <li><p><b>Find the tolerance band.</b> It is usually gold or silver, or it sits a little apart from the others. Turn the resistor so that band is on the right. Gold and silver can never be a first digit, so if one is on the left, you are reading from the wrong end.</p></li>
+      <li><p><b>Count the bands.</b> 4 bands: two digits, a multiplier, then tolerance. 5 bands: three digits, a multiplier, then tolerance. 5-band parts are usually 1 % metal-film resistors.</p></li>
+      <li><p><b>Work it out.</b> Join the digits into one number and multiply. Yellow-violet-red = 47 × 100 = 4 700 Ω = 4.7 kΩ.</p></li>
+      <li><p><b>Check it.</b> Is the answer a standard value (table below)? If not, you probably misread a band. Then confirm with a meter (P03). Measure with the resistor out of the circuit, or with one leg lifted, otherwise other parts in parallel pull the reading down.</p></li>
+    </ol>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Bands</th><th>Working</th><th>Value</th></tr>
+      <tr><td>Brown, black, red, gold</td><td>10 × 100</td><td>1 kΩ ± 5 %</td></tr>
+      <tr><td>Yellow, violet, orange, gold</td><td>47 × 1 000</td><td>47 kΩ ± 5 %</td></tr>
+      <tr><td>Red, red, brown, silver</td><td>22 × 10</td><td>220 Ω ± 10 %</td></tr>
+      <tr><td>Brown, black, black, brown, brown</td><td>100 × 1</td><td>100 Ω ± 1 %</td></tr>
+      <tr><td>Yellow, violet, black, red, brown</td><td>470 × 100</td><td>47 kΩ ± 1 %</td></tr>
+      <tr><td>Green, blue, black, gold, gold</td><td>560 × 0.1</td><td>56 Ω ± 5 %</td></tr>
+      <tr><td>One black band</td><td>—</td><td>0 Ω (a link, in resistor form)</td></tr>
+    </table></div>
+    <h3>Standard values</h3>
+    <p>You can only buy certain values. They come in <b>E-series</b>: each step is the same percentage bigger than the last, so that neighbouring tolerance ranges just touch. The series name is the number of values in each decade (the range from 1 to 10, or 10 to 100, and so on).</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Series</th><th>Per decade</th><th>Usual tolerance</th><th>Values (one decade)</th></tr>
+      <tr><td>E12</td><td>12</td><td>± 10 % (older carbon parts)</td><td>1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2</td></tr>
+      <tr><td>E24</td><td>24</td><td>± 5 %</td><td>E12 plus 1.1, 1.3, 1.6, 2.0, 2.4, 3.0, 3.6, 4.3, 5.1, 6.2, 7.5, 9.1</td></tr>
+      <tr><td>E96</td><td>96</td><td>± 1 %</td><td>3-digit values such as 1.00, 1.02, 1.05, 1.07 … 9.76 (full list under EIA-96 below)</td></tr>
+    </table></div>
+    <details class="more"><summary>Go deeper: why E24 steps are about 10 % apart</summary><p>Each E24 step multiplies by 10<sup>1/24</sup> ≈ 1.10. With a ±5 % tolerance, a 4.7 kΩ part can be anywhere from 4.47 to 4.94 kΩ, and the next value up (5.1 kΩ) runs from 4.85 to 5.36 kΩ. The ranges overlap a little, so any resistance you need is covered by some standard part. E96 steps are about 2.4 % apart, to suit ± 1 % parts.</p></details>
+
+    <h3>SMD resistor codes</h3>
+    <p>Chip resistors are small, so the printing is short. There are four styles. The decoder below handles all of them.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Code</th><th>Style</th><th>Working</th><th>Value</th></tr>
+      <tr><td>472</td><td>3 digits</td><td>47 × 10<sup>2</sup></td><td>4.7 kΩ (usually ± 5 %)</td></tr>
+      <tr><td>220</td><td>3 digits</td><td>22 × 10<sup>0</sup></td><td><b>22 Ω</b>, not 220 Ω</td></tr>
+      <tr><td>221</td><td>3 digits</td><td>22 × 10<sup>1</sup></td><td>220 Ω</td></tr>
+      <tr><td>4702</td><td>4 digits</td><td>470 × 10<sup>2</sup></td><td>47 kΩ (usually ± 1 %)</td></tr>
+      <tr><td>1001</td><td>4 digits</td><td>100 × 10<sup>1</sup></td><td>1 kΩ</td></tr>
+      <tr><td>4R7</td><td>R is the decimal point</td><td>4.7</td><td>4.7 Ω</td></tr>
+      <tr><td>R47</td><td>R is the decimal point</td><td>0.47</td><td>0.47 Ω</td></tr>
+      <tr><td>0R22</td><td>R is the decimal point</td><td>0.22</td><td>0.22 Ω (a current-sense resistor)</td></tr>
+      <tr><td>0, 000 or 0R0</td><td>Zero-ohm link</td><td>—</td><td>0 Ω. A jumper in chip form.</td></tr>
+      <tr><td>01C</td><td>EIA-96</td><td>100 × 100</td><td>10 kΩ, ± 1 %</td></tr>
+      <tr><td>68C</td><td>EIA-96</td><td>499 × 100</td><td>49.9 kΩ, ± 1 %</td></tr>
+    </table></div>
+    <p>The rule for digits: the <b>last digit says how many zeros to add</b>. The letters K and M are used the same way as R on some parts: 4K7 is 4.7 kΩ and 2M2 is 2.2 MΩ. Very small chips (0402 and smaller) often have no marking at all. Measure them.</p>
+    <details class="more"><summary>Go deeper: why a letter for the decimal point?</summary><p>A printed decimal point is tiny and can vanish on a worn or small part. The international marking code (IEC 60062) puts a letter where the point would be, so 4R7 cannot be misread as 47. It also marks the unit: R for ohms, K for kilohms and M for megohms.</p></details>
+
+    <h3>EIA-96 (1 % chip resistors)</h3>
+    <p>To squeeze a 3-digit value into three characters, 1 % chips use two digits and a letter. The digits are a code number from 01 to 96 that stands for a 3-digit base value. The letter is the multiplier. Example: <b>01C</b> is code 01 (base 100) with C (× 100), which is 10 000 Ω.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Letter</th><th>Z</th><th>Y (or R)</th><th>X (or S)</th><th>A</th><th>B (or H)</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+      <tr><td>Multiplier</td><td>0.001</td><td>0.01</td><td>0.1</td><td>1</td><td>10</td><td>100</td><td>1 000</td><td>10 000</td><td>100 000</td></tr>
+    </table></div>
+    <details class="more"><summary>EIA-96 code table (all 96 codes)</summary>
+      <p>The base is shown as a 3-digit number. Multiply it by the letter's multiplier. For example, 68 is 499, so 68C = 499 × 100 = 49.9 kΩ.</p>
+      <div class="table-wrap"><table class="eia"><tr><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th><th>Code</th><th>Base</th></tr>
+<tr><td><b>01</b></td><td>100</td><td><b>02</b></td><td>102</td><td><b>03</b></td><td>105</td><td><b>04</b></td><td>107</td><td><b>05</b></td><td>110</td><td><b>06</b></td><td>113</td><td><b>07</b></td><td>115</td><td><b>08</b></td><td>118</td></tr>
+<tr><td><b>09</b></td><td>121</td><td><b>10</b></td><td>124</td><td><b>11</b></td><td>127</td><td><b>12</b></td><td>130</td><td><b>13</b></td><td>133</td><td><b>14</b></td><td>137</td><td><b>15</b></td><td>140</td><td><b>16</b></td><td>143</td></tr>
+<tr><td><b>17</b></td><td>147</td><td><b>18</b></td><td>150</td><td><b>19</b></td><td>154</td><td><b>20</b></td><td>158</td><td><b>21</b></td><td>162</td><td><b>22</b></td><td>165</td><td><b>23</b></td><td>169</td><td><b>24</b></td><td>174</td></tr>
+<tr><td><b>25</b></td><td>178</td><td><b>26</b></td><td>182</td><td><b>27</b></td><td>187</td><td><b>28</b></td><td>191</td><td><b>29</b></td><td>196</td><td><b>30</b></td><td>200</td><td><b>31</b></td><td>205</td><td><b>32</b></td><td>210</td></tr>
+<tr><td><b>33</b></td><td>215</td><td><b>34</b></td><td>221</td><td><b>35</b></td><td>226</td><td><b>36</b></td><td>232</td><td><b>37</b></td><td>237</td><td><b>38</b></td><td>243</td><td><b>39</b></td><td>249</td><td><b>40</b></td><td>255</td></tr>
+<tr><td><b>41</b></td><td>261</td><td><b>42</b></td><td>267</td><td><b>43</b></td><td>274</td><td><b>44</b></td><td>280</td><td><b>45</b></td><td>287</td><td><b>46</b></td><td>294</td><td><b>47</b></td><td>301</td><td><b>48</b></td><td>309</td></tr>
+<tr><td><b>49</b></td><td>316</td><td><b>50</b></td><td>324</td><td><b>51</b></td><td>332</td><td><b>52</b></td><td>340</td><td><b>53</b></td><td>348</td><td><b>54</b></td><td>357</td><td><b>55</b></td><td>365</td><td><b>56</b></td><td>374</td></tr>
+<tr><td><b>57</b></td><td>383</td><td><b>58</b></td><td>392</td><td><b>59</b></td><td>402</td><td><b>60</b></td><td>412</td><td><b>61</b></td><td>422</td><td><b>62</b></td><td>432</td><td><b>63</b></td><td>442</td><td><b>64</b></td><td>453</td></tr>
+<tr><td><b>65</b></td><td>464</td><td><b>66</b></td><td>475</td><td><b>67</b></td><td>487</td><td><b>68</b></td><td>499</td><td><b>69</b></td><td>511</td><td><b>70</b></td><td>523</td><td><b>71</b></td><td>536</td><td><b>72</b></td><td>549</td></tr>
+<tr><td><b>73</b></td><td>562</td><td><b>74</b></td><td>576</td><td><b>75</b></td><td>590</td><td><b>76</b></td><td>604</td><td><b>77</b></td><td>619</td><td><b>78</b></td><td>634</td><td><b>79</b></td><td>649</td><td><b>80</b></td><td>665</td></tr>
+<tr><td><b>81</b></td><td>681</td><td><b>82</b></td><td>698</td><td><b>83</b></td><td>715</td><td><b>84</b></td><td>732</td><td><b>85</b></td><td>750</td><td><b>86</b></td><td>768</td><td><b>87</b></td><td>787</td><td><b>88</b></td><td>806</td></tr>
+<tr><td><b>89</b></td><td>825</td><td><b>90</b></td><td>845</td><td><b>91</b></td><td>866</td><td><b>92</b></td><td>887</td><td><b>93</b></td><td>909</td><td><b>94</b></td><td>931</td><td><b>95</b></td><td>953</td><td><b>96</b></td><td>976</td></tr>
+</table></div>
+    </details>
+
+    <h2>Capacitor and other markings</h2>
+    <h3>3-digit capacitor codes</h3>
+    <p>Small ceramic and film capacitors use the same idea as resistors, but the unit is the <b>picofarad</b> (pF). The first two digits are the number, the third is the number of zeros. Then convert: 1 000 pF = 1 nF, and 1 000 nF = 1 µF.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Marking</th><th>Working</th><th>Value</th></tr>
+      <tr><td>101</td><td>10 × 10<sup>1</sup> pF</td><td>100 pF</td></tr>
+      <tr><td>102</td><td>10 × 10<sup>2</sup> pF = 1 000 pF</td><td>1 nF</td></tr>
+      <tr><td>222</td><td>22 × 10<sup>2</sup> pF = 2 200 pF</td><td>2.2 nF</td></tr>
+      <tr><td>103</td><td>10 × 10<sup>3</sup> pF = 10 000 pF</td><td>10 nF (0.01 µF)</td></tr>
+      <tr><td>473</td><td>47 × 10<sup>3</sup> pF</td><td>47 nF</td></tr>
+      <tr><td>104</td><td>10 × 10<sup>4</sup> pF = 100 000 pF</td><td><b>100 nF</b> (0.1 µF), the standard decoupling capacitor</td></tr>
+      <tr><td>224</td><td>22 × 10<sup>4</sup> pF</td><td>220 nF</td></tr>
+      <tr><td>105</td><td>10 × 10<sup>5</sup> pF = 1 000 000 pF</td><td>1 µF</td></tr>
+      <tr><td>47 or 470</td><td>47 × 10<sup>0</sup> pF</td><td>47 pF, not 470 pF</td></tr>
+      <tr><td>471</td><td>47 × 10<sup>1</sup> pF</td><td>470 pF</td></tr>
+      <tr><td>4R7 or 4p7</td><td>decimal point</td><td>4.7 pF</td></tr>
+      <tr><td>4n7</td><td>n is the decimal point and the unit</td><td>4.7 nF</td></tr>
+      <tr><td>.01 or 0.1</td><td>already in µF</td><td>10 nF, or 100 nF</td></tr>
+    </table></div>
+    <p>A 9 as the third digit means × 0.1, so 479 is 4.7 pF. This is rare. A part without a clear code, such as an unmarked 0603 ceramic, cannot be read at all. You need a capacitance meter, and you should store such parts in labelled bags.</p>
+
+    <h3>Tolerance letters</h3>
+    <p>A letter after the code gives the tolerance. <b>104K</b> is 100 nF ± 10 %.</p>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Letter</th><th>B</th><th>C</th><th>D</th><th>F</th><th>G</th><th>J</th><th>K</th><th>M</th><th>Z</th></tr>
+      <tr><td>Tolerance</td><td>± 0.1 pF</td><td>± 0.25 pF</td><td>± 0.5 pF</td><td>± 1 %</td><td>± 2 %</td><td>± 5 %</td><td>± 10 %</td><td>± 20 %</td><td>+80 / −20 %</td></tr>
+    </table></div>
+    <p>B, C and D are used for tiny capacitors (under 10 pF) and give the tolerance in pF. The same letters also appear on some resistors: F is ± 1 %, J is ± 5 %.</p>
+    <h3>Ceramic types (dielectric codes)</h3>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Code</th><th>What it means</th><th>Use</th></tr>
+      <tr><td>C0G or NP0</td><td>Very stable, ± 30 ppm per °C, almost no ageing</td><td>Filters, timing, crystal load capacitors. Values from pF to about 100 nF.</td></tr>
+      <tr><td>X7R</td><td>−55 to +125 °C, capacitance changes by up to ± 15 %</td><td>General use and decoupling.</td></tr>
+      <tr><td>X5R</td><td>−55 to +85 °C, up to ± 15 %</td><td>Decoupling and bulk capacitors on small boards.</td></tr>
+      <tr><td>Y5V</td><td>−30 to +85 °C, +22 / −82 %</td><td>Cheap bulk capacitance. Can lose most of its value with heat. Avoid for anything that matters.</td></tr>
+    </table></div>
+
+    <h3>Voltage markings and electrolytics</h3>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Marking</th><th>Meaning</th></tr>
+      <tr><td>25V, 25 V, 25VDC, 25WV</td><td>Maximum DC working voltage. Never exceed it. Use a rating well above the circuit voltage.</td></tr>
+      <tr><td>1000µF 25V 105°C</td><td>Capacitance, voltage rating, and maximum temperature. The 105 °C is a temperature, not a capacitance code.</td></tr>
+      <tr><td>1E, 1H, 2A, 2E, 2G</td><td>A short voltage code on some ceramic and film capacitors: 25 V, 50 V, 100 V, 250 V, 400 V. Rare. Check the datasheet when it matters.</td></tr>
+      <tr><td>250V~, 275VAC, X2, Y2</td><td>Capacitors rated for mains AC. They are found inside mains equipment. Recognise them, but do not work on mains. That is licensed electrical work in Australia.</td></tr>
+    </table></div>
+
+    <h3>Other markings</h3>
+    <div class="table-wrap"><table class="fs">
+      <tr><th>Part</th><th>Marking</th><th>How to read it</th></tr>
+      <tr><td>SMD inductor or ferrite choke</td><td>100, 220, 4R7</td><td>Often in µH: 100 = 10 µH, 220 = 22 µH, 4R7 = 4.7 µH. Check the datasheet.</td></tr>
+      <tr><td>Potentiometer</td><td>B10K, A100K</td><td>10 kΩ or 100 kΩ. In many (not all) makes B is linear and A is logarithmic. Check the datasheet.</td></tr>
+      <tr><td>Crystal</td><td>16.000, 32.768</td><td>Frequency in MHz (or kHz for the watch-type 32.768 kHz).</td></tr>
+      <tr><td>Fuse</td><td>T2A 250V, F500mA</td><td>Time-lag (T) or fast (F), the current rating, and the voltage rating. Replace with the same type and rating.</td></tr>
+      <tr><td>Transistor, IC</td><td>2N3904, LM358, NE555</td><td>Part number. Look up the datasheet. Beware of fakes and relabelled parts from unknown sellers.</td></tr>
+    </table></div>
+
+    <h2>Resistor decoder</h2>
+    <p>Three tools in one. <b>Colour bands to value</b> shows the resistor as you set the bands. <b>Value to colour bands</b> works the other way: type 4.7k and it draws the bands. <b>SMD code to value</b> reads chip codes such as 472, 4702, 4R7, 0R or 01C. Use it to check your own reading, not to replace learning the code.</p>
+    <div class="widget" id="w-resdec">
+      <span class="label">Interactive · Resistor decoder</span>
+      <div class="rd-tabs" role="group" aria-label="Decoder mode">
+        <button type="button" id="rd-tab1" aria-pressed="true">Colour bands to value</button>
+        <button type="button" id="rd-tab2" aria-pressed="false">Value to colour bands</button>
+        <button type="button" id="rd-tab3" aria-pressed="false">SMD code to value</button>
+      </div>
+      <svg class="rd-svg" id="rd-svg" viewBox="0 0 380 120" role="img" aria-label="Resistor with colour bands"></svg>
+      <svg class="rd-svg" id="rd-chip" viewBox="0 0 380 120" role="img" aria-label="SMD chip resistor with a printed code" hidden></svg>
+
+      <div class="rd-pane" id="rd-p1">
+        <div class="rd-grid">
+          <div><label>Number of bands<br><select id="rd-n"><option value="4">4 bands</option><option value="5">5 bands</option></select></label></div>
+          <div><label>Band 1 (first digit)<br><select id="rd-d1"></select></label></div>
+          <div><label>Band 2 (second digit)<br><select id="rd-d2"></select></label></div>
+          <div id="rd-d3w" hidden><label>Band 3 (third digit)<br><select id="rd-d3"></select></label></div>
+          <div><label>Multiplier band<br><select id="rd-m"></select></label></div>
+          <div><label>Tolerance band<br><select id="rd-t"></select></label></div>
+        </div>
+      </div>
+
+      <div class="rd-pane" id="rd-p2" hidden>
+        <div class="rd-grid">
+          <div><label>Resistor value<br><input type="text" id="rd-v" value="4.7k" autocomplete="off" spellcheck="false" aria-describedby="rd-vhelp"></label></div>
+          <div><label>Bands wanted<br><select id="rd-nb"><option value="4">4 bands</option><option value="5">5 bands</option></select></label></div>
+          <div><label>Tolerance<br><select id="rd-t2"></select></label></div>
+        </div>
+        <div class="rd-ex" id="rd-vhelp">Try: <button type="button" data-fill="rd-v" data-val="4.7k">4.7k</button><button type="button" data-fill="rd-v" data-val="220">220</button><button type="button" data-fill="rd-v" data-val="4k7">4k7</button><button type="button" data-fill="rd-v" data-val="1M">1M</button><button type="button" data-fill="rd-v" data-val="0.47">0.47</button><button type="button" data-fill="rd-v" data-val="49.9k">49.9k</button><button type="button" data-fill="rd-v" data-val="0">0</button> (k = kilo, M = mega, R = ohms)</div>
+      </div>
+
+      <div class="rd-pane" id="rd-p3" hidden>
+        <div class="rd-grid">
+          <div><label>Code printed on the chip<br><input type="text" id="rd-smd" value="472" maxlength="8" autocomplete="off" spellcheck="false"></label></div>
+        </div>
+        <div class="rd-ex">Try: <button type="button" data-fill="rd-smd" data-val="472">472</button><button type="button" data-fill="rd-smd" data-val="4702">4702</button><button type="button" data-fill="rd-smd" data-val="4R7">4R7</button><button type="button" data-fill="rd-smd" data-val="R47">R47</button><button type="button" data-fill="rd-smd" data-val="0R">0R</button><button type="button" data-fill="rd-smd" data-val="220">220</button><button type="button" data-fill="rd-smd" data-val="01C">01C</button><button type="button" data-fill="rd-smd" data-val="68C">68C</button></div>
+      </div>
+
+      <div class="readings" id="rd-out" aria-live="polite"></div>
+      <p id="rd-note" aria-live="polite"></p>
+    </div>
+    <script>
+    (function(){
+      var E96=[100,102,105,107,110,113,115,118,121,124,127,130,133,137,140,143,147,150,154,158,162,165,169,174,178,182,187,191,196,200,205,210,215,221,226,232,237,243,249,255,261,267,274,280,287,294,301,309,316,324,332,340,348,357,365,374,383,392,402,412,422,432,442,453,464,475,487,499,511,523,536,549,562,576,590,604,619,634,649,665,681,698,715,732,750,768,787,806,825,845,866,887,909,931,953,976];
+      var E12=[100,120,150,180,220,270,330,390,470,560,680,820];
+      var E24=[100,110,120,130,150,160,180,200,220,240,270,300,330,360,390,430,470,510,560,620,680,750,820,910];
+      var COL=[
+        {n:'Black',h:'#1a1a1a'},{n:'Brown',h:'#7b4a1e'},{n:'Red',h:'#d32f2f'},{n:'Orange',h:'#f57c00'},{n:'Yellow',h:'#f9d71c'},
+        {n:'Green',h:'#2e9d4a'},{n:'Blue',h:'#1e5fd6'},{n:'Violet',h:'#8e44ad'},{n:'Grey',h:'#8c8c8c'},{n:'White',h:'#f5f5f5'},
+        {n:'Gold',h:'#c9a227'},{n:'Silver',h:'#b8bcc2'}];
+      var TOLS=[[1,1],[2,2],[5,0.5],[6,0.25],[7,0.1],[8,0.05],[10,5],[11,10],[-1,20]];
+      var SUP=['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'];
+      var mode=1;
+
+      function $(id){return document.getElementById(id);}
+      function mult(i){return i<=9?Math.pow(10,i):(i===10?0.1:0.01);}
+      function tolOf(ci){for(var k=0;k<TOLS.length;k++)if(TOLS[k][0]===ci)return TOLS[k][1];return 20;}
+      function clean(x){return String(parseFloat(x.toPrecision(4)));}
+      function fmt(v){
+        if(v===0)return '0 Ω';
+        var u=[[1e9,'GΩ'],[1e6,'MΩ'],[1e3,'kΩ'],[1,'Ω']];
+        for(var i=0;i<u.length;i++){if(v>=u[i][0]*0.99999)return clean(v/u[i][0])+' '+u[i][1];}
+        return clean(v)+' Ω';
+      }
+      function multTxt(m){if(m>=1e9)return clean(m/1e9)+' G';if(m>=1e6)return clean(m/1e6)+' M';if(m>=1e3)return clean(m/1e3)+' k';return String(m);}
+      function mant3(v){
+        var e=Math.floor(Math.log10(v)),m=v/Math.pow(10,e);
+        if(m>=10){m/=10;e++;} if(m<1){m*=10;e--;}
+        var q=Math.round(m*100); if(q>=1000){q=100;e++;}
+        return {m:q,e:e};
+      }
+      function series(v){
+        if(!(v>0))return '';
+        var q=mant3(v).m,a=[];
+        if(E12.indexOf(q)>=0)a.push('E12');
+        if(E24.indexOf(q)>=0)a.push('E24');
+        if(E96.indexOf(q)>=0)a.push('E96');
+        return a.join(', ');
+      }
+      function nearest(list,v){
+        var t=mant3(v),best=list[0],bd=1e9;
+        list.concat([1000]).forEach(function(x){var d=Math.abs(Math.log(x/t.m));if(d<bd){bd=d;best=x;}});
+        return best*Math.pow(10,t.e-2);
+      }
+      function opt(sel,val,text,on){var o=document.createElement('option');o.value=val;o.textContent=text;if(on)o.selected=true;sel.appendChild(o);}
+      function fillDigits(sel,from,def){for(var i=from;i<=9;i++)opt(sel,i,COL[i].n+' ('+i+')',i===def);}
+      function fillMult(sel,def){for(var i=0;i<=11;i++)opt(sel,i,COL[i].n+' (×'+multTxt(mult(i))+')',i===def);}
+      function fillTol(sel,def){TOLS.forEach(function(t){opt(sel,t[0],(t[0]<0?'No band':COL[t[0]].n)+' (±'+t[1]+' %)',t[0]===def);});}
+      function show(list){
+        var o=$('rd-out');o.innerHTML='';
+        list.forEach(function(p){
+          var d=document.createElement('div'),sm=document.createElement('small'),sp=document.createElement('span');
+          sm.textContent=p[0];sp.className='out'+(p[2]?' rd-s':'');sp.textContent=p[1];
+          d.appendChild(sm);d.appendChild(sp);o.appendChild(d);
+        });
+      }
+      function note(t){$('rd-note').textContent=t||'';}
+      function setHidden(el,on){if(on)el.setAttribute('hidden','');else el.removeAttribute('hidden');}
+
+      /* ----- drawing ----- */
+      var LEAD='<path class="s-line" d="M10 60 H72 M308 60 H370"/><rect class="s-line f-wash" x="72" y="32" width="236" height="56" rx="16"/>';
+      function band(x,ci){return '<rect x="'+x+'" y="32" width="16" height="56" style="fill:'+COL[ci].h+';stroke:var(--muted);stroke-width:.75"/>';}
+      function lab(x,t){return '<text class="t t-small t-muted" x="'+(x+8)+'" y="108" text-anchor="middle">'+t+'</text>';}
+      function drawBands(digits,mi,ti){
+        var five=digits.length===3,xs=five?[104,130,156,182,252]:[112,142,172,250],ls=five?['1','2','3','×','tol']:['1','2','×','tol'];
+        var seq=digits.concat([mi,ti]),s=LEAD,names=[];
+        seq.forEach(function(ci,k){if(ci<0)return;s+=band(xs[k],ci)+lab(xs[k],ls[k]);names.push(COL[ci].n);});
+        $('rd-svg').innerHTML=s;
+        $('rd-svg').setAttribute('aria-label','Resistor with bands: '+names.join(', '));
+        return names;
+      }
+      function drawBlank(){$('rd-svg').innerHTML=LEAD;$('rd-svg').setAttribute('aria-label','Resistor with no bands');}
+      function drawZero(){$('rd-svg').innerHTML=LEAD+band(182,0);$('rd-svg').setAttribute('aria-label','Zero-ohm link: one black band');}
+      function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+      function drawChip(code){
+        $('rd-chip').innerHTML='<rect class="f-grey" x="96" y="30" width="30" height="60" rx="2"/><rect class="f-grey" x="254" y="30" width="30" height="60" rx="2"/>'+
+          '<rect class="f-ink" x="112" y="30" width="156" height="60" rx="3"/>'+
+          '<text class="f-panel" x="190" y="72" text-anchor="middle" style="font-size:30px;font-weight:700;letter-spacing:2px">'+esc(code)+'</text>';
+        $('rd-chip').setAttribute('aria-label','SMD chip resistor printed '+code);
+      }
+
+      /* ----- mode 1: bands to value ----- */
+      function mode1(){
+        var five=$('rd-n').value==='5';
+        setHidden($('rd-d3w'),!five);
+        var d=[+$('rd-d1').value,+$('rd-d2').value];
+        if(five)d.push(+$('rd-d3').value);
+        var mi=+$('rd-m').value,ti=+$('rd-t').value,n=0;
+        d.forEach(function(x){n=n*10+x;});
+        var v=parseFloat((n*mult(mi)).toPrecision(12)),tol=tolOf(ti);
+        var names=drawBands(d,mi,ti);
+        var s=series(v);
+        show([['Value',fmt(v)],['Tolerance','±'+tol+' %'],['Range',fmt(v*(1-tol/100))+' to '+fmt(v*(1+tol/100)),1],['Standard series',s||'none',1]]);
+        note(s?'Bands: '+names.join(', ')+'. This is a standard value, which is a good sign that you read the bands the right way round.':
+          'This is not a standard E12, E24 or E96 value. On a real resistor that usually means a band was misread or you started from the wrong end.');
+      }
+
+      /* ----- mode 2: value to bands ----- */
+      function parseVal(raw){
+        var s=String(raw).replace(/[\s,_ΩΩ]/g,'').replace(/ohms?$/i,''),m;
+        var mu={k:1e3,K:1e3,M:1e6,G:1e9,MEG:1e6,Meg:1e6,meg:1e6,R:1,r:1};
+        if(!s)return {err:'Type a value, for example 4.7k, 4k7, 220 or 1M.'};
+        if((m=s.match(/^(\d+(?:\.\d+)?|\.\d+)(MEG|Meg|meg|[kKMGRr])?$/)))return {v:parseFloat(m[1])*(m[2]?mu[m[2]]:1)};
+        if((m=s.match(/^(\d*)([kKMGRr])(\d+)$/)))return {v:parseFloat((m[1]||'0')+'.'+m[3])*mu[m[2]]};
+        if(/^(\d+(?:\.\d+)?|\.\d+)m$/.test(s))return {err:'Did you mean M for mega? A lowercase m means milli, and colour bands cannot show milliohms. Use k for kilo and M for mega.'};
+        return {err:'I cannot read that. Use forms like 4.7k, 4k7, 220, 4R7 or 1M.'};
+      }
+      function split(v,sig){
+        var e=Math.floor(Math.log10(v)),m=v/Math.pow(10,e);
+        if(m>=10){m/=10;e++;} if(m<1){m*=10;e--;}
+        var f=Math.pow(10,sig-1),sc=Math.round(m*f),exact=Math.abs(sc/f-m)/m<1e-6;
+        if(sc>=Math.pow(10,sig)){sc=f;e++;}
+        return {digits:String(sc).split('').map(Number),mexp:e-(sig-1),exact:exact};
+      }
+      function mode2(){
+        var p=parseVal($('rd-v').value),ti=+$('rd-t2').value,want=+$('rd-nb').value===5?3:2;
+        if(p.err||!isFinite(p.v)||p.v<0){drawBlank();show([]);note(p.err||'Enter a positive value.');return;}
+        var v=p.v;
+        if(v===0){drawZero();show([['Value','0 \u03a9'],['Bands','Black (one band)',1]]);note('A zero-ohm link usually has a single black band in the middle. It is a wire in resistor form.');return;}
+        var order=want===3?[3,2]:[2,3],r=null,used=0,msg='';
+        function inRange(c){return c.mexp>=-2&&c.mexp<=9;}
+        order.forEach(function(sig){if(!r){var c=split(v,sig);if(c.exact&&inRange(c)){r=c;used=sig;}}});
+        order.forEach(function(sig){if(!r){var c=split(v,sig);if(inRange(c)){r=c;used=sig;}}});
+        if(!r){drawBlank();show([]);note('Too small or too large for colour bands. Bands cover about 0.1 \u03a9 up to 99 G\u03a9.');return;}
+        if(used!==want)msg+=used===3?'That value needs three digits, so it is drawn with 5 bands. ':'A 5-band resistor cannot show a value this small, so it is drawn with 4 bands. ';
+        if(used===3&&(ti===10||ti===11))msg+='Real 5-band resistors are usually brown (\u00b11 %), so change the tolerance if you want to match one. ';
+        var mi=r.mexp>=0?r.mexp:(r.mexp===-1?10:11),shown=0;
+        r.digits.forEach(function(x){shown=shown*10+x;});
+        shown=parseFloat((shown*mult(mi)).toPrecision(12));
+        if(!r.exact)msg+='Rounded to the nearest value these bands can show ('+fmt(shown)+'). ';
+        var names=drawBands(r.digits,mi,ti),s=series(shown);
+        if(s)msg+='This is a standard value ('+s+').';
+        else msg+='Not a standard value. Nearest E24: '+fmt(nearest(E24,shown))+'. Nearest E96: '+fmt(nearest(E96,shown))+'.';
+        show([['Value',fmt(shown)],['Bands ('+names.length+')',names.join(' \u2013 '),1],['Tolerance','\u00b1'+tolOf(ti)+' %']]);
+        note(msg);
+      }
+
+      /* ----- mode 3: SMD code to value ----- */
+      function decodeSMD(raw){
+        var s=String(raw).trim().toUpperCase().replace(/[\sΩ]/g,''),m;
+        if(!s)return {err:'Type the code printed on the chip, for example 472, 4702, 4R7, 0R or 01C.',s:''};
+        if(/^0+R?0*$/.test(s))return {v:0,s:s,how:'Zero-ohm link, a jumper in chip form.',tol:'Not applicable'};
+        if((m=s.match(/^(\d*)([RKM])(\d*)$/))&&(m[1]||m[3])){
+          var mu={R:1,K:1e3,M:1e6}[m[2]],whole=m[1]||'0',frac=m[3];
+          return {v:parseFloat(whole+(frac?'.'+frac:''))*mu,s:s,how:'The letter '+m[2]+' sits where the decimal point goes'+(m[2]==='R'?'':' and gives the unit ('+(m[2]==='K'?'kilohms':'megohms')+')')+'.',tol:'Check the datasheet'};
+        }
+        if((m=s.match(/^(\d\d)([ZYXSABHCDEF])$/))){
+          var n=+m[1];
+          if(n<1||n>96)return {err:'EIA-96 codes use 01 to 96 followed by a letter.',s:s};
+          var mm={Z:0.001,Y:0.01,X:0.1,S:0.1,A:1,B:10,H:10,C:100,D:1e3,E:1e4,F:1e5}[m[2]],base=E96[n-1];
+          return {v:parseFloat((base*mm).toPrecision(12)),s:s,how:'EIA-96: code '+m[1]+' is the base '+base+', letter '+m[2]+' is ×'+multTxt(mm)+'. So '+base+' × '+multTxt(mm)+'.',tol:'±1 % (EIA-96 is for 1 % parts)'};
+        }
+        if(/^\d{3,4}$/.test(s)){
+          if(s.charAt(0)==='0')return {err:'Digit codes do not start with 0. A zero-ohm link is marked 0, 000 or 0R.',s:s};
+          var k=s.length-1,sig=parseInt(s.slice(0,k),10),md=+s.charAt(k),mm2=md<=7?Math.pow(10,md):(md===8?0.01:0.1);
+          return {v:parseFloat((sig*mm2).toPrecision(12)),s:s,how:'First '+k+' digits '+sig+', last digit '+md+(md<=7?' means add '+md+' zero'+(md===1?'':'s')+': '+sig+' × 10'+SUP[md]+'.':' is an unusual multiplier (×'+mm2+').'),tol:k===2?'±5 % is typical for 3-digit codes':'±1 % is typical for 4-digit codes'};
+        }
+        return {err:'That does not look like a resistor code. Try 3 digits (472), 4 digits (4702), an R code (4R7) or an EIA-96 code (01C).',s:s};
+      }
+      function mode3(){
+        var d=decodeSMD($('rd-smd').value);
+        drawChip((d.s||'').slice(0,6));
+        if(d.err){show([]);note(d.err);return;}
+        show([['Value',fmt(d.v)],['Typical tolerance',d.tol,1],['How it was read',d.how,1]]);
+        note('Tolerance and power depend on the maker: if it matters, check the datasheet or measure the part.');
+      }
+
+      function render(){if(mode===1)mode1();else if(mode===2)mode2();else mode3();}
+      function setMode(k){
+        mode=k;
+        [1,2,3].forEach(function(i){
+          $('rd-tab'+i).setAttribute('aria-pressed',i===k?'true':'false');
+          setHidden($('rd-p'+i),i!==k);
+        });
+        setHidden($('rd-svg'),k===3);setHidden($('rd-chip'),k!==3);
+        render();
+      }
+
+      fillDigits($('rd-d1'),1,4);fillDigits($('rd-d2'),0,7);fillDigits($('rd-d3'),0,0);fillMult($('rd-m'),2);fillTol($('rd-t'),10);fillTol($('rd-t2'),10);
+      ['rd-n','rd-d1','rd-d2','rd-d3','rd-m','rd-t'].forEach(function(id){$(id).addEventListener('change',function(){mode1();});});
+      ['rd-nb','rd-t2'].forEach(function(id){$(id).addEventListener('change',function(){mode2();});});
+      $('rd-v').addEventListener('input',mode2);
+      $('rd-smd').addEventListener('input',mode3);
+      [1,2,3].forEach(function(i){$('rd-tab'+i).addEventListener('click',function(){setMode(i);});});
+      [].forEach.call(document.querySelectorAll('#w-resdec [data-fill]'),function(b){
+        b.addEventListener('click',function(){var t=$(b.getAttribute('data-fill'));t.value=b.getAttribute('data-val');render();});
+      });
+      setMode(1);
+    })();
+    </script>
+    <div class="callout try"><span class="label">Try this</span><p>Take five resistors from your kit and read each one with the table before you use the decoder. Then measure each with a multimeter and compare the reading with the colour value and its tolerance. Write down any that are outside tolerance. Then decode three chip codes on a spare board or an old plug-pack circuit, and check them with the meter too.</p></div>
+    <a class="crosslink" href="../practice/p02-breadboard-first-led.html">Practice P02 · Breadboard and your first LED circuit (resistor colour codes in use)</a>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html">Practice P03 · Multimeter mastery (ohms, continuity and diode test)</a>
+    <a class="crosslink" href="../reference/r01-glossary.html">Reference R01 · Glossary: every term in plain English</a>
+    <a class="crosslink" href="../reference/r02-formula-sheet.html">Reference R02 · Formula sheet with worked numbers</a>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A ceramic capacitor is marked 104K. What is its value and tolerance?</summary><div class="answer"><p>The first two digits are 10, and the third digit 4 means four zeros: 10 × 10<sup>4</sup> = 100 000 pF. That is <b>100 nF</b> (0.1 µF). The letter K means <b>± 10 %</b>.</p></div></details>
+    <details class="quiz"><summary>A resistor's bands read brown, black, orange, gold from one end. What is its value? What clue tells you that you have read it from the right end?</summary><div class="answer"><p>Brown = 1, black = 0, orange = × 1 000, so 10 × 1 000 = <b>10 kΩ</b>, gold = ± 5 %. From the other end it would start with gold, and gold is never a first digit. A gold or silver band on the left means you have it backwards.</p></div></details>
+    <details class="quiz"><summary>One SMD resistor is marked 4R7 and another is marked 472. How far apart are the values?</summary><div class="answer"><p>4R7 uses R as the decimal point, so it is <b>4.7 Ω</b>. 472 is 47 × 10<sup>2</sup> = <b>4 700 Ω</b>. They differ by a factor of 1 000. Fitting the wrong one is a common cause of a circuit that works badly.</p></div></details>
+    <details class="quiz"><summary>You find a small moulded SMD capacitor with a stripe at one end, and you treat it like an electrolytic: stripe means negative. What is the risk?</summary><div class="answer"><p>On a moulded SMD <b>tantalum</b> capacitor, the stripe marks the <b>positive</b> end, which is the opposite of an electrolytic can. Fitted backwards, it can fail short and overheat. Check the board's silkscreen and the datasheet for that part. Aluminium SMD electrolytics mark the negative side with a dark mark on top.</p></div></details>
+    <details class="quiz"><summary>One drawing shows a resistor as a zig-zag and another shows it as a plain box. Are they different parts? What should you do if a plain box has the label K2?</summary><div class="answer"><p>No. They are the same part in two drawing styles: US (zig-zag) and IEC (box). A box labelled <b>K2</b> is not a resistor. K is the usual letter for a relay, so it is probably a relay coil. This is why you read the legend and the label, not just the shape.</p></div></details>
+    <details class="quiz"><summary>A DIP-8 chip has its notch at the top. Where are pin 1 and pin 5?</summary><div class="answer"><p>Pin 1 is at the <b>top left</b>, next to the notch. Pins count down the left side (1, 2, 3, 4), then up the right side. So pin 5 is at the <b>bottom right</b> and pin 8 at the top right. That is anticlockwise when viewed from above.</p></div></details>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>I can name the common symbols and tell IEC from US style, and I read the legend before I trust a symbol.</span></li>
+      <li><input type="checkbox"><span>I use reference letters and labels (R, C, Q, K, F) to confirm what a symbol is.</span></li>
+      <li><input type="checkbox"><span>I can read 4-band and 5-band resistors and check them with a meter.</span></li>
+      <li><input type="checkbox"><span>I can decode SMD resistor codes: 3-digit, 4-digit, R as a decimal point and zero-ohm links.</span></li>
+      <li><input type="checkbox"><span>I can read 3-digit capacitor codes (104, 103, 222) and the J, K, M tolerance letters.</span></li>
+      <li><input type="checkbox"><span>I can find pin 1 on a DIP, SOIC and transistor package.</span></li>
+      <li><input type="checkbox"><span>I check polarity (diode band, LED flat side, electrolytic stripe, tantalum stripe) before I power anything.</span></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
