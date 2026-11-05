@@ -1,0 +1,12 @@
+@import url("theme.css?v=20261105-theme");
+/* The original standalone diode lesson keeps its typography and layout. */
+:root{--paper:var(--bg);--accent:var(--theory)}
+.intro{color:var(--muted)}
+nav a:hover{color:var(--ink);background:var(--wash)}
+.toolbar button,.segmented button,select{border-color:var(--control-border)}
+.segmented button[aria-pressed=true]{color:var(--on-accent);border-color:var(--accent)}
+.lab{border-color:var(--line)}
+/* These original scientific drawings contain fixed pigment colours. Keep their
+   canvas and labels paired rather than invert individual carrier colours. */
+:root[data-theme="dark"] svg{--ink:#16181d;--muted:#454b55;--accent:#1d4ed8;background:#e5e3dd;border-radius:8px}
+@media print{:root:root svg{--ink:#16181d;--muted:#454b55;--accent:#1d4ed8;background:#fff}}

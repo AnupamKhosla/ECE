@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>C06 · Access control and intruder alarms</title>
-<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 </head>
 <body class="book-career">
 <div class="shell">
@@ -158,7 +159,7 @@
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">
         <label>Facility code (0–255)<input type="number" id="wg-fc" min="0" max="255" value="12"></label>
         <label>Card number (0–65535)<input type="number" id="wg-cn" min="0" max="65535" value="34567"></label>
-        <button type="button" id="wg-enc" style="font:600 14px var(--sans);border:none;background:var(--accent);color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer;margin:8px 0">Encode → bits</button>
+        <button type="button" id="wg-enc" style="font:600 14px var(--sans);border:none;background:var(--accent);color:var(--on-accent);padding:8px 12px;border-radius:6px;cursor:pointer;margin:8px 0">Encode → bits</button>
         <button type="button" id="wg-rnd" style="font:600 14px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:8px 12px;border-radius:6px;cursor:pointer;margin:8px 0">Random card</button>
       </div>
       <svg id="wg-svg" viewBox="0 0 640 200" role="img" aria-label="The 26 bits coloured by field, and the D0 and D1 pulse trains"></svg>
@@ -402,6 +403,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
 </body>
 </html>

@@ -10,10 +10,6 @@
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || "null"); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   var done = store("ece-done") || {};
 
-  /* theme */
-  var savedTheme = store("ece-theme");
-  if (savedTheme === "light" || savedTheme === "dark") document.documentElement.setAttribute("data-theme", savedTheme);
-
   /* flatten chapters */
   var all = [];
   TOC.books.forEach(function (b) { b.parts.forEach(function (p) { p.chapters.forEach(function (c) { c.book = b.id; c.part = p.title; all.push(c); }); }); });
@@ -67,28 +63,9 @@
       });
     }
   }
-  /* Light / Dark / Auto switch. Auto follows the computer's setting. */
-  function themeSwitch() {
-    var wrap = el("div", "theme-switch");
-    wrap.setAttribute("role", "group");
-    wrap.setAttribute("aria-label", "Colour theme");
-    [["light", "☀ Light"], ["dark", "☾ Dark"], ["auto", "Auto"]].forEach(function (o) {
-      var b = el("button", null, o[1]);
-      b.type = "button";
-      b.dataset.mode = o[0];
-      b.onclick = function () {
-        if (o[0] === "auto") { document.documentElement.removeAttribute("data-theme"); store("ece-theme", "auto"); }
-        else { document.documentElement.setAttribute("data-theme", o[0]); store("ece-theme", o[0]); }
-        paintTheme();
-      };
-      wrap.appendChild(b);
-    });
-    return wrap;
-  }
-  function paintTheme() {
-    var mode = store("ece-theme") || "auto";
-    document.querySelectorAll(".theme-switch button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mode === mode)); });
-  }
+  /* Shared early theme bootstrap provides a light-default, explicit choice. */
+  function themeSwitch() { return window.ECETheme.createSwitch(); }
+  function paintTheme() { window.ECETheme.refresh(); }
   function markPending() {
     document.querySelectorAll(".side a.nav").forEach(function (a) {
       var m = meta[a.dataset.file];

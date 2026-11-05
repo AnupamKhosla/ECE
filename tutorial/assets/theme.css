@@ -1,0 +1,61 @@
+/* Light is the default. Dark is an explicit choice, never an OS override.
+   Design rationale and contrast targets: ../../docs/theme-readability.md */
+:root{
+  color-scheme:light;
+  --bg:#f7f5f0; --panel:#ffffff; --ink:#16181d; --muted:#5b6170; --line:#dcd8cf; --wash:#efece4;
+  --practice:#b43c0c; --practice-soft:#fdeee4;
+  --theory:#1d4ed8; --theory-soft:#e6edfd;
+  --career:#047857; --career-soft:#e1f5ec;
+  --ref:#7c3aed; --ref-soft:#efe8fd;
+  --warn:#b91c1c; --warn-soft:#fde8e8;
+  --tip:#7c5e00; --tip-soft:#fbf3d5;
+  --accent:var(--practice); --accent-soft:var(--practice-soft);
+  --brown:#8b5a2b; --red:#c62828; --blue:#2563eb; --green:#147d39; --amber:#9a5a00; --violet:#7c3aed; --grey:#606875;
+  --code:#f1efe9; --control-border:#767b85; --focus:#1d4ed8;
+  --on-accent:#ffffff; --success:#166534; --on-success:#ffffff;
+  --new:#f2cc7a; --on-new:#272016;
+  --selection:#dbe6ff; --selection-ink:#172957;
+  --radius:10px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1b1d21; --panel:#23262b; --ink:#e0e3e8; --muted:#b5bcc6; --line:#424851; --wash:#2c3036;
+  --practice:#efb18c; --practice-soft:#342a25;
+  --theory:#a9c7f5; --theory-soft:#293344;
+  --career:#9cd5b7; --career-soft:#273b32;
+  --ref:#c8b9ed; --ref-soft:#342e43;
+  --warn:#f0aaa5; --warn-soft:#3d2b2d;
+  --tip:#dcc389; --tip-soft:#3b3426;
+  --brown:#d2ad86; --red:#efaaa6; --blue:#a5c5ed; --green:#9dd1b0; --amber:#e4c38d; --violet:#c8b5eb; --grey:#b0b8c2;
+  --code:#292d33; --control-border:#87909c; --focus:#a9c7f5;
+  --on-accent:#171c22; --success:#9dd1b0; --on-success:#17251c;
+  --selection:#415574; --selection-ink:#f0f3f8;
+}
+::selection{background:var(--selection);color:var(--selection-ink)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+input,select,textarea{accent-color:var(--accent)}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
+.theme-switch{display:inline-flex;border:1px solid var(--control-border);border-radius:8px;overflow:hidden;margin:0 0 6px;background:var(--bg)}
+.theme-switch button{font:600 13px var(--sans);border:none;border-radius:0;background:transparent;color:var(--muted);padding:9px 13px;cursor:pointer;min-height:38px}
+.theme-switch button+button{border-left:1px solid var(--control-border)}
+.theme-switch button:hover{background:var(--wash);color:var(--ink)}
+.theme-switch button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.theme-switch button:focus-visible{outline-offset:-4px}
+.theme-switch button[aria-pressed="true"]:focus-visible{outline-color:var(--bg)}
+@media (prefers-reduced-motion:reduce){html:root{scroll-behavior:auto}body .livepill::before{animation:none}body .side,body .book .bar i,body .toast{transition:none}}
+/* Print uses the reading palette even when the visitor explicitly chose dark. */
+@media print{
+  :root:root{
+    color-scheme:light;
+    --bg:#fff; --panel:#fff; --ink:#16181d; --muted:#454b55; --line:#b9bdc4; --wash:#f1f2f4;
+    --practice:#b43c0c; --practice-soft:#fdeee4; --theory:#1d4ed8; --theory-soft:#e6edfd;
+    --career:#047857; --career-soft:#e1f5ec; --ref:#7c3aed; --ref-soft:#efe8fd;
+    --warn:#b91c1c; --warn-soft:#fde8e8; --tip:#7c5e00; --tip-soft:#fbf3d5;
+    --brown:#8b5a2b; --red:#c62828; --blue:#2563eb; --green:#147d39; --amber:#9a5a00; --violet:#7c3aed; --grey:#606875;
+    --code:#f1f2f4; --on-accent:#fff; --success:#166534; --on-success:#fff;
+  }
+  .theme-switch{display:none}
+}

@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>C11 · Licences, tickets and pathways in Australia</title>
-<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 </head>
 <body class="book-career">
 <div class="shell">
@@ -175,12 +176,12 @@
         inst:[["White Card","must"],["Driver's licence","often"],["Electrical licence (many E&I roles)","often"],["Certificate III/IV instrumentation","often"],["Confined spaces","later"],["Working at heights","later"],["Site inductions (mining/energy)","later"]]
       };
       var sel=document.getElementById('tk-role'),out=document.getElementById('tk-out');
-      var col={must:'var(--warn)',often:'var(--amber)',later:'var(--career)'};
+      var col={must:'var(--warn)',often:'var(--tip)',later:'var(--career)'};
       function key(r,i){return 'ece-tk:'+r+':'+i;}
       function get(k){try{return localStorage.getItem(k)==='1';}catch(e){return false;}}
       function set(k,v){try{localStorage.setItem(k,v?'1':'0');}catch(e){}}
       function draw(){var r=sel.value,h='';T[r].forEach(function(t,i){
-        h+='<label style="display:flex;gap:10px;align-items:center"><input type="checkbox" data-k="'+key(r,i)+'" '+(get(key(r,i))?'checked':'')+'><span style="flex:1">'+t[0]+'</span><span class="pill" style="background:'+col[t[1]]+';color:#fff">'+t[1]+'</span></label>';});
+        h+='<label style="display:flex;gap:10px;align-items:center"><input type="checkbox" data-k="'+key(r,i)+'" '+(get(key(r,i))?'checked':'')+'><span style="flex:1">'+t[0]+'</span><span class="pill" style="background:'+col[t[1]]+';color:var(--on-accent)">'+t[1]+'</span></label>';});
         out.innerHTML=h;out.querySelectorAll('input').forEach(function(cb){cb.onchange=function(){set(cb.dataset.k,cb.checked);};});}
       sel.onchange=draw;draw();
     })();
@@ -239,6 +240,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
 </body>
 </html>

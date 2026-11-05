@@ -18,3 +18,5 @@ The welding track includes a bridge-rectifier meter trainer, an illustrative IGB
 Review scope (5 November 2026): spot-checked the existing diode, MOSFET, rectifier and safety explanations used by this track. Corrected threshold-based MOSFET selection, the fixed diode-drop explanation, an overbroad reverse-blocking claim and blanket Australian licensing statements. This is not an exhaustive audit of every chapter. W07 distinguishes checked manufacturer documents from description-verified video links; no claim is made that the full videos were watched or safety-audited.
 
 Run it locally: `cd tutorial && python3 -m http.server 8765`, then open http://localhost:8765.
+
+Light mode is the default regardless of the system theme. The Light / Dark switch remembers an explicit choice. Dark-mode design references, contrast targets and verification notes are in [Reading themes](docs/theme-readability.md).
