@@ -91,7 +91,7 @@
       <tr><td>Bridge module, ~ to + (two pairs)</td><td>0.5–0.65 V</td><td>OL</td><td>Each of the 4 internal diodes can be tested this way</td></tr>
     </table></div>
 
-    <div class="callout why"><span class="label">Why it works</span><p>Joining p-type and n-type silicon leaves a thin depletion layer with a built-in voltage across it, about 0.7 V for silicon. Forward bias pushes against that barrier and current rises steeply once you approach it. Reverse bias makes the barrier taller, so almost no current flows. A Schottky uses a metal–semiconductor junction with a lower barrier, so it turns on at a lower voltage. The LED's higher voltage comes from its wider band gap, which is also what sets its colour.</p></div>
+    <div class="callout why"><span class="label">Why it works</span><p>Joining p-type and n-type silicon creates a depletion region and an internal equilibrium potential that depends on doping and temperature. Forward bias lowers the carrier-injection barrier, so current rises continuously and steeply; there is no universal 0.7 V switch point. The measured forward drop depends on current and temperature and is not simply the built-in potential. Reverse bias usually permits only a small leakage current until breakdown. Schottky and LED materials/structures give different current–voltage behaviour; an LED’s band gap also helps set its colour.</p></div>
     <a class="crosslink" href="../theory/t11-semiconductors-diodes.html">Theory T11 · Semiconductors and the diode family</a>
     <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Theory T11+ · Deep dive: why a diode has polarity</a>
 
@@ -395,7 +395,7 @@
       <li><p><b>Build (a)</b> with a 1N4007, a 9 V battery and a 470 Ω resistor plus an LED as the "load". Measure the battery and then the voltage after the diode. Difference: about 0.7 V at this small current.</p></li>
       <li><p><b>Reverse the battery.</b> The LED stays off and the meter after the diode reads 0 V. Nothing was damaged.</p></li>
       <li><p><b>Swap in a 1N5819</b> and measure again. Expect about 0.3 V lost instead of 0.7 V.</p></li>
-      <li><p><b>Optional: build (b)</b> with a small P-channel MOSFET rated for at least 20 V drain–source and a gate threshold of about −1 to −2.5 V (for example a common SOT-23 part on a breakout board). Expect only a few millivolts lost.</p></li>
+      <li><p><b>Optional: build (b)</b> with a P-channel MOSFET whose on-resistance is specified at the gate voltage available in this 9 V circuit. Check the full datasheet: drain–source rating, gate–source limit (including fresh-battery voltage), current and package dissipation. Threshold voltage alone does not establish full drive. Use a documented breakout and measure the actual voltage loss at this small load; see <a href="../theory/t13-mosfet-physics.html">T13</a>.</p></li>
     </ol>
 
     <div class="callout tip"><span class="label">Bench tip</span><p>A "12 V" device fed through a series diode from a 12 V supply gets about 11.3 V. If the device also sits at the end of a long cable, that lost 0.7 V adds to the cable drop (P10). Many cameras stop working reliably below about 11 V. A Schottky or a MOSFET buys that margin back.</p></div>
@@ -538,6 +538,10 @@
       <tr><td>Zener very hot</td><td>Input too high or R too small; worst with no load</td><td>Check P = V<sub>Z</sub> × I<sub>R</sub>; increase R or use a regulator.</td></tr>
       <tr><td>Two scope grounds and the bridge stops working or a diode dies</td><td>The two ground clips are joined through the scope's earth, shorting part of the bridge</td><td>Use one ground clip only, or a differential probe.</td></tr>
     </table></div>
+
+    <h2>Continue into welding repair</h2>
+    <p>Practise a complete bridge test on loose parts before encountering a welder's input bridge. The repair track explains the separate fast output rectifier and the limits of low-voltage diode testing.</p>
+    <a class="crosslink" href="../welding/w02-rectifier-bench-lab.html">W02 · Eight-reading bridge test and interactive meter trainer</a>
 
     <h2>Check yourself</h2>
     <details class="quiz"><summary>Your plug-pack reads 13.5 V AC. Predict the bridge output peak and the DC meter reading with a resistor load.</summary><div class="answer"><p>Peak AC = 1.414 × 13.5 ≈ 19.1 V. Two diode drops: 19.1 − 1.4 ≈ 17.7 V peak. The DC meter shows the average of a full-wave shape, 0.637 × 17.7 ≈ 11.3 V. With a large smoothing capacitor and a light load, the output would sit near 17 V.</p></div></details>

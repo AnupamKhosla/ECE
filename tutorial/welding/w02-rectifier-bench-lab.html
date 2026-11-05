@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W02 · Rectifier testing: the first repair skill</title>
+<meta name="description" content="Build a tiny battery-powered bridge, predict eight diode-test readings and learn what those measurements can—and cannot—prove about a welding rectifier.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W02</div>
+<span class="eyebrow">Welding Repair Track · W02</span>
+<h1>Rectifier testing: the first repair skill</h1>
+<p class="lede">Build a tiny battery-powered bridge, predict eight diode-test readings and learn what those measurements can—and cannot—prove about a welding rectifier.</p>
+<div class="meta"><span><b>Study + exercises</b> 2–3 hours</span><span><b>Level</b> After P03; battery lab</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>Parts and purpose</h2>
+<p>You need four 1N4007 diodes (or a small documented bridge), a breadboard, a 9 V battery, a <b>1 kΩ, ¼ W resistor</b> and a multimeter. For this lab there is <b>no mains input and no smoothing capacitor</b>. The resistor is the load and limits battery current to about 8 mA. Disconnect the battery before using diode or resistance mode.</p>
+<p>A silicon diode’s band marks its <b>cathode</b>. In diode mode a conventional digital meter sources a small test current from its red lead to its black lead. Verify your meter’s manual. A forward reading is a voltage at that test current, not the diode’s resistance or its rated operating drop.</p>
+
+<h2>Build a bridge with four visible diodes</h2>
+<p>Label four nodes <b>A (~1), B (~2), + and −</b>. Wire these four branches; the arrow below indicates forward conventional current, not the band:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Diode</th><th scope="col">Anode connects to</th><th scope="col">Cathode (band) connects to</th></tr></thead><tbody><tr><td>D1</td><td>A</td><td>+</td></tr><tr><td>D2</td><td>B</td><td>+</td></tr><tr><td>D3</td><td>−</td><td>A</td></tr><tr><td>D4</td><td>−</td><td>B</td></tr></tbody></table></div>
+<figure><svg viewBox="0 0 660 240" role="img" aria-label="Bridge connectivity: A and B each have a diode to plus, minus has a diode to A and B">
+<defs><marker id="w02-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-accent" d="M0,0 L8,4 L0,8z"/></marker></defs>
+<g class="f-accent-soft s-accent"><rect x="25" y="72" width="86" height="92" rx="8"/><rect x="268" y="20" width="100" height="48" rx="8"/><rect x="268" y="173" width="100" height="48" rx="8"/><rect x="530" y="72" width="100" height="92" rx="8"/></g>
+<g class="t t-bold" text-anchor="middle"><text x="68" y="122">−</text><text x="318" y="49">A (~1)</text><text x="318" y="202">B (~2)</text><text x="580" y="122">+</text></g>
+<path class="s-accent" d="M111 92 L266 45 M111 145 L266 197 M368 45 L528 92 M368 197 L528 145" marker-end="url(#w02-arrow)"/>
+<g class="t t-small" text-anchor="middle"><text x="174" y="52">D3: − → A</text><text x="174" y="205">D4: − → B</text><text x="452" y="52">D1: A → +</text><text x="452" y="205">D2: B → +</text></g>
+</svg><figcaption>Connectivity map, with all four branches drawn in their forward direction. Attach the 1 kΩ load between + and −. The A/B input polarity can reverse; the load’s polarity stays the same.</figcaption></figure>
+<ol class="steps">
+<li><p><b>Check the unpowered wiring.</b> Find the cathode band on all four diodes. Verify that only the nodes listed above are joined. Put the 1 kΩ resistor between + and −.</p></li>
+<li><p><b>First input polarity.</b> Battery positive to A, negative to B. Set the meter to DC volts; red to +, black to −. Expect about 7–8 V for a fresh 9 V battery, depending on the battery and diode drops. The conducting path is A → D1 → load → D4 → B.</p></li>
+<li><p><b>Reverse the battery at A/B.</b> Expect a similar positive load voltage. Now current follows B → D2 → load → D3 → A. The output polarity did not reverse.</p></li>
+<li><p><b>Disconnect the battery and remove the load.</b> Take the eight diode readings in the next table. Only use diode mode on this disconnected circuit.</p></li>
+<li><p><b>Make one safe fault.</b> Remove D1. Predict which battery polarity stops delivering load current, then reconnect the resistor and battery to check. Remove the battery again before repeating diode tests.</p></li>
+</ol>
+<div class="callout why"><span class="label">Why it works</span><p>Each input polarity selects two forward-biased junctions. The other two are reverse-biased. The diode’s depletion barrier and injected carriers explain the polarity preference; there is no fixed universal “0.7 V turn-on switch”. Read <a href="../theory/t11-semiconductors-diodes.html">T11</a> or your <a href="../theory/pn-junction-deep-dive.html">earlier diode deep dive</a>.</p></div>
+<h2>The eight-reading bridge test</h2>
+<p>This table is for a <b>fully isolated, ordinary silicon bridge</b>, with the battery and load removed. “OL” means the meter did not reach its conduction threshold; it is not a high-voltage insulation certificate.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Red probe</th><th scope="col">Black probe</th><th scope="col">Typical meter result</th><th scope="col">Junction</th></tr></thead><tbody><tr><td>A</td><td>+</td><td>Forward, often about 0.4–0.8 V</td><td>D1</td></tr><tr><td>+</td><td>A</td><td>OL</td><td>D1 reverse</td></tr><tr><td>B</td><td>+</td><td>Forward, often about 0.4–0.8 V</td><td>D2</td></tr><tr><td>+</td><td>B</td><td>OL</td><td>D2 reverse</td></tr><tr><td>−</td><td>A</td><td>Forward, often about 0.4–0.8 V</td><td>D3</td></tr><tr><td>A</td><td>−</td><td>OL</td><td>D3 reverse</td></tr><tr><td>−</td><td>B</td><td>Forward, often about 0.4–0.8 V</td><td>D4</td></tr><tr><td>B</td><td>−</td><td>OL</td><td>D4 reverse</td></tr></tbody></table></div>
+<p>A stable near-zero result in both directions across one isolated junction strongly indicates a short. OL in both directions can mean an open junction, poor probe contact or incorrect pin identification. Two-diodes-in-series measurements, such as − to +, depend on the meter’s available test voltage and are less useful than testing the four individual junctions.</p>
+
+<h2>Interactive meter trainer</h2>
+<div class="widget" id="bridge-trainer">
+<span class="label">Simulated loose bridge · no hardware connected</span>
+<label>Bridge condition<select id="bridge-fault"><option value="healthy">Healthy</option><option value="short">D1 shorted</option><option value="open">D1 open</option></select></label>
+<label>Red probe<select id="bridge-red"><option value="A">A (~1)</option><option value="B">B (~2)</option><option value="P">+</option><option value="N">−</option></select></label>
+<label>Black probe<select id="bridge-black"><option value="P">+</option><option value="A">A (~1)</option><option value="B">B (~2)</option><option value="N">−</option></select></label>
+<div class="readings" aria-live="polite"><div><small>Illustrative diode-mode reading</small><output class="out" id="bridge-reading">0.60 V</output></div></div>
+<p id="bridge-explanation">Forward through D1 from A to +.</p>
+<p><small>Model: each conducting junction drops 0.60 V; the simulated meter can display two series drops. Real readings vary with test current, temperature and meter compliance. Test all eight single-junction directions before diagnosing.</small></p>
+</div>
+<noscript><p>The interactive trainer requires JavaScript. Use the eight-reading table above as the complete offline exercise.</p></noscript>
+
+<h2>The output rectifier is a different part</h2>
+<p>Many welders use three-lead dual diodes, sometimes with the tab electrically connected to the common terminal. They may be common-cathode, common-anode or another arrangement. <b>Read the exact part-number suffix and package drawing.</b> Do not copy the pin order of a visually similar device.</p>
+<p>For a <b>common-cathode</b> dual package, red to each anode and black to the common cathode gives two forward readings. Reverse each pair for two blocking readings. For a common-anode package, reverse that connection logic. In-circuit transformer windings and parallel rectifiers can disguise either failure.</p>
+<p>An example to practise reading is ST’s <a href="https://www.st.com/resource/en/datasheet/stth6003.pdf">STTH6003 datasheet</a>: a dual high-frequency rectifier with specified recovery behaviour. This is an identification example, not a recommendation to fit it in your machine.</p>
+<a class="crosslink" href="../theory/t22-power-rectifiers-recovery.html">T22 · Why a normal bridge cannot replace a fast output rectifier</a><a class="crosslink" href="../practice/p06-diodes-rectifiers.html">P06 · More ELV diode and rectifier experiments</a>
+<h2>What this test does not prove</h2>
+<ul><li>A normal forward/reverse test does not verify high-voltage blocking, hot leakage, full-current conduction or reverse recovery at switching speed.</li><li>A low in-circuit reading may belong to a different component. Isolate as the schematic and safe procedure require before condemning the rectifier.</li><li>A replacement needs voltage, current, surge, switching, thermal and mechanical compatibility. A bigger printed amp number is not enough.</li></ul>
+<details class="quiz"><summary>You get 0.01 V in both directions on A to + while the bridge is still on a board. Is the bridge certainly shorted?</summary><div class="answer"><p>No. A parallel path can produce the reading. On a verified de-energised machine, a technician isolates the bridge and repeats it. A stable near-zero reading both ways on that isolated junction is strong evidence of a short.</p></div></details><details class="quiz"><summary>Why can a 1,000 V general-purpose rectifier still be wrong at the welding output?</summary><div class="answer"><p>Voltage rating says nothing about how quickly it clears stored charge during commutation. A high-frequency output requires the specified diode technology, recovery, current and thermal characteristics.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I have built the battery bridge and explained both current paths."><span>I have built the battery bridge and explained both current paths.</span></li><li><input type="checkbox" aria-label="I have recorded all eight isolated-junction readings."><span>I have recorded all eight isolated-junction readings.</span></li><li><input type="checkbox" aria-label="I can test a dual-diode package using its actual datasheet."><span>I can test a dual-diode package using its actual datasheet.</span></li><li><input type="checkbox" aria-label="I can explain why a meter pass is only a screening result."><span>I can explain why a meter pass is only a screening result.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

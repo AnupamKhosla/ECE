@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T23 · Capacitor ageing, heat and failure chains</title>
+<meta name="description" content="Understand why power repairs fail again: stored energy, capacitor ESR, inrush and thermal bottlenecks link apparently separate components into one failure chain.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › T23</div>
+<span class="eyebrow">Theory Book · T23</span>
+<h1>Capacitor ageing, heat and failure chains</h1>
+<p class="lede">Understand why power repairs fail again: stored energy, capacitor ESR, inrush and thermal bottlenecks link apparently separate components into one failure chain.</p>
+<div class="meta"><span><b>Study + exercises</b> 60–90 min</span><span><b>Level</b> After T03, T05</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>A real capacitor has losses</h2>
+<p>The ideal capacitor stores electric-field energy. A real aluminium electrolytic also has leakage, inductance and <b>equivalent series resistance (ESR)</b>. ESR represents loss at the specified test frequency and temperature; it is not a single invariant resistor hidden inside the can.</p>
+<div class="formula">E = ½CV²<br>ΔV ≈ I × Δt / C<br>Pripple ≈ Iripple,rms² × ESR<small>The ripple estimate applies to a defined discharge interval under an approximately constant load. ESR also creates a ripple-voltage component as current changes. Large ripple current heats the capacitor internally even if its average DC voltage is within rating.</small></div>
+<p>For illustration, 3 A RMS ripple through 0.2 Ω ESR generates 1.8 W internally. If ESR rises to 0.8 Ω at otherwise the same conditions, heating becomes 7.2 W. Heat accelerates deterioration, which can raise loss further. Actual ripple contains multiple frequencies, so use frequency-appropriate data and the manufacturer’s correction method.</p>
+<p>A capacitor can measure near its nominal capacitance and still perform badly because of ESR, leakage or an intermittent connection. An in-circuit ESR reading may be reduced by parallel capacitors or resistive paths. Appearance alone cannot clear it.</p>
+<a class="crosslink" href="t05-capacitors-fields.html">T05 · Where capacitor energy comes from</a><a class="crosslink" href="../practice/p07-capacitors-rc.html">P07 · Low-voltage RC and smoothing experiments</a>
+<h2>A low-energy discharge experiment</h2>
+<p>Use a <b>loose 470 µF capacitor rated at least 16 V</b>, a 9 V battery and two 10 kΩ resistors. Check polarity. Charge it from the battery through one resistor, then disconnect the battery completely. Discharge it through the other resistor while watching DC voltage across the capacitor. No welder, mains or recovered high-voltage bank is used.</p>
+<div class="formula">V(t) = V0 × e^(−t/RC)<br>R = 10 kΩ, C = 470 µF → τ = RC = 4.7 s<br>E at 9 V ≈ 0.019 J<small>After one time constant voltage is about 37% of its initial value; after five, about 0.67%. Record actual voltages at 0, 5, 10 and 20 seconds. Component tolerance and meter loading affect the result.</small></div>
+<p>This demonstrates the principle only. A welder’s bank has much higher energy and may contain multiple connected capacitors and failed bleeders. High-voltage discharge equipment requires voltage, pulse-energy, insulation and mechanical design; this small resistor exercise is not a recipe for making a welder discharge tool.</p>
+
+<h2>Why precharge exists</h2>
+<p>An uncharged DC-link capacitor initially has nearly zero voltage. Connecting it to rectified mains can draw a large charging pulse limited by the source, wiring, bridge and any intentional inrush circuit. A resistor or NTC initially limits this current; some designs later bypass the limiter with a relay. Placement and sequencing vary.</p>
+<p>A bypass stuck closed can remove intended inrush limitation. A bypass that never closes can leave the limiter dissipating power under load. An NTC also changes resistance with temperature, so rapid restart can behave differently from a cold start. Diagnose the actual circuit rather than assuming every machine uses the same NTC-and-relay arrangement.</p>
+<p>Increasing DC-link capacitance increases stored energy and can increase charging stress. “Fit a bigger capacitor” can therefore move the failure into the bridge, relay or fuse instead of fixing the design.</p>
+
+<h2>Heat flows through a chain</h2>
+<div class="formula">Tj ≈ Ta + P × (RθJC + RθCS + RθSA)<small>For one device under a simplified steady-state condition: ambient 35°C, loss 30 W and total thermal resistance 2.5°C/W gives an estimated junction temperature of 110°C. RθJC is junction-to-case, RθCS case-to-sink and RθSA sink-to-ambient.</small></div>
+<p>This approximation needs the actual mounting, airflow and power distribution. Several devices sharing a heatsink add heat to the same sink; their thermal paths cannot be calculated as though each had its own cool independent heatsink. Short pulses require transient thermal impedance, not only steady-state thermal resistance.</p>
+<p>A heatsink that feels merely warm does not guarantee a cool junction. A damaged pad or loose mount can create a temperature drop between the silicon and heatsink, leaving the junction much hotter. Conversely, a hot heatsink can indicate that heat is successfully reaching it, while airflow still needs attention.</p>
+<p>Thermal grease improves contact but is not automatically electrical insulation. Package tabs may connect to drain, collector or cathode. Pad type, thickness, sleeves, pressure and mounting torque are part of the electrical as well as thermal design.</p>
+
+<h2>Ageing and temperature</h2>
+<p>Aluminium electrolytic lifetime depends on the series, operating temperature, ripple and other stresses. A common approximation of longer life at lower temperature is useful for intuition, but a universal “every 10°C doubles life” calculation is not an acceptance test. Follow the manufacturer’s model and its range of validity.</p>
+<p><a href="https://www.nichicon.co.jp/english/products/pdf/aluminum-e.pdf">Nichicon’s application guidelines</a> explain ripple-related heating and operating limitations. When choosing a replacement, compare the actual series data for impedance, ripple current, life, temperature, size and voltage; a 105°C marking by itself does not establish compatibility.</p>
+
+<h2>Failure chains to investigate</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Initiating condition</th><th scope="col">Possible intermediate stress</th><th scope="col">Visible result</th></tr></thead><tbody><tr><td>Blocked airflow or failed fan</td><td>Higher semiconductor/capacitor temperature, increasing loss and ageing.</td><td>Shorted switch or dried capacitor.</td></tr><tr><td>High-ESR auxiliary capacitor</td><td>Rail ripple, startup cycling or unstable driver supply.</td><td>No output, weak drive or a stressed power switch.</td></tr><tr><td>Open snubber or changed wiring</td><td>Higher switching voltage overshoot.</td><td>Repeated switch or rectifier breakdown.</td></tr><tr><td>Bypassed inrush limiter</td><td>Excessive charging surge.</td><td>Input bridge, fuse or relay damage.</td></tr><tr><td>Loose output connection</td><td>Local I²R heating and output voltage loss.</td><td>Burnt terminal and weak arc, possibly without an internal power-stage fault.</td></tr></tbody></table></div>
+<p>These are hypotheses, not automatic diagnoses. For each, write the observation that would support it and the test that would distinguish another cause. For example, a damaged driver rail needs rail evidence; a capacitor merely being near a failed switch does not prove causation.</p>
+<a class="crosslink" href="../welding/w03-unpowered-diagnosis.html">Back to repair · W03: cold-test limits and failure evidence</a><a class="crosslink" href="../welding/w05-fault-cases.html">W05 · Loaded connector loss and overheating cases</a><details class="quiz"><summary>Why does doubling a small contact resistance matter so much at high current?</summary><div class="answer"><p>At a fixed current, I²R heating doubles with resistance. At 100 A even 10 mΩ produces 100 W. Heat can damage the connection further, increasing resistance and accelerating the failure.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can distinguish capacitance, ESR and leakage."><span>I can distinguish capacitance, ESR and leakage.</span></li><li><input type="checkbox" aria-label="I have measured a safe low-energy RC discharge."><span>I have measured a safe low-energy RC discharge.</span></li><li><input type="checkbox" aria-label="I can explain why bigger capacitance changes inrush stress."><span>I can explain why bigger capacitance changes inrush stress.</span></li><li><input type="checkbox" aria-label="I can trace a plausible failure chain without treating it as proven."><span>I can trace a plausible failure chain without treating it as proven.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

@@ -18,7 +18,7 @@
 
     <nav class="otp" data-auto></nav>
 
-    <div class="callout warn"><span class="label">Read this first</span><p>This is a <b>theory</b> chapter. It contains <b>no instructions</b> for working on mains, and none should be inferred. In Australia, electrical work on low-voltage (230/400 V) installations and equipment is legally restricted to licensed electricians. Never open a switchboard, remove a cover, or test mains circuits. The purpose of this chapter is to make you a safer, more useful technician beside the electricians you will work with.</p></div>
+    <div class="callout warn"><span class="label">Read this first</span><p>This is a <b>theory</b> chapter, not a procedure for working on mains. Australian installation work requires the appropriate electrical licence; equipment repair and restricted licences depend on the state and task. Do not use this chapter as authorisation to open a switchboard or test exposed mains circuits. Its purpose is to help you understand the systems and work safely beside qualified electrical workers.</p></div>
 
     <h2>A short history: from 240 V to 230 V, and the safety switch</h2>
     <p>Tesla's polyphase system (<a href="t07-ac-fundamentals.html">T07</a>) became the three-phase supply that almost every grid uses today. Australian cities began with a mix of DC and AC supplies at different voltages, then standardised during the twentieth century on 240 V, 50 Hz single-phase and 415 V three-phase. To align with international practice, Australian Standard AS 60038 changed the nominal voltage to <b>230 V</b> (400 V three-phase) around the year 2000. The wires did not change; the tolerance band was set so that existing 240 V supplies still complied, which is why many homes still measure about 240 V.</p>
@@ -331,10 +331,11 @@
     <p>Note the confusing name: in the electrical industry, "low voltage" means <b>mains</b>, up to 1000 V AC. In casual talk and in some security and AV marketing, "low voltage" is used loosely for 12–24 V cabling. On an Australian site, "LV" means 230/400 V, and "ELV" means your work.</p>
     <h3>Who may do what</h3>
     <ul>
-      <li><b>LV electrical work</b> (installing, altering, repairing or testing 230/400 V wiring and equipment) must be done by a <b>licensed electrician</b>, and contracting for it needs an electrical contractor licence. This applies in every state and territory, with only narrow exemptions.</li>
+      <li><b>Installation work and equipment repair are different scopes.</b> Fixed electrical installation work requires the appropriate licence. Equipment repair can have different requirements by state, including restricted licences with defined scope; a full electrician licence is not the only possible category. Voltage classification alone does not settle the licensing question.</li>
       <li><b>ELV work</b> generally does not need an electrical licence, but other rules apply: telecommunications and data cabling needs <b>ACMA cabling registration</b> (<a href="../career/c07-telecom-cabling-acma.html">C07</a>), and installing security equipment needs a <b>security licence</b> in most states (<a href="../career/c11-licences-pathways.html">C11</a>).</li>
-      <li><b>Equipment that straddles both</b>, such as a power supply with a 230 V input and a 12 V output, or an access control panel with a mains-fed supply inside, needs an electrician for the mains connection. You connect the ELV side after it is installed and covered.</li>
+      <li><b>Equipment that straddles both</b>, such as a 230 V input / 12 V output supply, needs an appropriately authorised person for any installation or repair task on its mains side. A factory plug connection and fixed wiring are different cases. For these bench labs, use an intact approved supply and work only on its isolated ELV output.</li>
     </ul>
+    <p>For examples of the distinction, see <a href="https://www.worksafe.qld.gov.au/licensing-and-registrations/electrical-licences/classes-of-licences">Queensland’s licence classes</a>, which include equipment and restricted scopes, and <a href="https://www.energysafe.vic.gov.au/licensing/electrical-licences/licence-types/restricted-electrical-workers-licence-rel">Energy Safe Victoria’s restricted-licence guidance</a>, which distinguishes fixed equipment from easily transportable plug-in equipment. These are state-specific examples, not an Australia-wide permission to repair. Checked 5 November 2026.</p>
     <div class="callout aus"><span class="label">In Australia: confirm with your regulator</span><p>Electrical licensing is run by each state and territory, and rules and exemptions differ and change. Examples of regulators include Energy Safe Victoria and Queensland's Electrical Safety Office; other states have their own fair trading, building or energy safety regulators. Before you rely on any rule in this chapter for real work, confirm the current requirement with the regulator in the state where you will work, and ask your employer what licences and site inductions they require.</p></div>
 
     <h3>What an ELV technician must still know when working near switchboards</h3>
@@ -376,7 +377,7 @@
       <li><input type="checkbox"><span>I can explain how an RCD works, why 30 mA, and what it cannot protect against.</span></li>
       <li><input type="checkbox"><span>I can compare fuses, circuit breakers and RCDs, and say what each protects.</span></li>
       <li><input type="checkbox"><span>I can explain body current thresholds (indicatively) and why ELV limits exist.</span></li>
-      <li><input type="checkbox"><span>I know the ELV and LV definitions, that LV work is for licensed electricians, and that I must confirm rules with my state regulator.</span></li>
+      <li><input type="checkbox"><span>I know the ELV and LV definitions, and I can distinguish installation work from equipment repair when checking the required state licence and scope.</span></li>
     </ul>
   </main>
 </div>

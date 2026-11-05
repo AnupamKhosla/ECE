@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W05 · Worked faults: dead, tripping, weak and overheating</title>
+<meta name="description" content="Practise diagnosis using five shop-style cases. Each separates the complaint, evidence, competing explanations and the tests needed to close the repair.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W05</div>
+<span class="eyebrow">Welding Repair Track · W05</span>
+<h1>Worked faults: dead, tripping, weak and overheating</h1>
+<p class="lede">Practise diagnosis using five shop-style cases. Each separates the complaint, evidence, competing explanations and the tests needed to close the repair.</p>
+<div class="meta"><span><b>Study + exercises</b> 2–3 hours</span><span><b>Level</b> After W03, W04</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+<div class="callout tip"><span class="label">How to use the cases</span><p>All readings and fault stories below are invented teaching examples, not measurements from your machines. Try to write the next discriminating test before opening each answer. Energised measurements described here are supplied by a trained mentor using the matching service procedure.</p></div>
+<h2>Case 1 · Trips immediately at switch-on</h2>
+<p><b>Complaint:</b> the input MCB trips before any arc is struck. <b>Cold evidence:</b> one input-bridge junction reads 0.005 V both ways after complete isolation from the PCB. The bus no longer shows a persistent hard short after BR1 is removed. The fuse rating matches the manual.</p>
+<p><b>Competing explanations:</b> an input bridge failure, a power-stage/DC-link short, damaged surge protection, an inrush fault or a fault in the supply arrangement. Confirming one failed component does not exclude the others.</p>
+<details class="quiz"><summary>What is established, and what comes before power-up?</summary><div class="answer"><p>The isolated bridge contains a shorted junction. Investigate inrush parts, surge protection, capacitor bank, power switches and the bridge’s cooling. A lifted short does not validate the whole downstream stage. Fit a compatible specified bridge only as part of a complete repair, then use the model’s controlled recommissioning and safety tests.</p></div></details>
+<p><b>Close the record:</b> BR1’s isolated readings, original part number, replacement specification, checks of the suspected cause and measured retest results. <b>Physics:</b> <a href="../theory/t22-power-rectifiers-recovery.html">T22</a> and <a href="../theory/t23-capacitor-thermal-failure.html">T23</a>.</p>
+
+<h2>Case 2 · Completely dead, but the main fuse is intact</h2>
+<p><b>Complaint:</b> no display or fan. <b>Cold evidence:</b> the input bridge and main switches have no obvious static shorts. A small auxiliary-supply startup resistor is open when isolated, and its value is confirmed from the schematic.</p>
+<p><b>Competing explanations:</b> missing input power, failed auxiliary supply, shorted secondary rail, disconnected control connector or a supply in protection. “No fan” alone does not locate the fault.</p>
+<details class="quiz"><summary>Can you just replace the startup resistor?</summary><div class="answer"><p>The resistor is a confirmed failed part, but inspect the startup/control circuit and auxiliary switch for the reason it opened. Follow the design’s voltage, pulse, power and flame/fusible specifications; never bypass it. A shorted auxiliary output can also prevent startup. The mentor verifies startup and rail stability under the exact service procedure.</p></div></details>
+<p><b>Close the record:</b> which rail was absent, its intended reference and tolerance, isolated failed parts and their causes, and control/fan behaviour after repair. <b>Physics:</b> <a href="../theory/t21-switching-converters-control.html">T21 · auxiliary supply and UVLO</a>.</p>
+
+<h2>Case 3 · Fan and display work, but no welding output</h2>
+<p><b>Complaint:</b> display changes with the current knob, but the machine will not strike an arc. <b>Cold evidence:</b> a visibly damaged gate resistor in one drive path measures open out of circuit. Output diode screening finds no hard short. The mentor’s properly referenced recording shows a command pulse before that resistor, with the intended gate pulse absent at the device.</p>
+<p><b>Competing explanations:</b> output enable/mode, anti-stick or thermal/overcurrent inhibit, failed auxiliary driver rail, missing drive, failed output path or bad leads. Some machines intentionally reduce open-circuit voltage through VRD; confirm model behaviour before declaring a low reading a fault.</p>
+<details class="quiz"><summary>Where does the evidence point, and what is still unresolved?</summary><div class="answer"><p>The open gate path explains missing drive at that device, but a previous gate failure may have damaged the resistor and driver together. Check the device, driver and matching leg, including off state and protection. Confirm the exact resistor specification and investigate the cause before restoring power. A normal display is not evidence that the power stage is enabled.</p></div></details>
+<p><b>Close the record:</b> the defective path, device/driver checks, approved waveform comparison and output tests in the correct mode. <b>Physics:</b> <a href="../theory/t20-igbt-physics.html">T20</a>, <a href="../theory/t21-switching-converters-control.html">T21</a>.</p>
+
+<h2>Case 4 · It welds, but becomes weak under load</h2>
+<p><b>Complaint:</b> the arc becomes erratic and an output connector gets hot. <b>Evidence from the mentor’s controlled load test:</b> the path from the machine’s output stud to the workpiece loses 1.2 V at 100 A; the largest drop is across a damaged connector. The machine-side current must be measured with equipment rated for the welding output.</p>
+<div class="formula">R = V / I = 1.2 / 100 = 0.012 Ω = 12 mΩ<br>P = VI = 1.2 × 100 = 120 W<small>A resistance too small to judge well with a basic two-wire meter can dissipate destructive power at welding current. This is why a loaded voltage-drop test can reveal a fault that continuity misses.</small></div>
+<p><b>Competing explanations:</b> poor welding leads or clamp, undersized extension supply, thermal/current limiting, defective rectification or incorrect feedback. Several can coexist.</p>
+<details class="quiz"><summary>Does this prove an internal rectifier fault?</summary><div class="answer"><p>No. The measured external path accounts for significant loss and heating. Repair the damaged connector/lead to the specified standard, inspect its mating socket, then repeat a controlled load test. If output is still weak, continue with measured supply, regulation and thermal evidence instead of assuming the lead was the only fault.</p></div></details>
+<p><b>Close the record:</b> before/after voltage drop at the same current, connector condition and load performance. <b>Physics:</b> <a href="../theory/t03-power-energy-heat.html">T03 · I²R heating</a>.</p>
+
+<h2>Case 5 · Works cold, then trips thermally</h2>
+<p><b>Complaint:</b> output stops after a few minutes and returns after cooling. <b>Evidence:</b> the customer’s use exceeds the nameplate duty-cycle table. Fins are also clogged, so this is not automatically “normal protection”. A technician confirms whether the indicated trip is actually thermal and checks fan and sensor behaviour.</p>
+<p><b>Competing explanations:</b> exceeded duty cycle, poor airflow, damaged thermal interface, excessive semiconductor loss, wrong thermal sensor or a control fault. Fan-on-demand may be intentional; compare with the model’s operating description.</p>
+<details class="quiz"><summary>What should be checked before changing the thermostat?</summary><div class="answer"><p>Compare actual use with the rated current, ambient temperature and duty cycle. Inspect airflow, fan operation and thermal mounting; check sensor type and readings against the manual. Do not bridge the sensor. A sound thermal trip protects the machine; defeating it can turn a recoverable limit into a power-stage failure.</p></div></details>
+<p><b>Duty-cycle example:</b> if a manual specifies a ten-minute basis and 60% at a stated current/ambient, that means a rated six minutes welding and four minutes cooling in that cycle under its test conditions. It does not authorise uninterrupted use whenever the case feels cool. Use the actual machine’s table.</p>
+<p><b>Close the record:</b> cooling repairs, correct sensor operation, measured behaviour within the rated cycle and customer operating advice. <b>Physics:</b> <a href="../theory/t23-capacitor-thermal-failure.html">T23 · thermal resistance and ageing</a>.</p>
+
+<h2>A diagnostic table for your notebook</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Observation</th><th scope="col">Useful next question</th><th scope="col">What it does not prove</th></tr></thead><tbody><tr><td>MCB trips before arc</td><td>Is there an input/bus short, surge or inrush problem? Which protection operated?</td><td>That the output rectifier must be bad.</td></tr><tr><td>Fan runs, output absent</td><td>Is the correct mode enabled? Which inhibit, rail, drive or output path is missing?</td><td>That all control rails and drivers are healthy.</td></tr><tr><td>Output present unloaded, collapses loaded</td><td>Where are voltage/current lost under a controlled load?</td><td>That open-circuit voltage verified output capability.</td></tr><tr><td>New switches fail again</td><td>Were drive, protection, load and mounting causes addressed?</td><td>That the replacement batch alone caused the repeat failure.</td></tr><tr><td>Only fails when hot</td><td>Does leakage, ESR, joint resistance or sensor response change with temperature?</td><td>That a cold meter pass cleared every component.</td></tr></tbody></table></div>
+<h2>Your next real case</h2>
+<p>Choose one completed outsourced job and, with permission, reconstruct the evidence with the technician. Do not label your reconstruction as a measured diagnosis. Write the actual complaint, which observations are known, which are inferred and what evidence is missing. Use <a href="../reference/r04-welding-job-sheet.html">the job sheet</a> to turn that discussion into a repair-learning record.</p>
+<h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I have written a diagnosis for each case before reading the answer."><span>I have written a diagnosis for each case before reading the answer.</span></li><li><input type="checkbox" aria-label="I can name a measurement that distinguishes two plausible causes."><span>I can name a measurement that distinguishes two plausible causes.</span></li><li><input type="checkbox" aria-label="I can calculate connector heating from a loaded voltage drop."><span>I can calculate connector heating from a loaded voltage drop.</span></li><li><input type="checkbox" aria-label="I know why open-circuit output and a short welding trial do not close a repair."><span>I know why open-circuit output and a short welding trial do not close a repair.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W00 · Welding-set repair: your learning and shop plan</title>
+<meta name="description" content="Learn to diagnose the welding machines already coming into your family’s power-tools shop. Every repair skill has a nearby explanation of the component’s physics, ready when you need it.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W00</div>
+<span class="eyebrow">Welding Repair Track · W00</span>
+<h1>Welding-set repair: your learning and shop plan</h1>
+<p class="lede">Learn to diagnose the welding machines already coming into your family’s power-tools shop. Every repair skill has a nearby explanation of the component’s physics, ready when you need it.</p>
+<div class="meta"><span><b>Study + exercises</b> 45–60 min</span><span><b>Level</b> Start here</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>What this trade is called</h2>
+<p>“Welding set” is normal workshop language in India and Pakistan. In service literature, look for <b>welding power source repair</b>, <b>inverter welder troubleshooting</b> or <b>component-level power electronics repair</b>. For rod welding, the process is <b>MMA</b> (manual metal arc), also called <b>SMAW</b> or stick welding. The machine supplies controlled electrical power to the arc.</p>
+<p>Your first target is a common <b>single-phase DC MMA inverter</b>. Transformer AC welders, transformer-rectifier machines, MIG wire feeders, AC/DC TIG and engine-driven sets have different circuits. Record what your customers actually bring before buying specialised equipment.</p>
+<div class="callout job"><span class="label">Your contingency pathway</span><p>The BMS track teaches building controls for the Australia job route. This track develops another useful skill around an existing business and customer flow. Keep a record of outsourced diagnoses, actual parts fitted, time spent and repeat failures. That becomes your local evidence about which machines are worth learning first.</p></div>
+
+<h2>A repair is a chain of evidence</h2>
+<p>Use this sentence on every job: <b>“The complaint is __; the measurements show __; that implicates __; the likely cause is __; the repair passed __.”</b> A burnt bridge rectifier proves that the bridge is damaged. It does not prove that the bridge was the only problem. A downstream short, failed inrush circuit or poor cooling may have overloaded it.</p>
+<p>Videos are useful for recognising components and seeing how a technician works. Pair them with the exact device datasheet and the matching machine schematic. Predict each reading before watching the answer. Record what would make your diagnosis wrong.</p>
+
+<h2>The practical study route</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Stage</th><th scope="col">Do this</th><th scope="col">Evidence that you are ready to move on</th></tr></thead><tbody><tr><td>1 · Meter and small circuits</td><td><a href="../practice/p03-multimeter-mastery.html">P03</a>, <a href="../practice/p05-soldering-wiring.html">P05</a>, then <a href="w02-rectifier-bench-lab.html">W02</a>. Use batteries and loose parts.</td><td>Eight bridge-junction readings, correct probe polarity and a clean solder joint. No customer machine needed.</td></tr><tr><td>2 · Understand the machine</td><td><a href="w01-machine-map-safety.html">W01</a>. Read three customer nameplates and draw the power path from a manual or photographs.</td><td>You can distinguish an input bridge from output fast diodes and identify what is connected to mains.</td></tr><tr><td>3 · Learn cold diagnosis</td><td><a href="w03-unpowered-diagnosis.html">W03</a>. Work with a technician on an isolated and verified de-energised donor machine.</td><td>A labelled board map and repeatable measurements that separate a part fault from parallel circuit paths.</td></tr><tr><td>4 · Understand failed switches</td><td><a href="w04-switches-drivers.html">W04</a> with <a href="../theory/t20-igbt-physics.html">T20</a> and <a href="../theory/t21-switching-converters-control.html">T21</a>.</td><td>A loose-device 9 V test and a driver-neighbourhood checklist. You can explain why a new IGBT might fail again.</td></tr><tr><td>5 · Reason through faults</td><td><a href="w05-fault-cases.html">W05</a> and the annotated resources in <a href="w07-tutorials-manuals.html">W07</a>.</td><td>Written diagnoses of five cases, including alternative explanations and the next discriminating test.</td></tr><tr><td>6 · Complete supervised repairs</td><td><a href="w06-repair-return-to-service.html">W06</a> and <a href="../reference/r04-welding-job-sheet.html">R04</a>.</td><td>An end-to-end repair record with the mentor’s power-up and safety checks, measured load performance and handover.</td></tr></tbody></table></div>
+<p>Use these as competence stages, not a promise to become ready in six weeks. You can repeat the battery labs immediately. Access inside a real welder begins only after the preparation in W01 and a competent technician’s isolation and stored-energy checks.</p>
+
+<h2>When a component makes you curious</h2>
+<p>Open the physics lesson at the point the repair raises the question. Each lesson also links back to the repair that uses it.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">You see or hear</th><th scope="col">The question to understand</th><th scope="col">Physics lesson</th></tr></thead><tbody><tr><td>Input bridge rectifier</td><td>How can either AC polarity produce the same DC polarity?</td><td><a href="../theory/t11-semiconductors-diodes.html">T11 · junctions</a>, <a href="../theory/pn-junction-deep-dive.html">T11+ · deep dive</a>, <a href="../theory/t22-power-rectifiers-recovery.html">T22 · real power diodes</a></td></tr><tr><td>Large electrolytic capacitor</td><td>Why is charge stored after unplugging? Why can a normal-looking capacitor be bad?</td><td><a href="../theory/t05-capacitors-fields.html">T05 · fields and energy</a>, <a href="../theory/t23-capacitor-thermal-failure.html">T23 · ESR and ageing</a></td></tr><tr><td>MOSFET</td><td>How does an insulated gate create a channel? Why is threshold not full drive?</td><td><a href="../theory/t13-mosfet-physics.html">T13 · MOSFET physics</a></td></tr><tr><td>IGBT</td><td>Why add bipolar conduction, and why is turn-off not instantaneous?</td><td><a href="../theory/t12-bjt-physics.html">T12 · bipolar carriers</a>, <a href="../theory/t20-igbt-physics.html">T20 · IGBT physics</a></td></tr><tr><td>Ferrite transformer / output choke</td><td>How do changing flux and stored magnetic energy move power and smooth current?</td><td><a href="../theory/t06-magnetism-inductors.html">T06 · inductors</a>, <a href="../theory/t08-transformers.html">T08 · transformers</a>, <a href="../theory/t21-switching-converters-control.html">T21 · converter operation</a></td></tr><tr><td>Gate driver / PWM / current sensor</td><td>How does a knob become controlled arc current, and what turns a fault off?</td><td><a href="../theory/t14-op-amps.html">T14 · feedback basics</a>, <a href="../theory/t21-switching-converters-control.html">T21 · drive and regulation</a></td></tr><tr><td>Output rectifier / snubber</td><td>Why can a diode pass a meter test but fail during switching?</td><td><a href="../theory/t22-power-rectifiers-recovery.html">T22 · reverse recovery and parasitics</a></td></tr><tr><td>Heatsink / fan / thermal trip</td><td>Where does heat go? Why can a small resistance destroy a high-current joint?</td><td><a href="../theory/t03-power-energy-heat.html">T03 · power</a>, <a href="../theory/t23-capacitor-thermal-failure.html">T23 · thermal failure chains</a></td></tr></tbody></table></div>
+<h2>Your first week at the shop</h2>
+<ol class="steps">
+<li><p><b>Start an intake notebook.</b> Record ten incoming machines: brand, model, board revision if a technician has identified it, input supply, stated symptom, repair outcome and outsourced cost. Do not open them to collect this information.</p></li>
+<li><p><b>Choose one representative donor.</b> Ask your existing repair technician to identify a common machine family and a matching schematic. A donor that you own is a better learning object than an urgent customer job.</p></li>
+<li><p><b>Learn a complete rectifier test.</b> Do W02 using loose parts. Explain each forward and reverse reading from the diode orientation.</p></li>
+<li><p><b>Arrange mentored observation.</b> Follow one repair from intake to return-to-service. Fill R04 with actual observations, leaving unperformed checks blank. Keep customer work outsourced until your mentor has verified the relevant skills.</p></li>
+</ol>
+<details class="quiz"><summary>A technician says “rectifier problem”. What do you ask next?</summary><div class="answer"><p>Which rectifier: the mains input bridge, the auxiliary-supply rectifier, or the high-frequency welding-output rectifier? Ask for the part marking, its place on the schematic, the isolated test readings and what caused the failure.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can name the first machine family I want to learn."><span>I can name the first machine family I want to learn.</span></li><li><input type="checkbox" aria-label="I can find a physics lesson for each power-stage component."><span>I can find a physics lesson for each power-stage component.</span></li><li><input type="checkbox" aria-label="I have a notebook and a concrete first battery-powered lab."><span>I have a notebook and a concrete first battery-powered lab.</span></li><li><input type="checkbox" aria-label="I can distinguish a failed part from a confirmed cause of failure."><span>I can distinguish a failed part from a confirmed cause of failure.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

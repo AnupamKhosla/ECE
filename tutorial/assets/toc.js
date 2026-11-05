@@ -74,6 +74,32 @@ window.TOC = {
           { n: "T17", file: "theory/t17-networking-theory.html", title: "How networks really work: Ethernet, IP, TCP/UDP", d: "Layers, frames, MAC and IP addresses, ARP, switching vs routing, ports, multicast and why cameras flood networks." },
           { n: "T18", file: "theory/t18-sensor-physics.html", title: "Sensor physics: how sensors turn the world into signals", d: "Thermistors, RTDs, thermocouples, PIR, Hall effect, pressure, humidity, CO₂ and photoelectric smoke." },
           { n: "T19", file: "theory/t19-motors-vsds.html", title: "Motors and variable speed drives", d: "DC, stepper and induction motors, slip, VSDs and the fan affinity laws behind every AHU." }
+        ]},
+        { title: "Part 6 · Power electronics for repair", blurb: "The device physics behind welding power supplies, with links back to bench diagnosis.", chapters: [
+          { n: "T20", file: "theory/t20-igbt-physics.html", title: "IGBTs: a MOS gate controlling bipolar conduction", d: "Drift regions, conductivity modulation, tail current, losses and reading a replacement datasheet." },
+          { n: "T21", file: "theory/t21-switching-converters-control.html", title: "Switching converters, gate drivers and feedback", d: "PWM, transformer reset, dead time, gate charge, current sensing and protection." },
+          { n: "T22", file: "theory/t22-power-rectifiers-recovery.html", title: "Power rectifiers: reverse recovery and real ratings", d: "Why an input bridge and an output rectifier are different; stored charge, Schottky diodes and snubbers." },
+          { n: "T23", file: "theory/t23-capacitor-thermal-failure.html", title: "Capacitor ageing, heat and failure chains", d: "ESR, ripple heating, inrush, thermal resistance and why the visibly broken component may be a victim." }
+        ]}
+      ]
+    },
+    {
+      id: "welding", title: "Welding Repair Track", short: "Welding",
+      blurb: "A second practical pathway for the family power-tools shop in India: welding power-source diagnosis, linked to the physics behind every part.",
+      parts: [
+        { title: "Part A · Start and understand", blurb: "Know the machine and build the small experiments before working on customer equipment.", chapters: [
+          { n: "W00", file: "welding/w00-start-here.html", title: "Welding-set repair: your learning and shop plan", d: "Start here: scope, a six-stage study route, a device-to-physics map and practical milestones." },
+          { n: "W01", file: "welding/w01-machine-map-safety.html", title: "Identify the machine, map the stages, prepare the bench", d: "Transformer vs inverter, two rectifiers, isolation boundaries, stored energy and supervised workshop access." },
+          { n: "W02", file: "welding/w02-rectifier-bench-lab.html", title: "Rectifier testing: the first repair skill", d: "A battery bridge lab, an interactive meter trainer, eight junction readings and dual-diode packages." }
+        ]},
+        { title: "Part B · Diagnose and repair", blurb: "A repeatable evidence trail from the customer's complaint to the failure's cause.", chapters: [
+          { n: "W03", file: "welding/w03-unpowered-diagnosis.html", title: "Unpowered diagnosis: inspect, isolate, measure", d: "A cold-test workflow, diode and switch screening, capacitor limitations and a complete worked bridge fault." },
+          { n: "W04", file: "welding/w04-switches-drivers.html", title: "MOSFETs, IGBTs and the gate-driver neighbourhood", d: "Test loose switches on a limited 9 V supply, read gate-drive evidence and stop repeat failures." },
+          { n: "W05", file: "welding/w05-fault-cases.html", title: "Worked faults: dead, tripping, weak and overheating", d: "Five training cases with measurements, alternative explanations and repair verification." }
+        ]},
+        { title: "Part C · Complete the job", blurb: "Turn a repair into a documented service and build a reliable reference library.", chapters: [
+          { n: "W06", file: "welding/w06-repair-return-to-service.html", title: "Parts, first power-up and return to service", d: "Replacement criteria, insulation and cooling, model-specific recommissioning and a shop handover record." },
+          { n: "W07", file: "welding/w07-tutorials-manuals.html", title: "Video tutorials, service manuals and a study workbook", d: "Practical English and Hindi/Urdu videos, manufacturer references and exercises for learning scientifically." }
         ]}
       ]
     },
@@ -116,7 +142,8 @@ window.TOC = {
         { title: "Look-up pages", blurb: "Quick answers while you build.", chapters: [
           { n: "R01", file: "reference/r01-glossary.html", title: "Glossary: every term in plain English", d: "From ampere to Zener, BACnet to VLAN, with a link to where each one is taught." },
           { n: "R02", file: "reference/r02-formula-sheet.html", title: "Formula sheet with worked numbers", d: "Every formula in the course, what each symbol means, and a typical-value example." },
-          { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, and decode resistor, capacitor and SMD markings." }
+          { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, and decode resistor, capacitor and SMD markings." },
+          { n: "R04", file: "reference/r04-welding-job-sheet.html", title: "Welding repair job sheet", d: "A printable, fillable record for intake, cold tests, replacement parts and supervised return-to-service checks." }
         ]}
       ]
     }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T21 · Switching converters, gate drivers and feedback</title>
+<meta name="description" content="Understand how a welder converts rectified mains into controlled arc current: timed switching, changing magnetic flux, charge-driven gates and feedback that can inhibit the output.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › T21</div>
+<span class="eyebrow">Theory Book · T21</span>
+<h1>Switching converters, gate drivers and feedback</h1>
+<p class="lede">Understand how a welder converts rectified mains into controlled arc current: timed switching, changing magnetic flux, charge-driven gates and feedback that can inhibit the output.</p>
+<div class="meta"><span><b>Study + exercises</b> 90–120 min</span><span><b>Level</b> After T05, T06, T08, T13</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>Why switch instead of burning off the voltage?</h2>
+<p>An ideal switch has nearly zero voltage across it when on and nearly zero current through it when off, so its instantaneous loss vi is small in both states. A real switch has conduction drop, leakage and finite transitions; much of the engineering controls those losses while transferring power through inductors and transformers.</p>
+<p>A welding inverter uses high-frequency switching so that its transformer can transfer power at a smaller magnetic size than a comparable 50 Hz design. The transformer does not convert steady DC continuously. Switching must create changing flux, and the design must reset the core flux to avoid saturation.</p>
+<div class="formula">v = N × dΦ/dt<br>ΔB = (1 / NAe) × ∫v(t) dt<small>N is winding turns and Ae is effective core area. Applied volt-seconds change flux density. Too much volt-second imbalance can drive the core toward saturation, causing a sharp current rise. Higher frequency alone does not make arbitrary transformer drive safe.</small></div>
+<a class="crosslink" href="t06-magnetism-inductors.html">T06 · Stored magnetic energy and induced voltage</a><a class="crosslink" href="t08-transformers.html">T08 · Transformer turns ratio and flux</a>
+<h2>Topology comes before expected waveform</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Topology example</th><th scope="col">Power-transfer idea</th><th scope="col">What to avoid assuming</th></tr></thead><tbody><tr><td>Two-switch forward</td><td>Two primary switches turn on together; a reset path restores transformer flux during the off interval.</td><td>That any design with two IGBTs is a half bridge.</td></tr><tr><td>Half bridge</td><td>Two devices alternate a switching midpoint, with an appropriate DC-link/capacitor arrangement.</td><td>That both devices should be driven simultaneously, or that capacitor balance is irrelevant.</td></tr><tr><td>Full bridge</td><td>Four devices form legs; selected diagonal pairs apply opposite primary polarities. Control may use pulse width or phase shift.</td><td>That every pair of gate traces has the same phase relationship or duty definition.</td></tr><tr><td>Auxiliary flyback</td><td>Stores magnetic energy during one interval and delivers it during another to power controls/fans.</td><td>That its output reference is necessarily isolated from mains, or that its pulse pattern matches the main inverter.</td></tr></tbody></table></div>
+<p>This table is for recognition, not a complete design guide. Resonant, PFC and other designs add further operating modes. Establish the actual schematic before interpreting phase, frequency, duty cycle or a missing pulse.</p>
+
+<h2>Frequency is different from duty cycle</h2>
+<p>Frequency counts cycles per second. Duty cycle is the on fraction within one period for a specified signal. At 20 kHz, a period is 50 µs. A 40% pulse lasts 20 µs and leaves 30 µs off in this simple single-signal example. Real bridge controls impose their own timing limits, and oscillator frequency need not equal an individual output’s switching frequency.</p>
+<div class="widget" id="pwm-model">
+<span class="label">Timing model · one abstract control signal</span>
+<label>Frequency, kHz<input id="pwm-frequency" type="range" min="10" max="100" value="20"><output id="pwm-frequency-out">20 kHz</output></label>
+<label>Duty cycle, %<input id="pwm-duty" type="range" min="5" max="90" value="40"><output id="pwm-duty-out">40%</output></label>
+<svg viewBox="0 0 620 120" role="img" aria-label="Three cycles of an abstract PWM signal"><path class="s-thin" d="M10 100 H610"/><path class="s-accent" id="pwm-path" d="M10 90 V25 H90 V90 H210 V25 H290 V90 H410 V25 H490 V90 H610"/><text class="t t-small t-muted" x="12" y="117">Three periods shown; time scale follows the selected frequency.</text></svg>
+<div class="readings" aria-live="polite"><div><small>Period</small><output class="out" id="pwm-period">50.0 µs</output></div><div><small>On time</small><output class="out" id="pwm-on">20.0 µs</output></div><div><small>Off time</small><output class="out" id="pwm-off">30.0 µs</output></div></div>
+<p><small>This is a timing model, not a recommended gate waveform or welder duty range. Output current is set by the whole converter, load and control loop; it is not simply the duty percentage times the front-panel amp rating.</small></p>
+</div>
+
+<h2>Why the gate needs a driver</h2>
+<p>A gate is insulated but capacitive. Every transition needs charge moved onto or off it. A tiny DC leakage does not imply tiny switching current. The driver’s local supply and decoupling capacitor deliver brief current pulses; the gate loop and series resistor influence the transition.</p>
+<div class="formula">Igate,avg ≈ Qg × fsw<br>ttransition ≈ Qinterval / Igate<br>Pdrive ≈ Qg × ΔVgate × fsw<small>Illustration: 100 nC per cycle at 40 kHz averages only 4 mA, yet moving 30 nC of Miller charge in 100 ns needs about 0.3 A during that interval. The correct charge comes from the relevant datasheet curve, not a fixed input-capacitance number alone.</small></div>
+<p>As collector/drain voltage changes, gate-to-collector/drain coupling also needs charge moved. This can create a <b>Miller plateau</b> in the gate trace. Fast switching-node changes can inject unwanted gate current into a supposedly off device. The driver’s sink path, impedance, layout and any clamp/off-bias scheme help control that risk.</p>
+<p>The gate voltage is defined relative to that device’s source/emitter. A high-side device’s reference moves. Isolated or level-shifting drive and correctly specified probing are necessary to interpret it. See <a href="https://www.ti.com/lit/ml/slua618a/slua618a.pdf">TI SLUA618A</a> for detailed gate-drive circuits.</p>
+
+<h2>Dead time, overlap and reset</h2>
+<p>In a half-bridge leg, if the upper and lower devices conduct together, they can short the DC bus: <b>shoot-through</b>. A suitable dead interval allows one device to turn off before its complement conducts. Propagation delay, IGBT tail, diode recovery, temperature and tolerances matter. “More dead time” is not an unlimited improvement; it also changes commutation and losses.</p>
+<p>Do not confuse complementary-leg dead time with transformer reset time. For example, a two-switch forward converter intentionally switches its two primary devices together; its off interval and reset network serve a different function. Timing must be interpreted within the actual topology.</p>
+
+<h2>From a knob to regulated welding current</h2>
+<p>In constant-current MMA operation, the knob supplies a current command. A sensor estimates actual current. A control circuit compares command with feedback and adjusts the power stage’s switching. Arc voltage varies with arc conditions, so a fixed pulse percentage would not reliably hold current.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Block</th><th scope="col">Physical meaning</th><th scope="col">Failure clue</th></tr></thead><tbody><tr><td>Shunt</td><td>A known small resistance makes a voltage proportional to current.</td><td>A damaged joint or sense lead can change the measured current without changing the actual current in the same way.</td></tr><tr><td>Current transformer</td><td>Changing primary current creates a secondary signal with a defined burden and conditioning. It does not measure steady DC directly.</td><td>Missing burden or wrong connection can corrupt feedback and may create dangerous secondary voltage; follow the actual circuit.</td></tr><tr><td>Hall sensor</td><td>A magnetic field produced by current changes the sensor output; suitable types can measure DC.</td><td>Wrong supply, reference or offset can imitate an overcurrent condition.</td></tr><tr><td>Error amplifier / compensation</td><td>Shapes how fast and stably the converter responds to error.</td><td>Noise, wrong capacitors or broken feedback can cause instability or limit output.</td></tr><tr><td>Protection / inhibit</td><td>Undervoltage, overcurrent, thermal or mode logic blocks drive when required.</td><td>No PWM can be a correct response to a fault elsewhere rather than a failed PWM IC.</td></tr></tbody></table></div>
+<p><b>Controller terminology:</b> <a href="https://www.st.com/en/power-management/sg3525.html">ST calls the SG3525 a voltage-mode PWM controller</a>. External circuitry can close a welding-current loop around it. That is distinct from a controller whose internal pulse-by-pulse modulation is peak-current-mode. Identify the chip and the surrounding feedback separately.</p>
+
+<h2>Auxiliary supply and startup sequence</h2>
+<p>The control circuit needs power before it can drive the main power stage. A startup path may charge an auxiliary controller’s supply until it begins switching; a winding or converter then sustains the rail. Undervoltage lockout prevents operation below the controller’s intended supply range. A shorted rail or dried auxiliary capacitor can produce repeated start/stop behaviour.</p>
+<p>Precharge, relay closure, references, sensor checks and drive enable may happen in a specific order. This is why a series lamp or low input voltage can change the symptoms. Use the exact startup description before deciding that a relay or missing PWM is faulty.</p>
+<a class="crosslink" href="../welding/w04-switches-drivers.html">Back to repair · W04: use drive evidence to find the cause</a><a class="crosslink" href="../welding/w05-fault-cases.html">W05 · Missing auxiliary power and missing gate drive cases</a><details class="quiz"><summary>A 40 kHz oscillator is present, but one output repeats at 20 kHz. Is the chip faulty?</summary><div class="answer"><p>Not necessarily. Controllers with alternating outputs may divide oscillator cycles between them. Read the timing description and the actual topology before treating the frequency difference as a fault.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can distinguish frequency, duty, dead time and transformer reset."><span>I can distinguish frequency, duty, dead time and transformer reset.</span></li><li><input type="checkbox" aria-label="I can explain high peak gate current despite tiny gate DC leakage."><span>I can explain high peak gate current despite tiny gate DC leakage.</span></li><li><input type="checkbox" aria-label="I can trace command, current feedback and protection to the gate drive."><span>I can trace command, current feedback and protection to the gate drive.</span></li><li><input type="checkbox" aria-label="I can explain why a current-regulated system can use a voltage-mode PWM IC."><span>I can explain why a current-regulated system can use a voltage-mode PWM IC.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

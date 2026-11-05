@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T22 · Power rectifiers: reverse recovery and real ratings</title>
+<meta name="description" content="Extend the p–n junction picture into power repair: a forward test is only the beginning when a diode must carry large current and stop conducting quickly.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › T22</div>
+<span class="eyebrow">Theory Book · T22</span>
+<h1>Power rectifiers: reverse recovery and real ratings</h1>
+<p class="lede">Extend the p–n junction picture into power repair: a forward test is only the beginning when a diode must carry large current and stop conducting quickly.</p>
+<div class="meta"><span><b>Study + exercises</b> 60–90 min</span><span><b>Level</b> After T11; pairs with W02</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>One symbol, two very different jobs</h2>
+<p>The input bridge rectifies mains-frequency AC and feeds a capacitor bank. The output rectifier commutates transformer pulses at the inverter’s switching rate and carries welding current. Voltage stress, waveform, cooling and recovery requirements differ. A diode selected for one job is not automatically suitable for the other.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Property</th><th scope="col">Input bridge</th><th scope="col">High-frequency output rectifier</th></tr></thead><tbody><tr><td>Typical task</td><td>Steer each mains half-cycle into the same bus polarity.</td><td>Steer high-frequency secondary current into the output/choke path.</td></tr><tr><td>Current shape</td><td>Charging pulses can be much higher than average input current.</td><td>Large pulsed or commutating current set by topology and load.</td></tr><tr><td>Important ratings</td><td>Blocking voltage, average/RMS current, surge, fuse coordination, cooling.</td><td>Blocking voltage including overshoot, average/RMS current, forward drop, recovery, hot leakage, cooling.</td></tr><tr><td>Meter limitation</td><td>A normal forward reading does not test rated-voltage leakage or surge survival.</td><td>The same, plus diode mode does not measure switching recovery.</td></tr></tbody></table></div>
+<h2>Why the forward drop is not always 0.7 V</h2>
+<p>Forward bias lowers the junction barrier and injects carriers. Current depends strongly on applied junction voltage and temperature; at high current, bulk and contact resistance also matter. A meter’s tiny current may give 0.55 V while the same diode loses much more at working current. The built-in equilibrium potential is not a fixed external turn-on voltage.</p>
+<div class="formula">Pcond = average[vF(t) × iF(t)]<small>A rough constant-drop estimate of 0.9 V at 100 A gives 90 W while that path conducts. Account for the actual duty and number of simultaneously conducting diodes. Small voltage drops matter at welding current.</small></div>
+<a class="crosslink" href="pn-junction-deep-dive.html">T11+ · The physics behind forward bias</a><a class="crosslink" href="t03-power-energy-heat.html">T03 · Turn a small voltage drop into a heat estimate</a>
+<h2>Stored carriers and reverse recovery</h2>
+<p>A forward-conducting p–n diode contains excess carriers near its junction and in its bulk. When the circuit tries to reverse-bias it, those carriers must first be removed or recombine. For a short interval, reverse current flows before the diode resumes blocking. This is <b>reverse recovery</b>.</p>
+<figure><svg viewBox="0 0 650 250" role="img" aria-label="Illustrative diode current changing from forward current through a negative recovery pulse back to zero">
+<path class="s-thin" d="M40 140 H620 M60 220 V20"/><path class="s-accent" d="M60 55 H200 L290 140 L350 210 Q385 210 435 142 H610"/>
+<g class="t t-small"><text x="80" y="42">Forward current</text><text x="280" y="128">Zero crossing</text><text x="365" y="235">Reverse recovery current</text><text x="470" y="120">Blocking resumes</text><text x="550" y="170">time →</text></g>
++</svg><figcaption>Conceptual current trace. The reverse-current area corresponds to recovery charge Qrr. Shape, peak and duration depend on operating conditions and circuit parasitics.</figcaption></figure>
+<p><b>trr</b> describes recovery time under a specified measurement definition; <b>Qrr</b> is recovered charge, the integral of reverse current over that interval. Temperature, forward current and imposed di/dt change them. Two diodes with similar trr can have different charge and softness. Recovery can increase the stress and loss of the transistor turning on against the diode.</p>
+<p>A rough stress intuition is energy of order voltage × recovered charge, but this is not a universal loss equation for every converter. The measured waveform and device test conditions determine where energy is dissipated. Read <a href="https://www.st.com/en/diodes-and-rectifiers/ultrafast-rectifiers.html">ST’s ultrafast-rectifier overview</a> for the forward-drop/recovery trade-off.</p>
+
+<h2>Schottky, ultrafast silicon and SiC</h2>
+<p>A Schottky junction uses a metal–semiconductor barrier. It avoids the same minority-carrier storage mechanism as a conducting p–n diode, so it has very little minority-carrier reverse recovery. It still has junction capacitance: changing its voltage moves charge and creates a transient current. “No reverse recovery” does not mean “no switching current”.</p>
+<p>Conventional silicon Schottky devices trade forward drop, leakage and voltage capability differently from ultrafast p–n rectifiers. SiC Schottky devices extend voltage capability with their own characteristics. None is a universal substitute: topology, reverse stress, hot leakage, surge and mounting still matter.</p>
+
+<h2>Parasitic inductance and the snubber</h2>
+<p>Tracks, leads and transformer leakage all contribute inductance. Rapidly changing current creates voltage according to <b>v = L × di/dt</b>. Even 100 nH with a 100 A change in 100 ns gives an illustrative 100 V. That voltage adds stress during commutation; it is not predicted by the average output voltage.</p>
+<p>A snubber or clamp manages stored energy, ringing and voltage stress. Its resistor, capacitor and diode values belong to the actual design. A missing snubber, a longer replacement lead or altered routing can change the switching stress even if the fitted semiconductor has the same headline rating. Do not invent replacement snubber values from a generic tutorial.</p>
+
+<h2>Read two actual datasheets</h2>
+<p>Open <a href="https://www.vishay.com/docs/88612/gbpc12.pdf">Vishay’s GBPC bridge family</a>. Find the four-terminal circuit, current-vs-temperature conditions, surge rating and mounting details. The family includes several voltage/current variants; use the full code.</p>
+<p>Then open <a href="https://www.st.com/resource/en/datasheet/stth6003.pdf">ST’s STTH6003</a>. Identify both diode paths, the common terminal and tab. Its headline 2 × 30 A rating is subject to the stated waveform and case temperature, not a promise that any mounting can carry 60 A continuously. The recovery figure also has specified test conditions. It is a fast-output example, not an approved replacement for every MMA welder.</p>
+<ol class="steps"><li><p>Sketch the actual pinout and mark all internally connected metal surfaces.</p></li><li><p>Copy VRRM, relevant current ratings, forward-voltage conditions and the thermal path.</p></li><li><p>For the fast diode, also copy trr/Qrr information if provided and its test conditions.</p></li><li><p>Explain why the two parts cannot be judged interchangeable from voltage and current alone.</p></li></ol>
+<a class="crosslink" href="../welding/w02-rectifier-bench-lab.html">Back to bench · W02: eight readings and the bridge trainer</a><a class="crosslink" href="../welding/w06-repair-return-to-service.html">Back to repair · W06: replacement criteria</a><details class="quiz"><summary>A diode has normal forward voltage at room temperature. What relevant faults can remain?</summary><div class="answer"><p>Excessive blocking leakage at working voltage or high temperature, breakdown weakness, excessive full-current loss, intermittent connections and unsuitable or degraded switching behaviour. The meter has only screened low-voltage static conduction.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can explain reverse recovery using stored carriers."><span>I can explain reverse recovery using stored carriers.</span></li><li><input type="checkbox" aria-label="I can distinguish recovery charge from junction capacitance."><span>I can distinguish recovery charge from junction capacitance.</span></li><li><input type="checkbox" aria-label="I can interpret the conditions behind a rectifier’s current and recovery ratings."><span>I can interpret the conditions behind a rectifier’s current and recovery ratings.</span></li><li><input type="checkbox" aria-label="I can connect lead inductance and snubber faults to repeat failures."><span>I can connect lead inductance and snubber faults to repeat failures.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

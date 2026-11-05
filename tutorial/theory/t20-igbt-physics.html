@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T20 · IGBTs: a MOS gate controlling bipolar conduction</title>
+<meta name="description" content="Follow the carriers through an IGBT: how a thin insulated gate controls current, why extra carriers reduce high-voltage conduction loss, and why those carriers make turn-off harder.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book › T20</div>
+<span class="eyebrow">Theory Book · T20</span>
+<h1>IGBTs: a MOS gate controlling bipolar conduction</h1>
+<p class="lede">Follow the carriers through an IGBT: how a thin insulated gate controls current, why extra carriers reduce high-voltage conduction loss, and why those carriers make turn-off harder.</p>
+<div class="meta"><span><b>Study + exercises</b> 75–90 min</span><span><b>Level</b> After T11–T13</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>The problem a high-voltage switch must solve</h2>
+<p>A power transistor must conduct large current when on and withstand large voltage when off. These demands conflict. To block voltage in silicon, a device usually needs a sufficiently thick, lightly doped <b>drift region</b>. In the off state, the depletion region expands into it and spreads the electric field. In the on state, the same lightly doped region can contribute substantial resistance.</p>
+<p>A power MOSFET handles conduction mainly with majority carriers. Its insulated gate creates a channel, but that channel cannot by itself remove the resistance of a high-voltage drift region. Superjunction and other structures improve this trade-off; it is not a universal rule that every high-voltage MOSFET is unsuitable.</p>
+<a class="crosslink" href="t11-semiconductors-diodes.html">T11 · Doping and depletion regions</a><a class="crosslink" href="t13-mosfet-physics.html">T13 · How the gate creates an inversion channel</a>
+<h2>Add a carrier-injecting collector</h2>
+<p>An <b>insulated-gate bipolar transistor</b> uses a MOS-controlled channel together with bipolar conduction. In a simplified N-channel vertical IGBT, the collector side includes a p-type injecting layer. The gate channel permits electron flow from the emitter toward the drift region. The collector injects holes, so both electrons and holes participate in conduction through the drift region.</p>
+<figure><svg viewBox="0 0 660 300" role="img" aria-label="Simplified vertical IGBT layers and relation between gate channel, injected carriers and drift region">
+<g class="s-thin"><rect class="f-accent-soft" x="30" y="30" width="250" height="44"/><rect class="f-wash" x="30" y="74" width="250" height="44"/><rect class="f-theory-soft" x="30" y="118" width="250" height="100"/><rect class="f-warn-soft" x="30" y="218" width="250" height="44"/></g>
+<g class="t t-small" text-anchor="middle"><text x="155" y="58">Emitter / n+ contacts</text><text x="155" y="102">p body + gate-controlled channel</text><text x="155" y="163">Lightly doped drift region</text><text x="155" y="187">blocking field / on-state carriers</text><text x="155" y="245">p+ collector injector</text></g>
+<g class="t t-small"><text x="310" y="56">Gate field opens the channel.</text><text x="310" y="96">Electrons enter from the emitter.</text><text x="310" y="154">Extra electrons + holes increase</text><text x="310" y="176">conductivity while the device is on.</text><text x="310" y="240">Holes are injected from this side.</text><text x="310" y="278">Conceptual layers; not a fabrication drawing.</text></g>
+</svg><figcaption>The gate is insulated, but the main current path contains stored mobile carriers. Real trench and field-stop structures are more complex than this layer sketch.</figcaption></figure>
+<p>The extra mobile carriers increase conductivity: <b>conductivity modulation</b>. A useful local relationship is σ = q(nμn + pμp). Here n and p are electron and hole concentrations, and μ describes how readily each carrier drifts in an electric field. Increasing carrier density reduces the voltage needed to carry a given current through the drift region.</p>
+<p>The gate does not supply the welding current or a continuous BJT-like base current. It controls a channel through an electric field. The main power circuit supplies the energy and injected carriers.</p>
+
+<h2>Turn-off and tail current</h2>
+<p>Taking the gate below its intended off level removes the inversion channel. Yet carriers already stored in the drift region do not vanish at the same instant. They must be extracted or recombine. Collector current can therefore continue during a <b>tail</b> while collector voltage is already rising. That overlap produces turn-off energy loss.</p>
+<p>This is a physical difference from gate charge. Gate charge resides in the transistor’s capacitive input and coupling structure; the tail relates to carriers stored in the power semiconductor. A strong driver helps control the switching transition, but it does not instantly remove every stored carrier from the drift region. Toshiba’s <a href="https://toshiba.semicon-storage.com/eu/semiconductor/knowledge/faq/mosfet_igbt/igbt-010.html">tail-current explanation</a> illustrates this mechanism.</p>
+<p>Different IGBT generations trade conduction drop, switching loss and ruggedness differently. Do not infer a suitable switching frequency merely from the word IGBT. Use switching-energy data and actual operating conditions.</p>
+
+<h2>Losses: heat has more than one source</h2>
+<div class="formula">Pcond ≈ VCE(on) × I × D<br>Psw ≈ (Eon + Eoff) × fsw<small>For a simplified rectangular current pulse: I = 20 A, VCE(on) = 1.8 V and D = 0.50 gives 18 W conduction loss. If Eon = 0.30 mJ and Eoff = 0.40 mJ at the relevant test conditions, 40 kHz gives another 28 W. Total ≈ 46 W for this hypothetical device and waveform.</small></div>
+<p>Real conduction loss is the time average of v(t)i(t). Switching energy depends on bus voltage, current, temperature, gate resistance and the commutating diode. A datasheet energy measured at one condition cannot simply be treated as fixed at every condition. Also distinguish the bridge repetition rate from the switching event frequency of an individual device.</p>
+<div class="widget" id="igbt-loss">
+<span class="label">Illustrative single-device loss budget</span>
+<label>Pulse current, A<input id="loss-current" type="number" min="0" max="100" step="1" value="20"></label>
+<label>On-state voltage, V<input id="loss-vce" type="number" min="0" max="5" step="0.1" value="1.8"></label>
+<label>Device on-time fraction, %<input id="loss-duty" type="range" min="0" max="100" value="50"><output id="loss-duty-out">50%</output></label>
+<label>Eon + Eoff, mJ per switching cycle<input id="loss-energy" type="number" min="0" max="20" step="0.05" value="0.7"></label>
+<label>Device switching frequency, kHz<input id="loss-frequency" type="number" min="1" max="100" value="40"></label>
+<div class="readings" aria-live="polite"><div><small>Conduction</small><output class="out" id="loss-conduction">18.0 W</output></div><div><small>Switching</small><output class="out" id="loss-switching">28.0 W</output></div><div><small>Estimated total</small><output class="out" id="loss-total">46.0 W</output></div></div>
+<p><small>This algebra model holds entered switching energy constant. It does not predict how that energy changes with current or gate drive and is not a component-selection or thermal-validation tool. Frequency presumes active switching cycles; 0% and 100% are not steady DC simulations.</small></p>
+</div>
+
+<h2>Gate voltage and the optional reverse diode</h2>
+<p>VGE(th) is the onset of a small specified collector current, not the voltage that guarantees low-loss welding operation. Read the VCE(sat) test condition and the driver requirements. Many conventional silicon welding IGBTs use a drive near +15 V, but this is not an instruction to apply 15 V to an unknown device; gate limits and intended off drive vary.</p>
+<p>An ordinary silicon MOSFET has an intrinsic body diode. A conventional IGBT does not provide the same useful reverse path. Many discrete IGBTs are sold with a <b>co-packaged antiparallel diode</b>, while other parts omit it or use specialised reverse-conducting structures. Read the circuit symbol and suffix. A missing reverse diode reading can be correct for one part and a fault for another.</p>
+
+<h2>Read a candidate replacement scientifically</h2>
+<ol class="steps"><li><p>Identify package, terminals, tab and diode configuration. Confirm blocking and gate-voltage limits.</p></li><li><p>Read continuous and pulsed current with their case-temperature conditions. The advertised current is not an output-current promise for a small heatsink.</p></li><li><p>Compare hot VCE(sat), Eon/Eoff, gate charge and thermal resistance at comparable test conditions. Check safe operating area and any specified short-circuit withstand conditions.</p></li><li><p>Check whether the existing driver and protection can support the candidate’s timing and charge. Follow the manufacturer’s replacement guidance rather than treating the comparison as automatic approval.</p></li></ol>
+<p><a href="https://www.st.com/resource/en/application_note/an4544-igbt-datasheet-tutorial-stmicroelectronics.pdf">ST AN4544</a> is a manufacturer guide to these datasheet terms and their test conditions.</p>
+<a class="crosslink" href="../welding/w04-switches-drivers.html">Back to repair · W04: test the switch and its driver neighbourhood</a><details class="quiz"><summary>Why can reducing conduction drop increase turn-off loss?</summary><div class="answer"><p>More injected/stored carriers can improve drift-region conductivity while on, but they must be cleared at turn-off. Device structures optimise this trade-off; compare actual switching energy as well as conduction voltage.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can explain conductivity modulation using extra mobile carriers."><span>I can explain conductivity modulation using extra mobile carriers.</span></li><li><input type="checkbox" aria-label="I can distinguish gate charge from stored-carrier tail current."><span>I can distinguish gate charge from stored-carrier tail current.</span></li><li><input type="checkbox" aria-label="I can calculate a simple conduction-plus-switching loss budget."><span>I can calculate a simple conduction-plus-switching loss budget.</span></li><li><input type="checkbox" aria-label="I can identify rating conditions and the internal diode configuration."><span>I can identify rating conditions and the internal diode configuration.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

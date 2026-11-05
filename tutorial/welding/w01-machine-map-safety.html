@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W01 · Identify the machine, map the stages, prepare the bench</title>
+<meta name="description" content="Recognise the power-source family, draw its energy path and understand the workshop conditions needed before a real machine is opened.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W01</div>
+<span class="eyebrow">Welding Repair Track · W01</span>
+<h1>Identify the machine, map the stages, prepare the bench</h1>
+<p class="lede">Recognise the power-source family, draw its energy path and understand the workshop conditions needed before a real machine is opened.</p>
+<div class="meta"><span><b>Study + exercises</b> 75–90 min</span><span><b>Level</b> After W00 and P03</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>Identify it from the outside first</h2>
+<p>Photograph the nameplate, controls, connectors and any damage. Record the exact model, serial/code number, rated input, output type and duty-cycle table. “MMA-200” is a broad marketing label used on different designs; it is not a schematic identifier. Weight and size are clues, not proof.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Family</th><th scope="col">Usual power path</th><th scope="col">Repair emphasis</th></tr></thead><tbody><tr><td>Heavy AC transformer welder</td><td>50 Hz transformer → adjustable or magnetically limited AC output</td><td>Leads, selector, cooling, insulation and windings. There may be no power rectifier.</td></tr><tr><td>Transformer-rectifier DC welder</td><td>50 Hz transformer → high-current rectifier → choke</td><td>High-current rectifier connections, contacts, cooling and winding/insulation diagnosis.</td></tr><tr><td>Compact DC inverter MMA welder</td><td>Rectified mains → fast switching → ferrite transformer → fast output rectifier</td><td>Power semiconductors, inrush, auxiliary supply, gate drivers and feedback.</td></tr><tr><td>MIG or AC/DC TIG</td><td>May use an inverter, with extra output/control stages</td><td>MIG may regulate voltage and adds wire feed. AC TIG adds polarity switching; HF ignition adds high-voltage pulses. Use a separate model-specific learning plan.</td></tr></tbody></table></div>
+<h2>A representative inverter power path</h2>
+<figure><svg viewBox="0 0 720 380" role="img" aria-label="Representative welding inverter power flow with mains-connected primary and isolated secondary">
+<defs><marker id="w01-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8z"/></marker></defs>
+<rect class="f-warn-soft" x="8" y="8" width="704" height="146" rx="10"/><text class="t t-small t-bold" x="24" y="33">PRIMARY · mains-connected, including many “low-voltage” control rails</text>
+<g class="f-panel s-line"><rect x="22" y="56" width="142" height="64" rx="6"/><rect x="195" y="56" width="142" height="64" rx="6"/><rect x="368" y="56" width="142" height="64" rx="6"/><rect x="541" y="56" width="154" height="64" rx="6"/></g>
+<g class="t t-small" text-anchor="middle"><text x="93" y="80">Input + inrush</text><text x="93" y="101">fuse, NTC, relay</text><text x="266" y="80">Bridge rectifier</text><text x="266" y="101">AC → DC</text><text x="439" y="80">DC link</text><text x="439" y="101">capacitor bank</text><text x="618" y="80">IGBT / MOSFET</text><text x="618" y="101">switching stage</text></g>
+<path class="s-line" d="M164 88 H193 M337 88 H366 M510 88 H539 M618 120 V193" marker-end="url(#w01-arrow)"/>
+<rect class="f-theory-soft s-line" x="470" y="195" width="224" height="62" rx="6"/><text class="t t-small" x="582" y="219" text-anchor="middle">High-frequency transformer</text><text class="t t-small" x="582" y="240" text-anchor="middle">isolation + voltage conversion</text>
+<path class="s-thin s-dash" d="M18 277 H703"/><text class="t t-small t-muted" x="22" y="266">Isolation boundary is in the transformer and feedback/drive interfaces</text>
+<g class="f-panel s-line"><rect x="470" y="305" width="224" height="56" rx="6"/><rect x="235" y="305" width="195" height="56" rx="6"/><rect x="22" y="305" width="174" height="56" rx="6"/></g>
+<g class="t t-small" text-anchor="middle"><text x="582" y="328">Fast output rectifier</text><text x="582" y="347">high current</text><text x="332" y="328">Output choke / filter</text><text x="332" y="347">smooths arc current</text><text x="109" y="328">Welding terminals</text><text x="109" y="347">electrode + work lead</text></g>
+<path class="s-line" d="M582 257 V303 M470 333 H432 M235 333 H198" marker-end="url(#w01-arrow)"/>
+</svg><figcaption>A teaching block diagram, not a wiring diagram. Inrush placement, topology, PFC, auxiliary supply and output filtering vary. Current sensing and thermal signals feed a controller that adjusts or inhibits the gate drive.</figcaption></figure>
+<p>With a simple bridge-and-capacitor input on nominal 230 V RMS, the unloaded bus is near <b>230 × √2 ≈ 325 V DC</b>, minus diode drops. This is a calculation, not a live measurement task. PFC designs may regulate the bus higher; doubler, split-bus and three-phase designs differ. Do not use 325 V as a universal acceptance limit.</p>
+<p>The output is not a fixed “12 V supply”. Open-circuit voltage, welding voltage, current regulation, VRD and protection behaviour depend on mode and model. A lit display or spinning fan proves only that some supply path works.</p>
+<a class="crosslink" href="../theory/t07-ac-fundamentals.html">T07 · RMS and peak voltage</a><a class="crosslink" href="../theory/t08-transformers.html">T08 · Why a transformer needs changing flux</a><a class="crosslink" href="../theory/t21-switching-converters-control.html">T21 · The controller, PWM and gate drivers</a>
+<h2>Three kinds of learning work</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Work</th><th scope="col">Preparation</th><th scope="col">What this course gives you</th></tr></thead><tbody><tr><td>Battery / isolated ELV bench</td><td>Loose components, 5–12 V current-limited supply or batteries, P03 meter skills.</td><td>Repeatable construction and measurement labs you can practise now.</td></tr><tr><td>Inside an unplugged welder</td><td>A competent technician isolates all sources, follows the model’s discharge procedure and verifies de-energisation before access. Re-check stored energy as required.</td><td>Inspection and cold-test reasoning. Unplugged does not by itself mean safe.</td></tr><tr><td>Energised internal diagnosis / recommissioning</td><td>Trained repair technician, model-specific service instructions, suitable probes and controlled workshop setup.</td><td>Waveform interpretation, test planning and records. Live mains measurements are mentored service work.</td></tr></tbody></table></div>
+<h2>Stored energy and measurement references</h2>
+<div class="formula">E = ½ C V²<br>For 680 µF at 325 V: E ≈ 35.9 J<small>Voltage determines both shock exposure and stored energy. Capacitors can retain charge, bleeders can fail, and voltage can rebound after discharge. A fixed wait time or an extinguished LED does not verify the capacitor bank.</small></div>
+<p>Use the exact service manual’s discharge and verification procedure under supervision. Each capacitor in a series bank and relevant nodes to chassis may need separate verification. Never short a capacitor with a screwdriver, and never assume a small control board is isolated because its rail is labelled 15 V.</p>
+<p>A normal bench oscilloscope’s probe ground is usually connected to protective earth; USB instruments may acquire an earth path through the computer. Clipping that ground to primary DC negative or a switching node can make a destructive short. Two ordinary probes with maths subtraction do not create isolation. A battery-powered scope is suitable only if its inputs and insulation are rated for the actual common-mode voltage and transients.</p>
+<div class="callout warn"><span class="label">The measurement setup is part of the circuit</span><p>Never remove the scope’s protective earth or power a normal earthed scope through an isolation transformer to float it. A Variac does not provide isolation; a series lamp limits current but does not isolate or establish safe power-up conditions. A rated differential probe or appropriately isolated instrument requires a trained operator and correct voltage, category and common-mode ratings. See <a href="https://www.tek.com/en/documents/application-note/three-facets-floating-measurement-solutions">Tektronix’s floating-measurement guidance</a>.</p></div>
+<h2>Buy tools in stages</h2>
+<ul class="kit">
+<li><b>First: low-voltage learning kit.</b><small>Reliable diode-mode multimeter, protected leads, breadboard, resistors, 1N4007 diodes, small bridge, loose known-good MOSFET, 9 V battery and current-limited 5–12 V supply. Learn soldering on scrap low-voltage boards.</small></li>
+<li><b>Next: cold repair work with a mentor.</b><small>Model manuals, insulated hand tools, magnification, temperature-controlled soldering, suitable extraction and a capacitance/ESR meter. Inspect donor boards only after verified discharge. Use an ESD bench for loose devices; remove body-connected ESD straps for hazardous-voltage work.</small></li>
+<li><b>Later: equipped service bench.</b><small>Let the mentor specify the instruments, differential/isolated probing, safety-test equipment and load test arrangement required by the actual machines. A cheap “100 MHz scope” alone does not make a welding repair bench.</small></li>
+</ul>
+<p>Keep the welding work-return clamp separate in your mind from the machine’s protective earth: the work lead carries welding current. It is not a replacement for the chassis earth conductor.</p>
+
+<h2>Map one machine without powering it</h2>
+<ol class="steps"><li><p>From an exact manual, mark input, bridge, capacitor bank, switches, transformer, output rectifier and control board. Draw arrows for the energy path.</p></li><li><p>Mark which regions are mains-referenced, which are isolated, and where the isolation components sit. Mark any uncertainty instead of assuming a “ground” symbol means protective earth.</p></li><li><p>Compare with photographs taken by your technician after safe access. Write component references and full markings beside your map.</p></li></ol>
+<details class="quiz"><summary>A board runs on 15 V. Can a grounded USB scope be attached?</summary><div class="answer"><p>Not on that fact alone. A 15 V rail can be referenced to the mains-connected primary bus. Determine the isolation boundary and the instrument’s permitted reference before any connection.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can identify the machine family from evidence."><span>I can identify the machine family from evidence.</span></li><li><input type="checkbox" aria-label="I can draw the two rectifier stages and the isolation boundary."><span>I can draw the two rectifier stages and the isolation boundary.</span></li><li><input type="checkbox" aria-label="I can explain why unplugging and waiting do not verify de-energisation."><span>I can explain why unplugging and waiting do not verify de-energisation.</span></li><li><input type="checkbox" aria-label="I know which activities require my repair mentor and the exact service manual."><span>I know which activities require my repair mentor and the exact service manual.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

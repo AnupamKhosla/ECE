@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W04 · MOSFETs, IGBTs and the gate-driver neighbourhood</title>
+<meta name="description" content="Learn loose-device screening at 9 V, then understand why a failed power switch sends you toward the driver, sensing and protection circuits.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W04</div>
+<span class="eyebrow">Welding Repair Track · W04</span>
+<h1>MOSFETs, IGBTs and the gate-driver neighbourhood</h1>
+<p class="lede">Learn loose-device screening at 9 V, then understand why a failed power switch sends you toward the driver, sensing and protection circuits.</p>
+<div class="meta"><span><b>Study + exercises</b> 2–3 hours</span><span><b>Level</b> W02, W03; loose-part lab</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+
+<h2>Identify the device before testing</h2>
+<p>Copy the full marking and suffix. Use the manufacturer’s datasheet to identify the device type, pin order, tab connection, internal diode and gate limits. TO-220 or TO-247 describes a package, not a pinout or technology. A MOSFET has gate, drain and source; an IGBT has gate, collector and emitter.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Feature</th><th scope="col">Ordinary silicon N-channel power MOSFET</th><th scope="col">Typical N-channel IGBT</th></tr></thead><tbody><tr><td>Conduction</td><td>A gate-induced channel controls majority-carrier current. On-state loss is often approximated with I²RDS(on).</td><td>A MOS channel enables bipolar carrier injection. On-state loss is often approximated with VCE(sat) × I.</td></tr><tr><td>Reverse direction</td><td>An intrinsic body diode usually conducts S → D with the gate off.</td><td>A useful antiparallel diode is not inherent in the same way. Many parts include a separate co-pack diode, E → C; others do not.</td></tr><tr><td>Meter gate test</td><td>A healthy unprotected insulated gate should not show a low-resistance path to source or drain.</td><td>Likewise for emitter/collector, but internal gate protection can change readings.</td></tr><tr><td>Turn-off</td><td>Charge must leave the gate; the power diode may also have recovery charge.</td><td>Gate charge must leave and stored minority carriers can produce a collector-current tail.</td></tr></tbody></table></div><a class="crosslink" href="../theory/t13-mosfet-physics.html">T13 · MOSFET channel, threshold and body diode</a><a class="crosslink" href="../theory/t20-igbt-physics.html">T20 · IGBT carrier injection and tail current</a>
+<h2>A loose-switch test you can do at low voltage</h2>
+<p>Use a <b>known-good, loose N-channel enhancement MOSFET</b> whose datasheet specifies on-resistance at 4.5 V or lower and permits a 9 V gate voltage. Use a 9 V battery, 1 kΩ load resistor (¼ W), 10 kΩ gate resistor and 100 kΩ gate-to-source pull-down. For an IGBT, use this lab only if its datasheet supports conduction at the chosen gate voltage; many welding IGBTs require a higher specified drive and this 9 V lab will not be conclusive.</p>
+<ol class="steps">
+<li><p><b>Build with the battery disconnected.</b> Battery negative will be the source/emitter reference. Connect battery + → 1 kΩ load → drain/collector. Connect source/emitter to battery −. Put 100 kΩ from gate to source/emitter.</p></li>
+<li><p><b>Off state.</b> Connect the battery, keeping the gate drive disconnected. Measure DC voltage across the 1 kΩ load: near 0 V is expected. D–S or C–E is near battery voltage. A hard short would put nearly the full battery voltage across the load, with current still limited by 1 kΩ.</p></li>
+<li><p><b>On state.</b> Connect battery + to the gate through 10 kΩ. The gate divider gives about 8.2 V on a 9 V battery. Measure gate-to-source/emitter and the load voltage. A suitable MOSFET should deliver nearly the battery voltage to the load; an IGBT may lose a larger on-state voltage.</p></li>
+<li><p><b>Turn off.</b> Disconnect the 10 kΩ drive. The 100 kΩ pull-down removes gate charge and the load voltage falls. Repeat and write what each terminal voltage means.</p></li>
+<li><p><b>Disconnect all power.</b> Follow the device’s gate-handling instructions before using diode mode. Compare with the datasheet’s diode arrangement. Keep loose parts on an appropriate ESD bench.</p></li>
+</ol>
+<p>This demonstrates controlled conduction at only a few milliamps. It does not test hundreds of volts of blocking, high-current loss, switching speed or short-circuit survival. A device that fails to conduct at 9 V might be unsuitable for this exercise rather than faulty. Do not perform this circuit on a transistor still connected to a welder board.</p>
+<div class="callout why"><span class="label">Why the pull-down matters</span><p>The gate is a capacitor. Removing the driving wire does not instantly remove its stored charge; a floating gate can retain an on state. A defined gate-to-source/emitter resistor gives charge a discharge path. See <a href="../theory/t05-capacitors-fields.html">T05</a>.</p></div>
+<h2>Screen an isolated power device</h2>
+<p>After the machine’s safe-access process, a technician checks for a hard D–S/C–E short with the gate held off, verifies any expected diode polarity and screens gate leakage/shorts using the correct device’s test guidance. A stored gate charge can make a good MOSFET appear conductive. A gate resistor or driver on the PCB can dominate an in-circuit reading. Photograph and record the original topology before lifting anything.</p>
+<p>Do not test arbitrary gates with an insulation tester or inject an unknown external voltage into a connected driver. If the datasheet includes a protection network, its behaviour must be included in the interpretation.</p>
+
+<h2>Why a new IGBT can fail again</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Neighbourhood</th><th scope="col">Mechanism</th><th scope="col">Useful evidence</th></tr></thead><tbody><tr><td>Gate series resistor and solder joints</td><td>An open/intermittent path prevents proper switching; wrong resistance changes speed and ringing.</td><td>Actual resistor value compared with schematic and the matching leg; joint condition. In-circuit parallel paths can mislead.</td></tr><tr><td>Driver output stage</td><td>A damaged driver can turn on weakly, fail to turn off or drive both devices at once.</td><td>Cold component checks plus mentor-recorded gate waveforms under the service procedure.</td></tr><tr><td>Driver supply / decoupling</td><td>A collapsing rail or undervoltage lockout prevents correct gate voltage.</td><td>Rail amplitude and ripple, measured against the driver’s own reference, not an assumed chassis ground.</td></tr><tr><td>Pull-down, clamp and timing</td><td>Uncontrolled gate charge or overlap can create unwanted turn-on and shoot-through.</td><td>Correct parts and layout; off-state voltage, timing and overshoot compared with service limits.</td></tr><tr><td>Snubber / power loop</td><td>Leakage inductance and fast current change create voltage overshoot.</td><td>Damaged clamp components, changed wire routing or a missing mounting part; approved waveform checks.</td></tr><tr><td>Current sensing / protection</td><td>Missing feedback can command excessive current or fail to shut a short off.</td><td>Sensor, burden, connector and control-path integrity. Never bypass the protection to “see if it welds”.</td></tr><tr><td>Cooling and output faults</td><td>A shorted output rectifier, bad pad or inadequate airflow overloads the switch.</td><td>Output cold tests, heatsink mounting and cooling inspection followed by specified load/thermal testing.</td></tr></tbody></table></div>
+<h2>Read a gate waveform as evidence</h2>
+<p>Study <b>recorded waveforms obtained by your mentor</b> before making live measurements yourself. Ask which reference was used: VGS means gate relative to source; VGE means gate relative to emitter. A high-side emitter moves with the switching node. A gate-to-chassis trace can look impressive while saying little about actual drive.</p>
+<p>Look for the intended on/off levels, repetition rate, pulse width, dead time where appropriate, supply droop and ringing. A flat region during switching can be the Miller plateau, not necessarily a fault. Values and acceptable overshoot come from the real design. Probe bandwidth, common-mode rejection and lead inductance can create apparent spikes.</p>
+<a class="crosslink" href="../theory/t21-switching-converters-control.html">T21 · Gate charge, Miller coupling and dead time</a><a class="crosslink" href="w01-machine-map-safety.html">W01 · Instrument references and isolation</a><details class="quiz"><summary>One IGBT is shorted. Is replacing all the IGBTs enough?</summary><div class="answer"><p>No. Follow the manufacturer’s guidance for the failed group, then investigate the gate drivers, related passives, snubbers, output stage, sensing and cooling. Replacing a group may be required, but it does not establish why the original group failed.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can identify MOSFET and IGBT terminals from the exact datasheet."><span>I can identify MOSFET and IGBT terminals from the exact datasheet.</span></li><li><input type="checkbox" aria-label="I have demonstrated an off–on–off cycle on a loose low-voltage device."><span>I have demonstrated an off–on–off cycle on a loose low-voltage device.</span></li><li><input type="checkbox" aria-label="I can explain the limits of static semiconductor screening."><span>I can explain the limits of static semiconductor screening.</span></li><li><input type="checkbox" aria-label="I can list the driver and protection checks needed after a switch failure."><span>I can list the driver and protection checks needed after a switch failure.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>

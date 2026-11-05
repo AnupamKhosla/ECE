@@ -3,7 +3,7 @@
   "use strict";
   var TOC = window.TOC || { books: [] };
   var path = location.pathname;
-  var inSub = /\/(practice|theory|career|reference)\/[^\/]*$/.test(path);
+  var inSub = /\/(practice|theory|career|reference|welding)\/[^\/]*$/.test(path);
   var ROOT = inSub ? "../" : "";
   var here = inSub ? path.split("/").slice(-2).join("/") : "index.html";
 

@@ -305,6 +305,11 @@
     <a class="crosslink" href="../career/c01-bms-fundamentals.html">Job track C01 · BMS fundamentals: 24 V AC field devices</a>
     <div class="callout try"><span class="label">Try this (ELV only)</span><p>Measure a 12 V or 24 V AC plug-pack's output with no load, then with a load resistor drawing about half its rated current (for a 24 V 1 A pack, a 47 Ω 25 W wirewound resistor draws about 0.5 A; it gets hot, so mount it safely). Calculate the regulation: (V<sub>no-load</sub> − V<sub>load</sub>) / V<sub>load</sub>. Expect something like 5–20 %. Leave it plugged in with no load for ten minutes and feel the case: that warmth is core loss.</p></div>
 
+    <h2>Use this physics in welding repair</h2>
+    <p>A compact inverter welder applies controlled high-frequency voltage to a transformer. Its topology, reset path and volt-second balance explain why pulse timing matters and why arbitrary DC cannot be applied to the primary.</p>
+    <a class="crosslink" href="t21-switching-converters-control.html">T21 · Converter topology, flux reset and PWM</a>
+    <a class="crosslink" href="../welding/w01-machine-map-safety.html">W01 · Follow the power path through a welding machine</a>
+
     <h2>Check yourself</h2>
     <details class="quiz"><summary>A transformer has 1150 primary turns and 120 secondary turns. With 230 V on the primary, what is the secondary voltage, and is it step-up or step-down?</summary><div class="answer"><p>V<sub>s</sub> = 230 × 120 / 1150 = 24 V. Step-down: fewer secondary turns means fewer volts, because each turn gets the same volts per turn (0.2 V here).</p></div></details>
     <details class="quiz"><summary>A 24 V, 40 VA transformer supplies 1.5 A. What is the ideal primary current at 230 V, and is the transformer overloaded?</summary><div class="answer"><p>Load = 24 × 1.5 = 36 VA, within the 40 VA rating (90 %). Ideal primary current = 36 / 230 ≈ 0.157 A (or 1.5 / 9.58). Real primary current is slightly higher because of losses and magnetising current.</p></div></details>

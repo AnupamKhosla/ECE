@@ -39,6 +39,7 @@ body.book-theory{--accent:var(--theory);--accent-soft:var(--theory-soft)}
 body.book-career{--accent:var(--career);--accent-soft:var(--career-soft)}
 body.book-reference{--accent:var(--ref);--accent-soft:var(--ref-soft)}
 body.book-practice{--accent:var(--practice);--accent-soft:var(--practice-soft)}
+body.book-welding{--accent:var(--tip);--accent-soft:var(--tip-soft)}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100%}
@@ -166,6 +167,24 @@ ul.checklist input{margin-top:6px;width:18px;height:18px;accent-color:var(--acce
 .widget .readings div{background:var(--wash);border-radius:8px;padding:8px 12px}
 .widget .readings small{display:block;color:var(--muted);font-size:12.5px}
 
+/* Repair worksheet: values are mirrored as wrapping text for complete printing. */
+.job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.job-field.wide{grid-column:1/-1}
+.job-field label{display:block;font-size:14px;font-weight:650;margin-bottom:5px}
+.job-field input,.job-field textarea{display:block;width:100%;font:15px/1.5 var(--sans);padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.job-field textarea{resize:vertical}
+.print-value{display:none}
+.sheet-controls button{font:600 14px var(--sans);padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--accent);color:#fff;cursor:pointer}
+@media(max-width:600px){.job-grid{grid-template-columns:1fr}}
+@media print{
+  body.book-reference:has(.job-sheet){--bg:#fff;--panel:#fff;--ink:#111;--muted:#444;--line:#bbb;color:#111;background:#fff;font-size:11pt}
+  .job-sheet .screen-field,.sheet-controls,body:has(.job-sheet) .otp,body:has(.job-sheet) .crosslink,body:has(.job-sheet) .meta,body:has(.job-sheet) .crumbs{display:none}
+  .job-sheet .print-value{display:block;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #aaa;min-height:28px;padding:6px;font-size:10pt}
+  .job-sheet .wide .print-value{min-height:50px}
+  .job-grid{gap:10px}
+  .job-field{break-inside:avoid}
+}
+
 .pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--wash);color:var(--muted)}
 
 /* SVG helper classes — use these instead of hard-coded colours so diagrams work in light and dark */
@@ -211,6 +230,7 @@ mark{background:var(--tip-soft);color:var(--ink);padding:0 2px;border-radius:3px
 .book .bar i{display:block;height:100%;background:var(--bk);width:0;transition:width .6s}
 .book small{color:var(--muted)}
 .book.practice{--bk:var(--practice)} .book.theory{--bk:var(--theory)} .book.career{--bk:var(--career)} .book.reference{--bk:var(--ref)}
+.book.welding,.ch.welding{--bk:var(--tip)}
 .part{margin:34px 0 8px}
 .part h2{border:none;margin:0 0 4px;padding:0;font-size:24px}
 .part>p{color:var(--muted);font-size:15px}
@@ -242,6 +262,7 @@ mark{background:var(--tip-soft);color:var(--ink);padding:0 2px;border-radius:3px
 
 /* ---------- responsive ---------- */
 @media (max-width:980px){
+  html{scroll-padding-top:72px}
   .shell{grid-template-columns:1fr}
   .side{position:fixed;inset:0 auto 0 0;width:300px;max-width:86vw;z-index:40;transform:translateX(-102%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.25)}
   body.nav-open .side{transform:none}

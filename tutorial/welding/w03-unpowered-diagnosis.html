@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W03 · Unpowered diagnosis: inspect, isolate, measure</title>
+<meta name="description" content="Build a repeatable cold-test routine for a donor welder. Record evidence, separate parallel paths and establish what must be investigated before replacement parts are energised.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+<aside class="side" id="side"></aside>
+<main class="page">
+<div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track › W03</div>
+<span class="eyebrow">Welding Repair Track · W03</span>
+<h1>Unpowered diagnosis: inspect, isolate, measure</h1>
+<p class="lede">Build a repeatable cold-test routine for a donor welder. Record evidence, separate parallel paths and establish what must be investigated before replacement parts are energised.</p>
+<div class="meta"><span><b>Study + exercises</b> 2–3 hours with a mentor</span><span><b>Level</b> W01, W02 and verified safe access</span><span><b>Context</b> India · family repair shop</span></div>
+<nav class="otp" data-auto></nav>
+<div class="callout warn"><span class="label">Entry condition</span><p>Inside-machine work in this chapter starts only after your repair mentor has isolated the machine, followed the exact stored-energy procedure and verified de-energisation. “Cold test” describes the test state; it does not prove that a machine is safe to touch. Re-establish safe conditions after any power-up.</p></div>
+<h2>Intake: make the complaint testable</h2>
+<p>Ask when the fault occurs: on switching on, when striking an arc, after warming up, or only on one supply or extension lead. Record mode, current setting, electrode, lead arrangement, fan/display/indicator behaviour, recent impact or moisture and any previous repair. Ask whether a fuse, MCB or RCD operated; those are different observations. Do not repeatedly reconnect a machine that trips.</p>
+<p>Attach a job number and list all supplied leads. Use <a href="../reference/r04-welding-job-sheet.html">R04</a>. Photograph the original wiring, connectors, insulating pads and mounting hardware before disconnecting anything. Label both ends of a connector.</p>
+
+<h2>Visual inspection follows the power path</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Look for</th><th scope="col">Do not conclude yet</th></tr></thead><tbody><tr><td>Input / inrush</td><td>Burnt plug or cord, cracked fuse holder, damaged MOV, NTC/resistor, relay contact or solder joint.</td><td>An open fuse is a symptom. Never increase its rating or bridge it.</td></tr><tr><td>DC link</td><td>Bulging or leaking capacitors, lifted vents, dark board, loose bank connections or balancing components.</td><td>Normal appearance does not establish capacitance, ESR or leakage.</td></tr><tr><td>Power switches</td><td>Cracked package, arc marks, damaged gate resistor, lifted track, discoloured clamp network.</td><td>The visibly exploded device may be the victim of another fault.</td></tr><tr><td>Transformer / output</td><td>Loose high-current joints, burnt winding insulation, broken ferrite, overheated output studs and rectifier mounts.</td><td>Low winding resistance is normal. A multimeter cannot rule out shorted turns.</td></tr><tr><td>Cooling / control</td><td>Blocked fins, metallic dust, seized fan, detached thermal sensor, corrosion, connector damage.</td><td>A fan turning briefly does not prove adequate airflow or correct thermal control.</td></tr></tbody></table></div>
+<p>Do not blow conductive debris deeper into boards. The cleaning method must suit the manufacturer’s instructions, contamination and insulation system. Record carbonisation or damaged clearances before cleaning; removing soot does not repair damaged insulation.</p>
+
+<h2>The cold-test sequence</h2>
+<ol class="steps">
+<li><p><b>Identify the actual circuit.</b> Match board revision to the diagram. Mark bridge +/−/~ terminals, each switch’s G/D/S or G/C/E and the output rectifier configuration from datasheets.</p></li>
+<li><p><b>Check the input protection path.</b> Test the disconnected fuse for continuity; inspect the specified fuse type, surge protection, series inrush element and relay. Do not bypass an open limiter. A disconnected cold NTC has a model-specific resistance, not a universal “good” value.</p></li>
+<li><p><b>Screen for a bus short.</b> With voltage verified absent, observe resistance across the designated bus nodes in both polarities. Capacitor charging by the meter can make the reading rise. A persistent low value is a lead for investigation, not a universal resistance threshold.</p></li>
+<li><p><b>Test the bridge.</b> Perform W02’s eight junction readings. Record whether each measurement is in circuit or isolated. If an abnormal result follows the bridge after isolation, the bridge itself is implicated.</p></li>
+<li><p><b>Screen all power switches.</b> Compare corresponding devices with their gates safely held off according to their datasheets. Check D–S or C–E both ways and gate-to-power terminals. The ordinary MOSFET’s body diode and an IGBT’s optional co-pack diode are different; use <a href="w04-switches-drivers.html">W04</a>.</p></li>
+<li><p><b>Test output diodes and inspect the load path.</b> Account for transformer windings and parallel rectifiers. Check the socket, cable and work-clamp connections. Do not use the meter’s current socket across welding terminals.</p></li>
+<li><p><b>Examine nearby causes.</b> Gate resistors, driver transistors/ICs, pull-downs, clamps, snubbers, current sensing, cooling and capacitor condition all matter. Note the next test needed for each unresolved item.</p></li>
+</ol>
+
+<h2>Write useful measurements</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">Poor note</th><th scope="col">Useful note</th></tr></thead><tbody><tr><td>“Bridge bad”</td><td>BR1 removed from circuit; red A, black +: 0.006 V; reverse: 0.007 V. Other three junctions each forward 0.56–0.60 V and reverse OL. Meter diode mode.</td></tr><tr><td>“IGBT okay”</td><td>Q1 gate held off, isolated: no hard C–E short; G–E and G–C show no meter-detectable low-resistance path. Dynamic switching and blocking not verified.</td></tr><tr><td>“Capacitor okay”</td><td>C7 disconnected and discharged: capacitance recorded at meter’s test frequency; ESR compared with the correct series/specification. Rated-voltage leakage not tested.</td></tr><tr><td>“Earth fine”</td><td>Visual earth-bond inspection performed only. Protective-conductor test pending with specified instrument and procedure; continuity beep alone is insufficient.</td></tr></tbody></table></div>
+
+<h2>Worked example: an input bridge failure</h2>
+<p><b>Training example, invented readings.</b> A machine trips its branch MCB immediately at turn-on. After safe isolation, BR1’s A-to-+ pair reads near zero both ways in circuit. Removing BR1 gives the same reading. The downstream capacitor bank no longer shows a persistent hard short on the mentor’s designated cold test.</p>
+<p><b>Confirmed:</b> one junction of BR1 is shorted. <b>Not confirmed:</b> why it failed, whether the IGBTs behave correctly at operating voltage, and whether the inrush relay has been bypassed. The repair plan includes the matching bridge specification, inrush circuit, bank condition, switch screening and thermal mounting.</p>
+<p>Suppose inspection finds an earlier repair has soldered across the inrush resistor. That is evidence of a plausible stress mechanism. Restore the original specified circuit, investigate the reason for the bypass and have the mentor follow the service manual’s controlled recommissioning. Only model-specific electrical and load tests close the job; clearing one ohmmeter short does not.</p>
+
+<h2>Why cold tests have limits</h2>
+<p>Resistance and diode mode use small voltages and currents. They find many shorts and opens, but they cannot reproduce operating voltage, heat, gate timing or switching transients. A normal-looking capacitor may have high ESR; a normal diode may leak when hot; a transistor may fail to block hundreds of volts. When a reading depends on test voltage or on another circuit branch, write that limitation.</p>
+<a class="crosslink" href="../theory/t23-capacitor-thermal-failure.html">T23 · ESR, inrush and failure chains</a><a class="crosslink" href="../practice/p21-fault-finding.html">P21 · Half-splitting and choosing a discriminating test</a><details class="quiz"><summary>The fuse is open and a power switch is shorted. Which do you replace first?</summary><div class="answer"><p>Neither is ready for immediate re-energisation. Document both failures, test the rest of that switch group and its gate-driver/protection neighbourhood, check downstream faults, then plan the complete repair and controlled retest. Fit only the specified fuse after the fault is addressed.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can collect a precise complaint and label original connections."><span>I can collect a precise complaint and label original connections.</span></li><li><input type="checkbox" aria-label="I record probe polarity, mode and whether a part was isolated."><span>I record probe polarity, mode and whether a part was isolated.</span></li><li><input type="checkbox" aria-label="I can separate confirmed failures from hypotheses."><span>I can separate confirmed failures from hypotheses.</span></li><li><input type="checkbox" aria-label="I can explain what my cold tests have left unverified."><span>I can explain what my cold tests have left unverified.</span></li></ul>
+</main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/welding.js"></script>
+</body>
+</html>
