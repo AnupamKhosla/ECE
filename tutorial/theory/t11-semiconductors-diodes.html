@@ -82,6 +82,8 @@
     <p>Boron has three outer electrons, one short of filling four bonds. A valence electron from a neighbouring Si–Si bond can move into the boron's empty bond. That costs only about <strong>0.045 eV</strong>, so at room temperature it happens to nearly every boron atom. The boron becomes a fixed <strong>−1</strong> ion. The bond the electron came from now has a vacancy: a <strong>hole</strong>. Boron <em>accepts</em> an electron, so it is an <strong>acceptor</strong>, and the silicon is <strong>p-type</strong>.</p>
     <p>Both kinds of doped silicon are <strong>electrically neutral overall</strong>. In n-type, each mobile electron is balanced by a fixed + donor ion. In p-type, each mobile hole is balanced by a fixed − acceptor ion. "n" and "p" name the <em>majority carrier</em>, not a net charge.</p>
 
+    <p class="callout"><strong>Follow the actual states:</strong> <a href="pn-junction-deep-dive.html#dopants-to-depletion">03A · From dopant states to changing depletion</a> draws acceptor ionization, both initial diffusion/recombination routes, and the stationary ions under forward and reverse bias. Use its four-state controls to see mobile compensation change without moving the dopants.</p>
+
     <h2>Holes: how a vacancy moves</h2>
     <p>A hole is a missing electron in an otherwise full valence band. It is not a particle you could pull out of the crystal. It moves because <strong>a neighbouring valence electron hops into the vacancy</strong>, which leaves a new vacancy where that electron used to be. Repeat, and the vacancy walks one way while the electrons each step once the other way.</p>
     <figure>
@@ -186,6 +188,12 @@
       <div><h4>Reverse bias (+ to n, − to p)</h4><p>The battery pulls majority carriers away from the junction. More ions are uncovered, the depletion layer widens (0.43 → 1.22 µm at −5 V) and the barrier grows to 0.714 + 5 = 5.71 V. Majority carriers can no longer cross. Only the few minority carriers (like those 10<sup>4</sup> electrons/cm³ in p) fall down the barrier: leakage of nanoamps in a small silicon diode at room temperature, until breakdown.</p></div>
     </div>
     <p>The depletion width follows W ∝ √(V<sub>bi</sub> − V), where V is the applied voltage (negative for reverse). Check: 0.43 µm × √(5.714/0.714) = 0.43 × 2.83 ≈ 1.22 µm. At 50 V reverse, W ≈ 0.43 × √(50.7/0.714) ≈ 3.6 µm.</p>
+
+    <h2>Reverse bias: contacts, mobile carriers, and fixed ions</h2>
+    <p>The reverse field drives p-side holes toward the negative contact and n-side conduction electrons toward the positive contact. Their removal near the junction exposes more fixed dopant charge and widens depletion. After this finite charging transient, the junction carries only a small leakage current below breakdown; the neutral regions remain conducting.</p>
+    <p><strong>Depletion is not forbidden territory.</strong> A conduction electron supplied on the p side can cross toward n; a hole supplied on the n side can cross toward p. The strong field sweeps them across. Ordinary reverse current is small because the supply of those minority carriers is small.</p>
+    <p><strong>Where are the negative ions’ electrons?</strong> Occupied acceptor states, approximately 0.045 eV above the valence-band edge for boron in silicon, account for the fixed negative acceptor charge. These are not freely mobile conduction electrons. Recombination into a valence-band hole and occupation of an acceptor state are distinct processes.</p>
+    <p><strong>Why doesn’t the negative wire flood p with conduction electrons?</strong> A metal supplies occupied states over an energy distribution, not arbitrary-energy electrons. At an ordinary ohmic p contact, exchange supports valence-band hole transport without maintaining a large excess conduction-electron population. Actual band bending and contact barriers matter; good contacts often use heavy doping and tunnelling. Under bias there is no single Fermi level across the whole diode. Read <a href="pn-junction-deep-dive.html#metal-contacts">06A · Metal contacts, ions, and reverse current</a> for three labelled diagrams, the complete path, the corresponding n contact, and MIT/Berkeley references.</p>
 
     <h2>The diode equation</h2>
     <p>Put the exponential barrier idea into one formula, the <strong>Shockley diode equation</strong>:</p>
