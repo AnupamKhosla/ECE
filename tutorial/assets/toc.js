@@ -146,6 +146,7 @@ window.TOC = {
           { n: "C01", file: "career/c01-bms-fundamentals.html", title: "BMS fundamentals: what a building management system does", d: "HVAC plant, points (AI/AO/DI/DO), controllers, front ends and alarms." },
           { n: "C02", file: "career/c02-bms-protocols-commissioning.html", title: "BMS protocols and commissioning: BACnet, Modbus, Niagara", d: "Device addressing, point mapping, trend logs, and a commissioning checklist." },
           { n: "C03", file: "career/c03-hvac-for-technicians.html", title: "HVAC for electronics people", d: "Chillers, AHUs, VAV boxes, FCUs, sensors and the control loops a BMS tech tunes." },
+          { n: "C17", file: "career/c17-bms-fieldwork.html", title: "Start in BMS: tools, site work and commissioning", d: "Junior controls roles, drills and spanners, ladder safety, field videos, and a commissioning portfolio project." },
           { n: "C04", file: "career/c04-fire-detection-ewis.html", title: "Fire detection and EWIS basics", d: "Detectors, panels, loops, EOL resistors and the Australian standards around them." }
         ]},
         { title: "Part II · Security systems", blurb: "Cameras, access control and alarms.", chapters: [

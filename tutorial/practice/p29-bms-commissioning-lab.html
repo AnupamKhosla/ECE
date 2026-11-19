@@ -17,6 +17,7 @@
     <p class="lede">Wire simulated field points, exercise the sequence of operation and hand over a test record with trends and fault evidence. The only loads are LEDs.</p>
     <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P21–P23, P27, C02</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
+    <p>The pot represents a temperature sensor, the command LED stands in for the fan start request, and the proof switch represents a separate indication that the fan is moving air. See the <a href="../career/c03-hvac-for-technicians.html#the-air-handling-unit-ahu">labelled real AHU and its video</a> to identify the equipment these points describe.</p>
 
     <h2>Build the point simulator</h2>
     <p>Use a 5 V Arduino Uno, two switches, a 10 kΩ linear pot, two 1 kΩ resistors, one 100 kΩ resistor and two LEDs with 330 Ω resistors. Connect the pot end terminals through 1 kΩ each to 5 V and GND. Connect its wiper to A0 and add 100 kΩ from A0 to GND so a removed wiper lead reads near zero. The pot models 15–35 °C around ADC codes 85–938. Once the sketch is running, measure your actual endpoints and put them in <code>adcAt15C</code> and <code>adcAt35C</code>. Check that the full travel stays within the valid window of 60–960. Wire the switches from D2 and D3 to GND and the command and alarm LEDs from D8 and D9 through their resistors to GND, anodes toward the pins.</p>
@@ -110,6 +111,13 @@
       <li>During another valid run, open the proof switch. Confirm a latched fault. Try to reset while enable remains closed, then complete the approved bench reset sequence and run a normal cycle.</li>
     </ol>
     <p>In the handover, include the points list, expected/actual test results, alarm timestamps, one normal and one failing trend, and the safe state left at the end. For a protocol extension, use the separate isolated training network in <a href="p14-serial-buses-modbus.html">P14</a> or the simulated BACnet lab in <a href="../career/c02-bms-protocols-commissioning.html">C02</a>. Map a raw value to a documented engineering unit and compare it with the local trend. <a href="https://bacnetinternational.org/bacnet-glossary/">BACnet International glossary and object terminology</a>.</p>
+    <h2>Turn this into an interview case</h2>
+    <p>Take a photo of your powered-down trainer with the enable switch, proof switch, temperature pot and both LEDs labelled. Use the following example to write your own result. Keep the terminal or Arduino pin, CSV timestamp and outcome visible together.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test</th><th scope="col">Expected</th><th scope="col">What to record from your run</th></tr></thead>
+      <tbody><tr><th scope="row">Fan command with no proof</th><td>Proof at D3 stays off. About three seconds after the fan command starts, D8 goes off and the alarm at D9 goes on.</td><td>Paste the CSV rows around the command and alarm changes, report the elapsed time and note how you restored the trainer.</td></tr></tbody>
+    </table></div>
+    <p>Explain why command and proof are separate. In a building, a command on the front end shows what the controller requested. The proof is the separate field observation. Use that distinction in your handover and in <a href="../career/c17-bms-fieldwork.html">C17’s BMS job route</a>.</p>
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18</a> and <a href="../theory/t16-signals-noise-loops.html">T16</a> cover sensor signals and scaling. <a href="../theory/t30-embedded-timing-states.html">T30</a> explains startup and faults. <a href="../theory/t31-feedback-control.html">T31</a> covers hysteresis, interlocks and independent proof.</p></div>
   </main>
 </div>

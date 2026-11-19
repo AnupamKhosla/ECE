@@ -18,6 +18,7 @@
     <div class="meta"><span><b>Reading</b> 50 min</span><span><b>Level</b> Beginner</span><span><b>Roles</b> BMS / controls technician</span><span><b>Builds on</b> P03, P12, P14</span></div>
 
     <nav class="otp" data-auto></nav>
+    <a class="crosslink" href="c17-bms-fieldwork.html">C17 · Start in BMS with real tool photos, field videos and a job-focused study order</a>
     <p>After reading C01–C03, wire simulated field points and take a commissioning trend in <a href="../practice/p29-bms-commissioning-lab.html">P29 · Commission a simulated air handler</a>. Use it to practise verifying a command and independent feedback.</p>
 
     <h2>What a BMS is (and what it is not)</h2>
@@ -372,11 +373,12 @@
 
     <h2>A day in the life of a BMS service technician</h2>
     <p>Here is a realistic day for a service tech in a capital city. Details differ, but the pattern is common.</p>
+    <p>Watch a Grosvenor BMS technician at a customer site. Pay attention to the tools and where the work takes place. The Setpoint engineers’ account covers the on-site coordination, programming and fault-finding that an integrator may do. <a href="https://www.youtube.com/watch?v=o0i546Fms50">Grosvenor Engineering Group field video</a> · <a href="https://setpoint.co.nz/a-day-in-the-life-of-a-bms-engineer/">Setpoint engineer accounts</a>.</p>
     <ol class="steps">
       <li><p><b>07:00 · Sign in.</b> Arrive at an office building. Sign in at the loading dock or with security, collect keys or an access card, and check the site's induction and permit system. Read the logbook for notes from the last visit.</p></li>
       <li><p><b>07:20 · Alarm review.</b> Log in to the front end. Sort the alarm list: what is new, what is repeating, what is long-standing. Note anything critical (chiller fault, pump failure, communication loss to a controller).</p></li>
       <li><p><b>08:00 · Preventive maintenance.</b> Work through the maintenance schedule: check a sample of sensors against a calibrated reference thermometer, stroke valves and dampers from 0 to 100 % and watch them move, check that schedules and holiday calendars are right, back up controller programs.</p></li>
-      <li><p><b>10:30 · A complaint.</b> The facility manager says level 5 is "freezing". On the front end, you see the zone at 20.1 °C, setpoint 22.5 °C, VAV damper at minimum, reheat valve commanded 100 %. You go to the ceiling: the reheat valve actuator is not moving. Measure 24 V AC at its supply terminals: present. Measure the control signal: 9.8 V DC, so the controller is doing its job. The actuator has failed. You quote a replacement.</p></li>
+      <li><p><b>10:30 · A complaint.</b> The facility manager says level 5 is too cold. The front end shows 20.1 °C against a 22.5 °C setpoint and a 100% reheat command. The authorised tech finds 24 V AC at the actuator’s supply and 9.8 V DC on its control input, yet the valve does not move. The fault is now narrowed to the actuator or valve assembly. Check the actuator’s mode and rating, the linkage and whether the valve is jammed before recommending a part.</p></li>
       <li><p><b>13:00 · Second site.</b> A cool room alarm keeps clearing itself. The trend shows the temperature crossing the limit for 30 seconds every defrost cycle. You add a delay to the alarm so it only triggers if the condition lasts 15 minutes, with the client's agreement, and record the change.</p></li>
       <li><p><b>15:30 · Paperwork.</b> Write up each job in the company's service app or CMMS (computerised maintenance management system): what you found, what you did, parts used, recommendations. Good notes are part of the product the client pays for.</p></li>
     </ol>
