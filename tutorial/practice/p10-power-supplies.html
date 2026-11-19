@@ -183,6 +183,36 @@
     </ol>
 
     <h2>3 · Buck converters: why they run cool</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/buck.jpg" alt="Three small switching converter boards showing inductors and adjustment components" width="1841" height="1342" loading="lazy" decoding="async">
+      <svg viewBox="0 0 1841 1342" aria-hidden="true">
+        <path d="M 478.7,644.2 L 478.7,611.1" fill="none" stroke="#142b38" stroke-width="13.6"/>
+        <path d="M 478.7,644.2 L 478.7,611.1" fill="none" stroke="#fff" stroke-width="6.0"/>
+        <path d="M 478.7,577.1 L 494.9,611.1 462.4,611.1 Z" fill="#fff" stroke="#142b38" stroke-width="3.4"/>
+        <circle cx="478.7" cy="644.2" r="37.7" fill="#103549" stroke="#fff" stroke-width="4.7"/>
+        <text x="478.7" y="644.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:52.3px">1</text>
+        <path d="M 1472.8,617.3 L 1413.4,600.0" fill="none" stroke="#142b38" stroke-width="13.6"/>
+        <path d="M 1472.8,617.3 L 1413.4,600.0" fill="none" stroke="#fff" stroke-width="6.0"/>
+        <path d="M 1380.8,590.5 L 1418.0,584.4 1408.9,615.6 Z" fill="#fff" stroke="#142b38" stroke-width="3.4"/>
+        <circle cx="1472.8" cy="617.3" r="37.7" fill="#103549" stroke="#fff" stroke-width="4.7"/>
+        <text x="1472.8" y="617.3" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:52.3px">2</text>
+        <path d="M 1233.5,147.6 L 1134.8,199.0" fill="none" stroke="#142b38" stroke-width="13.6"/>
+        <path d="M 1233.5,147.6 L 1134.8,199.0" fill="none" stroke="#fff" stroke-width="6.0"/>
+        <path d="M 1104.6,214.7 L 1127.3,184.6 1142.3,213.4 Z" fill="#fff" stroke="#142b38" stroke-width="3.4"/>
+        <circle cx="1233.5" cy="147.6" r="37.7" fill="#103549" stroke="#fff" stroke-width="4.7"/>
+        <text x="1233.5" y="147.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:52.3px">3</text>
+        <path d="M 1196.7,603.9 L 1072.3,468.0" fill="none" stroke="#142b38" stroke-width="13.6"/>
+        <path d="M 1196.7,603.9 L 1072.3,468.0" fill="none" stroke="#fff" stroke-width="6.0"/>
+        <path d="M 1049.4,442.9 L 1084.3,457.0 1060.4,478.9 Z" fill="#fff" stroke="#142b38" stroke-width="3.4"/>
+        <circle cx="1196.7" cy="603.9" r="37.7" fill="#103549" stroke="#fff" stroke-width="4.7"/>
+        <text x="1196.7" y="603.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:52.3px">4</text>
+      </svg>
+    </div>
+    <figcaption>The LM2596 and MP1584 boards step voltage down. The SDB628 board steps it up. Use the chip marking and input/output labels to tell the modules apart before connecting a load.<br><b>On the top LM2596 board, 1 is the input side and 2 is the output side. 3 marks the adjustment screw above the board, and 4 marks the inductor.</b><br><small>Photo by Matthew Berardi, with labels added. <a href="https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=CEhBN5_fO5o">Switch mode power supply tutorial: DC-DC buck converters · Afrotechmods</a><br>Trace what the inductor does during the on and off parts of a switching cycle.</p>
+
     <p>A <b>buck converter</b> (step-down switching regulator) does not burn off the extra voltage. A transistor switches the input on and off very fast (about 150 kHz on LM2596-type modules), and an inductor and capacitor smooth the pulses into steady DC. The output voltage is set by the duty cycle (P09): roughly V<sub>out</sub> ≈ D × V<sub>in</sub>. The switch is either fully on (tiny voltage across it) or fully off (no current through it), so it wastes very little. The inductor stores energy while the switch is on and keeps pushing current to the load while it is off.</p>
 
     <figure>
@@ -493,6 +523,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

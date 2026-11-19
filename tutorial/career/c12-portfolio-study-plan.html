@@ -70,6 +70,8 @@
     </div>
 
     <h3>Project 1 · Structured cabling board (week 3–4)</h3>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Xeowi82aLB8">Verification, Qualification and Certification Cable Testing by Fluke Networks · FlukeNetworksVideo</a><br>Select the right tester evidence for your portfolio. Save the wire-map result and label it with both ends of a practice run.</p>
+
     <p><b>Why first:</b> it is cheap, it is pure hand skill, and it is the most common entry door. Cabling crews hire beginners who can terminate neatly and fast.</p>
     <ol class="steps">
       <li><p><b>Build the board.</b> A 600 × 900 mm sheet of plywood, a small wall-mount bracket or a 6U rack shelf, a 12-port Cat6 patch panel, four surface-mount outlets spread across the board, a cheap unmanaged or smart switch.</p></li>
@@ -99,6 +101,11 @@
     </ol>
 
     <h3>Project 4 · Plant-room monitor, a tiny BMS (week 8–9)</h3>
+  <figure class="course-photo">
+    <img src="../assets/bms/cabinet-terminals.jpg" alt="Numbered screw terminals and wires in an industrial battery equipment cabinet" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>This battery equipment cabinet shows numbered terminals. Use the labelling pattern when routing your small low-voltage panel. In a portfolio photo, show labels that match the points list and the wiring sketch.<br><small>Photo by tony_duell, resized. <a href="https://commons.wikimedia.org/wiki/File:Cabinet_Terminal_Block.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <ol class="steps">
       <li><p><b>Points list first.</b> Write the points list before wiring, exactly as a BMS engineer would: point name, type (AI/AO/DI/DO), units, range, alarm limits. For example <code>PR-T-01 Plant room temp, AI, °C, alarm &gt; 32</code>.</p></li>
       <li><p><b>Inputs.</b> Two temperature sensors (one could be a 10 kΩ NTC through a divider into an ADC, see <a href="../practice/p04-series-parallel-dividers.html">P04</a> and <a href="../practice/p12-sensors-adc.html">P12</a>), a door contact as a DI, and one Modbus RTU device read over RS-485 (<a href="../practice/p14-serial-buses-modbus.html">P14</a>).</p></li>
@@ -294,6 +301,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

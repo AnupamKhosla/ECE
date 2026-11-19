@@ -131,6 +131,8 @@
     <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
 
     <h2>The voltage divider</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=XxLKfAZrhbM">Voltage divider tutorial · Afrotechmods</a><br>Watch how the midpoint voltage follows the resistor ratio. Compare the example with the loaded divider in this chapter.</p>
+
     <p>Two resistors in series across a supply share the voltage <b>in proportion to their resistance</b>. The bigger resistor gets the bigger share. The junction between them gives you a smaller voltage, set by the ratio:</p>
     <div class="formula">V<sub>out</sub> = V<sub>in</sub> × R2 / (R1 + R2)
       <small>R1 is the top resistor (from V<sub>in</sub>), R2 the bottom one (to 0 V), and V<sub>out</sub> is measured across R2. Example: 9 V with R1 = 10 kΩ and R2 = 4.7 kΩ gives 9 × 4.7 / 14.7 = 2.88 V. The same current flows through both, I = 9 / 14.7 kΩ = 0.61 mA.</small></div>
@@ -216,6 +218,11 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>If a voltage reads lower than it should only when your meter touches it, suspect loading: the circuit has a very high resistance (hundreds of kΩ or more). Try the measurement on a higher-impedance setting if your meter has one, or measure the resistors instead and calculate.</p></div>
 
     <h2>The potentiometer: an adjustable divider</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/pot.jpg" alt="Potentiometer with a rotary shaft and three electrical terminals" width="888" height="1040" loading="lazy" decoding="async">
+    <figcaption>Find the two outer terminals and the middle wiper. Across the outer pair, turning the shaft barely changes the resistance. Between the wiper and one end, the reading changes with position.<br><small>Photo by Iainf. <a href="https://commons.wikimedia.org/wiki/File:Potentiometer.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.5">CC BY 2.5</a>.</small></figcaption>
+  </figure>
+
     <p>A potentiometer ("pot") is a resistive track with a sliding contact called the <b>wiper</b>. The two end terminals see the full track resistance; the middle terminal is the wiper. Connect the ends across a supply and the wiper gives any voltage from 0 to V<sub>in</sub>: it is a divider whose R1 and R2 change together, always adding up to the track value.</p>
     <figure>
       <svg viewBox="0 0 560 220" role="img" aria-label="Potentiometer wired as a voltage divider, wiper as output, with its physical three-pin view">
@@ -433,6 +440,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

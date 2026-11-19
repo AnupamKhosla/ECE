@@ -28,6 +28,12 @@
     <p>Turn off power and remove the input jumper. Ask a partner to give the same “run rail missing” report as they would with the switch left open. Use measurements to distinguish missing input from a missing request. Restore the baseline and repeat. Record why replacing regulator B would fail to fix either case.</p>
 
     <h2>Transfer the sequence to a donor laptop</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/laptopfault.jpg" alt="Magnified failed step-down regulator on a laptop motherboard" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Record the damaged regulator marking and the nearby inductor and capacitors. Use a board reference to map the entire rail before choosing a replacement.<br><small>Photo by Profpcde, resized. <a href="https://commons.wikimedia.org/wiki/File:Microscope_close-up_of_blown_step-down_regulator_on_laptop_PCB.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=cWqWGFVEMA8">RTC, 3V &amp; 5V Are OK But Laptop Still Won&#x27;t Turn ON? | What to Check Next? | Full Logic in Course 7.0 · Laptex</a><br>Follow the reasoning after some standby rails are present. Write which evidence shows the next startup condition is missing.</p>
+
     <p>Start with P32’s external checks and confirm the exact board revision and documented test points. Work on a spare with no data to preserve. Follow the manual’s isolation procedure before opening or taking resistance or diode readings. Inspect connectors, flexes and components under magnification. Locate the input connector, input protection, charge circuit, standby rails and enable or power-good signals from approved documentation. Use a documented return reference. Use powered measurements on the trainer first. On a donor, only use model-documented, accessible low-voltage points and an equipped mentor when the procedure calls for an open powered board.</p>
     <div class="table-wrap"><table>
     <thead><tr><th scope="col">Documented point</th><th scope="col">Question it answers</th><th scope="col">What comes next</th></tr></thead>
@@ -42,6 +48,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

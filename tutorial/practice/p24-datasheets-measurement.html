@@ -19,6 +19,8 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Build two dividers</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=XxLKfAZrhbM">Voltage divider tutorial · Afrotechmods</a><br>Predict the midpoint voltage before watching the example. Then repeat your measurement with the extra load connected.</p>
+
     <p>Use an isolated 5 V source, a breadboard, a DMM, two 10 kΩ resistors and two 1 MΩ resistors. Check your meter’s input impedance in DC volts mode, including any low-impedance mode or range exception. Measure each resistor with the power off and before inserting it.</p>
     <ol class="steps">
       <li><p><b>Predict.</b> Connect one 10 kΩ resistor from 5 V to the output and another from output to ground. Build a second divider using the two 1 MΩ resistors. Calculate each unloaded output with your actual supply voltage, and calculate how your meter changes it using <a href="../theory/t24-measurement-datasheets.html">T24</a>.</p></li>
@@ -28,6 +30,11 @@
     <div class="callout why"><span class="label">Why it works</span><p>Follow <a href="../theory/t04-circuit-laws.html">T04</a> for divider and Thévenin calculations, and <a href="../theory/t24-measurement-datasheets.html">T24</a> for probe loading and how to compare the result with meter accuracy.</p></div>
 
     <h2>Read a regulator like a service technician</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/buck.jpg" alt="Three switching regulator modules with input and output pads" width="1841" height="1342" loading="lazy" decoding="async">
+    <figcaption>Read the board legends first. Record which pad will be your reference, then predict the input and output readings before you measure a powered trainer.<br><small>Photo by Matthew Berardi. <a href="https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>Open the 3.3 V TLV755P variant’s datasheet from TI. Copy the package pinout for one orderable variant, the input operating range, EN logic thresholds, minimum effective output capacitance, and dropout at the specified load for that package. On your sketch, mark IN, OUT, EN and GND and write where you would place the meter probes. <a href="https://www.ti.com/product/TLV755P">TI TLV755P product page and datasheet</a>.</p>
     <p>Suppose IN reads 5.00 V, EN reads 0.04 V and OUT reads 0.01 V. Check EN’s low threshold first. Then find what drives EN. Write how your conclusion would change if EN were valid high and the upstream supply remained steady under load. Read about <a href="../theory/t27-board-power-sequencing.html">EN and power-good in T27</a>.</p>
 
@@ -39,6 +46,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -81,6 +81,40 @@
     <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic and how a microcontroller works</a>
 
     <h2>Which Pi, and which power supply</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/pi.jpg" alt="Overhead photo of a Raspberry Pi 4 Model B with USB, Ethernet, HDMI and GPIO connectors" width="960" height="641" loading="lazy" decoding="async">
+      <svg viewBox="0 0 960 641" aria-hidden="true">
+        <path d="M 374.4,115.4 L 374.4,67.5" fill="none" stroke="#142b38" stroke-width="6.5"/>
+        <path d="M 374.4,115.4 L 374.4,67.5" fill="none" stroke="#fff" stroke-width="2.9"/>
+        <path d="M 374.4,51.3 L 382.1,67.5 366.7,67.5 Z" fill="#fff" stroke="#142b38" stroke-width="1.6"/>
+        <circle cx="374.4" cy="115.4" r="18.0" fill="#103549" stroke="#fff" stroke-width="2.2"/>
+        <text x="374.4" y="115.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.0px">1</text>
+        <path d="M 201.6,589.7 L 169.7,585.5" fill="none" stroke="#142b38" stroke-width="6.5"/>
+        <path d="M 201.6,589.7 L 169.7,585.5" fill="none" stroke="#fff" stroke-width="2.9"/>
+        <path d="M 153.6,583.3 L 170.7,577.8 168.7,593.1 Z" fill="#fff" stroke="#142b38" stroke-width="1.6"/>
+        <circle cx="201.6" cy="589.7" r="18.0" fill="#103549" stroke="#fff" stroke-width="2.2"/>
+        <text x="201.6" y="589.7" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.0px">2</text>
+        <path d="M 336.0,480.8 L 297.7,531.8" fill="none" stroke="#142b38" stroke-width="6.5"/>
+        <path d="M 336.0,480.8 L 297.7,531.8" fill="none" stroke="#fff" stroke-width="2.9"/>
+        <path d="M 288.0,544.9 L 291.5,527.2 303.9,536.5 Z" fill="#fff" stroke="#142b38" stroke-width="1.6"/>
+        <circle cx="336.0" cy="480.8" r="18.0" fill="#103549" stroke="#fff" stroke-width="2.2"/>
+        <text x="336.0" y="480.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.0px">3</text>
+        <path d="M 729.6,185.9 L 774.4,151.0" fill="none" stroke="#142b38" stroke-width="6.5"/>
+        <path d="M 729.6,185.9 L 774.4,151.0" fill="none" stroke="#fff" stroke-width="2.9"/>
+        <path d="M 787.2,141.0 L 779.1,157.1 769.6,144.9 Z" fill="#fff" stroke="#142b38" stroke-width="1.6"/>
+        <circle cx="729.6" cy="185.9" r="18.0" fill="#103549" stroke="#fff" stroke-width="2.2"/>
+        <text x="729.6" y="185.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.0px">4</text>
+        <path d="M 700.8,314.1 L 761.4,314.1" fill="none" stroke="#142b38" stroke-width="6.5"/>
+        <path d="M 700.8,314.1 L 761.4,314.1" fill="none" stroke="#fff" stroke-width="2.9"/>
+        <path d="M 777.6,314.1 L 761.4,321.8 761.4,306.3 Z" fill="#fff" stroke="#142b38" stroke-width="1.6"/>
+        <circle cx="700.8" cy="314.1" r="18.0" fill="#103549" stroke="#fff" stroke-width="2.2"/>
+        <text x="700.8" y="314.1" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.0px">5</text>
+      </svg>
+    </div>
+    <figcaption>Find the USB-C power input and the two micro-HDMI sockets on the lower edge, Ethernet and USB on the right, and the 40-pin GPIO header across the top.<br><b>1 · 40-pin GPIO header. 2 · USB-C power. 3 · The pair of micro-HDMI sockets. 4 · Ethernet. 5 · USB data ports.</b><br><small>Photo by Laserlicht, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_4_Model_B_-_Top.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <div class="cards">
       <div class="card"><h4>Raspberry Pi 4 Model B</h4><p>Quad-core 64-bit ARM, 1–8 GB RAM, Gigabit Ethernet, Wi-Fi, 2 × USB 3, 2 × micro-HDMI. Power: USB-C, 5.1 V 3 A (15.3 W) official supply. Still a great, cheaper bench machine.</p></div>
       <div class="card"><h4>Raspberry Pi 5</h4><p>About two to three times faster than a Pi 4, with a power button, real-time clock connector and a PCIe connector for an SSD. Power: the official 27 W USB-C supply (5.1 V 5 A). On a 3 A supply it runs but limits USB current.</p></div>
@@ -106,6 +140,8 @@
     <p>You can ask the Pi whether it has ever been short of power with <code>vcgencmd get_throttled</code>. <code>throttled=0x0</code> means all good. Anything else is a bit-field: for example <code>0x50005</code> means "under-voltage right now, throttled right now, and both have happened since boot". Fix the supply before you trust any test result.</p>
 
     <h2>Flash the card with Raspberry Pi Imager</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=O4IQE2E8oOw">How to use Raspberry Pi Imager · Raspberry Pi</a><br>Watch the official imaging workflow. Confirm the destination drive before writing your card.</p>
+
     <p>A <b>headless</b> Pi is one with no screen, keyboard or mouse. Most Pis in the field are headless: they sit in a cabinet and you reach them over the network. Raspberry Pi Imager lets you pre-set everything needed for that before the first boot.</p>
     <ol class="steps">
       <li><p><b>Install Imager</b> on your laptop from raspberrypi.com (free, Windows/macOS/Linux).</p></li>
@@ -509,6 +545,6 @@ tech@plantpi:~ $ pinctrl get 17
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -40,6 +40,11 @@
     <div class="callout warn"><span class="label">Safety</span><p>The ESP32 is a <b>3.3 V</b> chip and its pins are not 5 V tolerant, just like the Pi. The board's 5 V (VIN/5V) pin comes from USB: never connect it to a GPIO. Everything here is USB-powered ELV. Do not connect IoT relay boards to mains loads — switching 230 V is licensed electrical work in Australia.</p></div>
 
     <h2>Meet the ESP32</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/esp.jpg" alt="ESP32-WROOM development board showing the module, antenna and headers" width="600" height="600" loading="lazy" decoding="async">
+    <figcaption>The metal shield covers the ESP32 module. Find the antenna area at the end of the module and give it clearance when you mount the board.<br><small>Photo by SparkFun Electronics. <a href="https://commons.wikimedia.org/wiki/File:15663-SparkFun_Thing_Plus_-_ESP32_WROOM-01.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>The <b>ESP32</b> from Espressif is a microcontroller (like the Arduino's chip, P11) with <b>Wi-Fi and Bluetooth built in</b>. It has two processor cores at up to 240 MHz, about 520 kB of RAM, 4 MB of flash on a typical module, and plenty of GPIO. It costs a few dollars, so it is inside a huge number of smart plugs, sensors and gateways.</p>
     <div class="table-wrap"><table>
       <tr><th>Thing to know</th><th>Why it matters</th></tr>
@@ -61,6 +66,8 @@
     </ol>
 
     <h3>First sketch: join Wi-Fi</h3>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=xPlN_Tk3VLQ">Introduction to ESP32 - Getting Started · DroneBot Workshop</a><br>Find the board family and check the port. Separate the ESP32 setup steps from the later MQTT broker configuration.</p>
+
 <pre><code>#include &lt;WiFi.h&gt;
 
 const char* WIFI_SSID = "BenchIoT";
@@ -166,6 +173,8 @@ RSSI:       -58 dBm</code></pre>
     </ul>
 
     <h2>Install the Mosquitto broker on the Pi</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=XDrwgMSQrEY">MQTT Publish and Subscribe Using Node Red · Steve Cope</a><br>Watch a simple open/closed sensor message travel through the broker into a Node-RED subscriber, then compare it with the ESP32 payload.</p>
+
 <pre><code>sudo apt update
 sudo apt install -y mosquitto mosquitto-clients
 sudo systemctl enable --now mosquitto
@@ -533,6 +542,6 @@ $SYS/broker/clients/connected</textarea></label>
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

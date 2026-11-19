@@ -106,6 +106,12 @@
     <div class="callout myth"><span class="label">Common misconception</span><p><b>"Wi-Fi and 5G are radiation, like X-rays."</b> The word "radiation" covers both, but the physics differs completely. Each photon carries energy E = hf. At 3.5 GHz, E ≈ 6.6 × 10⁻³⁴ × 3.5 × 10⁹ ≈ 2.3 × 10⁻²⁴ J ≈ 0.000 014 eV. Breaking a chemical bond takes a few eV, roughly a hundred thousand to a million times more. Radio waves cannot ionise atoms no matter how many photons arrive; their established effect at high power is heating, and exposure limits (set in Australia by ARPANSA) are set well below levels that cause measurable heating. Being near a high-power antenna on a rooftop is still a real hazard, which is why such sites have signs and exclusion zones.</p></div>
 
     <h2>Antennas: turning current into waves</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/dipole.jpg" alt="Photograph of a half-wave dipole antenna" width="1600" height="1200" loading="lazy" decoding="async">
+    <figcaption>Locate the two sides of the driven element and its centre feed. This geometry is the physical counterpart of the chapter’s wavelength calculation.<br><small>Photo by Schwarzbeck Mess-Elektronik. <a href="https://commons.wikimedia.org/wiki/File:Half_%E2%80%93_Wave_Dipole.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=NTC5FWVvLcI">nanoVNA - Measuring Antenna &amp; Coax Characteristics (Revised Feb 16, 2024) · Gregg Messenger - VE6WO</a><br>Watch what changes when the analyser is connected to an antenna through a feed line.</p>
+
     <p>Any <b>accelerating</b> charge radiates. A steady DC current does not radiate; an AC current does, because its charges are constantly speeding up and slowing down. But a short wire radiates very weakly. An antenna is a conductor shaped so that the currents add up efficiently into a travelling wave. The simplest and most important is the <b>half-wave dipole</b>: two rods, end to end, fed at the centre, with a total length of about half a wavelength.</p>
     <p>Why half a wavelength? At that length the antenna is <b>resonant</b> (<a href="t07-ac-fundamentals.html">T07</a>): a wave of current travelling out to each end reflects and arrives back in step with the next push from the transmitter, so a large standing wave of current builds up, maximum at the centre and zero at the open ends. At resonance the antenna looks like a pure resistance of about 73 Ω to the cable, so power flows in without reflection.</p>
     <div class="formula">L ≈ 0.95 × λ / 2
@@ -408,6 +414,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

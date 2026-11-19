@@ -19,6 +19,16 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Cell, pack and device perform different jobs</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/battery.jpg" alt="18650 rechargeable lithium-ion cell beside an AA cell for scale" width="716" height="1150" loading="lazy" decoding="async">
+    <figcaption>Read the chemistry, voltage and model on the wrapper or data sheet. Physical size alone does not tell you the charging requirements.<br><small>Photo by Lead holder. <a href="https://commons.wikimedia.org/wiki/File:Liion-18650-AA-battery.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <figure class="course-photo">
+    <img src="../assets/photos/pack.jpg" alt="Battery monitoring electronics associated with a lithium-ion pack" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>This example shows the extra circuitry that can sit between a cell group and the outside connector. Its monitoring and cutoff thresholds are specific to the pack design.<br><small>Photo by Oldobelix, resized. <a href="https://commons.wikimedia.org/wiki/File:Lithium_Ionen_Akku_%C3%9Cberwachungselektronik.jpg">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=UUr-CJudg38">Most BMSs (Battery Management Systems) don&#x27;t cut it... I Built a BETTER One. · Haase Industries</a><br>Watch for the distinction between monitoring, balancing and protection. Compare those functions with a commercial pack’s documentation before choosing a charger or replacement.</p>
+
     <p>A cell stores energy chemically. Pack protection monitors conditions such as overvoltage, undervoltage and excessive current. A fuel gauge estimates state of charge using voltage, current history, temperature and a battery model. The host’s charge controller regulates the charge profile and may juggle adapter, system and battery power. Some packs use thermistors or a digital link. A connector that fits does not establish electrical or firmware compatibility.</p>
     <p>Many lithium-ion charging profiles use constant current first, then hold a specified voltage as current tapers before termination. Some include precharge and temperature limits. Limits vary by cell chemistry and vendor. Use only the documented pack and charge arrangement. Swelling, damage, unexpected heat or liquid exposure is a stop condition. Follow the device maker’s process for handling and qualified disposal. <a href="https://www.epa.gov/recycle/frequent-questions-lithium-ion-batteries">EPA guidance on damaged and swollen lithium-ion batteries</a>.</p>
 
@@ -32,6 +42,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

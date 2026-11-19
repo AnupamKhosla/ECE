@@ -19,6 +19,12 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>When the cable length matters</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/analyser.jpg" alt="NanoVNA showing an S11 Smith chart and an S21 trace" width="960" height="614" loading="lazy" decoding="async">
+    <figcaption>Watch how the S11 reading varies with frequency. Calibrate at the plane where you want to measure before blaming the antenna or the cable.<br><small>Photo by Martin Homuth-Rosemann, resized. <a href="https://commons.wikimedia.org/wiki/File:NanoVNA_S11_S21.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=NTC5FWVvLcI">nanoVNA - Measuring Antenna &amp; Coax Characteristics (Revised Feb 16, 2024) · Gregg Messenger - VE6WO</a><br>Watch the calibration step and note exactly where the feed line enters each measurement.</p>
+
     <p>Once a cable is an appreciable fraction of the relevant wavelength, different points along it can have different phases. A transmission line has characteristic impedance Z<sub>0</sub> and a propagation velocity below the speed of light. Coax marked 50 Ω means characteristic impedance, which a DMM resistance test across the open cable will not show. Its wavelength is v/f, where v is the cable’s propagation speed.</p>
     <div class="formula">Γ = (Z<sub>L</sub> − Z<sub>0</sub>) / (Z<sub>L</sub> + Z<sub>0</sub>)</div>
     <p>This is the voltage reflection coefficient at the load. A matched load has Γ = 0. For a 75 Ω resistive load on a 50 Ω line, Γ = 0.20, about 4% of incident power reflects, positive return loss is about 14 dB, and voltage SWR is 1.5:1. An instrument displaying S11 log magnitude shows about −14 dB for the same reflection. A lossy cable can make a bad match look better at the instrument, so set the VNA reference plane at the measurement point with the appropriate calibration. <a href="https://helpfiles.keysight.com/csg/m9485a/s1_settings/measurement_parameters.htm">Keysight reflection measurement definitions</a>.</p>
@@ -33,6 +39,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

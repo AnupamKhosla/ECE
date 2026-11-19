@@ -24,6 +24,11 @@
     <p>Their group leader, <strong>William Shockley</strong>, worked out a cleaner idea in early 1948: a sandwich of three doped layers with two p–n junctions, the <strong>junction transistor</strong>. Its theory could be calculated with the same diffusion and drift physics as the diode. Working junction transistors followed around 1950–51, the first silicon transistors arrived in 1954, and the three men shared the 1956 Nobel Prize in Physics. The word "transistor" comes from "transfer resistor". Every BJT you buy today is Shockley's junction transistor; the point-contact device is history.</p>
 
     <h2>The structure of an NPN transistor</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/bjt.jpg" alt="2N3904 NPN transistor seen from its flat marked face" width="760" height="570" loading="lazy" decoding="async">
+    <figcaption>The three legs access emitter, base and collector inside the package. Identify each using the package drawing for this exact model.<br><small>Photo by Windell Oskay. <a href="https://commons.wikimedia.org/wiki/File:2N3904.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>A <strong>bipolar junction transistor (BJT)</strong> has three regions. "Bipolar" means both electrons and holes take part. In an <strong>NPN</strong> device:</p>
     <ul>
       <li><strong>Emitter (E)</strong>, n-type, <strong>very heavily doped</strong> (around 10<sup>19</sup>–10<sup>20</sup> cm<sup>−3</sup>). Its job is to inject electrons.</li>
@@ -141,6 +146,8 @@
     </ul>
 
     <h2>Cut-off, active and saturation</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Te5YYVZiOKs">Transistor / MOSFET tutorial · Afrotechmods</a><br>Compare the low-side transistor’s control terminal and load circuit with the regions in the chapter.</p>
+
     <p>The <strong>output characteristics</strong> plot I<sub>C</sub> against V<sub>CE</sub> for several fixed base currents. Each curve rises steeply, then goes almost flat: once V<sub>CE</sub> is more than a few tenths of a volt, the collector collects everything the emitter sends, and more voltage hardly adds current. (The slight upward tilt is the <strong>Early effect</strong>: more C–B reverse voltage widens that depletion layer, which makes the neutral base slightly thinner, which loses fewer electrons.)</p>
     <figure>
       <svg viewBox="0 0 640 330" role="img" aria-label="BJT output characteristic curves with cut-off, active and saturation regions and a load line">
@@ -341,6 +348,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

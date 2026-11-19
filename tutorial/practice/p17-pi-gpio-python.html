@@ -49,6 +49,12 @@ python3 -m venv --system-site-packages ~/logger/venv
     <p><code>--system-site-packages</code> lets the venv still see apt's gpiozero and Flask, so you get both worlds.</p>
 
     <h2>Part 1 · LED and button with gpiozero</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/piio.jpg" alt="Raspberry Pi wired to a breadboard in a GPIO project" width="644" height="483" loading="lazy" decoding="async">
+    <figcaption>This separate GPIO project shows how jumper leads sit on a Pi header and land on a breadboard. Follow this chapter’s BCM pin numbers and resistor placements for the LED and button build.<br><small>Photo by David Pride. <a href="https://commons.wikimedia.org/wiki/File:Cjam-buzzwire-step6.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=iL_oZGHLHvU&amp;t=1994s">Raspberry Pi GPIO - Getting Started with gpiozero · DroneBot Workshop</a><br>Jump to 33:14 for the LED and button experiments. Use this chapter’s BCM pin numbers for your build.</p>
+
     <p>Wire the LED and button as in Figure 1: GPIO17 (physical pin 11) → 330 Ω → LED anode (long leg); LED cathode → GND. Button between GPIO27 (pin 13) and GND (pin 14). There is no resistor on the button because gpiozero turns on the chip's internal <b>pull-up</b> resistor (about 50 kΩ to 3.3 V). The pin reads high (1) when the button is open and low (0) when pressed, because pressing connects it to ground. gpiozero hides that inversion: <code>is_pressed</code> is True when you press.</p>
 
     <figure>
@@ -599,6 +605,6 @@ sudo reboot                               # the real test: does it come back by 
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

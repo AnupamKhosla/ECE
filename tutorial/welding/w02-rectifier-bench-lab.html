@@ -20,10 +20,45 @@
 <nav class="otp" data-auto></nav>
 
 <h2>Parts and purpose</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/boardbridge.jpg" alt="VSIB4A60 bridge rectifier on an actual power-supply PCB" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>The four-lead bridge is identified by the package printing. Find its AC and DC terminals in the manufacturer pinout before deciding how to probe a comparable welder input bridge.<br><small>Photo by Raimond Spekking, resized. <a href="https://commons.wikimedia.org/wiki/File:Acer_V233H_-_board_1_-_General_Semiconductor_VSIB4A60-7197.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
 <p>You need four 1N4007 diodes (or a small documented bridge), a breadboard, a 9 V battery, a <b>1 kΩ, ¼ W resistor</b> and a multimeter. For this lab there is <b>no mains input and no smoothing capacitor</b>. The resistor is the load and limits battery current to about 8 mA. Disconnect the battery before using diode or resistance mode.</p>
 <p>A silicon diode’s band marks its <b>cathode</b>. In diode mode a conventional digital meter sources a small test current from its red lead to its black lead. Verify your meter’s manual. A forward reading is a voltage at that test current, not the diode’s resistance or its rated operating drop.</p>
 
 <h2>Build a bridge with four visible diodes</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/bridgeopen.jpg" alt="Hand-wired four-diode bridge with two yellow AC leads and red and blue DC leads" width="960" height="1280" loading="lazy" decoding="async">
+      <svg viewBox="0 0 960 1280" aria-hidden="true">
+        <path d="M 163.2,499.2 L 293.2,466.7" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 163.2,499.2 L 293.2,466.7" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 316.8,460.8 L 296.0,478.0 290.4,455.4 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="163.2" cy="499.2" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="163.2" y="499.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">1</text>
+        <path d="M 758.4,780.8 L 618.9,748.0" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 758.4,780.8 L 618.9,748.0" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 595.2,742.4 L 621.5,736.7 616.2,759.3 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="758.4" cy="780.8" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="758.4" y="780.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">2</text>
+        <path d="M 729.6,422.4 L 627.3,464.4" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 729.6,422.4 L 627.3,464.4" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 604.8,473.6 L 622.9,453.6 631.7,475.1 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="729.6" cy="422.4" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="729.6" y="422.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">3</text>
+        <path d="M 134.4,806.4 L 293.8,750.5" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 134.4,806.4 L 293.8,750.5" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 316.8,742.4 L 297.7,761.4 290.0,739.5 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="134.4" cy="806.4" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="134.4" y="806.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">4</text>
+      </svg>
+    </div>
+    <figcaption>Trace each yellow lead to one banded and one unbanded end. Mark those two AC points and the two DC junctions before running the eight-reading test.<br><b>1 and 2 · AC inputs, yellow. 3 · DC positive, red. 4 · DC negative, blue.</b><br><small>Photo by MarBar SK, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Diode_bridge_Diodov%C3%BD_most%C3%ADk.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=cyhzpFqXwdA">Diode Tutorial &amp; How to build an AC to DC power supply · Afrotechmods</a><br>Follow each half-cycle through the exposed bridge, then convert that picture into meter-probe positions for the eight-reading test.</p>
+
 <p>Label four nodes <b>A (~1), B (~2), + and −</b>. Wire these four branches; the arrow below indicates forward conventional current, not the band:</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">Diode</th><th scope="col">Anode connects to</th><th scope="col">Cathode (band) connects to</th></tr></thead><tbody><tr><td>D1</td><td>A</td><td>+</td></tr><tr><td>D2</td><td>B</td><td>+</td></tr><tr><td>D3</td><td>−</td><td>A</td></tr><tr><td>D4</td><td>−</td><td>B</td></tr></tbody></table></div>
 <figure><svg viewBox="0 0 660 240" role="img" aria-label="Bridge connectivity: A and B each have a diode to plus, minus has a diode to A and B">
@@ -59,6 +94,8 @@
 <noscript><p>The interactive trainer requires JavaScript. Use the eight-reading table above as the complete offline exercise.</p></noscript>
 
 <h2>The output rectifier is a different part</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=JDIOp8QbHWQ">{514} Inverter Welding Machine Repair Course / How To Repair Inverter IGBT Welding Machine · Haseeb Electronics</a><br>The presenter traces the MMA-200T’s input rectifier and precharge section. Use the footage to identify stages and compare it with your low-voltage bench model.</p>
+
 <p>Many welders use three-lead dual diodes, sometimes with the tab electrically connected to the common terminal. They may be common-cathode, common-anode or another arrangement. <b>Read the exact part-number suffix and package drawing.</b> Do not copy the pin order of a visually similar device.</p>
 <p>For a <b>common-cathode</b> dual package, red to each anode and black to the common cathode gives two forward readings. Reverse each pair for two blocking readings. For a common-anode package, reverse that connection logic. In-circuit transformer windings and parallel rectifiers can disguise either failure.</p>
 <p>An example to practise reading is ST’s <a href="https://www.st.com/resource/en/datasheet/stth6003.pdf">STTH6003 datasheet</a>: a dual high-frequency rectifier with specified recovery behaviour. This is an identification example, not a recommendation to fit it in your machine.</p>
@@ -69,7 +106,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

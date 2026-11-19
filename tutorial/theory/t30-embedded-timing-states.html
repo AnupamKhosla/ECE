@@ -19,10 +19,17 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Events, state and timing</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/arduino.jpg" alt="Arduino Uno showing the main microcontroller and I/O headers" width="600" height="600" loading="lazy" decoding="async">
+    <figcaption>Assign an input to a physical event such as a button change and an output to the controller state. Use a timestamped serial log to check their timing.<br><small>Photo by SparkFun Electronics from Boulder, USA. <a href="https://commons.wikimedia.org/wiki/File:Arduino_Uno_-_R3.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>A state machine has a state, an input or event, and conditions that select the next state. Outputs can be mapped directly from state. A three-state controller can start in idle, enter running after a command, and move to fault on timeout. Give stop or fault conditions explicit priority when two events happen together. Write a state table before coding so every expected transition has a bench test.</p>
     <p>For a 32-bit millisecond counter, rollover occurs after 2<sup>32</sup> ms, about 49.7 days. For a short interval and regularly evaluated timers, compare an unsigned elapsed time <code>now - started</code> with the interval. Unsigned subtraction wraps consistently. For example, 0x0000000A − 0xFFFFFFF0 is 26 ticks modulo 2<sup>32</sup>. Long blocking calls delay checks even when the arithmetic is correct. <a href="https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay/">Arduino’s non-blocking timing example</a>.</p>
 
     <h2>Debounce, schedule and recover</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=v8KXa5uRavg">✔ Multitask Arduino with State Machines (&amp; Switch Debouncing) · Normal Universe - Chris Guichet</a><br>Watch a switch transition become a software event while timed work continues. Compare the code with your own state diagram.</p>
+
     <p>A switch can bounce between levels for several milliseconds. Record the time of the last raw edge, then accept the new stable state once it has held long enough. Trigger from the accepted edge so a held button cannot continually reissue a one-shot command. Choose whether an input needs an immediate fail-off path or can wait through debounce. A training software stop is different from a rated physical safety stop.</p>
     <p>A watchdog resets a controller if healthy execution stops servicing it. A brownout detector resets on an inadequate supply. Decide what happens after either reset and keep outputs in a defined state during pin startup. External pull resistors can hold a driver disabled until the firmware is ready. Telemetry and display work should have bounded time so control keeps running. <a href="https://docs.arduino.cc/built-in-examples/digital/Debounce/">Arduino debounce example and circuit</a>.</p>
 
@@ -32,6 +39,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -29,12 +29,18 @@
     <p>Real inductors have winding capacitance and real capacitors have lead or package inductance. Resonance or an impedance minimum can occur at frequencies the ideal component model misses. Locate the frequency range of interest before choosing a decoupling component or interpreting a switching spike.</p>
 
     <h2>Worked example and bench check</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/breadboard.jpg" alt="Unpopulated solderless breadboard with terminal groups and side rails" width="960" height="571" loading="lazy" decoding="async">
+    <figcaption>Put the resistor and capacitor on separate row groups, attach scope ground to the filter’s common return, and identify the output node before applying the test signal.<br><small>Photo by Evan-Amos, resized. <a href="https://commons.wikimedia.org/wiki/File:Electronics-White-Breadboard.jpg">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=YEKe5WyCzIg">Low Pass Filter - Simple Example ep3 · Kiss Analog</a><br>Look for the relationship between frequency and amplitude, then compare it to the corner frequency calculated by hand.</p>
+
     <p>With 10 kΩ and 100 nF, RC = 1 ms and f<sub>c</sub> ≈ 159 Hz. At 1 kHz an unloaded sine input of 2.00 V peak-to-peak gives about 0.314 V peak-to-peak. If a square wave gives an output with rounded corners, compare its time constant with the period and inspect a single step before calculating sine gain.</p>
     <details class="quiz"><summary>Why can aliasing still appear after smoothing the samples in software?</summary><div class="answer"><p>Once an out-of-band analogue signal has been sampled as a false lower frequency, digital smoothing cannot distinguish it from genuine in-band content. Limit the analogue bandwidth before sampling. <a href="t16-signals-noise-loops.html">T16 · Sampling and noise</a>.</p></div></details>
     <p><a class="crosslink" href="../practice/p25-scope-filters.html">Practice P25 · Measure a low-pass response</a></p>
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

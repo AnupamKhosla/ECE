@@ -24,7 +24,7 @@
 <div class="photo-pair">
   <figure>
     <div class="photo-annotation">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/GYS_-_MMA_Arc_Welder.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets." referrerpolicy="no-referrer">
+      <img src="../assets/photos/gys.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets.">
       <svg viewBox="0 0 370 370" aria-hidden="true" focusable="false">
         <defs><marker id="w01-photo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#fff"/></marker></defs>
         <g fill="none" stroke="#11202d" stroke-width="6" stroke-linejoin="round">
@@ -47,12 +47,14 @@
     <figcaption><b>Compact inverter stick welder.</b> The electrode-holder lead and work-clamp lead plug into the two brass output sockets. The mains input is elsewhere on the machine. Photo by Bruno Bouygues with course annotations. <a href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
   </figure>
   <figure>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/SMAW_welding_machine_internals.jpg" width="960" height="727" alt="Inside an AC stick welder, with a large mains-frequency transformer assembly." loading="lazy" referrerpolicy="no-referrer">
+    <img src="../assets/photos/weldinside.jpg" width="960" height="727" alt="Inside an AC stick welder, with a large mains-frequency transformer assembly." loading="lazy">
     <figcaption><b>Inside an AC transformer stick welder.</b> Look for the large iron-core transformer with heavy windings. Photo by Claudio Nardi (Klaudio). <a href="https://commons.wikimedia.org/wiki/File:SMAW_welding_machine_internals.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>.</figcaption>
   </figure>
 </div>
 <div class="table-wrap"><table><thead><tr><th scope="col">Family</th><th scope="col">Usual power path</th><th scope="col">Repair emphasis</th></tr></thead><tbody><tr><td>Heavy AC transformer welder</td><td>50 Hz transformer → adjustable or magnetically limited AC output</td><td>Leads, selector, cooling, insulation and windings. There may be no power rectifier.</td></tr><tr><td>Transformer-rectifier DC welder</td><td>50 Hz transformer → high-current rectifier → choke</td><td>High-current rectifier connections, contacts, cooling and winding/insulation diagnosis.</td></tr><tr><td>Compact DC inverter MMA welder</td><td>Rectified mains → fast switching → ferrite transformer → fast output rectifier</td><td>Power semiconductors, inrush, auxiliary supply, gate drivers and feedback.</td></tr><tr><td>MIG or AC/DC TIG</td><td>May use an inverter, with extra output/control stages</td><td>MIG may regulate voltage and adds wire feed. AC TIG adds polarity switching; HF ignition adds high-voltage pulses. Use a separate model-specific learning plan.</td></tr></tbody></table></div>
 <h2>A representative inverter power path</h2>
+  <p>Open section 4 of the <a href="https://weldwell.co.nz/content/files/technical%20manuals/weldarc%20200%20ac_dc%20%28mc114-1%29%20tech%20manual.pdf">Weldwell Weldarc 200 AC/DC technical manual</a> for two labelled photos of the actual inverter interior. Find the input rectifier and the primary inverter PCB. Compare the photos with the stage map below.</p>
+
 <p>Open the Lincoln inverter photos and find the power board, separate control board and heatsink-mounted switches. Compare those parts with the blocks below. Use the photos as a parts-spotting exercise and follow the exact service instructions for your machine. <a href="https://emil.matei.ro/invertec_v250.php">Emil Matei’s Lincoln Invertec V250-S photo teardown</a> · <a href="https://www.infineon.com/assets/row/public/documents/24/42/infineon-to-247plus-igbt-discrete-device-enhances-power-density-in-welding-machines-applicationnotes-en.pdf#page=6">Infineon’s inverter board and heatsink photographs, Figure 6</a>.</p>
 <a class="crosslink" href="https://www.youtube.com/watch?v=1XPzV0sXOck">Watch on YouTube · Haseeb Electronics identifies parts on an inverter welder</a>
 <p>Pause when you see the input bridge, capacitor bank and high-frequency transformer. Point to the matching block below. <a href="https://www.youtube.com/watch?v=rnfh9Q0uP50">Hindi/Urdu version on YouTube</a>.</p>
@@ -87,12 +89,17 @@
 <p>Keep the welding work-return clamp separate in your mind from the machine’s protective earth: the work lead carries welding current. It is not a replacement for the chassis earth conductor.</p>
 
 <h2>Map one machine without powering it</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/inverter.jpg" alt="Side view of a compact Lüsqtoff Iron-140 inverter stick welder showing its vents and fasteners" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Compare this side view with the GYS front photo above. Identify the cooling vents, case fasteners and the input lead before you refer to the service manual.<br><small>Photo by Just a Man, resized. <a href="https://commons.wikimedia.org/wiki/File:Soldadora_inverter_L%C3%BCsqtoff_Iron-140_(1).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+  </figure>
+
 <ol class="steps"><li><p>From an exact manual, mark input, bridge, capacitor bank, switches, transformer, output rectifier and control board. Draw arrows for the energy path.</p></li><li><p>Mark which regions are mains-referenced, which are isolated, and where the isolation components sit. Mark any uncertainty instead of assuming a “ground” symbol means protective earth.</p></li><li><p>Compare with photographs taken by your technician after safe access. Write component references and full markings beside your map.</p></li></ol>
 <details class="quiz"><summary>A board runs on 15 V. Can a grounded USB scope be attached?</summary><div class="answer"><p>Not on that fact alone. A 15 V rail can be referenced to the mains-connected primary bus. Determine the isolation boundary and the instrument’s permitted reference before any connection.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can identify the machine family from evidence."><span>I can identify the machine family from evidence.</span></li><li><input type="checkbox" aria-label="I can draw the two rectifier stages and the isolation boundary."><span>I can draw the two rectifier stages and the isolation boundary.</span></li><li><input type="checkbox" aria-label="I can explain why unplugging and waiting do not verify de-energisation."><span>I can explain why unplugging and waiting do not verify de-energisation.</span></li><li><input type="checkbox" aria-label="I know which activities require my repair mentor and the exact service manual."><span>I know which activities require my repair mentor and the exact service manual.</span></li></ul>
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

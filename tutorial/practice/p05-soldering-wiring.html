@@ -24,7 +24,7 @@
     <p>Watch the iron touch the copper pad and the component lead together. Then look for solder flowing around the joint when the wire touches the heated metal.</p>
     <figure>
       <div class="photo-annotation">
-        <img src="https://cdn-learn.adafruit.com/assets/assets/000/001/996/original/tools_Apply_Solder.jpg?1396778099=" width="800" height="479" alt="Close-up of a soldering iron and solder wire coming in from opposite sides of a through-hole joint on a circuit board." referrerpolicy="no-referrer">
+        <img src="../assets/photos/solde.jpg" width="800" height="479" alt="Close-up of a soldering iron and solder wire coming in from opposite sides of a through-hole joint on a circuit board.">
         <svg viewBox="0 0 800 479" aria-hidden="true" focusable="false">
           <defs><marker id="p05-photo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#fff"/></marker></defs>
           <g fill="none" stroke="#fff" stroke-width="4">
@@ -127,11 +127,11 @@
     <h2>Good joints and bad joints</h2>
     <div class="photo-pair">
       <figure>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Soldering-PCB-good.jpg" width="243" height="201" loading="lazy" alt="Solder fillets spread from the copper pads up around the component leads.">
+        <img src="../assets/photos/jointgood.jpg" width="243" height="201" loading="lazy" alt="Solder fillets spread from the copper pads up around the component leads.">
         <figcaption><b>Wetted joint.</b> Look for a smooth fillet joining the pad and lead. Photo by Tlapicka. <a href="https://commons.wikimedia.org/wiki/File:Soldering-PCB-good.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
       </figure>
       <figure>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Soldering-PCB-bad.jpg" width="165" height="141" loading="lazy" alt="Solder rounded into a ball around a lead on a printed circuit board.">
+        <img src="../assets/photos/jointbad.jpg" width="165" height="141" loading="lazy" alt="Solder rounded into a ball around a lead on a printed circuit board.">
         <figcaption><b>Balled solder.</b> The rounded blob leaves you little view of how the solder wets the pad. Photo by Tlapicka. <a href="https://commons.wikimedia.org/wiki/File:Soldering-PCB-bad.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
       </figure>
     </div>
@@ -261,6 +261,11 @@
     <div class="callout try"><span class="label">Try this</span><p>Bridge the cut at D6 with a blob of solder and power up. Watch the green LED dim or go out as the red LED hogs the current: the P02 lesson, now on a permanent board. Remove the bridge with braid, and confirm D5–D7 no longer beeps.</p></div>
 
     <h2>Wire: solid or stranded, and how big</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/strip.jpg" alt="Close view of an adjustable wire stripper’s jaws" width="960" height="1060" loading="lazy" decoding="async">
+    <figcaption>Notice where the blades cut the insulation. Set the tool for the conductor size and inspect the exposed copper for nicks or cut strands.<br><small>Photo by Stefan, resized. <a href="https://commons.wikimedia.org/wiki/File:Abisolierzange_detail.jpg">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+
     <h3>Solid vs stranded</h3>
     <div class="compare">
       <div><h4>Solid core</h4><p>One thick conductor. Holds its shape, goes cleanly into breadboards and insulation-displacement connectors (like Cat6 keystones and punch-down blocks). Breaks if flexed repeatedly. Used for fixed runs in walls and ceilings.</p></div>
@@ -334,6 +339,12 @@
     <a class="crosslink" href="../theory/t02-resistance-ohms-law.html">Theory T02 · Resistance and Ohm's law, physically (resistivity and cross-section)</a>
 
     <h2>Terminations: ferrules, lugs and heatshrink</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/crimper.jpg" alt="Ferrule crimping tool showing the jaws and ratcheting handles" width="960" height="954" loading="lazy" decoding="async">
+    <figcaption>Use a die made for insulated or uninsulated bootlace ferrules as specified. Check the ferrule’s wire size, fully seat the stripped strands and inspect the finished crimp.<br><small>Photo by SeanMiller, resized. <a href="https://commons.wikimedia.org/wiki/File:Crimp_Tool_For_Bootlace_Ferrules.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Z9Lxks4HAgM">KNIPEX Crimping Pliers for ferrules 97 68 145 · KNIPEX</a><br>For the separate wiring exercise, watch how a ferrule sits in the crimper jaws and how the wire enters it.</p>
+
     <h3>Bootlace ferrules</h3>
     <p>A <b>bootlace ferrule</b> is a thin metal tube with a plastic collar, crimped onto the end of a stranded wire. In a screw terminal, bare strands splay out, some get cut by the screw, and stray strands can short to the next terminal. A ferrule turns the strands into one solid pin that the terminal clamps properly. Almost every BMS controller, access-control panel and alarm panel uses screw or spring terminals, and neat ferrules are the first thing a supervisor looks at.</p>
     <figure>
@@ -442,6 +453,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

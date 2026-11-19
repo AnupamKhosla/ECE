@@ -19,6 +19,11 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Power path and control path</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/laptop.jpg" alt="Open Framework laptop with its power input area, mainboard and battery visible" width="960" height="723" loading="lazy" decoding="async">
+    <figcaption>Begin with the battery and the side carrying external power. Use the board documents to identify regulators and enable signals before treating any inductor as a named rail.<br><small>Photo by Ogidya, resized. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>The power path takes input through some combination of a fuse, protection switch, charge controller and converters. The control path tells these blocks when to turn on. A standby or always-on rail powers part of the logic while other rails are off. A laptop’s embedded controller (EC) or a phone’s power-management IC (PMIC) participates in startup. The actual order, voltages and control signals depend on the design and system state.</p>
     <p>A regulator’s <b>EN</b> input tells it whether to run. <b>PG</b> or power-good reports the output condition according to the regulator’s thresholds and timing. It often has an open-drain output, which can pull low and relies on an external pull-up to go high. A missing pull-up supply can mimic an asserted fault. <b>RESET</b> may hold processing logic until supply rails and clocks are ready. Check active polarity and reference in the schematic or datasheet.</p>
 
@@ -27,12 +32,14 @@
     <p>A current spike, pulse or collapse can represent startup inrush, a failed sequence or a power supply entering protection. A DMM may average a brief pulse into a steady-looking number. A scope trace is useful on a documented low-voltage test point when the reference and probe connection are safe. <a href="t21-switching-converters-control.html">T21 · Converters and protection</a>.</p>
 
     <h2>Worked example</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=cWqWGFVEMA8">RTC, 3V &amp; 5V Are OK But Laptop Still Won&#x27;t Turn ON? | What to Check Next? | Full Logic in Course 7.0 · Laptex</a><br>Listen for which standby supplies are already present and which startup stage comes next. Record the sequence before testing your trainer.</p>
+
     <p>On a teaching board, 5.0 V arrives at the regulator and standby is 3.3 V. The run rail remains at 0 V. If its EN is low and active-high, first check the prerequisite or switch that should request it. If EN is valid high, check whether input stays up and whether the output load is normal. If output is valid but PG stays low, check PG’s pull-up rail, thresholds and associated timing. These readings direct the next test before you replace a part.</p>
     <details class="quiz"><summary>Does the presence of an always-on rail prove the board has completed startup?</summary><div class="answer"><p>It proves that rail exists in the measured state. The controller, run rails, clocks, reset release and any platform self-tests still need their own evidence.</p></div></details>
     <p><a class="crosslink" href="../practice/p33-laptop-power-diagnostics.html">Practice P33 · Follow laptop power rails</a> <a class="crosslink" href="../practice/p35-phone-board-triage.html">Practice P35 · Phone charging and board triage</a></p>
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

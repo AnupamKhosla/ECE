@@ -20,6 +20,12 @@
 <nav class="otp" data-auto></nav>
 
 <h2>Identify the device before testing</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/igbt.jpg" alt="Real Infineon IGBT power module with case markings and terminals" width="960" height="458" loading="lazy" decoding="async">
+    <figcaption>Compare the package markings with the pinout in the manufacturer drawing. Some modules contain multiple switches, diodes and temperature-sensing connections.<br><small>Photo by Leonrosenbaum, resized. <a href="https://commons.wikimedia.org/wiki/File:Infineon_IGBT-Modul.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=CpdMwzz_5yg">Choosing the perfect IGBT for your application | Ask the Expert | Infineon · Infineon Technologies</a><br>Identify which device characteristics Infineon compares before choosing an IGBT for a circuit.</p>
+
 <p>Copy the full marking and suffix. Use the manufacturer’s datasheet to identify the device type, pin order, tab connection, internal diode and gate limits. TO-220 or TO-247 describes a package, not a pinout or technology. A MOSFET has gate, drain and source; an IGBT has gate, collector and emitter.</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">Feature</th><th scope="col">Ordinary silicon N-channel power MOSFET</th><th scope="col">Typical N-channel IGBT</th></tr></thead><tbody><tr><td>Conduction</td><td>A gate-induced channel controls majority-carrier current. On-state loss is often approximated with I²RDS(on).</td><td>A MOS channel enables bipolar carrier injection. On-state loss is often approximated with VCE(sat) × I.</td></tr><tr><td>Reverse direction</td><td>An intrinsic body diode usually conducts S → D with the gate off.</td><td>A useful antiparallel diode is not inherent in the same way. Many parts include a separate co-pack diode, E → C; others do not.</td></tr><tr><td>Meter gate test</td><td>A healthy unprotected insulated gate should not show a low-resistance path to source or drain.</td><td>Likewise for emitter/collector, but internal gate protection can change readings.</td></tr><tr><td>Turn-off</td><td>Charge must leave the gate; the power diode may also have recovery charge.</td><td>Gate charge must leave and stored minority carriers can produce a collector-current tail.</td></tr></tbody></table></div><a class="crosslink" href="../theory/t13-mosfet-physics.html">T13 · MOSFET channel, threshold and body diode</a><a class="crosslink" href="../theory/t20-igbt-physics.html">T20 · IGBT carrier injection and tail current</a>
 <h2>A loose-switch test you can do at low voltage</h2>
@@ -56,7 +62,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

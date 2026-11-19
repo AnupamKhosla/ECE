@@ -19,6 +19,11 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Calculate and assemble a dipole</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/dipole.jpg" alt="Half-wave dipole with two physical elements and a centre feed" width="1600" height="1200" loading="lazy" decoding="async">
+    <figcaption>Find the two arms and the point at the centre where the feed line attaches. Build your own arms to the length calculated for the receiver’s band.<br><small>Photo by Schwarzbeck Mess-Elektronik. <a href="https://commons.wikimedia.org/wiki/File:Half_%E2%80%93_Wave_Dipole.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Choose a public FM broadcast station that you already receive. You need an SDR receiver covering that station, its supplied antenna, suitable coax or an adapter to an insulated two-terminal feed point, two lengths of insulated wire and a non-conductive support. Turn off any receiver bias-tee DC output before connecting the antenna. Keep the wires indoors and away from mains wiring and outlets.</p>
     <ol class="steps">
       <li><p><b>Size the legs.</b> Use λ ≈ 300/f<sub>MHz</sub> metres. For 100 MHz, start with two legs near 0.75 m each. Keep notes on the exposed electrical lengths and layout. <a href="https://www.arrl.org/single-band-dipoles">ARRL dipole construction examples</a>.</p></li>
@@ -27,6 +32,12 @@
     </ol>
 
     <h2>Compare one variable at a time</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/sdr.jpg" alt="An open USB SDR receiver with a small antenna connector and tuner IC" width="879" height="436" loading="lazy" decoding="async">
+    <figcaption>Find the antenna connection at the edge of the receiver. Keep the receiver, frequency and gain setting fixed while you move or rotate the antenna.<br><small>Photo by Dsimic. <a href="https://commons.wikimedia.org/wiki/File:DVB-T_USB_dongle_with_RTL2832U_and_R820T_(cropped).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=NTC5FWVvLcI">nanoVNA - Measuring Antenna &amp; Coax Characteristics (Revised Feb 16, 2024) · Gregg Messenger - VE6WO</a><br>Watch the calibration and repeat measurement at the same reference plane. Apply the same care to your comparison of indoor antenna positions.</p>
+
     <p>Measure the supplied antenna, then the dipole at the same height and location, and finally the supplied antenna again. On each run, note an approximate station level and adjacent clear noise-floor level using identical display settings. The difference is a comparative indicator. Record any audio dropouts. Repeat with the dipole rotated by 90° about its feed point, then move it about a quarter wavelength indoors and repeat. Keep the cable routing as consistent as possible.</p>
     <p>If many stations distort together or the floor rises sharply, reduce receiver gain and rerun the comparison. If the two baseline trials differ substantially, repeat when conditions are steadier. If you own an analyser, practise calibrated S11 first with a known 50 Ω termination and an open on a disconnected bench fixture. Keep the reception comparison as a separate measurement.</p>
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t10-em-waves-antennas-fibre.html">T10</a> explains wavelength and polarisation. <a href="../theory/t32-rf-transmission-lines.html">T32</a> connects the wire length, feed line, reflection and signal level. <a href="../theory/t16-signals-noise-loops.html">T16</a> covers decibels and noise.</p></div>
@@ -39,6 +50,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

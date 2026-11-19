@@ -35,11 +35,18 @@
     <div class="callout warn"><span class="label">Safety</span><p>Everything in this lab runs from 12 V DC and 5 V. A relay's contacts may be printed "10 A 250 V AC". That rating does not give you permission to switch mains: in Australia, connecting anything to 230 V is work for a licensed electrician. Use relays here only to switch ELV loads. Motors and LED strips can draw amps, so keep the plug-pack's current rating in mind and never short its output.</p></div>
 
     <h2>1 · The idea: a small signal controls a big current</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Te5YYVZiOKs">Transistor / MOSFET tutorial · Afrotechmods</a><br>Follow the control signal and the load current along separate paths as the transistor turns on.</p>
+
     <p>A microcontroller pin can supply about 20 mA at 3.3 V or 5 V. A 12 V LED strip may need 1 A; a relay coil 30–70 mA; a door strike 250–500 mA. The pin cannot drive these directly. A transistor is an electrically controlled switch: a small control current (BJT) or a control voltage (MOSFET) opens or closes a path for a much bigger current from a separate supply.</p>
     <p>In this lab we always use a <b>low-side switch</b>: the load connects to +12 V, and the transistor sits between the load and ground (0 V). That way the transistor's control terminal is referenced to ground, the same ground as the logic signal. The one rule you must never forget:</p>
     <div class="callout myth"><span class="label">The rule people forget: common ground</span><p><b>Wrong:</b> "The 5 V signal and the 12 V supply are separate, so their grounds should stay separate." <b>Right:</b> a voltage is always measured between two points. The base or gate signal only means something relative to the transistor's emitter or source. Join the 0 V of the logic supply to the 0 V of the 12 V supply. Without it, the transistor sees no signal at all, or a random one.</p></div>
 
     <h2>2 · NPN transistor low-side switch</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/bjt.jpg" alt="Three-lead 2N3904 NPN transistor with a flat marked face" width="760" height="570" loading="lazy" decoding="async">
+    <figcaption>Read the part number on the flat face and use that part’s datasheet to identify base, emitter and collector. The lab’s BC547 has a different pin order.<br><small>Photo by Windell Oskay. <a href="https://commons.wikimedia.org/wiki/File:2N3904.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
 
     <figure>
       <svg viewBox="0 0 640 300" role="img" aria-label="NPN low-side switch: 12 V through LED and 560 ohm to collector, emitter to ground, base resistor from 5 V control, 10k pull-down, shared ground">
@@ -161,6 +168,11 @@
     <a class="crosslink" href="../theory/t12-bjt-physics.html">Theory T12 · How a bipolar transistor really works</a>
 
     <h2>3 · Logic-level N-MOSFET low-side switch</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/mosfet.jpg" alt="Power MOSFET packages with mounting tabs and three leads" width="960" height="640" loading="lazy" decoding="async">
+    <figcaption>The tab can be electrically connected to the drain. Read the package drawing before choosing a heatsink or assuming that the tab is isolated.<br><small>Photo by Suyash Dwivedi, resized. <a href="https://commons.wikimedia.org/wiki/File:Power_MOSFET.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>A MOSFET (metal–oxide–semiconductor field-effect transistor) is controlled by <b>voltage</b>, not current. The gate is insulated by a thin layer of oxide, so in steady state it draws essentially no current. Put enough voltage between gate and source and a conducting channel forms between drain and source with a very low resistance, R<sub>DS(on)</sub>, often tens of milliohms. That makes MOSFETs ideal for switching amps from a microcontroller pin.</p>
 
     <figure>
@@ -430,6 +442,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

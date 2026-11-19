@@ -34,6 +34,11 @@
     <div class="callout warn"><span class="label">Safety</span><p>Everything here is extra-low voltage: a 9 V battery and the low-voltage side of a sealed AC plug-pack. Electrolytic capacitors connected backwards, or above their voltage rating, heat up, vent and can burst with a bang and a spray of hot electrolyte. Wear safety glasses, check the stripe every time, and keep your face away the first time you power a new circuit. Never open mains equipment to look at its capacitors: large capacitors inside power supplies can stay charged to hundreds of volts after unplugging, and that work belongs to licensed people.</p></div>
 
     <h2>1 · Know your capacitors</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/cap.jpg" alt="Several aluminium electrolytic capacitor packages side by side" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Match the package to the way it will mount. A large snap-in capacitor and a small radial capacitor can share a voltage rating while having very different terminals and ripple ratings.<br><small>Photo by Elcap. <a href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+  </figure>
+
     <p>A <b>capacitor</b> is two conductors separated by a thin insulator (the <b>dielectric</b>). Push charge onto one plate and the same amount leaves the other; a voltage builds up between them. Capacitance C tells you how much charge it stores per volt: Q = C × V. One farad is huge, so real parts are in microfarads (µF, 10<sup>−6</sup>), nanofarads (nF, 10<sup>−9</sup>) and picofarads (pF, 10<sup>−12</sup>).</p>
 
     <figure>
@@ -119,6 +124,8 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>Most multimeters have a capacitance range (marked F or with the capacitor symbol). Discharge the capacitor first, then measure. It takes a few seconds for big values. Expect electrolytics to read anywhere within ±20% of the marking. Your measured value of the 1000 µF is the number to use in the timing lab.</p></div>
 
     <h2>2 · The RC charging lab: τ = 10 seconds</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=o-wegFuA3RA">How to Measure the Time Constant with an Oscilloscope · Keysight Labs</a><br>Watch how the rising waveform is used to measure the time constant. Use the same 63% point when plotting your meter readings.</p>
+
     <p>A resistor in series with a capacitor makes the simplest timer in electronics. The resistor limits how fast charge can flow in. As the capacitor fills, its voltage rises, the voltage left across the resistor falls, so the current falls, so it fills more slowly. That "the fuller it gets, the slower it fills" gives the famous exponential curve.</p>
     <div class="formula">τ = R × C = 10 000 Ω × 0.001 F = 10 s
       <small>τ (tau) is the <b>time constant</b>, in seconds when R is in ohms and C is in farads. After one τ the capacitor has charged 63% of the way. After 5τ it is effectively full (over 99%).</small></div>
@@ -486,6 +493,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

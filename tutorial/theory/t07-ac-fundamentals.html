@@ -69,6 +69,8 @@
     <p>Real power-station generators spin an electromagnet (the rotor) inside fixed coils (the stator), but the physics is the same. A two-pole generator must turn at 3000 rpm to give 50 Hz; a four-pole one at 1500 rpm. In general f = (number of poles × rpm) / 120. Every generator on the eastern Australian grid turns in lock-step so that the frequency is the same everywhere.</p>
 
     <h2>The sine wave: vocabulary and numbers</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=OQMnjaMSKn8">#43: Analog Oscilloscope Basics: Making a Frequency Measurement · w2aew</a><br>Find one complete cycle on the scope and read its period before converting it to hertz.</p>
+
     <p>An AC voltage is written</p>
     <div class="formula">v(t) = V<sub>p</sub> sin(ωt + φ)     ω = 2πf     T = 1/f
       <small>V<sub>p</sub> = peak (amplitude), f = frequency in hertz (cycles per second), T = period (time for one cycle), φ (phi) = phase angle, which says where in its cycle the wave is at t = 0.</small></div>
@@ -122,6 +124,11 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>Cheap multimeters are often "average-responding": they measure the average of the rectified wave and multiply by 1.11, which is only correct for a pure sine. On the distorted current of an LED driver or a switch-mode supply they can read 20–40 % wrong. A meter marked <b>True RMS</b> computes the real RMS. For AC work on the job, buy True RMS.</p></div>
 
     <h2>Phase and phasors</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/phase.jpg" alt="Oscilloscope screen displaying a Lissajous pattern" width="640" height="480" loading="lazy" decoding="async">
+    <figcaption>In X-Y mode the scope shows how two inputs relate over a cycle. A stable pattern lets you compare frequency ratios and, for equal frequencies, investigate phase.<br><small>Photo by Oliver Kurmis. <a href="https://commons.wikimedia.org/wiki/File:Lissajous-Figur_1_zu_3_(Oszilloskop).jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Two sine waves of the same frequency can be shifted in time relative to each other. We measure the shift as an angle, the <b>phase difference φ</b>, where a full cycle is 360°. At 50 Hz, 1 ms of shift is 360° × 1/20 = 18°. If the current reaches its peak <i>after</i> the voltage, the current <b>lags</b>; if before, it <b>leads</b>.</p>
     <p>Drawing two sine waves every time is slow. Engineers use a <b>phasor</b>: an arrow whose length is the amplitude and which rotates anticlockwise at ω. The vertical projection of the arrow's tip, as it turns, traces out the sine wave. Two waves of the same frequency rotate together, so their arrows keep a fixed angle between them: the phase difference. We can freeze the picture and just draw the arrows. Adding two AC voltages then becomes adding two arrows head-to-tail, which is much easier than adding two sine waves point by point.</p>
     <p>The widget below shows a phasor diagram on the left and the waveforms on the right. The dashed lines show that each waveform is just the height of its phasor's tip.</p>
@@ -369,6 +376,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

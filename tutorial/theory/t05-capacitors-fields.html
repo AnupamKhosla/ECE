@@ -40,6 +40,11 @@
     <div class="callout myth"><span class="label">Common misconception</span><p><b>"A capacitor stores charge."</b> A charged capacitor has +Q on one plate and −Q on the other, so its total charge is zero, exactly as before. What it stores is <b>energy</b>, in the electric field between the plates. "Charging a capacitor" means separating charge, not adding it. The same was true of batteries in <a href="t01-charge-current-voltage.html">T01</a>.</p></div>
 
     <h2>Dielectrics and polarisation</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/capinside.jpg" alt="Construction view of an aluminium electrolytic capacitor, showing wound layers and can" width="881" height="552" loading="lazy" decoding="async">
+    <figcaption>Follow the foil and separator layers into the rolled element. The thin oxide on the anode foil acts as the dielectric, giving substantial capacitance in a small can.<br><small>Photo by Elcap. <a href="https://commons.wikimedia.org/wiki/File:Al-e-cap-construction.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+  </figure>
+
     <p>Put an insulator (a <b>dielectric</b>) between the plates and the capacitance goes up by the factor ε<sub>r</sub>. Why? Inside an insulator the electrons cannot leave their atoms, but the field can stretch each atom or molecule slightly: the electron cloud shifts towards the + plate, and the nucleus towards the − plate. Some molecules (such as water) are already lopsided and they rotate to line up with the field. Either way, the material becomes full of tiny aligned dipoles. This is <b>polarisation</b>.</p>
     <figure>
       <svg viewBox="0 0 620 270" role="img" aria-label="Parallel plates in air with a strong field, and with a dielectric whose aligned dipoles create bound surface charges that reduce the field">
@@ -91,6 +96,8 @@
     <p>Every dielectric also has a <b>breakdown field</b>: above it, electrons are torn loose, a spark punches through, and the capacitor is destroyed (or, in air, a spark jumps). Air breaks down at about 3 kV per millimetre. Good plastic films withstand hundreds of volts per micrometre. This is the reason for every capacitor's <b>voltage rating</b>: the thinner the dielectric (for more capacitance), the lower the voltage it can survive.</p>
 
     <h2>Energy stored in the field</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=o-wegFuA3RA">How to Measure the Time Constant with an Oscilloscope · Keysight Labs</a><br>Use the observed rise and fall to distinguish instantaneous voltage from the total charge stored.</p>
+
     <p>Charging a capacitor takes work, because each new bit of charge must be pushed onto a plate that already repels it. When the capacitor holds charge q, its voltage is v = q/C. Moving an extra small charge dq costs energy dW = v dq = (q/C) dq. Add up (integrate) from empty to Q:</p>
     <div class="formula">W = ∫₀<sup>Q</sup> (q / C) dq = Q² / (2C) = ½ C V²
       <small>The first coulombs go on easily (low voltage); the last ones need the full voltage. On average you pay half the final voltage per coulomb, hence the ½.</small></div>
@@ -371,6 +378,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

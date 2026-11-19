@@ -20,6 +20,11 @@
     <p>The pot represents a temperature sensor, the command LED stands in for the fan start request, and the proof switch represents a separate indication that the fan is moving air. See the <a href="../career/c03-hvac-for-technicians.html#the-air-handling-unit-ahu">labelled real AHU and its video</a> to identify the equipment these points describe.</p>
 
     <h2>Build the point simulator</h2>
+  <figure class="course-photo">
+    <img src="../assets/bms/installed-damper-actuator.jpg" alt="Technician on access equipment next to an HVAC duct and damper actuator" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Follow the installed cable and the mechanical linkage separately. Your simulator represents a command, an observed position and a proof signal, each of which can fail independently.<br><small>Photo by MTA Capital Construction Mega Projects, resized. <a href="https://commons.wikimedia.org/wiki/File:Installation_of_Damper_Actuator_and_Ventilation_Damper_Switch_in_the_Plaza_Vent_Facility_(CS179,_02-20-2018)_(39727884614).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>Use a 5 V Arduino Uno, two switches, a 10 kΩ linear pot, two 1 kΩ resistors, one 100 kΩ resistor and two LEDs with 330 Ω resistors. Connect the pot end terminals through 1 kΩ each to 5 V and GND. Connect its wiper to A0 and add 100 kΩ from A0 to GND so a removed wiper lead reads near zero. The pot models 15–35 °C around ADC codes 85–938. Once the sketch is running, measure your actual endpoints and put them in <code>adcAt15C</code> and <code>adcAt35C</code>. Check that the full travel stays within the valid window of 60–960. Wire the switches from D2 and D3 to GND and the command and alarm LEDs from D8 and D9 through their resistors to GND, anodes toward the pins.</p>
     <div class="table-wrap"><table>
     <thead><tr><th scope="col">Point</th><th scope="col">Type and bench pin</th><th scope="col">Meaning</th></tr></thead>
@@ -33,6 +38,8 @@
     </table></div>
 
     <h2>Run the sequence</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=2PhZEdPKfhY">How To: Pre-Tension a Damper Actuator · Belimo</a><br>Observe the actuator’s movement. Think about when the controller can issue a command and when a separate proof signal should arrive.</p>
+
     <p>Demand starts at 25 °C and clears at 23 °C. Enable and a valid sensor are required. The fan waits for proof for up to three seconds. Loss of proof while running latches an alarm. With the permissive open and proof off, send <code>R</code> in Serial Monitor to clear a latched fault. A new start requires proof to be off at the time of the command. Keep Serial Monitor at 115200 and save the output as a CSV trend.</p>
     <pre><code>enum FanState { Off, WaitingForProof, Running, ProofFault };
     FanState fan = Off;
@@ -122,6 +129,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

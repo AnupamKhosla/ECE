@@ -62,6 +62,8 @@
       <figcaption>Figure 1. One electron's path, green dot to red dot, drawn hugely slowed down. Left: with no field, it wanders and goes nowhere on average. Right: a field (pointing left) bends every free flight slightly to the right, so the electron creeps right. Real drift is far smaller than drawn here compared with the random motion.</figcaption>
     </figure>
     <h3>From collisions to Ohm's law</h3>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=NfcgA1axPLo">Basic Electricity - Resistance and Ohm&#x27;s law · Afrotechmods</a><br>Compare the calculated current with the measured value across a real resistor.</p>
+
     <p>Let τ (tau) be the average time between scattering events. Between collisions the electron's acceleration is a = eE/m, where m is the electron mass. On average it gains an extra velocity of aτ before being reset. So the drift velocity is</p>
     <div class="formula">v<sub>d</sub> = eEτ / m
       <small>The drift is proportional to the field. Double the field, double the drift. This proportionality is the heart of Ohm's law.</small></div>
@@ -77,6 +79,11 @@
     <p>A useful related quantity is the <b>mobility</b> μ = eτ/m, so that v<sub>d</sub> = μE. For copper μ ≈ 0.0044 m²/(V·s). Electrons in pure silicon have a mobility about 30 times larger, yet silicon conducts far worse. The reason is n: pure silicon at room temperature has only about 10¹⁶ free electrons per m³, ten million million times fewer than copper. Semiconductors are poor conductors because they have few carriers, not because the carriers are slow. Doping changes n, which is why we can control them (<a href="t11-semiconductors-diodes.html">T11</a>).</p>
 
     <h2>Resistivity and R = ρL/A</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/resistors.png" alt="An array of colour-banded axial resistors" width="960" height="1371" loading="lazy" decoding="async">
+    <figcaption>Read the body markings or use an ohmmeter to distinguish parts of similar shape. The resistance depends on the material and geometry of the resistive element inside.<br><small>Photo by Evan-Amos, resized. <a href="https://commons.wikimedia.org/wiki/File:Electronic-Axial-Lead-Resistors-Array.png">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+
     <p>Resistivity belongs to a material. Resistance belongs to an object: a particular wire, track or part. To connect them, take a uniform conductor of length L and cross-section area A with voltage V across it. The field inside is E = V/L, and the current density is J = I/A. Put these into J = σE:</p>
     <div class="formula">I / A = V / (ρL)    ⟹    V = I × (ρL / A)    ⟹    R = ρ L / A
       <small>R in ohms, ρ in Ω·m, L in metres, A in m². Remember 1 mm² = 10⁻⁶ m².</small></div>
@@ -319,6 +326,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

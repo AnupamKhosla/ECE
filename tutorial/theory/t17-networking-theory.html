@@ -169,6 +169,12 @@ pre.bits{margin:10px 0 0;font-size:13.5px}
     <a class="crosslink" href="../practice/p20-cat6-termination.html">Practice P20 · Cat6 termination and testing: why a bad pair becomes a slow link</a>
 
     <h2>How a switch learns where everything is</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/switch.jpg" alt="Numbered Ethernet sockets on a managed switch" width="960" height="640" loading="lazy" decoding="async">
+    <figcaption>A switch learns source MAC addresses against the physical ports where frames arrive. The numbers on the front let you trace that relationship back to a patch lead.<br><small>Photo by Ben Franske, resized. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=AhOU2eOpmX0">Everything Switches do - Part 1 - Networking Fundamentals - Lesson 4 · Practical Networking</a><br>Watch when the switch learns a source address and when an unknown destination requires flooding.</p>
+
     <p>Old networks used a <b>hub</b>: whatever came in on one port was repeated out of every other port, so everyone shared one wire and collided. A <b>switch</b> is smarter. It reads the destination MAC of each frame and sends the frame only where it needs to go. The clever part is that nobody tells the switch where devices are. It learns by watching:</p>
     <ol class="steps">
       <li><p><b>Learn from the source.</b> A frame arrives on port 1 with source MAC A. The switch writes "A is on port 1" in its <b>MAC address table</b> (also called the CAM table).</p></li>
@@ -986,6 +992,6 @@ pre.bits{margin:10px 0 0;font-size:13.5px}
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -24,6 +24,11 @@
 <p>Attach a job number and list all supplied leads. Use <a href="../reference/r04-welding-job-sheet.html">R04</a>. Photograph the original wiring, connectors, insulating pads and mounting hardware before disconnecting anything. Label both ends of a connector.</p>
 
 <h2>Visual inspection follows the power path</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/capfailed.jpg" alt="A set of failed electrolytic capacitors on a motherboard" width="800" height="600" loading="lazy" decoding="async">
+    <figcaption>This example makes a raised vent easy to see. In the job sheet, record its position and what else shares the rail before assigning a root cause.<br><small>Photo by Bushytails at English Wikipedia. <a href="https://commons.wikimedia.org/wiki/File:Bad_Capacitor_01.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
 <div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Look for</th><th scope="col">Do not conclude yet</th></tr></thead><tbody><tr><td>Input / inrush</td><td>Burnt plug or cord, cracked fuse holder, damaged MOV, NTC/resistor, relay contact or solder joint.</td><td>An open fuse is a symptom. Never increase its rating or bridge it.</td></tr><tr><td>DC link</td><td>Bulging or leaking capacitors, lifted vents, dark board, loose bank connections or balancing components.</td><td>Normal appearance does not establish capacitance, ESR or leakage.</td></tr><tr><td>Power switches</td><td>Cracked package, arc marks, damaged gate resistor, lifted track, discoloured clamp network.</td><td>The visibly exploded device may be the victim of another fault.</td></tr><tr><td>Transformer / output</td><td>Loose high-current joints, burnt winding insulation, broken ferrite, overheated output studs and rectifier mounts.</td><td>Low winding resistance is normal. A multimeter cannot rule out shorted turns.</td></tr><tr><td>Cooling / control</td><td>Blocked fins, metallic dust, seized fan, detached thermal sensor, corrosion, connector damage.</td><td>A fan turning briefly does not prove adequate airflow or correct thermal control.</td></tr></tbody></table></div>
 <p>Do not blow conductive debris deeper into boards. The cleaning method must suit the manufacturer’s instructions, contamination and insulation system. Record carbonisation or damaged clearances before cleaning; removing soot does not repair damaged insulation.</p>
 
@@ -42,6 +47,8 @@
 <div class="table-wrap"><table><thead><tr><th scope="col">Poor note</th><th scope="col">Useful note</th></tr></thead><tbody><tr><td>“Bridge bad”</td><td>BR1 removed from circuit; red A, black +: 0.006 V; reverse: 0.007 V. Other three junctions each forward 0.56–0.60 V and reverse OL. Meter diode mode.</td></tr><tr><td>“IGBT okay”</td><td>Q1 gate held off, isolated: no hard C–E short; G–E and G–C show no meter-detectable low-resistance path. Dynamic switching and blocking not verified.</td></tr><tr><td>“Capacitor okay”</td><td>C7 disconnected and discharged: capacitance recorded at meter’s test frequency; ESR compared with the correct series/specification. Rated-voltage leakage not tested.</td></tr><tr><td>“Earth fine”</td><td>Visual earth-bond inspection performed only. Protective-conductor test pending with specified instrument and procedure; continuity beep alone is insufficient.</td></tr></tbody></table></div>
 
 <h2>Worked example: an input bridge failure</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=QaiTObCl378">How to Test Bridge Rectifier · Haseeb Electronics</a><br>Watch the meter mode, probe polarity and terminal selection on a loose bridge. Reproduce the reading sequence on your low-voltage trainer.</p>
+
 <p><b>Training example, invented readings.</b> A machine trips its branch MCB immediately at turn-on. After safe isolation, BR1’s A-to-+ pair reads near zero both ways in circuit. Removing BR1 gives the same reading. The downstream capacitor bank no longer shows a persistent hard short on the mentor’s designated cold test.</p>
 <p><b>Confirmed:</b> one junction of BR1 is shorted. <b>Not confirmed:</b> why it failed, whether the IGBTs behave correctly at operating voltage, and whether the inrush relay has been bypassed. The repair plan includes the matching bridge specification, inrush circuit, bank condition, switch screening and thermal mounting.</p>
 <p>Suppose inspection finds an earlier repair has soldered across the inrush resistor. That is evidence of a plausible stress mechanism. Restore the original specified circuit, investigate the reason for the bypass and have the mentor follow the service manual’s controlled recommissioning. Only model-specific electrical and load tests close the job; clearing one ohmmeter short does not.</p>
@@ -52,7 +59,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

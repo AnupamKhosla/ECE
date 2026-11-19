@@ -20,6 +20,12 @@
 <nav class="otp" data-auto></nav>
 
 <h2>One symbol, two very different jobs</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/boardbridge.jpg" alt="General Semiconductor VSIB4A60 packaged bridge on an Acer monitor board" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>This is one input bridge with the mains-frequency rectification role. A welder’s high-frequency output stage calls for a different diode specification even though both parts rectify.<br><small>Photo by Raimond Spekking, resized. <a href="https://commons.wikimedia.org/wiki/File:Acer_V233H_-_board_1_-_General_Semiconductor_VSIB4A60-7197.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=cyhzpFqXwdA">Diode Tutorial &amp; How to build an AC to DC power supply · Afrotechmods</a><br>Use the video for the low-frequency input bridge. Find the appropriate recovery behaviour separately in the output diode’s datasheet.</p>
+
 <p>The input bridge rectifies mains-frequency AC and feeds a capacitor bank. The output rectifier commutates transformer pulses at the inverter’s switching rate and carries welding current. Voltage stress, waveform, cooling and recovery requirements differ. A diode selected for one job is not automatically suitable for the other.</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">Property</th><th scope="col">Input bridge</th><th scope="col">High-frequency output rectifier</th></tr></thead><tbody><tr><td>Typical task</td><td>Steer each mains half-cycle into the same bus polarity.</td><td>Steer high-frequency secondary current into the output/choke path.</td></tr><tr><td>Current shape</td><td>Charging pulses can be much higher than average input current.</td><td>Large pulsed or commutating current set by topology and load.</td></tr><tr><td>Important ratings</td><td>Blocking voltage, average/RMS current, surge, fuse coordination, cooling.</td><td>Blocking voltage including overshoot, average/RMS current, forward drop, recovery, hot leakage, cooling.</td></tr><tr><td>Meter limitation</td><td>A normal forward reading does not test rated-voltage leakage or surge survival.</td><td>The same, plus diode mode does not measure switching recovery.</td></tr></tbody></table></div>
 <h2>Why the forward drop is not always 0.7 V</h2>
@@ -36,6 +42,11 @@
 <p>A rough stress intuition is energy of order voltage × recovered charge, but this is not a universal loss equation for every converter. The measured waveform and device test conditions determine where energy is dissipated. Read <a href="https://www.st.com/en/diodes-and-rectifiers/ultrafast-rectifiers.html">ST’s ultrafast-rectifier overview</a> for the forward-drop/recovery trade-off.</p>
 
 <h2>Schottky, ultrafast silicon and SiC</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/rectifier.jpg" alt="Several packaged bridge rectifiers showing different mechanical forms" width="960" height="726" loading="lazy" decoding="async">
+    <figcaption>A package view shows pin shape and mounting. Recovery and repetitive current ratings come from the exact datasheet, so record the full part number.<br><small>Photo by Smial at German Wikipedia, resized. <a href="https://commons.wikimedia.org/wiki/File:Brueckengleichrichter_IMGP5380.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 de</a>.</small></figcaption>
+  </figure>
+
 <p>A Schottky junction uses a metal–semiconductor barrier. It avoids the same minority-carrier storage mechanism as a conducting p–n diode, so it has very little minority-carrier reverse recovery. It still has junction capacitance: changing its voltage moves charge and creates a transient current. “No reverse recovery” does not mean “no switching current”.</p>
 <p>Conventional silicon Schottky devices trade forward drop, leakage and voltage capability differently from ultrafast p–n rectifiers. SiC Schottky devices extend voltage capability with their own characteristics. None is a universal substitute: topology, reverse stress, hot leakage, surge and mounting still matter.</p>
 
@@ -51,7 +62,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

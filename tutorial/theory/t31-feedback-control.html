@@ -24,6 +24,12 @@
     <p>Proportional action changes the command immediately with error. Integral action accumulates error to correct a persistent offset. When the output is saturated, accumulation can cause windup and slow recovery. Anti-windup can stop or unwind the integral under defined conditions. Derivative action responds to the rate of change and can amplify noise. Delay and excessive gain can turn corrective action into oscillation. Start by testing a single change and recording the response over time. <a href="https://ctms.engin.umich.edu/CTMS/?example=MotorSpeed&amp;section=ControlPID">University of Michigan motor speed control tutorial</a>.</p>
 
     <h2>Hysteresis, permissives and proof</h2>
+  <figure class="course-photo">
+    <img src="../assets/bms/damper-actuator-shaft.jpg" alt="Damper actuator with shaft connection and position indicator" width="886" height="591" loading="lazy" decoding="async">
+    <figcaption>The shaft and indicator show an actual mechanical position. A controller command can change while that position remains fixed, which is why a proof or feedback point helps.<br><small>Photo by Belimo Automation AG. <a href="https://commons.wikimedia.org/wiki/File:Klappenstellantrieb.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Y4yhrT1ZA44">Webinar: Basic Actuator Trouble Shooting - Tips and Tricks · Belimo</a><br>Identify which checks establish command, supply and mechanical response independently in a real actuator investigation.</p>
+
     <p>A controller can start cooling above 25 °C and stop below 23 °C. The gap is hysteresis. Between the limits the controller remembers the current state. A permissive is a condition that must be satisfied to allow action. An interlock prevents or stops a conflicting action. Feedback from a current switch, airflow switch, encoder or auxiliary contact gives independent evidence that a commanded action occurred.</p>
     <p>In the BMS trainer, a simulated fan is commanded on, but its proof input stays off. After the proof deadline, drive the output off and latch an alarm. Record the command, feedback, alarm and timestamp separately. A proof switch can itself stick, so a field test should also check behaviour with the command off. Life-safety and plant protection require the approved system design and site procedures.</p>
 
@@ -33,6 +39,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

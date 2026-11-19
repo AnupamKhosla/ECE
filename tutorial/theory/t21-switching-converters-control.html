@@ -20,6 +20,12 @@
 <nav class="otp" data-auto></nav>
 
 <h2>Why switch instead of burning off the voltage?</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/buck.jpg" alt="Three small boards that use switching conversion, with inductors visible" width="1841" height="1342" loading="lazy" decoding="async">
+    <figcaption>The inductors are visible energy-storage components, and the ICs contain or control the switches. Use the markings to look up which topology each board uses.<br><small>Photo by Matthew Berardi. <a href="https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=CEhBN5_fO5o">Switch mode power supply tutorial: DC-DC buck converters · Afrotechmods</a><br>Identify the on and off current paths before comparing the converter with the welding-stage example.</p>
+
 <p>An ideal switch has nearly zero voltage across it when on and nearly zero current through it when off, so its instantaneous loss vi is small in both states. A real switch has conduction drop, leakage and finite transitions; much of the engineering controls those losses while transferring power through inductors and transformers.</p>
 <p>A welding inverter uses high-frequency switching so that its transformer can transfer power at a smaller magnetic size than a comparable 50 Hz design. The transformer does not convert steady DC continuously. Switching must create changing flux, and the design must reset the core flux to avoid saturation.</p>
 <div class="formula">v = N × dΦ/dt<br>ΔB = (1 / NAe) × ∫v(t) dt<small>N is winding turns and Ae is effective core area. Applied volt-seconds change flux density. Too much volt-second imbalance can drive the core toward saturation, causing a sharp current rise. Higher frequency alone does not make arbitrary transformer drive safe.</small></div>
@@ -61,7 +67,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

@@ -19,11 +19,18 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>The instrument is another component</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=zodpCuxwn_o">#68: Oscilloscope Probe Ground lead length effects on signal quality · w2aew</a><br>Look at the effect of the scope probe ground lead on a real waveform. Keep the probe arrangement in your measurement notes.</p>
+
     <p>Replace the source and its resistor network with a <a href="t04-circuit-laws.html">Thévenin equivalent</a>. Its open-circuit voltage is V<sub>th</sub> and its series resistance is R<sub>th</sub>. A voltmeter of input resistance R<sub>in</sub> forms a divider with it.</p>
     <div class="formula">V<sub>read</sub> = V<sub>th</sub> × R<sub>in</sub> / (R<sub>th</sub> + R<sub>in</sub>)</div>
     <p>A 5.00 V supply and two 1 MΩ resistors give 2.50 V open-circuit and R<sub>th</sub> = 500 kΩ. A 10 MΩ meter reads about 2.38 V. A 1 MΩ input would give about 1.67 V. Oscilloscope probes also add capacitance, so their loading usually increases with frequency. An ammeter inserts a series shunt and has a burden voltage. For small current in a low-voltage circuit, measuring a known resistor’s drop can be easier to account for.</p>
 
     <h2>Display resolution and accuracy</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/meterhold.jpg" alt="HP 34401A bench multimeter display and input terminals" width="1972" height="2000" loading="lazy" decoding="async">
+    <figcaption>The number of displayed digits depends on the meter and mode. Read the datasheet accuracy for the selected range and integration time before trusting the last digit.<br><small>Photo by Nuno Nogueira ( Nmnogueira ). <a href="https://commons.wikimedia.org/wiki/File:Benchtop_multimeter.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>.</small></figcaption>
+  </figure>
+
     <p>A meter specification of ±(0.5% of reading + 2 counts) on a range with 0.01 V resolution gives ±(0.5% × 5.00 V + 0.02 V) = ±0.045 V at a 5.00 V reading, under the stated calibration and operating conditions. The last digit can move without the circuit changing. Treat loading, reference errors and component tolerances as separate effects. A divider made with two independent 1% resistors and exactly 5.00 V spans 2.475–2.525 V before the meter loads it.</p>
     <p>Resistance and diode modes source a small test signal. In-circuit resistance includes parallel paths. Diode-mode readings depend on test polarity, current and the available paths. Compare like with like and record mode, range, polarity, reference and power state.</p>
 
@@ -42,6 +49,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

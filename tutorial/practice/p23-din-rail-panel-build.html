@@ -98,6 +98,31 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>Relay sockets number their pins in different ways. This chapter uses <b>A1/A2</b> for the coil, <b>11-12-14</b> for the first changeover contact (11 common, 12 normally closed, 14 normally open) and <b>21-22-24</b> for the second. If your socket is marked differently, write your own numbers on the drawing before you wire anything.</p></div>
 
     <h2>Layout planning: power at the top, field at the bottom</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/panel.jpg" alt="Industrial controller modules above numbered field terminals and grey wiring duct" width="1285" height="679" loading="lazy" decoding="async">
+      <svg viewBox="0 0 1285 679" aria-hidden="true">
+        <path d="M 488.3,101.8 L 537.3,127.8" fill="none" stroke="#142b38" stroke-width="6.9"/>
+        <path d="M 488.3,101.8 L 537.3,127.8" fill="none" stroke="#fff" stroke-width="3.0"/>
+        <path d="M 552.5,135.8 L 533.5,135.0 541.2,120.5 Z" fill="#fff" stroke="#142b38" stroke-width="1.7"/>
+        <circle cx="488.3" cy="101.8" r="19.1" fill="#103549" stroke="#fff" stroke-width="2.4"/>
+        <text x="488.3" y="101.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:26.5px">1</text>
+        <path d="M 693.9,488.9 L 693.9,445.0" fill="none" stroke="#142b38" stroke-width="6.9"/>
+        <path d="M 693.9,488.9 L 693.9,445.0" fill="none" stroke="#fff" stroke-width="3.0"/>
+        <path d="M 693.9,427.8 L 702.1,445.0 685.7,445.0 Z" fill="#fff" stroke="#142b38" stroke-width="1.7"/>
+        <circle cx="693.9" cy="488.9" r="19.1" fill="#103549" stroke="#fff" stroke-width="2.4"/>
+        <text x="693.9" y="488.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:26.5px">2</text>
+        <path d="M 938.0,645.0 L 929.2,607.5" fill="none" stroke="#142b38" stroke-width="6.9"/>
+        <path d="M 938.0,645.0 L 929.2,607.5" fill="none" stroke="#fff" stroke-width="3.0"/>
+        <path d="M 925.2,590.7 L 937.2,605.6 921.2,609.4 Z" fill="#fff" stroke="#142b38" stroke-width="1.7"/>
+        <circle cx="938.0" cy="645.0" r="19.1" fill="#103549" stroke="#fff" stroke-width="2.4"/>
+        <text x="938.0" y="645.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:26.5px">3</text>
+      </svg>
+    </div>
+    <figcaption>The top row is an Allen-Bradley controller and its I/O modules. Labels on the terminal row below let a technician trace the outgoing wires. Plan the same traceability for your low-voltage trainer.<br><b>1 · Controller and I/O row. 2 · Wiring duct. 3 · Labelled terminals.</b><br><small>Photo by Cmarcante, with labels added. <a href="https://commons.wikimedia.org/wiki/File:PLC_AB_InstaladoV1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Z9Lxks4HAgM">KNIPEX Crimping Pliers for ferrules 97 68 145 · KNIPEX</a><br>See how a wire-end ferrule is compressed before termination. Compare the completed ferrule with the terminal manufacturer’s approved strip length and wire size.</p>
+
     <p>A <b>DIN rail</b> is a standard 35 mm steel top-hat strip that terminals, relays and power supplies clip onto, so parts from many makers fit the same rail. Plan on paper before you drill or snap anything onto it. A bad layout stays bad for twenty years, and everyone who opens the panel pays for it.</p>
 
     <figure>
@@ -980,6 +1005,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

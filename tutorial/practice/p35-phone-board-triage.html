@@ -19,6 +19,12 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Build a known-good charging comparison</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/usb.webp" alt="USB-C cable plug next to an iPad USB-C receptacle" width="960" height="539" loading="lazy" decoding="async">
+    <figcaption>Compare the test cable and device port before using a USB power meter. If a connector is visibly deformed or loose, record that observation first.<br><small>Photo by Wikideas1, resized. <a href="https://commons.wikimedia.org/wiki/File:USB-C_connector_and_receptacle.webp">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=eCsUkQvHHlU">USB-C Power Delivery · STMicroelectronics</a><br>Follow how the source and device agree on a power profile. Use that distinction when comparing readings from your two cables.</p>
+
     <p>Use your own physically sound USB-C phone, a compatible known-good source and cable, and an optional rated pass-through USB meter that supports the required negotiation. Measure the known-good setup first, then try the suspect phone or accessory by changing one item at a time. Compare both plug orientations at the phone and direct operation without the meter. Record charge state, source, cable, orientation, VBUS, input current, phone indication and whether it can transfer data with a known-good data cable. Data testing belongs on a device you own and can unlock normally.</p>
     <div class="table-wrap"><table>
     <thead><tr><th scope="col">What you observed</th><th scope="col">Next test</th></tr></thead>
@@ -31,6 +37,11 @@
     </table></div>
 
     <h2>Do a cold check on a documented donor</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/phonebad.jpg" alt="Swollen pouch cell visibly expanded inside an older iPhone" width="960" height="498" loading="lazy" decoding="async">
+    <figcaption>A lifted cover or an expanded pouch changes the job. Stop charging and handling the device when you see damage like this.<br><small>Photo by Mpt-matthew, resized. <a href="https://commons.wikimedia.org/wiki/File:Expanded_lithium-ion_polymer_battery_from_an_Apple_iPhone_3GS.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Follow the model’s isolation sequence, then trace a documented path from the port or daughterboard through its flex and protection to an accessible point. Record visible connector or pad damage. With the board isolated and unpowered, compare continuity between identified points and compare diode-mode readings with a known-good board of the same revision using the same meter and orientation. Keep references and results attached to the job record. If the port is modular and the evidence supports it, follow the manufacturer’s procedure to replace and verify it.</p>
     <p>For a soldered port, practise on an unpowered, battery-free connector training board with labelled breakout pads. Map ground and shell where the board specifies they are connected, VBUS and the available signal pads. After a supervised practice replacement, verify each routed pin-to-test-point connection and check adjacent independent nets for bridges. Work up from the resistor and castellated exercises in P26. A densely packed phone board may need microscope work, controlled heat and a qualified technician. Refer packed multilayer, data-critical, battery-damaged or undocumented cases.</p>
 
@@ -40,6 +51,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

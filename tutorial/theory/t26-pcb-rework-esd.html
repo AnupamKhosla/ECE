@@ -19,9 +19,16 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Pad, via and plane</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/smd.jpg" alt="Close view of populated PCB, component end caps and solder pads" width="1024" height="800" loading="lazy" decoding="async">
+    <figcaption>Pick a chip resistor and follow each termination onto its copper pad. Look for the small through-board holes that join copper layers.<br><small>Photo by John Fader. <a href="https://commons.wikimedia.org/wiki/File:Smt_closeup.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>A pad is exposed copper with a solderable finish. A plated via joins selected layers. Planes spread current and conduct heat away from pads. Solder mask covers most of the copper, and the laminate bonds the layers together. A through-hole barrel may join inner layers, so bridging a lifted pad to the first visible trace may restore only one branch of the net. A multilayer repair starts with the actual net and all of its destinations.</p>
 
     <h2>Wetting and heat transfer</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Collin&#x27;s Lab: Soldering · Adafruit Industries</a><br>Watch how the solder first flows onto a heated joint. Compare the resulting shape with the surface-mount joint in the photo.</p>
+
     <p>Flux removes or disrupts oxides during heating so molten solder can wet the exposed metals. A thin intermetallic layer forms at the interface. Tip-to-joint contact area, a thin solder film and the thermal mass of the copper determine how quickly both surfaces reach soldering temperature. A large ground pad can need more heat delivery even when the iron display is unchanged. Heat applied for too long can weaken the pad bond, melt connectors or damage nearby components.</p>
     <p>Inspect under magnification for wetting around both ends, alignment, bridges, lifted pads and disturbed neighbouring parts. Compare continuity from component terminal to a separate point on the routed net. Surface finish varies by solder alloy. <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s photographed solder defects</a>.</p>
 
@@ -35,6 +42,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -142,6 +142,11 @@
     </script>
 
     <h3>Wiring: TX goes to RX</h3>
+  <figure class="course-photo">
+    <img src="../assets/photos/uart.jpg" alt="FTDI USB-to-TTL serial adapter cable with separate signal wires" width="960" height="640" loading="lazy" decoding="async">
+    <figcaption>The USB plug contains the converter. At the loose end, confirm TX, RX and GND from the cable pinout and check its logic voltage before connecting a board.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:FTDI_Cable.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>Each device <b>transmits</b> on its TX pin and <b>listens</b> on its RX pin. So you cross them: TX of one to RX of the other, and the other way round. And you must connect GND, because each receiver judges HIGH and LOW against its own ground (P13).</p>
     <figure>
       <svg viewBox="0 0 640 170" role="img" aria-label="UART crossover wiring between two boards">
@@ -193,6 +198,8 @@ void loop() {
     <div class="callout warn"><span class="label">Safety: TTL is not RS-232</span><p>Arduino UART pins are "TTL level": 0 V and 5 V (or 3.3 V on 3.3 V boards). The old <b>RS-232</b> serial port (9-pin D connector on older PCs and some plant equipment) uses roughly ±5 to ±12 V and inverted logic. Connecting RS-232 straight to an Arduino or ESP32 pin can destroy it. Use an RS-232-to-TTL converter module. Also, a 5 V Uno TX into a 3.3 V board's RX needs a divider or level shifter (P11).</p></div>
 
     <h2>I²C: many chips on two wires</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=UTF99NNtQ7g">SparkFun According to Pete 10-15-12: SPI &amp; I2C · SparkFun Electronics</a><br>Compare the shared I²C data and clock with the separate select line used in the SPI example.</p>
+
     <p><b>I²C</b> (say "I-squared-C", also written I2C) connects many chips on the same board with just two wires: <b>SDA</b> (data) and <b>SCL</b> (clock). One device, the <b>controller</b> (traditionally called master), drives the clock and starts every conversation. Every other device, a <b>target</b> (traditionally called slave), has a <b>7-bit address</b>, so up to about 112 usable addresses share the bus.</p>
     <p>The clever part is electrical. No device ever drives a line HIGH. Each device can only pull a line <b>LOW</b> (an "open-drain" output: a transistor to ground) or let go. <b>Pull-up resistors</b>, typically 4.7 kΩ, pull each line HIGH when nobody is pulling it low. So two devices can never fight (one HIGH, one LOW = short circuit), and any device can hold the clock low to say "wait". This is the same pull-up idea as your button in P11.</p>
     <figure>
@@ -638,6 +645,6 @@ print("CDAB:", struct.unpack("&gt;f", cdab)[0])  # nonsense for this device</cod
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

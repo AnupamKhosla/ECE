@@ -97,6 +97,11 @@
     </figure>
 
     <h2>The access control model</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/fob.jpg" alt="Key fob and wall reader at a controlled door" width="130" height="130" loading="lazy" decoding="async">
+    <figcaption>Use the reader as the first visible point in a system trace. Next identify the controller decision, the physical lock action and the door status reported to software.<br><small>Photo by Mgavenda. <a href="https://commons.wikimedia.org/wiki/File:Fob-at-proximity-reader_532_130xauto.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Every enterprise access system stores the same kinds of objects in its database. Learn these and you can read any of them.</p>
     <div class="table-wrap"><table>
       <tr><th>Object</th><th>What it is</th><th>Example</th></tr>
@@ -224,6 +229,8 @@
     <div class="callout try"><span class="label">Try this</span><p>Find a case for each of these log reasons: no access to this door, outside schedule, wrong PIN, credential disabled, expired cardholder. Then answer a real help-desk call: "Tom says his card stopped working on Sunday night." Which check failed? (His schedule is Mon–Sat.) Most access "faults" you will be called to are not hardware faults at all; they are rules doing what they were told.</p></div>
 
     <h2>Commissioning a door, step by step</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=dzU_g-UFWSw">How to configure an Access Control Door with Gallagher SMB · Gallagher Security</a><br>Compare what the configuration screen calls a door with the real reader, lock and contact you would verify during commissioning.</p>
+
     <p>This is the order most technicians follow on any platform. The software screens differ; the logic does not.</p>
     <ol class="steps">
       <li><p><b>Check the hardware first.</b> Controller powered, battery connected, network cable tested, IP address set per the IP schedule. Reader module addressed on the RS-485 bus and terminated correctly at the ends (see <a href="../practice/p14-serial-buses-modbus.html">P14</a>).</p></li>
@@ -361,6 +368,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

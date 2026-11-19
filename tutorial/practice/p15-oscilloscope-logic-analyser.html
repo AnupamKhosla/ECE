@@ -77,6 +77,8 @@
     <div class="callout aus"><span class="label">In Australia</span><p>Buy a scope whose power supply carries the RCM mark, and keep it on a tested and tagged lead if your workplace requires it (common on construction and commercial sites under work health and safety rules). Second-hand scopes on marketplaces are good value; ask the seller to show the self-calibration passing.</p></div>
 
     <h2>Probes: ×1, ×10 and compensation</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">How to Compensate a Probe · Tektronix</a><br>Compare the undercompensated and overcompensated square wave with the flat-topped result.</p>
+
     <p>A scope input looks like <b>1 MΩ in parallel with about 15–20 pF</b>. A probe cable adds more capacitance. That capacitance is the problem: at high frequencies it draws current from your circuit and rounds off fast edges.</p>
     <ul>
       <li><b>×1 setting:</b> the tip connects straight through. Full sensitivity (good for tiny signals), but the cable's ~100 pF loads the circuit and bandwidth is often only a few MHz.</li>
@@ -142,6 +144,35 @@
     <div class="callout myth"><span class="label">Common misconception</span><p>"The ground clip is just the negative lead, like on my multimeter." A multimeter is battery-powered and fully floating, so its black lead can go anywhere. A mains-powered scope's ground is tied to earth. Battery handheld scopes are different again: they float, but on many models the channels share one common, so two clips at different voltages still short. Read the manual for your exact scope.</p></div>
 
     <h2>The controls: volts/div, time/div and the trigger</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/scope.jpg" alt="Four-channel digital oscilloscope displaying several traces" width="960" height="1106" loading="lazy" decoding="async">
+      <svg viewBox="0 0 960 1106" aria-hidden="true">
+        <path d="M 105.6,287.6 L 187.0,296.1" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 105.6,287.6 L 187.0,296.1" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 211.2,298.6 L 185.8,307.6 188.2,284.5 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="105.6" cy="287.6" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="105.6" y="287.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">1</text>
+        <path d="M 537.6,165.9 L 607.0,237.0" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 537.6,165.9 L 607.0,237.0" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 624.0,254.4 L 598.7,245.1 615.3,228.9 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="537.6" cy="165.9" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="537.6" y="165.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">2</text>
+        <path d="M 825.6,331.8 L 753.9,331.8" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 825.6,331.8 L 753.9,331.8" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 729.6,331.8 L 753.9,320.2 753.9,343.4 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="825.6" cy="331.8" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="825.6" y="331.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">3</text>
+        <path d="M 835.2,475.6 L 753.9,475.6" fill="none" stroke="#142b38" stroke-width="9.7"/>
+        <path d="M 835.2,475.6 L 753.9,475.6" fill="none" stroke="#fff" stroke-width="4.3"/>
+        <path d="M 729.6,475.6 L 753.9,464.0 753.9,487.2 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
+        <circle cx="835.2" cy="475.6" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
+        <text x="835.2" y="475.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">4</text>
+      </svg>
+    </div>
+    <figcaption>Compare the channel colours with the traces on screen. Find the vertical, horizontal and trigger control groups before following the three measurements.<br><b>1 · Waveform screen. 2 · Horizontal/timebase controls. 3 · Trigger controls. 4 · Vertical controls for the four input channels.</b><br><small>Photo by Radarvector, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>The screen is a grid, usually <b>10 divisions across</b> and <b>8 divisions high</b>. Every control answers one question about that grid.</p>
     <div class="table-wrap"><table>
       <tr><th>Control</th><th>Question it answers</th><th>Typical setting for a 5 V Arduino signal</th></tr>
@@ -392,6 +423,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

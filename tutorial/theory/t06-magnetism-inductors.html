@@ -96,6 +96,11 @@
     <p>A useful way to remember the weber: <b>1 Wb = 1 volt × 1 second</b>. You will see why in the next section.</p>
 
     <h2>Faraday's law and Lenz's law</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/ferrite.jpg" alt="An assortment of wound inductors with several types of core" width="1170" height="1038" loading="lazy" decoding="async">
+    <figcaption>Look for the visible windings and the magnetic material they surround. Both winding turns and core construction affect inductance.<br><small>Photo by Miguel. <a href="https://commons.wikimedia.org/wiki/File:Electronic_component_inductors.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Faraday's discovery, in one sentence: <b>when the flux through a loop changes, a voltage (EMF) appears around the loop, equal to the rate of change of flux</b>. For a coil of N turns:</p>
     <div class="formula">ε = − N dΦ/dt
       <small>ε (epsilon) is the induced EMF in volts. dΦ/dt is how fast the flux changes, in webers per second. The minus sign is Lenz's law: the induced voltage pushes current in the direction that fights the change.</small></div>
@@ -104,6 +109,8 @@
     <p><b>Worked example.</b> A pickup coil has 200 turns and an area of 4 cm² (4 × 10⁻⁴ m²). A magnet brings the field through it from 0 to 0.5 T in 10 ms. Change of flux per turn: ΔΦ = 0.5 × 4 × 10⁻⁴ = 2 × 10⁻⁴ Wb. EMF ≈ N ΔΦ / Δt = 200 × 2 × 10⁻⁴ / 0.01 = <b>4 V</b> while the magnet moves. Move it ten times faster and you get 40 V. Hold it still and you get 0 V. This is how a bicycle dynamo, a guitar pickup and a car's magnetic wheel-speed sensor all work.</p>
 
     <h3>Lenz's law: nature opposes the change</h3>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=GMePE7NZcxw">What is a Transformer? An Electrical Transformer Tutorial · Afrotechmods</a><br>Watch a winding induce voltage in another winding and relate the changing flux to the induced voltage.</p>
+
     <p>The direction of the induced current is always such that its own magnetic field <b>opposes the change in flux</b> that caused it. Push a magnet's north pole into a coil and the coil's near end becomes a north pole, pushing back. Pull the magnet out and the near end becomes a south pole, pulling it back.</p>
     <p>Why must it be this way? <b>Energy conservation.</b> If the induced current <i>helped</i> the change, pushing a magnet in slightly would induce a current that pulls it in harder, which induces more current, and so on: free energy forever. That does not happen. Because the induced current opposes you, you must do work to move the magnet, and that work is exactly the electrical energy delivered to the circuit. A bike dynamo feels harder to pedal when the light is on for this reason.</p>
 
@@ -465,6 +472,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

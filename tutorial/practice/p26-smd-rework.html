@@ -19,14 +19,40 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Set up and find a good reference joint</h2>
+  <figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/smd.jpg" alt="Close-up of surface-mount resistors, capacitors and a ferrite on a PCB" width="1024" height="800" loading="lazy" decoding="async">
+      <svg viewBox="0 0 1024 800" aria-hidden="true">
+        <path d="M 204.8,136.0 L 261.4,186.5" fill="none" stroke="#142b38" stroke-width="8.1"/>
+        <path d="M 204.8,136.0 L 261.4,186.5" fill="none" stroke="#fff" stroke-width="3.6"/>
+        <path d="M 276.5,200.0 L 254.9,193.7 267.8,179.3 Z" fill="#fff" stroke="#142b38" stroke-width="2.0"/>
+        <circle cx="204.8" cy="136.0" r="22.5" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+        <text x="204.8" y="136.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.2px">1</text>
+        <path d="M 614.4,264.0 L 659.9,299.5" fill="none" stroke="#142b38" stroke-width="8.1"/>
+        <path d="M 614.4,264.0 L 659.9,299.5" fill="none" stroke="#fff" stroke-width="3.6"/>
+        <path d="M 675.8,312.0 L 653.9,307.1 665.8,291.9 Z" fill="#fff" stroke="#142b38" stroke-width="2.0"/>
+        <circle cx="614.4" cy="264.0" r="22.5" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+        <text x="614.4" y="264.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.2px">2</text>
+        <path d="M 788.5,360.0 L 767.4,364.1" fill="none" stroke="#142b38" stroke-width="8.1"/>
+        <path d="M 788.5,360.0 L 767.4,364.1" fill="none" stroke="#fff" stroke-width="3.6"/>
+        <path d="M 747.5,368.0 L 765.6,354.6 769.3,373.6 Z" fill="#fff" stroke="#142b38" stroke-width="2.0"/>
+        <circle cx="788.5" cy="360.0" r="22.5" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+        <text x="788.5" y="360.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.2px">3</text>
+      </svg>
+    </div>
+    <figcaption>Check that each end of the chip overlaps a pad and that there is a visible solder fillet along the termination. Use a neighbouring joint as a reference.<br><b>1 · Integrated circuit. 2 · Resistor body. 3 · Metal end soldered to a pad.</b><br><small>Photo by John Fader, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Smt_closeup.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Use a solderable 0805 or 1206 practice PCB, several 1 kΩ chip resistors, tweezers, a temperature-controlled iron with a small chisel tip, flux, copper braid, magnification, eye protection and local fume extraction. Choose a board with two accessible test points and a schematic. Keep battery packs, customer equipment and loose cells off the rework bench. Follow the solder and flux instructions, keep your head out of the plume and use effective extraction at the source. <a href="https://www.hse.gov.uk/PUBNS/indg248.htm">HSE solder fume guidance</a>.</p>
     <a class="crosslink" href="https://www.youtube.com/watch?v=QzoPxvIM2qE">Watch on YouTube · Adafruit’s surface-mount soldering demonstration</a>
     <figure>
-      <img src="https://cdn-learn.adafruit.com/assets/assets/000/002/042/original/tools_Surface_Mount_Solder.jpg?1396778477=" width="800" height="576" loading="lazy" alt="Close-up of solder being applied to a surface-mount pad on a circuit board." referrerpolicy="no-referrer">
+      <img src="../assets/photos/smde.jpg" width="800" height="576" loading="lazy" alt="Close-up of solder being applied to a surface-mount pad on a circuit board.">
       <figcaption>Look for where the iron and solder touch the tiny joint. Photo by Bill Earl. <a href="https://learn.adafruit.com/assets/2042">Adafruit source</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
     </figure>
 
     <h2>Fit, inspect and rework a resistor</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=2KSwjZH3X4U">Soldering Surface Mount Devices to a Single Sided PCB · Julian Ilett</a><br>Watch the part being positioned and soldered on the PCB. Compare the iron placement and how much solder is used at each end.</p>
+
     <ol class="steps">
       <li><p><b>Identify the nets.</b> Check continuity from each bare pad to its test point. Identify a nearby pad on a different net and record the reading between it and your test point before soldering.</p></li>
       <li><p><b>Tack one end.</b> Apply a little flux and solder to one pad. Hold the resistor with tweezers and reheat that pad while sliding the resistor into position. Lift the iron and keep the part still. It should sit flat and centred.</p></li>
@@ -45,6 +71,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -87,6 +87,12 @@
     <p>A <b>MAC address</b> is the 48-bit hardware address burned into each network interface, written like <code>dc:a6:32:12:34:56</code> or <code>DC-A6-32-12-34-56</code>. The first three bytes (the <b>OUI</b>) identify the manufacturer. Switches deliver frames by MAC; IP addresses are for getting between networks. When you find an unknown device, look up its OUI online and you often learn "this is a camera from brand X".</p>
 
     <h2>Switch, router, access point</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/switch.jpg" alt="Rows of RJ45 Ethernet sockets on a managed network switch" width="960" height="640" loading="lazy" decoding="async">
+    <figcaption>Each numbered socket is a separate physical port. Note the port you connect to before looking for its link LED, VLAN or PoE status.<br><small>Photo by Ben Franske, resized. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=AhOU2eOpmX0">Everything Switches do - Part 1 - Networking Fundamentals - Lesson 4 · Practical Networking</a><br>Follow an Ethernet frame through the switch and compare the packet decision with the port you plugged into.</p>
+
     <div class="cards">
       <div class="card"><h4>Switch (layer 2)</h4><p>Connects devices on <i>one</i> network. It learns which MAC address lives on which port and sends each frame only there. Unmanaged switches have no settings; managed switches add VLANs, PoE control, port statistics.</p></div>
       <div class="card"><h4>Router (layer 3)</h4><p>Connects <i>different</i> networks and decides the path by IP address. The default gateway is a router interface. Also does NAT to the internet and often firewalling.</p></div>
@@ -387,6 +393,6 @@ netsh interface ipv4 set address name="Ethernet" source=dhcp      &lt;-- put it 
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

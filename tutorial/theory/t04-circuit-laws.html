@@ -24,6 +24,11 @@
     <p>In 1853 Hermann von Helmholtz, while studying currents in animal tissue, noticed that any network of batteries and resistors behaves, at two chosen terminals, exactly like a single battery with a single resistor. The French telegraph engineer Léon Charles Thévenin rediscovered and published the same idea in 1883, and his name stuck. In 1926 Edward Norton at Bell Labs in America and Hans Ferdinand Mayer at Siemens in Germany independently described the "current source" version. Underneath all of these is <b>linearity</b>: in circuits made of resistors and ideal sources, doubling every source doubles every current. That property also gives us the superposition principle.</p>
 
     <h2>Words first: nodes, branches, loops</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/breadinside.jpg" alt="Part of a breadboard opened to reveal its conductive spring strips" width="240" height="320" loading="lazy" decoding="async">
+    <figcaption>The holes served by one uninterrupted metal strip make one common node. A component spanning two strips can form a branch between different nodes.<br><small>Photo by Aadhirai. <a href="https://commons.wikimedia.org/wiki/File:Insidebreadboard_(2).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <ul>
       <li>A <b>node</b> is a point where two or more parts connect. All the wire joined together without any part in between counts as one node, even if it is drawn spread out.</li>
       <li>A <b>branch</b> is a single path between two nodes, containing one or more parts in series. The same current flows everywhere along a branch.</li>
@@ -32,6 +37,8 @@
     </ul>
 
     <h2>Kirchhoff's current law: charge is conserved</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=WBfAEeEzDlg">EEVBlog #819 - DC Fundamentals Part 4: Kirchhoff&#x27;s Laws Tutorial · EEVblog</a><br>Mark a node and assign a sign to each current before watching the worked example.</p>
+
     <div class="formula">Σ I<sub>in</sub> = Σ I<sub>out</sub>    (at every node)
       <small>Or: the algebraic sum of currents at a node is zero, counting currents in as positive and currents out as negative.</small></div>
     <p>Why it is true: charge cannot be created or destroyed, and in a steady circuit it cannot pile up at a node either. A node is a bit of metal; if extra charge collected there, its potential would shoot up within nanoseconds and push the charge away. (<a href="t01-charge-current-voltage.html">T01</a> showed how strongly matter resists becoming charged.) So whatever flows in each second must flow out each second.</p>
@@ -315,6 +322,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -19,10 +19,17 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Set up the circuit and probes</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/scope.jpg" alt="Digital scope displaying multiple channels together" width="960" height="1106" loading="lazy" decoding="async">
+    <figcaption>Use two channels to compare the input and output on the same timebase. Separate the traces vertically if they overlap, then read the amplitudes using the scale for each channel.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>Use a 10 kΩ resistor, 100 nF non-polar capacitor, two scope probes and a low-voltage signal generator. Connect generator output through 10 kΩ to the output node and place the capacitor from output to circuit return. Attach both probe ground clips and the generator return to that same point. Probe channel 1 before the resistor and channel 2 after it. Match each scope channel’s attenuation setting to its probe. Use only the isolated extra-low-voltage trainer circuit for this lab. A standard bench scope’s probe grounds are normally tied together and tied to protective earth.</p>
     <p>A signal generator with a high-impedance load mode makes its displayed amplitude easier to interpret. Verify input amplitude at channel 1 anyway. With no generator, use a 0–5 V square wave from a 5 V Arduino GPIO (for example <code>tone(9, 50)</code>) and do the step test only. Connect the board’s GND to the circuit return.</p>
 
     <h2>Make the measurements</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=o-wegFuA3RA">How to Measure the Time Constant with an Oscilloscope · Keysight Labs</a><br>Use the screen cursors to locate the RC time constant. Then sweep your own input frequency for a different measurement, the filter’s −3 dB point.</p>
+
     <ol class="steps">
       <li><p><b>Step test.</b> Set a 50 Hz square wave. Measure the output rise from one settled level to the other. At about 1 ms after the step the output should have travelled 63% of that step. A 10–90% rise takes about 2.2 ms.</p></li>
       <li><p><b>Sine test.</b> Set a 2 V peak-to-peak sine with no DC offset when using the standalone generator. Measure both channels at 20 Hz, 159 Hz and 1 kHz. Expect an output/input ratio near 0.99, 0.71 and 0.16 respectively. At 159 Hz compare matching rising zero crossings. The output should lag by about one eighth of a period, or 0.79 ms.</p></li>
@@ -37,6 +44,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

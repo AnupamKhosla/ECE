@@ -19,9 +19,16 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Keep the bench small</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/esp.jpg" alt="ESP32 board with a USB connection and a wireless radio module" width="600" height="600" loading="lazy" decoding="async">
+    <figcaption>Start the stale-data exercise with a single powered device. Unplug its USB power while leaving the broker and dashboard running to mimic a sensor that stops reporting.<br><small>Photo by SparkFun Electronics. <a href="https://commons.wikimedia.org/wiki/File:15663-SparkFun_Thing_Plus_-_ESP32_WROOM-01.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+  </figure>
+
     <p>Reuse the P18 ESP32, broker and Node-RED flow on your own isolated lab network. Use the temperature topic <code>bench/l1/plantroom/temp</code> and the status topic <code>bench/l1/plantroom/esp32-01/status</code>. Leave the LED output as a local trainer. Confirm that the ESP32’s last will is retained <code>offline</code> and its successful connection publishes retained <code>online</code>. Change the temperature publish call’s retain argument to <code>false</code> for this exercise. Clear any previously retained temperature by sending an empty retained message on that exact lab topic from a client authorised to publish there. Your dashboard will then wait for an actual sample after reconnecting.</p>
 
     <h2>Build a freshness indicator in Node-RED</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=gBaVaAi-0SI">Node-Red -MQTT Retained Message Tool · Steve Cope</a><br>Watch what a subscriber receives when the broker retains a message. Try reconnecting after sensor power is removed and check whether your dashboard correctly calls that reading stale.</p>
+
     <p>In your lab flow, wire the temperature and device status MQTT In nodes to one Function node and set both to UTF-8 string. Add a Status node scoped to the temperature MQTT In node to report the dashboard’s own broker connection. Add an Inject node with topic <code>bench/clock</code> set to fire once on deploy and every second. Wire those two nodes to the same Function. For a fault test, add two manual Inject nodes with the topic <code>bench/test/pause</code> and Boolean payloads <code>true</code> and <code>false</code>. Wire them to the same Function, then wire its output to a Debug node. The freshness deadline is 30 seconds for a device reporting roughly every 10 seconds.</p>
     <pre><code>const now = Date.now();
     const temperatureTopic = "bench/l1/plantroom/temp";
@@ -79,6 +86,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

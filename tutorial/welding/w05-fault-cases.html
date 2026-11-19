@@ -20,12 +20,19 @@
 <nav class="otp" data-auto></nav>
 <div class="callout tip"><span class="label">How to use the cases</span><p>All readings and fault stories below are invented teaching examples, not measurements from your machines. Try to write the next discriminating test before opening each answer. Energised measurements described here are supplied by a trained mentor using the matching service procedure.</p></div>
 <h2>Case 1 · Trips immediately at switch-on</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=QaiTObCl378">How to Test Bridge Rectifier · Haseeb Electronics</a><br>Use the isolated bridge demonstration to practise the unpowered test involved in this case. Keep the resulting readings with the job notes.</p>
+
 <p><b>Complaint:</b> the input MCB trips before any arc is struck. <b>Cold evidence:</b> one input-bridge junction reads 0.005 V both ways after complete isolation from the PCB. The bus no longer shows a persistent hard short after BR1 is removed. The fuse rating matches the manual.</p>
 <p><b>Competing explanations:</b> an input bridge failure, a power-stage/DC-link short, damaged surge protection, an inrush fault or a fault in the supply arrangement. Confirming one failed component does not exclude the others.</p>
 <details class="quiz"><summary>What is established, and what comes before power-up?</summary><div class="answer"><p>The isolated bridge contains a shorted junction. Investigate inrush parts, surge protection, capacitor bank, power switches and the bridge’s cooling. A lifted short does not validate the whole downstream stage. Fit a compatible specified bridge only as part of a complete repair, then use the model’s controlled recommissioning and safety tests.</p></div></details>
 <p><b>Close the record:</b> BR1’s isolated readings, original part number, replacement specification, checks of the suspected cause and measured retest results. <b>Physics:</b> <a href="../theory/t22-power-rectifiers-recovery.html">T22</a> and <a href="../theory/t23-capacitor-thermal-failure.html">T23</a>.</p>
 
 <h2>Case 2 · Completely dead, but the main fuse is intact</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/boardbridge.jpg" alt="A board-mounted bridge rectifier next to power-supply components" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Locate the rectifier and nearby supply stages on this reference board. Case 2 needs evidence that distinguishes a good DC bus from the absence of a low-voltage auxiliary supply.<br><small>Photo by Raimond Spekking, resized. <a href="https://commons.wikimedia.org/wiki/File:Acer_V233H_-_board_1_-_General_Semiconductor_VSIB4A60-7197.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
 <p><b>Complaint:</b> no display or fan. <b>Cold evidence:</b> the input bridge and main switches have no obvious static shorts. A small auxiliary-supply startup resistor is open when isolated, and its value is confirmed from the schematic.</p>
 <p><b>Competing explanations:</b> missing input power, failed auxiliary supply, shorted secondary rail, disconnected control connector or a supply in protection. “No fan” alone does not locate the fault.</p>
 <details class="quiz"><summary>Can you just replace the startup resistor?</summary><div class="answer"><p>The resistor is a confirmed failed part, but inspect the startup/control circuit and auxiliary switch for the reason it opened. Follow the design’s voltage, pulse, power and flame/fusible specifications; never bypass it. A shorted auxiliary output can also prevent startup. The mentor verifies startup and rail stability under the exact service procedure.</p></div></details>
@@ -59,7 +66,7 @@
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

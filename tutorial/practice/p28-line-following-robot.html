@@ -19,6 +19,11 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Build and check the chassis</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/robot.jpg" alt="An assembled two-wheel line-following robot with reflectance sensors" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>The line sensors go near the leading edge of the chassis. Fit yours so both face the floor and hold the same height before calibrating over the track.<br><small>Photo by Marcmccomb, resized. <a href="https://commons.wikimedia.org/wiki/File:Line_follower.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Use a 5 V Arduino Uno, a TB6612FNG carrier, two 5 V-compatible analogue reflectance sensors such as Pololu QTR A-type units, two small geared motors, a chassis and a separately switched motor supply matched to the motors. A 4×AA pack can suit 6 V motors if the loaded and fresh pack voltages meet the selected hardware limits. Check each motor’s stall current at that voltage against the carrier’s continuous and peak limits and size the supply and protection for both motors. Use a securely mounted holder, a fuse suited to the wiring, and an accessible motor supply switch. Keep fingers and wires clear of gears. <a href="https://www.pololu.com/product/713">Pololu TB6612FNG carrier</a>.</p>
     <ul>
       <li>Connect Uno 5 V to carrier VCC and sensor supply, and join Uno GND, sensor grounds and motor supply negative at the driver’s ground reference. Connect motor positive supply only to the carrier’s VMOT. Use a separate 5 V USB supply for the Uno. Follow the carrier’s decoupling instructions.</li>
@@ -27,6 +32,8 @@
     </ul>
 
     <h2>Calibrate, then run</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Jtwu7-T1a9o">Pololu Zumo 32U4 Robot Example Projects · Pololu Robotics and Electronics</a><br>Look for the line-sensor robot example. Compare the sensor position and turning corrections with the behaviour of your trainer.</p>
+
     <p>Leave motor power off. Upload the sketch with <code>driveEnabled</code> set to <code>false</code>. Read the left and right values in Serial Monitor at 115200 on white and black. If black reads higher, set each threshold to the midpoint of that sensor’s two levels. For opposite-polarity modules, reverse both comparisons. If the ranges overlap, fix sensor height or lighting before driving. <a href="https://www.pololu.com/docs/0J13/all">Pololu reflectance sensor application note and example traces</a>.</p>
     <pre><code>const bool driveEnabled = false;
     const int leftThreshold = 500;   // Replace after calibration.
@@ -83,6 +90,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

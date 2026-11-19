@@ -46,6 +46,21 @@
     brand.href = ROOT + "index.html";
     side.appendChild(brand);
     side.appendChild(themeSwitch());
+    if (inSub) {
+      var searchForm = el("form", "searchbox");
+      searchForm.action = ROOT + "index.html#chapter-search";
+      searchForm.setAttribute("role", "search");
+      var query = el("input");
+      query.type = "search";
+      query.name = "q";
+      query.required = true;
+      query.minLength = 2;
+      query.placeholder = "Search chapters";
+      query.setAttribute("aria-label", "Search chapters");
+      query.setAttribute("enterkeyhint", "search");
+      searchForm.appendChild(query);
+      side.appendChild(searchForm);
+    }
     var nav = el("nav", "side-nav");
     nav.setAttribute("aria-label", "Course chapters");
     side.appendChild(nav);
@@ -240,8 +255,8 @@
     var out = document.getElementById("search-out");
     if (!box || !out) return;
     var cache = {}; // file -> plain text
+    var allLoaded;
     function load(c) {
-      if (cache[c.file] !== undefined) return Promise.resolve();
       return fetch(ROOT + c.file, { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (h) {
         var doc = new DOMParser().parseFromString(h, "text/html");
         doc.querySelectorAll("script,style,svg,nav,aside").forEach(function (n) { n.remove(); });
@@ -256,11 +271,12 @@
       var q = box.value.trim().toLowerCase();
       if (q.length < 2) { out.innerHTML = ""; return; }
       out.innerHTML = '<div class="pill">Searching…</div>';
-      var ready = all.filter(function (c) { return meta[c.file] && meta[c.file].ok; });
-      Promise.all(ready.map(load)).then(function () {
+      if (!allLoaded) allLoaded = Promise.all(all.map(load));
+      allLoaded.then(function () {
+        if (q !== box.value.trim().toLowerCase()) return;
         var words = q.split(/\s+/);
         var hits = [];
-        ready.forEach(function (c) {
+        all.forEach(function (c) {
           var t = cache[c.file] || "", lt = t.toLowerCase(), score = 0;
           if (!words.every(function (w) { return lt.indexOf(w) >= 0; })) return;
           words.forEach(function (w) { var i = -1; while ((i = lt.indexOf(w, i + 1)) >= 0) score++; if ((c.title).toLowerCase().indexOf(w) >= 0) score += 50; });
@@ -278,6 +294,11 @@
       });
     }
     box.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(run, 250); });
+    var initialQuery = new URLSearchParams(location.search).get("q");
+    if (initialQuery) {
+      box.value = initialQuery;
+      run();
+    }
   }
 
   buildSide();

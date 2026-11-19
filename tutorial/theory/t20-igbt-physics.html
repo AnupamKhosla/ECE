@@ -57,13 +57,19 @@
 <p>An ordinary silicon MOSFET has an intrinsic body diode. A conventional IGBT does not provide the same useful reverse path. Many discrete IGBTs are sold with a <b>co-packaged antiparallel diode</b>, while other parts omit it or use specialised reverse-conducting structures. Read the circuit symbol and suffix. A missing reverse diode reading can be correct for one part and a fault for another.</p>
 
 <h2>Read a candidate replacement scientifically</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/igbt.jpg" alt="Infineon power IGBT module showing multiple terminals" width="960" height="458" loading="lazy" decoding="async">
+    <figcaption>This module packages several switching devices with separate terminal roles. Use the manufacturer’s internal circuit and mounting drawing when comparing it with another part.<br><small>Photo by Leonrosenbaum, resized. <a href="https://commons.wikimedia.org/wiki/File:Infineon_IGBT-Modul.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=CpdMwzz_5yg">Choosing the perfect IGBT for your application | Ask the Expert | Infineon · Infineon Technologies</a><br>Listen for the application conditions that determine whether an IGBT technology and package are a good fit.</p>
+
 <ol class="steps"><li><p>Identify package, terminals, tab and diode configuration. Confirm blocking and gate-voltage limits.</p></li><li><p>Read continuous and pulsed current with their case-temperature conditions. The advertised current is not an output-current promise for a small heatsink.</p></li><li><p>Compare hot VCE(sat), Eon/Eoff, gate charge and thermal resistance at comparable test conditions. Check safe operating area and any specified short-circuit withstand conditions.</p></li><li><p>Check whether the existing driver and protection can support the candidate’s timing and charge. Follow the manufacturer’s replacement guidance rather than treating the comparison as automatic approval.</p></li></ol>
 <p><a href="https://www.st.com/resource/en/application_note/an4544-igbt-datasheet-tutorial-stmicroelectronics.pdf">ST AN4544</a> is a manufacturer guide to these datasheet terms and their test conditions.</p>
 <a class="crosslink" href="../welding/w04-switches-drivers.html">Back to repair · W04: test the switch and its driver neighbourhood</a><details class="quiz"><summary>Why can reducing conduction drop increase turn-off loss?</summary><div class="answer"><p>More injected/stored carriers can improve drift-region conductivity while on, but they must be cleared at turn-off. Device structures optimise this trade-off; compare actual switching energy as well as conduction voltage.</p></div></details><h2>Skills checklist</h2><ul class="checklist"><li><input type="checkbox" aria-label="I can explain conductivity modulation using extra mobile carriers."><span>I can explain conductivity modulation using extra mobile carriers.</span></li><li><input type="checkbox" aria-label="I can distinguish gate charge from stored-carrier tail current."><span>I can distinguish gate charge from stored-carrier tail current.</span></li><li><input type="checkbox" aria-label="I can calculate a simple conduction-plus-switching loss budget."><span>I can calculate a simple conduction-plus-switching loss budget.</span></li><li><input type="checkbox" aria-label="I can identify rating conditions and the internal diode configuration."><span>I can identify rating conditions and the internal diode configuration.</span></li></ul>
 </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/welding.js"></script>
 </body>
 </html>

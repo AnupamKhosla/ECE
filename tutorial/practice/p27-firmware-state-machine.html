@@ -19,9 +19,16 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>Wire the trainer</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/plc.jpg" alt="Siemens LOGO compact controller next to a DIN-rail power supply" width="960" height="627" loading="lazy" decoding="async">
+    <figcaption>This is how a compact industrial controller separates supply, inputs and switched outputs. Give the stop input and run output equally clear labels on your low-voltage trainer.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>Use a 5 V Arduino Uno, a pushbutton and a toggle switch. Connect the Start button between D2 and GND. Connect the toggle between D3 and GND. The internal pull-ups make an open contact read HIGH. D3 must be closed for the output to run. Use the built-in LED as the output. If you attach a logic analyser, connect its return to Arduino GND and check that its inputs tolerate 5 V.</p>
 
     <h2>Define the behaviour before uploading</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=v8KXa5uRavg">✔ Multitask Arduino with State Machines (&amp; Switch Debouncing) · Normal Universe - Chris Guichet</a><br>Track how the code lets a button event be handled while the other timed work continues. Use that same idea when you add the stop input.</p>
+
     <p>Start on a new button press only when the permissive is closed. Run for up to five seconds. Opening the permissive overrides every start request and turns the LED off. Closing the permissive or powering on with Start held leaves the LED off. A new press during a run leaves the original timeout in effect.</p>
     <pre><code>const int startPin = 2;
     const int permissivePin = 3;
@@ -84,6 +91,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

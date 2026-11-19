@@ -20,6 +20,11 @@
     <nav class="otp" data-auto></nav>
 
     <h2>What an op-amp is</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/opamp.jpg" alt="Philips LM358D dual op-amp mounted on a keyboard controller PCB" width="960" height="960" loading="lazy" decoding="async">
+    <figcaption>Locate the marked LM358D package. Its eight pins serve two amplifiers and the shared supply, which helps explain why the board wiring looks busier than a single op-amp symbol.<br><small>Photo by Raimond Spekking, resized. <a href="https://commons.wikimedia.org/wiki/File:Nedap_ESD1_-_Keyboard_controller_PCB_-_Philips_LM358D-8584.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>An <strong>operational amplifier</strong> is a <strong>differential amplifier with very high gain</strong>. It has two inputs, the non-inverting input (+) and the inverting input (−), one output, and two supply pins. It amplifies only the <em>difference</em> between its inputs:</p>
     <div class="formula">V<sub>out</sub> = A<sub>OL</sub> × (V<sub>+</sub> − V<sub>−</sub>)
       <small>A<sub>OL</sub> is the open-loop gain: typically 10<sup>5</sup> to 10<sup>6</sup> (100–120 dB) at DC. The output can never go beyond the supply rails. The inputs draw tiny currents: nanoamps for bipolar-input parts such as the LM358, picoamps for CMOS or JFET inputs.</small></div>
@@ -67,6 +72,8 @@
     <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "The two inputs are connected together inside (a 'virtual short'), so current flows between them." <b>Right:</b> no current flows between them at all (Rule 2). The output simply drives the feedback network until the inputs happen to sit at the same voltage. Think of a thermostat: it does not connect the room to the setpoint; it adjusts the heater until they match.</p></div>
 
     <h2>The three basic amplifiers</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=e67WiJ6IPlQ">This chip will RUIN your circuit · Afrotechmods</a><br>Look for the real op-amp limits discussed in the demonstration. Compare them with what the ideal circuit model predicts.</p>
+
     <h3>Voltage follower (buffer)</h3>
     <p>Connect the output straight to V<sub>−</sub> and the signal to V<sub>+</sub>. Rule 1: V<sub>out</sub> = V<sub>−</sub> = V<sub>+</sub> = V<sub>in</sub>. Gain is exactly 1. Why bother? Rule 2: the input draws nothing, yet the output can supply milliamps. A follower lets a weak, high-resistance source (a sensor divider, a 100 kΩ potentiometer) drive a load (an ADC input, a long cable) without being dragged down.</p>
     <h3>Non-inverting amplifier: gain 1 + R<sub>f</sub>/R<sub>g</sub></h3>
@@ -341,6 +348,6 @@ V<sub>out</sub> = 0 − I × R<sub>f</sub> = −(R<sub>f</sub>/R<sub>in</sub>) �
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

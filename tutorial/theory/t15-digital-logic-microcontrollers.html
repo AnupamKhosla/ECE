@@ -163,6 +163,8 @@
     <div class="callout try"><span class="label">Try this</span><p>Count in binary on the fingers of one hand: thumb = 1, index = 2, middle = 4, ring = 8, little = 16. Raised finger = 1. You can count from 0 to 31 on one hand. Show 0x13 (= 19 = 16 + 2 + 1) to check yourself.</p></div>
 
     <h2>Logic gates</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=sTu3LwpF6XI">Making logic gates from transistors · Ben Eater</a><br>Predict the output for each combination before the demonstrator changes the inputs. The video builds the gates with discrete transistors.</p>
+
     <p>A <b>logic gate</b> is a small circuit whose output is a fixed function of its inputs. Six gates cover almost everything you will see. Think of them in words first:</p>
     <ul>
       <li><b>NOT</b> (inverter): the output is the opposite of the input.</li>
@@ -267,6 +269,11 @@
     </script>
 
     <h2>Building a gate from transistors: CMOS</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/die.jpg" alt="Exposed silicon die of a digital panel-meter ADC chip" width="960" height="768" loading="lazy" decoding="async">
+    <figcaption>The die photo shows how complex an integrated circuit looks below its case. The small connection pads at the edge link it to package pins. This example is an ADC, which uses both analogue and digital circuitry.<br><small>Photo by Mister rf, resized. <a href="https://commons.wikimedia.org/wiki/File:ICM7107.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+
     <p>Almost every modern chip is made with <b>CMOS</b> (complementary metal-oxide-semiconductor). It uses two kinds of MOSFET as switches (see <a href="t13-mosfet-physics.html">T13</a> for how the channel forms):</p>
     <ul>
       <li>An <b>n-channel MOSFET (NMOS)</b> turns ON when its gate is HIGH. It is good at connecting things to 0 V (ground).</li>
@@ -747,6 +754,6 @@ out  0x05, r16     ; copy r16 to I/O address 0x05 (PORTB): PB5 goes HIGH, LED on
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

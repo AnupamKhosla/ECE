@@ -145,6 +145,12 @@
     <p>Which pins carry data? 10 and 100 Mb/s Ethernet use only pins 1, 2, 3 and 6 (two pairs). Gigabit and faster use all four pairs. PoE uses two or four pairs. So a cable with one broken pair may "work" at 100 Mb/s and then fail when someone plugs in a gigabit device or a PoE+ camera — always terminate and test all eight.</p>
 
     <h2>Terminate an RJ45 plug</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/plug.jpg" alt="Two Ethernet plugs shown close up for comparison" width="750" height="658" loading="lazy" decoding="async">
+    <figcaption>Locate the gold contacts and the latch. Put the plug in the orientation used in the pinout so you read the conductor order from the correct side.<br><small>Photo by Baran Ivo. <a href="https://commons.wikimedia.org/wiki/File:Rj-45_male_compare.jpg">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=lWfuf5cQbOg">Standard Load Bar RJ45 Plug Termination and Testing - Best Tips and Tricks · trueCABLE</a><br>Watch the jacket depth, conductor order and seating before the crimp. Use the pinout required for your job.</p>
+
     <p>Two kinds of Cat6 plug are common. A <b>standard</b> plug often comes with a <b>load bar</b> (a small insert that holds the wires in order) and you trim the wires <i>before</i> inserting. A <b>pass-through</b> plug lets the wires come out the front so you can check the order, and the matching crimper trims them flush as it crimps. Pass-through is easier for beginners; standard plugs are preferred by some installers because no trimmed copper can be left proud at the tip.</p>
     <ol class="steps">
       <li><p><b>Strip</b> about 30–40 mm of jacket with a rotary stripper. Do not nick the conductor insulation: bend the cable to check — any copper showing means cut it off and start again.</p></li>
@@ -158,6 +164,12 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>Keep the twists right up to the plug or jack: no more than about 13 mm untwisted at a Cat5e/Cat6 termination. The most common rejected terminations are too much untwist, jacket not inside the plug (the wires then take all the strain and break), and conductors not fully home (intermittent faults that come and go with temperature). Make ten patch leads and test every one.</p></div>
 
     <h2>Keystone jacks and patch panels (110 punch-down)</h2>
+  <figure class="course-photo">
+    <img src="../assets/photos/keystone.jpg" alt="Ethernet keystone module showing the jack and wire termination block" width="1800" height="1544" loading="lazy" decoding="async">
+    <figcaption>The patch lead plugs in at the face. The permanent cable lands on the rear contacts. Read the module’s own colour legend before punching it down.<br><small>Photo by Dmeranda. <a href="https://commons.wikimedia.org/wiki/File:Keystone_module_CAT5_orange.jpg">Original photo</a> · Public domain.</small></figcaption>
+  </figure>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Xeowi82aLB8">Verification, Qualification and Certification Cable Testing by Fluke Networks · FlukeNetworksVideo</a><br>Compare what verification, qualification and certification testers can tell you about the finished run.</p>
+
     <p>Installed cabling does not end in plugs. It ends in <b>jacks</b>: a keystone jack in a wall plate at the user's end, and a port on a <b>patch panel</b> in the comms rack at the other. Both use <b>IDC</b> (insulation displacement contact) slots. You push each conductor into a forked metal slot with a <b>110 punch-down tool</b>; the fork slices through the insulation and grips the copper, and the tool's blade trims the waste in the same stroke.</p>
     <ol class="steps">
       <li><p><b>Strip</b> 25–50 mm of jacket and remove the spline. Keep pairs twisted.</p></li>
@@ -382,6 +394,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

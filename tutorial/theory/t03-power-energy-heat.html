@@ -25,6 +25,8 @@
     <p>Fifty years later, power engineering became a business battle. Thomas Edison's first central power station in New York (1882) supplied direct current (DC) at about 110 V. At that voltage, the I²R loss in the cables was so large that customers had to be within about a kilometre or two of the station. George Westinghouse and Nikola Tesla backed alternating current (AC), because transformers can step AC up to high voltage for transmission and back down for use. In 1896 AC power was sent about 35 km from Niagara Falls to the city of Buffalo, and AC won the grid. The reason is one formula from this chapter: P<sub>loss</sub> = I²R.</p>
 
     <h2>Power: energy per second</h2>
+  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=VSpB3HivkhY">Basic Electricity - Power and watts · Afrotechmods</a><br>Calculate watts from the demonstrated voltage and current measurements, then compare with the component rating.</p>
+
     <p><b>Energy</b> (W or E, in joules, J) is the capacity to do work or make heat. <b>Power</b> (P, in watts, W) is the rate at which energy is transferred: 1 W = 1 J/s. A 10 W LED lamp turns 10 joules of electrical energy into light and heat every second.</p>
     <h3>Deriving P = VI</h3>
     <p>Put together the two definitions from <a href="t01-charge-current-voltage.html">T01</a>:</p>
@@ -78,6 +80,11 @@
       <small>ΔT is the temperature rise above the surrounding air, in °C. θ (theta) is the <b>thermal resistance</b> from the part to the air, in °C per watt. Small parts and parts in still air have large θ; heatsinks and fans make θ smaller.</small></div>
     <p>Example: a regulator in a TO-220 package (the common three-legged package with a metal tab) has a thermal resistance to air of roughly 50–65 °C/W without a heatsink. In Figure 1 it must lose 7 W. ΔT ≈ 7 × 50 = 350 °C. Long before that, its built-in thermal protection shuts it down. It needs a large heatsink, or better, a buck converter (<a href="../practice/p10-power-supplies.html">P10</a>).</p>
     <h3>Resistor power ratings</h3>
+  <figure class="course-photo">
+    <img src="../assets/photos/resistor.jpg" alt="Small carbon resistors and larger ceramic power resistors alongside a scale" width="960" height="1280" loading="lazy" decoding="async">
+    <figcaption>Compare the small parts with the larger ceramic packages. Use the datasheet to get the dissipation rating for the specified mounting and temperature.<br><small>Photo by David Ludovino, resized. <a href="https://commons.wikimedia.org/wiki/File:Carbon_and_ceramic_resistors_of_different_power_ratings.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+  </figure>
+
     <p>Every resistor has a <b>power rating</b>: the power it can turn into heat continuously, at a stated surrounding (ambient) temperature, without damage. Common ratings: 1/16 W (0402 surface-mount), 1/10 W (0603), 1/8 W (0805), 1/4 W (1206 and the usual through-hole resistor), 1/2 W, 1 W, 2 W, and 5 W or more for ceramic-cased wirewound types. The rating depends on size: a bigger body has more surface to lose heat from.</p>
     <p>Two practical facts about the rating:</p>
     <ul>
@@ -311,6 +318,6 @@
   </main>
 </div>
 <script src="../assets/toc.js"></script>
-<script src="../assets/app.js?v=20261105-theme"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>
