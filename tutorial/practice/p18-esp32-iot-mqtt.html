@@ -517,6 +517,8 @@ $SYS/broker/clients/connected</textarea></label>
     <details class="quiz"><summary>RSSI changes from −55 dBm to −73 dBm when the ESP32 goes into a metal cabinet. How much weaker is the signal?</summary><div class="answer"><p>18 dB weaker. Every 10 dB is ×10 and every 3 dB about ×2: 18 dB ≈ 10 × 10<sup>0.8</sup> ≈ 63 times less power. That is why metal cabinets need an external antenna or a wired connection.</p></div></details>
     <details class="quiz"><summary>Your ESP32 is on Wi-Fi but gets <code>state=-2</code>. The Pi is on Ethernet. Name the first check.</summary><div class="answer"><p>Are they on the same network? Compare the ESP32's IP (Serial Monitor) with the Pi's (<code>ip a</code>). A guest SSID or an IoT VLAN may block traffic to the Pi. Then confirm the broker listens on <code>0.0.0.0:1883</code>, not only localhost.</p></div></details>
 
+    <p>Once the dashboard receives live readings, follow <a href="p30-iot-reliability.html">P30 · Make an IoT sensor show stale data clearly</a> to test sample expiry, device loss and broker reconnection.</p>
+
     <h2>Skills checklist</h2>
     <ul class="checklist">
       <li><input type="checkbox"><span>I can set up the ESP32 board package and upload a sketch, including the BOOT-button trick.</span></li>

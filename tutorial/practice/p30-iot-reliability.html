@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P30 · Make an IoT sensor show stale data clearly</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P30</span>
+    <h1>Make an IoT sensor show stale data clearly</h1>
+    <p class="lede">Extend the ESP32 and MQTT bench so a dashboard distinguishes a fresh sample, a sensor that stopped updating and a lost connection.</p>
+    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Before this</b> P18</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Keep the bench small</h2>
+    <p>Reuse the P18 ESP32, broker and Node-RED flow on your own isolated lab network. Use the temperature topic <code>bench/l1/plantroom/temp</code> and the status topic <code>bench/l1/plantroom/esp32-01/status</code>. Leave the LED output as a local trainer. Confirm that the ESP32’s last will is retained <code>offline</code> and its successful connection publishes retained <code>online</code>. Change the temperature publish call’s retain argument to <code>false</code> for this exercise. Clear any previously retained temperature by sending an empty retained message on that exact lab topic from a client authorised to publish there. Your dashboard will then wait for an actual sample after reconnecting.</p>
+
+    <h2>Build a freshness indicator in Node-RED</h2>
+    <p>In your lab flow, wire the temperature and device status MQTT In nodes to one Function node and set both to UTF-8 string. Add a Status node scoped to the temperature MQTT In node to report the dashboard’s own broker connection. Add an Inject node with topic <code>bench/clock</code> set to fire once on deploy and every second. Wire those two nodes to the same Function. For a fault test, add two manual Inject nodes with the topic <code>bench/test/pause</code> and Boolean payloads <code>true</code> and <code>false</code>. Wire them to the same Function, then wire its output to a Debug node. The freshness deadline is 30 seconds for a device reporting roughly every 10 seconds.</p>
+    <pre><code>const now = Date.now();
+    const temperatureTopic = "bench/l1/plantroom/temp";
+    const statusTopic = "bench/l1/plantroom/esp32-01/status";
+    let sample = context.get("sample") || null;
+    let status = context.get("status") || "unknown";
+    let brokerConnected = context.get("brokerConnected") === true;
+
+    if (msg.status) {
+      brokerConnected = msg.status.fill === "green" &amp;&amp; msg.status.shape === "dot";
+      if (!brokerConnected) {
+        sample = null;
+        status = "unknown";
+      }
+    } else if (msg.topic === "bench/test/pause") {
+      context.set("paused", msg.payload === true);
+    } else if (msg.topic === statusTopic) {
+      const value = String(msg.payload).trim();
+      if (value === "online" || value === "offline") status = value;
+      if (status !== "online") sample = null;
+    } else if (msg.topic === temperatureTopic) {
+      const value = String(msg.payload).trim();
+      const temperature = Number(value);
+      if (!context.get("paused") &amp;&amp; !msg.retain &amp;&amp; value.length &gt; 0 &amp;&amp; Number.isFinite(temperature)) {
+        sample = { temperature, receivedAt: now };
+      }
+    }
+
+    context.set("sample", sample);
+    context.set("status", status);
+    context.set("brokerConnected", brokerConnected);
+    const age = sample ? now - sample.receivedAt : null;
+    const fresh = brokerConnected &amp;&amp; status === "online" &amp;&amp; age !== null &amp;&amp; age &gt;= 0 &amp;&amp; age &lt; 30000;
+    msg.payload = {
+      brokerConnected,
+      status,
+      fresh,
+      temperature: fresh ? sample.temperature : null,
+      ageSeconds: age === null ? null : Math.floor(age / 1000)
+    };
+    return msg;</code></pre>
+    <p>Use Node-RED’s default memory context for this lab. A known broker disconnect clears the sample immediately, and expiry provides an independent check while the connection is still reported as online. A recovered session may report online before it supplies fresh data. <a href="https://nodered.org/docs/user-guide/writing-functions">Node-RED Function node and context reference</a> · <a href="https://nodered.org/docs/creating-nodes/status">Node-RED status events</a>.</p>
+
+    <h2>Prove the failure behaviour</h2>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Test</th><th scope="col">Expected evidence</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Start the dashboard while the device is online</th><td>Online status can arrive first. A new sample makes <code>fresh</code> true.</td></tr>
+    <tr><th scope="row">Press the true Inject button after a fresh sample, then resume with false</th><td>The flow ignores new samples while the device remains online. The reading becomes null 30 seconds after the last accepted sample. On resume it stays blank until a new sample arrives.</td></tr>
+    <tr><th scope="row">Unplug the ESP32’s USB power</th><td>A broker that detects unexpected disconnect publishes the last will. Staleness is bounded by the local expiry even if the will arrives later.</td></tr>
+    <tr><th scope="row">Reconnect after an outage</th><td>Capture the first new sample and record how long the indicator takes to recover. Repeat with the broker temporarily disconnected from the lab network.</td></tr>
+    </tbody>
+    </table></div>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t17-networking-theory.html">T17</a> explains the TCP connection underlying MQTT, and <a href="../theory/t30-embedded-timing-states.html">T30</a> covers liveness and expiry timers. A retained message is broker state, and QoS describes message delivery. Neither establishes sample freshness. An extension is to include a device session ID, sequence number and capture time so delayed and duplicate deliveries can be spotted. <a href="https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">OASIS MQTT 3.1.1 specification</a>.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

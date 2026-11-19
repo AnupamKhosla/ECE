@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P29 · Commission a simulated air handler</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P29</span>
+    <h1>Commission a simulated air handler</h1>
+    <p class="lede">Wire simulated field points, exercise the sequence of operation and hand over a test record with trends and fault evidence. The only loads are LEDs.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P21–P23, P27, C02</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build the point simulator</h2>
+    <p>Use a 5 V Arduino Uno, two switches, a 10 kΩ linear pot, two 1 kΩ resistors, one 100 kΩ resistor and two LEDs with 330 Ω resistors. Connect the pot end terminals through 1 kΩ each to 5 V and GND. Connect its wiper to A0 and add 100 kΩ from A0 to GND so a removed wiper lead reads near zero. The pot models 15–35 °C around ADC codes 85–938. Once the sketch is running, measure your actual endpoints and put them in <code>adcAt15C</code> and <code>adcAt35C</code>. Check that the full travel stays within the valid window of 60–960. Wire the switches from D2 and D3 to GND and the command and alarm LEDs from D8 and D9 through their resistors to GND, anodes toward the pins.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Point</th><th scope="col">Type and bench pin</th><th scope="col">Meaning</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Zone temperature</th><td>AI, A0</td><td>Engineering units are °C. Invalid low/high codes simulate a wiring fault.</td></tr>
+    <tr><th scope="row">Enable permissive</th><td>BI, D2</td><td>Closed contact permits operation. An open wire stops it.</td></tr>
+    <tr><th scope="row">Fan proof</th><td>BI, D3</td><td>Closed contact simulates independent proof, such as airflow.</td></tr>
+    <tr><th scope="row">Fan command</th><td>BO, D8</td><td>LED shows the controller’s command, regardless of proof.</td></tr>
+    <tr><th scope="row">Fault</th><td>Internal status, D9 indicator</td><td>Sensor fault or latched fan-proof alarm.</td></tr>
+    </tbody>
+    </table></div>
+
+    <h2>Run the sequence</h2>
+    <p>Demand starts at 25 °C and clears at 23 °C. Enable and a valid sensor are required. The fan waits for proof for up to three seconds. Loss of proof while running latches an alarm. With the permissive open and proof off, send <code>R</code> in Serial Monitor to clear a latched fault. A new start requires proof to be off at the time of the command. Keep Serial Monitor at 115200 and save the output as a CSV trend.</p>
+    <pre><code>enum FanState { Off, WaitingForProof, Running, ProofFault };
+    FanState fan = Off;
+    bool demand = false;
+    const int adcAt15C = 85;
+    const int adcAt35C = 938;
+    unsigned long commandAt = 0;
+    unsigned long reportAt = 0;
+
+    void setup() {
+      pinMode(2, INPUT_PULLUP);
+      pinMode(3, INPUT_PULLUP);
+      pinMode(8, OUTPUT);
+      pinMode(9, OUTPUT);
+      Serial.begin(115200);
+      Serial.println("ms,adc,temp_C,valid,enable,proof,command,proof_fault,alarm");
+    }
+
+    void loop() {
+      const unsigned long now = millis();
+      const int adc = analogRead(A0);
+      const bool valid = adc &gt;= 60 &amp;&amp; adc &lt;= 960;
+      const bool enabled = digitalRead(2) == LOW;
+      const bool proof = digitalRead(3) == LOW;
+      const int scaledAdc = constrain(adc, adcAt15C, adcAt35C);
+      const float temp = 15.0 + (scaledAdc - adcAt15C) * 20.0 / (adcAt35C - adcAt15C);
+      const bool resetRequested = Serial.available() &gt; 0 &amp;&amp; Serial.read() == 'R';
+
+      if (!valid || temp &lt;= 23.0) demand = false;
+      else if (temp &gt;= 25.0) demand = true;
+
+      if (fan == ProofFault) {
+        if (resetRequested &amp;&amp; !enabled &amp;&amp; !proof &amp;&amp; valid) fan = Off;
+      } else if (!enabled || !valid || !demand) {
+        fan = Off;
+      } else if (fan == Off) {
+        if (proof) {
+          fan = ProofFault;
+        } else {
+          commandAt = now;
+          fan = WaitingForProof;
+        }
+      } else if (fan == WaitingForProof) {
+        if (now - commandAt &gt;= 3000) fan = ProofFault;
+        else if (proof) fan = Running;
+      } else if (!proof) {
+        fan = ProofFault;
+      }
+
+      const bool command = fan == WaitingForProof || fan == Running;
+      const bool alarm = !valid || fan == ProofFault;
+      digitalWrite(8, command ? HIGH : LOW);
+      digitalWrite(9, alarm ? HIGH : LOW);
+
+      if (now - reportAt &gt;= 250) {
+        reportAt = now;
+        Serial.print(now); Serial.print(',');
+        Serial.print(adc); Serial.print(',');
+        if (valid) Serial.print(temp, 2);
+        Serial.print(',');
+        Serial.print(valid); Serial.print(',');
+        Serial.print(enabled); Serial.print(',');
+        Serial.print(proof); Serial.print(',');
+        Serial.print(command); Serial.print(',');
+        Serial.print(fan == ProofFault); Serial.print(',');
+        Serial.println(alarm);
+      }
+    }</code></pre>
+
+    <h2>Record five functional tests</h2>
+    <ol>
+      <li>Check each point end-to-end. Move the pot and both switches one at a time. Record raw ADC, scaled value, switch polarity and the named point.</li>
+      <li>Close enable with proof open and raise the temperature above 25 °C. Close proof within three seconds. Lower temperature below 23 °C and confirm the command drops, then open the proof switch. Record the two observed thresholds and the gap between them.</li>
+      <li>Repeat startup with proof open past the deadline. Verify command off and alarm latched. Open enable, keep proof open and send <code>R</code>. For the next trial, close proof before enabling to simulate a stuck proof switch. Expect an alarm and no fan command.</li>
+      <li>During a valid run, unplug the pot wiper lead at A0 while keeping the 100 kΩ pull-down attached. Confirm temperature is absent, the alarm comes on and the command stops. Disable the sequence, restore the pot and return to the known-good state.</li>
+      <li>During another valid run, open the proof switch. Confirm a latched fault. Try to reset while enable remains closed, then complete the approved bench reset sequence and run a normal cycle.</li>
+    </ol>
+    <p>In the handover, include the points list, expected/actual test results, alarm timestamps, one normal and one failing trend, and the safe state left at the end. For a protocol extension, use the separate isolated training network in <a href="p14-serial-buses-modbus.html">P14</a> or the simulated BACnet lab in <a href="../career/c02-bms-protocols-commissioning.html">C02</a>. Map a raw value to a documented engineering unit and compare it with the local trend. <a href="https://bacnetinternational.org/bacnet-glossary/">BACnet International glossary and object terminology</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18</a> and <a href="../theory/t16-signals-noise-loops.html">T16</a> cover sensor signals and scaling. <a href="../theory/t30-embedded-timing-states.html">T30</a> explains startup and faults. <a href="../theory/t31-feedback-control.html">T31</a> covers hysteresis, interlocks and independent proof.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

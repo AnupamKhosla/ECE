@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P26 · Surface-mount soldering and inspection</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P26</span>
+    <h1>Surface-mount soldering and inspection</h1>
+    <p class="lede">Practise alignment, joint inspection and pad-safe removal on an unpowered training PCB before attempting laptop or phone work.</p>
+    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Before this</b> P05, P24</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Set up and find a good reference joint</h2>
+    <p>Use a solderable 0805 or 1206 practice PCB, several 1 kΩ chip resistors, tweezers, a temperature-controlled iron with a small chisel tip, flux, copper braid, magnification, eye protection and local fume extraction. Choose a board with two accessible test points and a schematic. Keep battery packs, customer equipment and loose cells off the rework bench. Follow the solder and flux instructions, keep your head out of the plume and use effective extraction at the source. <a href="https://www.hse.gov.uk/PUBNS/indg248.htm">HSE solder fume guidance</a>.</p>
+    <p>Watch how the demonstrator holds a part and wets two surfaces. Compare the source photographs for the difference between wetting, an oversized joint and a lifted pad. <a href="https://www.youtube.com/watch?v=QzoPxvIM2qE">Adafruit surface-mount soldering video</a> · <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit solder-joint photos</a>.</p>
+
+    <h2>Fit, inspect and rework a resistor</h2>
+    <ol class="steps">
+      <li><p><b>Identify the nets.</b> Check continuity from each bare pad to its test point. Identify a nearby pad on a different net and record the reading between it and your test point before soldering.</p></li>
+      <li><p><b>Tack one end.</b> Apply a little flux and solder to one pad. Hold the resistor with tweezers and reheat that pad while sliding the resistor into position. Lift the iron and keep the part still. It should sit flat and centred.</p></li>
+      <li><p><b>Complete the joint.</b> Touch the tip to the second pad and terminal, feed a little solder, and withdraw the solder before the iron. Inspect the first joint again. If it needs adjustment, let the board cool, add flux and reflow briefly.</p></li>
+      <li><p><b>Check electrically.</b> Measure from each accessible resistor terminal to its remote test point and compare with your shorted-probe baseline. Across the two test points on an isolated footprint, expect around 1 kΩ within part and meter tolerance. Recheck the neighbouring pad for a new bridge.</p></li>
+      <li><p><b>Remove and repeat.</b> On the practice board, use suitable heated tweezers or two temperature-controlled tips to melt both joints and lift straight up when the solder releases. Avoid levering the pads. Use flux and fresh braid to clear excess solder, lift the braid with the iron while the solder is molten, then inspect both pads and repeat the net checks. Stop if the braid sticks or the pad moves.</p></li>
+    </ol>
+    <p>Repeat on five footprints. Keep a written note of tip fit, dwell and the first defect you caught. Try a castellated breakout as the next exercise, then a fine-pitch training board. <a href="https://learn.sparkfun.com/tutorials/how-to-solder-castellated-mounting-holes/">SparkFun’s photographed castellated-joint tutorial</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26 · PCB construction, solder and ESD</a> covers pad bonds, flux, vias and ESD clamps. <a href="../theory/t02-resistance-ohms-law.html">T02</a> covers chip resistor behaviour and <a href="../reference/r03-symbols-parts.html">R03</a> helps you decode part markings.</p></div>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> Five mounted parts passed the visual and electrical checks.</label></li>
+      <li><label><input type="checkbox"> I removed and refitted one part without lifting a pad or losing a routed connection.</label></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

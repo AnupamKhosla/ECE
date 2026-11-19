@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P28 · Build a two-sensor line-following robot</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P28</span>
+    <h1>Build a two-sensor line-following robot</h1>
+    <p class="lede">Use a motor driver and two reflectance sensors to steer a small robot. Test it with the wheels raised before tuning on a paper course.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P12, P13, P27</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build and check the chassis</h2>
+    <p>Use a 5 V Arduino Uno, a TB6612FNG carrier, two 5 V-compatible analogue reflectance sensors such as Pololu QTR A-type units, two small geared motors, a chassis and a separately switched motor supply matched to the motors. A 4×AA pack can suit 6 V motors if the loaded and fresh pack voltages meet the selected hardware limits. Check each motor’s stall current at that voltage against the carrier’s continuous and peak limits and size the supply and protection for both motors. Use a securely mounted holder, a fuse suited to the wiring, and an accessible motor supply switch. Keep fingers and wires clear of gears. <a href="https://www.pololu.com/product/713">Pololu TB6612FNG carrier</a>.</p>
+    <ul>
+      <li>Connect Uno 5 V to carrier VCC and sensor supply, and join Uno GND, sensor grounds and motor supply negative at the driver’s ground reference. Connect motor positive supply only to the carrier’s VMOT. Use a separate 5 V USB supply for the Uno. Follow the carrier’s decoupling instructions.</li>
+      <li>Connect left and right sensor outputs to A0 and A1. Wire left motor to AO1/AO2 and right motor to BO1/BO2. Connect PWMA to D5, PWMB to D6 and STBY to D4. Connect AIN1 to D7, AIN2 to D8, BIN1 to D9 and BIN2 to D10. Add a 10 kΩ pull-down from STBY to GND if your carrier lacks one.</li>
+      <li>Mount the sensors just ahead of the axle, close to the surface at the maker’s recommended height. Use a broad black line on matte white paper so both sensors see black when centred. Build a course with gradual curves, away from edges.</li>
+    </ul>
+
+    <h2>Calibrate, then run</h2>
+    <p>Leave motor power off. Upload the sketch with <code>driveEnabled</code> set to <code>false</code>. Read the left and right values in Serial Monitor at 115200 on white and black. If black reads higher, set each threshold to the midpoint of that sensor’s two levels. For opposite-polarity modules, reverse both comparisons. If the ranges overlap, fix sensor height or lighting before driving. <a href="https://www.pololu.com/docs/0J13/all">Pololu reflectance sensor application note and example traces</a>.</p>
+    <pre><code>const bool driveEnabled = false;
+    const int leftThreshold = 500;   // Replace after calibration.
+    const int rightThreshold = 500;
+    const int standbyPin = 4;
+    const int leftPwm = 5;
+    const int rightPwm = 6;
+    unsigned long lastSample = 0;
+    unsigned long lastReport = 0;
+
+    void setup() {
+      const int outputPins[] = {4, 5, 6, 7, 8, 9, 10};
+      for (int pin : outputPins) pinMode(pin, OUTPUT);
+      digitalWrite(standbyPin, LOW);
+      digitalWrite(7, HIGH);
+      digitalWrite(8, LOW);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, LOW);
+      Serial.begin(115200);
+    }
+
+    void loop() {
+      const unsigned long now = millis();
+      if (now - lastSample &lt; 20) return;
+      lastSample = now;
+
+      const int left = analogRead(A0);
+      const int right = analogRead(A1);
+      const bool leftOn = left &gt;= leftThreshold;
+      const bool rightOn = right &gt;= rightThreshold;
+      const bool moving = driveEnabled &amp;&amp; (leftOn || rightOn);
+      const int slowPwm = 70;
+      const int fastPwm = 125;
+      const int straightPwm = 95;
+
+      if (moving) {
+        analogWrite(leftPwm, leftOn == rightOn ? straightPwm : leftOn ? slowPwm : fastPwm);
+        analogWrite(rightPwm, leftOn == rightOn ? straightPwm : rightOn ? slowPwm : fastPwm);
+      }
+      digitalWrite(standbyPin, moving ? HIGH : LOW);
+
+      if (now - lastReport &gt;= 200) {
+        lastReport = now;
+        Serial.print(left);
+        Serial.print(',');
+        Serial.println(right);
+      }
+    }</code></pre>
+    <p>Set <code>driveEnabled</code> to <code>true</code> and upload with motor power still off. Secure the chassis with wheels raised, then switch on motor power. Show both sensors black and verify both wheels drive forward. If one is reversed, switch off power and swap that motor’s leads. Show only the left sensor black and verify the right wheel runs faster. Show both white and verify standby disables drive. The robot can resume when a sensor sees black again.</p>
+
+    <h2>Run three trials</h2>
+    <p>Put the robot at the same start line for each run. Measure time and count stops or departures. Adjust one parameter at a time. If it oscillates, reduce speed or steering correction. If a slow wheel stalls, try a higher low duty or a lower overall speed with suitable gearing. If the Arduino resets during starts, measure the supply and return for dips and check driver and motor power wiring. For an extension, add wheel encoders and control the difference between requested and measured speed under changing load.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18</a> covers optical sensors, <a href="../theory/t19-motors-vsds.html">T19</a> covers back-EMF and stall current, and <a href="../theory/t31-feedback-control.html">T31</a> explains why steering correction can track the line or make oscillation worse.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T27 · Board power rails, enables and startup sequencing</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T27</span>
+    <h1>Board power rails, enables and startup sequencing</h1>
+    <p class="lede">Understand why a laptop or phone can have power at its connector and still show no signs of life. Follow energy and the control signals that decide where it goes next.</p>
+    <div class="meta"><span><b>Prerequisites</b> T13, T21, T24</span><span><b>Bench</b> P33, P35</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Power path and control path</h2>
+    <p>The power path takes input through some combination of a fuse, protection switch, charge controller and converters. The control path tells these blocks when to turn on. A standby or always-on rail powers part of the logic while other rails are off. A laptop’s embedded controller (EC) or a phone’s power-management IC (PMIC) participates in startup. The actual order, voltages and control signals depend on the design and system state.</p>
+    <p>A regulator’s <b>EN</b> input tells it whether to run. <b>PG</b> or power-good reports the output condition according to the regulator’s thresholds and timing. It often has an open-drain output, which can pull low and relies on an external pull-up to go high. A missing pull-up supply can mimic an asserted fault. <b>RESET</b> may hold processing logic until supply rails and clocks are ready. Check active polarity and reference in the schematic or datasheet.</p>
+
+    <h2>Resistance and current clues</h2>
+    <p>With the board unpowered and isolated per its service instructions, a rising resistance reading can reflect decoupling capacitors charging from the meter. Low resistance can be normal on a high-current processor rail. Short your probes to establish lead resistance, use the same polarity and mode across comparisons, and choose an identical board revision or documented reference. The first low reading does not identify a failed capacitor. <a href="t24-measurement-datasheets.html">T24 · Test signal and in-circuit readings</a>.</p>
+    <p>A current spike, pulse or collapse can represent startup inrush, a failed sequence or a power supply entering protection. A DMM may average a brief pulse into a steady-looking number. A scope trace is useful on a documented low-voltage test point when the reference and probe connection are safe. <a href="t21-switching-converters-control.html">T21 · Converters and protection</a>.</p>
+
+    <h2>Worked example</h2>
+    <p>On a teaching board, 5.0 V arrives at the regulator and standby is 3.3 V. The run rail remains at 0 V. If its EN is low and active-high, first check the prerequisite or switch that should request it. If EN is valid high, check whether input stays up and whether the output load is normal. If output is valid but PG stays low, check PG’s pull-up rail, thresholds and associated timing. These readings direct the next test before you replace a part.</p>
+    <details class="quiz"><summary>Does the presence of an always-on rail prove the board has completed startup?</summary><div class="answer"><p>It proves that rail exists in the measured state. The controller, run rails, clocks, reset release and any platform self-tests still need their own evidence.</p></div></details>
+    <p><a class="crosslink" href="../practice/p33-laptop-power-diagnostics.html">Practice P33 · Follow laptop power rails</a> <a class="crosslink" href="../practice/p35-phone-board-triage.html">Practice P35 · Phone charging and board triage</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

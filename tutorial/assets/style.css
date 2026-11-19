@@ -225,7 +225,7 @@ mark{background:var(--tip-soft);color:var(--ink);padding:0 2px;border-radius:3px
 /* ---------- responsive ---------- */
 @media (max-width:980px){
   html{scroll-padding-top:72px}
-  .shell{grid-template-columns:1fr}
+  .shell{grid-template-columns:minmax(0,1fr)}
   .side{position:fixed;inset:0 auto 0 0;width:300px;max-width:86vw;z-index:40;transform:translateX(-102%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.25)}
   .side .theme-switch{top:52px}
   .side .theme-switch::before{content:"";position:absolute;left:-18px;right:-18px;bottom:100%;height:72px;background:var(--panel)}

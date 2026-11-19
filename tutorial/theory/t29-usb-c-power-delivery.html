@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T29 · USB-C attachment, power delivery and diagnosis</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T29</span>
+    <h1>USB-C attachment, power delivery and diagnosis</h1>
+    <p class="lede">Separate the connector, cable, power roles and charging negotiation. Use external tests to narrow a fault before opening a laptop or a phone.</p>
+    <div class="meta"><span><b>Prerequisites</b> T15, T27</span><span><b>Bench</b> P32, P35</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>The connector and the protocol</h2>
+    <p>USB Type-C describes a connector system. Data speed, alternate modes and USB Power Delivery (PD) depend on the port, device and cable. The configuration channel (CC) lets the source and sink detect attachment and orientation. After attach, a compliant Type-C source initially supplies nominal 5 V on VBUS. If both sides support PD, the source advertises capabilities and the sink can request a supported operating point. A higher-voltage contract changes VBUS only after the relevant exchange. Cable capability can limit the offered power. <a href="https://www.usb.org/sites/default/files/D2T2-1%20-%20USB%20Power%20Delivery.pdf">USB-IF power-delivery architecture presentation</a> · <a href="https://usb.org/usbc">USB-IF Type-C resources</a>.</p>
+
+    <h2>Interpret observations in context</h2>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Observation</th><th scope="col">What to test next</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">No VBUS after expected attach</th><td>Verify the meter itself and compare with an appropriate known-good source, cable and device. Check both orientations and inspect the port with power disconnected.</td></tr>
+    <tr><th scope="row">5 V persists</th><td>Confirm what the device ordinarily requests under these charge and load conditions. If higher voltage is expected, vary one cable or source and compare the negotiated capabilities using a compatible analyser.</td></tr>
+    <tr><th scope="row">Expected contract, low current</th><td>Record battery state, temperature and system activity. Follow the model’s checks for battery health and the downstream charge path.</td></tr>
+    <tr><th scope="row">One orientation fails consistently</th><td>Cross-check with another known-good cable. Inspect connector contacts, then use the documented connector/CC path if board diagnosis is in scope.</td></tr>
+    </tbody>
+    </table></div>
+    <p>An inline meter can affect negotiation or current capability if it does not pass through the relevant functions. Confirm its ratings and compare direct operation. Never feed a higher PD voltage into a bare connector or an unidentified rail.</p>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>Why does a C-to-C cable that charges a phone prove little about whether it powers a laptop?</summary><div class="answer"><p>The two sinks can request different voltages and currents. The charger and cable have to support the laptop’s requirements together. A charging phone only proves that combination worked at the operating point it used.</p></div></details>
+    <p><a class="crosslink" href="../practice/p35-phone-board-triage.html">Practice P35 · Run a charging comparison</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

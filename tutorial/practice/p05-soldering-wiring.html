@@ -31,7 +31,7 @@
       <li><b>Insulated crimp lugs + crimper</b><small>ring or fork, small assortment</small></li>
       <li><b>Heatshrink + heat gun</b><small>a hair dryer is too cool; avoid lighters</small></li>
       <li><b>Cable ties, hook-and-loop ties, labels</b><small>any label printer or write-on labels</small></li>
-      <li><b>Safety glasses, fume extraction or a window fan</b><small>non-negotiable</small></li>
+      <li><b>Safety glasses and local fume extraction</b><small>capture the plume close to the joint</small></li>
       <li><b>Hookup wire</b><small>solid 0.5 mm² and stranded 0.5–0.75 mm²</small></li>
     </ul>
 
@@ -51,6 +51,11 @@
     <p>Why set the iron about 150 °C above the melting point? Because the joint steals heat. The tip temperature is a reservoir: the bigger the joint (a thick wire, a ground plane), the faster it drains. For bigger joints use a <b>bigger tip</b>, which holds and delivers more heat, rather than cranking the temperature to 450 °C, which burns the flux off before it can work and can lift copper pads off the board.</p>
     <div class="callout why"><span class="label">Why it works</span><p>Heat flows from hot to cold at a rate proportional to the temperature difference and the contact area (much as current flows in proportion to voltage). A large contact area, made by a wet blob of solder bridging tip and joint, transfers heat far faster than a dry point. That is why a freshly tinned tip and a tiny "heat bridge" of solder at the contact point make joints quick and easy.</p></div>
     <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat</a>
+    <a class="crosslink" href="../theory/t26-pcb-rework-esd.html">Theory T26 · Wetting, heat transfer and solder pads</a>
+
+    <h2>Watch a joint form and inspect real examples</h2>
+    <p>Watch for the tip touching both surfaces and the solder flowing into the heated joint. Pause at the finished joint, then compare your work with the photographed defects. <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Adafruit’s Collin’s Lab soldering video</a> · <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s solder-joint photos</a>.</p>
+    <p>After finishing the stripboard exercise, use <a href="p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> to practise working on chip resistors and smaller pads.</p>
 
     <h2>Tinning and tip care</h2>
     <p>The tip is iron-plated copper. The plating is wetted by solder; if it oxidises (goes black or grey and solder slides off), heat transfer collapses. Rules:</p>
@@ -355,7 +360,7 @@
 
     <h2>Safety: fumes, lead and burns</h2>
     <div class="callout warn"><span class="label">Safety</span>
-      <p><b>Fumes.</b> The smoke from soldering is mostly burnt flux. Rosin (colophony) flux fume is a recognised respiratory sensitiser: repeated exposure can cause occupational asthma that lasts for life. Do not breathe the smoke. Use a fume extractor at the joint or at least a fan that draws the smoke <i>away</i> from your face towards an open window, and do not lean over the joint.</p>
+      <p><b>Fumes.</b> Rosin (colophony) flux fume can cause occupational asthma. Capture fume close to the joint with suitable local extraction and keep your head out of the plume. A fan that only moves air around the room leaves the fume in the work area. <a href="https://www.hse.gov.uk/PUBNS/indg248.htm">HSE solder fume guidance</a>.</p>
       <p><b>Lead.</b> At soldering temperatures, lead does not evaporate in meaningful amounts; the risk is <b>swallowing</b> it from your hands. Wash your hands with soap after soldering and before eating, drinking or smoking. No food or drinks at the bench. Keep solder away from children. Lead-free solder avoids lead but still produces flux fume.</p>
       <p><b>Burns.</b> The tip is 350 °C+ and molten solder sticks to skin. Always return the iron to its stand; never leave it on the bench. If it falls, let it fall. Freshly soldered joints, heat gun nozzles and just-shrunk heatshrink stay hot for a while. For a burn: cool running water for 20 minutes.</p>
       <p><b>Eyes.</b> Glasses on for soldering and especially for trimming legs; solder can spit and clipped legs fly.</p>

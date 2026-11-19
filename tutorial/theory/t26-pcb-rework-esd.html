@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T26 · PCB construction, solder joints and ESD</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T26</span>
+    <h1>PCB construction, solder joints and ESD</h1>
+    <p class="lede">Learn what solder must bond to, what heat does to a board, and how static discharge damages a device before a visible fault appears.</p>
+    <div class="meta"><span><b>Prerequisites</b> T03, T05</span><span><b>Bench</b> P05, P26</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Pad, via and plane</h2>
+    <p>A pad is exposed copper with a solderable finish. A plated via joins selected layers. Planes spread current and conduct heat away from pads. Solder mask covers most of the copper, and the laminate bonds the layers together. A through-hole barrel may join inner layers, so bridging a lifted pad to the first visible trace may restore only one branch of the net. A multilayer repair starts with the actual net and all of its destinations.</p>
+
+    <h2>Wetting and heat transfer</h2>
+    <p>Flux removes or disrupts oxides during heating so molten solder can wet the exposed metals. A thin intermetallic layer forms at the interface. Tip-to-joint contact area, a thin solder film and the thermal mass of the copper determine how quickly both surfaces reach soldering temperature. A large ground pad can need more heat delivery even when the iron display is unchanged. Heat applied for too long can weaken the pad bond, melt connectors or damage nearby components.</p>
+    <p>Inspect under magnification for wetting around both ends, alignment, bridges, lifted pads and disturbed neighbouring parts. Compare continuity from component terminal to a separate point on the routed net. Surface finish varies by solder alloy. <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s photographed solder defects</a>.</p>
+
+    <h2>Static discharge and protection parts</h2>
+    <p>Charge on a person, tool or insulator can make a fast pulse when a conductive path appears. Even a pulse too small to feel can damage gate oxides or thin structures inside an IC. A dissipative work surface, grounded wrist strap connected to the designated ESD common point, suitable packaging and handling boards by their edges reduce voltage differences on an unpowered bench.</p>
+    <p>A TVS diode or protection array near a connector diverts surge energy along a designed path. A failed clamp can read short, and a good clamp can show a diode path. Signal lines can require low-capacitance arrays. Verify pinout, directionality, standoff voltage and capacitance before specifying a replacement. <a href="https://www.esda.org/esd-overview/esd-fundamentals/part-3-basic-esd-control-procedures-and-materials/">EOS/ESD Association workstation guidance</a>.</p>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A component body looks secure, but its net is open. Where do you measure?</summary><div class="answer"><p>With power off, measure between the component’s terminal and a separate exposed point on the same net, such as a confirmed test point or the next component. Checking across the solder blob alone can miss a break between pad and trace.</p></div></details>
+    <p><a class="crosslink" href="../practice/p26-smd-rework.html">Practice P26 · SMD rework on a training PCB</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

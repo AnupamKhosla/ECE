@@ -6,6 +6,7 @@ window.TOC = {
       blurb: "Hands on. Build it, measure it, break it safely, fix it. Every lab links to the theory behind it.",
       parts: [
         { title: "Part A · Your bench", blurb: "Tools, safety and the first circuits.", chapters: [
+          { n: "P00", file: "practice/p00-foundation-roadmap.html", title: "Your ECE foundation and learning routes", d: "A first-session plan, four foundation checkpoints and routes into welding, BMS, repair, embedded systems and RF." },
           { n: "P01", file: "practice/p01-bench-kit-safety.html", title: "Your bench: kit, budget and safety", d: "What to buy in Australia, what each tool is for, and the ELV safety line you must not cross." },
           { n: "P02", file: "practice/p02-breadboard-first-led.html", title: "Breadboard and your first LED circuit", d: "How a breadboard is wired inside, resistor colour codes, and Ohm's law you can measure." },
           { n: "P03", file: "practice/p03-multimeter-mastery.html", title: "Multimeter mastery", d: "Volts, amps, ohms, continuity and diode test, and the mistakes that blow fuses." },
@@ -37,6 +38,24 @@ window.TOC = {
           { n: "P21", file: "practice/p21-fault-finding.html", title: "Fault-finding: a technician's troubleshooting method", d: "Half-splitting, measure-don't-guess, and worked faults on power, signals, networks and field devices." },
           { n: "P22", file: "practice/p22-reading-drawings.html", title: "Reading drawings: schematics, wiring diagrams and as-builts", d: "Schematics vs wiring diagrams, riser and block diagrams, cable schedules, points lists and marking up as-builts." },
           { n: "P23", file: "practice/p23-din-rail-panel-build.html", title: "Build a DIN-rail control panel (12/24 V)", d: "Power supply, fusing, terminals, relays and labels: a mini security/BMS panel on your bench." }
+        ]},
+        { title: "Part F · Measurements and board craft", blurb: "Predict readings, measure waveforms and build reliable joints.", chapters: [
+          { n: "P24", file: "practice/p24-datasheets-measurement.html", title: "Predict a reading before touching the board", d: "Measure loading with two resistor dividers and read operating conditions in a regulator datasheet." },
+          { n: "P25", file: "practice/p25-scope-filters.html", title: "Measure an RC filter on the oscilloscope", d: "Measure a capacitor’s rise time, then measure gain and phase across frequency." },
+          { n: "P26", file: "practice/p26-smd-rework.html", title: "Surface-mount soldering and inspection", d: "Solder, inspect, remove and refit chip resistors on a training board, with photos and video." }
+        ]},
+        { title: "Part G · Embedded systems, automation and RF", blurb: "Build and verify an embedded controller, robot, BMS sequence, IoT monitor and indoor antenna.", chapters: [
+          { n: "P27", file: "practice/p27-firmware-state-machine.html", title: "Program a timed controller that can stop", d: "Arduino firmware with non-blocking timing, debounce and a stop permissive." },
+          { n: "P28", file: "practice/p28-line-following-robot.html", title: "Build a two-sensor line-following robot", d: "Wiring and an Arduino sketch for reflectance sensors, motor PWM and steering feedback." },
+          { n: "P29", file: "practice/p29-bms-commissioning-lab.html", title: "Commission a simulated air handler", d: "BMS points, temperature scaling, hysteresis, fan proof, faults and a CSV trend for handover." },
+          { n: "P30", file: "practice/p30-iot-reliability.html", title: "Make an IoT sensor show stale data clearly", d: "Use MQTT and Node-RED to distinguish device status, broker outage and stale telemetry." },
+          { n: "P31", file: "practice/p31-antenna-receive-lab.html", title: "Build and compare an indoor receive antenna", d: "Assemble an FM dipole and compare reception as you change orientation and placement." }
+        ]},
+        { title: "Part H · Laptop and phone repair", blurb: "Work through symptom triage, module service and introductory board diagnosis.", chapters: [
+          { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Distinguish no power, no POST, no boot and no video. Practise replacing an SSD or testing removable RAM." },
+          { n: "P33", file: "practice/p33-laptop-power-diagnostics.html", title: "Laptop board diagnosis and power rails", d: "Build a two-rail trainer and trace input, standby, enable and run voltages." },
+          { n: "P34", file: "practice/p34-phone-module-service.html", title: "Phone repair, module replacement and final tests", d: "Use model-specific procedures for displays and other modules, then check touch, charge and affected functions." },
+          { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Phone charging faults and board-level triage", d: "Compare USB-C charging, investigate a port or flex on a donor, and practise connector checks." }
         ]}
       ]
     },
@@ -80,6 +99,19 @@ window.TOC = {
           { n: "T21", file: "theory/t21-switching-converters-control.html", title: "Switching converters, gate drivers and feedback", d: "PWM, transformer reset, dead time, gate charge, current sensing and protection." },
           { n: "T22", file: "theory/t22-power-rectifiers-recovery.html", title: "Power rectifiers: reverse recovery and real ratings", d: "Why an input bridge and an output rectifier are different; stored charge, Schottky diodes and snubbers." },
           { n: "T23", file: "theory/t23-capacitor-thermal-failure.html", title: "Capacitor ageing, heat and failure chains", d: "ESR, ripple heating, inrush, thermal resistance and why the visibly broken component may be a victim." }
+        ]},
+        { title: "Part 7 · Measuring and repairing boards", blurb: "Read specifications, understand real instruments and follow the board’s power path.", chapters: [
+          { n: "T24", file: "theory/t24-measurement-datasheets.html", title: "Measurement loading, tolerance and datasheets", d: "Meter impedance, burden voltage, accuracy and guaranteed operating conditions." },
+          { n: "T25", file: "theory/t25-filters-resonance.html", title: "Filters, frequency response and resonance", d: "RC gain and phase, step response, RLC resonance and damping." },
+          { n: "T26", file: "theory/t26-pcb-rework-esd.html", title: "PCB construction, solder joints and ESD", d: "Pads, vias and planes, solder wetting, electrostatic discharge and TVS protection." },
+          { n: "T27", file: "theory/t27-board-power-sequencing.html", title: "Board power rails, enables and startup sequencing", d: "Standby rails, laptop embedded controllers, phone PMICs, EN, power-good and reset." },
+          { n: "T28", file: "theory/t28-lithium-batteries.html", title: "Lithium-ion cells, charging and protection", d: "Pack protection, fuel gauges, charge controllers, energy and runtime." },
+          { n: "T29", file: "theory/t29-usb-c-power-delivery.html", title: "USB-C attachment, power delivery and diagnosis", d: "CC, VBUS, power contracts, cables and charging tests." }
+        ]},
+        { title: "Part 8 · Embedded control and radio", blurb: "Time, feedback and propagation from projects to real systems.", chapters: [
+          { n: "T30", file: "theory/t30-embedded-timing-states.html", title: "Firmware timing, state machines and recovery", d: "Debounce, millis rollover, watchdogs, brownouts and safe startup." },
+          { n: "T31", file: "theory/t31-feedback-control.html", title: "Feedback, interlocks and control loops", d: "Open and closed loops, PID, hysteresis, permissives and independent proof." },
+          { n: "T32", file: "theory/t32-rf-transmission-lines.html", title: "RF transmission lines, antenna matching and link budget", d: "Characteristic impedance, S11, SWR, antenna dimensions, polarisation and RSSI." }
         ]}
       ]
     },
@@ -94,7 +126,7 @@ window.TOC = {
         ]},
         { title: "Part B · Diagnose and repair", blurb: "A repeatable evidence trail from the customer's complaint to the failure's cause.", chapters: [
           { n: "W03", file: "welding/w03-unpowered-diagnosis.html", title: "Unpowered diagnosis: inspect, isolate, measure", d: "A cold-test workflow, diode and switch screening, capacitor limitations and a complete worked bridge fault." },
-          { n: "W04", file: "welding/w04-switches-drivers.html", title: "MOSFETs, IGBTs and the gate-driver neighbourhood", d: "Test loose switches on a limited 9 V supply, read gate-drive evidence and stop repeat failures." },
+          { n: "W04", file: "welding/w04-switches-drivers.html", title: "MOSFETs, IGBTs and the gate-driver neighbourhood", d: "Test loose switches, scope a 5 V PWM trainer and trace a missing gate pulse before working with equipment." },
           { n: "W05", file: "welding/w05-fault-cases.html", title: "Worked faults: dead, tripping, weak and overheating", d: "Five training cases with measurements, alternative explanations and repair verification." }
         ]},
         { title: "Part C · Complete the job", blurb: "Turn a repair into a documented service and build a reliable reference library.", chapters: [
@@ -131,7 +163,8 @@ window.TOC = {
           { n: "C15", file: "career/c15-solar-batteries.html", title: "Solar, batteries and EV chargers for technicians", d: "How PV and battery systems work, what needs an electrician, and the monitoring and support roles that don't." },
           { n: "C11", file: "career/c11-licences-pathways.html", title: "Licences, tickets and pathways in Australia", d: "White Card, ACMA, security licences, electrical licensing, skills assessment and visas." },
           { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." },
-          { n: "C13", file: "career/c13-first-day-on-site.html", title: "Your first day on an Australian site", d: "Inductions, SWMS and JSAs, PPE, permits, isolation and lock-out, site etiquette, your tool bag and job notes." }
+          { n: "C13", file: "career/c13-first-day-on-site.html", title: "Your first day on an Australian site", d: "Inductions, SWMS and JSAs, PPE, permits, isolation and lock-out, site etiquette, your tool bag and job notes." },
+          { n: "C16", file: "career/c16-repair-work-portfolio.html", title: "Build a repair portfolio and a shop workflow", d: "Case records for BMS and repair, with intake, assessment, quoting, retesting and handover." }
         ]}
       ]
     },
@@ -142,7 +175,7 @@ window.TOC = {
         { title: "Look-up pages", blurb: "Quick answers while you build.", chapters: [
           { n: "R01", file: "reference/r01-glossary.html", title: "Glossary: every term in plain English", d: "From ampere to Zener, BACnet to VLAN, with a link to where each one is taught." },
           { n: "R02", file: "reference/r02-formula-sheet.html", title: "Formula sheet with worked numbers", d: "Every formula in the course, what each symbol means, and a typical-value example." },
-          { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, and decode resistor, capacitor and SMD markings." },
+          { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, decode markings and find theory and bench links." },
           { n: "R04", file: "reference/r04-welding-job-sheet.html", title: "Welding repair job sheet", d: "A printable, fillable record for intake, cold tests, replacement parts and supervised return-to-service checks." }
         ]}
       ]

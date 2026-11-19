@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T32 · RF transmission lines, antenna matching and link budget</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T32</span>
+    <h1>RF transmission lines, antenna matching and link budget</h1>
+    <p class="lede">Connect wavelength, impedance and the radio link to measurements you can repeat. Learn what SWR, antenna gain and RSSI each tell you.</p>
+    <div class="meta"><span><b>Prerequisites</b> T07, T10, T16, T25</span><span><b>Bench</b> P31</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>When the cable length matters</h2>
+    <p>Once a cable is an appreciable fraction of the relevant wavelength, different points along it can have different phases. A transmission line has characteristic impedance Z<sub>0</sub> and a propagation velocity below the speed of light. Coax marked 50 Ω means characteristic impedance, which a DMM resistance test across the open cable will not show. Its wavelength is v/f, where v is the cable’s propagation speed.</p>
+    <div class="formula">Γ = (Z<sub>L</sub> − Z<sub>0</sub>) / (Z<sub>L</sub> + Z<sub>0</sub>)</div>
+    <p>This is the voltage reflection coefficient at the load. A matched load has Γ = 0. For a 75 Ω resistive load on a 50 Ω line, Γ = 0.20, about 4% of incident power reflects, positive return loss is about 14 dB, and voltage SWR is 1.5:1. An instrument displaying S11 log magnitude shows about −14 dB for the same reflection. A lossy cable can make a bad match look better at the instrument, so set the VNA reference plane at the measurement point with the appropriate calibration. <a href="https://helpfiles.keysight.com/csg/m9485a/s1_settings/measurement_parameters.htm">Keysight reflection measurement definitions</a>.</p>
+
+    <h2>Antenna length, polarisation and placement</h2>
+    <p>Free-space wavelength λ ≈ 300/f<sub>MHz</sub> metres. A half-wave dipole starts near two quarter-wave legs. Conductor diameter, nearby materials, feed arrangement and end effects shift resonance. A dipole’s orientation sets its linear polarisation. Mismatch in polarisation reduces received power, and indoor multipath can change the result when you move an antenna only a short distance. An antenna’s matching figure measures reflected power at the feed. Efficiency and direction determine where accepted power goes. <a href="https://www.arrl.org/single-band-dipoles">ARRL single-band dipole article</a>.</p>
+
+    <h2>Read a link budget</h2>
+    <p>Add gains and subtract losses in dB. An illustrative link with 10 dBm transmit power, 2 dBi gain at each end, 3 dB total cable loss and 80 dB path loss gives −69 dBm at the receiver. With a sensitivity of −85 dBm for the chosen data rate, nominal margin is 16 dB. Interference, fading, receiver bandwidth and overload can change real performance. RSSI is the receiver’s estimate and depends on the device and settings.</p>
+    <details class="quiz"><summary>Does 1:1 SWR prove good reception?</summary><div class="answer"><p>It indicates little reflection at the measurement plane. A 50 Ω dummy load can also match well and receives very little from the air. Compare signal and noise under repeatable conditions and look at antenna placement and losses.</p></div></details>
+    <p><a class="crosslink" href="../practice/p31-antenna-receive-lab.html">Practice P31 · Compare antennas with a receiver</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

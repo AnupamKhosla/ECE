@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P27 · Program a timed controller that can stop</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P27</span>
+    <h1>Program a timed controller that can stop</h1>
+    <p class="lede">Build a small controller with a start button and a permissive switch. Test what happens when the user holds Start, opens the switch or resets the board.</p>
+    <div class="meta"><span><b>Time</b> 60 min</span><span><b>Before this</b> P11, P15</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Wire the trainer</h2>
+    <p>Use a 5 V Arduino Uno, a pushbutton and a toggle switch. Connect the Start button between D2 and GND. Connect the toggle between D3 and GND. The internal pull-ups make an open contact read HIGH. D3 must be closed for the output to run. Use the built-in LED as the output. If you attach a logic analyser, connect its return to Arduino GND and check that its inputs tolerate 5 V.</p>
+
+    <h2>Define the behaviour before uploading</h2>
+    <p>Start on a new button press only when the permissive is closed. Run for up to five seconds. Opening the permissive overrides every start request and turns the LED off. Closing the permissive or powering on with Start held leaves the LED off. A new press during a run leaves the original timeout in effect.</p>
+    <pre><code>const int startPin = 2;
+    const int permissivePin = 3;
+    const unsigned long debounceMs = 30;
+    const unsigned long runMs = 5000;
+
+    bool rawStart;
+    bool stableStart;
+    bool pressPermitted = false;
+    bool running = false;
+    unsigned long rawChangedAt;
+    unsigned long startedAt;
+
+    void setup() {
+      pinMode(startPin, INPUT_PULLUP);
+      pinMode(permissivePin, INPUT_PULLUP);
+      pinMode(LED_BUILTIN, OUTPUT);
+      digitalWrite(LED_BUILTIN, LOW);
+      rawStart = stableStart = digitalRead(startPin) == LOW;
+      rawChangedAt = millis();
+    }
+
+    void loop() {
+      const unsigned long now = millis();
+      const bool startHeld = digitalRead(startPin) == LOW;
+      const bool permitted = digitalRead(permissivePin) == LOW;
+      bool startPressed = false;
+
+      if (startHeld != rawStart) {
+        rawStart = startHeld;
+        rawChangedAt = now;
+        pressPermitted = startHeld &amp;&amp; permitted;
+      }
+      if (!permitted) pressPermitted = false;
+      if (rawStart != stableStart &amp;&amp; now - rawChangedAt &gt;= debounceMs) {
+        stableStart = rawStart;
+        startPressed = stableStart &amp;&amp; pressPermitted;
+      }
+
+      if (!permitted) {
+        running = false;
+      } else if (running) {
+        if (now - startedAt &gt;= runMs) running = false;
+      } else if (startPressed) {
+        startedAt = now;
+        running = true;
+      }
+      digitalWrite(LED_BUILTIN, running ? HIGH : LOW);
+    }</code></pre>
+
+    <h2>Run the acceptance tests</h2>
+    <ol class="steps">
+      <li><p><b>Normal request.</b> Close the permissive and press Start. Record the approximate delay to ON and run time.</p></li>
+      <li><p><b>Held button.</b> Hold Start for more than five seconds. The LED turns off after one run. Release, then press again to start a second run.</p></li>
+      <li><p><b>Interrupted run.</b> Open the permissive midway. The LED turns off. Close the permissive while still holding Start and confirm the output stays off. Repeat by resetting while holding Start.</p></li>
+      <li><p><b>Broken input wire.</b> Unplug the permissive wire at the ground end. The pull-up makes the open circuit stop the output. Write why this software input belongs to the trainer and what a machine safety circuit would require from its approved design.</p></li>
+    </ol>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t15-digital-logic-microcontrollers.html">T15</a> explains logic levels and pull-ups. <a href="../theory/t30-embedded-timing-states.html">T30</a> explains debounce, elapsed time and startup state. <a href="https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay/">Arduino’s Blink Without Delay example</a> demonstrates the elapsed-time pattern.</p></div>
+    <p>Advance to <a href="p28-line-following-robot.html">P28</a> for a moving plant or <a href="p29-bms-commissioning-lab.html">P29</a> for a building controls sequence.</p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

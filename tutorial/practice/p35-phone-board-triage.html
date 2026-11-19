@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P35 · Phone charging faults and board-level triage</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P35</span>
+    <h1>Phone charging faults and board-level triage</h1>
+    <p class="lede">Compare a phone’s external charging behaviour, locate the suspect path on an unpowered donor, and rehearse component work on a training board.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P24, P26, P33, P34</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build a known-good charging comparison</h2>
+    <p>Use your own physically sound USB-C phone, a compatible known-good source and cable, and an optional rated pass-through USB meter that supports the required negotiation. Measure the known-good setup first, then try the suspect phone or accessory by changing one item at a time. Compare both plug orientations at the phone and direct operation without the meter. Record charge state, source, cable, orientation, VBUS, input current, phone indication and whether it can transfer data with a known-good data cable. Data testing belongs on a device you own and can unlock normally.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">What you observed</th><th scope="col">Next test</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Known-good setup works in both orientations. Suspect phone only charges in one.</th><td>Repeat with a second good cable. Inspect the phone receptacle for damage or debris with power disconnected and follow the model’s cleaning instructions. Consider the connector/CC path if the fault persists.</td></tr>
+    <tr><th scope="row">Wired charging repeatedly fails, supported wireless charging works.</th><td>Document working wireless charging as evidence. Check the port/module and its connection before escalating to board diagnosis.</td></tr>
+    <tr><th scope="row">Expected VBUS appears but battery does not gain charge.</th><td>Use the official battery status checks, note device activity and temperature, and compare with a repeat below the supported charge limit.</td></tr>
+    <tr><th scope="row">Black screen, but the device vibrates or reports to a trusted host.</th><td>Follow the display branch of the manual. A partial response narrows the fault and does not by itself verify boot completion.</td></tr>
+    </tbody>
+    </table></div>
+
+    <h2>Do a cold check on a documented donor</h2>
+    <p>Follow the model’s isolation sequence, then trace a documented path from the port or daughterboard through its flex and protection to an accessible point. Record visible connector or pad damage. With the board isolated and unpowered, compare continuity between identified points and compare diode-mode readings with a known-good board of the same revision using the same meter and orientation. Keep references and results attached to the job record. If the port is modular and the evidence supports it, follow the manufacturer’s procedure to replace and verify it.</p>
+    <p>For a soldered port, practise on an unpowered, battery-free connector training board with labelled breakout pads. Map ground and shell where the board specifies they are connected, VBUS and the available signal pads. After a supervised practice replacement, verify each routed pin-to-test-point connection and check adjacent independent nets for bridges. Work up from the resistor and castellated exercises in P26. A densely packed phone board may need microscope work, controlled heat and a qualified technician. Refer packed multilayer, data-critical, battery-damaged or undocumented cases.</p>
+
+    <h2>Write the closing test</h2>
+    <p>Recheck charge in both orientations with the recorded known-good combination. Where relevant, test data, mic, speaker, wireless, and any functions the port board carries. Record a later battery percentage under comparable use. For a referral, write the last confirmed node and why you stopped, so the next tech can begin there.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t29-usb-c-power-delivery.html">T29</a> explains CC, VBUS and PD, <a href="../theory/t28-lithium-batteries.html">T28</a> explains the distinction between input power and battery charge, and <a href="../theory/t26-pcb-rework-esd.html">T26</a> explains protection arrays and inspectable joints. <a href="../theory/t27-board-power-sequencing.html">T27</a> helps when charging is normal but startup still fails.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

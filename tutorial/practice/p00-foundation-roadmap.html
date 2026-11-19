@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P00 · Your ECE foundation and learning routes</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P00</span>
+    <h1>Your ECE foundation and learning routes</h1>
+    <p class="lede">Build a circuit, predict what it should do, measure it, and explain a failure. Use that same routine when you move from a breadboard to a welder, building controller, laptop, phone, robot or antenna.</p>
+    <div class="meta"><span><b>Start with</b> P01–P04</span><span><b>Tools</b> Notebook and the P01 bench kit</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Start with the first three sessions</h2>
+    <ol class="steps">
+      <li><p><b>Set up the bench.</b> Read <a href="p01-bench-kit-safety.html">P01</a> and <a href="../theory/t00-maths-toolkit.html">T00</a>. Write one example each of converting mA to A and kΩ to Ω. Identify the meter jacks and practise returning the red lead to the voltage jack after current measurements.</p></li>
+      <li><p><b>Build an LED circuit.</b> Do <a href="p02-breadboard-first-led.html">P02</a> and <a href="p03-multimeter-mastery.html">P03</a>. Measure the supply, LED and resistor voltages. Use the measured resistor voltage and resistance to compute current. Explain how much of the supply voltage each component uses.</p></li>
+      <li><p><b>Change one thing.</b> Do the loaded divider in <a href="p04-series-parallel-dividers.html">P04</a>. Predict the change before attaching the load. Turn power off, open one jumper, then use measurements to locate the fault as though someone else had introduced it.</p></li>
+    </ol>
+
+    <h2>Foundation checkpoints</h2>
+    <p>Allow two or three bench sessions per stage. Redo a checkpoint on a different circuit before advancing if you still need the original wiring instructions to explain it.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Stage</th><th scope="col">Practice and theory</th><th scope="col">What to put in your notebook</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">1. DC and measurement</th><td><a href="p01-bench-kit-safety.html">P01–P04</a>, <a href="p24-datasheets-measurement.html">P24</a>, <a href="../theory/t01-charge-current-voltage.html">T01–T04</a>, <a href="../theory/t24-measurement-datasheets.html">T24</a></td><td>A schematic with node voltages, a prediction and an explanation for any difference.</td></tr>
+    <tr><th scope="row">2. Parts and power</th><td><a href="p05-soldering-wiring.html">P05–P10</a>, <a href="../theory/t05-capacitors-fields.html">T05–T08</a>, <a href="../theory/t11-semiconductors-diodes.html">T11–T14</a></td><td>A soldered LED or switch circuit, a joint inspection and evidence that the supply holds up under load.</td></tr>
+    <tr><th scope="row">3. Signals and instruments</th><td>Do <a href="p11-arduino-first-steps.html">P11</a> before <a href="p14-serial-buses-modbus.html">P14–P15</a> and <a href="p25-scope-filters.html">P25</a>. Read <a href="../theory/t15-digital-logic-microcontrollers.html">T15–T16</a> and <a href="../theory/t25-filters-resonance.html">T25</a> as needed.</td><td>A measured bus or signal with voltage levels, time scale and an explanation of what the probe can change.</td></tr>
+    <tr><th scope="row">4. Design and diagnosis</th><td><a href="p12-sensors-adc.html">P12–P13</a>, <a href="p21-fault-finding.html">P21–P23</a>, <a href="p27-firmware-state-machine.html">P27</a></td><td>A sensor-to-output project with a schematic, a deliberate fault, a before/after measurement and a retest.</td></tr>
+    </tbody>
+    </table></div>
+
+    <h2>Choose a branch when you can explain your measurements</h2>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Route</th><th scope="col">Next work</th><th scope="col">Proof of skill</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Welding-set repair</th><td><a href="../welding/w00-start-here.html">W00–W07</a> + <a href="../theory/t20-igbt-physics.html">T20–T23</a></td><td>A battery-powered bridge lab and a supervised repair record with the original failure and return-to-service checks.</td></tr>
+    <tr><th scope="row">Building management systems</th><td><a href="../career/c01-bms-fundamentals.html">C01–C03</a> + <a href="p29-bms-commissioning-lab.html">P29</a></td><td>A points list, a commissioning test matrix and a trend showing a fault and its recovery.</td></tr>
+    <tr><th scope="row">Laptop and phone repair</th><td><a href="p26-smd-rework.html">P26</a> + <a href="p32-laptop-service.html">P32–P35</a> + <a href="../theory/t27-board-power-sequencing.html">T27–T29</a></td><td>A complete record for a module replacement, followed by a board-level diagnosis on a trainer or donor.</td></tr>
+    <tr><th scope="row">Embedded, robotics and IoT</th><td><a href="p27-firmware-state-machine.html">P27–P28</a> + <a href="p18-esp32-iot-mqtt.html">P18</a> + <a href="p30-iot-reliability.html">P30</a></td><td>A controller that respects its stop input and telemetry that visibly becomes stale when the network goes down.</td></tr>
+    <tr><th scope="row">RF and antennas</th><td><a href="../theory/t10-em-waves-antennas-fibre.html">T10</a> + <a href="../theory/t32-rf-transmission-lines.html">T32</a> + <a href="p31-antenna-receive-lab.html">P31</a></td><td>A receive-only comparison with the same station, receiver settings and location for each test.</td></tr>
+    </tbody>
+    </table></div>
+
+    <h2>Read the theory when a measurement raises a question</h2>
+    <p>Start with each lab’s <b>Why it works</b> links. Use the <a href="../reference/r03-symbols-parts.html">parts and symbol index</a> when a new part appears. Find its marking, circuit symbol, purpose, limits and one expected measurement. For job or shop evidence, use <a href="../career/c16-repair-work-portfolio.html">C16</a> and keep your predictions, readings and results together.</p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

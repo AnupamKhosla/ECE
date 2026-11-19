@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P24 · Predict a reading before touching the board</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P24</span>
+    <h1>Predict a reading before touching the board</h1>
+    <p class="lede">Use two voltage dividers to see how a meter alters a circuit. Then read a real voltage regulator datasheet and decide which numbers matter on the bench.</p>
+    <div class="meta"><span><b>Time</b> 45–60 min</span><span><b>Before this</b> P03, P04</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build two dividers</h2>
+    <p>Use an isolated 5 V source, a breadboard, a DMM, two 10 kΩ resistors and two 1 MΩ resistors. Check your meter’s input impedance in DC volts mode, including any low-impedance mode or range exception. Measure each resistor with the power off and before inserting it.</p>
+    <ol class="steps">
+      <li><p><b>Predict.</b> Connect one 10 kΩ resistor from 5 V to the output and another from output to ground. Build a second divider using the two 1 MΩ resistors. Calculate each unloaded output with your actual supply voltage, and calculate how your meter changes it using <a href="../theory/t24-measurement-datasheets.html">T24</a>.</p></li>
+      <li><p><b>Measure.</b> Measure output to ground on both dividers with the same DMM DC-voltage setting. With exact resistors, a 5.00 V supply and a 10 MΩ meter, expect about 2.499 V and 2.381 V respectively. Use your actual meter resolution when comparing.</p></li>
+      <li><p><b>Add a real load.</b> With power off, clip a spare 10 kΩ resistor from the 10 kΩ divider’s output to ground. The bottom leg becomes about 5 kΩ, so expect about 1.67 V after power returns. Remove the clip and verify the original reading returns.</p></li>
+    </ol>
+    <div class="callout why"><span class="label">Why it works</span><p>Follow <a href="../theory/t04-circuit-laws.html">T04</a> for divider and Thévenin calculations, and <a href="../theory/t24-measurement-datasheets.html">T24</a> for probe loading and how to compare the result with meter accuracy.</p></div>
+
+    <h2>Read a regulator like a service technician</h2>
+    <p>Open the 3.3 V TLV755P variant’s datasheet from TI. Copy the package pinout for one orderable variant, the input operating range, EN logic thresholds, minimum effective output capacitance, and dropout at the specified load for that package. On your sketch, mark IN, OUT, EN and GND and write where you would place the meter probes. <a href="https://www.ti.com/product/TLV755P">TI TLV755P product page and datasheet</a>.</p>
+    <p>Suppose IN reads 5.00 V, EN reads 0.04 V and OUT reads 0.01 V. Check EN’s low threshold first. Then find what drives EN. Write how your conclusion would change if EN were valid high and the upstream supply remained steady under load. Read about <a href="../theory/t27-board-power-sequencing.html">EN and power-good in T27</a>.</p>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> I recorded the prediction and measured result for each divider and explained the difference.</label></li>
+      <li><label><input type="checkbox"> I identified a pin and a guaranteed limit for an exact package and test condition.</label></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

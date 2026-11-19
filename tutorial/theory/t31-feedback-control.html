@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T31 · Feedback, interlocks and control loops</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T31</span>
+    <h1>Feedback, interlocks and control loops</h1>
+    <p class="lede">Model a robot’s steering or an air handler’s output as a measured process. Decide what to command, how to recognise failure and when to leave the output off.</p>
+    <div class="meta"><span><b>Prerequisites</b> T14, T18, T19, T30</span><span><b>Bench</b> P28, P29</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Open-loop and closed-loop control</h2>
+    <p>Open-loop control applies a command without measuring the result. A robot’s 50% PWM setting can produce different speeds as the battery and floor change. Closed-loop control measures the process, compares it with the setpoint and uses the error to adjust its command. The sign matters. If the adjustment makes the error grow, the loop is acting in the wrong direction.</p>
+    <div class="formula">e = setpoint − measurement &nbsp; · &nbsp; u = clamp(K<sub>p</sub>e + bias, u<sub>min</sub>, u<sub>max</sub>)</div>
+    <p>Proportional action changes the command immediately with error. Integral action accumulates error to correct a persistent offset. When the output is saturated, accumulation can cause windup and slow recovery. Anti-windup can stop or unwind the integral under defined conditions. Derivative action responds to the rate of change and can amplify noise. Delay and excessive gain can turn corrective action into oscillation. Start by testing a single change and recording the response over time. <a href="https://ctms.engin.umich.edu/CTMS/?example=MotorSpeed&amp;section=ControlPID">University of Michigan motor speed control tutorial</a>.</p>
+
+    <h2>Hysteresis, permissives and proof</h2>
+    <p>A controller can start cooling above 25 °C and stop below 23 °C. The gap is hysteresis. Between the limits the controller remembers the current state. A permissive is a condition that must be satisfied to allow action. An interlock prevents or stops a conflicting action. Feedback from a current switch, airflow switch, encoder or auxiliary contact gives independent evidence that a commanded action occurred.</p>
+    <p>In the BMS trainer, a simulated fan is commanded on, but its proof input stays off. After the proof deadline, drive the output off and latch an alarm. Record the command, feedback, alarm and timestamp separately. A proof switch can itself stick, so a field test should also check behaviour with the command off. Life-safety and plant protection require the approved system design and site procedures.</p>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>A robot veers away from the line when the left sensor sees it. What do you check first?</summary><div class="answer"><p>Check sensor polarity and whether the command actually turns the robot left. Raise the wheels for this direction test. A swapped motor or reversed error sign can produce positive feedback even with a small gain.</p></div></details>
+    <p><a class="crosslink" href="../practice/p28-line-following-robot.html">Practice P28 · Build a line-following robot</a> <a class="crosslink" href="../practice/p29-bms-commissioning-lab.html">Practice P29 · Commission a simulated air handler</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T25 · Filters, frequency response and resonance</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T25</span>
+    <h1>Filters, frequency response and resonance</h1>
+    <p class="lede">Follow amplitude and phase as frequency changes. The same ideas explain a sensor filter, audio coupling, power-rail decoupling and antenna tuning.</p>
+    <div class="meta"><span><b>Prerequisites</b> T05–T07</span><span><b>Bench</b> P25</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>A time constant becomes a corner frequency</h2>
+    <p>In an unloaded RC low-pass, R goes in series and C goes from the output to the return. DC passes, while increasing frequency reduces capacitor reactance. The output is the complex divider result V<sub>out</sub>/V<sub>in</sub> = 1/(1 + j2πfRC).</p>
+    <div class="formula">f<sub>c</sub> = 1/(2πRC) &nbsp; · &nbsp; |V<sub>out</sub>/V<sub>in</sub>| = 1/√(1 + (f/f<sub>c</sub>)²)</div>
+    <p>At f<sub>c</sub> the amplitude ratio is about 0.707, or −3.01 dB, and the output phase lags by 45°. Well beyond the corner, amplitude falls at about 20 dB per decade. With the same two parts arranged as a series capacitor and a shunt resistor, the output across the resistor is a high-pass. It passes fast changes and attenuates steady offsets.</p>
+    <p>A step gives a different view of the same low-pass. After one time constant RC, the voltage has travelled about 63% of the way from its starting voltage to its final voltage. The 10–90% rise time is about 2.2RC. The DC gain, measured corner and rise time all change if the real source, load or probe changes the effective circuit.</p>
+
+    <h2>Resonance and damping</h2>
+    <p>In ideal series LC, inductive and capacitive reactance cancel at f<sub>0</sub> = 1/(2π√LC). A real series RLC has minimum impedance near resonance. A matching parallel topology can show an impedance peak. Resistance determines how much the real network rings and how sharply it selects a band. For a simple series RLC with total series resistance R, Q = 2πf<sub>0</sub>L/R and the current response has a half-power bandwidth of f<sub>0</sub>/Q.</p>
+    <p>Real inductors have winding capacitance and real capacitors have lead or package inductance. Resonance or an impedance minimum can occur at frequencies the ideal component model misses. Locate the frequency range of interest before choosing a decoupling component or interpreting a switching spike.</p>
+
+    <h2>Worked example and bench check</h2>
+    <p>With 10 kΩ and 100 nF, RC = 1 ms and f<sub>c</sub> ≈ 159 Hz. At 1 kHz an unloaded sine input of 2.00 V peak-to-peak gives about 0.314 V peak-to-peak. If a square wave gives an output with rounded corners, compare its time constant with the period and inspect a single step before calculating sine gain.</p>
+    <details class="quiz"><summary>Why can aliasing still appear after smoothing the samples in software?</summary><div class="answer"><p>Once an out-of-band analogue signal has been sampled as a false lower frequency, digital smoothing cannot distinguish it from genuine in-band content. Limit the analogue bandwidth before sampling. <a href="t16-signals-noise-loops.html">T16 · Sampling and noise</a>.</p></div></details>
+    <p><a class="crosslink" href="../practice/p25-scope-filters.html">Practice P25 · Measure a low-pass response</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

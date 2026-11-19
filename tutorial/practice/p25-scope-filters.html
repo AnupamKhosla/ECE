@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P25 · Measure an RC filter on the oscilloscope</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P25</span>
+    <h1>Measure an RC filter on the oscilloscope</h1>
+    <p class="lede">Build a low-pass from two parts. Watch a square wave charge the capacitor, then measure how much of a sine wave passes at three frequencies.</p>
+    <div class="meta"><span><b>Time</b> 60 min</span><span><b>Before this</b> P07, P15</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Set up the circuit and probes</h2>
+    <p>Use a 10 kΩ resistor, 100 nF non-polar capacitor, two scope probes and a low-voltage signal generator. Connect generator output through 10 kΩ to the output node and place the capacitor from output to circuit return. Attach both probe ground clips and the generator return to that same point. Probe channel 1 before the resistor and channel 2 after it. Match each scope channel’s attenuation setting to its probe. Use only the isolated extra-low-voltage trainer circuit for this lab. A standard bench scope’s probe grounds are normally tied together and tied to protective earth.</p>
+    <p>A signal generator with a high-impedance load mode makes its displayed amplitude easier to interpret. Verify input amplitude at channel 1 anyway. With no generator, use a 0–5 V square wave from a 5 V Arduino GPIO (for example <code>tone(9, 50)</code>) and do the step test only. Connect the board’s GND to the circuit return.</p>
+
+    <h2>Make the measurements</h2>
+    <ol class="steps">
+      <li><p><b>Step test.</b> Set a 50 Hz square wave. Measure the output rise from one settled level to the other. At about 1 ms after the step the output should have travelled 63% of that step. A 10–90% rise takes about 2.2 ms.</p></li>
+      <li><p><b>Sine test.</b> Set a 2 V peak-to-peak sine with no DC offset when using the standalone generator. Measure both channels at 20 Hz, 159 Hz and 1 kHz. Expect an output/input ratio near 0.99, 0.71 and 0.16 respectively. At 159 Hz compare matching rising zero crossings. The output should lag by about one eighth of a period, or 0.79 ms.</p></li>
+      <li><p><b>Check the model.</b> Power down, replace 100 nF with 200 nF (two 100 nF capacitors in parallel), then repeat the step. Expect the 10–90% rise time to double and the sine corner to halve.</p></li>
+    </ol>
+    <div class="callout why"><span class="label">Why it works</span><p>The <a href="../theory/t05-capacitors-fields.html">capacitor</a> charges through the resistor, which creates a time constant. <a href="../theory/t25-filters-resonance.html">T25 · Filters and resonance</a> connects that same time constant to gain and phase. Review <a href="../theory/t24-measurement-datasheets.html">T24</a> if your probe or next circuit loads the output.</p></div>
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> I saved a trace with both channels and used cursors to estimate the time constant or phase delay.</label></li>
+      <li><label><input type="checkbox"> I predicted what would change when I doubled the capacitance and verified it.</label></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

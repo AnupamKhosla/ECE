@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T28 · Lithium-ion cells, charging and protection</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T28</span>
+    <h1>Lithium-ion cells, charging and protection</h1>
+    <p class="lede">Distinguish the cell, pack protection, fuel gauge and charging circuit so a low runtime or a no-charge complaint becomes a testable diagnosis.</p>
+    <div class="meta"><span><b>Prerequisites</b> T03, T18, T21</span><span><b>Bench</b> P32, P34, P35</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Cell, pack and device perform different jobs</h2>
+    <p>A cell stores energy chemically. Pack protection monitors conditions such as overvoltage, undervoltage and excessive current. A fuel gauge estimates state of charge using voltage, current history, temperature and a battery model. The host’s charge controller regulates the charge profile and may juggle adapter, system and battery power. Some packs use thermistors or a digital link. A connector that fits does not establish electrical or firmware compatibility.</p>
+    <p>Many lithium-ion charging profiles use constant current first, then hold a specified voltage as current tapers before termination. Some include precharge and temperature limits. Limits vary by cell chemistry and vendor. Use only the documented pack and charge arrangement. Swelling, damage, unexpected heat or liquid exposure is a stop condition. Follow the device maker’s process for handling and qualified disposal. <a href="https://www.epa.gov/recycle/frequent-questions-lithium-ion-batteries">EPA guidance on damaged and swollen lithium-ion batteries</a>.</p>
+
+    <h2>What runtime tells you</h2>
+    <p>Charge capacity is measured in Ah. Approximate stored energy in Wh is nominal pack voltage times Ah. An 11.4 V, 3 Ah pack is nominally 34.2 Wh. A constant 10 W load would ideally run about 3.4 h. Cutoff, converter loss, age and temperature reduce available runtime. Under load, internal resistance causes a voltage drop roughly equal to I × R. A worn pack can report charge at idle and still shut down when the load rises.</p>
+
+    <h2>What bench evidence can tell you</h2>
+    <p>Use documented battery health and charge diagnostics on a physically sound device. Compare behaviour with a known-good supported adapter or pack where the manual permits. Check reporting, temperature, stated charge thresholds and whether system load consumes the adapter budget. Preserve the original pack labels and test context in the repair record.</p>
+    <details class="quiz"><summary>Why might a device draw input current while its battery percentage stays constant?</summary><div class="answer"><p>Input power can be serving the running device. Charge may also be limited by temperature, battery policy, an adapter power limit or a fault in the charging path. The adapter meter alone cannot show which is happening.</p></div></details>
+    <p><a class="crosslink" href="../practice/p34-phone-module-service.html">Practice P34 · Use a phone’s model-specific module procedure</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

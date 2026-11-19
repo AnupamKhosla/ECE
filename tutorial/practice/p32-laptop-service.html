@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P32 · Laptop repair from intake to module replacement</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P32</span>
+    <h1>Laptop repair from intake to module replacement</h1>
+    <p class="lede">Sort no power, no POST, no boot and no video. Then remove, refit and verify a serviceable module on a laptop you can use for practice.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P21, P22, P26</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Classify the complaint while the laptop is closed</h2>
+    <p>Write the exact model, what happened before the failure, the adapter model, and whether preserving data is the priority. Note current condition and any cracks, missing screws or accessories. Start on your own working or repairable spare with a backup and a scratch drive. Stop applying power if there is visible swelling, signs of liquid ingress or unusual heat and follow the maker’s handling guidance.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Symptom</th><th scope="col">First evidence to collect</th><th scope="col">What you can narrow down</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">No power</th><td>No response to Power. Check wall supply using a known-working outlet, adapter rating, supported cable and the specified charge port. Record adapter and charge LEDs if fitted.</td><td>Use a known-good supported adapter and cable before investigating the board. An open-circuit adapter reading alone gives little evidence about current delivery.</td></tr>
+    <tr><th scope="row">No POST</th><td>Fans or LEDs respond, but firmware never completes its power-on self-test. Record LED and beep patterns and check the exact model’s code table.</td><td>Use the documented preboot tests and isolate compatible removable memory if the model permits. Keep one known baseline configuration.</td></tr>
+    <tr><th scope="row">No boot</th><td>Firmware setup opens but the OS does not start. Check whether the firmware sees the drive and identify the boot error.</td><td>Storage detection, boot configuration or OS is the next branch. Preserve user data before any write, reinstallation or recovery action.</td></tr>
+    <tr><th scope="row">No video</th><td>Machine appears to run with a black or failed internal screen. Try the supported display self-test and an external monitor where supported.</td><td>External display or a successful LCD self-test changes the next check. Record exactly what each test exercises on the model.</td></tr>
+    </tbody>
+    </table></div>
+    <p>LED codes and preboot shortcuts are model-specific. Check the maker’s instructions before changing firmware or firmware settings, particularly where drive encryption is enabled. <a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell’s symptom and diagnostics guide</a>.</p>
+
+    <h2>Bench exercise on a removable SSD</h2>
+    <ol class="steps">
+      <li><p><b>Pick a known starting point.</b> Confirm a working baseline in firmware setup and use an already backed-up, non-customer test drive. Identify the supported interface and form factor from the manual. M.2 length alone does not establish SATA or NVMe compatibility.</p></li>
+      <li><p><b>Follow the exact service sequence.</b> Shut down, disconnect the charger and follow the manufacturer’s service mode or internal battery isolation instructions before touching modules. Use an ESD mat and wrist strap on the unpowered work area. Map screw lengths, connector routing and any thermal shield or pad. Use the manual’s release methods for clips and sockets. On a non-Rugged Latitude 5420 with a 2280 drive, the SSD instructions illustrate the thermal plate and retaining screws. <a href="https://www.dell.com/support/manuals/en-lk/latitude-5420-laptop/5420_sp14_sm/removing-the-m2-2280-solid-state-drive?guid=guid-d3705b0e-b956-46c2-92ba-dee2d53d7308&amp;lang=en-us">Dell Latitude 5420 illustrated SSD removal</a>.</p></li>
+      <li><p><b>Change one part.</b> Refit the existing test drive first to practise alignment, then fit a known-good compatible spare if you have one. Restore the thermal plate and reassemble as specified before powering. For a similar exercise on a laptop with removable RAM, change one module or slot at a time and compare preboot memory diagnostics.</p></li>
+      <li><p><b>Verify the scope of the fix.</b> Check that firmware sees the expected drive and capacity and run the supported read-only diagnostic. Boot a prepared test OS only if the drive already has one and you are authorised to use it. Check charging, the original symptom and functions disturbed during the work, then record every pass or skipped check.</p></li>
+    </ol>
+    <p>Build a fault case by removing your own scratch drive, reassembling and observing the changed firmware or boot state. Refit it and verify recovery. If a customer drive disappears intermittently and the data matters, limit further power cycles and refer to a recovery specialist before writing or reinstalling.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> covers ESD and connector protection. <a href="../theory/t27-board-power-sequencing.html">T27</a> covers the path to POST, <a href="../theory/t28-lithium-batteries.html">T28</a> covers battery health and <a href="../theory/t29-usb-c-power-delivery.html">T29</a> covers charger and cable negotiation.</p></div>
+    <p><a class="crosslink" href="p33-laptop-power-diagnostics.html">Next · P33 laptop power-rail diagnostics</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

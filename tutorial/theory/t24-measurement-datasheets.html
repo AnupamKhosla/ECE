@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T24 · Measurement loading, tolerance and datasheets</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T24</span>
+    <h1>Measurement loading, tolerance and datasheets</h1>
+    <p class="lede">A meter becomes part of the circuit. A datasheet number comes with conditions. Use both ideas to decide whether a reading is plausible or points to a fault.</p>
+    <div class="meta"><span><b>Prerequisites</b> T02, T04</span><span><b>Bench</b> P24</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>The instrument is another component</h2>
+    <p>Replace the source and its resistor network with a <a href="t04-circuit-laws.html">Thévenin equivalent</a>. Its open-circuit voltage is V<sub>th</sub> and its series resistance is R<sub>th</sub>. A voltmeter of input resistance R<sub>in</sub> forms a divider with it.</p>
+    <div class="formula">V<sub>read</sub> = V<sub>th</sub> × R<sub>in</sub> / (R<sub>th</sub> + R<sub>in</sub>)</div>
+    <p>A 5.00 V supply and two 1 MΩ resistors give 2.50 V open-circuit and R<sub>th</sub> = 500 kΩ. A 10 MΩ meter reads about 2.38 V. A 1 MΩ input would give about 1.67 V. Oscilloscope probes also add capacitance, so their loading usually increases with frequency. An ammeter inserts a series shunt and has a burden voltage. For small current in a low-voltage circuit, measuring a known resistor’s drop can be easier to account for.</p>
+
+    <h2>Display resolution and accuracy</h2>
+    <p>A meter specification of ±(0.5% of reading + 2 counts) on a range with 0.01 V resolution gives ±(0.5% × 5.00 V + 0.02 V) = ±0.045 V at a 5.00 V reading, under the stated calibration and operating conditions. The last digit can move without the circuit changing. Treat loading, reference errors and component tolerances as separate effects. A divider made with two independent 1% resistors and exactly 5.00 V spans 2.475–2.525 V before the meter loads it.</p>
+    <p>Resistance and diode modes source a small test signal. In-circuit resistance includes parallel paths. Diode-mode readings depend on test polarity, current and the available paths. Compare like with like and record mode, range, polarity, reference and power state.</p>
+
+    <h2>Read the right row</h2>
+    <ul>
+      <li><b>Absolute maximum ratings</b> describe stress limits. Use <b>recommended operating conditions</b> for design, then electrical characteristics for guaranteed behaviour under the stated test conditions.</li>
+      <li><b>Typical</b> helps predict a representative device. Use a specified minimum or maximum when the circuit must work across units or temperatures.</li>
+      <li><b>Pinout and order code</b> travel together. Verify package view, orientation, exact output-voltage suffix, exposed pad connection and allowed capacitors.</li>
+      <li><b>Thermal limits</b> depend on the board and airflow. A linear regulator dropping 5.0 V to 3.3 V at 0.20 A dissipates roughly 0.34 W before its small quiescent loss. Check how the package and layout move that heat.</li>
+    </ul>
+    <p>For the fixed-output TLV755P, find the dropout row for the 3.3 V option, specific package and load current. The minimum input listed for the family describes the range of devices and conditions. Your output version still needs enough input-to-output headroom. <a href="https://www.ti.com/product/TLV755P">TI TLV755P datasheet and package options</a>.</p>
+
+    <h2>Check yourself</h2>
+    <details class="quiz"><summary>The meter reads 2.38 V on a nominal 2.50 V divider. What measurement would test loading?</summary><div class="answer"><p>Use a lower-resistance divider with the same ratio and the same supply. The predicted loading falls. If the reading stays low, measure the supply and resistors and check for another load.</p></div></details>
+    <p><a class="crosslink" href="../practice/p24-datasheets-measurement.html">Practice P24 · Measure loading and read a regulator datasheet</a></p>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

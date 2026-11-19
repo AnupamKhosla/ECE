@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P33 · Laptop board diagnosis and power rails</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P33</span>
+    <h1>Laptop board diagnosis and power rails</h1>
+    <p class="lede">Learn the order of a no-power investigation on a 5 V trainer, then map the same questions to a documented donor laptop.</p>
+    <div class="meta"><span><b>Time</b> 90 min</span><span><b>Before this</b> P24, P26, P32</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build a two-rail trainer</h2>
+    <p>Use an isolated 5 V bench supply, a DMM, a switch, two documented 3.3 V regulator breakout boards with active-high enable pins, a 10 kΩ resistor and a 1 kΩ resistor. Choose breakouts rated for 5 V input, with their required capacitors fitted, that accept 3.3 V on EN and have no permanent enable strap. The TLV755P in P24 is an example of the regulator type. Use the breakout instructions and pin labels. Power off for each wiring change.</p>
+    <ol class="steps">
+      <li><p><b>Wire input and standby.</b> Connect both module inputs to the 5 V rail through a removable jumper, and connect both grounds to the supply return. Wire regulator A’s EN to its input and label its output <b>STBY</b>.</p></li>
+      <li><p><b>Wire the run command.</b> Put the 10 kΩ resistor from regulator B’s EN to ground. Connect STBY to B’s EN through the switch. Label B’s output <b>RUN</b> and attach 1 kΩ from RUN to return as its load.</p></li>
+      <li><p><b>Capture both states.</b> With a low current limit suited to the two modules and the load, measure source, after-jumper input, STBY, B’s EN and RUN against return. With input connected, the first two nodes are about 5 V and STBY about 3.3 V. With the switch open, EN and RUN settle near zero. With it closed, EN and RUN are about 3.3 V. The load draws about 3.3 mA.</p></li>
+    </ol>
+    <p>Turn off power and remove the input jumper. Ask a partner to give the same “run rail missing” report as they would with the switch left open. Use measurements to distinguish missing input from a missing request. Restore the baseline and repeat. Record why replacing regulator B would fail to fix either case.</p>
+
+    <h2>Transfer the sequence to a donor laptop</h2>
+    <p>Start with P32’s external checks and confirm the exact board revision and documented test points. Work on a spare with no data to preserve. Follow the manual’s isolation procedure before opening or taking resistance or diode readings. Inspect connectors, flexes and components under magnification. Locate the input connector, input protection, charge circuit, standby rails and enable or power-good signals from approved documentation. Use a documented return reference. Use powered measurements on the trainer first. On a donor, only use model-documented, accessible low-voltage points and an equipped mentor when the procedure calls for an open powered board.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Documented point</th><th scope="col">Question it answers</th><th scope="col">What comes next</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Input before and after protection</th><td>Does supported adapter power reach the downstream converter?</td><td>Check a transition across the connector, fuse or input switch. A blown fuse is a symptom. Identify the reason before replacement.</td></tr>
+    <tr><th scope="row">Standby rail and power request</th><td>Can the startup logic receive the power-button event?</td><td>Verify power-button flex and documented prerequisite signals before blaming the controller.</td></tr>
+    <tr><th scope="row">Run regulator IN, EN, OUT and PG</th><td>Is the stage requested, powered and confirming its output?</td><td>Use the first missing prerequisite to choose the next test. A rail expected only after sequencing can correctly be off in standby.</td></tr>
+    </tbody>
+    </table></div>
+    <p>Record a cold resistance or diode-mode reading with polarity, reference and setting, and compare against the same test on an identical board revision if available. A low reading alone does not establish a short or identify a part. Keep first board-level exercises to measured localization, and refer unknown rails, extensive liquid damage or data-critical devices for specialist work.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t27-board-power-sequencing.html">T27</a> explains standby, EN and PG. <a href="../theory/t13-mosfet-physics.html">T13</a> covers protection switches, <a href="../theory/t21-switching-converters-control.html">T21</a> covers converters, and <a href="../theory/t24-measurement-datasheets.html">T24</a> covers why in-circuit readings need a reference.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

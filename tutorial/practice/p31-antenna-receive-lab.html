@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P31 · Build and compare an indoor receive antenna</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P31</span>
+    <h1>Build and compare an indoor receive antenna</h1>
+    <p class="lede">Make a simple FM broadcast dipole and compare it against the receiver’s supplied antenna. Use a repeatable signal and record how orientation and indoor placement change the result.</p>
+    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Before this</b> T10, T32</span><span><b>Scope</b> Receive-only indoor setup</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Calculate and assemble a dipole</h2>
+    <p>Choose a public FM broadcast station that you already receive. You need an SDR receiver covering that station, its supplied antenna, suitable coax or an adapter to an insulated two-terminal feed point, two lengths of insulated wire and a non-conductive support. Turn off any receiver bias-tee DC output before connecting the antenna. Keep the wires indoors and away from mains wiring and outlets.</p>
+    <ol class="steps">
+      <li><p><b>Size the legs.</b> Use λ ≈ 300/f<sub>MHz</sub> metres. For 100 MHz, start with two legs near 0.75 m each. Keep notes on the exposed electrical lengths and layout. <a href="https://www.arrl.org/single-band-dipoles">ARRL dipole construction examples</a>.</p></li>
+      <li><p><b>Connect at the centre.</b> Disconnect the feed from the receiver. Use the insulated junction to connect one leg to coax centre and the other to shield. Stretch the legs in opposite directions. Keep them electrically separate. Use the meter to verify centre-to-its-wire, shield-to-its-wire and no short between them on this passive assembly before reconnecting.</p></li>
+      <li><p><b>Set the receiver.</b> Use WFM for broadcast FM and verify the signal against the receiver’s supplied antenna. Turn off automatic RF gain where possible and record manual gain, bandwidth, sample rate and FFT settings. <a href="https://airspy.com/quickstart/">Airspy’s illustrated SDR setup guide</a>.</p></li>
+    </ol>
+
+    <h2>Compare one variable at a time</h2>
+    <p>Measure the supplied antenna, then the dipole at the same height and location, and finally the supplied antenna again. On each run, note an approximate station level and adjacent clear noise-floor level using identical display settings. The difference is a comparative indicator. Record any audio dropouts. Repeat with the dipole rotated by 90° about its feed point, then move it about a quarter wavelength indoors and repeat. Keep the cable routing as consistent as possible.</p>
+    <p>If many stations distort together or the floor rises sharply, reduce receiver gain and rerun the comparison. If the two baseline trials differ substantially, repeat when conditions are steadier. If you own an analyser, practise calibrated S11 first with a known 50 Ω termination and an open on a disconnected bench fixture. Keep the reception comparison as a separate measurement.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t10-em-waves-antennas-fibre.html">T10</a> explains wavelength and polarisation. <a href="../theory/t32-rf-transmission-lines.html">T32</a> connects the wire length, feed line, reflection and signal level. <a href="../theory/t16-signals-noise-loops.html">T16</a> covers decibels and noise.</p></div>
+
+    <h2>Skills checklist</h2>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> I drew the feed point, recorded both wire lengths and checked continuity with the receiver disconnected.</label></li>
+      <li><label><input type="checkbox"> I repeated the baseline and explained what could cause the rotated or moved antenna’s signal to change.</label></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>

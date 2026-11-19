@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P34 · Phone repair, module replacement and final tests</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P34</span>
+    <h1>Phone repair, module replacement and final tests</h1>
+    <p class="lede">Practise a documented display or other replaceable module procedure on a spare phone. Record the original symptom, the affected functions and the results after reassembly.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P26, P32</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Start with a working baseline</h2>
+    <p>Use a spare phone you own with no important data and a physically sound battery. Record the exact model and variant, the reported fault, exterior condition and charge state. Test screen image and touch, buttons, speakers, microphones, cameras, charge, wireless and the sensors you may disturb. Where the phone is usable, back up data and check the documented diagnostic or repair mode. Plan for model-required calibration before ordering a part.</p>
+    <p>Begin with a module the manufacturer documents as replaceable and for which you have the tools, parts and service instructions. The iPhone 15 manual lists separate display, speaker, camera and USB-C procedures, plus repair videos and views. Samsung publishes an illustrated generic screen workflow and model-specific manuals. Google links Pixel diagnostics and guides. <a href="https://support.apple.com/en-us/104900">Apple iPhone 15 repair manual, diagrams and video index</a> · <a href="https://www.samsung.com/uk/support/mobile-devices/how-to-self-repair-your-phone-screen/">Samsung screen-repair walkthrough</a> · <a href="https://support.google.com/pixelphone/answer/14257407?hl=en">Google Pixel repair and diagnostics</a>.</p>
+
+    <h2>Exercise with a documented display replacement</h2>
+    <ol class="steps">
+      <li><p><b>Rule out other faults first.</b> On a spare with a display complaint, establish whether the phone boots or responds, whether touch or image fails, and whether there are visible impact marks. Record each sign. Use the model’s diagnostic steps to narrow display, flex, or board-level causes before ordering a screen.</p></li>
+      <li><p><b>Set up and isolate.</b> Read the manual’s first steps, battery and glass safety, removal, reassembly and post-repair sections. Set the charge level required by the manual. Gather the correct drivers, ESD tools, parts, adhesives and model-specified fixture or heat source. Stop for swelling, puncture, unexpected heat or liquid damage. Follow the manual’s battery disconnection order before touching flex connectors.</p></li>
+      <li><p><b>Document the mechanical work.</b> Draw a screw map, keep brackets paired with their screws, and note flex locations. Follow model-specific opening direction, depth limits and adhesive instructions. Lift connector covers and latches in their documented direction. Inspect sockets under magnification and use the exact part and seal specified.</p></li>
+      <li><p><b>Close and verify.</b> Reassemble in the manual’s order and run any official post-repair configuration. Verify uniform image, brightness, touch across the full screen and proximity response. Compare front camera, call audio, buttons and charge against baseline. Record part history or calibration messages, functions unavailable for testing, and what the reassembly process establishes about sealing. <a href="https://support.apple.com/en-sg/120579">Apple Repair Assistant and supported parts</a>.</p></li>
+    </ol>
+
+    <h2>Decide what to offer next</h2>
+    <p>For a phone that rings and shows a black screen, start with the documented display checks. For a no-charge case, do the external comparison in <a href="p35-phone-board-triage.html">P35</a> before ordering a connector. Confirm whether the port is a replaceable assembly, part of a daughterboard or soldered to a board on that model. A spare handset is the place to learn adhesive release and connector handling. Record the mentor and procedure you would use before quoting a first repair on a different design.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> explains pads and ESD, <a href="../theory/t28-lithium-batteries.html">T28</a> covers battery safety and the charging path, and <a href="../theory/t18-sensor-physics.html">T18</a> explains optical and proximity sensing.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js"></script>
+<script src="../assets/app.js?v=20261105-theme"></script>
+</body>
+</html>
