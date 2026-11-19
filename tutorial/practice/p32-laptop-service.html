@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P32 · Laptop repair from intake to module replacement</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261119-photos">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -32,6 +32,10 @@
     <p>LED codes and preboot shortcuts are model-specific. Check the maker’s instructions before changing firmware or firmware settings, particularly where drive encryption is enabled. <a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell’s symptom and diagnostics guide</a>.</p>
 
     <h2>Bench exercise on a removable SSD</h2>
+    <figure>
+      <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg/960px-Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg" width="960" height="723" loading="lazy" alt="Inside a Framework Laptop 13, showing the mainboard, fan, memory and large battery pack." referrerpolicy="no-referrer">
+      <figcaption>Inside a Framework Laptop 13. Identify the battery pack, fan and board first. For SSD removal, match your model to the manufacturer’s procedure. Photo by Ogidya. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</figcaption>
+    </figure>
     <ol class="steps">
       <li><p><b>Pick a known starting point.</b> Confirm a working baseline in firmware setup and use an already backed-up, non-customer test drive. Identify the supported interface and form factor from the manual. M.2 length alone does not establish SATA or NVMe compatibility.</p></li>
       <li><p><b>Follow the exact service sequence.</b> Shut down, disconnect the charger and follow the manufacturer’s service mode or internal battery isolation instructions before touching modules. Use an ESD mat and wrist strap on the unpowered work area. Map screw lengths, connector routing and any thermal shield or pad. Use the manual’s release methods for clips and sockets. On a non-Rugged Latitude 5420 with a 2280 drive, the SSD instructions illustrate the thermal plate and retaining screws. <a href="https://www.dell.com/support/manuals/en-lk/latitude-5420-laptop/5420_sp14_sm/removing-the-m2-2280-solid-state-drive?guid=guid-d3705b0e-b956-46c2-92ba-dee2d53d7308&amp;lang=en-us">Dell Latitude 5420 illustrated SSD removal</a>.</p></li>

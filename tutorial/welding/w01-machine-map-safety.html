@@ -6,7 +6,7 @@
 <title>W01 · Identify the machine, map the stages, prepare the bench</title>
 <meta name="description" content="Recognise the power-source family, draw its energy path and understand the workshop conditions needed before a real machine is opened.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261119-photos">
 </head>
 <body class="book-welding">
 <div class="shell">
@@ -19,10 +19,43 @@
 <div class="meta"><span><b>Study + exercises</b> 75–90 min</span><span><b>Level</b> After W00 and P03</span><span><b>Context</b> India · family repair shop</span></div>
 <nav class="otp" data-auto></nav>
 
-<h2>Identify it from the outside first</h2>
+<h2 id="identify-it-from-the-outside-first">Identify it from the outside first</h2>
 <p>Photograph the nameplate, controls, connectors and any damage. Record the exact model, serial/code number, rated input, output type and duty-cycle table. “MMA-200” is a broad marketing label used on different designs; it is not a schematic identifier. Weight and size are clues, not proof.</p>
+<div class="photo-pair">
+  <figure>
+    <div class="photo-annotation">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/GYS_-_MMA_Arc_Welder.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets." referrerpolicy="no-referrer">
+      <svg viewBox="0 0 370 370" aria-hidden="true" focusable="false">
+        <defs><marker id="w01-photo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#fff"/></marker></defs>
+        <g fill="none" stroke="#11202d" stroke-width="6" stroke-linejoin="round">
+          <path d="M276 154L249 166L232 180"/>
+          <path d="M231 325L200 309L200 290"/>
+        </g>
+        <g fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round">
+          <path d="M276 154L249 166L232 180" marker-end="url(#w01-photo-arrow)"/>
+          <path d="M231 325L200 309L200 290" marker-end="url(#w01-photo-arrow)"/>
+        </g>
+        <g fill="#11202d" stroke="#fff" stroke-width="1.3">
+          <rect x="247" y="125" width="110" height="29" rx="5"/>
+          <rect x="173" y="325" width="171" height="29" rx="5"/>
+        </g>
+        <g fill="#fff" font-family="system-ui, sans-serif" font-size="16" font-weight="650" text-anchor="middle">
+          <text x="302" y="145">Controls</text><text x="258.5" y="345">Output sockets</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Compact inverter stick welder.</b> The electrode-holder lead and work-clamp lead plug into the two brass output sockets. The mains input is elsewhere on the machine. Photo by Bruno Bouygues with course annotations. <a href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+  </figure>
+  <figure>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/SMAW_welding_machine_internals.jpg" width="960" height="727" alt="Inside an AC stick welder, with a large mains-frequency transformer assembly." loading="lazy" referrerpolicy="no-referrer">
+    <figcaption><b>Inside an AC transformer stick welder.</b> Look for the large iron-core transformer with heavy windings. Photo by Claudio Nardi (Klaudio). <a href="https://commons.wikimedia.org/wiki/File:SMAW_welding_machine_internals.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>.</figcaption>
+  </figure>
+</div>
 <div class="table-wrap"><table><thead><tr><th scope="col">Family</th><th scope="col">Usual power path</th><th scope="col">Repair emphasis</th></tr></thead><tbody><tr><td>Heavy AC transformer welder</td><td>50 Hz transformer → adjustable or magnetically limited AC output</td><td>Leads, selector, cooling, insulation and windings. There may be no power rectifier.</td></tr><tr><td>Transformer-rectifier DC welder</td><td>50 Hz transformer → high-current rectifier → choke</td><td>High-current rectifier connections, contacts, cooling and winding/insulation diagnosis.</td></tr><tr><td>Compact DC inverter MMA welder</td><td>Rectified mains → fast switching → ferrite transformer → fast output rectifier</td><td>Power semiconductors, inrush, auxiliary supply, gate drivers and feedback.</td></tr><tr><td>MIG or AC/DC TIG</td><td>May use an inverter, with extra output/control stages</td><td>MIG may regulate voltage and adds wire feed. AC TIG adds polarity switching; HF ignition adds high-voltage pulses. Use a separate model-specific learning plan.</td></tr></tbody></table></div>
 <h2>A representative inverter power path</h2>
+<p>Open the Lincoln inverter photos and find the power board, separate control board and heatsink-mounted switches. Compare those parts with the blocks below. Use the photos as a parts-spotting exercise and follow the exact service instructions for your machine. <a href="https://emil.matei.ro/invertec_v250.php">Emil Matei’s Lincoln Invertec V250-S photo teardown</a> · <a href="https://www.infineon.com/assets/row/public/documents/24/42/infineon-to-247plus-igbt-discrete-device-enhances-power-density-in-welding-machines-applicationnotes-en.pdf#page=6">Infineon’s inverter board and heatsink photographs, Figure 6</a>.</p>
+<a class="crosslink" href="https://www.youtube.com/watch?v=1XPzV0sXOck">Watch on YouTube · Haseeb Electronics identifies parts on an inverter welder</a>
+<p>Pause when you see the input bridge, capacitor bank and high-frequency transformer. Point to the matching block below. <a href="https://www.youtube.com/watch?v=rnfh9Q0uP50">Hindi/Urdu version on YouTube</a>.</p>
 <figure><svg viewBox="0 0 720 380" role="img" aria-label="Representative welding inverter power flow with mains-connected primary and isolated secondary">
 <defs><marker id="w01-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8z"/></marker></defs>
 <rect class="f-warn-soft" x="8" y="8" width="704" height="146" rx="10"/><text class="t t-small t-bold" x="24" y="33">PRIMARY · mains-connected, including many “low-voltage” control rails</text>

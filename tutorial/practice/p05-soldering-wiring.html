@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P05 · Soldering, crimping and wiring like a tradie</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261119-photos">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -17,7 +17,36 @@
     <p class="lede">You will make reliable through-hole solder joints and recognise bad ones on sight, desolder mistakes, build your P02 LED circuit on stripboard, and terminate wires the way they are done in real controller cabinets: ferrules, crimp lugs, heatshrink, labels and neat looms, with the right wire size for the voltage drop.</p>
     <div class="meta"><span><b>Time</b> 2–3 hours</span><span><b>Level</b> Beginner</span><span><b>Kit cost</b> ~A$150 (next-step tier)</span><span><b>Theory</b> T02, T03</span></div>
 
+    <a class="crosslink" href="https://www.youtube.com/watch?v=QKbJxytERvg">Watch on YouTube · Adafruit’s through-hole soldering demonstration</a>
     <nav class="otp" data-auto></nav>
+
+    <h2 id="watch-a-joint-form-and-inspect-real-examples">Watch a joint form</h2>
+    <p>Watch the iron touch the copper pad and the component lead together. Then look for solder flowing around the joint when the wire touches the heated metal.</p>
+    <figure>
+      <div class="photo-annotation">
+        <img src="https://cdn-learn.adafruit.com/assets/assets/000/001/996/original/tools_Apply_Solder.jpg?1396778099=" width="800" height="479" alt="Close-up of a soldering iron and solder wire coming in from opposite sides of a through-hole joint on a circuit board." referrerpolicy="no-referrer">
+        <svg viewBox="0 0 800 479" aria-hidden="true" focusable="false">
+          <defs><marker id="p05-photo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#fff"/></marker></defs>
+          <g fill="none" stroke="#fff" stroke-width="4">
+            <path d="M213 76L247 166" marker-end="url(#p05-photo-arrow)"/>
+            <path d="M655 128L596 222" marker-end="url(#p05-photo-arrow)"/>
+            <path d="M225 401L311 305" marker-end="url(#p05-photo-arrow)"/>
+            <path d="M550 399L449 295" marker-end="url(#p05-photo-arrow)"/>
+          </g>
+          <g fill="#11202d" stroke="#fff" stroke-width="2">
+            <rect x="35" y="22" width="223" height="54" rx="8"/>
+            <rect x="586" y="74" width="179" height="54" rx="8"/>
+            <rect x="39" y="399" width="235" height="54" rx="8"/>
+            <rect x="519" y="399" width="230" height="54" rx="8"/>
+          </g>
+          <g fill="#fff" font-family="system-ui, sans-serif" font-size="30" font-weight="650" text-anchor="middle">
+            <text x="146.5" y="59">Solder wire</text><text x="675.5" y="111">Iron tip</text>
+            <text x="156.5" y="436">Lead at joint</text><text x="634" y="436">Copper pad</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Bring the solder wire to the hot joint from the other side of the iron tip. Photo by Bill Earl with course annotations. <a href="https://learn.adafruit.com/assets/1996">Adafruit source</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
 
     <h2>What you need</h2>
     <ul class="kit">
@@ -52,10 +81,6 @@
     <div class="callout why"><span class="label">Why it works</span><p>Heat flows from hot to cold at a rate proportional to the temperature difference and the contact area (much as current flows in proportion to voltage). A large contact area, made by a wet blob of solder bridging tip and joint, transfers heat far faster than a dry point. That is why a freshly tinned tip and a tiny "heat bridge" of solder at the contact point make joints quick and easy.</p></div>
     <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat</a>
     <a class="crosslink" href="../theory/t26-pcb-rework-esd.html">Theory T26 · Wetting, heat transfer and solder pads</a>
-
-    <h2>Watch a joint form and inspect real examples</h2>
-    <p>Watch for the tip touching both surfaces and the solder flowing into the heated joint. Pause at the finished joint, then compare your work with the photographed defects. <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Adafruit’s Collin’s Lab soldering video</a> · <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s solder-joint photos</a>.</p>
-    <p>After finishing the stripboard exercise, use <a href="p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> to practise working on chip resistors and smaller pads.</p>
 
     <h2>Tinning and tip care</h2>
     <p>The tip is iron-plated copper. The plating is wetted by solder; if it oxidises (goes black or grey and solder slides off), heat transfer collapses. Rules:</p>
@@ -100,6 +125,17 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>Count it out loud: "heat one, feed two, off three". Most beginner problems come from rushing step 3 (the joint is not hot enough) or from melting solder onto the tip and dabbing it on (the flux has already burned away). If a joint goes wrong, do not keep heating it. Stop, add a touch of flux, and try again cleanly.</p></div>
 
     <h2>Good joints and bad joints</h2>
+    <div class="photo-pair">
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Soldering-PCB-good.jpg" width="243" height="201" loading="lazy" alt="Solder fillets spread from the copper pads up around the component leads.">
+        <figcaption><b>Wetted joint.</b> Look for a smooth fillet joining the pad and lead. Photo by Tlapicka. <a href="https://commons.wikimedia.org/wiki/File:Soldering-PCB-good.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+      </figure>
+      <figure>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Soldering-PCB-bad.jpg" width="165" height="141" loading="lazy" alt="Solder rounded into a ball around a lead on a printed circuit board.">
+        <figcaption><b>Balled solder.</b> The rounded blob leaves you little view of how the solder wets the pad. Photo by Tlapicka. <a href="https://commons.wikimedia.org/wiki/File:Soldering-PCB-bad.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+      </figure>
+    </div>
+    <p>Compare your stripboard joints with these photos under a light. See <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s photographs of bridges and lifted pads</a>, then try <a href="p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> after your stripboard build.</p>
     <figure>
       <svg viewBox="0 0 660 230" role="img" aria-label="Cross-sections of four through-hole joints: a good concave fillet, a cold joint, a dry joint, and a solder bridge">
         <!-- panel 1: good -->
