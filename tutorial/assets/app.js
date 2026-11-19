@@ -29,6 +29,15 @@
 
   /* ---- sidebar ---- */
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function sideGroup(label, groupName, className, active) {
+    var group = el("details", className);
+    group.setAttribute("name", groupName);
+    group.classList.toggle("current-group", active);
+    var summary = el("summary");
+    summary.textContent = label;
+    group.appendChild(summary);
+    return group;
+  }
   function buildSide() {
     var side = document.getElementById("side");
     if (!side) return;
@@ -37,31 +46,55 @@
     brand.href = ROOT + "index.html";
     side.appendChild(brand);
     side.appendChild(themeSwitch());
+    var nav = el("nav", "side-nav");
+    nav.setAttribute("aria-label", "Course chapters");
+    side.appendChild(nav);
     TOC.books.forEach(function (b) {
-      side.appendChild(el("h4", null, b.title));
+      var activeBook = !!current && current.book === b.id;
+      var book = sideGroup(b.title, "ece-books", "side-book", activeBook);
+      nav.appendChild(book);
       b.parts.forEach(function (p) {
-        side.appendChild(el("h5", null, p.title));
+        var part = sideGroup(p.title, "ece-parts-" + b.id, "side-part", activeBook && current.part === p.title);
+        book.appendChild(part);
         p.chapters.forEach(function (c) {
           var a = el("a", "nav", '<span class="num">' + c.n + '</span><span class="t">' + c.title + "</span>");
           a.href = ROOT + c.file;
           a.dataset.file = c.file;
-          if (c.file === here) a.classList.add("current");
+          if (c.file === here) {
+            a.classList.add("current");
+            a.setAttribute("aria-current", "page");
+          }
           if (done[c.file]) a.classList.add("done");
-          side.appendChild(a);
+          part.appendChild(a);
         });
       });
     });
     var cur = side.querySelector(".current");
-    if (cur) side.scrollTop = Math.max(0, cur.offsetTop - side.clientHeight / 2);
-
-    if (!document.querySelector(".menu-btn")) {
-      var mb = el("button", "menu-btn", "☰ Chapters");
-      mb.onclick = function () { document.body.classList.toggle("nav-open"); };
-      document.body.appendChild(mb);
-      document.addEventListener("click", function (e) {
-        if (document.body.classList.contains("nav-open") && !side.contains(e.target) && e.target !== mb) document.body.classList.remove("nav-open");
-      });
+    if (cur) {
+      cur.closest(".side-book").open = true;
+      cur.closest(".side-part").open = true;
+      side.scrollTop = Math.max(0, cur.offsetTop - side.clientHeight / 2);
     }
+
+    var mb = el("button", "menu-btn", "☰ Chapters");
+    mb.type = "button";
+    mb.setAttribute("aria-controls", "side");
+    function setDrawer(open) {
+      document.body.classList.toggle("nav-open", open);
+      mb.setAttribute("aria-expanded", String(open));
+    }
+    setDrawer(false);
+    mb.onclick = function () { setDrawer(!document.body.classList.contains("nav-open")); };
+    document.body.insertBefore(mb, document.body.firstChild);
+    document.addEventListener("click", function (e) {
+      if (document.body.classList.contains("nav-open") && !side.contains(e.target) && !mb.contains(e.target)) setDrawer(false);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("nav-open")) {
+        setDrawer(false);
+        mb.focus();
+      }
+    });
   }
   /* Shared early theme bootstrap provides a light-default, explicit choice. */
   function themeSwitch() { return window.ECETheme.createSwitch(); }
@@ -99,7 +132,13 @@
     var bar = el("div", "donebar");
     var btn = el("button");
     function paint() { btn.textContent = done[here] ? "✓ Chapter done" : "Mark this chapter done"; btn.classList.toggle("is-done", !!done[here]); }
-    btn.onclick = function () { if (done[here]) delete done[here]; else done[here] = Date.now(); store("ece-done", done); paint(); buildSide(); markPending(); };
+    btn.onclick = function () {
+      if (done[here]) delete done[here]; else done[here] = Date.now();
+      store("ece-done", done);
+      paint();
+      var sideLink = document.querySelector(".side a.nav.current");
+      if (sideLink) sideLink.classList.toggle("done", !!done[here]);
+    };
     paint();
     bar.appendChild(btn);
     bar.appendChild(el("span", null, "Your progress is saved in this browser only."));
