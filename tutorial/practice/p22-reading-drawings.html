@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>P22 · Reading drawings: schematics, wiring diagrams and as-builts</title>
+<title>P22 · Read a site drawing and label a cable</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 </head>
@@ -13,11 +13,40 @@
   <main class="page">
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part E</div>
     <span class="eyebrow">Practice · P22</span>
-    <h1>Reading drawings: schematics, wiring diagrams and as-builts</h1>
-    <p class="lede">On site, the drawing set tells you what to install, where it goes and where every wire lands. By the end of this lab you can read the main kinds of drawing, trace a wire from a schematic to a real terminal, find your way with cross-references, and mark up an as-built so the next technician can trust it.</p>
-    <div class="meta"><span><b>Time</b> 60–90 min</span><span><b>Level</b> Beginner → Intermediate</span><span><b>Kit cost</b> ~A$0–20</span><span><b>Theory</b> T04, T06</span><span><b>Reference</b> R03</span></div>
+    <h1>Read a site drawing and label a cable</h1>
+    <p class="lede">Start with one job an installation supervisor could give you. Find the right room, mark where the sensor goes, and label both ends of its cable.</p>
+    <div class="meta"><span><b>First exercise</b> 15 min</span><span><b>Kit</b> Tape measure, masking tape, pen and scrap cable or string</span></div>
 
-    <nav class="otp" data-auto></nav>
+    <nav class="otp" aria-label="On this page">
+      <ol><li><a href="#first-site-task">Do the first site task</a></li><li><a href="#more-drawing-examples">Look up more drawing types</a></li></ol>
+    </nav>
+
+    <h2 id="first-site-task">Find one sensor and label its cable</h2>
+    <p>You’re helping with a Level 2 office fit-out. The supervisor asks you to prepare the position and cable labels for one room temperature sensor. These are two excerpts from the training job pack.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Sheet</th><th scope="col">What the sheet says</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Level 2 layout, Rev C</th><td>Room 204. Sensor <b>TS-204</b> goes on the corridor-side wall <b>inside</b> the room. Mark its centre <b>1,500 mm above finished floor</b> and <b>300 mm from the door frame</b> on the latch side.</td></tr>
+        <tr><th scope="row">Cable list, Rev C</th><td>Cable <b>C-204</b>. Starts at <b>BMS-02</b> in the plant room, follows the approved corridor tray, and ends at <b>TS-204</b> in Room 204.</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li><p><b>Check the sheet.</b> Your supervisor confirms Rev C is current. Find Room 204, then stand on the room side of the doorway. For practice, use a doorway at home as your mock location.</p></li>
+      <li><p><b>Mark the spot with tape.</b> Measure up from the floor, then across from the latch side of the door frame. Put a removable tape cross where the centre goes. Write <b>TS-204</b> next to it. The dimensions belong to this example job.</p></li>
+      <li><p><b>Prepare the cable labels.</b> Put <b>C-204</b> on both ends of a loose cable or piece of string. Point to the starting panel and the sensor end on the cable list. In this exercise, keep the cable on the bench or floor.</p></li>
+      <li><p><b>Report a clash.</b> Suppose a duct now blocks the drawn route. Tell the supervisor which cable it affects and where the clash is. Ask for an approved route before work continues.</p></li>
+    </ol>
+    <figure>
+      <img src="../assets/bms/cable-tray.jpg" width="960" height="720" loading="lazy" alt="An overhead metal cable tray full of cables passing close to round ducts and pipes.">
+      <figcaption>A real overhead cable tray surrounded by building services. A route can look clear on paper even when it is crowded on site. Confirm which tray and access points the job specifies. <a href="https://commons.wikimedia.org/wiki/File:Cable_tray_with_cables.jpg">Photo by Santeri Viinamäki, resized</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</figcaption>
+    </figure>
+    <details class="quiz"><summary>Check your labels and handover</summary><div class="answer"><p>The wall mark says <b>TS-204</b>, because it shows where the device goes. Both cable ends say <b>C-204</b>, so the next person can identify the same cable at the plant room and the sensor. A useful update is “TS-204 marked from Rev C. C-204 labelled. The drawn route is blocked by a duct outside Room 204. Which route should I use?”</p></div></details>
+    <p>That’s the first exercise. For work on a real site, continue with <a href="../career/c13-first-day-on-site.html">C13 · Your first day on site</a>. Ask the supervisor which tasks you can do and which need a qualified worker.</p>
+
+    <details class="more" id="drawing-reference">
+    <summary>More drawing examples</summary>
+    <h2 id="more-drawing-examples">Drawings to look up later</h2>
+    <p>Use these sections when a job needs more detail. A <a href="#floor-plans-symbols-and-the-legend">floor plan</a> shows location, a <a href="#the-drawing-set-who-draws-what-and-why">wiring diagram</a> shows connections, and an <a href="#as-builts-marking-up-what-really-happened">as-built</a> records what was installed.</p>
 
     <h2>What you need</h2>
     <p>This lab is mostly reading and marking up. You can do all of it on screen, but printing two or three pages and marking them by hand teaches the habit faster.</p>
@@ -765,9 +794,24 @@
       <li><input type="checkbox"><span>I can read a cable schedule, an I/O terminal diagram and a points list together.</span></li>
       <li><input type="checkbox"><span>I mark up as-builts the same day, in the company's colours, with why, who and when.</span></li>
     </ul>
+    </details>
   </main>
 </div>
 <script src="../assets/toc.js"></script>
 <script src="../assets/app.js?v=20261105-theme"></script>
+<script>
+  (function () {
+    var reference = document.getElementById("drawing-reference");
+    function openLinkedSection() {
+      var target = document.getElementById(location.hash.slice(1));
+      if (!reference.open && target && reference.contains(target)) {
+        reference.open = true;
+        target.scrollIntoView();
+      }
+    }
+    window.addEventListener("hashchange", openLinkedSection);
+    openLinkedSection();
+  })();
+</script>
 </body>
 </html>

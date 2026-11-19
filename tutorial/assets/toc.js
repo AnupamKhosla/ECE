@@ -36,7 +36,7 @@ window.TOC = {
         ]},
         { title: "Part E · Working like a technician", blurb: "Method skills every employer tests.", chapters: [
           { n: "P21", file: "practice/p21-fault-finding.html", title: "Fault-finding: a technician's troubleshooting method", d: "Half-splitting, measure-don't-guess, and worked faults on power, signals, networks and field devices." },
-          { n: "P22", file: "practice/p22-reading-drawings.html", title: "Reading drawings: schematics, wiring diagrams and as-builts", d: "Schematics vs wiring diagrams, riser and block diagrams, cable schedules, points lists and marking up as-builts." },
+          { n: "P22", file: "practice/p22-reading-drawings.html", title: "Read a site drawing and label a cable", d: "Start by finding a room sensor and preparing its cable labels. Look up floor plans, schematics, wiring diagrams and as-builts when needed." },
           { n: "P23", file: "practice/p23-din-rail-panel-build.html", title: "Build a DIN-rail control panel (12/24 V)", d: "Power supply, fusing, terminals, relays and labels: a mini security/BMS panel on your bench." }
         ]},
         { title: "Part F · Measurements and board craft", blurb: "Predict readings, measure waveforms and build reliable joints.", chapters: [
