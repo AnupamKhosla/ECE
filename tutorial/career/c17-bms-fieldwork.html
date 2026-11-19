@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>C17 · Start in BMS: tools, site work and commissioning</title>
-<meta name="description" content="A BMS-first learning route for Australian junior controls roles, with real tool photos, field videos and a commissioning portfolio project.">
+<title>C17 · BMS fieldwork: diagnose and commission a damper</title>
+<meta name="description" content="Follow an Australian BMS commissioning workflow from the points list to a real damper, diagnose a mismatch, and reproduce the measurements on a 5 V trainer.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 </head>
@@ -14,78 +14,98 @@
   <main class="page">
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Australia Job Track › Building services</div>
     <span class="eyebrow">Job Track · C17</span>
-    <h1>Start in BMS: tools, site work and commissioning</h1>
-    <p class="lede">Learn to follow a drawing to a real device, prove what it does and leave a test record. That is a useful first project for a junior building controls job and gives you evidence for adjacent field-service roles.</p>
-    <p><a href="https://www.youtube.com/watch?v=o0i546Fms50"><strong>Watch a BMS technician on a customer site</strong></a> with Grosvenor Engineering Group, an Australian building-services employer.</p>
+    <h1>BMS fieldwork: diagnose and commission a damper</h1>
+    <p class="lede">The BMS says the outside-air damper is half open. The damper shaft has barely moved. Follow the command from the workstation to the controller and actuator, then use an independent observation to work out what failed.</p>
+    <div class="meta"><span><b>Work</b> Service and commissioning</span><span><b>Bench</b> 5 V trainer</span><span><b>Before this</b> <a href="../practice/p03-multimeter-mastery.html">P03 meter</a> · <a href="c01-bms-fundamentals.html">C01 BMS points</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Which jobs to look for</h2>
-    <p>The <a href="c00-what-job-ads-ask-for.html">SEEK research in this course</a> found 51 BMS and controls ads with a median of 19 applicants, compared with 38 across all 2,764 ads captured on 1–2 November 2026. Drawings appeared in 16 of the 51 ads, IP networking in 12, BACnet and Modbus in 11 each, and Niagara or Tridium in 10. The group includes experienced roles. Electrical licences were mentioned in 20% of the BMS ads. Read each employer’s mandatory requirements before judging fit.</p>
+    <h2>Start at the plant and the drawing</h2>
+    <p>In this worked example, facilities staff report stuffy meeting rooms after an AHU service. You have the latest drawing, the AHU sequence and a points list. Find which air handler serves the rooms and confirm that the outside-air damper is supposed to open at the time of the complaint. The schedule, operating mode and interlocks can all explain a closed damper before there is anything to repair.</p>
+    <figure>
+      <img src="../assets/bms/air-handler.jpg" width="1109" height="738" loading="lazy" alt="An air handler beside its ducts. Arrow 6 identifies the mixed-air duct on the inlet side and arrow 1 identifies the supply duct at the outlet.">
+      <figcaption>Start on the inlet side near 6 and follow the mixed-air duct towards the fan and supply at 1. Use the actual AHU drawing to locate the outside-air branch and its damper. <a href="c03-hvac-for-technicians.html#the-air-handling-unit-ahu">C03 photo key</a> · <a href="https://commons.wikimedia.org/wiki/File:Air_handling_unit.JPG">Photo by P199, public domain</a>.</figcaption>
+    </figure>
+    <p>Get agreement on whether a test may move the damper and when the plant may be taken out of service. Use the site isolation procedure before anyone puts hands on moving parts. For learner practice, use the 5 V trainer below.</p>
+    <p id="watch-the-work-before-you-practise-it">Watch what a BMS technician does during a customer visit, then watch the AHU walkthrough and identify the parts that carry air and the devices that report its condition. <a href="https://www.youtube.com/watch?v=o0i546Fms50">Grosvenor Engineering Group on a customer site</a> · <a href="https://www.youtube.com/watch?v=1UrQzV5E9Qw">CCPIA AHU walkthrough</a>.</p>
+
+    <h2>Follow three different signals</h2>
+    <p>These are example tags for the same damper, <strong>AHU-01 OA-D01</strong>. Locate the controller output and input on the drawing first. Then match the field labels and the exact actuator model before using the manufacturer’s connection diagram. A BMS point can show the requested position, the motor’s reported position or a separate field measurement.</p>
     <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Look for</th><th scope="col">What the work can involve</th><th scope="col">What to check in the ad</th></tr></thead>
+      <thead><tr><th scope="col">Example point</th><th scope="col">Path</th><th scope="col">What it proves</th></tr></thead>
       <tbody>
-      <tr><th scope="row">Junior controls technician, BMS trainee, commissioning assistant</th><td>Work with a senior technician to trace devices, check points, record results and help with fault-finding.</td><td>Check whether training starts from electronics and networking or expects an existing HVAC or electrical trade.</td></tr>
-      <tr><th scope="row">BMS installer, electrical apprentice with a controls team</th><td>Read layouts, mount devices, run approved cable routes, label and terminate under the applicable supervision. Expect regular construction-site work.</td><td>Check the apprenticeship year, construction induction, work rights and driving requirements, and who does the licensed work.</td></tr>
-      <tr><th scope="row">Junior BMS integration or graphics role, graduate project or service engineer</th><td>Set up controllers and networks, map points, build graphics and trends, and support testing on site.</td><td>Look for the qualification level, platform and amount of site work the employer expects.</td></tr>
+        <tr><th scope="row">OA-D01-CMD · AO</th><td>Controller analogue output → actuator command wire <b>Y</b></td><td>The position requested. Check the voltage at the actuator to prove it arrived.</td></tr>
+        <tr><th scope="row">OA-D01-POS · AI</th><td>Actuator feedback wire <b>U</b> → controller analogue input</td><td>The position reported by the actuator. A slipping clamp can leave the damper stationary while this value changes.</td></tr>
+        <tr><th scope="row">Independent physical check</th><td>Shaft or blade position observed from a safe point</td><td>Whether the damper itself moved. If the job also calls for outdoor airflow in L/s, use the specified airflow measurement.</td></tr>
       </tbody>
     </table></div>
-    <p>Read the employers’ own role descriptions. Alerton Australia describes graduate service and project roles and an electrical apprenticeship. Integrata lists examples of licensed and non-licensed installation roles with experience expectations. Johnson Controls’ Sydney trainee example targets people already qualified in HVAC. <a href="https://alerton.com.au/careers/">Alerton Australia careers</a> · <a href="https://www.integrata.com.au/careers">Integrata careers</a> · <a href="https://jobs.johnsoncontrols.com/job/WD30260794">Johnson Controls trainee example</a>.</p>
-    <p>Keep adjacent searches open. <a href="c05-cctv-ip-cameras.html">Electronic security</a> and <a href="c07-telecom-cabling-acma.html">data cabling</a> share drawings, IP networking and site practice, with their own registration and licensing requirements. <a href="c10-plc-instrumentation.html">PLC and instrumentation</a> share the sensor and commissioning work. Electronics field service and bench repair draw more directly on schematics, meter work and <a href="../practice/p05-soldering-wiring.html">soldering</a>.</p>
+    <figure>
+      <div class="photo-annotation">
+        <img src="../assets/bms/damper-actuator-shaft.jpg" width="886" height="591" loading="lazy" alt="A Belimo damper actuator. The round shaft opening is next to the clamp nuts and the curved travel scale.">
+        <svg viewBox="0 0 886 591" aria-hidden="true">
+          <defs><marker id="c17-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#172b39"/></marker></defs>
+          <g fill="none" stroke="white" stroke-width="10">
+            <path d="M164 160 187 267"/><path d="M48 474 121 390"/><path d="M363 496 268 437"/>
+          </g>
+          <g fill="none" stroke="#172b39" stroke-width="6" marker-end="url(#c17-arrow)">
+            <path d="M164 160 187 267"/><path d="M48 474 121 390"/><path d="M363 496 268 437"/>
+          </g>
+          <g fill="#172b39" stroke="white" stroke-width="3">
+            <circle cx="164" cy="160" r="32"/><circle cx="48" cy="474" r="32"/><circle cx="363" cy="496" r="32"/>
+          </g>
+          <g fill="white" font-size="38" font-weight="bold" text-anchor="middle">
+            <text x="164" y="173">1</text><text x="48" y="487">2</text><text x="363" y="509">3</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>1 · The damper shaft passes through this opening. 2 · The clamp grips the shaft here. 3 · The travel scale shows movement at the actuator. This photo is a mechanical reference from a different Belimo model. Use the exact model’s wiring information. <a href="https://commons.wikimedia.org/wiki/File:Klappenstellantrieb.jpg">Photo by Belimo Automation AG, with on-page labels</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+    <p>For the <b>Belimo LM24A-SR</b> in this example, connection 1 is the signal reference, 2 supplies nominal 24 V AC/DC, 3 is the 2–10 V DC command input and 5 is the 2–10 V DC feedback output. The example controller maps 2 V to 0% and 10 V to 100%, so 50% should be <b>6 V</b>. Check the approved direction of travel before assigning a percentage to blade position. <a href="https://www.belimo.com/mam/general-documents/datasheets/en-gb/belimo_LM24A-SR_datasheet_en-gb.pdf#page=4">Belimo wiring diagram and model data</a>.</p>
 
-    <h2>What a technician carries and why</h2>
-    <p>A construction installer may spend much of the day mounting, labelling and terminating. A service or commissioning tech may spend more of it at a laptop, multimeter and plant room. Learn to recognise the tools for both and ask the employer which they supply.</p>
-    <div class="photo-pair">
-      <figure>
-        <div class="photo-annotation">
-          <img src="../assets/bms/drill-driver.jpg" width="960" height="725" loading="lazy" alt="Cordless drill-driver with the chuck at the upper right, the red trigger in the handle, the battery at the bottom and a separate charger.">
-          <svg viewBox="0 0 960 725" aria-hidden="true">
-            <g stroke="#18212a" stroke-width="6" fill="none">
-              <path d="M861 229 792 131"/><path d="M398 295 301 290"/><path d="M322 657 228 610"/>
-            </g>
-            <g fill="#18212a" stroke="white" stroke-width="3">
-              <circle cx="861" cy="229" r="36"/><circle cx="398" cy="295" r="36"/><circle cx="322" cy="657" r="36"/>
-            </g>
-            <g fill="white" font-size="44" font-weight="bold" text-anchor="middle">
-              <text x="861" y="244">1</text><text x="398" y="310">2</text><text x="322" y="672">3</text>
-            </g>
-          </svg>
-        </div>
-        <figcaption>Cordless drill-driver. 1 · chuck holds the bit. 2 · trigger. 3 · battery pack. © Raimond Spekking. On-page labels and resized image. <a href="https://commons.wikimedia.org/wiki/File:Obi_Diana_Akku-Bohrschrauber-5831.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</figcaption>
-      </figure>
-      <figure>
-        <img src="../assets/bms/spanners.jpg" width="742" height="208" loading="lazy" alt="Four spanners. The combination spanner at bottom left has a closed ring end and an open end.">
-        <figcaption>The bottom-left tool is a combination spanner. Its open end slips onto a nut from the side. Its closed ring fits over the nut. Use the size specified for the bracket or actuator clamp. Photo by Securiger. <a href="https://commons.wikimedia.org/wiki/File:Assorted_spanners.JPG">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/1.0/">CC BY-SA 1.0</a>.</figcaption>
-      </figure>
-    </div>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Tool</th><th scope="col">A BMS task</th><th scope="col">Practise it</th></tr></thead>
-      <tbody>
-      <tr><th scope="row">Tape, marker, level, drill-driver and matching bit</th><td>Mark hole centres from a sensor or bracket template and mount it on the approved substrate. A drill bit cuts a hole. A driver bit turns a screw.</td><td>Clamp a scrap timber backboard at the bench, mark and drill the pilot holes with the correct bit, and screw a small bracket onto the board. Wear eye protection and follow the tool instructions.</td></tr>
-      <tr><th scope="row">Combination spanners, socket or hex key</th><td>Secure a bracket or a damper actuator’s shaft clamp. Use the fastener size and torque specified for that model.</td><td>Fit the same bracket with a bolt, washer and nut. Use the correctly sized spanner to hold the nut as you tighten the bolt.</td></tr>
-      <tr><th scope="row">Wire stripper, ferrule crimper, terminal screwdriver and label printer</th><td>Prepare and label the ends of stranded control wires, then terminate them according to the terminal specification.</td><td>Make two labelled leads on your unpowered panel. Inspect the ferrule and check retention before connecting power. <a href="../practice/p05-soldering-wiring.html">P05 wiring</a> · <a href="../practice/p23-din-rail-panel-build.html">P23 panel build</a>.</td></tr>
-      <tr><th scope="row">Multimeter, reference thermometer and manometer</th><td>Check a control supply or signal, compare a temperature reading with a reference or verify differential pressure.</td><td>Prove continuity on an unpowered training lead and compare the voltage at both ends of an isolated ELV supply circuit. <a href="../practice/p03-multimeter-mastery.html">P03 multimeter</a> · <a href="c03-hvac-for-technicians.html#sensors-you-will-meet">C03 sensors</a>.</td></tr>
-      <tr><th scope="row">Laptop, Ethernet patch lead and approved RS-485 adapter</th><td>Connect to the authorised service network, read a point, confirm its units and save a trend.</td><td>Find a simulated device on your own training network, then read a value and compare it with your test record. <a href="../practice/p19-networking-hands-on.html">P19 networking</a> · <a href="c02-bms-protocols-commissioning.html#free-tools-and-a-home-lab">C02 protocol lab</a>.</td></tr>
-      <tr><th scope="row">Platform ladder or other site-approved access equipment</th><td>Reach a ceiling sensor or actuator when access at height is required. The supervisor’s risk assessment determines the equipment.</td><td>At ground level, identify the platform, handrail, locks, feet and rating label on equipment supplied by your trainer. <a href="https://www.baileyladders.com.au/products/ladders/platform-stepladders/P150/FS14067">Platform ladder photos</a> · <a href="https://www.youtube.com/watch?v=flrzZ16nDzg">SafeWork NSW ladder video</a>.</td></tr>
-      </tbody>
-    </table></div>
-    <div class="callout warn"><span class="label">On site</span><p>Before opening a ceiling, drilling a wall or working on plant, get the site’s clearance for access, hidden services, asbestos risks and isolation. Keep the practice work on a loose backboard at ground level with an isolated extra-low-voltage supply. Check the role’s state and site requirements for construction induction and the limits on electrical and customer cabling work. <a href="c13-first-day-on-site.html">C13 first-day site guide</a> · <a href="https://www.safework.nsw.gov.au/licences-and-registrations/white-cards" target="_blank" rel="noopener">SafeWork NSW White Card guidance</a> · <a href="https://www.acma.gov.au/cabling-provider-rules">ACMA cabling rules</a>.</p></div>
+    <h2>Work the fault with measurements</h2>
+    <ol class="steps">
+      <li><p><b>Save the starting state.</b> Record the AHU tag, mode and time. Trend command and feedback together. Verify the displayed feedback is mapped to the analogue input from U. Otherwise the graphic could be showing the command twice.</p></li>
+      <li><p><b>Compare the panel, device and shaft.</b> During an approved test, the technician has 24.1 V DC across 2 and 1, a 6.0 V output at the controller and 6.0 V from Y to 1 at the actuator. U to 1 settles near 6.0 V. The actuator indicator rotates, but the shaft mark stays near closed.</p></li>
+      <li><p><b>Inspect the first place the evidence disagrees.</b> The supply and command reach the actuator and its indicator moves. The first mismatch is between the moving actuator and the stationary shaft. In this example the isolated inspection finds a loose clamp and matching slip marks. Check the shaft and linkage condition before refitting to the manufacturer’s instructions.</p></li>
+      <li><p><b>Prove the repair and hand it back.</b> Watch the shaft at 0%, 50% and 100%, allowing travel to settle at each position. Record command, feedback and physical result. Release the test override, confirm automatic operation and tell facilities what was fixed. Macquarie’s procedure calls for physical response checks and a recorded return to normal conditions. <a href="https://www.property.mq.edu.au/__data/assets/pdf_file/0019/522271/MUBS-14-Modulating-Damper-Actuator.pdf">Macquarie University damper commissioning method</a>.</p></li>
+    </ol>
 
-    <h2>Watch the work before you practise it</h2>
+    <h3>Choose your next check</h3>
+    <p>Each variation starts with a 50% command and has one changed condition. Say what you would check before opening the answer.</p>
+    <details class="quiz"><summary>Panel output is 6.0 V, but actuator Y to 1 is near 0 V.</summary><div class="answer"><p>Confirm the test uses the correct signal reference at each end. Check the labelled command and common conductors between the panel and the actuator. With power isolated and the leads separated as required, check continuity to distinguish an open conductor from a bad termination or a reference problem.</p></div></details>
+    <details class="quiz"><summary>Y and U are near 6.0 V at the actuator. The shaft moves, but the BMS feedback stays at 0%.</summary><div class="answer"><p>Check the raw controller input at the terminal named in the points list. If it is also near 6.0 V, examine the input type, scaling and point mapping. If the field and panel readings differ, trace the feedback wire and its reference to the controller.</p></div></details>
+    <details class="quiz"><summary>The screen says 50% and the controller output is 5.0 V. Wiring and references check out.</summary><div class="answer"><p>Compare the output range with the exact actuator data. A 0–10 V output map gives 5 V at 50%. On a 2–10 V input that voltage is 37.5% of the nominal electrical span. Record the mismatch and check the approved configuration before changing it.</p></div></details>
+
+    <h2 id="what-a-technician-carries-and-why">What changes between installation and service</h2>
+    <figure>
+      <img src="../assets/bms/installed-damper-actuator.jpg" width="960" height="720" loading="lazy" alt="Technician working from a raised work platform near overhead ductwork, cable trays and conduit during a ventilation damper installation.">
+      <figcaption>Ventilation damper actuator and switch installation at a rail ventilation facility. The work position is above the ducts and other services. Plan the access method, isolation and coordination before bringing fixings or tools to the work area. <a href="https://commons.wikimedia.org/wiki/File:Installation_of_Damper_Actuator_and_Ventilation_Damper_Switch_in_the_Plaza_Vent_Facility_(CS179,_02-20-2018)_(39727884614).jpg">Photo by MTA Capital Construction Mega Projects, resized</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</figcaption>
+    </figure>
     <ul>
-      <li><strong>Service and operation.</strong> In the Grosvenor field video above, look for the places the technician works and the equipment they use. Compare the role with the people who operate the building day to day. <a href="https://www.youtube.com/watch?v=jPCg4KLddjw">NWTC building energy controls operator</a> · <a href="https://setpoint.co.nz/a-day-in-the-life-of-a-bms-engineer/">Setpoint’s BMS engineers on their work</a>.</li>
-      <li><strong>Plant room.</strong> See a real AHU and identify the inlet, filter and fan. Use the labelled photo in C03 to orient yourself first. <a href="https://www.youtube.com/watch?v=1UrQzV5E9Qw">CCPIA air handling unit walkthrough</a> · <a href="c03-hvac-for-technicians.html#the-air-handling-unit-ahu">C03 AHU photo</a>.</li>
-      <li><strong>Installation.</strong> Watch the actuator’s mechanical setup and the ferrule crimp. They are two small jobs you should be able to explain aloud. <a href="https://www.youtube.com/watch?v=2PhZEdPKfhY">Belimo damper actuator demonstration</a> · <a href="https://www.youtube.com/watch?v=Rb3eorQG0Tc">KNIPEX ferrule crimper demonstration</a>.</li>
-      <li><strong>Commissioning.</strong> Follow a controls manufacturer’s demonstration of testing BACnet/IP and MS/TP before the equipment goes on site. Note what gets checked before the point value is trusted. <a href="https://www.youtube.com/watch?v=_7g27pLk8Vw">Horner Automation BACnet commissioning demonstration</a>.</li>
+      <li><b>Construction.</b> Find the mounting location, cable route and clearances on the approved drawing. Check that the actuator remains accessible for service and clears other equipment through its travel. Obtain the approved fixings and access equipment for that exact location. Label both ends before the ceiling closes. <a href="https://www.property.mq.edu.au/__data/assets/pdf_file/0006/522249/ITP-MUBM06-Installation-Panel-Pre-Commissioning-checklist.pdf">Macquarie pre-commissioning panel checklist</a> · <a href="c13-first-day-on-site.html#ladders-and-working-at-height">C13 site access and ladder video</a>.</li>
+      <li><b>Commissioning.</b> One person commands the point from the laptop. The person at the unit reads the signal and describes what moved. Agree on the tag and test step before each command, and log the readings together. Use the meter to separate an output problem from a field wiring problem.</li>
+      <li><b>Service.</b> Choose the instrument for the claim you need to verify. A reference thermometer checks a temperature point. A differential manometer checks pressure across two specified taps, for example across a filter. For a damper complaint, compare the actuator indicator with a shaft witness mark. A separate airflow reading is needed when the complaint is about air quantity.</li>
     </ul>
 
-    <h2>What to learn first</h2>
+    <h2 id="what-to-learn-first">Reproduce the fault on a 5 V bench</h2>
+    <p>Use a 5 V USB-powered <a href="../practice/p11-arduino-first-steps.html">Arduino Uno</a> as the supply, two 10 kΩ linear pots, a 100 kΩ resistor, a breadboard, jumpers and a <a href="../practice/p03-multimeter-mastery.html">multimeter</a>. Use two paper pointers on a piece of card for the actuator indicator and shaft mark. The two pots let you set command and feedback independently, at half the field voltages.</p>
     <ol class="steps">
-      <li><p><strong>Read a drawing and prove a wire.</strong> Trace a device tag to its terminal number. Make a labelled lead and measure or test it on your trainer. Start with <a href="../practice/p22-reading-drawings.html">P22 drawings</a>, <a href="../practice/p03-multimeter-mastery.html">P03 multimeter</a> and <a href="../practice/p23-din-rail-panel-build.html">P23 panel craft</a>.</p></li>
-      <li><p><strong>Follow an AHU from sensor to fan.</strong> Identify the air path, temperature sensor, damper, fan command and separate fan proof. Draw an example of each physical input and output type. Use <a href="c01-bms-fundamentals.html">C01 BMS points</a> and <a href="c03-hvac-for-technicians.html#the-air-handling-unit-ahu">C03 HVAC</a>.</p></li>
-      <li><p><strong>Find the device and read one point.</strong> Set up two hosts on an isolated network, explain their subnet, then discover a simulated BACnet point and read one Modbus register. Record the raw value, units and scaling. Learn to describe where Niagara would sit in that workflow. Use <a href="../practice/p19-networking-hands-on.html">P19 networking</a>, <a href="../practice/p14-serial-buses-modbus.html">P14 serial buses</a> and <a href="c02-bms-protocols-commissioning.html#free-tools-and-a-home-lab">C02 BACnet and Modbus</a>.</p></li>
-      <li><p><strong>Commission a sequence and show your work.</strong> In <a href="../practice/p29-bms-commissioning-lab.html">P29</a>, confirm that the command appears during a normal run, then hold fan proof open and show the command dropping and an alarm appearing. Save a labelled photo of your trainer, a points list, expected versus actual results, and a normal and failed trend.</p></li>
+      <li><p><b>Wire the model.</b> With USB unplugged, connect the outer legs of both pots across 5 V and GND. Put a removable jumper between the first wiper, labelled <b>panel AO</b>, and a free breadboard row, labelled <b>field Y</b>. Connect 100 kΩ from field Y to GND. Label the second wiper <b>field U</b>. Both pots share GND.</p></li>
+      <li><p><b>Record a normal midpoint.</b> Power the trainer. Set the meter to DC volts and connect COM to GND. Adjust the first pot until panel AO is about 3.0 V. Measure field Y, then set U to about 3.0 V. This represents the 6.0 V command and feedback in the field. Put both paper pointers at mid-travel.</p></li>
+      <li><p><b>Test two faults.</b> Remove the AO-to-Y jumper. Record panel AO near 3.0 V and field Y near 0 V. Reconnect it. For a simulated slipping clamp, leave Y and U at about 3.0 V and move only the shaft pointer back to closed. State what check distinguishes these two faults.</p></li>
+      <li><p><b>Log and hand over.</b> Record one normal test and both failure cases in the table format below. If your supply voltage differs from 5 V, use the measured readings in your notes. Disconnect USB when finished.</p></li>
     </ol>
-    <p>Bring that one-page case and your trends to a junior interview. Explain which training switch simulates the feedback, how you knew the fault belonged to the proof path, and which checks you would request a supervisor to perform on real plant.</p>
+    <div class="table-wrap"><table>
+      <caption>Sample field record for AHU-01 OA-D01. Use the same columns for your bench run.</caption>
+      <thead><tr><th scope="col">Test</th><th scope="col">Command</th><th scope="col">Panel AO / field Y / field U</th><th scope="col">Shaft observed</th><th scope="col">Result</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Before repair</th><td>50%</td><td>6.0 / 6.0 / 6.0 V DC</td><td>Near closed</td><td>Fail. Actuator and shaft disagree.</td></tr>
+        <tr><th scope="row">After refit</th><td>0%, 50%, 100%</td><td>About 2 / 2 / 2, then 6 / 6 / 6, then 10 / 10 / 10 V DC</td><td>Closed, mid-travel, open</td><td>Pass on observed travel. Override released and automatic mode confirmed.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For an interview, bring one drawing with the points marked, one labelled photo of your trainer, and the two readings that changed your diagnosis. Follow this with an independent fan proof and a recorded fault trend in <a href="../practice/p29-bms-commissioning-lab.html">P29</a>. Practise the networking part separately in <a href="c02-bms-protocols-commissioning.html#free-tools-and-a-home-lab">C02</a>.</p>
+
+    <h2>Which jobs to look for</h2>
+    <p>In the project’s SEEK sample of 51 BMS and controls ads, drawings appeared in 16, IP networking in 12, and BACnet and Modbus in 11 each. For junior controls or commissioning work, show that you can read the drawing, check a signal and communicate a result. For installation work, also look at the employer’s apprenticeship, site and trade requirements. <a href="c00-what-job-ads-ask-for.html#choose-a-first-job-target">SEEK research and adjacent roles</a> · <a href="https://alerton.com.au/careers/">Alerton Australia role descriptions</a>.</p>
   </main>
 </div>
 <script src="../assets/toc.js"></script>
