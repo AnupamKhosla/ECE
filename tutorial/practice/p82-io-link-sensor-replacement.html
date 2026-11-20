@@ -35,7 +35,18 @@
       </figure>
     </div>
     <p class="course-video"><b>Watch ifm’s IO-Link sensor replacement demonstration.</b> Watch which parameter the master restores. Check the device and port compatibility required before depending on this behaviour. <a href="https://www.youtube.com/watch?v=gHupKy-qfJ0">ifm’s IO-Link sensor replacement demonstration on YouTube</a>.</p>
-    <p>Open the product gallery alongside the sensor photo and find the separate sensor, network and power ports. <a href="https://www.ifm.com/us/en/product/AL1100">ifm AL1100 master photos and connector layout</a>.</p>
+
+    <h2>Follow the port map on an actual master</h2>
+    <p>Use the AL1100 product photograph and connection drawing as an identification exercise. Trace the name of each connection into the datasheet before choosing any cable. The table describes this ifm model. Other devices can use different port numbers and supplies. <a href="https://www.ifm.com/ca/en/product/AL1100">ifm AL1100 photographs and technical data</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">AL1100 marking</th><th scope="col">What you verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">X01–X04</th><td>Four Class A IO-Link device ports with A-coded M12 connectors. Trace the actual port number to its device identity and PLC mapping.</td></tr>
+        <tr><th scope="row">X21, X22</th><td>Separate PROFINET connections with D-coded M12 connectors. Check the upstream link independently from the sensor status.</td></tr>
+        <tr><th scope="row">Supply connector</th><td>Use the supply connection drawing and only the matching power lead. A threaded body by itself does not identify a connector’s electrical function.</td></tr>
+      </tbody>
+    </table></div>
+    <details><summary>Bench exercise with no master</summary><p>The old worksheet says X02. The replacement reads back the expected device ID on X03. The PLC still shows invalid data from X02. The new sensor has proved communication on its current port. Check the documented cable and port assignment before changing programming or a teach value. Recheck both device ID and process-data validity on the assigned port after the correction.</p></details>
 
     <h2>Make a replacement test card</h2>
     <p>Start on paper with an inductive sensor aimed at a small steel target on a fixture. Use a real unit only on your own isolated training kit, with its compatible master, manufacturer cable and isolated supply. Switch the kit off before changing the cable or sensor unless its procedure specifies hot replacement. Check the port mode, Class A or B wiring and current rating before connecting. Use the manufacturer's pinout for all equipment.</p>
@@ -57,7 +68,7 @@
     <div class="callout good"><span class="label">Keep this evidence</span><p>Save device and port IDs, the intended parameters, and a before-and-after test matrix. Explain why a believable number needs a validity check.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@ Reviewed all 174 chapter pages at the device-service release. The audit counted 
 - P04 now shows the divider midpoint, rail and separate probe contacts. P07 compares real capacitor packages and shows ceramic construction under magnification. P10 shows a real regulator package and corrects load-resistor power and thermal test instructions. P21 adds a repeatable source-to-load comparison. [P04](../tutorial/practice/p04-series-parallel-dividers.html) · [P07](../tutorial/practice/p07-capacitors-rc.html) · [P10](../tutorial/practice/p10-power-supplies.html) · [P21](../tutorial/practice/p21-fault-finding.html)
 - T45, T46 and T48 have now added direct video links. C19 and C20 had no inline raster image or directly linked video in the scan. Their current content is business and job research. Add role or equipment media only where it illustrates the action described by the chapter.
 - P15 now shows the scope and logic analyser connections and adds a calibration capture. P16 pictures both sides of a Pi 5 and adds a boot and network check. P17 shows the temperature sensor package and how to distinguish a GPIO wiring fault from a failed sensor read. [P15](../tutorial/practice/p15-oscilloscope-logic-analyser.html) · [P16](../tutorial/practice/p16-raspberry-pi-linux.html) · [P17](../tutorial/practice/p17-pi-gpio-python.html)
+- P70 now shows a water flowmeter and compares it with level and switch indication. P82 adds a model-specific port identification and mapping exercise using ifm’s AL1100. [P70](../tutorial/practice/p70-machine-chiller-flow.html) · [P82](../tutorial/practice/p82-io-link-sensor-replacement.html)
 
 ### Next practical pages with one inline raster image
 
@@ -28,7 +29,6 @@ Reviewed all 174 chapter pages at the device-service release. The audit counted 
 | [P28 Build a two-sensor line-following robot](../tutorial/practice/p28-line-following-robot.html) | Underside sensor clearance and route material, with the wheels and motor connections located. |
 | [P29 Commission a simulated air handler](../tutorial/practice/p29-bms-commissioning-lab.html) | Air-handler and controller views that identify the points in the simulator sequence. |
 | [P30 Make an IoT sensor show stale data clearly](../tutorial/practice/p30-iot-reliability.html) | Bench sensor hookup and two dashboard states with timestamps, using captured test data. |
-| [P70 Trace a machine chiller’s low-flow alarm](../tutorial/practice/p70-machine-chiller-flow.html) | Accessible sight glass, flow sensor, external piping and the difference between actual flow and proof signal. |
 | [P82 Replace an IO-Link sensor and verify its data](../tutorial/practice/p82-io-link-sensor-replacement.html) | The connector, master port LEDs, and actual side-by-side displays of parameter restore and current process data. |
 
 ## Practical course comparison and route revision · 20 November 2026
