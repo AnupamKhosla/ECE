@@ -62,6 +62,7 @@
     <p>Turn off power before removing the input jumper. Bring the current-limited trainer back up and measure each node. The same zero at RUN can mean the regulator received no request or that supply never reached it. Put the jumper back with power off and prove both rails again. Replacing regulator B would leave either fault in place.</p>
 
     <h2>Transfer the sequence to a donor laptop</h2>
+    <p>When a rail looks shorted, <a href="p97-laptop-board-short-isolation.html">P97 uses a protected trainer to show how to isolate the faulty branch</a>. When the diagnosis points to the whole mainboard, <a href="p98-laptop-motherboard-replacement.html">P98 shows how to qualify a compatible replacement</a>.</p>
     <figure class="course-photo">
       <img src="../assets/photos/laptop.jpg" width="960" height="723" loading="lazy" decoding="async" alt="Open Framework Laptop 13 with a wide battery below the compact motherboard, display cable and cooling fan">
       <figcaption>Use the wide view before a microscope view. Start at the battery and the side where a charging module connects. Ask which wires and connectors carry power and which are data or control. Use the exact board documents to assign names and voltages. <a href="p32-laptop-service.html#find-the-same-parts-inside-a-laptop">P32 photo with labels</a> · <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Photo by Ogidya, resized</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</figcaption>
@@ -85,7 +86,7 @@
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t27-board-power-sequencing.html">T27</a> explains standby, EN and PG. <a href="../theory/t13-mosfet-physics.html">T13</a> covers protection switches, <a href="../theory/t21-switching-converters-control.html">T21</a> covers converters, and <a href="../theory/t24-measurement-datasheets.html">T24</a> covers why in-circuit readings need a reference.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/toc.js?v=20261120-board-display"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -122,14 +122,21 @@ window.TOC = {
           { n: "P88", file: "practice/p88-vav-airflow-commissioning.html", title: "Find why a VAV box misses its airflow setpoint", d: "Compare demand, box pickup pressure, reported airflow, actuator travel and an independent reference reading." },
           { n: "P89", file: "practice/p89-photoelectric-sensor-alignment.html", title: "Find why a photoelectric sensor misses a carton", d: "Compare opposed, retroreflective and diffuse sensing, then separate optical, output and counter faults." }
         ]},
-        { title: "Part O · Salvage and test used laptop parts", blurb: "Assess a lot, prove a memory fault and test recovered parts before reuse.", chapters: [
+        { title: "Part O · Salvage and test used laptop parts", blurb: "Assess a lot, prove a memory fault, qualify recovered parts and isolate a motherboard failure.", chapters: [
           { n: "P90", file: "practice/p90-laptop-donor-lot.html", title: "Sort an old laptop lot and qualify donor parts", d: "Price an untested donor lot, set up a reference machine, and trace each recovered part through inspection and retest." },
           { n: "P91", file: "practice/p91-test-used-laptop-ram.html", title: "Test a used laptop RAM module and its slot", d: "Use a known-good SO-DIMM and a bootable test to distinguish a bad module, socket, incompatible pair and memory-controller fault." },
           { n: "P92", file: "practice/p92-inspect-repair-damaged-ram.html", title: "Inspect damaged laptop RAM and decide what is repairable", d: "Separate edge contacts, small support components, SPD and BGA memory packages. Practise cold inspection before attempting board rework." },
           { n: "P93", file: "practice/p93-qualify-used-ssd.html", title: "Qualify a used SATA or NVMe SSD without reading files", d: "Identify the drive interface, run read-only health checks on blank training media, and interpret wear, error counters and intermittent detection." },
           { n: "P94", file: "practice/p94-salvage-laptop-cooling.html", title: "Qualify a donor laptop fan and heatsink", d: "Separate a blocked air path, failing blower, worn connection and poor heat transfer with a known-good assembly and repeatable load." },
           { n: "P95", file: "practice/p95-salvage-laptop-display.html", title: "Diagnose a blank laptop screen and qualify a donor panel", d: "Separate a no-boot fault, a panel fault and an internal display cable fault before swapping a matched donor part." },
-          { n: "P96", file: "practice/p96-laptop-dc-input-harness.html", title: "Test and replace a removable laptop charging jack", d: "Separate an adapter fault from a worn barrel jack or laptop-side charging fault using a known-good charger and a removable DC-in harness." }
+          { n: "P96", file: "practice/p96-laptop-dc-input-harness.html", title: "Test and replace a removable laptop charging jack", d: "Separate an adapter fault from a worn barrel jack or laptop-side charging fault using a known-good charger and a removable DC-in harness." },
+          { n: "P97", file: "practice/p97-laptop-board-short-isolation.html", title: "Find which branch is shorted on a laptop board", d: "Compare cold resistance against a reference, then split a 5 V trainer to isolate a failed branch before you touch a donor motherboard." },
+          { n: "P98", file: "practice/p98-laptop-motherboard-replacement.html", title: "Qualify and replace a ThinkPad T480 motherboard", d: "Prove what needs replacing, match a donor board by service part number and verify ports, power and memory after the swap." }
+        ]},
+        { title: "Part P · Display and industrial bench repairs", blurb: "Diagnose LCD TVs, model a backlight fault and prove a cable dropout under load.", chapters: [
+          { n: "P99", file: "practice/p99-lcd-tv-fault-diagnosis.html", title: "Find why an LCD television has sound but no picture", d: "Use the TV’s own picture test, a reference HDMI source and a flashlight to separate external input, image and backlight faults." },
+          { n: "P100", file: "practice/p100-tv-backlight-panel-service.html", title: "Learn LED backlight fault isolation and panel handling", d: "Reproduce an open LED string at 5 V, identify exact TV strip revisions and rehearse the fragile display stack before real service." },
+          { n: "P101", file: "practice/p101-industrial-sensor-cable-repair.html", title: "Find an intermittent fault in a machine sensor cable", d: "Map a detached industrial harness pin by pin and reproduce a dropout under load while keeping the machine isolated." }
         ]}
       ]
     },
@@ -207,11 +214,12 @@ window.TOC = {
           { n: "T45", file: "theory/t45-commercial-hvac-device-signals.html", title: "Commercial HVAC devices, signals and independent proof", d: "Differential pressure, VAV pickup, actuator signals, fan proof and CO₂ sensor readings." },
           { n: "T46", file: "theory/t46-commercial-power-and-device-data.html", title: "Commercial power measurement, 24 V distribution and smart sensor data", d: "CT scaling, energy metering, selective branch protection and IO-Link process data, identities and validity." }
         ]},
-        { title: "Part 12 · Device service and failure analysis", blurb: "How audio, haptics and liquid exposure change the tests you should run.", chapters: [
+        { title: "Part 12 · Device service and failure analysis", blurb: "How audio, haptics, liquid exposure, memory, storage and LCD construction shape diagnostic tests.", chapters: [
           { n: "T47", file: "theory/t47-phone-acoustics-and-haptics.html", title: "Phone microphones, speakers and haptics", d: "MEMS microphone ports, seals, audio routing, speaker enclosures and ERM or LRA haptic drives." },
           { n: "T48", file: "theory/t48-electronics-liquid-corrosion.html", title: "How liquid exposure damages electronics", d: "Moisture and ionic leakage, electrochemical migration, contact corrosion, capillary paths and cold inspection." },
           { n: "T49", file: "theory/t49-dram-chips-memory-faults.html", title: "Inside laptop RAM: cells, chips, ranks and spare rows", d: "Trace a DRAM cell and read a SO-DIMM label. Explain why removing a failed chip or limiting usable memory cannot normally restore a module." },
-          { n: "T50", file: "theory/t50-ssd-health-and-bad-blocks.html", title: "Inside SSDs: flash wear, spare blocks and health reports", d: "Follow a logical block into NAND flash, distinguish remapped blocks from interface errors, and interpret NVMe and SATA health evidence." }
+          { n: "T50", file: "theory/t50-ssd-health-and-bad-blocks.html", title: "Inside SSDs: flash wear, spare blocks and health reports", d: "Follow a logical block into NAND flash, distinguish remapped blocks from interface errors, and interpret NVMe and SATA health evidence." },
+          { n: "T51", file: "theory/t51-lcd-panel-backlight.html", title: "How an LCD panel makes an image and lights it", d: "Follow the video and light paths through the mainboard, display timing, glass, optical layers and LED driver." }
         ]}
       ]
     },

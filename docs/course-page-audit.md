@@ -1,5 +1,12 @@
 # ECE Workbench page audit
 
+## Board repair, LCD televisions and industrial cables · 20 November 2026
+
+- [P97](../tutorial/practice/p97-laptop-board-short-isolation.html) adds a protected 5 V branch-isolation exercise and a documented donor-board example. [P98](../tutorial/practice/p98-laptop-motherboard-replacement.html) covers a T480 motherboard swap, FRU matching and acceptance tests.
+- [P99](../tutorial/practice/p99-lcd-tv-fault-diagnosis.html) adds closed-case TV tests. [P100](../tutorial/practice/p100-tv-backlight-panel-service.html) uses a 5 V LED trainer and a separated display stack. [T51](../tutorial/theory/t51-lcd-panel-backlight.html) explains LCD image and light paths.
+- [P101](../tutorial/practice/p101-industrial-sensor-cable-repair.html) reproduces an intermittent dropout in a detached industrial sensor lead. [C19](../tutorial/career/c19-ludhiana-repair-shop.html) now includes bench jobs and public Ludhiana evidence. Service availability and demand still need to be checked with the shop's customers.
+- [P92](../tutorial/practice/p92-inspect-repair-damaged-ram.html) now cites dated Indian price observations and compares repair economics against a tested replacement. All new chapters have annotated photos and video demonstrations.
+
 ## Laptop salvage and component decisions · 20 November 2026
 
 Added seven practice chapters and two theory chapters. [Benchtop route](../tutorial/index.html#laptop-salvage)

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P98 · Qualify and replace a ThinkPad T480 motherboard</title>
+<meta name="description" content="Prove what needs replacing, match a donor board by service part number and verify ports, power and memory after the swap.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P98</span>
+    <h1>Qualify and replace a ThinkPad T480 motherboard</h1>
+    <p class="lede">Prove what needs replacing, match a donor board by service part number and verify ports, power and memory after the swap.</p>
+    <div class="meta"><span><b>Time</b> 60–120 minutes</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32 laptop intake</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Establish the last good stage before committing to a board</h2>
+    <p>Use a ThinkPad T480, machine type 20L5 or 20L6, with an owned spare drive or no drive for the initial firmware tests. Record charger detection, keyboard lights or model diagnostics, supported memory and whether a picture appears before the OS. Try one exact known-good removable module where the manual permits it. A fault that follows the SO-DIMM, removable jack or panel gives you a narrower job. If a soldered memory configuration is suspected on another laptop, use that model's manual to establish whether the chip, a socket, a regulator or the motherboard is field-replaceable. <a href="p91-test-used-laptop-ram.html">P91 compare sticks and slots</a> · <a href="p97-laptop-board-short-isolation.html">P97 localise a shorted branch</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/thinkpad-t480-board.jpg" width="592" height="444" loading="lazy" decoding="async" alt="ThinkPad T480 motherboard being lifted from its base, with the processor and empty fan area visible">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p98-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M254,104 L308,166" fill="none" stroke="#18232a" stroke-width="12"/><path d="M254,104 L308,166" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="185" y="82" width="123" height="35" rx="6" fill="#122029"/><text x="194" y="107" style="fill:#fff;font-size:22px;font-weight:700">Processor</text>
+            <path d="M432,338 L480,214" fill="none" stroke="#18232a" stroke-width="12"/><path d="M432,338 L480,214" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="416" y="323" width="119" height="35" rx="6" fill="#122029"/><text x="425" y="348" style="fill:#fff;font-size:22px;font-weight:700">Fan bay</text>
+          </svg>
+        </div>
+        <figcaption>The ThinkPad T480 motherboard rises clear of its base. The grey residue marks the processor's contact with the heatsink. The fan and heatsink must be correctly installed for a powered test.<br><small>Photo by Sarah Westberg for iFixit, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Lenovo+ThinkPad+T480+Motherboard+Replacement/140250">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/thinkpad-t480-display-connection.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Close-up of the connector area by the left display hinge above the T480 motherboard">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p98-cable" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M266,96 L174,104" fill="none" stroke="#18232a" stroke-width="12"/><path d="M266,96 L174,104" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-cable)"/>
+            <rect x="246" y="73" width="199" height="35" rx="6" fill="#122029"/><text x="255" y="98" style="fill:#fff;font-size:22px;font-weight:700">Display connector</text>
+            <path d="M283,380 L235,353" fill="none" stroke="#18232a" stroke-width="12"/><path d="M283,380 L235,353" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-cable)"/>
+            <rect x="271" y="371" width="100" height="35" rx="6" fill="#122029"/><text x="280" y="396" style="fill:#fff;font-size:22px;font-weight:700">Flex cable</text>
+          </svg>
+        </div>
+        <figcaption>The display connector is near the hinge. The case contains several cable-release mechanisms. Use the manual and look at the latch or pull tab before lifting anything.<br><small>Photo by Sarah Westberg for iFixit, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Lenovo+ThinkPad+T480+Motherboard+Replacement/140250">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Locate the separate internal battery and system board removal and replacement demonstrations. Observe which contacts must be clear before the board moves. <a href="https://pcsupport.lenovo.com/om/en/solutions/ht510663">Lenovo's T470 and T480 service videos</a> · <a href="https://www.youtube.com/watch?v=fqXU9w_qJ5s">Thinkplus demonstrates a T480 board swap</a> · <a href="https://www.ifixit.com/Guide/Lenovo+ThinkPad+T480+Motherboard+Replacement/140250">iFixit's T480 photo sequence</a>.</p>
+
+    <h2>Match the replacement before it comes to the bench</h2>
+    <ol class="steps">
+      <li><p><b>Use the service part number.</b> Find the Lenovo field-replaceable unit (FRU) in the parts lookup using the recipient's model details. Ask the seller for a photograph of the replacement's FRU label and relevant edges, the installed processor and graphics variant, and a return policy. Confirm the matching cooling assembly and connector layout. A common chassis name can have several board variants. <a href="https://support.lenovo.com/us/en/parts-lookup">Lenovo Parts Lookup</a>.</p></li>
+      <li><p><b>Prepare for the storage and firmware consequences.</b> On a customer machine, confirm a backup and the owner's ability to recover encrypted storage before changing the board. A changed TPM can trigger a BitLocker recovery prompt. Let the owner handle their recovery key. Confirm the donor is free of firmware locks through the seller or legitimate service route. Record only the necessary repair identifiers. <a href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview">Microsoft's BitLocker recovery overview</a>.</p></li>
+      <li><p><b>Keep the reference separate.</b> Photograph the port edges, labels and thermal layout. Confirm the donor's behaviour in its own compatible host where possible. Use a proven board and change one suspect assembly at a time if the diagnostic result matters.</p></li>
+    </ol>
+
+    <h2>Transfer the parts one group at a time</h2>
+    <p>Lay out screw positions, spudger, correct bit, ESD equipment, compatible cooling materials and the exact manual. On the T480, follow the manufacturer procedure to disable a working internal battery, then remove external power and the removable battery, and disconnect the internal battery in the prescribed sequence. If the laptop cannot enter setup, use Lenovo's documented isolation route for a non-starting system. Get qualified help if you cannot establish isolation, or if there is a swollen pack or widespread liquid damage. <a href="https://pcsupport.lenovo.com/gb/en/products/laptops-and-netbooks/thinkpad-t-series-laptops/thinkpad-t480-type-20l5-20l6/document-userguide">T480 manuals and hardware maintenance guide</a>.</p>
+    <ol class="steps">
+      <li><p>Photograph the ribbon latch and pull-tab positions by group as you go. Mark antenna leads by the manual. Follow the listed removal order and never use a remaining cable or port as a hinge. Group and count screws by length.</p></li>
+      <li><p>Transfer only compatible removable items. Inspect the receiving sockets and standoffs first. Fit the matching heatsink, with the correct pad positions and thermal material for that variant, before testing. Use the service manual's screw order and restore cable routing, insulation and shields. <a href="p94-salvage-laptop-cooling.html">P94 thermal assembly comparison</a>.</p></li>
+      <li><p>Reassemble to the manufacturer test state. Start with firmware or OEM diagnostics and a service drive before trusting valuable storage to the repair. Follow the exact manufacturer's procedure for any system-board identity, firmware or feature-related service steps.</p></li>
+    </ol>
+
+    <h2>Run the acceptance checks on the assembled laptop</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Area disturbed</th><th scope="col">Hand-back evidence</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Power and battery</th><td>Matching charger is recognised, battery behaviour is stable and the original fault no longer reproduces over several cold boots and shutdowns.</td></tr>
+        <tr><th scope="row">Memory and storage</th><td>Firmware reports the installed capacity and storage. Boot from a shop-owned drive and run the supported memory and storage diagnostics.</td></tr>
+        <tr><th scope="row">Cooling and I/O</th><td>A comparable load produces expected fan behaviour. Test both display paths where supported, then keyboard, touchpad, Wi-Fi, USB and audio as applicable to the cables touched.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">When the swap is worth quoting</span><p>Compare board price, fitting, test time and warranty risk against like-for-like working units. If a proven local fault can be repaired reliably and affordably, quote that option. If a compatible board gives a better result, show the customer the diagnostic evidence and the acceptance tests.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-board-display"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

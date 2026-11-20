@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P100 · Learn LED backlight fault isolation and panel handling</title>
+<meta name="description" content="Reproduce an open LED string at 5 V, identify exact TV strip revisions and rehearse the fragile display stack before real service.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P100</span>
+    <h1>Learn LED backlight fault isolation and panel handling</h1>
+    <p class="lede">Reproduce an open LED string at 5 V, identify exact TV strip revisions and rehearse the fragile display stack before real service.</p>
+    <div class="meta"><span><b>Time</b> 45–90 minutes on the trainer</span><span><b>Before this</b> <a href="p99-lcd-tv-fault-diagnosis.html">P99 closed-case TV diagnosis</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>See what it takes to reach the strips</h2>
+    <p>A direct-lit set has an array of lenses behind the LCD glass and optical films. An edge-lit set places its strips beside a light guide. A blown or open LED, a detached lens and a deteriorated reflector can give different symptoms. Work the closed-case checks in <a href="p99-lcd-tv-fault-diagnosis.html">P99</a> before handing a TV to an internal repair bench. Use this lesson's small trainer and an already separated, unpowered panel stack to practise.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-led-array.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Reflective white TV tray with rows of circular LED lenses">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p100-array" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M436,152 L417,130" fill="none" stroke="#18232a" stroke-width="12"/><path d="M436,152 L417,130" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-array)"/>
+            <rect x="430" y="148" width="124" height="35" rx="6" fill="#122029"/><text x="439" y="173" style="fill:#fff;font-size:22px;font-weight:700">LED lens</text>
+            <path d="M166,266 L214,226" fill="none" stroke="#18232a" stroke-width="12"/><path d="M166,266 L214,226" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-array)"/>
+            <rect x="65" y="252" width="146" height="35" rx="6" fill="#122029"/><text x="74" y="277" style="fill:#fff;font-size:22px;font-weight:700">Reflector</text>
+          </svg>
+        </div>
+        <figcaption>This Samsung UE40MU5120KXXU has a direct-lit backlight. The image layer is removed here. Individual lenses spread the light, and the reflector sends stray light forward.<br><small>Photo by Greg Sully and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+TV+UE40MU5120KXXU+LED+backlight+strips+Replacement/177517">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-strip-part-code.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Close-up of a television LED strip showing a manufacturing label and the VSDU-400DCA-R1 identifier">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p100-label" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M164,210 L240,213" fill="none" stroke="#18232a" stroke-width="12"/><path d="M164,210 L240,213" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-label)"/>
+            <rect x="31" y="192" width="132" height="35" rx="6" fill="#122029"/><text x="40" y="217" style="fill:#fff;font-size:22px;font-weight:700">Strip code</text>
+            <path d="M403,89 L316,91" fill="none" stroke="#18232a" stroke-width="12"/><path d="M403,89 L316,91" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-label)"/>
+            <rect x="399" y="75" width="109" height="35" rx="6" fill="#122029"/><text x="408" y="100" style="fill:#fff;font-size:22px;font-weight:700">Sticker</text>
+          </svg>
+        </div>
+        <figcaption>Record the printed strip code and revision. Photograph its mate, connector and mounting as well. In this donor the illustrated strip reads VSDU-400DCA-R1, and the guide also lists DCB-R1 for its paired part.<br><small>Photo by Greg Sully and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+TV+UE40MU5120KXXU+LED+backlight+strips+Replacement/177517">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-strip-rows.jpg" width="592" height="444" loading="lazy" decoding="async" alt="With the reflector removed, five rows of white LED strips are visible on the metal tray">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p100-rows" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M474,149 L436,134" fill="none" stroke="#18232a" stroke-width="12"/><path d="M474,149 L436,134" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-rows)"/>
+            <rect x="462" y="132" width="105" height="35" rx="6" fill="#122029"/><text x="471" y="157" style="fill:#fff;font-size:22px;font-weight:700">Lens</text>
+            <path d="M113,389 L176,355" fill="none" stroke="#18232a" stroke-width="12"/><path d="M113,389 L176,355" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p100-rows)"/>
+            <rect x="63" y="373" width="136" height="35" rx="6" fill="#122029"/><text x="72" y="398" style="fill:#fff;font-size:22px;font-weight:700">Strip joint</text>
+          </svg>
+        </div>
+        <figcaption>With the reflector off, you can see how the strips locate on the tray. The lens positions must line up with its holes. The metalwork also helps carry heat away from the LEDs.<br><small>Photo by Greg Sully and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+TV+UE40MU5120KXXU+LED+backlight+strips+Replacement/177517">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> See how the glass is supported, the optical films are lifted as a set, and the strips are indexed by position. The video uses certain LG 42-inch models. The photographs show a Samsung model to illustrate why a different series can need different parts and disassembly. Use the clip to study mechanical handling. <a href="https://www.youtube.com/watch?v=h5Zyqowl6zg">ShopJimmy's LG 42-inch strip replacement</a>.</p>
+
+    <h2>Model an open LED string at 5 V</h2>
+    <p>Use an isolated 5 V source capped at 30 mA, four low-current red LEDs whose typical forward voltage is about 2 V at a few milliamps, two 330 Ω resistors rated at 0.25 W, breadboard leads and a multimeter. This is a teaching model with ordinary LEDs and series resistors. See <a href="../theory/t51-lcd-panel-backlight.html">T51 for how a TV driver regulates current</a>.</p>
+    <ol class="steps">
+      <li><p>With power off, make two branches. Each starts at 5 V, goes through its own 330 Ω resistor and two forward-oriented red LEDs in series, and ends at return. Add a removable lead in one branch between its two LEDs. Verify orientation before switching on.</p></li>
+      <li><p>With both leads fitted, record each resistor's voltage in DC volts and divide it by 330 Ω for branch current. At an assumed 2 V per illuminated LED, the nominal drop across each resistor is 1 V, or roughly 3 mA. Record your actual readings. Hold a sheet of tracing paper a short distance in front of the LEDs to compare the bright points and diffused pattern.</p></li>
+      <li><p>Turn off the source and remove the link in one branch. Restore power. Both LEDs in that branch go dark, its resistor drop falls near zero, and the other branch keeps conducting. Turn power off, restore the link and retest. A TV driver may instead shut down a larger bank or the entire backlight if it detects an open string.</p></li>
+    </ol>
+    <div class="callout try"><span class="label">Transfer the skill</span><p>Explain why a single open can darken two good-looking lamps on your trainer. A dim or dark region alone does not reveal whether the strip, lens, conductor or driver needs attention. A whole TV strip can require much more voltage than the little circuit here. Keep the trainer away from TV connectors and do not attach a generic LED tester to an assembled television.</p></div>
+
+    <h2>Rehearse the optical stack before a real job</h2>
+    <ol class="steps">
+      <li><p>On an already separated donor stack supplied by the technician, keep the LCD glass fully supported and the attached flexes free of load. Practise with a scrap panel small enough to handle or with a partner for larger assemblies. Prepare a clean, rigid, flat work surface and a separate protected landing area for the panel.</p></li>
+      <li><p>Photograph the front and orientation of each optical layer. Keep the film order, face and corner reference. Mark handling tabs or the holder where suitable and avoid marking the optical face. Observe reflector location, lens register, spacers and retention clips on the exact model. A crease, fingerprint or reversed sheet may show in the picture after assembly.</p></li>
+      <li><p>Record the panel part number, the strip codes on every variant used, connector orientation, lens spacing and attachment points. Compare the exact approved or verified strip set. New and worn LEDs can show different brightness and colour. On an ageing set compare a matched set with the cost and risk of reopening the panel later.</p></li>
+    </ol>
+    <p>For a real mains-powered TV, review the service isolation, stored-energy and insulation procedures with a qualified technician before the cover is touched. The videos and photos show repair construction. This lab's work uses the isolated trainer and already separated mechanics. A completed real repair needs a closed-cabinet picture test and the applicable electrical safety checks. <a href="https://www.hse.gov.uk/PuBns/eis36.htm">HSE TV servicing guidance</a>.</p>
+
+    <h2>Check the finished picture</h2>
+    <p>Use a built-in or known-good source for white, grey and black fields, and then normal video. Check for flicker, bright spots, dark zones or colour differences at normal brightness and after warm-up. Check the original input and audio after the other cables have been refitted. Record any remaining panel defects separately.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-board-display"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>
