@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P122 · Protect laptop data and run a repeatable handover test</title>
+<meta name="description" content="Separate diagnosis from destructive work, record owner authorization and deliver acceptance tests for storage, firmware, repairs and peripherals.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P122</span>
+    <h1>Protect laptop data and run a repeatable handover test</h1>
+    <p class="lede">Separate diagnosis from destructive work, record owner authorization and deliver acceptance tests for storage, firmware, repairs and peripherals.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a>, <a href="../practice/p117-windows-laptop-startup-and-driver-diagnosis.html">P117</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Record who owns the data and what the job allows</h2>
+    <p>Run this first as a mock intake on your own laptop, using disposable test files. Write the customer symptom in their words, and separately record exact model, power input, owner’s data priority, available backup and allowed operations. Ask the owner to use the manufacturer’s supported unlock or enrollment procedure themselves. Never store a password, recovery key or account code in a bench ticket. An organization’s system needs its administrator’s authorised workflow.</p><p>Review boot configuration, storage detection and signs of data-risk before changes. Get explicit scope for initialization, a reset, reinstall, disk writes, major board changes that affect storage, or a destructive firmware restore. A known-good backup includes a test restore or verification of representative files. Keep a failing drive out of stress tests while the owner decides the priority of recovery. Compare the options in <a href="../practice/p93-qualify-used-ssd.html">P93 · Qualify a used SATA or NVMe SSD without reading files</a> and <a href="../theory/t50-ssd-health-and-bad-blocks.html">T50 · Inside SSDs: flash wear, spare blocks and health reports</a>.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <img src="../assets/photos/repair/sata.jpg" width="960" height="720" loading="lazy" decoding="async" alt="A 2.5-inch Intel SATA SSD, showing its two L-shaped connector sections">
+        <figcaption>The narrow section carries SATA data. The wider section carries power. Compare this end of a cabled drive with the narrow M.2 card in the SSD exercise.<br><small>Photo by Dsimic, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_DC_S3700_SSD_series,_bottom_side_of_a_100_GB_SATA_3.0_model.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/sata-ssd-controller-side.jpg" width="960" height="663" loading="lazy" decoding="async" alt="Controller side of an Intel SSD showing the SandForce chip, SATA contacts and empty package positions">
+        <svg viewBox="0 0 960 663" aria-hidden="true">
+          <defs><marker id="t50-ctrl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M308,374 L305,284" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M308,374 L305,284" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t50-ctrl)"/>
+          <rect x="257" y="363" width="201" height="56" rx="6" fill="#122029"/><text x="270" y="404" style="fill:#fff;font-size:37px;font-weight:700">Controller</text>
+          <path d="M157,144 L55,270" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M157,144 L55,270" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t50-ctrl)"/>
+          <rect x="116" y="97" width="282" height="56" rx="6" fill="#122029"/><text x="129" y="138" style="fill:#fff;font-size:37px;font-weight:700">SATA connector</text>
+        </svg>
+      </div>
+        <figcaption>The controller governs communication and flash access. The large empty footprints on this intact board are unused positions. Compare with the other side before judging missing parts.<br><small>Photo by Phiarc, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Intel_SSD_330_Series_Sandforce_controller_PCB.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=jn5BaLyTSwQ">See how to read storage health information as one part of a repair record</a>.</p>
+
+    <h2>Use a handover sheet that proves the specific repair</h2>
+    <ol class="steps"><li>Record one reproducible pre-repair failure and how it was observed. Note conditions such as charger, outlet, access state, boot device, display or dock.</li><li>After repair, repeat the same test twice. Confirm two cold boots, charging and battery discharge, expected sleep/wake, display and input, and any adjacent port, audio or Wi-Fi path that was disturbed. Run stress checks on appropriate known-good hardware with temperature and shutdown limits.</li><li>Compare detected storage, memory and battery to intake. Record diagnostic results without identifiers or contents that the owner has not agreed to share. List the exact part fitted, any model-specific calibration, unresolved symptoms and data outcome.</li></ol><p>Write a two-sentence handover for a mock customer. State what failed, why the observed result supports it and what checks passed. Include one condition you could not reproduce. Continue to <a href="../career/c16-repair-work-portfolio.html">C16 · Build a repair portfolio and a shop workflow</a> for portfolio examples without customer data.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://support.microsoft.com/en-gb/windows/experience/backup-recovery/recovery-options-in-windows">Microsoft explains recovery choices and effects</a></li>
+      <li><a href="https://support.apple.com/en-us/102541">Apple guidance on Activation Lock for Mac</a></li>
+      <li><a href="https://support.google.com/chromebook/answer/1080595?hl=en">Google Chromebook recovery and data implications</a></li>
+      <li><a href="https://guides.frame.work/">Framework official repair and replacement guides</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

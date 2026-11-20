@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P129 · Diagnose Lenovo Yoga Book display and keyboard faults</title>
+<meta name="description" content="Work a dual-screen Yoga Book 9i case and distinguish it from the original Halo keyboard Yoga Book before ordering boards, cables or displays.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P129</span>
+    <h1>Diagnose Lenovo Yoga Book display and keyboard faults</h1>
+    <p class="lede">Work a dual-screen Yoga Book 9i case and distinguish it from the original Halo keyboard Yoga Book before ordering boards, cables or displays.</p>
+    <div class="meta"><span><b>Time</b> 65–95 minutes</span><span><b>Before this</b> <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a>, <a href="../practice/p117-windows-laptop-startup-and-driver-diagnosis.html">P117</a>, <a href="../practice/p121-laptop-ports-audio-and-small-module-service.html">P121</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify which Yoga Book is on the bench</h2>
+    <p>The 2023 Yoga Book 9i 13IRU8, machine type 82YQ, has two OLED touch displays and a removable Bluetooth keyboard. The original Yoga Book YB1 line uses a separate Create Pad with a Halo touch keyboard on supported variants. There are Windows and Android versions of that earlier family. Use the full machine type and its own manual. The photos here show comparable latch and display connections. For the exact Yoga Book layout use the Lenovo disassembly videos and parts diagrams below.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
+      <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/salvage/framework-12-edp-connector.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Close view of Framework Laptop 12 display cable and its fine gold panel-side connector">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p95-edp" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M123,331 L216,273" fill="none" stroke="#18232a" stroke-width="12"/><path d="M123,331 L216,273" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-edp)"/>
+          <rect x="37" y="320" width="162" height="35" rx="6" fill="#122029"/><text x="46" y="345" style="fill:#fff;font-size:22px;font-weight:700">Panel socket</text>
+          <path d="M138,85 L273,154" fill="none" stroke="#18232a" stroke-width="12"/><path d="M138,85 L273,154" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-edp)"/>
+          <rect x="32" y="62" width="151" height="35" rx="6" fill="#122029"/><text x="41" y="87" style="fill:#fff;font-size:22px;font-weight:700">eDP cable</text>
+          </svg>
+        </div>
+        <figcaption>Panel-side eDP connector. Learn its latch and release direction from the model guide. A different end of the same cable can use a different release mechanism.<br><small>Photo by Arthur Shi and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Framework+Laptop+12+Display+Replacement/186464">Original repair photographs</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=D9whPZge5ws">Lenovo shows the on-screen keyboard and gestures on the 2023 Yoga Book 9i</a>.</p>
+
+    <h2>Test picture, touch and input as three different functions</h2>
+    <ol class="steps"><li>On a 13IRU8 with both screens normally usable, record whether the upper and lower display produce an image at the positions and modes described by Lenovo. Use Windows display identification and a known-good external display connection if needed. Check brightness and whether Windows sees one or two internal displays.</li><li>With the Bluetooth keyboard moved away, test touch and pen independently on each screen with a simple local drawing. Then use Lenovo’s virtual keyboard gesture under the documented conditions. Working display and touch with only the virtual keyboard missing points you toward the Lenovo software and settings.</li><li>Test the removable Bluetooth keyboard separately while its own battery is charged. Compare with a known-good USB keyboard and with the laptop’s on-screen keyboard. Record whether the problem occurs only during the keyboard placement or posture change that triggers a different view.</li><li>If a screen or touch path remains absent, use the 82YQ removal video for the matching assembly to locate connectors and service limits. Compare parts using full type, upper/lower position and FRU. Isolate all feeds as Lenovo instructs before touching a ribbon. Never live-reseat a display connector. Retest both displays, touch and supported modes afterward.</li></ol>
+
+    <h2>Compare a first-generation Halo case</h2>
+    <p>When the built-in touch keys stop on a working Windows YB1-X91F/L, compare Create Pad modes and verify the correct Lenovo Halo driver. Use a known-good external keyboard to distinguish the application from the integrated input. An Android YB1 needs the Android-specific support route. If the touch keyboard and Create Pad functions fail in several supported modes, document the full module path before accepting a mechanical or board repair.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://support.lenovo.com/in/en/solutions/ht515221-yoga-book-9i-13-8-82yq-lenovo-slim-pro-9i-gen-8-83bv-83c0">Lenovo Yoga Book 9i 13IRU8 82YQ removal and replacement videos</a></li>
+      <li><a href="https://support.lenovo.com/au/en/solutions/ht515209-how-to-use-the-basic-features-yoga-book-9i">Lenovo basic features and on-screen controls</a></li>
+      <li><a href="https://psref.lenovo.com/Product/Yoga/Yoga_Book_9_13IRU8">13IRU8 specifications and photos</a></li>
+      <li><a href="https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/yoga-series/yoga-book-9-13iru8/downloads/ds562863-yogabook9-solutions-for-windows-11-64-bit-yoga-book-9-13iru8">YogaBook9 Solutions for matching 13IRU8 and 13IMU9</a></li>
+      <li><a href="https://support.lenovo.com/om/en/solutions/pd104400-overview-for-yoga-book">Original Yoga Book overview including the Create Pad</a></li>
+      <li><a href="https://support.lenovo.com/us/en/downloads/ds119816-halo-keyboard-driver-for-windows-10-64-bit-yoga-book-lenovo-yb1-x91fl">Windows Halo keyboard driver for YB1-X91F/L</a></li>
+      <li><a href="https://www.youtube.com/watch?v=YSTTPimYgys">Lenovo demonstrates placement of the detached keyboard and virtual touchpad</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

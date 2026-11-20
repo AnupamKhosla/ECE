@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T55 · Logic thresholds, hysteresis and signal timing</title>
+<meta name="description" content="Read a logic data sheet to explain noise margin, input thresholds, debounce, probe loading and edge detection.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T55</span>
+    <h1>Logic thresholds, hysteresis and signal timing</h1>
+    <p class="lede">Read a logic data sheet to explain noise margin, input thresholds, debounce, probe loading and edge detection.</p>
+    <div class="meta"><span><b>Time</b> 20–35 minutes</span><span><b>Before this</b> <a href="../theory/t15-digital-logic-microcontrollers.html">T15</a>, <a href="../theory/t25-filters-resonance.html">T25</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Separate the voltage from the interpretation</h2>
+    <p>Logic inputs accept defined voltage ranges. Compare driver V<sub>OH(min)</sub> and V<sub>OL(max)</sub> with receiver requirements under the specified supply, current and temperature. A guaranteed high noise margin is V<sub>OH(min)</sub> − V<sub>IH(min)</sub>, and the low margin is V<sub>IL(max)</sub> − V<sub>OL(max)</sub>. Negative margin means the chosen combination lacks a guarantee. Check input voltage tolerance if one side remains powered while the other is off.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/eight-channel-logic-analyser.jpg" width="960" height="637" alt="Eight-channel USB logic analyser with a USB socket, bundled signal leads and grabber clips" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 637" aria-hidden="true">
+          <defs><marker id="p15-logic-analyser" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M463,127 L505,70" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M463,127 L505,70" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="350" y="106" width="224" height="53" rx="6" fill="#122029"/><text x="362" y="145" style="fill:#fff;font-size:35px;font-weight:700">USB socket</text>
+          <path d="M311,516 L348,446" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M311,516 L348,446" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="148" y="514" width="250" height="53" rx="6" fill="#122029"/><text x="160" y="553" style="fill:#fff;font-size:35px;font-weight:700">Signal leads</text>
+          <path d="M124,370 L159,315" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M124,370 L159,315" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="4" y="370" width="227" height="53" rx="6" fill="#122029"/><text x="16" y="409" style="fill:#fff;font-size:35px;font-weight:700">Grabber clips</text>
+        </svg>
+      </div>
+      <figcaption>This bench-built example has a USB socket for the host and a separate group of signal leads. Identify the channel names and ground connection on your model. Check its voltage limits and threshold before connecting it to the circuit.<br><small>Photo by Dilshan Jayakody, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:8_Channel_USB_logic_analyzer_(5172098012).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 508" aria-hidden="true">
+          <defs><marker id="p15-passive-probe" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M157,381 L52,447" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M157,381 L52,447" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="12" y="323" width="206" height="53" rx="6" fill="#122029"/><text x="24" y="362" style="fill:#fff;font-size:35px;font-weight:700">Signal hook</text>
+          <path d="M346,274 L310,310" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M346,274 L310,310" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
+        </svg>
+      </div>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">Tektronix shows how the probe response changes an observed edge</a>.</p>
+
+    <h2>Follow an edge in time</h2>
+    <p>A Schmitt input crosses an upper threshold on a rising input and a lower threshold on a falling input. The gap resists chatter when noise is smaller than the margin at that moment. An RC filter trades noise attenuation for delay, and the timing depends on which threshold is crossed. In a first-order charge from zero toward 5 V, crossing 3 V takes approximately 0.92 time constants. Compare the data-sheet limits and the actual charge curve.</p><p>A scope shows edge shape. A logic analyser represents voltage events in time after thresholding and sampling. Practise with <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110 · See a bouncing switch and clean up a digital edge</a>, then combine sensor, filter and threshold in <a href="../practice/p124-foundation-mixed-signal-capstone.html">P124 · Commission a complete low-voltage sensor and alarm</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110 · See a bouncing switch and clean up a digital edge</a>.</p>
+    <ul>
+      <li><a href="https://www.ti.com/document-viewer/lit/html/scea046">TI Schmitt-trigger input application brief</a></li>
+      <li><a href="https://www.ti.com/lit/ds/symlink/sn74hc14.pdf">TI SN74HC14 voltage and threshold tables</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

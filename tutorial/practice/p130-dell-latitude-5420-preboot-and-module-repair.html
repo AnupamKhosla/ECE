@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P130 · Triage and service a Dell Latitude 5420</title>
+<meta name="description" content="Run Dell’s no-power, no-POST, no-video and no-boot comparisons, then complete a model-matched repair using service and diagnostics documentation.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P130</span>
+    <h1>Triage and service a Dell Latitude 5420</h1>
+    <p class="lede">Run Dell’s no-power, no-POST, no-video and no-boot comparisons, then complete a model-matched repair using service and diagnostics documentation.</p>
+    <div class="meta"><span><b>Time</b> 60–100 minutes</span><span><b>Before this</b> <a href="../practice/p33-laptop-power-diagnostics.html">P33</a>, <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a>, <a href="../practice/p117-windows-laptop-startup-and-driver-diagnosis.html">P117</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Confirm this is the 2021 Latitude 5420</h2>
+    <p>Use the private service tag or regulatory model to confirm your manual. The 2021 Latitude 5420, older E5420 and Latitude 5420 Rugged use different manuals. The older Dell photograph is a family comparison. The 5420 link gives the exact internal layouts and removal order.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/dell-latitude-d830-donor-layout.jpg" width="960" height="712" loading="lazy" decoding="async" alt="Inside an older Dell Latitude D830 showing socketed memory and the fan with a copper heatpipe">
+        <svg viewBox="0 0 960 712" aria-hidden="true">
+          <defs><marker id="p90-dell-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M153,299 L111,215" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M153,299 L111,215" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p90-dell-photo)"/>
+          <rect x="75" y="292" width="147" height="56" rx="6" fill="#122029"/><text x="88" y="333" style="fill:#fff;font-size:37px;font-weight:700">Blower</text>
+          <path d="M465,477 L449,378" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M465,477 L449,378" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p90-dell-photo)"/>
+          <rect x="382" y="465" width="151" height="56" rx="6" fill="#122029"/><text x="395" y="506" style="fill:#fff;font-size:37px;font-weight:700">RAM</text>
+        </svg>
+      </div>
+        <figcaption>An older Latitude D830 with its fan and RAM exposed. Use its own service manual to identify the part revisions. Its memory is of a different generation from the recent laptop beside it.<br><small>Photo by Siarhei Besarab, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Internal_components_of_a_Dell_Latitude_D830_laptop.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/laptop-usb-c-adapter.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Apple 96 W USB-C charger with rating and model identifier on the casing">
+        <svg viewBox="0 0 960 640" aria-hidden="true">
+          <defs><marker id="p87-charger" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M463,204 L458,244" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M463,204 L458,244" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-charger)"/>
+          <rect x="323" y="146" width="278" height="57" rx="7" fill="#122029"/><text x="335.6666666666667" y="187.8" style="fill:#fff;font-size:38px;font-weight:700">96 W marking</text>
+        </svg>
+      </div>
+        <figcaption>This Apple charger has the overall rating and model number printed on its case. On the charger used for your lab, look for the separate list of supported V and A combinations or use its datasheet.<br><small>Photo by Tony Webster, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Apple_96W_USB_Type-C_Power_Adapter_for_new_16_inch_MacBook_Pro_(49165128252).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=DP1EOYPWKb4">Dell demonstrates battery and adapter diagnostics before parts replacement</a>.</p>
+
+    <h2>Capture the earliest reliable evidence</h2>
+    <ol class="steps"><li>Start closed. Use the documented compatible charger and verify observable charging indications. Note the LED pattern, including which colours and how many pulses, then look it up in the matching manual rather than using a general Internet code table.</li><li>If the laptop powers on with a blank screen, use Dell’s documented LCD BIST path for the model, typically D held while pressing power. Record whether it shows clean solid colours. That checks a local display test path; compare normal boot and an external display before declaring the entire display assembly healthy.</li><li>If the logo or F12 menu appears, select Diagnostics for the supported preboot path. Collect the reported component, error and validation code when provided. Check whether firmware sees storage before running Windows startup repair.</li></ol>
+
+    <h2>Run one authorized module repair</h2>
+    <p>Choose a proven faulty removable module on the spare, for example a battery that fails the vendor test or a speaker that fails a repeatable local test. Use the exact 5420 manual’s Service Mode or battery-disconnection instructions for the condition and part. Photograph cable routes and track screw lengths. Inspect matching identifiers on the replacement before connecting. Execute the Dell procedure with power isolated, then repeat the original check, run diagnostics again and exercise the adjacent function you touched. For a no-power job with failure still on the logic board use <a href="../practice/p87-laptop-usb-c-charging.html">P87 · Find why a USB-C laptop will not charge</a>, <a href="../practice/p97-laptop-board-short-isolation.html">P97 · Find which branch is shorted on a laptop board</a> and <a href="../practice/p123-laptop-board-power-good-sequence-trainer.html">P123 · Find a missing enable or power-good signal before swapping a board</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://www.dell.com/support/manuals/en-tv/latitude-5420-laptop/5420_sp14_sm/bios-overview?guid=guid-c4107ad0-123a-4caf-98f0-003dd7e0cf76&amp;lang=en-us">Dell Latitude 5420 service manual, BIOS section and illustrated removal procedures</a></li>
+      <li><a href="https://www.ifixit.com/Document/lykeC3vMFjLcWpbv/5420-sp14-service-manual-en-us.pdf">Dell 5420 service manual mirror from iFixit</a></li>
+      <li><a href="https://www.dell.com/support/manuals/en-ee/latitude-5420-laptop/5420_sp14_sm/service-mode?guid=guid-4061c167-f31d-4142-b787-ad649898892b&amp;lang=en-us">Dell Service Mode for the 5420</a></li>
+      <li><a href="https://www.dell.com/support/kbdoc/en-ap/000134936/how-to-run-the-lcd-built-in-self-test-on-a-dell-laptop">Dell LCD built-in self-test</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

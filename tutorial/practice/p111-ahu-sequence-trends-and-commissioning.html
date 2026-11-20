@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P111 · Commission one complete air-handler sequence</title>
+<meta name="description" content="Run a browser-based air-handler simulation, then prove a schedule, a fan, an alarm and a command priority using a timed functional test.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P111</span>
+    <h1>Commission one complete air-handler sequence</h1>
+    <p class="lede">Run a browser-based air-handler simulation, then prove a schedule, a fan, an alarm and a command priority using a timed functional test.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="../practice/p29-bms-commissioning-lab.html">P29</a>, <a href="../practice/p63-bms-point-to-point.html">P63</a>, <a href="../practice/p79-fan-run-proof.html">P79</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify command, proof and permissive</h2>
+    <p>An occupied schedule asks for ventilation. A safety permission must be healthy, and a fan command must lead to separate proof before this training sequence enables the temperature loop. Treat the scheduler as a request, the fan command as an output and fan proof as a separate input. A sensor failure is separate from a valid temperature out of range. This simplified classroom sequence uses fixed example delays and an example low limit; a real plant uses its approved sequence and independent safety circuits.</p><div class="table-wrap"><table><thead><tr><th scope="col">Point</th><th scope="col">Purpose</th><th scope="col">Evidence to keep</th></tr></thead><tbody><tr><th scope="row">Occupied and safety OK</th><td>Run request and permission</td><td>Two independent values at the time of failure</td></tr><tr><th scope="row">Fan request and fan proof</th><td>Command and equipment feedback</td><td>Time from command to proof</td></tr><tr><th scope="row">Supply-air temperature and quality</th><td>Feedback and whether it can be trusted</td><td>Value, degree units and quality together</td></tr></tbody></table></div>
+    <div class="photo-pair">
+<figure>
+      <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+      <figcaption>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/water-manometer.jpg" alt="Wall-mounted transparent U-tube differential manometer with a vertical scale" width="680" height="907" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1334" aria-hidden="true">
+            <defs><marker id="parts-water-manometer" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M490,699 L415,703" fill="none" stroke="#18232a" stroke-width="14"/><path d="M490,699 L415,703" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-water-manometer)"/>
+            <rect x="489" y="668" width="212" height="57" rx="8" fill="#122029"/><text x="501" y="708" style="fill:#fff;font-size:35px;font-weight:700">Liquid scale</text>
+          </svg></div>
+        <figcaption>Follow both legs of this real gauge. Read the two liquid levels against the scale. Their vertical separation gives the pressure difference.<br><small>Photo by Neurotronix, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=l_3SeSCyASY">See a Siemens operator create a trend log and define the view you would use to record a fault</a>.</p>
+
+    <h2>Run the virtual plant</h2>
+    <p>Use one click for one simulated 10-second scan. Fan proof is available immediately on a healthy scan for this exercise. Failure is raised after 30 simulated seconds of continuous command without proof. Keep the trend copied into your record before resetting.</p><form id="ahu-simulator" class="callout try widget">
+  <fieldset>
+    <legend>Set the plant inputs</legend>
+    <p><label><input name="occupied" type="checkbox" checked> Occupied schedule</label></p>
+    <p><label><input name="safety" type="checkbox" checked> Safety permission healthy</label></p>
+    <p><label>Fan proof <select name="proof"><option value="normal">Follows command</option><option value="missing">Always missing</option></select></label></p>
+    <p><label>Operator command <select name="override"><option value="released">Released</option><option value="stop">Stop</option><option value="start">Start</option></select></label></p>
+    <p><label><input name="quality" type="checkbox" checked> Supply-air temperature has good quality</label></p>
+    <p><label>Supply-air temperature (°C) <input name="temperature" type="number" value="18" min="-30" max="60" step="0.1" required></label></p>
+  </fieldset>
+  <p class="lab-controls"><button type="submit">Advance 10 seconds</button> <button type="reset">Reset simulation</button></p>
+  <p id="ahu-status" role="status">Ready. Advance one scan to see the simulated result.</p>
+  <noscript><p>With JavaScript disabled, use the timed tests below as a worksheet and record expected outputs at each scan.</p></noscript>
+</form>
+<div class="table-wrap">
+  <table>
+    <caption>Latest 12 simulation scans, newest first</caption>
+    <thead><tr><th scope="col">Time</th><th scope="col">Request source</th><th scope="col">Command</th><th scope="col">Proof</th><th scope="col">Temperature</th><th scope="col">Loop</th><th scope="col">Active alarms</th></tr></thead>
+    <tbody id="ahu-trend"></tbody>
+  </table>
+</div>
+
+    <h2>Write a functional test with pass criteria</h2>
+    <ol class="steps"><li>Start occupied with safety healthy. Advance 10 seconds. Expect fan command, proof and loop enable. Change to unoccupied, advance again, and expect all three off.</li><li>Enable occupied, select missing fan proof and run three scans. Expect the alarm only on the third scan. Restore proof and check that the active alarm clears on the next scan. Log a real site’s required acknowledgement and latch behaviour separately.</li><li>Return to normal proof. Try an operator stop while occupied. Release it and show that the schedule regains control. Then set operator start and remove the safety permission. Verify that the training safety veto wins. Restore the safe baseline and release the command.</li><li>Start normally, switch the supply-air sensor to bad quality and advance. Expect proof with no loop enable. Try 4 °C with good quality and record what changes. Describe the signals and limits you would find in a real freeze-protection sequence before testing it.</li></ol><p>Keep baseline and failed trend rows, identify the first point to go wrong and record every setting restored. Continue the same tag set in <a href="../practice/p112-niagara-four-workbench-integration.html">P112 · Build and commission a Niagara 4 station on a training system</a> or <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113 · Trace a Siemens Desigo point from PXC to Desigo CC</a>. For terminal box airflow continue with <a href="../practice/p88-vav-airflow-commissioning.html">P88 · Find why a VAV box misses its airflow setpoint</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a>.</p>
+    <ul>
+      <li><a href="https://resourcecenter.ashrae.org/technical-resources/standards-and-guidelines/titles-purposes-and-scopes">ASHRAE published scopes, including Guideline 36</a></li>
+      <li><a href="https://resourcecenter.ashrae.org/technical-resources/standards-and-guidelines/standards-addenda">ASHRAE Guideline 36 addenda</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/ahu-simulator.js"></script>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

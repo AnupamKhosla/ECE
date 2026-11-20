@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P117 · Diagnose a Windows laptop that reaches firmware but fails to boot</title>
+<meta name="description" content="Work through UEFI, drive detection, Windows Recovery Environment, Safe Mode and logged errors while preserving customer data.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P117</span>
+    <h1>Diagnose a Windows laptop that reaches firmware but fails to boot</h1>
+    <p class="lede">Work through UEFI, drive detection, Windows Recovery Environment, Safe Mode and logged errors while preserving customer data.</p>
+    <div class="meta"><span><b>Time</b> 45–80 minutes</span><span><b>Before this</b> <a href="../practice/p32-laptop-service.html">P32</a>, <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Run three observations before trying a repair</h2>
+    <ol class="steps"><li>Use a spare Windows machine with a known backup and test account. Record whether you reach the OEM logo, firmware setup, Windows spinner and sign-in. A black display and absent power lights follow different routes.</li><li>Read firmware storage and boot entries without changing setup. Run the targeted storage test if the drive is detected and stable. On a customer drive with read errors or valuable unbacked-up data, pause and scope recovery before running repair writes or extended stress.</li><li>From a booting Windows test machine use Advanced startup to enter WinRE. On a non-booting test machine, follow Microsoft’s supported WinRE or matching recovery media route. Note what requests owner authentication. Let the owner enter recovery information through the supported interface if it is required.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+    <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
+    <figcaption>Find the contacts at one end and the screw notch at the other. Check length, keying and interface against your laptop before buying a drive.<br><small>Photo by Kent Madsen (Designermadsen), resized. <a href="https://commons.wikimedia.org/wiki/File:WesterDigital-Black-NVMe-SSD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+  </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/repair/sata.jpg" width="960" height="720" loading="lazy" decoding="async" alt="A 2.5-inch Intel SATA SSD, showing its two L-shaped connector sections">
+        <figcaption>The narrow section carries SATA data. The wider section carries power. Compare this end of a cabled drive with the narrow M.2 card in the SSD exercise.<br><small>Photo by Dsimic, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_DC_S3700_SSD_series,_bottom_side_of_a_100_GB_SATA_3.0_model.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=2zG84RNGXWA">Dell Support demonstrates its troubleshooting workflow for Windows freezes</a>.</p>
+
+    <h2>Use the smallest change that tests the hypothesis</h2>
+    <p>With approval and a known-good backup on a practice machine, select Startup Repair for a Windows startup case. Record its message and retest. If the symptom began after a driver change and a supported Safe Mode session is stable, record the driver name and time before using an approved rollback. A Safe Mode success narrows the conditions. A storage error in both paths points back toward drive and controller checks.</p><p>On a system that boots, open Reliability Monitor and Event Viewer’s System log around the incident. Record timestamps and providers. Repeated storage timeouts, WHEA events or a specific driver fault can guide the next test. An unexpected shutdown event alone does not identify the failed part. Test cold boot, two restarts and the feature that triggered the fault. For storage testing use <a href="../practice/p93-qualify-used-ssd.html">P93 · Qualify a used SATA or NVMe SSD without reading files</a>, and for consent and handover use <a href="../practice/p122-laptop-data-safe-intake-and-handover.html">P122 · Protect laptop data and run a repeatable handover test</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://support.microsoft.com/en-gb/windows/experience/backup-recovery/windows-recovery-environment">Microsoft Windows Recovery Environment and illustrated menus</a></li>
+      <li><a href="https://support.microsoft.com/en-us/windows/experience/startup-boot/startup-repair">Microsoft Startup Repair</a></li>
+      <li><a href="https://support.microsoft.com/en-gb/windows/experience/backup-recovery/recovery-options-in-windows">Microsoft recovery options</a></li>
+      <li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/whea/whea-hardware-error-events">Microsoft WHEA hardware error events</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

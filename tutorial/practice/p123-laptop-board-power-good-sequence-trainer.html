@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P123 · Find a missing enable or power-good signal before swapping a board</title>
+<meta name="description" content="Model standby, an enable and a power-good signal at safe voltage, then compare the first failed transition on a documented donor board.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P123</span>
+    <h1>Find a missing enable or power-good signal before swapping a board</h1>
+    <p class="lede">Model standby, an enable and a power-good signal at safe voltage, then compare the first failed transition on a documented donor board.</p>
+    <div class="meta"><span><b>Time</b> 55–85 minutes</span><span><b>Before this</b> <a href="../practice/p33-laptop-power-diagnostics.html">P33</a>, <a href="../practice/p97-laptop-board-short-isolation.html">P97</a>, <a href="../practice/p105-laptop-board-input-fuse.html">P105</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read a chain in order</h2>
+    <p>Draw input supply, standby rail, a controller request, a switched rail and its power-good feedback. A real board may have several coupled rails, active-low signals, mask-dependent timing and pull-ups fed by other rails. Use an authorised diagram and the exact board revision, including thresholds, polarity and probe test points. The bench exercise uses an independent low-voltage trainer. It illustrates the logic behind the measurements in <a href="../theory/t27-board-power-sequencing.html">T27 · Board power rails, enables and startup sequencing</a>.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/thinkpad-t480-board.jpg" width="592" height="444" loading="lazy" decoding="async" alt="ThinkPad T480 motherboard being lifted from its base, with the processor and empty fan area visible">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p98-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M254,104 L308,166" fill="none" stroke="#18232a" stroke-width="12"/><path d="M254,104 L308,166" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="185" y="82" width="123" height="35" rx="6" fill="#122029"/><text x="194" y="107" style="fill:#fff;font-size:22px;font-weight:700">Processor</text>
+            <path d="M432,338 L480,214" fill="none" stroke="#18232a" stroke-width="12"/><path d="M432,338 L480,214" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="416" y="323" width="119" height="35" rx="6" fill="#122029"/><text x="425" y="348" style="fill:#fff;font-size:22px;font-weight:700">Fan bay</text>
+          </svg>
+        </div>
+        <figcaption>The ThinkPad T480 motherboard rises clear of its base. The grey residue marks the processor's contact with the heatsink. The fan and heatsink must be correctly installed for a powered test.<br><small>Photo by Sarah Westberg for iFixit, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Lenovo+ThinkPad+T480+Motherboard+Replacement/140250">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 508" aria-hidden="true">
+          <defs><marker id="p15-passive-probe" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M157,381 L52,447" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M157,381 L52,447" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="12" y="323" width="206" height="53" rx="6" fill="#122029"/><text x="24" y="362" style="fill:#fff;font-size:35px;font-weight:700">Signal hook</text>
+          <path d="M346,274 L310,310" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M346,274 L310,310" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
+        </svg>
+      </div>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">Tektronix prepares a passive scope probe for reliable timing measurements</a>.</p>
+
+    <h2>Make and break an observable signal chain</h2>
+    <p>Use an isolated 5 V supply limited to 30 mA, a two-position SPDT switch, a documented SN74HC14 DIP, two 10 kΩ resistors and a 100 nF bypass. Supply the logic from the standby rail. Tie unused inputs to return and leave outputs open. Wire the switch common to EN node, one throw to 5 V and the other to return. Fit 10 kΩ from EN to return and use a removable jumper from EN to the first inverter’s input. Fit another 10 kΩ from the input to return so the input stays defined with the jumper removed. Use the first inverter output as the trainer’s active-low status proxy.</p><ol class="steps"><li>With the switch off expect standby near 5 V, EN near 0 V and active-low status near 5 V. With the switch on expect EN near 5 V and status near 0 V. This status is a logic model of feedback. No regulated output is built in this exercise.</li><li>Power off and remove the EN jumper. Then power on and switch again. Standby remains present and EN moves but the inverter input stays low. Trace from the last node that changes to the first node that does not, and restore the jumper with power off.</li><li>On a documented spare board, compare power-button event, expected enable and power-good in order under the approved normal power condition. Use only the specified ground and designated pads. Scope EN and status on a common timebase if their signal limits and grounding permit it. If the enable is absent, investigate upstream permissions. If enable is present but power-good is missing, verify that rail’s voltage, load and feedback path. Keep the annotated timeline before choosing a part.</li></ol>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t27-board-power-sequencing.html">T27 · Board power rails, enables and startup sequencing</a>.</p>
+    <ul>
+      <li><a href="https://download.lenovo.com/pccbbs/mobiles_pdf/t480_hmm_en.pdf">Lenovo ThinkPad T480 maintenance manual for model and board service context</a></li>
+      <li><a href="https://knowledgebase.frame.work/availability-of-schematics-and-boardviews-BJMZ6EAu">Framework explains available mainboard pinouts and schematics scope</a></li>
+      <li><a href="https://www.ti.com/lit/ds/symlink/tps62130.pdf">TI TPS6213x data sheet with enable and power-good functions</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

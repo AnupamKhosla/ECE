@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P114 · Transfer commissioning skills across four BMS ecosystems</title>
+<meta name="description" content="Trace the same fan and temperature points through Schneider EcoStruxure, Johnson Controls Metasys, Honeywell Optimizer and Automated Logic WebCTRL.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P114</span>
+    <h1>Transfer commissioning skills across four BMS ecosystems</h1>
+    <p class="lede">Trace the same fan and temperature points through Schneider EcoStruxure, Johnson Controls Metasys, Honeywell Optimizer and Automated Logic WebCTRL.</p>
+    <div class="meta"><span><b>Time</b> 60–100 minutes</span><span><b>Before this</b> <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111</a>, <a href="../practice/p112-niagara-four-workbench-integration.html">P112</a>, <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Choose the tool from its system role</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">System</th><th scope="col">Controller or engineering layer</th><th scope="col">Operator evidence</th></tr></thead><tbody><tr><th scope="row">Schneider Electric</th><td>EcoStruxure Building Operation project in WorkStation, Automation Server and compatible field controller. Verify the actual AS-P or MP/RP controller family on the project.</td><td>Locate the point in the server tree, trend the declared quantity and show alarm state in the documented client.</td></tr><tr><th scope="row">Johnson Controls</th><td>CCT configures compatible field controllers and has a documented Simulation mode. SCT is for supported system-level configuration and archives.</td><td>Read the mapped point, online status and trend in the training Metasys interface. Keep controller evidence separate.</td></tr><tr><th scope="row">Honeywell</th><td>Identify the actual Optimizer controller and project. The Optimizer Advanced Controller uses Niagara; other product generations and site tools can differ.</td><td>Check how the licensed system exposes point state, history and overrides before using the Niagara-method record.</td></tr><tr><th scope="row">Automated Logic</th><td>EIKON builds control programs, SiteBuilder assigns equipment and ViewBuilder builds graphics. Confirm the install’s release and device model.</td><td>Show the resulting equipment point, schedule, trend and alarm in WebCTRL.</td></tr></tbody></table></div>
+    <div class="photo-pair">
+<figure>
+      <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+      <figcaption>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/terminal.jpg" width="960" height="638" alt="Installed WAGO controller with field cabling connected to terminal rows" loading="lazy" decoding="async">
+        <figcaption>On the panel side the cable tag and input terminal are separate identifiers. Write both before assigning the screen name.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=fz0IvX7pvVI">Automated Logic demonstrates its WebCTRL reporting workflow</a>.</p>
+
+    <h2>Run one identical fault across two projects</h2>
+    <ol class="steps"><li>Choose two rows. Document exact software release and controller family for each. Use an approved demo or offline simulation where offered; otherwise fill the comparison using official help and <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a>.</li><li>Pick the same three points in each project: an occupied fan request, actual proving input and supply-air temperature. Record how each is mapped from controller to screen. Take one local or simulated snapshot and one view of the supervisory value.</li><li>Hold the proof false with request true on the training copy, record the first disagreement and the delayed alarm, then restore the input. Compare time stamp convention, quality display and what clearing the source does to alarm history.</li><li>Archive each project using the documented workflow. Record which tool can restore which layer, including any dependencies or licenses. A successful trend export is evidence for commissioning; document a separate backup and restoration record.</li></ol>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a>.</p>
+    <ul>
+      <li><a href="https://ecostruxure-building-help.se.com/">Schneider EcoStruxure Building Operation online help</a></li>
+      <li><a href="https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/Metasys-System-Configuration-Guide/15.0/Metasys-system/Tools/Controller-Configuration-Tool-CCT">Johnson Controls CCT modes and tool roles</a></li>
+      <li><a href="https://buildings.honeywell.com/us/en/brands/our-brands/bms/what-we-do/controllers/optimizer-suite/advanced-controller">Honeywell Optimizer Advanced Controller documentation</a></li>
+      <li><a href="https://www.automatedlogic.com/en/training/training-courses/webctrl-tools/">Automated Logic WebCTRL training environments</a></li>
+      <li><a href="https://www.automatedlogic.com/en/products/webctrl-building-automation-system/engineering-tools/eikon/">Automated Logic EIKON screenshots and description</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

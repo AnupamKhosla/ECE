@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P131 · Diagnose and repair iClever and other keyboards</title>
+<meta name="description" content="Separate Bluetooth, USB and receiver faults from bad switches, damaged ribbons, matrix rows and mechanical sticking.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P131</span>
+    <h1>Diagnose and repair iClever and other keyboards</h1>
+    <p class="lede">Separate Bluetooth, USB and receiver faults from bad switches, damaged ribbons, matrix rows and mechanical sticking.</p>
+    <div class="meta"><span><b>Time</b> 50–85 minutes</span><span><b>Before this</b> <a href="../practice/p05-soldering-wiring.html">P05</a>, <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110</a>, <a href="../practice/p121-laptop-ports-audio-and-small-module-service.html">P121</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>First separate the host, link and key mechanism</h2>
+    <p>Read the exact model on the underside. An iClever BK08 or BK10 is a Bluetooth keyboard, while a DK05 combo uses its matched receiver. Some charging sockets on wireless keyboards supply power only. Use the manual’s diagram to verify indicators, channel, pairing command and cable role. Model revisions can change controls, so use the diagram on the matching manual.</p><ol class="steps"><li>On the iClever practice unit, charge with a compatible cable, confirm the power indication and pick an available documented Bluetooth slot. Follow that revision’s pairing command and verify the pairing light before selecting it on the host. Check that another previously paired device has not taken the slot.</li><li>Test on a second host you own and test another known-good Bluetooth input device on the first host. For a receiver model use its correct receiver directly in a known-good USB port and test on a second machine. For a wired model test another port, inspect the cable and test with no hub.</li><li>Use an offline text editor and a list of characters, modifiers and known key combinations. Record isolated missed keys, double entries, stuck keys and entire groups. A changed layout or OS mode can explain altered symbols while a whole physical row suggests a matrix path. Actual matrix groupings can cross visual rows.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
+      <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/mechanical-keyboard-switch.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Mechanical keyboard with keycaps off and one switch removed, exposing contact holes"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="mechanical-keyboard-switch" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M332.375,48 L334,76" fill="none" stroke="#14232b" stroke-width="9"/><path d="M332.375,48 L334,76" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#mechanical-keyboard-switch)"/><rect x="280" y="25" width="104.75" height="23" rx="4" fill="#14232b"/><text x="286" y="41" style="fill:#fff;font-size:15px;font-weight:700">Switch stem</text>
+<path d="M374,257 L291,238" fill="none" stroke="#14232b" stroke-width="9"/><path d="M374,257 L291,238" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#mechanical-keyboard-switch)"/><rect x="374" y="234" width="121.25" height="23" rx="4" fill="#14232b"/><text x="380" y="250" style="fill:#fff;font-size:15px;font-weight:700">Contact holes</text></svg></div><figcaption>In this documented soldered keyboard, the two switch contact holes are on the board. A scissor or membrane key has different hardware.<br><small>Photo by Matt Chan and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/Redragon+Kumara+K552+Key+Switch+Replacement/148374">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=4yOsgbYroS0">iClever demonstrates how to troubleshoot Bluetooth slots on the IC-BK08</a>.</p>
+
+    <h2>Repair the physical failure at the right level</h2>
+    <p>Disconnect USB and isolate accessible power or remove batteries before opening. For a portable iClever with a damaged hinge, scissor or sealed battery, compare part availability and manual disassembly before pulling keycaps. A fold-dependent set of missing keys makes the hinge flex or connector worth inspecting with power off. Check a detachable flex for visible damage and seat it according to the latch type. Leave a swollen or damaged rechargeable cell isolated for proper handling.</p><p>On your documented mechanical trainer, compare an identical good switch and the suspect switch. A hot-swap board uses a puller on a supported switch after removing the cap. A soldered board, such as the pictured procedure, requires controlled rework and protection of adjoining pads. Read the exact revision because either construction can exist under similar model names. With the part isolated, use a meter across the specified switch contacts. Compare idle, pressed and repeatability. Replace a matched bad switch and retest the whole matrix. A membrane keyboard’s repeat row failure may need the membrane or flex replaced.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t55-signal-levels-thresholds-and-time.html">T55 · Logic thresholds, hysteresis and signal timing</a>.</p>
+    <ul>
+      <li><a href="https://tech.iclever.com/storage/product/guide/31/17091129442908.pdf">iClever BK08 USB-C manual with pairing and indicator diagrams</a></li>
+      <li><a href="https://tech.iclever.com/storage/product/guide/76/17483113081630.pdf">iClever BK10 manual for the illustrated revision</a></li>
+      <li><a href="https://tech.iclever.com/support/guides">iClever guide index for other keyboard and receiver models</a></li>
+      <li><a href="https://tech.iclever.com/storage/product/guide/42/17483995645981.pdf">iClever DK05 receiver combo manual</a></li>
+      <li><a href="https://support.microsoft.com/en-gb/windows/hardware/input-devices/mouse-and-keyboard-problems-in-windows">Microsoft USB, wireless and input checks</a></li>
+      <li><a href="https://www.ifixit.com/Guide/Redragon+Kumara+K552+Key+Switch+Replacement/148374">iFixit’s soldered mechanical switch example</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

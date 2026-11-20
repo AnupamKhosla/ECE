@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P118 · Use a Linux live USB to isolate a laptop hardware fault</title>
+<meta name="description" content="Compare the same peripheral across installed and live systems, then collect readable kernel evidence without writing to the internal drive.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P118</span>
+    <h1>Use a Linux live USB to isolate a laptop hardware fault</h1>
+    <p class="lede">Compare the same peripheral across installed and live systems, then collect readable kernel evidence without writing to the internal drive.</p>
+    <div class="meta"><span><b>Time</b> 50–80 minutes</span><span><b>Before this</b> <a href="../practice/p19-networking-hands-on.html">P19</a>, <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Boot a test environment and protect the original storage</h2>
+    <p>Use an owned x86-64 practice laptop, an empty removable USB and an official matching Ubuntu image. The image writer overwrites the selected removable drive. Match its size and device before selecting it, and unplug other removable storage. Use the machine’s one-time boot menu, choose Try Ubuntu, and leave internal partitions unopened. Follow Canonical’s exact instructions. On ARM or Apple silicon use a separate platform-specific path. Do not disable encryption or change firmware settings to make the comparison work.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/laptop-usb-c-port.jpg" width="960" height="1280" loading="lazy" decoding="async" alt="HP laptop with a USB-C connector, USB-A connector and DisplayPort marking">
+        <svg viewBox="0 0 960 1280" aria-hidden="true">
+          <defs><marker id="p87-port" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M398,499 L453,606" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M398,499 L453,606" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-port)"/>
+          <rect x="267" y="444" width="220" height="57" rx="7" fill="#122029"/><text x="279.6666666666667" y="485.8" style="fill:#fff;font-size:38px;font-weight:700">USB-C port</text>
+          <path d="M740,504 L657,575" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M740,504 L657,575" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-port)"/>
+          <rect x="676" y="451" width="224" height="57" rx="7" fill="#122029"/><text x="688.6666666666666" y="492.8" style="fill:#fff;font-size:38px;font-weight:700">DisplayPort</text>
+        </svg>
+      </div>
+        <figcaption>HP ProBook 430 G8 side view. The centre connector is USB-C. Find the USB and DisplayPort symbols beside it. HP lists Power Delivery for this connector. Look up the input capability for the exact machine you are testing. <a href="https://www8.hp.com/content/dam/sites/garage-press/press/press-kits/2020/2020-hp-reinvent/hp_probook_430_g8.pdf">HP datasheet</a>.<br><small>Photo by Logant547, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:USB-C_connector_on_a_laptop.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+    <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
+    <figcaption>Find the contacts at one end and the screw notch at the other. Check length, keying and interface against your laptop before buying a drive.<br><small>Photo by Kent Madsen (Designermadsen), resized. <a href="https://commons.wikimedia.org/wiki/File:WesterDigital-Black-NVMe-SSD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+  </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=_FD4_vDpLUc">Watch a live USB boot and the Try Ubuntu option. Use Canonical’s current guide for the exact screens</a>.</p>
+
+    <h2>Observe the hardware from two environments</h2>
+    <ol class="steps"><li>Write down one symptom, e.g. a USB mouse disconnects intermittently. Compare the same known-good mouse, port, workload and fault trigger in the installed system and the live session. Use a second known-working port as the control.</li><li>In the live terminal run <code>lsusb</code> before and after connection and <code>lspci -nn</code> for PCI devices. Use <code>lsblk -o NAME,MODEL,SIZE,TRAN,TYPE</code> to identify visible devices without mounting them. Use <code>journalctl -k -b --no-pager</code> or permitted kernel logs around the event. A retired practice laptop can be tested without a customer disk fitted.</li><li>Record device ID, port and event time, and compare only relevant lines. An error in both operating systems with matching conditions increases suspicion of the path shared by both. Missing Wi-Fi in the live image alone may reflect kernel or firmware support. Test with a known-good device and an OS supported on this model.</li></ol>
+
+    <h2>Repeat a resume fault with one change</h2>
+    <p>Record kernel version with <code>uname -r</code>, supported states using <code>cat /sys/power/mem_sleep</code> where present, plus whether AC power or a dock was attached. Compare two suspend and resume cycles with the dock removed. Live-session logs usually disappear at power-off. Save only the relevant redacted evidence externally. Restart without the USB and verify the original boot path. Continue with <a href="../practice/p121-laptop-ports-audio-and-small-module-service.html">P121 · Isolate laptop port, headphone and speaker faults</a> if a physical connector or modular port is implicated.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://ubuntu.com/desktop/docs/en/latest/tutorial/try-ubuntu-desktop/">Canonical Try Ubuntu Desktop with screen examples</a></li>
+      <li><a href="https://ubuntu.com/tutorials/install-ubuntu-desktop">Canonical bootable USB instructions</a></li>
+      <li><a href="https://docs.kernel.org/admin-guide/pm/sleep-states.html">Linux kernel sleep-state documentation</a></li>
+      <li><a href="https://manpages.ubuntu.com/manpages/noble/en/man8/lsblk.8.html">Ubuntu lsblk manual</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

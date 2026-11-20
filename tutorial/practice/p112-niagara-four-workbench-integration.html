@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P112 · Build and commission a Niagara 4 station on a training system</title>
+<meta name="description" content="Separate platform and station tasks, import a point, wire a training sequence and demonstrate trends, alarms, scheduling and relinquishment.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P112</span>
+    <h1>Build and commission a Niagara 4 station on a training system</h1>
+    <p class="lede">Separate platform and station tasks, import a point, wire a training sequence and demonstrate trends, alarms, scheduling and relinquishment.</p>
+    <div class="meta"><span><b>Time</b> 75–120 minutes</span><span><b>Before this</b> <a href="../practice/p38-bacnet-point-commissioning.html">P38</a>, <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Recognise where your job takes place</h2>
+    <p>Workbench is the engineering client. A station runs services, points and control logic. A JACE can host a station near field equipment. A Supervisor can run a separate station to aggregate data and present an operator view. Platform connection deals with host-level commissioning and station lifecycle, while a station connection deals with the running application. Compare the actual JACE photograph and callouts in Tridium’s product documentation with the generic controllers pictured here.</p><p>Use a licensed, isolated training station and an instructor-provided device or points simulator. Confirm Niagara build, module compatibility and permission before starting. If you only have a browser, run <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a> and complete steps 2 through 5 on paper with the source references. Save the expected evidence and label it as a simulation.</p>
+    <div class="photo-pair">
+<figure>
+      <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+      <figcaption>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/switch.jpg" alt="Numbered Ethernet sockets on a managed switch" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>An Ethernet switch joins IP devices on the bench. Draw the exact laptop-to-switch-to-controller path and record which link lights show.<br><small>Photo by Ben Franske, resized. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=acqZfEZzD3Y">Tridium demonstrates Niagara’s HTML5 engineering views in 4.14</a>.</p>
+
+    <h2>Work from a physical point to an operator view</h2>
+    <ol class="steps"><li>Record host, station name and revision. Locate the platform management view and then the station component tree. Start from the approved training copy. Capture a restorable baseline using the backup procedure for your version.</li><li>In the training BACnet network, locate the assigned device and bring in a temperature AI and fan proof BI as proxy points. Record device instance, object type and instance, point quality, engineering units and value. Compare both to the simulator readings before adding local logic.</li><li>On a wiresheet, use a schedule input, fan request logic and separate proof. Add a history for command, proof, value and quality. Choose an interval short enough to show the 30-second classroom test, or use change logging where suited. Make a simple graphic with source, units and status.</li><li>Generate a simulator fan-proof failure and check the alarm appears after the training delay. Distinguish alarm acknowledgement from returning to a normal value. Trend one rise, one fall and a fault. Compare alarm and trend timestamps on the same clock.</li><li>On a training writable output only, use the approved operator control and confirm expiry or manual release. Read effective state, record command and priority information, and verify normal scheduling resumes. Return the simulator to normal and save the final station backup in the designated training location.</li></ol><p>Keep a point list, one wiresheet image from your own lab, two events and one trend export. <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113 · Trace a Siemens Desigo point from PXC to Desigo CC</a> repeats the same symptom on Siemens, where a controller project and the management project are distinct evidence.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a>.</p>
+    <ul>
+      <li><a href="https://www.tridium.com/us/en/services-support/tridium-university">Tridium University Niagara courses and certification</a></li>
+      <li><a href="https://www.tridium.com/us/en/Products/niagara/jace">Tridium JACE product photographs, data sheet links and connections</a></li>
+      <li><a href="https://www.tridium.com/content/dam/tridium/en/documents/document-lists/niagara/tri-Niagara4-Hardening-Guide-en-2025.pdf">Tridium Niagara 4 hardening and site practices guide</a></li>
+      <li><a href="https://www.tridium.com/us/en/services-support/events/2022/05/2022-05-12-niagara-4-12-webwiresheet">Tridium’s WebWiresheet demonstration</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

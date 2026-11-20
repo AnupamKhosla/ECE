@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P110 · See a bouncing switch and clean up a digital edge</title>
+<meta name="description" content="Capture a raw switch and a Schmitt-trigger output on the same timebase, then separate electrical filtering from software timing.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P110</span>
+    <h1>See a bouncing switch and clean up a digital edge</h1>
+    <p class="lede">Capture a raw switch and a Schmitt-trigger output on the same timebase, then separate electrical filtering from software timing.</p>
+    <div class="meta"><span><b>Time</b> 45–70 minutes</span><span><b>Before this</b> <a href="../practice/p07-capacitors-rc.html">P07</a>, <a href="../practice/p15-oscilloscope-logic-analyser.html">P15</a>, <a href="../theory/t15-digital-logic-microcontrollers.html">T15</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build two versions of the same switch input</h2>
+    <p>Use a normally open pushbutton, 10 kΩ pull-up, 1 kΩ series resistor, 1 µF capacitor, 100 nF supply bypass and an SN74HC14 in a documented DIP package. Use a 5 V isolated supply, current limit no higher than 30 mA. Put pin 14 at +5 V and pin 7 at return. Bypass at the IC. Tie unused inputs to return and leave unused outputs open. Pull RAW up through 10 kΩ, and connect the button from RAW to return.</p><ol class="steps"><li>Probe RAW initially without the capacitor, using DC coupling and a falling single trigger around mid-supply. Record the time and number of visible transitions on ten presses and ten releases. A particular switch may produce few bounces.</li><li>Wire 1 kΩ from RAW to FILTER, place 1 µF from FILTER to return and connect FILTER to the first inverter input. For a polarised capacitor, its positive end faces FILTER. Capture FILTER and the inverter output together.</li><li>The release charges through roughly 11 kΩ, giving a time constant near 11 ms. Holding the button discharges through approximately 1 kΩ, giving about 1 ms. Estimate the threshold reached on each edge using the measured capture and the data sheet. The output changes opposite to the input.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/eight-channel-logic-analyser.jpg" width="960" height="637" alt="Eight-channel USB logic analyser with a USB socket, bundled signal leads and grabber clips" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 637" aria-hidden="true">
+          <defs><marker id="p15-logic-analyser" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M463,127 L505,70" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M463,127 L505,70" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="350" y="106" width="224" height="53" rx="6" fill="#122029"/><text x="362" y="145" style="fill:#fff;font-size:35px;font-weight:700">USB socket</text>
+          <path d="M311,516 L348,446" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M311,516 L348,446" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="148" y="514" width="250" height="53" rx="6" fill="#122029"/><text x="160" y="553" style="fill:#fff;font-size:35px;font-weight:700">Signal leads</text>
+          <path d="M124,370 L159,315" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M124,370 L159,315" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-logic-analyser)"/>
+          <rect x="4" y="370" width="227" height="53" rx="6" fill="#122029"/><text x="16" y="409" style="fill:#fff;font-size:35px;font-weight:700">Grabber clips</text>
+        </svg>
+      </div>
+      <figcaption>This bench-built example has a USB socket for the host and a separate group of signal leads. Identify the channel names and ground connection on your model. Check its voltage limits and threshold before connecting it to the circuit.<br><small>Photo by Dilshan Jayakody, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:8_Channel_USB_logic_analyzer_(5172098012).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 508" aria-hidden="true">
+          <defs><marker id="p15-passive-probe" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M157,381 L52,447" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M157,381 L52,447" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="12" y="323" width="206" height="53" rx="6" fill="#122029"/><text x="24" y="362" style="fill:#fff;font-size:35px;font-weight:700">Signal hook</text>
+          <path d="M346,274 L310,310" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M346,274 L310,310" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
+        </svg>
+      </div>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">Tektronix shows how to prepare a probe for a clean edge capture</a>.</p>
+
+    <h2>Explain what the analyser leaves out</h2>
+    <p>A logic analyser decodes a voltage against a threshold and can miss narrow transitions at too low a sample rate. Verify its actual 5 V input tolerance before connecting. The scope shows the analog slope and bounce. A Schmitt input uses different thresholds in the two directions. A software debounce timer adds a separate delay. Decide whether release and press delay are acceptable for your application and rerun the capture after changing one component at a time.</p><p>Keep paired raw and filtered captures and label the timebase, trigger point and ground reference. Link the results to <a href="../practice/p27-firmware-state-machine.html">P27 · Program a timed controller that can stop</a> for firmware stop logic and <a href="../practice/p63-bms-point-to-point.html">P63 · Prove a BMS point from the room to the screen</a> for switch inputs on a building controller.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t55-signal-levels-thresholds-and-time.html">T55 · Logic thresholds, hysteresis and signal timing</a>.</p>
+    <ul>
+      <li><a href="https://www.ti.com/lit/ds/symlink/sn74hc14.pdf">TI SN74HC14 data sheet and pinout</a></li>
+      <li><a href="https://circuits.mit.edu/F26/labs/scopes">MIT scopes, breadboards and sensors lab</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

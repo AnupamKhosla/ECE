@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P121 · Isolate laptop port, headphone and speaker faults</title>
+<meta name="description" content="Build a port capability matrix and use Framework and MacBook examples to distinguish replaceable modules from board or software faults.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P121</span>
+    <h1>Isolate laptop port, headphone and speaker faults</h1>
+    <p class="lede">Build a port capability matrix and use Framework and MacBook examples to distinguish replaceable modules from board or software faults.</p>
+    <div class="meta"><span><b>Time</b> 60–85 minutes</span><span><b>Before this</b> <a href="../practice/p60-laptop-display-cooling-input.html">P60</a>, <a href="../practice/p87-laptop-usb-c-charging.html">P87</a>, <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Test charge, signal and recognition separately</h2>
+    <p>On a documented spare Framework Laptop 13 start with the correct Mainboard generation and rear/front port map. Use one known-good USB-C cable, a supported adapter, a known-good USB peripheral and where supported a display. Record port position, power, data and display observation. Move one known-good Expansion Card from a working compatible bay to the suspect compatible bay. Then move the suspect card to the known-good bay. A fault that follows the card and a fault that stays with the bay have different next checks.</p><p>For a headphone complaint verify the output device and volume first. Use a known-good stereo plug and test channels and plug detection. Built-in speakers, wired headphones and a USB audio device provide separate comparison paths. For a microphone complaint compare two local recordings with the same settings, input device and permissions.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/laptop.jpg" alt="Open Framework Laptop 13 showing fan, motherboard, battery and removable parts" width="960" height="723" loading="lazy" decoding="async">
+      <svg viewBox="0 0 960 723" aria-hidden="true">
+        <path d="M 192.0,224.1 L 309.2,268.3" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 192.0,224.1 L 309.2,268.3" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 326.4,274.7 L 306.2,276.5 312.3,260.1 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="192.0" cy="224.1" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="192.0" y="224.1" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">1</text>
+        <path d="M 508.8,433.8 L 505.0,422.3" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 508.8,433.8 L 505.0,422.3" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 499.2,404.9 L 513.3,419.5 496.7,425.0 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="508.8" cy="433.8" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="508.8" y="433.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">2</text>
+        <path d="M 624.0,542.2 L 597.7,571.9" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 624.0,542.2 L 597.7,571.9" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 585.6,585.6 L 591.2,566.1 604.3,577.7 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="624.0" cy="542.2" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="624.0" y="542.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">3</text>
+        <path d="M 681.6,115.7 L 681.6,176.9" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 681.6,115.7 L 681.6,176.9" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 681.6,195.2 L 672.9,176.9 690.3,176.9 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="681.6" cy="115.7" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="681.6" y="115.7" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">4</text>
+      </svg>
+    </div>
+    <figcaption>Find the parts before disconnecting anything. Compare the layout with the exact model’s service guide.<br><b>1 · Cooling fan. 2 · M.2 SSD. 3 · Battery. 4 · Memory module area.</b><br><small>Photo by Ogidya, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+  </figure>
+<figure class="course-photo">
+      <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
+      <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=DP1EOYPWKb4">Dell Support demonstrates laptop battery and adapter checks to perform before blaming a port</a>.</p>
+
+    <h2>Choose the smallest proven physical repair</h2>
+    <p>Look up the exact model’s guide to determine whether the jack is on a replaceable board, a cable, or the motherboard, and whether speakers are bundled with another assembly. On an Apple M4 13-inch Air practice case the audio board and speaker procedures are distinct. Photograph the original cable route and ZIF latch condition before removing the part. Isolate AC and batteries per the manual. Use an exact replacement if the comparison actually implicated that part. Damaged pads, corrosion or a soldered connector send you to bench-level inspection in <a href="../practice/p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> and <a href="../practice/p97-laptop-board-short-isolation.html">P97 · Find which branch is shorted on a laptop board</a>.</p><p>After reassembly retest both orientations where relevant, charge or data with known-good accessories, stereo channels, mic routing and speaker output at the previous levels. Archive only test evidence. A headphone socket that detects a plug but drops one channel under movement needs a different repair from a missing device after a driver change.</p><p>For a detachable keyboard or mouse, use <a href="../practice/p131-iclever-and-keyboard-repair.html">P131 · Diagnose and repair iClever and other keyboards</a> and <a href="../practice/p132-mouse-repair-tracking-clicks-and-scroll.html">P132 · Find and repair a mouse click, tracking or wheel fault</a> to isolate the accessory before opening the laptop.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://knowledgebase.frame.work/usb-port-definition-matrix-framework-laptop-13-HkHVUHaTge">Framework Laptop 13 port-by-port capability matrix</a></li>
+      <li><a href="https://knowledgebase.frame.work/en_us/one-port-on-my-laptop-does-not-function-correctly-r1mqMnTet">Framework isolates expansion card versus bay</a></li>
+      <li><a href="https://support.apple.com/en-us/122003">Apple M4 repair manual with audio board and speaker procedures</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

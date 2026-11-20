@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P119 · Triage a MacBook and prove which module needs service</title>
+<meta name="description" content="Differentiate Intel and Apple silicon startup paths, service a model-specific USB-C board and verify calibration, data and port functions.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P119</span>
+    <h1>Triage a MacBook and prove which module needs service</h1>
+    <p class="lede">Differentiate Intel and Apple silicon startup paths, service a model-specific USB-C board and verify calibration, data and port functions.</p>
+    <div class="meta"><span><b>Time</b> 60–100 minutes</span><span><b>Before this</b> <a href="../practice/p87-laptop-usb-c-charging.html">P87</a>, <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify the Mac and the path it can reach</h2>
+    <p>Record exact model, generation and chip, including whether an Intel model has the T2 chip. Confirm data ownership and backup before major repair. The photos below show a 2022 M2 Air. The service exercise links Apple’s 13-inch M4 2025 documentation. Use the guide for the Mac actually on your bench.</p><ol class="steps"><li>Check supported charger, known-good cable, indicators and external display. Test each supported port independently and reduce variables such as docks.</li><li>Start Apple Diagnostics using the official model path. On Apple silicon press and hold power to the startup options, then use Command-D. On Intel hold D at startup for the documented diagnostic path. Save exact results and the test that could or could not run.</li><li>Record whether macOS Recovery or startup options can be reached. For eligible Macs with a firmware symptom, Apple documents revive and restore with a second Mac and a supported cable. Treat revive as a data-preserving attempt and restore as erasing. Stop before an erase unless authorized and covered by the job record. Use the official model-specific DFU port and instructions.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/macbook-m2-logic.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Apple M2 MacBook Air logic board showing processor, memory and storage"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="macbook-m2-logic" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M218.5,325 L196,259" fill="none" stroke="#14232b" stroke-width="9"/><path d="M218.5,325 L196,259" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="162" y="325" width="113" height="23" rx="4" fill="#14232b"/><text x="168" y="341" style="fill:#fff;font-size:15px;font-weight:700">M2 processor</text>
+<path d="M196.75,136 L218,211" fill="none" stroke="#14232b" stroke-width="9"/><path d="M196.75,136 L218,211" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="165" y="113" width="63.5" height="23" rx="4" fill="#14232b"/><text x="171" y="129" style="fill:#fff;font-size:15px;font-weight:700">Memory</text>
+<path d="M74.5,119 L98,180" fill="none" stroke="#14232b" stroke-width="9"/><path d="M74.5,119 L98,180" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="18" y="96" width="113" height="23" rx="4" fill="#14232b"/><text x="24" y="112" style="fill:#fff;font-size:15px;font-weight:700">NAND storage</text></svg></div><figcaption>This 2022 M2 Air has its memory alongside the processor and NAND storage on the logic board. Use the model’s teardown chip map to compare with a removable PC SSD.<br><small>Photo by Arthur Shi and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Teardown/Macbook+Air+(M2+2022)+Logic+Board+and+Chip+Identification/151816">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/macbook-m2-cables.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Opened M2 MacBook Air with the logic board removed, showing the modular side-port area and flex cables"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="macbook-m2-cables" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M489.25,275 L529,224" fill="none" stroke="#14232b" stroke-width="9"/><path d="M489.25,275 L529,224" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-cables)"/><rect x="335" y="275" width="154.25" height="23" rx="4" fill="#14232b"/><text x="341" y="291" style="fill:#fff;font-size:15px;font-weight:700">USB-C and MagSafe</text>
+<path d="M332.625,360 L285,308" fill="none" stroke="#14232b" stroke-width="9"/><path d="M332.625,360 L285,308" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-cables)"/><rect x="272" y="360" width="121.25" height="23" rx="4" fill="#14232b"/><text x="278" y="376" style="fill:#fff;font-size:15px;font-weight:700">Battery cable</text></svg></div><figcaption>On the 2022 M2 Air, cable and port assemblies can have their own fasteners. Use the correct service guide before lifting a connector.<br><small>Photo by Spencer Day and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/MacBook+Air+2022+(M2)+Logic+Board+Replacement/156325">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=NjP-aAhHhnE">iFixit opens the M2 MacBook Air and shows its logic board and modules</a>.</p>
+
+    <h2>Prove a serviceable USB-C fault before opening</h2>
+    <p>On the 13-inch M4 training model, test the same known-good PD charger and a separate known-good data device on each port, including cable orientation. Add a display test with rated equipment if supported. Record whether MagSafe works. One port losing charge and data while its sibling passes points toward the local port path. Follow Apple’s bottom-case, battery isolation and USB-C board procedure for that exact model. Compare board and fasteners before installation. The 2022 photos teach identification of cables and board functions, and the M4 guide shows the service assembly for the exercise.</p>
+
+    <h2>Complete reassembly and verify the job</h2>
+    <p>Repeat charging, data and display tests where applicable. Check Apple Diagnostics again. Determine from Apple’s current table whether the repaired part requires Repair Assistant, and use the supported procedure. Record function, calibration status and any remaining work privately. A logic-board swap can change access to data, Touch ID and other associated parts; plan backup and part completion before approving that job.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://support.apple.com/en-in/102550">Apple Diagnostics on Intel and Apple silicon</a></li>
+      <li><a href="https://support.apple.com/en-us/122003">Apple MacBook Air 13-inch M4 repair manual and part maps</a></li>
+      <li><a href="https://support.apple.com/en-us/121943">Apple M4 USB-C boards procedure</a></li>
+      <li><a href="https://support.apple.com/en-us/123128">Apple Repair Assistant model, OS and part requirements</a></li>
+      <li><a href="https://support.apple.com/en-us/108900">Apple firmware revive and restore procedure</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

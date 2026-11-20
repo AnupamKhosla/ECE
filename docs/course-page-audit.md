@@ -1,5 +1,13 @@
 # ECE Workbench page audit
 
+## Foundations, BMS, laptop and peripheral routes · 21 November 2026
+
+- [P126](../tutorial/practice/p126-electronics-foundation-mastery-route.html) sequences existing labs and five new foundation workshops. The new exercises cover measurement under load, a sensor buffer, relay kickback, logic edges and a complete signal-path fault. T54 and T55 explain measurement loading and digital thresholds.
+- [P127](../tutorial/practice/p127-bms-technician-to-platform-commissioning-route.html) starts with field work and instruments, then uses a browser-based air-handler sequence in P111, licensed training workflows for Niagara and Siemens, a comparison across Schneider, Johnson Controls, Honeywell and Automated Logic, plus hydronics and read-only BACnet and Modbus integration tests. T56 connects demand, permission, command, proof and point quality.
+- [P128](../tutorial/practice/p128-laptop-repair-multiplatform-mastery-route.html) separates model and architecture from operating system and connects UEFI, Windows, Linux, Mac and ChromeOS diagnosis to service manuals, data handling, modules, board power sequencing and handover. P129 and P130 build model-specific Lenovo Yoga Book and Dell Latitude cases. P131 and P132 cover iClever, wired and wireless keyboards and optical mice.
+- Every new page links to a relevant existing video and has at least two credited photographs, some showing comparable equipment. New labelled assets show MacBook Air, Samsung Galaxy Book, Acer Chromebook, mechanical key switches and a Logitech mouse. Linked official manuals and demonstrations give exact Yoga Book, Dell Latitude, iClever, JACE and PXC hardware references.
+- The BMS platform procedures require the corresponding authorised training software or hardware for vendor-specific execution. The virtual lab and case readings provide evidence practice without access to a production system.
+
 ## Specialist drop-off repair workshops · 21 November 2026
 
 - [P102](../tutorial/practice/p102-plasma-gas-torch-service.html) adapts Hypertherm's separation of cap/consumable faults and gas-pressure faults into a cold inspection and two-point flowing-pressure case. [T52](../tutorial/theory/t52-airflow-and-pressure.html) explains pressure, flow and restrictions using Festo and Atlas Copco references.

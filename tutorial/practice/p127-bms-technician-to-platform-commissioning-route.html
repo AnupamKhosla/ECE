@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P127 · BMS from field installation to platform commissioning</title>
+<meta name="description" content="Learn the physical job, signals, HVAC sequences, integration, Niagara, Siemens and other vendor tools, then prove commissioning and handover.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P127</span>
+    <h1>BMS from field installation to platform commissioning</h1>
+    <p class="lede">Learn the physical job, signals, HVAC sequences, integration, Niagara, Siemens and other vendor tools, then prove commissioning and handover.</p>
+    <div class="meta"><span><b>Route</b> Six stages</span><span><b>Before this</b> <a href="../practice/p126-electronics-foundation-mastery-route.html">P126</a>, <a href="../career/c01-bms-fundamentals.html">C01</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Enter at the physical job</h2>
+    <p>Start with <a href="../career/c17-bms-fieldwork.html">C17 · BMS fieldwork: diagnose and commission a damper</a> and <a href="../practice/p54-install-a-room-sensor.html">P54 · Mount, label and check a BMS room sensor</a>. Trace the labelled point to its terminal before opening any software. A site helper can contribute mounting, labels, drawings and evidence under supervision. The commissioning role moves into point checks, sequences and defects. <a href="../career/c11-licences-pathways.html">C11 · Licences, tickets and pathways in Australia</a> explains the Australian work boundary for electrical and cabling tasks. Use the low-voltage trainers for bench practice.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/labs/thermostat-wall-plate.jpg" alt="An opened White-Rodgers thermostat with its fixing screw on the left, wires coming through the middle and screw terminals on the right" width="960" height="720" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 720" aria-hidden="true">
+            <defs><marker id="room-plate-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#fff" stroke="#103549" stroke-width="0.7"/></marker></defs>
+            <g fill="none" stroke="#103549" stroke-width="12" stroke-linecap="round"><path d="M147,451 L153,370 M391,573 L476,370 M720,425 L591,340"/></g>
+            <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M147,451 L153,370" marker-end="url(#room-plate-arrow)"/><path d="M391,573 L476,370" marker-end="url(#room-plate-arrow)"/><path d="M720,425 L591,340" marker-end="url(#room-plate-arrow)"/></g>
+            <g fill="#103549" stroke="#fff" stroke-width="2"><rect x="34" y="451" width="229" height="59" rx="10"/><rect x="274" y="573" width="236" height="59" rx="10"/><rect x="610" y="425" width="224" height="59" rx="10"/></g>
+            <g text-anchor="middle" font-weight="700" style="fill:#fff;font-size:36px"><text x="148" y="491">Fixing screw</text><text x="392" y="613">Cable entry</text><text x="722" y="465">Terminals</text></g>
+          </svg>
+        </span>
+        <figcaption>With a White-Rodgers thermostat cover removed, the fixing, cable route and terminal screws are visible. Use this photo to recognise the parts of a wall unit. Use the Belimo sheet for this lab’s fixing positions and connections.<br><small>Photo by Dvortygirl, resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Digital_thermostat_wall.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/water-manometer.jpg" alt="Wall-mounted transparent U-tube differential manometer with a vertical scale" width="680" height="907" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1334" aria-hidden="true">
+            <defs><marker id="parts-water-manometer" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M490,699 L415,703" fill="none" stroke="#18232a" stroke-width="14"/><path d="M490,699 L415,703" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-water-manometer)"/>
+            <rect x="489" y="668" width="212" height="57" rx="8" fill="#122029"/><text x="501" y="708" style="fill:#fff;font-size:35px;font-weight:700">Liquid scale</text>
+          </svg></div>
+        <figcaption>Follow both legs of this real gauge. Read the two liquid levels against the scale. Their vertical separation gives the pressure difference.<br><small>Photo by Neurotronix, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=Y_W7JYJJAPM">Watch a room-control mounting demonstration before starting field practice</a>.</p>
+
+    <h2>Build evidence in six stages</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Stage</th><th scope="col">Work through</th><th scope="col">What to keep</th></tr></thead><tbody>
+<tr><th scope="row">1. Get around the equipment</th><td>Read <a href="../career/c01-bms-fundamentals.html">C01 · BMS fundamentals: what a building management system does</a>, <a href="../career/c03-hvac-for-technicians.html">C03 · HVAC for electronics people</a>, <a href="../practice/p22-reading-drawings.html">P22 · Read a site drawing and label a cable</a> and <a href="../practice/p54-install-a-room-sensor.html">P54 · Mount, label and check a BMS room sensor</a>. Find one room sensor, duct, damper, valve, fan and panel on a drawing.</td><td>Photo or mock panel, device tags and marked drawing.</td></tr>
+<tr><th scope="row">2. Prove wiring and signals</th><td>Use <a href="../practice/p63-bms-point-to-point.html">P63 · Prove a BMS point from the room to the screen</a>, <a href="../practice/p37-current-loop-calibration.html">P37 · Calibrate a 4–20 mA pressure input</a>, <a href="../practice/p77-duct-differential-pressure.html">P77 · Find a fault in a duct pressure measurement</a>, <a href="../practice/p78-hydronic-valve-stroke.html">P78 · Prove a heating or cooling valve moves and flows</a>, <a href="../practice/p79-fan-run-proof.html">P79 · Distinguish a fan command from proof of airflow</a> and <a href="../practice/p80-room-air-quality-sensor.html">P80 · Check a room CO₂ sensor against a second meter</a>. Know dry contact, resistance, voltage and current inputs.</td><td>For each point record terminal, raw quantity, scaled quantity and physical result.</td></tr>
+<tr><th scope="row">3. Prove what the plant does</th><td>Run <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a>, <a href="../practice/p88-vav-airflow-commissioning.html">P88 · Find why a VAV box misses its airflow setpoint</a>, <a href="../practice/p115-building-plant-hydronics-and-trend-diagnosis.html">P115 · Diagnose a heating-water loop from command, proof and trend</a> and the meter observations in <a href="../practice/p81-commercial-power-meter.html">P81 · Check a commercial power meter reading</a>.</td><td>Functional test of normal start, shutdown, one injected fault and recovery.</td></tr>
+<tr><th scope="row">4. Locate network and mapping faults</th><td>Use <a href="../practice/p19-networking-hands-on.html">P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</a>, <a href="../practice/p38-bacnet-point-commissioning.html">P38 · Commission a BACnet room-controller point</a> and <a href="../practice/p125-bms-bacnet-modbus-integration-diagnostics.html">P125 · Diagnose a stale or wrongly scaled point across two protocols</a>. Use <a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a> for priorities and data quality.</td><td>Device-to-object point map, values at both ends, timestamps and an integration diagnosis.</td></tr>
+<tr><th scope="row">5. Work across platforms</th><td>Complete <a href="../practice/p112-niagara-four-workbench-integration.html">P112 · Build and commission a Niagara 4 station on a training system</a> and <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113 · Trace a Siemens Desigo point from PXC to Desigo CC</a>, then one comparison in <a href="../practice/p114-schneider-metasys-honeywell-webctrl.html">P114 · Transfer commissioning skills across four BMS ecosystems</a>. Use the available vendor training environment.</td><td>Controller and head end map, trend, alarm, documented command release and project backup.</td></tr>
+<tr><th scope="row">6. Close the job</th><td>Choose an AHU, VAV and pump-loop case. Rerun their tests with another person checking evidence. Use <a href="../career/c12-portfolio-study-plan.html">C12 · Portfolio projects, interviews and a 12-week plan</a> for a portfolio record.</td><td>Passed and failed checks, who witnessed them, settings restored and items requiring follow-up.</td></tr>
+</tbody></table></div>
+
+    <h2>Choose a site family after the common route</h2>
+    <p>Start with air handling and temperature before exploring hydronics, metering, lighting, specialized room equipment and site-specific integrations. Ask which controller family, front end and approved training copy the real building uses. Keep the vendor’s actual wiring and sequence documents beside your worked example.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a>.</p>
+    <ul>
+      <li><a href="https://resourcecenter.ashrae.org/technical-resources/standards-and-guidelines/titles-purposes-and-scopes">ASHRAE HVAC sequence scope and reference</a></li>
+      <li><a href="https://bacnetinternational.org/tbi/">BACnet Institute</a></li>
+      <li><a href="https://www.tridium.com/us/en/services-support/tridium-university">Tridium University official progression</a></li>
+      <li><a href="https://resources.sw.siemens.com/en-US/desigo-cc-graphic-generation-webinar-session-2/">Siemens Desigo CC graphics engineering demo and training scope</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P108 · Buffer a weak sensor signal and find the limits</title>
+<meta name="description" content="Build a unity-gain op-amp buffer, compare its drive against a plain divider and measure a gain stage before it clips.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P108</span>
+    <h1>Buffer a weak sensor signal and find the limits</h1>
+    <p class="lede">Build a unity-gain op-amp buffer, compare its drive against a plain divider and measure a gain stage before it clips.</p>
+    <div class="meta"><span><b>Time</b> 50–75 minutes</span><span><b>Before this</b> <a href="../practice/p04-series-parallel-dividers.html">P04</a>, <a href="../practice/p24-datasheets-measurement.html">P24</a>, <a href="../theory/t14-op-amps.html">T14</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Wire the divider and buffer</h2>
+    <p>Use an MCP6002 PDIP-8 on a breadboard, a 5 V isolated supply limited to 30 mA, two 10 kΩ resistors, a third 10 kΩ load and a 100 nF bypass capacitor. Read the pin diagram for your exact package. For the PDIP put pin 8 at +5 V and pin 4 at return. Fit the bypass close between those pins. Straddle the centre gap and verify notch orientation before powering. Tie the unused amplifier’s non-inverting input to return and connect its own output to its own inverting input.</p><ol class="steps"><li>Build the two equal resistors as a divider. Measure its 2.50 V centre unloaded. Add the third 10 kΩ to return and expect about 1.67 V.</li><li>Move the load off the divider. Connect the divider centre to pin 3 (+) and wire pin 1 (OUT) back to pin 2 (−). Measure the source and output with no load.</li><li>Fit the 10 kΩ load from pin 1 to return. Both readings should stay close to 2.50 V. The load draws about 0.25 mA largely supplied by the amplifier. Record the actual difference between the input and output.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+    <img src="../assets/photos/opamp.jpg" alt="Philips LM358D dual op-amp mounted on a keyboard controller PCB" width="960" height="960" loading="lazy" decoding="async">
+    <figcaption>Locate the marked LM358D package. Its eight pins serve two amplifiers and the shared supply, which helps explain why the board wiring looks busier than a single op-amp symbol.<br><small>Photo by Raimond Spekking, resized. <a href="https://commons.wikimedia.org/wiki/File:Nedap_ESD1_-_Keyboard_controller_PCB_-_Philips_LM358D-8584.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+  </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-two-resistors.jpg" alt="Two axial resistors on a sideways breadboard, with their midpoint and the two supply rails marked" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-divider-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M430,71 L403,109" fill="none" stroke="#18232a" stroke-width="18"/><path d="M430,71 L403,109" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="379" y="13" width="297" height="54" rx="7" fill="#122029"/><text x="389" y="53" style="fill:#fff;font-size:36px;font-weight:700">Top rail</text>
+          <path d="M310,199 L214,213" fill="none" stroke="#18232a" stroke-width="18"/><path d="M310,199 L214,213" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="307" y="154" width="254" height="54" rx="7" fill="#122029"/><text x="317" y="194" style="fill:#fff;font-size:36px;font-weight:700">Midpoint</text>
+          <path d="M522,492 L545,426" fill="none" stroke="#18232a" stroke-width="18"/><path d="M522,492 L545,426" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="505" y="494" width="311" height="54" rx="7" fill="#122029"/><text x="515" y="534" style="fill:#fff;font-size:36px;font-weight:700">Bottom rail</text>
+        </svg>
+      </div>
+      <figcaption>This two-resistor example has an upper return rail and a lower supply rail. The numbered terminal strips run vertically because the board is turned sideways. The resistor leads in the same connected strip form the midpoint. Check continuity with the battery removed on your own board before relying on a row or rail.<br><small>Photo by Toluaj, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Breadboard_and_resistors.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.ti.com/video/6115087344001">TI Precision Labs demonstrates output swing</a>.</p>
+
+    <h2>Make it amplify and find where the prediction ends</h2>
+    <p>With power off, remove the direct feedback wire. Fit 10 kΩ from pin 1 to pin 2 and 10 kΩ from pin 2 to return. Replace the input divider with a 10 kΩ pot across 5 V and return, with its wiper feeding pin 3. Begin near 1 V input and expect roughly 2 V output. Record 1, 2, 2.4 and 3 V input. At 3 V, a gain of two would ask for 6 V, beyond the positive rail. Record the measured ceiling and the load used. Disconnect power before changing resistance or wiring.</p><p>The analog chain in a controller has similar limits. A scaling problem changes a point displayed by software. Clipping is already visible at the hardware pin. Photograph or sketch your connection, and mark which measurements separate those failures.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t54-source-resistance-loading-and-uncertainty.html">T54 · Source resistance, loading and measurement uncertainty</a>.</p>
+    <ul>
+      <li><a href="https://www.microchip.com/content/dam/mchp/documents/MSLD/ProductDocuments/DataSheets/MCP6001-1R-1U-2-4-1-MHz-Low-Power-Op-Amp-DS20001733L.pdf">MCP6002 part and data sheet, including pin diagram</a></li>
+      <li><a href="https://ece.ufl.edu/academics/undergraduate/lab-facilities/">University of Florida analog laboratory progression</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>
