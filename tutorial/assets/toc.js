@@ -57,10 +57,14 @@ window.TOC = {
           { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Learn the startup path and use independent tests to choose your next step before servicing a module." },
           { n: "P33", file: "practice/p33-laptop-power-diagnostics.html", title: "Laptop board diagnosis and power rails", d: "Build a two-rail trainer and trace input, standby, enable and run voltages." },
           { n: "P60", file: "practice/p60-laptop-display-cooling-input.html", title: "Diagnose a laptop’s screen, cooling and inputs", d: "Compare preboot, external display, fan behaviour and keyboard tests before opening a working spare or donor." },
+          { n: "P87", file: "practice/p87-laptop-usb-c-charging.html", title: "Find why a USB-C laptop will not charge", d: "Identify the required charger profile and test ports, cable power rating, detection and battery behaviour separately." },
           { n: "P34", file: "practice/p34-phone-module-service.html", title: "Android screen, speaker and headphone jack repair", d: "Learn phone parts and work through three photo-led repairs on a Google Pixel 4a." },
           { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Android charging faults and board-level triage", d: "Test USB-C charging and diagnose the flex and removable port board in a Galaxy A54 5G." },
           { n: "P36", file: "practice/p36-android-battery-service.html", title: "Diagnose and replace an Android battery", d: "Find the Pixel 4a battery and adhesive tabs, then compare charging and runtime before and after repair." },
-          { n: "P61", file: "practice/p61-android-camera-diagnosis.html", title: "Diagnose an Android camera and service its module", d: "Compare front and rear capture, app and optics faults. Follow a Pixel 4a teardown to the rear-camera connector." }
+          { n: "P61", file: "practice/p61-android-camera-diagnosis.html", title: "Diagnose an Android camera and service its module", d: "Compare front and rear capture, app and optics faults. Follow a Pixel 4a teardown to the rear-camera connector." },
+          { n: "P84", file: "practice/p84-android-haptic-motor.html", title: "Diagnose weak vibration and replace a Pixel 8a haptic motor", d: "Compare several vibration sources, locate the module on a Pixel 8a and repeat the tests after restoration." },
+          { n: "P85", file: "practice/p85-android-microphone-call-audio.html", title: "Find why callers cannot hear an Android phone", d: "Compare local recording, audio routes and calls, then inspect the microphone mouth and gasket before selecting a module." },
+          { n: "P86", file: "practice/p86-liquid-exposure-intake.html", title: "Triage a phone or laptop after liquid exposure", d: "Keep power off, distinguish a port alert from internal exposure, and identify corrosion and repair limits." }
         ]},
         { title: "Part I · Building controls and industrial service", blurb: "Calibrate a point, test the controller sequence and hand over the diagnosis.", chapters: [
           { n: "P54", file: "practice/p54-install-a-room-sensor.html", title: "Mount, label and check a BMS room sensor", d: "Practise a first installation task on a mock wall, then identify an open circuit, misplaced sensor or mismatched profile." },
@@ -114,7 +118,9 @@ window.TOC = {
           { n: "P80", file: "practice/p80-room-air-quality-sensor.html", title: "Check a room CO₂ sensor against a second meter", d: "Compare true CO₂, temperature and humidity and locate drift, placement or a stale BMS point." },
           { n: "P81", file: "practice/p81-commercial-power-meter.html", title: "Check a commercial power meter reading", d: "Use CT ratios, phase pairing, Modbus units and kWh differences to diagnose a meter and BMS mismatch." },
           { n: "P82", file: "practice/p82-io-link-sensor-replacement.html", title: "Replace an IO-Link sensor and verify its data", d: "Identify a sensor, select its IODD, check parameter storage and prove live data and validity." },
-          { n: "P83", file: "practice/p83-24v-branch-protection.html", title: "Find why a 24 V panel resets when a load switches", d: "Reproduce a shared voltage drop and distinguish a supply dropout from a single electronic branch trip." }
+          { n: "P83", file: "practice/p83-24v-branch-protection.html", title: "Find why a 24 V panel resets when a load switches", d: "Reproduce a shared voltage drop and distinguish a supply dropout from a single electronic branch trip." },
+          { n: "P88", file: "practice/p88-vav-airflow-commissioning.html", title: "Find why a VAV box misses its airflow setpoint", d: "Compare demand, box pickup pressure, reported airflow, actuator travel and an independent reference reading." },
+          { n: "P89", file: "practice/p89-photoelectric-sensor-alignment.html", title: "Find why a photoelectric sensor misses a carton", d: "Compare opposed, retroreflective and diffuse sensing, then separate optical, output and counter faults." }
         ]}
       ]
     },
@@ -191,6 +197,10 @@ window.TOC = {
         { title: "Part 11 · Commercial field equipment", blurb: "Pressure, airflow, actuator commands, energy measurement and industrial device data.", chapters: [
           { n: "T45", file: "theory/t45-commercial-hvac-device-signals.html", title: "Commercial HVAC devices, signals and independent proof", d: "Differential pressure, VAV pickup, actuator signals, fan proof and CO₂ sensor readings." },
           { n: "T46", file: "theory/t46-commercial-power-and-device-data.html", title: "Commercial power measurement, 24 V distribution and smart sensor data", d: "CT scaling, energy metering, selective branch protection and IO-Link process data, identities and validity." }
+        ]},
+        { title: "Part 12 · Device service and failure analysis", blurb: "How audio, haptics and liquid exposure change the tests you should run.", chapters: [
+          { n: "T47", file: "theory/t47-phone-acoustics-and-haptics.html", title: "Phone microphones, speakers and haptics", d: "MEMS microphone ports, seals, audio routing, speaker enclosures and ERM or LRA haptic drives." },
+          { n: "T48", file: "theory/t48-electronics-liquid-corrosion.html", title: "How liquid exposure damages electronics", d: "Moisture and ionic leakage, electrochemical migration, contact corrosion, capillary paths and cold inspection." }
         ]}
       ]
     },

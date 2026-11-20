@@ -18,6 +18,8 @@
     <div class="meta"><span><b>Time</b> 90 min</span><span><b>Before this</b> P24, P26, P32</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <p>For USB-C input faults, <a href="p87-laptop-usb-c-charging.html">P87 tests the source and negotiated input</a> before the board rail checks in this chapter.</p>
+
     <h2>Learn the four checks on one regulator</h2>
     <p>A <b>rail</b> is a supply connection shared by parts that need the same voltage. A 3.3 V rail can feed the logic for many devices. <b>IN</b> is the voltage presented to the regulator. <b>EN</b> (enable) is a control signal that requests operation. <b>OUT</b> is the voltage it makes. Some regulators also give a <b>power-good</b> signal when the output is in range. A regulator can have input power and a correct zero reading at its output while it waits for EN.</p>
     <figure>
@@ -83,7 +85,7 @@
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t27-board-power-sequencing.html">T27</a> explains standby, EN and PG. <a href="../theory/t13-mosfet-physics.html">T13</a> covers protection switches, <a href="../theory/t21-switching-converters-control.html">T21</a> covers converters, and <a href="../theory/t24-measurement-datasheets.html">T24</a> covers why in-circuit readings need a reference.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

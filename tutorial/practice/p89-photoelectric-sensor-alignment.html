@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P89 · Find why a photoelectric sensor misses a carton</title>
+<meta name="description" content="Compare opposed, retroreflective and diffuse sensing, then separate optical, output and counter faults.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P89</span>
+    <h1>Find why a photoelectric sensor misses a carton</h1>
+    <p class="lede">Build a simple light receiver, run a repeatable detection test and use the result to diagnose a packaging machine sensor.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p12-sensors-adc.html">P12 sensors</a> · <a href="../theory/t18-sensor-physics.html">T18 sensor physics</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify which way the light travels</h2>
+    <p>An opposed or through-beam system puts the emitter and receiver on opposite sides of the path. A retroreflective unit puts both in one housing and uses a reflector opposite. A diffuse sensor depends on light reflected by the target. The object’s colour, surface, size, position and background can matter. Bright or shiny material can fool an unsuitable arrangement. Check the actual part’s mode, distance and output specification before adjusting. <a href="https://www.ia.omron.com/support/guide/43/introduction.html">Omron’s industrial sensor guide</a> · <a href="../theory/t18-sensor-physics.html">T18 · Sensor conversion and thresholds</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/sick-photoelectric-sensor.png" width="500" height="767" loading="lazy" decoding="async" alt="Blue SICK retroreflective photoelectric sensor housing, red optical face, printed wiring diagram and threaded cable connector">
+        <svg viewBox="0 0 500 767" aria-hidden="true">
+          <defs><marker id="p89-reflex" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M338,216 L432,243" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M338,216 L432,243" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p89-reflex)"/>
+          <rect x="288" y="180" width="172" height="36" rx="7" fill="#122029"/><text x="296" y="206.4" style="fill:#fff;font-size:24px;font-weight:700">Optical face</text>
+          <path d="M162,621 L98,653" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M162,621 L98,653" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p89-reflex)"/>
+          <rect x="148" y="585" width="154" height="36" rx="7" fill="#122029"/><text x="156" y="611.4" style="fill:#fff;font-size:24px;font-weight:700">Connector</text>
+        </svg>
+      </div>
+        <figcaption>This retroreflective SICK model looks towards a reflector. The side artwork identifies the exact unit and its supply and signal pins. Read its drawing and the machine paperwork before making a connection.<br><small>Photo by Lucasbosch, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:SICK_WL12G-3B2531_Photoelectric_reflex_switch_angled1.png">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/optical-mouse-encoder.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Inside an Apple Mouse II, an optical emitter and receiver stand across a narrow gap for the encoder wheel">
+        <svg viewBox="0 0 960 540" aria-hidden="true">
+          <defs><marker id="p89-mouse" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M118,245 L117,335" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M118,245 L117,335" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p89-mouse)"/>
+          <rect x="25" y="188" width="295" height="57" rx="7" fill="#122029"/><text x="37.666666666666664" y="229.8" style="fill:#fff;font-size:38px;font-weight:700">Interrupted beam</text>
+        </svg>
+      </div>
+        <figcaption>The upright elements at the left face across a gap. In the mouse, a rotating slotted wheel repeatedly blocks that path. The same beam-interruption principle can count cartons.<br><small>Photo by Raimond Spekking, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Apple_Desktop_Bus_Mouse_II_-_board_-_Photoelectric_sensors-40104.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Watch how a commercial Q5X sensor samples two conditions to choose a threshold. Compare it with your measured clear and blocked voltages. <a href="https://www.youtube.com/watch?v=TkDmG82vmtM">Banner Engineering’s two-point teach demonstration on YouTube</a>.</p>
+
+    <h2>Build a low-voltage receiver you can measure</h2>
+    <p>Use a steady visible LED flashlight or a small approved LED source, a photoresistor, a 10 kΩ resistor, a 3 V battery holder, a multimeter and cardboard or tape for the fixture. A photoresistor is slow compared with a commercial photoelectric receiver. This bench work is a static or hand-speed comparison. It has no role in guarding or stopping machinery.</p>
+    <ol class="steps">
+      <li><p>Wire +3 V → 10 kΩ → measurement node → photoresistor → battery negative. Measure the node to battery negative. In this layout, more light usually reduces the photoresistor’s resistance and lowers the reading.</p></li>
+      <li><p>Secure the light and the receiver across a short path. Sample three times with the beam clear and three times blocked by a plain opaque carton. Compare the ranges. If the clear readings are all below the blocked readings, choose a midpoint in that gap as your test threshold. Record what happens if ambient light or alignment changes without moving the target.</p></li>
+      <li><p>Try ten entries with each of a matte carton, shiny pack and transparent training item, then count how many cause a repeatable transition. A pass means exactly one blocked state and a return to clear before the next item. Add a paper tube around the receiver if stray light narrows the gap. Repeat under the same conditions and record clear, blocked, missed and false triggers.</p></li>
+    </ol>
+    <p>In a diffuse tabletop variant, put source and receiver on the same side, separate them with a small opaque divider, and compare how much reflected light returns from different targets. A commercial unit may use modulated illumination, background suppression, polarisation, or teach settings. Learn the optics on the trainer and use the actual datasheet for a site job.</p>
+
+    <h2>Find the first point where the count is wrong</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation at the machine or trainer</th><th scope="col">Discriminating next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Receiver status flickers with path clear</th><td>Compare mounting alignment, contamination, stray light and baseline signal margin before changing the threshold.</td></tr>
+        <tr><th scope="row">Sensor output changes once per pass but the controller value never changes</th><td>Compare at the input and confirm PNP/NPN compatibility and input common, or verify the expected IO-Link bit and validity.</td></tr>
+        <tr><th scope="row">Input changes reliably and one carton is counted twice</th><td>Check edge logic, bounce or reflections, and the clear-to-blocked cycle before adjusting delay. Retest under normal product spacing.</td></tr>
+        <tr><th scope="row">Cardboard works while shiny packs fail</th><td>Check the optical mode and surface response. Prove the chosen reflector or polarised mode on the actual material.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Review the output and signal logic in <a href="../theory/t34-industrial-control-signals.html">T34</a>. Continue with the <a href="p82-io-link-sensor-replacement.html">IO-Link sensor verification</a> or compare physical stock movement in the <a href="p67-barcode-printer-service.html">label-printer lab</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save one fixture photo, clear and blocked voltages, ten-trial counts for two materials and the measured effect of your one change.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>
