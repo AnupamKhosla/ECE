@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P61 · Diagnose an Android camera and service its module</title>
+<meta name="description" content="Separate focus, lens-window, app and rear-camera faults with repeatable photos. Follow the Pixel 4a module path only if the evidence calls for it.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P61</span>
+    <h1>Diagnose an Android camera and service its module</h1>
+    <p class="lede">Separate focus, lens-window, app and rear-camera faults with repeatable photos. Follow the Pixel 4a module path only if the evidence calls for it.</p>
+    <div class="meta"><span><b>Time</b> 30 minutes for diagnosis</span><span><b>Before opening</b> <a href="p34-phone-module-service.html">P34</a> · <a href="p36-android-battery-service.html">P36</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">First pass with your phone closed</span><p>Use any Android phone you own, its ordinary camera app, a sheet of small printed text, a clean microfibre cloth and daylight or a fixed lamp. The internal photos and replacement procedure are specifically for the Google Pixel 4a. Do the software and optics checks first.</p></div>
+
+    <h2>Do front and rear cameras fail the same way?</h2>
+    <p>The outer lens window protects a small module with its own lens assembly, image sensor and flex to the mainboard. On a multi-camera phone the app may switch modules automatically with zoom, light or focus distance. For comparisons, record the selected camera and zoom, use repeatable light and keep the same subject and distance. On the Pixel 4a select the front camera or rear 1× view.</p>
+    <ol class="steps">
+      <li><p>Remove the case or add-on lens protector if present. Look sideways into the protective glass for cracks, haze or contamination. Clean the outside with a clean cloth. Keep the phone still and capture small print in good light at two distances that the selected module can focus at, starting about half a metre away. Tap the same target where tap focus is supported.</p></li>
+      <li><p>Compare preview with the saved file. Switch front to rear, record a short clip on each and test the flash in a supported rear photo mode. A sharp saved frame with a smeared preview points you toward a different check from a smear in every file.</p></li>
+      <li><p>If the app crashes or the rear view stays black, record the symptom after a restart. Try the manufacturer’s test or another trusted app already installed, with camera permission granted. Follow Google’s camera troubleshooting if failure continues. On a Galaxy with Samsung Members, locate its camera diagnostic; the menu layout varies by model and software. Preserve the owner’s data and get permission before changes that might affect it.</p></li>
+    </ol>
+    <p><a href="https://support.google.com/pixelphone/answer/6306624?hl=en">Google’s Pixel camera troubleshooting sequence</a> · <a href="https://www.samsung.com/us/support/answer/ANS10001383/">Samsung’s camera and microphone diagnostics</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Fixed flare on one lens that changes with the light angle</th><td>Inspect the outer window and case before opening the phone. Compare photos after cleaning.</td></tr>
+        <tr><th scope="row">Sharp at medium distance, blurry only very close</th><td>Move back and see when focus returns. Compare with the model’s expected focus behaviour before suspecting its actuator.</td></tr>
+        <tr><th scope="row">Rear shows black in two apps after restart. Front and saved playback work.</th><td>Compare model diagnostics. The rear module, its connector and its board path are candidates. Inspect and test one at a time.</td></tr>
+        <tr><th scope="row">Only one app fails, with usable images in the stock camera</th><td>Check that app’s permissions or behaviour and repeat the same capture. A working stock app supplied independent evidence.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Locate the Pixel 4a rear module on a donor</h2>
+    <p>The Pixel 4a rear camera is on the far side of the motherboard and this job reaches deeper than the screen or jack. Start with a documented donor and rehearse the P34 opening. Use the iFixit parts and tools list, model-specific battery preparation, screw map and P34 adhesive practice. Stop if the pouch is swollen or damaged. The <b>Pixel 4a 5G</b> uses a different assembly and guide.</p>
+    <ol class="steps">
+      <li><p>Follow the guide to lift and disconnect the OLED, release the back, then disconnect the battery per its access sequence. Support each cover while its flex is attached. Keep the screw positions and brackets on a map.</p></li>
+      <li><p>The documented path clears the headphone jack, front camera and loudspeaker before removing the motherboard. Identify and disconnect the speaker flex called out by the guide. Do not lift a board that still has a tether or fastener. Look at the shaped lower corner where the author starts lifting it.</p></li>
+      <li><p>Turn the isolated board onto a supported static-safe surface. Identify the rear camera body and its broad flex before releasing the press connector at the edge shown. Compare the replacement’s module and plug. Remove any transport spacer or film called out by the guide and keep dust away from the lens. Align both connector halves before pressing them together.</p></li>
+    </ol>
+    <figure class="course-photo">
+      <img src="../assets/photos/repair/pixel-camera-board.jpg" width="592" height="444" alt="Plastic spudger against the lower corner of a Pixel 4a motherboard inside the chassis" loading="lazy" decoding="async">
+      <figcaption>The guide starts lifting the board after its fasteners and surrounding parts have been removed. The battery remains in the handset and is disconnected.<br><small>Photo by Sam Omiotek for iFixit. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Rear-Facing+Camera+Replacement/139566#s277804">Guide step 42</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-camera-plug.jpg" width="592" height="444" alt="Pixel 4a rear camera body and broad flex on the removed board with a tool beside the seated connector" loading="lazy" decoding="async">
+        <figcaption>Follow the broad flex from the rear camera body to the plug at the tool tip. The camera body and connector are separate parts of the same module.<br><small>Photo by Sam Omiotek for iFixit. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Rear-Facing+Camera+Replacement/139566#s277807">Guide step 44</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-camera-out.jpg" width="592" height="444" alt="Rear camera flex raised from the Pixel 4a board with the gold socket now visible" loading="lazy" decoding="async">
+        <figcaption>With the flex up, the long rectangular board socket is visible. Its outline is the alignment reference when you refit the plug.<br><small>Photo by Sam Omiotek for iFixit. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Rear-Facing+Camera+Replacement/139566#s277807">Guide step 44</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch an existing teardown</b> · Use it to recognise the camera modules and the route past the screen. Use the model-specific written steps and photos above for removal. <a href="https://www.youtube.com/watch?v=g9uJXvZOfPM">Google Pixel 4a teardown · JerryRigEverything</a>.</p>
+
+    <h2>Use the same scene to close the job</h2>
+    <p>Reassemble using the guide and the specified adhesive. Retest front and rear preview, saved photos, focus, flash, video playback, touch, fingerprint and audio as applicable. Check the SIM connection after replacing the tray. Compare your original printed target and distances with the result. A clear preview plus a failed saved image is an open repair. Keep the customer’s images out of the work record.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t36-camera-optics-and-depth.html">T36 · Focus, optics and camera geometry</a><br><a href="../theory/t26-pcb-rework-esd.html">T26 · Flex connectors and handling</a><br><a href="p34-phone-module-service.html">P34 · Pixel 4a opening and first module service</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

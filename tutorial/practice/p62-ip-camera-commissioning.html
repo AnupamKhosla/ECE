@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P62 · Commission an IP camera and verify recorded video</title>
+<meta name="description" content="Use one bench camera to distinguish power, network, live-view and recording faults before a site handover.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P62</span>
+    <h1>Commission an IP camera and verify recorded video</h1>
+    <p class="lede">Use one bench camera to distinguish power, network, live-view and recording faults before a site handover.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes</span><span><b>Before this</b> <a href="p19-networking-hands-on.html">P19</a> · <a href="../career/c05-cctv-ip-cameras.html">C05</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">Bench equipment</span><p>A camera you own, compatible standards-based PoE switch or an injector documented for the camera, two known-good patch leads, a computer, and a compatible local recorder or camera recording feature. Keep the bench network private and aim the camera at a printed target you own. If you only have a computer, use the three supplied evidence cases.</p></div>
+
+    <h2>Trace power and video through different devices</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/cctv.jpg" width="960" height="634" alt="Three IP cameras on a bench alongside a switch and a network video recorder" loading="lazy" decoding="async">
+        <figcaption>The camera makes the video, the PoE switch powers compatible devices and moves packets, and the recorder stores selected streams. Follow the installed patch lead before changing a setting.<br><small>Photo by Petr Novák, Wikipedia, resized. <a href="https://commons.wikimedia.org/wiki/File:IPCorder_NVR_with_cameras.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/keystone.jpg" width="1800" height="1544" alt="Network keystone terminal showing the contact area for individual Ethernet pairs" loading="lazy" decoding="async">
+        <figcaption>Test the camera on a short known-good patch lead before judging a longer cable or outlet. For the training lab connect directly with patch cords.<br><small>Photo by Dmeranda. <a href="https://commons.wikimedia.org/wiki/File:Keystone_module_CAT5_orange.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+    </div>
+    <p>Read the labels or datasheets for camera power standard and consumption, switch port capability, and total switch power budget. For an injector check which jack is data-in and which is powered data-out. Label the camera <code>CAM-01</code> and record the switch port. Wired link, an IP address, live video and a playable recording are four separate checks. <a href="https://www.axis.com/files/acad/Network_Video_Fundamentals_Course_Description.pdf">Axis Academy’s network video lab syllabus</a>.</p>
+
+    <h2>Commission one camera and prove it recorded</h2>
+    <ol class="steps">
+      <li><p>Connect the camera to the assigned powered port. Compare the switch’s power status and Ethernet link status with the camera instructions. On your private test setup, view the DHCP lease on the local router or use the manufacturer’s local setup method to identify the device. Record the address and how it was assigned.</p></li>
+      <li><p>Set up your camera and recorder with their documented process. Open live view while showing a printed identifier and walking a neutral test object into the frame. Compare the image with room lighting changed. Keep the subject large enough to read and avoid aiming at people or neighbours.</p></li>
+      <li><p>Record a short scheduled or continuous clip for the first pass. Include a written time marker in the scene. Check displayed time, timezone and recorder timeline against the written event. Jump back to the marker and play it. Reopen playback independently of the live window. If using an export, open it in the approved player and check both its content and time.</p></li>
+      <li><p>Disconnect the test patch lead for about a minute and reconnect it. Recheck live view, record a new marker and verify playback resumes. Document what the recorder reports during the outage. Check any time or recording configuration the outage revealed before handover.</p></li>
+    </ol>
+    <p class="course-video"><b>Watch the recorder workflow</b> · Identify the separate live, recording and export views. The published example uses AXIS Camera Station 5. Use the help guide for the exact version on your bench. <a href="https://www.youtube.com/watch?v=OI8y9B9ypTQ">Getting familiar with AXIS Camera Station · Axis Technical Support Videos</a> · <a href="https://help.axis.com/en-us/axis-camera-station-pro">Axis Camera Station Pro manual</a>.</p>
+
+    <h2>Localise each failure before swapping hardware</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Sample observations</th><th scope="col">Next check</th><th scope="col">Closing evidence</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Port shows zero watts and no link. Same camera and lead work on a known PoE port.</th><td>Verify the assigned port’s power capability, administrative status and remaining budget.</td><td>Power and link recorded on the assigned port after correction.</td></tr>
+        <tr><th scope="row">Switch shows 5.4 W and link. Camera lease exists. Recorder shows offline.</th><td>Open the authorised camera interface from the bench client. Verify the recorder address, supported camera stream and configuration if live view works directly.</td><td>Matching device identity and stable live view on the recorder.</td></tr>
+        <tr><th scope="row">The camera appears live. The written time marker is absent from playback.</th><td>Check recording policy, storage health and system time on both ends. Record another marker with a known continuous schedule.</td><td>Playback shows the marker at the expected time after correction and again after link recovery.</td></tr>
+      </tbody>
+    </table></div>
+    <p>At an average 3 Mb/s, one continuous stream requires about 32.4 GB per day before overhead. Actual bit rate depends on lighting, motion, scene and encoder settings. Use measured average bit rate and actual storage for a retention estimate.</p>
+    <p>Save the port and device tag, power status, IP assignment method, one still showing coverage, and a report with recording time and outage behaviour. Keep passwords and any private footage out of the record. Use <a href="../career/c05-cctv-ip-cameras.html">C05</a> for site survey, installation and Australian work scope.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t17-networking-theory.html">T17 · Link, network address and delivery</a><br><a href="../theory/t36-camera-optics-and-depth.html">T36 · Light and image detail</a><br><a href="p53-fibre-loss-and-otdr.html">P53 · Prove a physical link independently</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

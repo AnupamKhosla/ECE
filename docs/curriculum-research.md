@@ -2,6 +2,8 @@
 
 Reviewed 20 November 2026. The [Workbench library](../tutorial/reference/r05-practical-learning-library.html) gives learners the source links. This record explains what the sources do in their lessons, how that informed the two books and what the Australian job evidence can support.
 
+The [practical course comparison and skill map](practical-course-crosswalk.md) includes the follow-up review of TAFE units, university lab syllabuses, and service and commissioning guides. It records what changed across the learning routes and the remaining coverage.
+
 ## What established training does
 
 | Source | Structure worth adopting | Workbench application |

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P60 · Diagnose a laptop’s screen, cooling and inputs</title>
+<meta name="description" content="Use preboot and external comparisons to decide when a laptop needs a display cable, cooling service or input repair.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P60</span>
+    <h1>Diagnose a laptop’s screen, cooling and inputs</h1>
+    <p class="lede">Use preboot and external comparisons to decide when a laptop needs a display cable, cooling service or input repair.</p>
+    <div class="meta"><span><b>Time</b> 45–90 minutes</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you need</span><p>A working or repairable spare laptop, its exact service manual, a known-good external screen and compatible cable, a plain USB keyboard, good light and a notebook. A Dell example is used for preboot tests. Framework Laptop 13 is the physical service example. You can use the recorded cases without opening a laptop.</p></div>
+
+    <h2>Is there an image before the operating system starts?</h2>
+    <p>Separate the parts of the display path. The graphics system creates picture data. The internal cable carries that data to the panel and may also carry display power and controls. A typical laptop LCD uses a backlight so you can see the image. An OLED panel emits its own light. The lid sensor can send the laptop to sleep as the lid approaches the closed position.</p>
+    <ol class="steps">
+      <li><p>Watch a cold start. Record whether the internal display shows firmware, whether it only fails after sign-in and whether a supported external monitor shows a picture. Try the monitor and cable on another source first. A booting laptop may send early firmware video only to its internal screen.</p></li>
+      <li><p>On a supported Dell with the machine off, follow Dell’s instructions for holding <kbd>D</kbd> and pressing Power. Look for the same lines or dark zones through the colour fields. Stop using the laptop’s documented exit. A clean pass confirms the screen rendered those test patterns under those conditions. An intermittent cable can still fail later.</p></li>
+      <li><p>On an LCD, a faint image visible with a light held at an angle is a clue to the backlight path. If normal movement changes the fault, record the angle without flexing or forcing the lid. Remove magnetic accessories while checking an unexpected sleep or blanking complaint.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/laptop-display-bars.jpg" width="960" height="610" alt="Dell laptop with bright horizontal lines and coloured blocks on its display" loading="lazy" decoding="async">
+        <figcaption>This photographed Dell had a damaged display connection. Similar bars can also appear with a different fault. Compare the built-in test, external monitor and lid angle before choosing a part.<br><small>Photo by Atomicdragon136, resized. <a href="https://commons.wikimedia.org/wiki/File:Laptop_LCD_with_a_faulty_connector.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/laptop.jpg" width="960" height="723" alt="Framework Laptop 13 opened with battery and cable route visible along the rear near the hinge" loading="lazy" decoding="async">
+        <figcaption>Look toward the hinge when tracing the display path from board to lid. Use the full model guide to identify the connector before lifting tape or moving a cable.<br><small>Photo by Ogidya, resized. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the manufacturer’s test video</b> · Record where the first colour appears and how the test differs from watching a Windows startup. <a href="https://www.youtube.com/watch?v=Kyf9wVqKZiI">Dell Support · Run LCD BIST on a Dell laptop</a> · <a href="https://www.dell.com/support/kbdoc/en-us/000134936/how-to-run-the-lcd-built-in-self-test-on-a-dell-laptop">Dell’s written procedure</a>.</p>
+    <p>If the internal path remains suspect, isolate external power and the internal battery using the exact model procedure before touching the display plugs. For a compatible Framework Laptop 13, the manufacturer shows how to remove the bezel, free the display harness and lift the panel without pulling on the cable. Compare panel identity, cable routing and retaining tape before reassembly. Retest brightness, sleep/wake and normal lid travel. <a href="https://guides.frame.work/c/Framework_Laptop">Framework Laptop 13 display and hinge guides</a>.</p>
+
+    <h2>Separate cooling hardware from a heavy workload</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/laptop-cooling-path.jpg" width="960" height="640" alt="Laptop cooling assembly with a copper heat pipe beside its centrifugal fan" loading="lazy" decoding="async">
+        <figcaption>Heat crosses the thermal interface into the plate, travels along the heat pipe to the fins and leaves through moving air. Follow both the heat path and the air path.<br><small>Photo by Kristoferb, resized. <a href="https://commons.wikimedia.org/wiki/File:Laptop_Heat_Pipe.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/laptop-blocked-fins.jpg" width="960" height="720" alt="Dell XPS M170 cooling system with a mat of lint exposed behind its fan and grille" loading="lazy" decoding="async">
+        <figcaption>Compare the ordinary-looking outer grille with the blocked fin stack inside. A fan can spin when air cannot get through the fins.<br><small>Photo montage by Dale Mahalko. <a href="https://commons.wikimedia.org/wiki/File:Laptop_overheating_due_to_dust-clogged_internal_heatsinks_in_2.5_year_old_laptop.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <ol class="steps">
+      <li><p>On a hard surface, note the room temperature, AC or battery state, performance profile and CPU use when the complaint occurs. Use a short normal workload. Stop at a manufacturer thermal warning, abnormal odour or unexplained shutdown.</p></li>
+      <li><p>If available, run the OEM fan diagnostic. Dell describes <kbd>F12</kbd> → Diagnostics on supported models and a separate Fan test. Record the result code. A passing fan can coexist with restricted airflow or high software load. Fan speed may intentionally rise during the diagnostic.</p></li>
+      <li><p>With the laptop powered down and isolated, inspect its intake, fins and fan connector if you can safely reach them by the service manual. Clean or replace only what the evidence points to. Follow the exact model’s thermal-material requirements and screw order if the heatsink needs lifting. Compare the same workload, room and profile after reassembly.</p></li>
+    </ol>
+    <p class="course-video"><b>Watch a service demonstration</b> · Use the heat sink fan removal and replacement clips to identify the fan plug and fastener order on a ThinkPad T480. Look up your own machine’s instructions before removing its cooling assembly. <a href="https://pcsupport.lenovo.com/om/en/solutions/ht510663">Lenovo T480 hardware service videos</a> · <a href="https://www.dell.com/support/kbdoc/en-us/000130867/how-to-troubleshoot-a-overheating-shutdown-or-thermal-issue-on-a-dell-pc">Dell fan and thermal diagnosis</a>.</p>
+    <p><b>Worked comparison.</b> In a training record, the same five-minute workload reached 89 °C with loud fan noise before cleaning and 76 °C after cleaning, both at 22 °C room temperature and near the same CPU load. The result supports improved heat removal after the observed obstruction was cleared. Those temperatures are example readings. Apply your model’s own operating limits.</p>
+
+    <h2>Check one input complaint across two environments</h2>
+    <p>For a group of dead keys, test the same physical keys in the normal system and an independent manufacturer diagnostic that exercises those keys, when available. Compare with a known-good USB keyboard and check keyboard layout and accessibility settings. With power and battery isolated, look up the cover and flex release for the model. A ribbon left partly inserted can take out a column or row. After work, test every key, touchpad click and gesture, and repeat the sleep/wake and charging checks if those parts were disturbed. <a href="https://guides.frame.work/Guide/Keyboard+Replacement+Guide/83">Framework keyboard service photos</a>.</p>
+
+    <h2>Decide what the evidence justifies</h2>
+    <details class="quiz"><summary>The display looks clean in self-test and fails after sign-in</summary><div class="answer"><p>Check the driver, display settings and use a supported clean software test before replacing a panel. Save photos of the working preboot and the failing state with the same lid position.</p></div></details>
+    <details class="quiz"><summary>The external image is stable and the internal lines change when the lid moves</summary><div class="answer"><p>Inspect the internal path and strain points with power isolated. A new cable may be a good test if the model permits a documented substitution. Record whether the original symptom returns at the same angle.</p></div></details>
+    <details class="quiz"><summary>The fan diagnostic passes and an application keeps CPU use at 95% while idle</summary><div class="answer"><p>Investigate the application or background workload. Recheck temperature and fan speed at a known comparable load before opening the case.</p></div></details>
+    <p>Keep a separate job record for the display, cooling or input case you can reproduce. Include which tests ran before opening and what independent result confirmed the outcome. The Australian computer-repair competency uses multiple known faults, manufacturer procedures, functional checks and reporting. <a href="https://training.gov.au/training/details/UEEEC0055">UEEEC0055 competency</a> · <a href="../career/c16-repair-work-portfolio.html">C16 repair job record</a>.</p>
+
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t03-power-energy-heat.html">T03 · Power and heat</a><br><a href="../theory/t26-pcb-rework-esd.html">T26 · Flex connectors and ESD</a><br><a href="p32-laptop-service.html">P32 · First laptop checks and module service</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

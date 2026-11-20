@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P59 · Trace an audio amplifier from input to speaker</title>
+<meta name="description" content="Build a small audio stage and use DC and AC measurements to distinguish a missing source, clipping and a weak speaker signal.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P59</span>
+    <h1>Trace an audio amplifier from input to speaker</h1>
+    <p class="lede">Build a small audio stage and use DC and AC measurements to distinguish a missing source, clipping and a weak speaker signal.</p>
+    <div class="meta"><span><b>Time</b> 75–90 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p07-capacitors-rc.html">P07</a> · <a href="p15-oscilloscope-logic-analyser.html">P15</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you need</span><p>An LM386N-1 in an eight-pin package, breadboard, isolated current-limited 5 V DC supply, 8 Ω speaker rated 0.5 W or more, 10 kΩ potentiometer, 220 µF and 10 µF output capacitors, 100 nF and 100 µF supply bypass capacitors, and a 10 Ω resistor with a 47–50 nF capacitor for the output stability network. For measurements use a multimeter, oscilloscope and signal generator. For a first audible test, use a low-volume, battery-powered audio source with a proper mono lead.</p></div>
+
+    <h2>Follow the signal from source to speaker</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/lm386-package.jpg" width="277" height="271" alt="The LM386 audio power amplifier in an eight-pin dual-inline package" loading="lazy" decoding="async">
+        <figcaption>Read LM386 before using its pinout. Find the pin 1 dot or package notch and check the manufacturer’s top view.<br><small>Photo by Samba pa ti. <a href="https://commons.wikimedia.org/wiki/File:LM386-Operational_amplifier.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/scope.jpg" width="960" height="1106" alt="Oscilloscope for comparing the input and output AC signals" loading="lazy" decoding="async">
+        <figcaption>Use millivolts at the input and a larger vertical scale at the output. Check that your probe attenuation and scope channel agree.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/repair/lm386-prototype.jpg" width="960" height="754" alt="LM386N-1 in a perfboard amplifier with a label pointing to the pin 1 dimple" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 754" aria-hidden="true">
+          <path d="M217 616 L214 459" stroke="#103549" stroke-width="14"/>
+          <path d="M217 616 L214 461" stroke="#fff" stroke-width="6"/>
+          <path d="M213 445 L201 469 L227 468 Z" fill="#fff" stroke="#103549" stroke-width="3"/>
+          <rect x="65" y="614" rx="10" width="310" height="62" fill="#103549" stroke="#fff" stroke-width="3"/>
+          <text x="220" y="657" text-anchor="middle" font-weight="700" style="fill:#fff;font-size:36px">Pin 1 marker</text>
+        </svg>
+      </div>
+      <figcaption>An assembled LM386 prototype. Read the chip and identify the point beside pin 1. Nearby parts include capacitors and a resistor. Use the schematic below to assign the wires on your own board.<br><small>Photo by Socrate28, resized with a label added. <a href="https://commons.wikimedia.org/wiki/File:Lm386_circuito_amplificatore.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p>Build the gain-of-20 circuit in Figure 9-1. Bridge the centre gap of the breadboard with the IC. Connect <code>2</code> and <code>4</code> to 0 V and <code>6</code> to 5 V. Wire the outer lugs of the 10 kΩ volume control to the source signal and 0 V, and its wiper to <code>3</code>. Leave <code>1</code>, <code>7</code> and <code>8</code> open in this basic build. Place both supply bypass capacitors between 5 V and 0 V close to the chip. Place the series 47–50 nF and 10 Ω network between <code>5</code> and 0 V. Put the 220 µF output capacitor between <code>5</code> and the speaker, with its positive side at <code>5</code>. The speaker’s other terminal goes to 0 V. Set the volume low before switching on. <a href="https://www.ti.com/lit/ds/symlink/lm386.pdf#page=10">TI datasheet and full schematic</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Locate the source, volume control, chip and speaker in the build. Use the TI gain-of-20 circuit above for the values and connections in this lab. <a href="https://www.youtube.com/watch?v=4ObzEft2R_g">Build a simple LM386 audio amplifier · Afrotechmods</a>.</p>
+
+    <h2>Collect a DC baseline and then an AC trace</h2>
+    <ol class="steps">
+      <li><p>With power disconnected, check for accidental shorting of the supply and check the speaker wiring. Connect an isolated 5 V supply, set a 100 mA current limit for this low-signal exercise and check that the supply is operating in voltage mode. If it hits the limit at idle, disconnect and inspect wiring before continuing.</p></li>
+      <li><p>With the source at zero, measure pin 6, pin 5 and the speaker terminal on the far side of the capacitor, all relative to 0 V. With power off, clip the scope and generator ground to the circuit’s 0 V. Never clip their grounds to pin 5 or an unknown output.</p></li>
+      <li><p>Apply a 400 Hz sine wave. Measure and adjust the signal at pin 3 to approximately 25 mV peak-to-peak, with zero DC offset from the generator. Compare the AC swing at pin 5 with the swing across the speaker. Keep the input small. Increase it only briefly to recognise clipping, then return to the baseline.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test point</th><th scope="col">Illustrative result</th><th scope="col">Why it matters</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Pin 6</th><td>5.0 V DC</td><td>Actual supply at the chip under load</td></tr>
+        <tr><th scope="row">Pin 3</th><td>25 mV peak-to-peak at 400 Hz</td><td>Signal delivered by the source and volume control</td></tr>
+        <tr><th scope="row">Pin 5</th><td>About half the supply at idle, with roughly 0.50 V peak-to-peak when driven</td><td>The chip biases its output and adds the audio swing</td></tr>
+        <tr><th scope="row">Speaker terminal after the capacitor</th><td>Near 0 V DC, with AC swing close to pin 5 at 400 Hz</td><td>The capacitor blocks steady DC and passes most of this signal</td></tr>
+      </tbody>
+    </table></div>
+    <p>Estimate gain from the measured AC amplitudes at pins 3 and 5. Use the same units and measurement type on both channels. If your meter gives only AC volts, check its 400 Hz bandwidth before trusting a small reading. For a frequency comparison hold the amplitude at pin 3 constant and compare the speaker waveform at 100 Hz and 400 Hz. These figures are an example. Speaker impedance and actual gain vary. <a href="https://training.gov.au/TrainingComponentFiles/UEE/UEEEC0067_AssessmentRequirements_R1.pdf">UEEEC0067 amplifier troubleshooting skills</a>.</p>
+
+    <h2>Troubleshoot two quiet amplifiers</h2>
+    <p>When you have a working baseline, switch off and lift the input jumper. On the next run, the signal is absent at pin 3, though pin 5 still has its DC bias. Restore the input. For a second comparison switch off and fit 10 µF in place of the output capacitor, keeping the polarity. At 400 Hz compare pin 5 and the speaker again. The speaker’s AC swing falls much more than pin 5’s signal. Approximate corner frequency is 90 Hz with 220 µF and 2 kHz with 10 µF, using an 8 Ω resistive approximation. A real speaker changes impedance with frequency.</p>
+    <details class="quiz"><summary>Both amplifiers sound quiet. Which trace changes your next step?</summary><div class="answer"><p>With little AC already at pin 3, follow the source and volume control. With normal AC at pin 5 and much less after the capacitor, inspect the coupling part and load. If the wave is squared at pin 5, reduce the input and see if the clean sine returns before treating it as a speaker fault.</p></div></details>
+    <p>Refit 220 µF, retest using the original source level and save both waveforms plus the idle DC readings. On a working donor speaker or radio, draw the matching path from source selection to the speaker. Find the actual amplifier part number first. Some devices use bridge outputs that require different probing.</p>
+
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t43-audio-amplifier-signal-path.html">T43 · Audio gain, clipping and speaker coupling</a><br><a href="../theory/t14-op-amps.html">T14 · Amplifiers and feedback</a><br><a href="p21-fault-finding.html">P21 · Half-split a signal path</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

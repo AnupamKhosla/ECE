@@ -48,6 +48,10 @@
     <p>In a copy, reverse the LED placement or disconnect the link to R1. Open the board view and record whether ERC, DRC or your human checklist catches each fault. ERC and DRC understand declared constraints. They cannot know which connector an assembler will put in or whether the intended footprint matches the actual part.</p>
     <p>If you build a board, inspect soldering, compare diode orientation and prove the supply and ground before power. Use a current-limited 5 V bench supply with sufficient but modest headroom for the expected LED current. Measure each test point and infer current from the resistor voltage with the measured resistance.</p>
 
+    <h2>Check the real mating plug before sending the board out</h2>
+    <p>Print the layout at actual size and measure a known length on the paper to check printer scaling. Put the real header, mating plug and enclosure against it. Check lug clearance, cable exit, keyed orientation and pin 1 from the mating side. The connector can fit and pass DRC while its wiring diagram is reversed. For a two-wire power connector, name the positive and return leads and trace both to their nets before approving fabrication.</p>
+    <p>Have another person trace the same path using the marked parts and printout, then write a first-power check for the probe pads. <a href="https://docs.kicad.org/master/en/getting_started_in_kicad/getting_started_in_kicad.html">KiCad’s guided first project</a> · <a href="p58-board-production-test.html">P58 known-good and known-faulty fixtures</a>.</p>
+
     <h2>Keep a release package for a second person</h2>
     <p>Keep the schematic PDF, PCB revision, BOM with actual part numbers, Gerber and drill files, a tested measurement table and a test-point photo or 1:1 layout print. Write down one design decision made specifically to ease repair.</p>
 
@@ -64,7 +68,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

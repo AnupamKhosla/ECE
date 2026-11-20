@@ -71,6 +71,10 @@
     <ol class="steps"><li>Crop the fixed region of interest. Convert to grayscale and threshold the dark silhouette against the light background. Mark the two physical ruler positions outside the part region.</li><li>Use OpenCV’s external contours and compute a bounding box. Check that exactly one candidate is present above your noise area threshold and that its box stays away from the crop border.</li><li>Save both the original and the mask. Vary exposure and lighting and compare accepted and rejected frames. If the shape changes orientation, use a better shape measurement or constrain it with the fixture.</li></ol>
     <p>The OpenCV examples give working commands for thresholding and retrieving the contours. <a href="https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html">OpenCV thresholding</a> · <a href="https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html">OpenCV contours</a>.</p>
 
+    <h2>Check that a second setup gives the same decision</h2>
+    <p>Take and measure five images of your reference part without changing the fixture. Then lift and place the part again and repeat. In an illustrative station, the first group spans 15.8–16.1 mm and the reseated group spans 15.1–16.8 mm. For a 15.5–16.5 mm acceptance band, movement between placements is large enough to change the decision. Fix scale placement, centring or lighting and run both groups again. A threshold based on one sharp photo could miss that failure.</p>
+    <p>For automation scenarios, retain one frame at each boundary and check the mask and raw image together. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV camera calibration reference</a> · <a href="p47-edge-ai-inspection.html">P47 held-out capture sessions</a>.</p>
+
     <h2>Record the camera settings and the acceptance rule</h2>
     <p>Keep one accepted image with its measurements, one out-of-spec part, two unusable frames and independent measurements from the caliper. Include focus, lamp position and working distance so someone can reproduce the setup.</p>
 
@@ -86,7 +90,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/labs.js" defer></script>
 </body>

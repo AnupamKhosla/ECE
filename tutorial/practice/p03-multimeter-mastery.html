@@ -332,6 +332,10 @@
     </figure>
     <p>Note the resistance too. Two cores of 30 m of 0.5 mm² should read about 2 × 30 × 0.034 ≈ 2 Ω. If a pair beeps but reads 30 Ω, there is a bad joint or a corroded terminal somewhere: "continuity" is not the same as "a good connection". A long tail lead (a reel of wire to bring the far end back to you) also works.</p>
 
+    <h2>Prove a weak connection under load</h2>
+    <p>Build a known fault where continuity alone gives a tempting answer. Use an isolated current-limited 5 V supply, a 100 Ω half-watt resistor as the load and a 22 Ω resistor as the simulated bad connection in its positive lead. The meter reads almost 5 V at the load side of the link with the load disconnected. Turn power off before connecting the load, then expect about 0.90 V across the 22 Ω link and 4.10 V across the 100 Ω load. The same current, about 41 mA, passes through both.</p>
+    <p>Measure first across the load, then put one probe on each side of the simulated connection. That second measurement shows where the missing voltage went. Power off and replace only the 22 Ω link with a jumper. Repeat the two readings at the same points. This is a bench stand-in for a connector or cable that looks fine until current flows. <a href="https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter">SparkFun’s probe and measurement guide</a> · <a href="p21-fault-finding.html">P21 fault-finding</a>.</p>
+
     <h2>CAT ratings and probe care</h2>
     <p>P01 explained measurement categories. For daily use: your meter's rating is only as good as its <b>leads</b>. The leads have their own CAT rating printed on them; the system is rated at the lower of the two.</p>
     <ul>
@@ -382,7 +386,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -55,6 +55,10 @@
     </div>
     <p>On a differential-drive robot, wrong count polarity can make closed-loop control speed up the wrong wheel. Before floor testing, turn both wheels in the same physical direction and verify that your software interprets them consistently.</p>
 
+    <h2>Catch a scale error with one marked revolution</h2>
+    <p>The Pololu Romi has approximately 1,440 counts per wheel revolution when counting both edges of both channels. Use removable tape on a raised wheel and turn it one full revolution by hand with motor power inhibited as documented. Compare direction and count with the setup. On a configuration intended to count every edge, a repeatable result near 360 points toward edge-count settings before you buy an encoder. An intermittent count that jumps or drops at different angles calls for checking both signals and the physical assembly.</p>
+    <p>For a speed cross-check, a change of 720 counts in one second gives roughly 0.5 revolutions per second, or 30 rpm. The count rate reports the wheel, while slipping reduces distance travelled on the floor. Keep your count mode and gear ratio with the measurement. <a href="https://www.pololu.com/docs/0J69/3.3">Pololu count resolution and channel wiring</a>.</p>
+
     <h2>Retest the repair</h2>
     <p>Record short slow forward and reverse runs on the stand plus a stopped state. Confirm both wheel directions, counts that increase or decrease consistently, and the original fault condition. A new motor that spins is only one item in the test record.</p>
 
@@ -70,7 +74,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

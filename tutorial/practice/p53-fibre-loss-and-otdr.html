@@ -55,6 +55,10 @@
     <p>The OTDR’s dead zone can hide a next event after a large reflection. A launch fibre helps separate the first installed connector from the launch. A receive fibre helps see the final connector. A splice can look like a gain when backscatter changes. Use comparable traces in both directions when the test procedure calls for it.</p>
     <p>After a supervised cleaning or permitted correction, repeat the end-to-end loss with the same reference procedure. Keep trace and loss as two separate records. <a href="https://www.thefoa.org/tech/ref/testing/OTDR/OTDR.html">Fiber Optic Association practical OTDR reference</a>.</p>
 
+    <h2>Reject a result when its reference drifts</h2>
+    <p>In a sample source-and-meter test the reference is −6.00 dBm and the link measures −7.20 dBm, an apparent loss of 1.20 dB. A reference recheck before packing up now reads −6.45 dBm. If the exercise’s allowed reference drift is 0.10 dB, hold the result even though the first calculated loss is below the 1.38 dB limit. Inspect and clean the approved reference setup, re-establish it at the same wavelength and repeat the link reading. Use the job’s actual drift criterion and test method in the field.</p>
+    <p>The comparison distinguishes a faulty reference from a bad fibre link. Write which direction and reference method you used so the next technician can reproduce the result. <a href="https://www.thefoa.org/tech/ref/quickstart/test.html">FOA hands-on fibre test sequence</a>.</p>
+
     <h2>Hand over both measurements</h2>
     <p>Keep link ID, endpoints, test wavelength, reference method, allowable loss, actual loss, main events and why you believe they belong to the installation. Record what changed before the final measurement.</p>
 
@@ -70,7 +74,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

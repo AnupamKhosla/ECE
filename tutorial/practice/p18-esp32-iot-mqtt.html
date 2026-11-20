@@ -463,6 +463,8 @@ $SYS/broker/clients/connected</textarea></label>
     <div class="callout try"><span class="label">Try this</span><p>Predict before you click: does <code>bench/l1/#</code> match <code>bench/l1</code>? Does <code>bench/+/+/temp</code> match <code>bench/l1/plantroom/temp/fault</code>? Does <code>#</code> match <code>$SYS/broker/clients/connected</code>? Then run the same filters with <code>mosquitto_sub -t</code> on the Pi and confirm the real broker agrees.</p></div>
 
     <h2>A dashboard with Node-RED</h2>
+    <p>Before adding a gauge, trace one measurement through three places. Find the temperature on the ESP32’s serial monitor, the individual topic and value on an authenticated subscriber, and <code>msg.payload</code> on a Node-RED Debug node. Save the topic, units and reception time. For example, if serial and the subscriber show 24.6 but Debug is empty, compare the exact broker and topic settings in Node-RED before rewiring the sensor. If Debug shows the value but the gauge does not, check its input type, group and range.</p>
+    <p>On your own bench remove USB power from the sensor after writing the last sample time. The dashboard may continue displaying the retained value. Mark its age or quality and verify the status after reconnection. Use the next chapter to make this behaviour visible. <a href="https://mosquitto.org/man/mosquitto_sub-1.html">Mosquitto subscriber and retained-message reference</a> · <a href="p30-iot-reliability.html">P30 stale-data exercise</a>.</p>
     <p><b>Node-RED</b> is a free, browser-based tool where you wire "nodes" together into flows: an MQTT input node feeds a gauge node, a switch node feeds an MQTT output node. It is widely used for quick IoT dashboards and protocol glue (Modbus, BACnet and MQTT nodes all exist).</p>
     <ol class="steps">
       <li><p><b>Install.</b> Use the official Raspberry Pi install script from the Node-RED website (nodered.org → Docs → Getting Started → Raspberry Pi). It is one command that installs Node.js and Node-RED and asks a few setup questions — say yes to setting up a login (user security). Then <code>sudo systemctl enable --now nodered.service</code>.</p></li>
@@ -541,7 +543,7 @@ $SYS/broker/clients/connected</textarea></label>
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -1,5 +1,9 @@
 # ECE Workbench page audit
 
+## Practical course comparison and route revision · 20 November 2026
+
+The current catalogue has 141 chapters. New work includes component-level audio diagnosis and theory, laptop display, cooling and inputs, Android camera diagnosis, camera installation and playback verification, and BMS point-to-point checks. Existing bench, welding, embedded, automation, robotics, camera, board design and communications lessons gained targeted comparisons. See the [course and competency comparison](practical-course-crosswalk.md) for the references, revised learning routes and remaining coverage.
+
 ## Practical curriculum expansion · 20 November 2026
 
 Added 22 practical chapters, 10 theory articles, an Australian career chapter and a practical learning library. The new routes cover physical BMS installation, industrial controls, pneumatics, robot service and positioning, ROS 2, 2D and stereo vision, AI inspection, board design and production test, CAN, RF and fibre test, sensor calibration, Pico debugging and DC power logging. Each new practical chapter links to theory and finishes with evidence a learner can keep. Start from the [course hub](../tutorial/index.html) or look up the [source comparison and job research](curriculum-research.md). The Android revision and earlier page-by-page baseline remain below.

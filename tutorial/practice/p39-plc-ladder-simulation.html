@@ -73,6 +73,10 @@
     <h2>Try the cases a service technician would see</h2>
     <ol class="steps"><li>With permissives true, press Start and apply proof before 3 seconds elapse. Confirm the command stays on.</li><li>Keep proof off on a second run. Advance 3 seconds. The command must drop and the fault must latch. Restore proof and observe that the command stays off.</li><li>Start with proof present, drop Stop OK, then return it. The command stays off until a deliberate new Start. Repeat for Guard OK.</li><li>Fault the logic deliberately in the simulator: bypass the test permissive in your own copy, run the checklist, then restore the rung. Record which case catches it.</li></ol>
 
+    <h2>Distinguish wiring, logic and feedback on a service call</h2>
+    <p>Follow one tag across three views on an authorised low-voltage trainer or use this example. The print calls the start pushbutton <code>S1</code> and assigns <code>I0.0</code>. Pressing it puts the expected trainer voltage at the actual common and input terminal, but the wired input channel indicates no response. Check the common, module channel and assignment before editing a rung. If the live tag follows S1 correctly and RUN still stays false, inspect the active permissive or latched fault. If RUN is true and independent proof stays false, step outward through the output path and feedback wiring.</p>
+    <p>Take three named readings for the case you run, including physical state and software observation. <a href="https://www.siemens.com/en-us/content/sce-educational-institutions/documents/">Siemens SCE process sequence and I/O training</a> · <a href="p63-bms-point-to-point.html">P63 point-to-point method</a>.</p>
+
     <h2>Save evidence for the next technician</h2>
     <p>Keep the I/O list, rung view, and test record containing starting inputs, commanded output, feedback, alarm and expected result for each row. Record the timing. Retest starting from the same state after correcting the bug.</p>
 
@@ -88,7 +92,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 <script src="../assets/labs.js" defer></script>
 </body>

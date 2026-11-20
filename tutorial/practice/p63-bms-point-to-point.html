@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P63 · Prove a BMS point from the room to the screen</title>
+<meta name="description" content="Trace two sensors through the schedule and controller, then catch a screen mapping fault with a test that moves just one point.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P63</span>
+    <h1>Prove a BMS point from the room to the screen</h1>
+    <p class="lede">Trace two sensors through the schedule and controller, then catch a screen mapping fault with a test that moves just one point.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes</span><span><b>Before this</b> <a href="p22-reading-drawings.html#first-site-task">P22</a> · <a href="p54-install-a-room-sensor.html">P54</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you can practise at home</span><p>Two extra-low-voltage sensor cable samples, labels, two 10 kΩ NTCs or two measured resistors, a multimeter and an ordinary thermometer. Read the included controller observations on paper if you have no spare BMS trainer. All substitutions are for disconnected bench leads or a dedicated trainer.</p></div>
+
+    <h2>Match the wall device to its terminal and screen point</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/thermostat-wall-plate.jpg" width="960" height="720" alt="Opened wall thermostat showing its fixing, wire entry and terminal screws" loading="lazy" decoding="async">
+        <figcaption>A wall unit has a physical fixing, entry and termination. Match those physical parts to the plan. For this exercise use the passive sensor connections in P54.<br><small>Photo by Dvortygirl, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_thermostat_wall.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/terminal.jpg" width="960" height="638" alt="Installed WAGO controller with field cabling connected to terminal rows" loading="lazy" decoding="async">
+        <figcaption>On the panel side the cable tag and input terminal are separate identifiers. Write both before assigning the screen name.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>On a pretend floor plan mark room A as <code>TS-101</code> and room B as <code>TS-102</code>. Give each cable a separate ID. On your mock panel mark two inputs, <code>AI-01</code> and <code>AI-02</code>, each with its documented return path. On the schedule record the intended full chain, from room and device through cable and terminal to displayed point. In real commissioning, construction checks precede tests of the sequence. <a href="https://www.wbdg.org/FFC/GSA/gsa_commissioning_guide_2020.pdf">GSA commissioning guide and example deliverables</a>.</p>
+    <p class="course-video"><b>Watch the wall-unit installation</b> · Look for support of the cable at the base and the terminal access. Belimo demonstrates a 22RTM unit. Follow P54’s passive 01RT document for that model’s actual resistance connections. <a href="https://www.youtube.com/watch?v=Y_W7JYJJAPM">Belimo room sensor installation</a>.</p>
+
+    <h2>Make one room change and watch which point follows</h2>
+    <ol class="steps">
+      <li><p>With both ends of each cable disconnected, use the open/short test from P54 to identify each pair, one at a time. Check the label at the far end. Record any discrepancy before reinstalling. Two plausible readings at the screen cannot show which room is which.</p></li>
+      <li><p>Connect two known sensors to the trainer, or use resistors known to your meter on the isolated exercise leads. A 10.0 kΩ 10k2 sensor is near 25 °C and 12.49 kΩ is near 20 °C. On the trainer change room A alone, let the reading settle and write which raw input changed. The sample below uses resistor substitution to make the two states obvious.</p></li>
+      <li><p>Confirm the local input and displayed tag update at the same point. If only the screen name is wrong, collect the controller point and screen evidence before requesting a mapping correction. If the wrong controller input moves, recheck cable identity and terminals with the approved isolation procedure. Hold the point from handover while the mismatch is open.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Action on the bench</th><th scope="col">Raw panel input</th><th scope="col">Screen reading</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Start both at 12.49 kΩ nominal</th><td>AI-01 12.49 kΩ · AI-02 12.49 kΩ</td><td>Room A 20 °C · Room B 20 °C</td><td>Baseline only</td></tr>
+        <tr><th scope="row">Change room A to 10.0 kΩ</th><td>AI-01 10.0 kΩ · AI-02 12.49 kΩ</td><td>Room A 20 °C · Room B 25 °C</td><td>Controller receives on the intended terminal. Room mapping needs checking.</td></tr>
+        <tr><th scope="row">Restore the example mapping and repeat</th><td>AI-01 10.0 kΩ · AI-02 12.49 kΩ</td><td>Room A 25 °C · Room B 20 °C</td><td>Test room B independently before closing both points.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Record what the installer and commissioning technician each proved</h2>
+    <p>The installer can hand over a matching room, cable and terminal with continuity proof and an updated drawing. The commissioning record adds the direction of change, input profile, screen tag, value, time and final result. Return the training point to normal. When both points pass, go to P29 to prove how a control sequence uses readings and proof feedback. <a href="p29-bms-commissioning-lab.html">P29 functional sequence lab</a> · <a href="p38-bacnet-point-commissioning.html">P38 inspect the BACnet object</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18 · Sensor resistance and temperature</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Raw inputs and independent proof</a><br><a href="p54-install-a-room-sensor.html">P54 · Mount and measure the passive sensor</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

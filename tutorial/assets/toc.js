@@ -32,7 +32,8 @@ window.TOC = {
         ]},
         { title: "Part D · Networks and cabling on the bench", blurb: "The skills every installer job ad assumes.", chapters: [
           { n: "P19", file: "practice/p19-networking-hands-on.html", title: "Networking hands-on: IP, subnets, switches, PoE, VLANs", d: "Set static IPs, find devices, budget PoE, and segment cameras from office PCs." },
-          { n: "P20", file: "practice/p20-cat6-termination.html", title: "Cat6 termination and testing", d: "T568A/B, RJ45 plugs, keystones, patch panels, testers, and the faults you will find." }
+          { n: "P20", file: "practice/p20-cat6-termination.html", title: "Cat6 termination and testing", d: "T568A/B, RJ45 plugs, keystones, patch panels, testers, and the faults you will find." },
+          { n: "P62", file: "practice/p62-ip-camera-commissioning.html", title: "Commission an IP camera and verify recorded video", d: "Prove PoE, the local link, live view, recorded playback and recovery after a disconnected cable." }
         ]},
         { title: "Part E · Working like a technician", blurb: "Method skills every employer tests.", chapters: [
           { n: "P21", file: "practice/p21-fault-finding.html", title: "Fault-finding: a technician's troubleshooting method", d: "Half-splitting, measure-don't-guess, and worked faults on power, signals, networks and field devices." },
@@ -42,7 +43,8 @@ window.TOC = {
         { title: "Part F · Measurements and board craft", blurb: "Predict readings, measure waveforms and build reliable joints.", chapters: [
           { n: "P24", file: "practice/p24-datasheets-measurement.html", title: "Predict a reading before touching the board", d: "Measure loading with two resistor dividers and read operating conditions in a regulator datasheet." },
           { n: "P25", file: "practice/p25-scope-filters.html", title: "Measure an RC filter on the oscilloscope", d: "Measure a capacitor’s rise time, then measure gain and phase across frequency." },
-          { n: "P26", file: "practice/p26-smd-rework.html", title: "Surface-mount soldering and inspection", d: "Solder, inspect, remove and refit chip resistors on a training board, with photos and video." }
+          { n: "P26", file: "practice/p26-smd-rework.html", title: "Surface-mount soldering and inspection", d: "Solder, inspect, remove and refit chip resistors on a training board, with photos and video." },
+          { n: "P59", file: "practice/p59-audio-signal-tracing.html", title: "Trace an audio amplifier from input to speaker", d: "Build an LM386 stage and locate a quiet output by comparing bias, waveforms and coupling." }
         ]},
         { title: "Part G · Embedded systems, automation and RF", blurb: "Build and verify an embedded controller, robot, BMS sequence, IoT monitor and indoor antenna.", chapters: [
           { n: "P27", file: "practice/p27-firmware-state-machine.html", title: "Program a timed controller that can stop", d: "Arduino firmware with non-blocking timing, debounce and a stop permissive." },
@@ -52,14 +54,17 @@ window.TOC = {
           { n: "P31", file: "practice/p31-antenna-receive-lab.html", title: "Build and compare an indoor receive antenna", d: "Assemble an FM dipole and compare reception as you change orientation and placement." }
         ]},
         { title: "Part H · Laptop and Android repair", blurb: "Identify parts, test symptoms and replace documented modules.", chapters: [
-          { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Identify desktop and laptop parts, follow the boot sequence, then practise SSD and RAM service." },
+          { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Learn the startup path and use independent tests to choose your next step before servicing a module." },
           { n: "P33", file: "practice/p33-laptop-power-diagnostics.html", title: "Laptop board diagnosis and power rails", d: "Build a two-rail trainer and trace input, standby, enable and run voltages." },
+          { n: "P60", file: "practice/p60-laptop-display-cooling-input.html", title: "Diagnose a laptop’s screen, cooling and inputs", d: "Compare preboot, external display, fan behaviour and keyboard tests before opening a working spare or donor." },
           { n: "P34", file: "practice/p34-phone-module-service.html", title: "Android screen, speaker and headphone jack repair", d: "Learn phone parts and work through three photo-led repairs on a Google Pixel 4a." },
           { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Android charging faults and board-level triage", d: "Test USB-C charging and diagnose the flex and removable port board in a Galaxy A54 5G." },
-          { n: "P36", file: "practice/p36-android-battery-service.html", title: "Diagnose and replace an Android battery", d: "Find the Pixel 4a battery and adhesive tabs, then compare charging and runtime before and after repair." }
+          { n: "P36", file: "practice/p36-android-battery-service.html", title: "Diagnose and replace an Android battery", d: "Find the Pixel 4a battery and adhesive tabs, then compare charging and runtime before and after repair." },
+          { n: "P61", file: "practice/p61-android-camera-diagnosis.html", title: "Diagnose an Android camera and service its module", d: "Compare front and rear capture, app and optics faults. Follow a Pixel 4a teardown to the rear-camera connector." }
         ]},
         { title: "Part I · Building controls and industrial service", blurb: "Calibrate a point, test the controller sequence and hand over the diagnosis.", chapters: [
           { n: "P54", file: "practice/p54-install-a-room-sensor.html", title: "Mount, label and check a BMS room sensor", d: "Practise a first installation task on a mock wall, then identify an open circuit, misplaced sensor or mismatched profile." },
+          { n: "P63", file: "practice/p63-bms-point-to-point.html", title: "Prove a BMS point from the room to the screen", d: "Match two devices to cable tags and terminal numbers, then identify a swapped screen point with a directed test." },
           { n: "P37", file: "practice/p37-current-loop-calibration.html", title: "Calibrate a 4–20 mA pressure input", d: "Wire a current source and 250 Ω receiver, record five up/down points, then diagnose a scaling error." },
           { n: "P38", file: "practice/p38-bacnet-point-commissioning.html", title: "Commission a BACnet room-controller point", d: "Read a BACnet point list and a discovery capture before diagnosing bad values, duplicate instances and overrides." },
           { n: "P39", file: "practice/p39-plc-ladder-simulation.html", title: "Build and test a start–stop PLC sequence", d: "Trace I/O, simulate a seal-in rung and prove stop, proof feedback, a timeout and restart behavior." },
@@ -112,7 +117,8 @@ window.TOC = {
           { n: "T11+", file: "theory/pn-junction-deep-dive.html", title: "Deep dive: why a diode has polarity (our earlier session)", d: "Your original diode questions answered from the physics up, with a numerical model." },
           { n: "T12", file: "theory/t12-bjt-physics.html", title: "How a bipolar transistor really works", d: "Two junctions, a thin base, and why a small base current controls a big one." },
           { n: "T13", file: "theory/t13-mosfet-physics.html", title: "How a MOSFET works", d: "Field effect, the inversion channel, threshold voltage and on-resistance." },
-          { n: "T14", file: "theory/t14-op-amps.html", title: "Op-amps: the golden rules", d: "Comparators, followers, amplifiers and the feedback idea behind them." }
+          { n: "T14", file: "theory/t14-op-amps.html", title: "Op-amps: the golden rules", d: "Comparators, followers, amplifiers and the feedback idea behind them." },
+          { n: "T43", file: "theory/t43-audio-amplifier-signal-path.html", title: "Audio amplifiers, coupling and output limits", d: "Explain DC bias, AC voltage gain, speaker power, unwanted clipping and coupling losses." }
         ]},
         { title: "Part 4 · Digital, computers and signals", blurb: "From logic gates to sensors, current loops and decibels.", chapters: [
           { n: "T15", file: "theory/t15-digital-logic-microcontrollers.html", title: "Digital logic and how a microcontroller works", d: "Binary, gates, flip-flops, clocks, memory, registers and the ADC." },

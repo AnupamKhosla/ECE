@@ -504,9 +504,9 @@ tech@plantpi:~ $ pinctrl get 17
     <h2>Troubleshooting</h2>
     <div class="table-wrap"><table>
       <tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr>
-      <tr><td>Red LED on, green LED never flickers</td><td>No OS on card, bad card, or card not seated</td><td>Re-flash with Imager and verify; try another card</td></tr>
+      <tr><td>Power indication but no console</td><td>Storage, boot configuration, power or video path</td><td>Record the LED pattern for the model and test a local monitor with a known-good card before judging the board</td></tr>
       <tr><td><code>ssh: Could not resolve hostname plantpi.local</code></td><td>mDNS blocked or Pi not on network</td><td>Find the IP in the router's DHCP list; use Ethernet</td></tr>
-      <tr><td><code>Connection refused</code></td><td>Pi is up but SSH is not enabled</td><td>Re-flash with "Enable SSH" ticked</td></tr>
+      <tr><td><code>Connection refused</code></td><td>The addressed host may be rejecting connections or have no listener on that port</td><td>Confirm the IP belongs to the Pi. At its local console check <code>systemctl status ssh</code> and the configured port. Enable SSH through the documented settings if needed.</td></tr>
       <tr><td><code>Connection timed out</code></td><td>Wrong IP, different network/VLAN, or firewall</td><td><code>ping</code> the IP first; check both are on the same subnet (P19)</td></tr>
       <tr><td><code>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED</code></td><td>You re-flashed, so the Pi has new host keys</td><td>If you know you re-flashed: <code>ssh-keygen -R plantpi.local</code>. If you did not, stop and investigate.</td></tr>
       <tr><td>Random crashes, corrupted files</td><td>Under-voltage or power pulled while writing</td><td>Official supply; always <code>sudo shutdown -h now</code></td></tr>
@@ -516,7 +516,9 @@ tech@plantpi:~ $ pinctrl get 17
 
     <div class="callout job"><span class="label">On the job</span><p>Field technicians log in to Linux boxes far more often than they expect. Many network video recorders, BMS supervisory controllers and IoT gateways, 4G routers and Modbus-to-BACnet gateways run embedded Linux under the hood, and some give you SSH or a similar console for diagnostics. The questions you ask are always the same: is it powered properly, is the disk full, is the service running, what does its log say, what is its IP, can it reach the gateway, and which port is it listening on? That is <code>vcgencmd</code>/<code>df -h</code>/<code>systemctl</code>/<code>journalctl</code>/<code>ip a</code>/<code>ping</code>/<code>ss</code> — this chapter. See <a href="../career/c01-bms-fundamentals.html">C01 BMS fundamentals</a> and <a href="../career/c05-cctv-ip-cameras.html">C05 CCTV and IP cameras</a>.</p></div>
     <div class="callout tip"><span class="label">Bench tip</span><p>On a customer's device, read before you change. Run <code>systemctl status</code>, <code>journalctl</code>, <code>df -h</code> and <code>ip a</code>, write down what you see, and only then restart things. A restart can wipe the evidence of what went wrong. And never update or reboot a live building controller without the site's permission.</p></div>
-    <div class="callout try"><span class="label">Try this</span><p>Unplug the Ethernet cable while running <code>ping 192.168.1.1</code> (no <code>-c</code>) over a Wi-Fi SSH session in another window, then run <code>ip a</code> — watch <code>eth0</code> switch to NO-CARRIER. Then deliberately use a cheap thin USB cable and a phone charger, run a CPU load with <code>yes &gt; /dev/null &amp;</code> four times, and check <code>vcgencmd get_throttled</code>. Stop the load with <code>killall yes</code>.</p></div>
+    <h2>Prove boot, network and service in that order</h2>
+    <p>Start a spare Pi with a supported supply and known-good media. First record a local display or console and run <code>uptime</code>. Next find the link and assigned IP with <code>ip -br address</code>. Then check the SSH service and connect from your other device on the same private bench network. If the address works but the <code>.local</code> name fails, keep the media and SSH configuration intact while you check name resolution.</p>
+    <p>With a local screen attached, disconnect only the Ethernet cable, turn Wi-Fi off for the comparison and observe the missing link while <code>uptime</code> still works. Reconnect, let the lease recover and recheck SSH. If you have no screen, compare the recorded boot code and router lease, then repeat with a known-good spare card after a proper shutdown. A supported Pi can report historical undervoltage through <code>vcgencmd get_throttled</code>. Record the output without deliberately starving the supply. <a href="https://www.raspberrypi.com/documentation/computers/configuration.html#led-warning-flash-codes">Raspberry Pi boot and LED diagnostics</a> · <a href="p17-pi-gpio-python.html">P17 use the working Pi as a logger</a>.</p>
 
     <h2>Check yourself</h2>
     <details class="quiz"><summary>You need to count pulses from a water meter at up to 5 kHz and also show a web dashboard. Pi, Arduino, or both?</summary><div class="answer"><p>Both, or a microcontroller feeding a Pi. Counting fast pulses needs exact timing that a microcontroller's hardware counter does well; Linux may miss pulses while it schedules other processes. The Pi is ideal for the dashboard and logging. This "small controller + Linux supervisor" split is exactly how BMS systems are built.</p></div></details>
@@ -544,7 +546,7 @@ tech@plantpi:~ $ pinctrl get 17
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

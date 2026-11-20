@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T43 · Audio amplifiers, coupling and output limits</title>
+<meta name="description" content="Understand how a small signal drives a speaker and distinguish supply bias, gain, clipping and coupling loss.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T43</span>
+    <h1>Audio amplifiers, coupling and output limits</h1>
+    <p class="lede">Understand how a small signal drives a speaker and distinguish supply bias, gain, clipping and coupling loss.</p>
+    <div class="meta"><span><b>Practice</b> <a href="../practice/p59-audio-signal-tracing.html">P59</a></span><span><b>Before this</b> <a href="t14-op-amps.html">T14</a> · <a href="t25-filters-resonance.html">T25</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>The speaker needs voltage swing and current</h2>
+    <p>A small signal can contain a complete voice waveform but have too little available current to move a speaker. A power amplifier gets energy from its supply and makes a larger controlled waveform. A gain of 20 multiplies a 25 mV peak-to-peak input by 20 to give about 0.50 V peak-to-peak at the output when the stage is linear. With an ideal 8 Ω resistive load, a 0.50 V peak-to-peak sine is about 0.177 V RMS and about 4 mW. A speaker’s real impedance varies with frequency, so this calculation is a bench estimate.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/lm386-package.jpg" width="277" height="271" alt="LM386 audio power amplifier in a dual-inline package" loading="lazy" decoding="async">
+        <figcaption>The LM386 is a single-ended audio power amplifier. Identify its real pinout and current path before probing.<br><small>Photo by Samba pa ti. <a href="https://commons.wikimedia.org/wiki/File:LM386-Operational_amplifier.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/scope.jpg" width="960" height="1106" alt="Bench oscilloscope with several coloured waveforms on screen" loading="lazy" decoding="async">
+        <figcaption>A scope shows peak-to-peak amplitude, shape and timing. Use matching units when comparing input and output.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Why one side of a coupling capacitor reads DC</h2>
+    <p>In the TI example a 5 V supply powers the LM386 and the output sits near half that voltage at idle. The waveform swings around that bias. A series capacitor charges to the average difference between the amplifier output and the load return. Once settled, steady DC current through the capacitor is negligible. Changing voltage still drives an AC current that moves the speaker.</p>
+    <div class="formula">f<sub>c</sub> ≈ 1 / (2πRC)<small>For a first estimate, R is the resistive load and C is the series coupling capacitor.</small></div>
+    <p>Using R = 8 Ω and C = 220 µF, the corner is about 90 Hz. With 10 µF it rises to about 2 kHz. At 400 Hz the simple model predicts relative amplitudes of about 0.98 and 0.20. That is why a stage can show a good waveform at the IC and still sound weak at its speaker. With real equipment, include series resistance, the speaker’s frequency-dependent load and the full documented circuit. <a href="https://www.ti.com/lit/ds/symlink/lm386.pdf#page=10">TI LM386 application schematic</a>.</p>
+
+    <h2>Clipping, coupling loss and a missing input look different</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observed at the test points</th><th scope="col">Interpretation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input sine clean, amplifier output flat at one or both extremes</th><td>The output reaches a limit. Reduce input amplitude and compare supply voltage and load under the same test.</td></tr>
+        <tr><th scope="row">Healthy output swing at the chip, much smaller after the capacitor at low frequency</th><td>Check the coupling network and load. Compare a higher frequency at the same measured input amplitude.</td></tr>
+        <tr><th scope="row">Output idle bias present, no AC swing, no input waveform</th><td>Trace the source and volume control first. A bias measurement proves only part of the stage.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="course-video"><b>Watch a bench demonstration</b> · Find where the source enters the LM386 circuit and where the speaker joins it. Use the datasheet’s gain-of-20 circuit and your measured input for the prediction. <a href="https://www.youtube.com/watch?v=4ObzEft2R_g">Build a simple LM386 audio amplifier · Afrotechmods</a>.</p>
+
+    <h2>Why some speakers have two driven wires</h2>
+    <p>A bridge-tied-load output drives both speaker terminals. The speaker sees their voltage difference. Neither lead should be assumed to be circuit ground. An earth-referenced scope ground attached to a driven output can short the stage. Use the documented differential measurement setup and available supervision. For this first exercise use the single-ended P59 circuit with the scope earth connected to the verified circuit common. <a href="../practice/p59-audio-signal-tracing.html">P59 audio signal-tracing lab</a>.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>
