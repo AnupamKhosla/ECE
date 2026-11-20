@@ -254,42 +254,81 @@
     var box = document.getElementById("search");
     var out = document.getElementById("search-out");
     if (!box || !out) return;
-    var cache = {}; // file -> plain text
+    var cache = {};
     var allLoaded;
+    function searchText(s) {
+      return s.normalize("NFKC").toLowerCase()
+        .replace(/[-\u2010-\u2015]/g, " ")
+        .replace(/(\d)\s+(v|mv|a|ma|pa|kpa|w|kw|wh|kwh|hz|khz|mhz|ghz|ppm)\b/g, "$1$2")
+        .replace(/\s+/g, " ").trim();
+    }
     function load(c) {
       return fetch(ROOT + c.file, { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (h) {
         var doc = new DOMParser().parseFromString(h, "text/html");
         doc.querySelectorAll("script,style,svg,nav,aside").forEach(function (n) { n.remove(); });
         doc.querySelectorAll("td,th,li,p,h1,h2,h3,h4,div,br,summary,figcaption").forEach(function (n) { n.append(" "); });
-        var m = doc.querySelector("main");
-        cache[c.file] = m ? m.textContent.replace(/\s+/g, " ") : "";
-      }).catch(function () { cache[c.file] = ""; });
+        var main = doc.querySelector("main");
+        if (!main) return;
+        var text = main.textContent.replace(/\s+/g, " ");
+        cache[c.file] = {
+          text: text,
+          body: searchText(text),
+          title: searchText(c.n + " " + c.title),
+          description: searchText(c.d || "")
+        };
+      }).catch(function () { /* A chapter that could not load has no full-text result. */ });
     }
-    function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+    function escapeHtml(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+    function scoreHit(record, phrase, words) {
+      if (!words.every(function (word) {
+        return record.title.includes(word) || record.description.includes(word) || record.body.includes(word);
+      })) return 0;
+      var score = 1;
+      if (record.title.includes(phrase)) score += 200;
+      if (record.description.includes(phrase)) score += 35;
+      if (record.body.includes(phrase)) score += 20;
+      words.forEach(function (word) {
+        if (record.title.includes(word)) score += 25;
+        if (record.description.includes(word)) score += 5;
+      });
+      return score;
+    }
     var timer = null;
     function run() {
-      var q = box.value.trim().toLowerCase();
-      if (q.length < 2) { out.innerHTML = ""; return; }
+      var rawQuery = box.value.trim();
+      var phrase = searchText(rawQuery);
+      if (phrase.length < 2) { out.innerHTML = ""; return; }
       out.innerHTML = '<div class="pill">Searching…</div>';
       if (!allLoaded) allLoaded = Promise.all(all.map(load));
       allLoaded.then(function () {
-        if (q !== box.value.trim().toLowerCase()) return;
-        var words = q.split(/\s+/);
+        if (rawQuery !== box.value.trim()) return;
+        var words = phrase.split(" ");
+        var longest = words.reduce(function (a, b) { return b.length > a.length ? b : a; });
+        var literal = rawQuery.normalize("NFKC").toLowerCase();
+        var rawTerms = rawQuery.split(/\s+/).filter(function (term) { return term.length > 1; }).map(function (term) {
+          return term.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+        });
+        var highlight = rawTerms.length ? new RegExp("(" + rawTerms.join("|") + ")", "ig") : null;
         var hits = [];
         all.forEach(function (c) {
-          var t = cache[c.file] || "", lt = t.toLowerCase(), score = 0;
-          if (!words.every(function (w) { return lt.indexOf(w) >= 0; })) return;
-          words.forEach(function (w) { var i = -1; while ((i = lt.indexOf(w, i + 1)) >= 0) score++; if ((c.title).toLowerCase().indexOf(w) >= 0) score += 50; });
-          var at = lt.indexOf(words[0]);
-          var snip = t.slice(Math.max(0, at - 70), at + 130);
-          hits.push({ c: c, score: score, snip: snip });
+          var record = cache[c.file];
+          if (!record) return;
+          var score = scoreHit(record, phrase, words);
+          if (!score) return;
+          var plain = record.text.normalize("NFKC").toLowerCase();
+          var at = plain.indexOf(literal);
+          if (at < 0) at = plain.indexOf(longest);
+          var snippet = at < 0 && c.d ? c.d : record.text.slice(Math.max(0, at - 70), Math.max(0, at) + 130);
+          hits.push({ c: c, score: score, snippet: snippet });
         });
         hits.sort(function (a, b) { return b.score - a.score; });
         if (!hits.length) { out.innerHTML = '<p class="pill">No chapter mentions that yet.</p>'; return; }
         out.innerHTML = hits.slice(0, 12).map(function (h) {
-          var s = esc(h.snip);
-          words.forEach(function (w) { s = s.replace(new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig"), "<mark>$1</mark>"); });
-          return '<a class="ch ' + h.c.book + '" href="' + ROOT + h.c.file + '"><span class="n">' + h.c.n + '</span><b>' + h.c.title + '</b><span class="d">…' + s + '…</span></a>';
+          var parts = highlight ? h.snippet.split(highlight) : [h.snippet];
+          var snippet = parts.map(function (part, i) {
+            return i % 2 ? "<mark>" + escapeHtml(part) + "</mark>" : escapeHtml(part);
+          }).join("");
+          return '<a class="ch ' + h.c.book + '" href="' + ROOT + h.c.file + '"><span class="n">' + h.c.n + '</span><b>' + h.c.title + '</b><span class="d">…' + snippet + '…</span></a>';
         }).join("");
       });
     }
