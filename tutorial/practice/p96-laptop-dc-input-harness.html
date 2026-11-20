@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P96 · Test and replace a removable laptop charging jack</title>
+<meta name="description" content="Separate an adapter fault from a worn barrel jack or laptop-side charging fault using a known-good charger and a removable DC-in harness.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P96</span>
+    <h1>Test and replace a removable laptop charging jack</h1>
+    <p class="lede">Separate an adapter fault from a worn barrel jack or laptop-side charging fault using a known-good charger and a removable DC-in harness.</p>
+    <div class="meta"><span><b>Time</b> 35–55 minutes plus disassembly</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03 resistance and continuity</a> · <a href="p90-laptop-donor-lot.html">P90 donor intake</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Locate the replaceable part</h2>
+    <p>On some older laptops, the barrel jack is a removable assembly with a short loom and a plug at the motherboard. Some jacks are soldered directly to a board. Locate the mechanical assembly first. The charger output, jack contacts, cable and motherboard input protection are separate stages. Some models also use a third contact to identify the adapter, and an “unknown adapter” message can involve more than the two power conductors.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/salvage/thinkpad-x220-dc-in-harness.jpg" width="500" height="525" loading="lazy" decoding="async" alt="Four views of a detached ThinkPad X220 barrel jack, wired motherboard plug and separate metal mounting bracket">
+          <svg viewBox="0 0 500 525" aria-hidden="true">
+            <defs><marker id="p96-jack" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M110,71 L49,50" fill="none" stroke="#18232a" stroke-width="12"/><path d="M110,71 L49,50" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p96-jack)"/>
+          <rect x="36" y="70" width="150" height="35" rx="6" fill="#122029"/><text x="45" y="95" style="fill:#fff;font-size:22px;font-weight:700">Board plug</text>
+          <path d="M404,128 L374,237" fill="none" stroke="#18232a" stroke-width="12"/><path d="M404,128 L374,237" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p96-jack)"/>
+          <rect x="333" y="117" width="139" height="35" rx="6" fill="#122029"/><text x="342" y="142" style="fill:#fff;font-size:22px;font-weight:700">Barrel jack</text>
+          <path d="M427,401 L413,447" fill="none" stroke="#18232a" stroke-width="12"/><path d="M427,401 L413,447" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p96-jack)"/>
+          <rect x="334" y="382" width="137" height="35" rx="6" fill="#122029"/><text x="343" y="407" style="fill:#fff;font-size:22px;font-weight:700">Bracket</text>
+          </svg>
+        </div>
+        <figcaption>A detached Lenovo ThinkPad X220 harness. The barrel jack is where the external charger plugs in. The black plug goes to the motherboard. The separate bracket holds the jack to the case. This picture teaches the layout. Use the service part number for your own model.<br><small>Photo by Siarhei Besarab, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Lenovo_ThinkPad_X220_power_jack_cable_with_7.5x5.5_mm_connector.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/salvage/laptop-heatpipe-and-fan.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Laptop motherboard with a pink wired charging jack at the right and a blower in the centre">
+          <svg viewBox="0 0 960 640" aria-hidden="true">
+            <defs><marker id="p96-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M813,318 L852,218" fill="none" stroke="#18232a" stroke-width="12"/><path d="M813,318 L852,218" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p96-board)"/>
+          <rect x="755" y="311" width="164" height="35" rx="6" fill="#122029"/><text x="764" y="336" style="fill:#fff;font-size:22px;font-weight:700">Chassis jack</text>
+          <path d="M660,43 L725,166" fill="none" stroke="#18232a" stroke-width="12"/><path d="M660,43 L725,166" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p96-board)"/>
+          <rect x="568" y="22" width="156" height="35" rx="6" fill="#122029"/><text x="577" y="47" style="fill:#fff;font-size:22px;font-weight:700">Board plug</text>
+          </svg>
+        </div>
+        <figcaption>Follow the short loom from the pink chassis jack at right to the white motherboard plug. In an intact laptop, duplicate the original route and strain relief so that a hinge or cover cannot pinch the wires.<br><small>Photo by Saud, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Laptop_Heatsink.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> The Dell clip shows where BIOS reports the adapter and battery separately. The model-specific 3D demonstration then shows why the jack loom on the Inspiron 3511 is easy to miss beneath the hinge. <a href="https://www.dell.com/support/contents/en-us/videos/videoplayer/how-to-check-ac-adapter-and-battery-status-in-bios/6368777609112">Dell’s adapter and battery BIOS video</a> · <a href="https://www.youtube.com/watch?v=DP1EOYPWKb4">Dell Support’s YouTube charging walkthrough</a> · <a href="https://www.dell.com/support/resources/en-in/3dviewer/cb040153511001701a/how-to-replace-the-power-adapter-port-on-a-inspiron-3511">Dell’s Inspiron 3511 DC jack demonstration</a>.</p>
+    <p>For a USB-C charging input, go to <a href="p87-laptop-usb-c-charging.html">P87 USB-C inspection and charging diagnosis</a>. This bench uses a removable barrel jack and leaves the AC adapter closed.</p>
+
+    <h2>Confirm the symptom using one known-good adapter</h2>
+    <ol>
+      <li>Use a plugged-in compatible charger only after an intact connector, case and cable have passed visual inspection. A port with melting, exposed conductors or severe corrosion stays unpowered. Record the exact host, charger rating and applicable service parts.</li>
+      <li>Where the machine boots, compare the original and a known-good manufacturer-approved adapter from the outset and record the adapter type or wattage and battery health in BIOS. Try the known-good adapter in its reference host when necessary. Change one variable and test each condition after a fresh boot.</li>
+      <li>If the adapter LED drops out immediately when plugged into an intact-looking host, disconnect it. Check the manufacturer’s troubleshooting path for possible overload or input damage before repeating the test. If BIOS reports a recognised adapter and the battery still fails to charge, compare battery health and charge settings before blaming the jack. <a href="https://www.dell.com/support/kbdoc/en-us/000125125/how-to-troubleshoot-ac-adapter-issues">Dell’s AC adapter diagnostic branches</a>.</li>
+    </ol>
+
+    <h2>Inspect and compare the harness with power removed</h2>
+    <p>For the Dell Inspiron 15 3511, open the base, isolate the battery cable and follow the manual for the right hinge and the DC-in cable route. Photograph the route before freeing the connector. Support the hinge and lid as shown and keep its fasteners in order. Lift the jack from its cradle once the loom is free. <a href="https://www.dell.com/support/manuals/en-us/inspiron-15-3511-laptop/inspiron-3511-service-manual/power-adapter-port?guid=guid-fcfd0001-7cda-44e5-acbb-f3db60fc0cff&amp;lang=en-us">Dell Inspiron 3511 service manual</a>.</p>
+    <ol>
+      <li>Inspect the socket body, center contact, bracket, loom at both exits and the motherboard plug. Compare them to an intact exact replacement by part number. A loose case bracket may let a sound jack move. Carbon, melted plastic or loose contacts call for a sound replacement assembly.</li>
+      <li>Use the meter only on an isolated, documented passive harness whose service documentation confirms the pin map. Record the resistance of the shorted leads first. If you have a compatible unpowered mating connector, use it to access the jack contacts without forcing the meter probes into the socket. Measure each documented conduction path. Check adjacent paths for isolation only where the documentation specifies it. A continuity beep gives a threshold indication. Record the resistance and whether it changes under a gentle bend of the detached wire loom.</li>
+      <li>If the pin map is absent, visually match the service assembly and do the known-good swap instead. Wire colours, plug shape and the number of conductors alone cannot establish a pinout. If the port is soldered to a board, use the relevant service procedure or send that work to a board rework bench.</li>
+    </ol>
+
+    <h2>Prove that the part fixed the original fault</h2>
+    <p>Reinstall the bracket, original routing and strain relief. Close the hinge and base in the sequence specified for the model, and reconnect the battery at the point instructed in the manual. Reassemble before powering it. Repeat the BIOS adapter check and check stable charging under the same conditions with the same known-good adapter. Where available, run the OEM battery diagnostic and compare with the intake result.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test result</th><th scope="col">Shop decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Original charger fails in two suitable hosts. Known-good charger works.</th><td>Set aside the charger. The harness swap has not been justified.</td></tr>
+        <tr><th scope="row">Both compatible chargers fail with the old jack. The same reference charger works with the exact replacement and the jack is mechanically secure.</th><td>Record the comparison and release the repair after the assembled charge test.</td></tr>
+        <tr><th scope="row">Known-good charger and exact known-good jack still fail in the suspect laptop.</th><td>Record the board connector or charging path as the next check. Do not write “charging IC failed” without evidence.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Log the jack part number, adapter and recipient model, old and replacement observations, and BIOS adapter and battery results. This fits a salvage tag just as well as a customer repair report.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P95 · Diagnose a blank laptop screen and qualify a donor panel</title>
+<meta name="description" content="Separate a no-boot fault, a panel fault and an internal display cable fault before swapping a matched donor part.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P95</span>
+    <h1>Diagnose a blank laptop screen and qualify a donor panel</h1>
+    <p class="lede">Separate a no-boot fault, a panel fault and an internal display cable fault before swapping a matched donor part.</p>
+    <div class="meta"><span><b>Time</b> 45–75 minutes plus disassembly</span><span><b>Before this</b> <a href="p60-laptop-display-cooling-input.html">P60 display diagnosis</a> · <a href="p90-laptop-donor-lot.html">P90 donor intake</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Identify the parts between the picture and the motherboard</h2>
+    <p>The screen includes the panel and its driver electronics. A separate harness carries display data and power through the hinge area. In an LCD, the backlight makes the image visible. A touchscreen adds a touch-sensing path, which can fail while the picture still looks normal. In a donor lid assembly, the hinges, webcam, antennas and parts of the enclosure can also be present.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/salvage/framework-12-display-out.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Framework Laptop 12 display panel held by its two edges above the laptop base">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p95-panel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M297,161 L297,104" fill="none" stroke="#18232a" stroke-width="12"/><path d="M297,161 L297,104" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-panel)"/>
+          <rect x="202" y="153" width="182" height="35" rx="6" fill="#122029"/><text x="211" y="178" style="fill:#fff;font-size:22px;font-weight:700">Display panel</text>
+          <path d="M151,334 L99,276" fill="none" stroke="#18232a" stroke-width="12"/><path d="M151,334 L99,276" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-panel)"/>
+          <rect x="111" y="324" width="163" height="35" rx="6" fill="#122029"/><text x="120" y="349" style="fill:#fff;font-size:22px;font-weight:700">Mounting tab</text>
+          </svg>
+        </div>
+        <figcaption>Framework Laptop 12 with its display freed. The mounting tabs are along its lower edge. Treat the thin glass and tabs as fragile.<br><small>Photo by Arthur Shi and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Framework+Laptop+12+Display+Replacement/186464">Original repair photographs</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/salvage/framework-12-edp-connector.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Close view of Framework Laptop 12 display cable and its fine gold panel-side connector">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p95-edp" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M123,331 L216,273" fill="none" stroke="#18232a" stroke-width="12"/><path d="M123,331 L216,273" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-edp)"/>
+          <rect x="37" y="320" width="162" height="35" rx="6" fill="#122029"/><text x="46" y="345" style="fill:#fff;font-size:22px;font-weight:700">Panel socket</text>
+          <path d="M138,85 L273,154" fill="none" stroke="#18232a" stroke-width="12"/><path d="M138,85 L273,154" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p95-edp)"/>
+          <rect x="32" y="62" width="151" height="35" rx="6" fill="#122029"/><text x="41" y="87" style="fill:#fff;font-size:22px;font-weight:700">eDP cable</text>
+          </svg>
+        </div>
+        <figcaption>Panel-side eDP connector. Learn its latch and release direction from the model guide. A different end of the same cable can use a different release mechanism.<br><small>Photo by Arthur Shi and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Framework+Laptop+12+Display+Replacement/186464">Original repair photographs</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Look for how Framework removes the screen without twisting it, and where it supports the loose panel while working around cables. The video demonstrates a Laptop 13. The illustrated procedure for the worked Laptop 12 is linked below. <a href="https://www.youtube.com/watch?v=QbENiwOrRbU">Framework’s display, webcam and mainboard upgrade demonstration</a>.</p>
+
+    <h2>Start with the lid and case intact</h2>
+    <ol>
+      <li><b>Establish that the laptop starts.</b> Observe power and diagnostic codes. Connect a working external display through a known-good lead to an output documented for that laptop. Use the manufacturer’s pre-boot display test if supported. Some external outputs are enabled later than the internal screen, so a blank external screen during startup has limited value by itself.</li>
+      <li><b>Record what is present.</b> Check whether the internal screen shows a startup logo, its brightness changes, and whether the symptom appears before the OS. For a dark LCD, shine a flashlight obliquely across the front while you know there should be a picture. A faint image points to the backlight path. That includes the panel, cable and motherboard supply.</li>
+      <li><b>Stop if the hinge binds or the lid is already separating.</b> If a dropout occurs during ordinary use, note the angle and direction once. Avoid repeated flexing of a damaged hinge or cable.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Next comparison</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">External display works and the internal image is faint</th><td>Investigate the LCD backlight path. Use an exact known-good panel or cable one at a time and repeat the same pre-boot check.</td></tr>
+        <tr><th scope="row">Both displays remain blank and the laptop reports a memory diagnostic code</th><td>Work the no-POST branch first. See <a href="p91-test-used-laptop-ram.html">P91 isolate modules and slots</a>.</td></tr>
+        <tr><th scope="row">Lines follow the same spot on the internal panel across test images</th><td>Record the result and compare with a matching working panel. The symptom alone cannot exclude the connector and cable.</td></tr>
+        <tr><th scope="row">Picture stays good and touch stops responding</th><td>Run the manufacturer’s touch test where available. Compare touch coverage and check the touch connector or cable where it is separately serviceable.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Match the donor before connecting it</h2>
+    <p>Record the recipient’s exact model, panel label, cable label and service part numbers. Use the OEM parts list or the panel and cable specifications to establish compatibility. A matching screen size or matching pin count alone tells you little about signal type, pinout, voltage, resolution, refresh rate, touch support, mounting or cable reach. eDP and legacy LVDS are different interfaces. This lab uses a known compatible part. Leave legacy high-voltage backlight inverters and improvised panel power supplies outside the exercise.</p>
+    <ol>
+      <li><b>Use both manuals for the job.</b> On the Framework Laptop 12, the display guide shows the lower cover, panel mounts and panel connector. For the isolation used in this lab, follow the eDP cable guide’s power-off and battery removal steps before moving the display connector. Use the exact model’s guides for any other laptop. <a href="https://guides.frame.work/Guide/Display+Replacement+on+Framework+Laptop+12/428">Official Laptop 12 display guide</a> · <a href="https://guides.frame.work/Guide/eDP+Cable+Replacement+on+Framework+Laptop+12/430">Official Laptop 12 cable and battery steps</a>.</li>
+      <li><b>Document before lifting.</b> Photograph screw positions, brackets, routing and grounding tape. Support the panel, keep fingers on its edges, and open the model’s specific latch. On this Laptop 12 panel side the locking bar releases before the connector slides out. This is a cold connection. Reconnect the battery only after the cable, lock and insulation are restored and the machine is assembled to the service guide’s test state.</li>
+      <li><b>Change one part.</b> A known-good cable with the original panel tests one hypothesis. A known-good panel with a proven cable tests another. A complete donor lid can establish that the fault follows the lid, then the single-part comparisons can narrow it down.</li>
+    </ol>
+
+    <h2>Release a part with evidence</h2>
+    <p>With the laptop assembled, record the panel and host models, firmware image, normal startup, brightness range, solid black, white and primary colours, sleep and wake. If equipped, test touch to all four edges. Operate the lid through its normal range once if the hinge is sound. Record marks, dead pixels or case damage as separately observed defects. If the panel has never shown a stable image on a proven compatible host, tag it untested.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>One intake photo, one connector photo and a short result for each configuration. State exactly which single change restored the image or write “fault isolated to display path” if the evidence does not identify a part.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

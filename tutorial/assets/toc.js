@@ -127,7 +127,9 @@ window.TOC = {
           { n: "P91", file: "practice/p91-test-used-laptop-ram.html", title: "Test a used laptop RAM module and its slot", d: "Use a known-good SO-DIMM and a bootable test to distinguish a bad module, socket, incompatible pair and memory-controller fault." },
           { n: "P92", file: "practice/p92-inspect-repair-damaged-ram.html", title: "Inspect damaged laptop RAM and decide what is repairable", d: "Separate edge contacts, small support components, SPD and BGA memory packages. Practise cold inspection before attempting board rework." },
           { n: "P93", file: "practice/p93-qualify-used-ssd.html", title: "Qualify a used SATA or NVMe SSD without reading files", d: "Identify the drive interface, run read-only health checks on blank training media, and interpret wear, error counters and intermittent detection." },
-          { n: "P94", file: "practice/p94-salvage-laptop-cooling.html", title: "Qualify a donor laptop fan and heatsink", d: "Separate a blocked air path, failing blower, worn connection and poor heat transfer with a known-good assembly and repeatable load." }
+          { n: "P94", file: "practice/p94-salvage-laptop-cooling.html", title: "Qualify a donor laptop fan and heatsink", d: "Separate a blocked air path, failing blower, worn connection and poor heat transfer with a known-good assembly and repeatable load." },
+          { n: "P95", file: "practice/p95-salvage-laptop-display.html", title: "Diagnose a blank laptop screen and qualify a donor panel", d: "Separate a no-boot fault, a panel fault and an internal display cable fault before swapping a matched donor part." },
+          { n: "P96", file: "practice/p96-laptop-dc-input-harness.html", title: "Test and replace a removable laptop charging jack", d: "Separate an adapter fault from a worn barrel jack or laptop-side charging fault using a known-good charger and a removable DC-in harness." }
         ]}
       ]
     },

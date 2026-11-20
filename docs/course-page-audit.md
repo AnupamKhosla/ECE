@@ -2,11 +2,12 @@
 
 ## Laptop salvage and component decisions · 20 November 2026
 
-Added five practice chapters and two theory chapters. [Benchtop route](../tutorial/index.html#laptop-salvage)
+Added seven practice chapters and two theory chapters. [Benchtop route](../tutorial/index.html#laptop-salvage)
 
 - Use [P90](../tutorial/practice/p90-laptop-donor-lot.html) for lot intake and safe parts sorting before paying. The revenue example uses fictional prices and test yield.
 - Use [P91](../tutorial/practice/p91-test-used-laptop-ram.html) for a bootable module and socket comparison. [P92](../tutorial/practice/p92-inspect-repair-damaged-ram.html) covers contacts, support components, SPD and BGA decision-making. [T49](../tutorial/theory/t49-dram-chips-memory-faults.html) explains which faults a row spare, ECC or address exclusion can address.
-- Use [P93](../tutorial/practice/p93-qualify-used-ssd.html) and [T50](../tutorial/theory/t50-ssd-health-and-bad-blocks.html) for SSD identification and health evidence. [P94](../tutorial/practice/p94-salvage-laptop-cooling.html) compares matching fan and thermal assemblies. Each new practice chapter includes photographs and an existing demonstration.
+- Use [P93](../tutorial/practice/p93-qualify-used-ssd.html) and [T50](../tutorial/theory/t50-ssd-health-and-bad-blocks.html) for SSD identification and health evidence. [P94](../tutorial/practice/p94-salvage-laptop-cooling.html) compares matching fan and thermal assemblies.
+- [P95](../tutorial/practice/p95-salvage-laptop-display.html) proves panel and cable faults with one change at a time. [P96](../tutorial/practice/p96-laptop-dc-input-harness.html) checks a removable charging jack and uses BIOS to confirm adapter recognition. All seven practice chapters have annotated photographs and existing demonstrations.
 
 ## Device service and foundations · 20 November 2026
 
