@@ -4,7 +4,7 @@
 
 Added 22 practical chapters, 10 theory articles, an Australian career chapter and a practical learning library. The new routes cover physical BMS installation, industrial controls, pneumatics, robot service and positioning, ROS 2, 2D and stereo vision, AI inspection, board design and production test, CAN, RF and fibre test, sensor calibration, Pico debugging and DC power logging. Each new practical chapter links to theory and finishes with evidence a learner can keep. Start from the [course hub](../tutorial/index.html) or look up the [source comparison and job research](curriculum-research.md). The Android revision and earlier page-by-page baseline remain below.
 
-The catalogue now lists 135 chapters. Each has an inline image and a direct video link. The expansion added 26 media files, and all 247 inline local image references in the catalogue resolve. Each of the 25 distinct YouTube links used in the new chapters returned video metadata. That check establishes link availability at review time. Topic coverage and placement were checked separately against the work described in each new lab.
+The catalogue now lists 135 chapters. Each has an inline image and a direct video link. The expansion added 28 media files, and all 248 inline local image references in the catalogue resolve. Each of the 25 distinct YouTube links used in the new chapters returned video metadata. That check establishes link availability at review time. Topic coverage and placement were checked separately against the work described in each new lab.
 
 ## Android repair revision · 20 November 2026
 
