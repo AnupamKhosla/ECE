@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P72 · Patch and prove a duplex fibre cross-connect</title>
+<meta name="description" content="Read a two-ended work order, trace transmit to receive and record the circuit you actually proved.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P72</span>
+    <h1>Patch and prove a duplex fibre cross-connect</h1>
+    <p class="lede">Read a two-ended work order, trace transmit to receive and record the circuit you actually proved.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="p20-cat6-termination.html">P20</a> · <a href="p53-fibre-loss-and-otdr.html">P53</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify both ends before touching a lead</h2>
+    <p>A cross-connect is a documented link across a patching system, often between two customers or providers. A work order names both ends. On paper make the order <code>LAB-XC-017</code> from A cabinet, panel 02, pair 05/06 to Z cabinet, panel 01, pair 11/12. Add labelled strands and the expected optical interface at each end. For the exercise use duplex LC and matching 1000BASE-SX equipment if you have it; the paper option needs only labels and two coloured strings.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/fibre-panel.jpg" alt="Optical patch panel with rows of couplers and a printed port schedule in a rack" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 750" aria-hidden="true">
+          <defs><marker id="fibre-panel-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M450,107 L445,186" fill="none" stroke="#201600" stroke-width="12"/><path d="M450,107 L445,186" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#fibre-panel-arrow)"/>
+          <rect x="380" y="61" width="184" height="46" rx="8" fill="#122029"/><text x="392" y="89" style="fill:#fff;font-size:26px;font-weight:700">Port schedule</text>
+          <path d="M646,484 L655,383" fill="none" stroke="#201600" stroke-width="12"/><path d="M646,484 L655,383" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#fibre-panel-arrow)"/>
+          <rect x="567" y="484" width="150" height="46" rx="8" fill="#122029"/><text x="579" y="512" style="fill:#fff;font-size:26px;font-weight:700">Adapters</text>
+        </svg></div>
+        <figcaption>Read the printed schedule above the couplers. Match the assigned panel, module and pair before selecting any position.<br><small>Photo by Robert.Harker, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Network_Fiber_Patch_Front.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/sfp-bidi.jpg" alt="Two single-fibre BiDi transceivers with differently coloured latches and complementary wavelength markings" width="960" height="492" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 513" aria-hidden="true">
+          <defs><marker id="sfp-bidi-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M113,363 L84,297" fill="none" stroke="#201600" stroke-width="12"/><path d="M113,363 L84,297" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#sfp-bidi-arrow)"/>
+          <rect x="32" y="363" width="161" height="46" rx="8" fill="#122029"/><text x="44" y="391" style="fill:#fff;font-size:26px;font-weight:700">Optical port</text>
+          <path d="M760,60 L718,103" fill="none" stroke="#201600" stroke-width="12"/><path d="M760,60 L718,103" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#sfp-bidi-arrow)"/>
+          <rect x="760" y="40" width="169" height="46" rx="8" fill="#122029"/><text x="772" y="68" style="fill:#fff;font-size:26px;font-weight:700">Tx/Rx label</text>
+        </svg></div>
+        <figcaption>Compare the Tx and Rx wavelength labels. The first module sends at 1490 nm, which the second receives. Each is a single-fibre example alongside the two-strand lab.<br><small>Photo by OUSENT, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Ousent_Optical_Transceiver_BIDI_SFP_01.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the inspect and clean sequence.</b> Follow the close-up of the fibre end face and note when the technician reinspects. <a href="https://www.youtube.com/watch?v=udepACqms_w">VIAVI on YouTube</a>.</p>
+    <p class="course-video"><b>Watch a technician inspect the two end faces.</b> With authorised equipment, trained technicians verify the fibres are dark and use a suitable video inspection probe. The manufacturer's examples show both the patch-cord plug and the mating interface. <a href="https://video.viavisolutions.com/category/videos/inspect-before-you-connect_">VIAVI inspection videos, especially episode 3</a> · <a href="https://docs.equinix.com/smart-hands/">Equinix Smart Hands tasks and work orders</a>.</p>
+
+    <h2>Map both strands and check the medium</h2>
+    <ol class="steps">
+      <li><p>Label the pair at both ends and draw arrows for A-Tx → Z-Rx and Z-Tx → A-Rx. Ask a partner to make one label disagree with the work order. Verify the physical identifier at the far end before selecting any port. Put the pair back in the expected position.</p></li>
+      <li><p>Check the manufacturer’s transceiver, wavelength, fibre type, connector polish, link length and receive range. The sample uses two matching SX modules and compatible multimode fibre. A matched single-fibre BiDi pair needs complementary wavelengths and a different order. Use the hardware guide to prove compatibility rather than relying on jacket colour.</p></li>
+      <li><p>For a real, owned training link, inspect and clean compatible ends on the bench with the sources off and a suitable inspection tool. Keep dust caps on until ready. Never look into a fibre, port or transceiver. Make all patch changes while the training optics are off. Once the patch is complete, power the devices and record negotiated mode and link status on both ends. As a separate check verify test traffic in both directions using P19. Use the paper readout below if you lack the hardware.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Order check</th><th scope="col">Illustrative observations</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Reference pair</th><td>A Rx −8 dBm · Z Rx −9 dBm · both interfaces up · test replies flow both ways</td><td>Compare both levels with the actual receive range. Save port names and service proof.</td></tr>
+        <tr><th scope="row">Both receivers dark on a lab pair</th><td>Both outputs documented as enabled; Tx/Rx path unverified</td><td>Check the strand map and seating on the isolated lab link. Compare known-good optics and patch path in turn.</td></tr>
+        <tr><th scope="row">Link lights on; test traffic fails</th><td>Both ends show optical receive; network configuration is uncertain</td><td>Move to service-layer checks such as the expected test VLAN or subnet. Keep the original optical readings.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Save the A and Z panel, ports, optics, received levels if available, tests and rollback labels. Add the measurement instrument and reference if you used a calibrated source and meter. On a customer job confirm who can authorise changes and record results for the remote engineer. <a href="https://www.flukenetworks.com/edocs/wp-fiber-cleaning-and-inspection-white-paper">Fluke inspection and cleaning guide</a> · <a href="../career/c07-telecom-cabling-acma.html">C07 · Scope and registration</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t39-optical-link-loss-and-reflectometry.html">T39 · Optical receive level and loss</a> · <a href="../theory/t44-telecom-networks.html">T44 · Physical link and service evidence</a> · <a href="../career/c09-fibre-splicing-otdr.html">C09 · Connectors and splices</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

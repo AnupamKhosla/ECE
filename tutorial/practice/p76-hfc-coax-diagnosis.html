@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P76 · Find a fault on an HFC coax trainer</title>
+<meta name="description" content="Identify the cable modem connections. Use a multimeter on disconnected spare coax and read a sample DOCSIS signal report.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P76</span>
+    <h1>Find a fault on an HFC coax trainer</h1>
+    <p class="lede">Identify the cable modem connections. Use a multimeter on disconnected spare coax and read a sample DOCSIS signal report.</p>
+    <div class="meta"><span class="pill">Isolated bench</span><span class="pill">40–60 min</span><span class="pill">After <a href="p03-multimeter-mastery.html">P03</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+
+    <h2>Follow the cable into the house</h2>
+    <p>Hybrid fibre coaxial (HFC) carries services over fibre for part of the route and coaxial cable for the last segment. A cable modem exchanges downstream and upstream signals on that coax. Ethernet takes data from the modem to the router. Review the <a href="../theory/t44-telecom-networks.html">DOCSIS signal readings</a> and <a href="../theory/t32-rf-transmission-lines.html">transmission lines</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/docsis-back.jpg" alt="Back of an Arris SB6190 showing Ethernet, threaded coax and DC power sockets" width="453" height="960" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 2119" aria-hidden="true">
+          <defs><marker id="docsis-back-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M584,440 L534,588" fill="none" stroke="#201600" stroke-width="12"/><path d="M584,440 L534,588" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#docsis-back-arrow)"/>
+          <rect x="584" y="380" width="252" height="73" rx="8" fill="#122029"/><text x="596" y="435" style="fill:#fff;font-size:53px;font-weight:700">Ethernet</text>
+          <path d="M627,1247 L570,1419" fill="none" stroke="#201600" stroke-width="12"/><path d="M627,1247 L570,1419" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#docsis-back-arrow)"/>
+          <rect x="627" y="1194" width="161" height="73" rx="8" fill="#122029"/><text x="639" y="1249" style="fill:#fff;font-size:53px;font-weight:700">Coax</text>
+          <path d="M595,1780 L547,1711" fill="none" stroke="#201600" stroke-width="12"/><path d="M595,1780 L547,1711" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#docsis-back-arrow)"/>
+          <rect x="595" y="1750" width="181" height="73" rx="8" fill="#122029"/><text x="607" y="1805" style="fill:#fff;font-size:53px;font-weight:700">DC in</text>
+        </svg></div>
+        <figcaption>This ARRIS cable modem illustrates the three port types. The approved nbn model and indicator layout may differ.<br><small>Photo by F ASTILY, with cropping and perspective correction by Pittigrilli, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Arris_Surfboard_SB_6190_cable_modem_(2018)_with_connectors_on_rear.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/f-connectors.jpg" alt="Five F-type coax adapters, including threaded shells and visible centre contacts" width="960" height="682" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 710" aria-hidden="true">
+          <defs><marker id="f-connectors-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M466,241 L408,194" fill="none" stroke="#201600" stroke-width="12"/><path d="M466,241 L408,194" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#f-connectors-arrow)"/>
+          <rect x="396" y="241" width="214" height="46" rx="8" fill="#122029"/><text x="408" y="269" style="fill:#fff;font-size:26px;font-weight:700">Centre contact</text>
+          <path d="M302,532 L326,449" fill="none" stroke="#201600" stroke-width="12"/><path d="M302,532 L326,449" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#f-connectors-arrow)"/>
+          <rect x="167" y="532" width="224" height="46" rx="8" fill="#122029"/><text x="179" y="560" style="fill:#fff;font-size:26px;font-weight:700">Threaded shell</text>
+        </svg></div>
+        <figcaption>The outer shell contacts the shield. The insulated centre contact carries the inner conductor. These adapters show the geometry clearly. Use the connector specified for your trainer.<br><small>Photo by Eyreland, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Flex_Coax_Connector_F_Type.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the approved connection box setup.</b> Follow the coax into the box and the separate Ethernet lead to the customer router. <a href="https://www.youtube.com/watch?v=5E8YgJFUFfI">Telstra’s nbn HFC guide on YouTube</a>.</p>
+
+    <h2>Test the three paths in a spare lead</h2>
+    <p>Use a spare 75 Ω coax lead with both ends disconnected, a second known-good lead, a multimeter and ideally an F-type breakout or adapter so the contacts are easy to access. Keep customer and carrier cables connected as installed. Never put meter probes into a live wall outlet or modem.</p>
+    <ol class="steps">
+      <li>On resistance or continuity, touch the probe tips together and note the baseline. Visually check both connector bodies and centre conductors for looseness, damage and displaced braid.</li>
+      <li>Probe centre to centre, shell to shell and centre to shell as three separate tests. A short spare lead typically has low end-to-end resistance on each conductor and an open circuit between the two. Keep your fingers clear of exposed tips when checking for an open.</li>
+      <li>Repeat on the second lead. For a teaching fault, attach a removable shorting jumper between centre and shell on one end of a decommissioned lab lead using a breakout. The isolation reading changes. Remove the jumper and confirm that isolation is restored.</li>
+      <li>Label results with which ends and contacts you tested. DC continuity catches certain opens and shorts. It cannot prove RF impedance, shielding quality under use, insertion loss or network signal levels.</li>
+    </ol>
+
+    <h2>Read a dispatch report</h2>
+    <p>These are fictional readings for comparison. Real acceptable values depend on the equipment, channels and operator test limit. dBmV measures level relative to 1 mV. A dB SNR value describes signal quality. Read the <a href="https://arris.my.salesforce-sites.com/consumers/articles/knowledge/SBG6580-2-Cable-Signal-Levels">manufacturer's explanation of downstream power, SNR and upstream power</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Service snapshot</th><th scope="col">Downstream level / SNR</th><th scope="col">Upstream transmit power</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><td>Normal at 08:00</td><td>+1 dBmV / 38 dB</td><td>39 dBmV</td><td>Keep a baseline including locked channels and modem state.</td></tr>
+        <tr><td>Stalls at 19:00</td><td>−7 dBmV / 28 dB</td><td>51 dBmV</td><td>Look for changes across channels and common area faults. Escalate with times, modem lock, channel information and the comparison.</td></tr>
+        <tr><td>No Ethernet link after a router swap</td><td>Previous normal readings. Modem remains online.</td><td>Previous normal reading</td><td>Check the short Ethernet lead and router WAN port first. Verify with a wired service test after link returns.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A splitter can add insertion loss. Interference or an upstream plant fault can cause superficially similar symptoms. The example values alone cannot identify which item to replace. Hand carrier-side testing to the authorised technician with their approved RF meter and procedure.</p>
+
+    <div class="callout good"><strong>Submit your evidence</strong><p>Keep three contact readings for the spare lead, a fault and restoration result, and a short escalation based on the sample. Draw the boundary between coax, the modem and Ethernet to the router.</p></div>
+    <p>Return to <a href="p71-nbn-service-desk-triage.html">access-network support</a> or <a href="../career/c21-melbourne-telecom-jobs.html">HFC and other telecom job routes</a>.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

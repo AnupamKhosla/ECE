@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P73 · Triage an outage in a network operations centre</title>
+<meta name="description" content="Use three reachability checks and a change record to work out who is affected. Write the incident handover the next shift will need.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P73</span>
+    <h1>Triage an outage in a network operations centre</h1>
+    <p class="lede">Use three reachability checks and a change record to work out who is affected. Write the incident handover the next shift will need.</p>
+    <div class="meta"><span class="pill">Desk and lab</span><span class="pill">35–55 min</span><span class="pill">After <a href="p71-nbn-service-desk-triage.html">P71</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+
+    <h2>What the operator does</h2>
+    <p>A network operations centre (NOC) groups alerts, checks the impact, contacts the responsible team and keeps the incident record current. A field technician can inspect, test or reseat a specifically authorised asset. An operator can correlate the time and symptoms across services before dispatch. Learn the distinction between <a href="../theory/t44-telecom-networks.html">management reachability, link state and service reachability</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/telecom/noc-technician.jpg" alt="A technician checking green fibre connectors among yellow patch leads" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>A technician traces a fibre near a rack. An operations ticket should identify the circuit and port clearly enough to guide this check.<br><small>Photo by Lance Cheung, USDA, resized. <a href="https://commons.wikimedia.org/wiki/File:Telecommunications_technician.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public Domain Mark</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/switch.jpg" alt="A rack of switches showing numbered Ethernet ports and link indicator rows" width="960" height="640" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 667" aria-hidden="true">
+          <defs><marker id="switch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M169,415 L254,455" fill="none" stroke="#201600" stroke-width="12"/><path d="M169,415 L254,455" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#switch-arrow)"/>
+          <rect x="43" y="393" width="128" height="46" rx="8" fill="#122029"/><text x="55" y="421" style="fill:#fff;font-size:26px;font-weight:700">Port row</text>
+          <path d="M572,502 L575,543" fill="none" stroke="#201600" stroke-width="12"/><path d="M572,502 L575,543" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#switch-arrow)"/>
+          <rect x="503" y="456" width="167" height="46" rx="8" fill="#122029"/><text x="515" y="484" style="fill:#fff;font-size:26px;font-weight:700">Status LEDs</text>
+        </svg></div>
+        <figcaption>Record which switch and port reported link down. One front-panel indicator needs the port map and service checks to establish impact.<br><small>Photo by Ben Franske, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch a real Network Operations Centre.</b> Listen for the difference between observing an outage and sending someone to the affected network. <a href="https://www.youtube.com/watch?v=nRUiEF9rEzo">Telstra Enterprise on YouTube</a>.</p>
+
+    <h2>Make a monitoring bench</h2>
+    <p>Use an owned router with two lab computers and an Ethernet switch. Connect one computer directly to a router LAN port as your monitoring station. Connect the other to a downstream switch. Write down the gateway and downstream host IP addresses from their own network settings. Disable alternative paths such as Wi-Fi on the downstream test computer. An optional third computer or Raspberry Pi behind the same switch gives you another affected endpoint. Use the case below on paper if you have a single computer.</p>
+    <ol class="steps">
+      <li>At the monitoring station, use <code>ping</code> to check the gateway and downstream hosts. Record their addresses as labels G, A and B in the portfolio. Check that each destination actually answers ICMP before starting. If a computer blocks ping, run a known lab service on it and test that service consistently.</li>
+      <li>Unplug the downstream switch uplink on the isolated bench. Repeat the checks. Look at the link indicators on both ends. Restore the cable to its original port and record the first successful checks and their times.</li>
+      <li>Repeat with one endpoint's cable. Compare the different scope. Check whether the router remains reachable in both experiments and whether only the endpoint or the whole branch failed.</li>
+    </ol>
+
+    <h2>Work the shift case</h2>
+    <p>All times and device labels are synthetic. The diagram in the work order is <code>monitor → G → aggregate switch → uplink U7 → downstream switch → services A and B</code>. The upstream switch management address is reached from G without using U7.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Time</th><th scope="col">Observation</th><th scope="col">What to check</th></tr></thead>
+      <tbody>
+        <tr><td>09:01</td><td>A and B respond normally. G and the upstream switch management port respond.</td><td>Last known good time for this monitoring interval.</td></tr>
+        <tr><td>09:02</td><td>A and B time out. G and the upstream switch management IP still respond. The upstream switch reports U7 link down.</td><td>Match U7 with the circuit record. Check whether other branches work.</td></tr>
+        <tr><td>09:04</td><td>Other branches work. A planned change is listed for U9.</td><td>Ask the change owner what was physically touched. Log the overlap as a possibility.</td></tr>
+        <tr><td>09:11</td><td>Remote hands restores U7, reports a disconnected patch lead and reads back its labels. Link and service probes recover.</td><td>Repeat both application checks, capture the restored link state and confirm the declared impact.</td></tr>
+      </tbody>
+    </table></div>
+    <p>You can locate the affected branch by 09:02. The precise cause needs the later physical observation. A successful gateway ping says the management station can reach that gateway. It cannot confirm that either downstream service works.</p>
+
+    <h2>Write a handover someone can act on</h2>
+    <p>Include timezone, first failure and last success, services and sites affected, a working comparison, upstream interface, evidence, current owner and next update time. Follow the employer's severity matrix and change authority. Keep personal details and infrastructure identifiers out of the public portfolio.</p>
+    <div class="callout good"><strong>Submit your evidence</strong><p>Save your link-state and probe matrix for normal operation, single endpoint failure and switch uplink failure. Add one operator note at 09:04 and a separate closure note after the application probes pass. Include what the receiving team would need to verify on site.</p></div>
+    <p>Continue with the <a href="p72-fibre-cross-connect.html">fibre cross-connect work order</a> or <a href="p75-voip-one-way-audio.html">separating call signalling from audio</a>. See the <a href="../career/c21-melbourne-telecom-jobs.html">career route</a> for operations and service assurance roles.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

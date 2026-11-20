@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P71 · Find where an NBN broadband service stops</title>
+<meta name="description" content="Use the connection box, router, wired test and outage record to decide which team owns the next check.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P71</span>
+    <h1>Find where an NBN broadband service stops</h1>
+    <p class="lede">Use the connection box, router, wired test and outage record to decide which team owns the next check.</p>
+    <div class="meta"><span><b>Time</b> 40 minutes</span><span><b>Before this</b> <a href="p19-networking-hands-on.html">P19</a> · <a href="../career/c08-nbn-technologies.html">C08</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Follow the connection from the street to the customer’s device</h2>
+    <p>For fibre to the premises, trace carrier fibre → nbn connection box → enabled Ethernet data port → retail provider’s router WAN port → home Ethernet or Wi-Fi. The connection box terminates the carrier service. The router shares it with the home. A Wi-Fi connection to the router can work when the internet service is down. On a new FTTP model, use the <b>Port</b> indicator. On a legacy multi-port model, record the provisioned <b>UNI-D</b> port from the provider’s instructions.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/nbn-fttp.jpg" alt="Installed four-port nbn FTTP connection box with cover removed to show the LED row, Ethernet, power and fibre" width="960" height="785" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 785" aria-hidden="true">
+            <defs><marker id="nbn-fttp-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <g fill="none" stroke="#201600" stroke-width="12"><path d="M268,122 L378,118 M259,620 L330,597 M562,706 L574,608 M746,634 L687,599"/></g>
+            <g fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#nbn-fttp-arrow)"><path d="M268,122 L378,118"/><path d="M259,620 L330,597"/><path d="M562,706 L574,608"/><path d="M746,634 L687,599"/></g>
+            <g fill="#122029"><rect x="72" y="97" width="196" height="50" rx="8"/><rect x="88" y="595" width="171" height="50" rx="8"/><rect x="500" y="706" width="128" height="50" rx="8"/><rect x="746" y="609" width="118" height="50" rx="8"/></g>
+            <g style="fill:#fff;font-size:32px;font-weight:700"><text x="84" y="132">Optical LED</text><text x="100" y="630">Ethernet</text><text x="512" y="741">Power</text><text x="758" y="644">Fibre</text></g>
+          </svg></div>
+        <figcaption>In this installed example the blue Ethernet lead uses UNI-D 1. The LEDs along the top report separate optical and Ethernet states. The cover is off in this photo so the connections are visible. Observe your own unit with the cover in place.<br><small>Photo by Pez098, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:NTD_cover_removed.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/nbn.jpg" alt="A green nbn fibre-to-the-node cabinet in Estella, New South Wales" width="960" height="1440" loading="lazy" decoding="async">
+        <figcaption>For FTTN, fibre reaches this shared street cabinet and a copper pair carries the final VDSL signal. FTTP takes fibre to an indoor connection box instead.<br><small>Photo by Bidgee, resized. <a href="https://commons.wikimedia.org/wiki/File:Fibre_to_the_node_cabinet_located_on_Pugsley_Ave,_Estella.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/au/">CC BY-SA 3.0 AU</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p><b>See the FTTP ports before the lab.</b> The current one-port model groups indicators differently. <a href="https://www.nbnco.com.au/learn/network-technology/fibre-to-the-premises-explained-fttp/connection-box/1-port">nbn one-port photo and guide</a>.</p>
+    <p class="course-video"><b>Watch an nbn field installation.</b> Identify which boxes are outside and inside and where the customer router connects. Open the guide for the exact one- or four-port model to locate power, optical and data indicators. <a href="https://www.youtube.com/watch?v=4reVwCJBtnQ">nbn FTTP installation video</a> · <a href="https://www.nbnco.com.au/learn/network-technology/fibre-to-the-premises-explained-fttp/connection-box">nbn connection-box models and indicator guides</a>.</p>
+
+    <h2>Practise three independent checks with a spare router</h2>
+    <ol class="steps">
+      <li><p>Use a router you own and one Ethernet-connected laptop. An old spare router can run this lab with its WAN disconnected. Read the laptop’s address and default gateway with <code>ipconfig</code> on Windows, <code>ip route</code> on Linux or the network settings on macOS. Ping the listed gateway if your router answers ICMP, or open the local router page without changing settings. Record whether the local path works.</p></li>
+      <li><p>Disconnect the WAN lead on the spare router, if one was connected, and repeat. The wired client can still reach the home gateway. The router’s WAN reports link down. This is different from a failure of the customer’s device to get a local address. Restore the original cable routing when finished.</p></li>
+      <li><p>With the router WAN already disconnected, unplug or disable the laptop’s wired connection. Confirm the wired adapter is disconnected and check that another network connection cannot mask the result. Take a second worksheet card from below and decide which observation you’d ask the customer for next.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Intake observation</th><th scope="col">Next check</th><th scope="col">Escalation evidence</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Only a bedroom Wi-Fi device drops</th><td>Compare two devices, then test the wired path.</td><td>Wired pass and a reproducible location point to a local wireless issue.</td></tr>
+        <tr><th scope="row">Power on, optical alarm on the specified model</th><td>Record exact indicators and check the provider’s outage status.</td><td>Report service, time, box model and observed loss. No need to touch the fibre.</td></tr>
+        <tr><th scope="row">Optical appears normal, WAN no link</th><td>Check the approved data port, Ethernet lead and router WAN socket.</td><td>Healthy optical indication cannot prove WAN addressing or service activation.</td></tr>
+        <tr><th scope="row">WAN link up, several devices fail</th><td>Check the provider’s outage, router WAN session state, then compare name lookup and a known authorised service.</td><td>Provide results for DHCP or PPPoE as applicable. Redact the account, any credentials and public-facing identifiers.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For an actual outage, the retail provider manages the customer case and escalates network work to nbn when applicable. Record existing lights before a provider-authorised restart. Preserve medical and emergency communications arrangements. Leave the installed fibre connector, coax and carrier enclosure in place. <a href="https://www.nbnco.com.au/support/network-status">nbn outage information</a> · <a href="../career/c21-melbourne-telecom-jobs.html">C21 Melbourne telecom job routes</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t17-networking-theory.html">T17 · Link, IP and TCP/IP</a> · <a href="../theory/t44-telecom-networks.html">T44 · Shared paths and fault ownership</a> · <a href="p76-hfc-coax-diagnosis.html">P76 · HFC service differs at the access layer</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

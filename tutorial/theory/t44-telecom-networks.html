@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T44 · How broadband, mobile and voice services share a network</title>
+<meta name="description" content="Follow the physical signal, link, IP connection and application. Use each test result to choose the next layer to check.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T44</span>
+    <h1>How broadband, mobile and voice services share a network</h1>
+    <p class="lede">Follow the physical signal, link, IP connection and application. Use each test result to choose the next layer to check.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t17-networking-theory.html">Ethernet and IP</a> · <a href="t10-em-waves-antennas-fibre.html">Radio and fibre</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+
+    <h2>Follow a service in both directions</h2>
+    <p>At home, a laptop or phone uses a local network to reach a router. The router connects through an access service into an operator's network. Aggregation brings many access connections together. From there, traffic can go to the retailer's equipment and then to other networks or services. For a mobile connection, the handset uses a local cell over radio, then the site connects to the operator's network over backhaul such as fibre or microwave.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/nbn-ntd.jpg" alt="Legacy nbn fixed wireless indoor connection box with an outdoor unit light and a series of signal strength lights" width="960" height="693" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 722" aria-hidden="true">
+          <defs><marker id="nbn-ntd-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M117,125 L151,61" fill="none" stroke="#201600" stroke-width="12"/><path d="M117,125 L151,61" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#nbn-ntd-arrow)"/>
+          <rect x="56" y="125" width="104" height="46" rx="8" fill="#122029"/><text x="68" y="153" style="fill:#fff;font-size:26px;font-weight:700">Power</text>
+          <path d="M596,134 L545,62" fill="none" stroke="#201600" stroke-width="12"/><path d="M596,134 L545,62" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#nbn-ntd-arrow)"/>
+          <rect x="548" y="134" width="188" height="46" rx="8" fill="#122029"/><text x="560" y="162" style="fill:#fff;font-size:26px;font-weight:700">Radio signal</text>
+        </svg></div>
+        <figcaption>The front has separate power, outdoor-unit and radio signal indicators. To check your service, use the guide for your own technology and box model.<br><small>Photo by Greg Lehey, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:NBN-NTD.jpeg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/mobile-sector.jpg" alt="Pole-mounted cellular panels, equipment and feeder cables seen from below" width="960" height="640" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 667" aria-hidden="true">
+          <defs><marker id="mobile-sector-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M640,116 L523,126" fill="none" stroke="#201600" stroke-width="12"/><path d="M640,116 L523,126" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-sector-arrow)"/>
+          <rect x="639" y="90" width="105" height="46" rx="8" fill="#122029"/><text x="651" y="118" style="fill:#fff;font-size:26px;font-weight:700">Panel</text>
+          <path d="M544,445 L440,386" fill="none" stroke="#201600" stroke-width="12"/><path d="M544,445 L440,386" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-sector-arrow)"/>
+          <rect x="544" y="431" width="182" height="46" rx="8" fill="#122029"/><text x="556" y="459" style="fill:#fff;font-size:26px;font-weight:700">Cable bundle</text>
+        </svg></div>
+        <figcaption>The flat panels face different directions. Equipment mounted below and around them connects through a cluster of cables. A photo alone cannot identify each frequency band or connected customer.<br><small>Photo by Tony Webster, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Cellular_5G_Equipment_-_Cell_Tower_Antennas.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Access type</th><th scope="col">Last segment</th><th scope="col">Equipment to recognise</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Fibre to the premises</th><td>Optical fibre to a connection box</td><td>ONT or NTD at the customer end. A passive optical network can share an optical line terminal (OLT) port through a splitter.</td></tr>
+        <tr><th scope="row">Hybrid fibre coaxial</th><td>RF over 75 Ω coaxial cable</td><td>A cable modem uses DOCSIS channels between the premises and network equipment serving multiple customers.</td></tr>
+        <tr><th scope="row">Mobile and fixed wireless</th><td>Radio link to a cell</td><td>A subscriber device, site radio and antenna, and a backhaul link from the site.</td></tr>
+        <tr><th scope="row">Fibre to the node</th><td>Copper pair from the node, using VDSL</td><td>A street node and a VDSL modem. The distribution architecture varies by access type.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Some boxes combine functions. A unit sold as a modem-router can terminate the access medium, route IP and provide Wi-Fi. Identify the function from its port labels and model documentation. <a href="https://www.nbnco.com.au/learn/network-technology">nbn access-technology guides</a> · <a href="https://www.youtube.com/watch?v=4reVwCJBtnQ">Watch an nbn fibre installation</a>.</p>
+
+    <h2>Test the layer that answers your question</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Layer or state</th><th scope="col">Successful test</th><th scope="col">What you can conclude</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Physical path</th><td>Optical power is within the receiver's specified window.</td><td>Light reaches that receiver under these test conditions. Next check whether the expected link comes up.</td></tr>
+        <tr><th scope="row">Local link</th><td>Switch and device agree the Ethernet link is up.</td><td>The ports have established link. The intended VLAN and the IP configuration are separate checks.</td></tr>
+        <tr><th scope="row">Address and route</th><td>The client reaches a known IP endpoint over the intended path.</td><td>There is a working route for that test. Next test name resolution and the actual application.</td></tr>
+        <tr><th scope="row">Service</th><td>A representative transaction completes in both directions.</td><td>The tested service works for that user and case, including the required return path.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A separate management interface can answer while the service port has failed. A modem may see signal but still fail registration. The scope of an outage helps distinguish failure of a shared segment from a single client or service. Compare a known working neighbour in the network diagram before changing equipment.</p>
+
+    <h2>Read units before comparing numbers</h2>
+    <p><b>Optical dBm</b> represents absolute power referenced to 1 mW. Loss in <b>dB</b> is a ratio. A trainer with −4 dBm transmit power and 5 dB of path loss receives approximately −9 dBm. Compare against the receiver's sensitivity and overload limits. Read <a href="../practice/p53-fibre-loss-and-otdr.html">P53 for the full loss budget</a>.</p>
+    <p><b>DOCSIS dBmV</b> is a voltage level referenced to 1 mV. Downstream power is received by the modem, while upstream power is what the modem transmits. <b>SNR in dB</b> is a signal-to-noise ratio. Compare equivalent channels and equipment states. A multimeter on disconnected coax can check opens and shorts. RF impedance and channel signal quality require RF test equipment. <a href="https://arris.my.salesforce-sites.com/consumers/articles/knowledge/SBG6580-2-Cable-Signal-Levels">ARRIS signal-level guide</a>.</p>
+    <p><b>RSRP in dBm</b> is the received power of a specified cellular reference signal. <b>RSRQ in dB</b> indicates reference signal quality. <b>SINR in dB</b> compares wanted signal with interference and noise. On the same handset and technology, −94 dBm is stronger than −107 dBm. Stronger power can accompany poorer signal quality or an overloaded service. LTE and 5G NR readings can use different references. <a href="https://source.android.com/docs/core/connect/signal-strength">Android signal-strength reference</a>.</p>
+
+    <h2>Separate a call from the audio it carries</h2>
+    <p><b>SIP</b> can register a phone and establish or end a call. A session description (SDP) conveys media addresses, ports and supported formats. <b>RTP</b> commonly carries the audio. A gateway or call server can create separate signalling and media legs. A call can ring and connect even if only one direction of audio gets through. Check the capture position, expected receive address and observed media for each leg. <a href="https://www.rfc-editor.org/rfc/rfc3261">SIP specification</a> · <a href="https://www.rfc-editor.org/rfc/rfc3550">RTP specification</a>.</p>
+
+    <div class="callout try"><span class="label">Check yourself</span><p>Your router responds over Ethernet and its WAN light is on, but two devices cannot open a website. What does each observation prove? Pick two further checks that distinguish address or routing failure from name resolution or application failure.</p></div>
+    <p>Apply the tests in <a href="../practice/p71-nbn-service-desk-triage.html">broadband service triage</a>, <a href="../practice/p73-network-operations-outage.html">shared outage triage</a>, <a href="../practice/p74-mobile-network-triage.html">mobile service measurements</a>, <a href="../practice/p75-voip-one-way-audio.html">voice call diagnosis</a> or <a href="../practice/p76-hfc-coax-diagnosis.html">HFC coax diagnosis</a>.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

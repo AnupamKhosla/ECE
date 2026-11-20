@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P74 · Triage a mobile coverage or activation fault</title>
+<meta name="description" content="Use an Android phone to compare cellular measurements and service behaviour across locations. Write a useful carrier fault report.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P74</span>
+    <h1>Triage a mobile coverage or activation fault</h1>
+    <p class="lede">Use an Android phone to compare cellular measurements and service behaviour across locations. Write a useful carrier fault report.</p>
+    <div class="meta"><span class="pill">Phone and notebook</span><span class="pill">40–60 min</span><span class="pill">After <a href="p31-antenna-receive-lab.html">P31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+
+    <h2>Know the equipment</h2>
+    <p>A handset connects over the air to a cell. Site radios and antennas serve areas called sectors. A backhaul link takes data from the site towards the operator's network. In some sites the radio and antenna are separate. An active antenna system can combine them. Carrier support may investigate registration, the SIM or eSIM account, voice compatibility and outages. A field team may investigate the site or radio path. Read <a href="../theory/t44-telecom-networks.html">T44 on the mobile service path and signal readings</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/mobile-rooftop.jpg" alt="A rooftop in London with cellular antennas mounted at several corners and cable routes across the roof" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 750" aria-hidden="true">
+          <defs><marker id="mobile-rooftop-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M269,594 L198,463" fill="none" stroke="#201600" stroke-width="12"/><path d="M269,594 L198,463" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-rooftop-arrow)"/>
+          <rect x="269" y="581" width="197" height="46" rx="8" fill="#122029"/><text x="281" y="609" style="fill:#fff;font-size:26px;font-weight:700">Antenna panel</text>
+          <path d="M739,283 L778,350" fill="none" stroke="#201600" stroke-width="12"/><path d="M739,283 L778,350" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-rooftop-arrow)"/>
+          <rect x="702" y="237" width="171" height="46" rx="8" fill="#122029"/><text x="714" y="265" style="fill:#fff;font-size:26px;font-weight:700">Cable route</text>
+        </svg></div>
+        <figcaption>The panels are mounted at different positions and orientations. Trace the rooftop cable route in the photograph before thinking about which hardware could serve a reported area.<br><small>Photo by Acabashi, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Rooftop_with_cellular_network_mobile_phone_antenna_mounts.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/mobile-sector.jpg" alt="Pole-mounted cellular panels, equipment and feeder cables seen from below" width="960" height="640" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 667" aria-hidden="true">
+          <defs><marker id="mobile-sector-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M640,116 L523,126" fill="none" stroke="#201600" stroke-width="12"/><path d="M640,116 L523,126" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-sector-arrow)"/>
+          <rect x="639" y="90" width="105" height="46" rx="8" fill="#122029"/><text x="651" y="118" style="fill:#fff;font-size:26px;font-weight:700">Panel</text>
+          <path d="M544,445 L440,386" fill="none" stroke="#201600" stroke-width="12"/><path d="M544,445 L440,386" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#mobile-sector-arrow)"/>
+          <rect x="544" y="431" width="182" height="46" rx="8" fill="#122029"/><text x="556" y="459" style="fill:#fff;font-size:26px;font-weight:700">Cable bundle</text>
+        </svg></div>
+        <figcaption>The flat panels face different directions. Equipment mounted below and around them connects through a cluster of cables. A photo alone cannot identify each frequency band or connected customer.<br><small>Photo by Tony Webster, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Cellular_5G_Equipment_-_Cell_Tower_Antennas.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>See how a walk-test kit works.</b> Compare the equipment used to log both LTE and 5G measurements with what you can record from your Android phone. <a href="https://www.youtube.com/watch?v=-UuqxGrPsks">Rohde &amp; Schwarz on YouTube</a>.</p>
+
+    <h2>Make a repeatable comparison</h2>
+    <ol class="steps">
+      <li>Use your own Android phone and service. Switch off Wi-Fi for the comparison so mobile data and ordinary test calls use the intended cellular connection. Note the handset model, SIM slot if relevant, carrier, time and displayed radio technology. Android Settings often supplies SIM status or signal strength. The path and available measurements vary by manufacturer.</li>
+      <li>At a stationary indoor point, take three readings about 15 seconds apart. Record radio technology, signal name and units, plus whether an ordinary data request and a call to a consenting person complete. Use LTE RSRP or NR SS-RSRP when clearly labelled. Write “unavailable” for anything your handset hides. Never call an emergency number to test a device.</li>
+      <li>Repeat near a window and at a safe outdoor point on the ground. Keep the same device, SIM and test actions. If it changes radio technology, record the change. Compare LTE with LTE and NR with NR where available.</li>
+      <li>Where practical, have a second consenting person compare their phone on the same carrier at the same time. A known-working compatible phone or a permitted test SIM helps separate handset and subscription faults. Keep identifiers and account information within the provider's normal verification process.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Example observation</th><th scope="col">Reasonable next action</th></tr></thead>
+      <tbody>
+        <tr><td>One indoor location has weak LTE RSRP. Outdoor signal and calls improve on the same device.</td><td>Record the location dependence. Check provider coverage guidance and supported Wi-Fi calling.</td></tr>
+        <tr><td>Two same-carrier devices stop working in the same area. Both work elsewhere.</td><td>Check the public outage notice, then report the timing and area using the provider's channel.</td></tr>
+        <tr><td>One handset fails to attach everywhere. Another compatible handset on the same service works at the test point.</td><td>Check SIM activation or eSIM status, model compatibility and recent device changes with the provider. If only voice fails while data works, ask about VoLTE provisioning and device support.</td></tr>
+        <tr><td>Signal is stronger outdoors but service still fails at some times.</td><td>Record time, signal quality if available and the exact failing service. Consider congestion, outage, backhaul and provisioning among the possible layers.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The lab uses an ordinary handset from public or private ground-level locations. Site access, climbing, RF work and repeaters require the relevant authority and procedures. Consult <a href="https://www.acma.gov.au/mobile-repeaters-you-need-permission">ACMA's repeater rules</a> and <a href="https://www.acma.gov.au/ensuring-mobiles-can-reach-000-after-3g-shutdown">Australian handset compatibility guidance</a>.</p>
+
+    <div class="callout good"><strong>Submit your evidence</strong><p>Keep three rows of measurements, units and service results, plus an incident note that distinguishes the symptom, tested conditions and the next check. Omit phone numbers, SIM identifiers and precise private locations.</p></div>
+    <p>Study the <a href="p31-antenna-receive-lab.html">receive-only antenna lab</a>, then look at the <a href="../career/c21-melbourne-telecom-jobs.html">wireless and mobile service roles</a>.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

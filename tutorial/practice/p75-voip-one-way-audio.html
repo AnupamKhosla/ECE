@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P75 · Diagnose one-way audio on an IP phone call</title>
+<meta name="description" content="Compare the signalling and media paths. Turn “the call connects but I can’t hear them” into a precise support ticket.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P75</span>
+    <h1>Diagnose one-way audio on an IP phone call</h1>
+    <p class="lede">Compare the signalling and media paths. Turn “the call connects but I can’t hear them” into a precise support ticket.</p>
+    <div class="meta"><span class="pill">Tabletop or isolated LAN</span><span class="pill">45–65 min</span><span class="pill">After <a href="p71-nbn-service-desk-triage.html">P71</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+
+    <h2>Identify the phone and gateway</h2>
+    <p>A desk IP phone can connect over Ethernet. A compatible power-over-Ethernet switch may also supply its power. An analogue handset can connect through a compatible analogue telephone adapter (ATA), while calls to outside lines may go through a voice provider's gateway. <a href="../theory/t44-telecom-networks.html">T44</a> explains how Session Initiation Protocol (SIP) sets up a call and the Real-time Transport Protocol (RTP) can carry its audio.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/desk-ip-phone.jpg" alt="Cisco 7960 series IP desk phone with handset, line keys and speaker button" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 750" aria-hidden="true">
+          <defs><marker id="desk-ip-phone-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M129,71 L166,133" fill="none" stroke="#201600" stroke-width="12"/><path d="M129,71 L166,133" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#desk-ip-phone-arrow)"/>
+          <rect x="51" y="26" width="136" height="46" rx="8" fill="#122029"/><text x="63" y="54" style="fill:#fff;font-size:26px;font-weight:700">Handset</text>
+          <path d="M787,141 L758,219" fill="none" stroke="#201600" stroke-width="12"/><path d="M787,141 L758,219" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#desk-ip-phone-arrow)"/>
+          <rect x="757" y="96" width="143" height="46" rx="8" fill="#122029"/><text x="769" y="124" style="fill:#fff;font-size:26px;font-weight:700">Line keys</text>
+        </svg></div>
+        <figcaption>An IP desk phone still has conventional call controls and a handset. Check device documentation for Ethernet, power and supported signalling.<br><small>Photo by SimonInns, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:Cisco_7960_IP_Phone.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/telecom/voice-gateway.jpg" alt="The back of a OneAccess One200 gateway showing UPLINK, CONSOLE and telephony module markings" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 1000 750" aria-hidden="true">
+          <defs><marker id="voice-gateway-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M184,374 L157,507" fill="none" stroke="#201600" stroke-width="12"/><path d="M184,374 L157,507" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#voice-gateway-arrow)"/>
+          <rect x="99" y="328" width="215" height="46" rx="8" fill="#122029"/><text x="111" y="356" style="fill:#fff;font-size:26px;font-weight:700">Ethernet uplink</text>
+          <path d="M813,374 L864,502" fill="none" stroke="#201600" stroke-width="12"/><path d="M813,374 L864,502" fill="none" stroke="#ffda64" stroke-width="7" marker-end="url(#voice-gateway-arrow)"/>
+          <rect x="706" y="328" width="202" height="46" rx="8" fill="#122029"/><text x="718" y="356" style="fill:#fff;font-size:26px;font-weight:700">Voice module</text>
+        </svg></div>
+        <figcaption>This legacy gateway illustrates the difference between an Ethernet uplink, console and telephony interfaces. Look up the exact hardware before connecting a cable or handset.<br><small>Photo by hystiff, resized with callouts. <a href="https://commons.wikimedia.org/wiki/File:ONE_ACCESS_One_200_voice_and_network_router_-_back.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch a packet analysis workshop.</b> Find the SIP dialogue and then the two RTP directions in the example. <a href="https://www.youtube.com/watch?v=1c2iI-VN7ZQ">SharkFest on YouTube</a>.</p>
+
+    <h2>Follow a working call</h2>
+    <p>Use the example records below first. If you already have an isolated test PBX and two compatible softphones, create two private test extensions. Work on an owned LAN, without a public trunk or inbound Internet access. Place a call between the test extensions and confirm each party can hear a short spoken phrase. Capture only your own lab sessions, with permission from everyone involved.</p>
+    <ol class="steps">
+      <li>Check users A and B can register if the system uses registration. An authentication challenge during registration can be normal when successful authentication follows.</li>
+      <li>Place the call. Follow the SIP dialogue for INVITE, any provisional responses, the final response, ACK and call hang-up with BYE. Note which endpoints or PBX legs the capture can see.</li>
+      <li>Read the Session Description Protocol (SDP) in the signalling to identify where each party asks to receive audio. In Wireshark open <b>Telephony → RTP → RTP Streams</b> where applicable. An RTP stream may need identification from signalling. Record the expected and observed packet direction.</li>
+    </ol>
+    <p>Follow the official <a href="https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-res_pjsip/res_pjsip-Configuration-Examples/">Asterisk PJSIP examples</a> if building the optional lab. Keep local credentials outside your evidence. The public exercise works without installing a PBX.</p>
+
+    <h2>Compare the evidence</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Case</th><th scope="col">Observed in this capture</th><th scope="col">First discriminating check</th></tr></thead>
+      <tbody>
+        <tr><td>Known good</td><td>Successful dialog. Audio packets reach both endpoints. Each person confirms intelligible audio.</td><td>Save signalling plus a baseline stream summary.</td></tr>
+        <tr><td>A hears B. B cannot hear A.</td><td>Call is answered. Both use the PBX as their media endpoint. On B, the expected incoming audio stream is absent. B's outgoing stream reaches the PBX.</td><td>Check whether A's media reaches the PBX and whether the PBX sends it towards B. Compare the addresses and ports read from SDP on both legs.</td></tr>
+        <tr><td>Packets arrive at B but B hears silence.</td><td>RTP sequence advances on the receiving interface. The session has audio packets in both directions.</td><td>Check softphone sound output, mute on A, codec and endpoint stats. Packet arrival can coexist with a silent or undecodable payload.</td></tr>
+        <tr><td>No call rings</td><td>No successful INVITE completion.</td><td>Investigate reachability, registration, routing and SIP response codes before the media diagnosis.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Capture location matters. A downstream capture cannot show a packet discarded upstream. Media can be encrypted, relayed or split across two call legs. Escalate with the evidence your vantage point supports.</p>
+
+    <div class="callout good"><strong>Submit your evidence</strong><p>Draw two arrows for expected audio and mark where each was seen. Include which party heard whom, capture location, call and media timestamps and the request for the next team. Use synthetic extensions and redact identifiers.</p></div>
+    <p>Continue with <a href="p73-network-operations-outage.html">network incident handover</a> and the <a href="../career/c21-melbourne-telecom-jobs.html">business connectivity and voice route</a>.</p>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-telecom"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

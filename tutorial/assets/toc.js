@@ -91,14 +91,21 @@ window.TOC = {
           { n: "P55", file: "practice/p55-pico-boot-and-swd-debugging.html", title: "Find where a Raspberry Pi Pico program stops", d: "Check power, USB and serial logging, then use SWD and GDB to distinguish a boot problem from a blocking program." },
           { n: "P58", file: "practice/p58-board-production-test.html", title: "Build a repeatable board test fixture", d: "Prove a low-voltage board test with a known-good reference, two known faults and a closing retest." }
         ]},
-        { title: "Part L · Specialist repair for small businesses", blurb: "Train for textile, fabrication, packaging and cooling service jobs.", chapters: [
-          { n: "P69", file: "practice/p69-knitting-yarn-stop.html", title: "Find an intermittent yarn-stop fault on a knitting-machine trainer", d: "Trace one yarn path, detector and harness. Prove which opens before quoting a controller." },
+        { title: "Part L · Specialist repair for small businesses", blurb: "Train for bench repair in fabrication, packaging, label printing and cooling.", chapters: [
           { n: "P66", file: "practice/p66-sewing-servo-pedal.html", title: "Diagnose an industrial sewing machine that ignores the pedal", d: "Check the treadle linkage, neutral position, harness signal and motor feedback." },
           { n: "P64", file: "practice/p64-plasma-cutter-triage.html", title: "Triage a plasma cutter that will not start", d: "Record the exact fault and distinguish consumables, air and trigger conditions." },
           { n: "P65", file: "practice/p65-packaging-sealer-diagnostics.html", title: "Diagnose a packaging sealer with a weak or uneven seam", d: "Distinguish band and impulse sealers. Compare heater command, load, film and jaw pressure." },
           { n: "P67", file: "practice/p67-barcode-printer-service.html", title: "Repair a barcode printer that skips labels or prints streaks", d: "Identify the thermal head and platen, print a standalone report and confirm the result with a scanner." },
           { n: "P68", file: "practice/p68-cold-room-probe.html", title: "Check a cold-room temperature probe and alarm", d: "Compare a reference thermometer, NTC curve and controller display. Distinguish warm, open and shorted." },
           { n: "P70", file: "practice/p70-machine-chiller-flow.html", title: "Trace a machine chiller’s low-flow alarm", d: "Use a timed volume test to tell a hydraulic restriction from a flow indicator fault." }
+        ]},
+        { title: "Part M · Telecommunications service", blurb: "Troubleshoot broadband, fibre, mobile and business voice services and practise fault handovers.", chapters: [
+          { n: "P71", file: "practice/p71-nbn-service-desk-triage.html", title: "Find where an NBN broadband service stops", d: "Use a router, wired test, optical indicator and outage record to separate a local fault from the access service." },
+          { n: "P72", file: "practice/p72-fibre-cross-connect.html", title: "Patch and prove a duplex fibre cross-connect", d: "Read a data-centre work order, trace fibre strands and verify optical link and traffic at both ends." },
+          { n: "P73", file: "practice/p73-network-operations-outage.html", title: "Triage an outage in a network operations centre", d: "Use link and service probes to identify a branch outage, test the recovery and write the next shift's handover." },
+          { n: "P74", file: "practice/p74-mobile-network-triage.html", title: "Triage a mobile coverage or activation fault", d: "Compare LTE and 5G readings, SIM or eSIM activation, data and voice at repeatable locations." },
+          { n: "P75", file: "practice/p75-voip-one-way-audio.html", title: "Diagnose one-way audio on an IP phone call", d: "Check SIP call setup and both RTP media paths, then report where the missing audio was last seen." },
+          { n: "P76", file: "practice/p76-hfc-coax-diagnosis.html", title: "Find a fault on an HFC coax trainer", d: "Identify cable modem ports, check spare coax with a meter and interpret a DOCSIS signal report." }
         ]}
       ]
     },
@@ -152,10 +159,11 @@ window.TOC = {
           { n: "T28", file: "theory/t28-lithium-batteries.html", title: "Lithium-ion cells, charging and protection", d: "Pack protection, fuel gauges, charge controllers, energy and runtime." },
           { n: "T29", file: "theory/t29-usb-c-power-delivery.html", title: "USB-C attachment, power delivery and diagnosis", d: "CC, VBUS, power contracts, cables and charging tests." }
         ]},
-        { title: "Part 8 · Embedded control and radio", blurb: "Time, feedback and propagation from projects to real systems.", chapters: [
+        { title: "Part 8 · Embedded control, radio and telecom", blurb: "Time, feedback, propagation and shared service paths.", chapters: [
           { n: "T30", file: "theory/t30-embedded-timing-states.html", title: "Firmware timing, state machines and recovery", d: "Debounce, millis rollover, watchdogs, brownouts and safe startup." },
           { n: "T31", file: "theory/t31-feedback-control.html", title: "Feedback, interlocks and control loops", d: "Open and closed loops, PID, hysteresis, permissives and independent proof." },
-          { n: "T32", file: "theory/t32-rf-transmission-lines.html", title: "RF transmission lines, antenna matching and link budget", d: "Characteristic impedance, S11, SWR, antenna dimensions, polarisation and RSSI." }
+          { n: "T32", file: "theory/t32-rf-transmission-lines.html", title: "RF transmission lines, antenna matching and link budget", d: "Characteristic impedance, S11, SWR, antenna dimensions, polarisation and RSSI." },
+          { n: "T44", file: "theory/t44-telecom-networks.html", title: "How broadband, mobile and voice services share a network", d: "Access media, aggregation, backhaul, DOCSIS, cellular signal units and SIP/RTP." }
         ]},
         { title: "Part 9 · Robotics, sensing and perception", blurb: "Motion and feedback, control I/O, calibration, camera geometry and learned inspection.", chapters: [
           { n: "T33", file: "theory/t33-robot-motion-and-feedback.html", title: "Robot motion, coordinate frames and encoder feedback", d: "Joint space, task space, repeatability and the encoder readings that support a robot’s control loop." },
@@ -200,7 +208,7 @@ window.TOC = {
         { title: "Part 0 · The market", blurb: "Start with the evidence from real Australian job ads.", chapters: [
           { n: "C00", file: "career/c00-what-job-ads-ask-for.html", title: "What Australian job ads actually ask for", d: "2,764 SEEK ads from your research: competition, tickets, tools and pay for each technician family." },
           { n: "C18", file: "career/c18-controls-robotics-and-service-careers.html", title: "Choose a path into controls, electronics test or automation", d: "Compare Australian entry routes, actual employer tasks and portfolio evidence for hands-on technician roles." },
-          { n: "C20", file: "career/c20-ludhiana-melbourne-technician-jobs.html", title: "Find hands-on technician work in Ludhiana and Melbourne", d: "Compare local ads, entry requirements and training pathways for repair, instrumentation, controls and HVAC site work." }
+          { n: "C20", file: "career/c20-ludhiana-melbourne-technician-jobs.html", title: "Find hands-on technician work in Melbourne", d: "Compare local ads, entry requirements and training pathways for repair, instrumentation, controls and HVAC site work." }
         ]},
         { title: "Part I · Building services", blurb: "The building systems trades.", chapters: [
           { n: "C01", file: "career/c01-bms-fundamentals.html", title: "BMS fundamentals: what a building management system does", d: "HVAC plant, points (AI/AO/DI/DO), controllers, front ends and alarms." },
@@ -214,7 +222,8 @@ window.TOC = {
           { n: "C06", file: "career/c06-access-control-alarms.html", title: "Access control and intruder alarms", d: "Readers, Wiegand and OSDP, locks, REX, fail-safe vs fail-secure, sensors and EOL." },
           { n: "C14", file: "career/c14-security-platforms.html", title: "Security platforms: how Gallagher, Genetec, Integriti and Milestone think", d: "Cardholders, access levels, schedules, doors, VMS recording rules and integrations, explained vendor-neutrally." }
         ]},
-        { title: "Part III · Telecommunications", blurb: "Structured cabling, NBN, fibre and wireless.", chapters: [
+        { title: "Part III · Telecommunications", blurb: "Melbourne career routes, regulated cabling, NBN, fibre and wireless.", chapters: [
+          { n: "C21", file: "career/c21-melbourne-telecom-jobs.html", title: "Find a first telecom job in Melbourne", d: "Compare ISP support, mobile and network operations, data-centre patching and field trainee roles." },
           { n: "C07", file: "career/c07-telecom-cabling-acma.html", title: "Telecom cabling in Australia: ACMA rules and structured cabling", d: "Cabling registration, AS/CA S009, comms rooms, labelling and testing." },
           { n: "C08", file: "career/c08-nbn-technologies.html", title: "The NBN and access networks", d: "FTTP, FTTC, FTTN, HFC, fixed wireless and satellite, and the tech roles around them." },
           { n: "C09", file: "career/c09-fibre-splicing-otdr.html", title: "Fibre optics in the field: splicing, connectors and OTDR", d: "Single-mode vs multimode, fusion splicing, loss budgets and reading an OTDR trace." }
@@ -228,7 +237,7 @@ window.TOC = {
           { n: "C16", file: "career/c16-repair-work-portfolio.html", title: "Build a repair portfolio and a shop workflow", d: "Case records for BMS and repair, with intake, assessment, quoting, retesting and handover." }
         ]},
         { title: "India · Start a specialist repair service", blurb: "Evaluate local customers, turnaround, parts and the bench tests behind a paid repair.", chapters: [
-          { n: "C19", file: "career/c19-ludhiana-repair-shop.html", title: "Choose a specialist repair service in Ludhiana", d: "Compare paid repair opportunities in knitting, plasma, packaging, temperature controls and industrial electronics. Check the gap with a local pilot." }
+          { n: "C19", file: "career/c19-ludhiana-repair-shop.html", title: "Choose a specialist repair service in Ludhiana", d: "Use the existing counter to validate paid jobs in plasma, packaging, temperature controls and portable electronics." }
         ]}
       ]
     },
