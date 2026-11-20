@@ -70,10 +70,12 @@
     <h2>Transfer the reasoning to an actual motherboard</h2>
     <p>On an owned donor, record the board identifier and revision and follow its service instructions for charger, main battery and any other energy sources. Find a trustworthy schematic for that revision. Locate the supply net, ground reference, regulator, loads and a documented point where a section can be disconnected. The T480 drawing linked here applies to the specific board marked <code>NM-B501</code> revision <code>0.1</code>. Check your actual board before using it. <a href="https://www.ifixit.com/Document/RXTmJIF56BpXZcoC/Lenovo-ThinkPad-T480-01YR328-NM-B501-rev0.1.pdf">T480 board schematic example</a>.</p>
     <p>Measure the suspect rail cold. Record range, polarity, settling time and the same readings on an identical reference board if available. A capacitor can charge from the meter and make the reading climb. Processor core rails often look low even when healthy. Accessible connectors on a documented rail make good first isolation points. Treat any soldered isolation link, inductor lift or voltage injection as separate supervised work that requires confirmed rail limits and board topology. The 5 V trainer's parameters apply to its resistors alone. <a href="../theory/t24-measurement-datasheets.html">T24 in-circuit measurement</a> · <a href="p26-smd-rework.html">P26 practice on a rework board</a>.</p>
+    <p>If the downstream circuit checks out cold and the evidence indicates an open series device, <a href="p105-laptop-board-input-fuse.html">P105 shows how to prove and replace an open chip fuse on a training board</a>.</p>
+
     <div class="callout good"><span class="label">What to put on the job card</span><p>Write the last confirmed startup stage, the exact net that differs, the readings before and after isolation and the remaining candidate components. Once a specific accessible component has been proven faulty, check whether you can identify and source its replacement. Verify the original symptom again after the repair.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-board-display"></script>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
 <script src="../assets/app.js?v=20261120-commercial-search"></script>
 </body>
 </html>

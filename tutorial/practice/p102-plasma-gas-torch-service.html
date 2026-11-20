@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P102 · Test plasma-cutter gas delivery and service torch consumables</title>
+<meta name="description" content="Work through a Powermax45 XP gas-test case, inspect a cold Duramax Lock torch and prove whether the fault follows the air supply or torch.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P102</span>
+    <h1>Test plasma-cutter gas delivery and service torch consumables</h1>
+    <p class="lede">Work through a Powermax45 XP gas-test case, inspect a cold Duramax Lock torch and prove whether the fault follows the air supply or torch.</p>
+    <div class="meta"><span><b>Time</b> 45–75 minutes</span><span><b>Before this</b> <a href="p64-plasma-cutter-triage.html">P64 plasma cutter triage</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Inspect the cold torch before diagnosing power</h2>
+    <p>Work on a Powermax45 XP with the Duramax Lock hand torch for the worked example. Record the exact power source, torch, lead length, process and fault indication. A Powermax45, Powermax45 XP and Powermax45 SYNC can have different consumables and controls. This lesson uses the operator-service scope. Keep the cabinet closed. With the torch cool, isolate mains and the compressed-air supply and release retained pressure as the operator manual specifies before removing operator-serviceable parts.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/plasma-machine.jpg" width="960" height="631" alt="Portable plasma cutter with labels pointing to the pressure gauge and hand torch" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 631" aria-hidden="true">
+            <defs><marker id="p102-machine-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M159 379 309 316" stroke="#103549" stroke-width="14"/>
+            <path d="M159 379 309 316" stroke="white" stroke-width="6" marker-end="url(#p102-machine-arrow)"/>
+            <rect x="24" y="356" width="270" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="159" y="398" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Pressure gauge</text>
+            <path d="M672 544 360 543" stroke="#103549" stroke-width="14"/>
+            <path d="M672 544 360 543" stroke="white" stroke-width="6" marker-end="url(#p102-machine-arrow)"/>
+            <rect x="557" y="521" width="230" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="672" y="563" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Hand torch</text>
+          </svg>
+        </div>
+        <figcaption>A generic plasma cutter. Locate the pressure gauge and hand torch. Check the control layout of the named Powermax model separately.<br><small>Photo by Thomas S., resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Plasmaschneider.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/air-filter-regulator-cutaway.jpg" width="500" height="783" loading="lazy" decoding="async" alt="Cutaway photograph of a compressed-air filter regulator showing two pipe ports, an adjustment screw and a spring">
+          <svg viewBox="0 0 500 783" aria-hidden="true">
+            <defs><marker id="p102-reg" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M180,83 L243,157" fill="none" stroke="#18232a" stroke-width="12"/><path d="M180,83 L243,157" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p102-reg)"/>
+            <rect x="101" y="62" width="171" height="35" rx="6" fill="#122029"/><text x="110" y="87" style="fill:#fff;font-size:22px;font-weight:700">Adjustment</text>
+            <path d="M70,496 L125,436" fill="none" stroke="#18232a" stroke-width="12"/><path d="M70,496 L125,436" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p102-reg)"/>
+            <rect x="21" y="481" width="101" height="35" rx="6" fill="#122029"/><text x="30" y="506" style="fill:#fff;font-size:22px;font-weight:700">Air port</text>
+            <path d="M383,568 L263,534" fill="none" stroke="#18232a" stroke-width="12"/><path d="M383,568 L263,534" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p102-reg)"/>
+            <rect x="343" y="550" width="99" height="35" rx="6" fill="#122029"/><text x="352" y="575" style="fill:#fff;font-size:22px;font-weight:700">Spring</text>
+          </svg>
+        </div>
+        <figcaption>A sectioned filter regulator from the museum collection. Its ports fit into the air path. The internal spring and valve mechanism illustrate how the pressure is set. Find the flow arrow on the actual assembly.<br><small>Photo from Museo Nazionale della Scienza e della Tecnologia Leonardo da Vinci, Milan, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Filtro_riduttore_di_pressione_per_aria_compressa_-_Museo_scienza_tecnologia_Milano_10921_dia.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the two tests separately.</b> The setup clip shows the Duramax Lock hand torch, cable connection and front controls. At 2:30 of the second clip, identify where the Powermax45 XP displays its set and actual values in gas-test mode. Use the actual operator manual to confirm the mode and procedure. <a href="https://www.hypertherm.com/resources/more-resources/videos/powermax45-xp-setup-video/">Hypertherm's machine and torch setup</a> · <a href="https://www.youtube.com/watch?v=jUFL5-kjOEo&amp;t=150s">Hypertherm's Powermax45 XP gas test</a>.</p>
+
+    <h2>Lay out the consumables in order</h2>
+    <ol class="steps">
+      <li><p>Use a cool isolated spare or detached training torch. Set out a tray for the parts. Identify the shield, retaining cap, nozzle, electrode and swirl ring using the manual's drawing for your cutting process. Photograph the order and record the numbers from the packaging where parts are unmarked. Do not assume a cartridge for a SYNC torch is interchangeable with a loose Duramax stack.</p></li>
+      <li><p>Compare each piece against a proven matching set under good light. Look for an oval nozzle bore, marks or deposits on the shield, cracks or obstructed holes in the swirl ring and excessive pitting in the electrode. Use the model's service limits and replacement guidance. Keep the two sets separate. Forcing a gauge or pick through a bore can change the part you were trying to inspect.</p></li>
+      <li><p>Use the documented sequence to assemble the correct set. The Powermax45 XP manual calls for finger-tight consumables. Observe the cap seating and cold cable condition. Damage to the torch body, lead insulation or connector goes to the suitable service bench. <a href="https://xnet.hypertherm.com/Xnet/library/download/?file=HYP172110">Powermax45 XP operator manual, pages 48–50 and 165–166</a> · <a href="https://www.hypertherm.com/resources/resources-by-product/?ProductCode=POWERMAX45+XP">Hypertherm's exact torch and part options</a>.</p></li>
+    </ol>
+
+    <h2>Read the air path under demand</h2>
+    <p>A regulator can show normal pressure with air stopped. A blocked element, narrow hose, poor quick coupling or weak supply only becomes apparent when the machine demands flow. Compare the regulator outlet and the machine inlet during the same gas-test interval. Keep the same mode, lead, supply setting and pressure units. The front display's actual outlet reading and an external inlet gauge measure different points. Their readings should be evaluated against their respective specifications. <a href="../theory/t52-airflow-and-pressure.html">T52 pressure drop and flow</a>.</p>
+    <p>Use this recorded training case away from a powered cutter. To gather live evidence later, have a competent operator use the manual's gas-only test with the cabinet closed and the correctly assembled torch pointed safely away. Keep people and loose objects clear. Use the facility's rated gauges and fittings with verified depressurisation for any changes. Log the manual's specified minimum inlet condition for the exact mode and lead before calling a result acceptable.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Recorded case (illustrative)</th><th scope="col">Air stopped</th><th scope="col">During the same gas test</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Original delivery hose and coupling</th><td>About 6.0 bar at both points</td><td>5.9 bar after regulator, 3.2 bar at machine inlet</td><td>The largest loss is between these points. Check that hose, couplings and any filter in that span.</td></tr>
+        <tr><th scope="row">Known-good correctly sized delivery assembly</th><td>About 6.0 bar at both points</td><td>5.9 bar after regulator, 5.5 bar at machine inlet</td><td>The loss shrank at the same demand. Confirm gas test and return-to-service behaviour before calling the torch faulty.</td></tr>
+        <tr><th scope="row">Supply also falls when gas starts</th><td>About 6.0 bar at both points</td><td>3.3 bar after regulator, 3.1 bar at inlet</td><td>Measure farther upstream under the same demand. Investigate upstream supply, regulator or air preparation before buying a torch.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Return the job with the fault reproduced and resolved</h2>
+    <p>If the same fault persists on a known supply with the correct consumables, record whether there is no gas, gas without ignition, or ignition without transfer. A poor work connection is a separate branch for an arc that starts but does not transfer. Use the OEM service route for internal electrical faults. For a completed repair have the authorised operator repeat the original complaint under comparable conditions and perform the approved return checks. Record matched parts, flowing readings and a sample cut where applicable. Never bridge a cap or torch interlock for a test. <a href="../welding/w06-repair-return-to-service.html">W06 return-to-service record</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

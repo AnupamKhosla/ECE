@@ -1,5 +1,13 @@
 # ECE Workbench page audit
 
+## Specialist drop-off repair workshops · 21 November 2026
+
+- [P102](../tutorial/practice/p102-plasma-gas-torch-service.html) adapts Hypertherm's separation of cap/consumable faults and gas-pressure faults into a cold inspection and two-point flowing-pressure case. [T52](../tutorial/theory/t52-airflow-and-pressure.html) explains pressure, flow and restrictions using Festo and Atlas Copco references.
+- [P103](../tutorial/practice/p103-zebra-label-printer-service.html) uses Zebra calibration, self-test, cleaning and replacement procedures to build a controlled print comparison. [T53](../tutorial/theory/t53-thermal-printing-and-barcode-quality.html) explains thermal elements, label sensing and the difference between functional scans and GS1 verification.
+- [P104](../tutorial/practice/p104-m12-sensor-cable-termination.html) adds an exact Phoenix Contact termination, complementary assembly videos and a full post-repair pin map and loaded check.
+- [P105](../tutorial/practice/p105-laptop-board-input-fuse.html) uses Littelfuse part documentation and PACE rework training to teach an open chip fuse on a protected five-volt board. [P106](../tutorial/practice/p106-tv-tcon-panel-diagnosis.html) combines a Samsung picture-test procedure, a documented repair case and ribbon handling on detached parts.
+- Each new lesson has at least two real photos and an existing demonstration. The [Ludhiana shop route](../tutorial/index.html#india-repair) and [career guide](../tutorial/career/c19-ludhiana-repair-shop.html) link the five jobs to a reference, a diagnostic result and a handover test.
+
 ## Board repair, LCD televisions and industrial cables · 20 November 2026
 
 - [P97](../tutorial/practice/p97-laptop-board-short-isolation.html) adds a protected 5 V branch-isolation exercise and a documented donor-board example. [P98](../tutorial/practice/p98-laptop-motherboard-replacement.html) covers a T480 motherboard swap, FRU matching and acceptance tests.

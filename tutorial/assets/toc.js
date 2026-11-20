@@ -137,6 +137,13 @@ window.TOC = {
           { n: "P99", file: "practice/p99-lcd-tv-fault-diagnosis.html", title: "Find why an LCD television has sound but no picture", d: "Use the TV’s own picture test, a reference HDMI source and a flashlight to separate external input, image and backlight faults." },
           { n: "P100", file: "practice/p100-tv-backlight-panel-service.html", title: "Learn LED backlight fault isolation and panel handling", d: "Reproduce an open LED string at 5 V, identify exact TV strip revisions and rehearse the fragile display stack before real service." },
           { n: "P101", file: "practice/p101-industrial-sensor-cable-repair.html", title: "Find an intermittent fault in a machine sensor cable", d: "Map a detached industrial harness pin by pin and reproduce a dropout under load while keeping the machine isolated." }
+        ]},
+        { title: "Part Q · Specialist repair jobs", blurb: "Service plasma consumables, label printers, sensor cables, protected laptop rails and television timing boards.", chapters: [
+          { n: "P102", file: "practice/p102-plasma-gas-torch-service.html", title: "Test plasma-cutter gas delivery and service torch consumables", d: "Work through a Powermax45 XP gas-test case, inspect a cold Duramax Lock torch and prove whether the fault follows the air supply or torch." },
+          { n: "P103", file: "practice/p103-zebra-label-printer-service.html", title: "Clean and replace a Zebra ZD421 platen roller", d: "Use the printer's own samples to tell a media calibration problem from a repeating platen defect, then service the correct direct-thermal model." },
+          { n: "P104", file: "practice/p104-m12-sensor-cable-termination.html", title: "Re-terminate a passive four-pin M12 sensor cable", d: "Fit a documented screw-terminal plug, verify its complete pin map and prove the repair under load before returning it to a machine installer." },
+          { n: "P105", file: "practice/p105-laptop-board-input-fuse.html", title: "Prove and replace an open surface-mount board fuse", d: "Distinguish a missing source, an open fuse and a downstream fault. Practise replacing a documented 1206 fuse on a 5 V board." },
+          { n: "P106", file: "practice/p106-tv-tcon-panel-diagnosis.html", title: "Separate a TV timing-board fault from a panel fault", d: "Compare picture patterns and parts, practise ribbon handling on detached boards and learn when an exact T-Con swap is justified." }
         ]}
       ]
     },
@@ -220,6 +227,10 @@ window.TOC = {
           { n: "T49", file: "theory/t49-dram-chips-memory-faults.html", title: "Inside laptop RAM: cells, chips, ranks and spare rows", d: "Trace a DRAM cell and read a SO-DIMM label. Explain why removing a failed chip or limiting usable memory cannot normally restore a module." },
           { n: "T50", file: "theory/t50-ssd-health-and-bad-blocks.html", title: "Inside SSDs: flash wear, spare blocks and health reports", d: "Follow a logical block into NAND flash, distinguish remapped blocks from interface errors, and interpret NVMe and SATA health evidence." },
           { n: "T51", file: "theory/t51-lcd-panel-backlight.html", title: "How an LCD panel makes an image and lights it", d: "Follow the video and light paths through the mainboard, display timing, glass, optical layers and LED driver." }
+        ]},
+        { title: "Part 13 · Workshop equipment and consumables", blurb: "Use airflow, thermal printing and optical sensing to diagnose equipment brought to the bench.", chapters: [
+          { n: "T52", file: "theory/t52-airflow-and-pressure.html", title: "Why a pneumatic gauge can read normally when air delivery fails", d: "Understand static pressure, pressure drop, regulation and stored air. Use readings taken under the same demand to localise a restriction." },
+          { n: "T53", file: "theory/t53-thermal-printing-and-barcode-quality.html", title: "Thermal printheads, media sensing and barcode quality", d: "Follow a moving label past the sensor and printhead, then explain print defects using dot pitch, heat and contrast." }
         ]}
       ]
     },
