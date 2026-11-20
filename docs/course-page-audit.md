@@ -1,5 +1,38 @@
 # ECE Workbench page audit
 
+## Device service and foundations · 20 November 2026
+
+Reviewed all 174 chapter pages at the device-service release. The audit counted distinct inline raster images and identified direct video links. Counts identify where to review the media by hand. A raster image may be a diagram or a screenshot, and a video link may need a more precise demonstration.
+
+### Changes published after the scan
+
+- Device service now covers Android vibration and call audio, liquid exposure, laptop USB-C charging, VAV airflow and photoelectric sensing. Each of the six practical pages has two inline photos, a video and a test record to keep. The new theory explains phone acoustics, haptics and liquid-related failures. [Device diagnosis route](../tutorial/index.html#device-diagnostics) · [Commercial controls route](../tutorial/index.html#commercial-devices)
+- P04 now shows the divider midpoint, rail and separate probe contacts. P07 compares real capacitor packages and shows ceramic construction under magnification. P10 shows a real regulator package and corrects load-resistor power and thermal test instructions. P21 adds a repeatable source-to-load comparison. [P04](../tutorial/practice/p04-series-parallel-dividers.html) · [P07](../tutorial/practice/p07-capacitors-rc.html) · [P10](../tutorial/practice/p10-power-supplies.html) · [P21](../tutorial/practice/p21-fault-finding.html)
+- T45, T46 and T48 have now added direct video links. C19 and C20 had no inline raster image or directly linked video in the scan. Their current content is business and job research. Add role or equipment media only where it illustrates the action described by the chapter.
+
+### Next practical pages with one inline raster image
+
+| Chapter | What to show when revising the lab |
+| --- | --- |
+
+| [P00 Your ECE foundation and learning routes](../tutorial/practice/p00-foundation-roadmap.html) | A completed first circuit beside the first field-style work record, so the route has visible examples of the two difficulty levels. |
+| [P11 Arduino first steps](../tutorial/practice/p11-arduino-first-steps.html) | Board variants and two states of the upload path, with the power, activity and reset indicators named. |
+| [P14 Talking to devices: UART, I²C, SPI, RS-485 and Modbus](../tutorial/practice/p14-serial-buses-modbus.html) | Real UART, I²C, SPI and RS-485 hardware. Show the pins or terminals before comparing a good and a failed transaction. |
+| [P15 Seeing signals: oscilloscope and logic analyser](../tutorial/practice/p15-oscilloscope-logic-analyser.html) | The probe tip, short ground connection and two screen captures under different trigger settings. |
+| [P16 Raspberry Pi and the Linux you need](../tutorial/practice/p16-raspberry-pi-linux.html) | Power input, display port and card slot on two Pi models, with actual boot evidence after flashing. |
+| [P17 Raspberry Pi GPIO with Python: a data logger](../tutorial/practice/p17-pi-gpio-python.html) | The GPIO pin header and actual wired breadboard with correct pin numbers, plus the terminal output. |
+| [P18 ESP32 and IoT: Wi-Fi, MQTT and dashboards](../tutorial/practice/p18-esp32-iot-mqtt.html) | ESP32 power and boot controls, the sensor wired to the actual board, and a dashboard showing live versus stale data. |
+| [P19 Networking hands-on: IP, subnets, switches, PoE, VLANs](../tutorial/practice/p19-networking-hands-on.html) | Patch lead, switch port indicator and a captured local topology for the small network lab. |
+| [P22 Read a site drawing and label a cable](../tutorial/practice/p22-reading-drawings.html) | Separate highlighted parts of a real drawing, cable label and termination it points to. |
+| [P24 Predict a reading before touching the board](../tutorial/practice/p24-datasheets-measurement.html) | The same test points photographed with a meter, and the predicted-versus-measured entries from the comparison. |
+| [P25 Measure an RC filter on the oscilloscope](../tutorial/practice/p25-scope-filters.html) | Probe attachment and the bench RC network, with adjacent input and output traces on a real screen. |
+| [P27 Program a timed controller that can stop](../tutorial/practice/p27-firmware-state-machine.html) | Controller wiring and an independent stop input, then the observed signal at a stop transition. |
+| [P28 Build a two-sensor line-following robot](../tutorial/practice/p28-line-following-robot.html) | Underside sensor clearance and route material, with the wheels and motor connections located. |
+| [P29 Commission a simulated air handler](../tutorial/practice/p29-bms-commissioning-lab.html) | Air-handler and controller views that identify the points in the simulator sequence. |
+| [P30 Make an IoT sensor show stale data clearly](../tutorial/practice/p30-iot-reliability.html) | Bench sensor hookup and two dashboard states with timestamps, using captured test data. |
+| [P70 Trace a machine chiller’s low-flow alarm](../tutorial/practice/p70-machine-chiller-flow.html) | Accessible sight glass, flow sensor, external piping and the difference between actual flow and proof signal. |
+| [P82 Replace an IO-Link sensor and verify its data](../tutorial/practice/p82-io-link-sensor-replacement.html) | The connector, master port LEDs, and actual side-by-side displays of parameter restore and current process data. |
+
 ## Practical course comparison and route revision · 20 November 2026
 
 The current catalogue has 150 chapters. The India repair-shop route adds seven repair labs and a Ludhiana market guide. The job track adds a Ludhiana and Melbourne comparison based on reviewed employer ads. The previous expansion added component-level audio diagnosis and theory, laptop display and cooling, Android camera diagnosis, network camera commissioning and BMS point-to-point checks. See the [India repair-shop research](india-repair-shop-research.md), the [local job research](ludhiana-melbourne-job-market.md) and the [course and competency comparison](practical-course-crosswalk.md).

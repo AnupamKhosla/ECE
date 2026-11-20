@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P10 · Power supplies: regulators, buck converters, batteries</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -25,16 +25,30 @@
       <li><b>LM317T adjustable regulator ×2</b><small>~A$2 each</small></li>
       <li><b>Buck converter module</b><small>~A$5–10 · adjustable, LM2596-type or similar, with a multi-turn trim pot</small></li>
       <li><b>Capacitors</b><small>0.33 µF and 0.1 µF ceramic; 10 µF and 100 µF electrolytic (25 V)</small></li>
-      <li><b>Resistors</b><small>240 Ω, 1.5 kΩ, 5 kΩ trim pot; load resistors 100 Ω 1 W, 22 Ω 5 W, 10 Ω 5 W</small></li>
-      <li><b>12 V DC plug-pack, 1–2 A</b><small>From P08; a 9 V battery and a 4×AA holder too</small></li>
-      <li><b>Inline fuse holder + fuses, and a polyfuse</b><small>~A$5 · 5×20 mm glass or blade type; a 0.5 A PTC resettable fuse</small></li>
+      <li><b>Resistors</b><small>240 Ω, 1.5 kΩ, 5 kΩ trim pot; load resistors 100 Ω 1 W, 22 Ω 5 W, 10 Ω 10 W, 6.8 Ω 10 W and 47 Ω 10 W</small></li>
+      <li><b>12 V DC plug-pack, 1–2 A</b><small>from P08, a 9 V battery and 4×AA holder, and an isolated 5 V current-limited bench supply for the protection test</small></li>
+      <li><b>Inline fuse holder + fuses, and a polyfuse</b><small>for the 5 V test, a 250 mA fuse with holder and a PTC with a typical 0.25 A hold and 0.50 A trip rating at room temperature</small></li>
       <li><b>10–20 m of thin two-core cable</b><small>~A$10 · e.g. alarm cable or light figure-8, for the voltage-drop lab</small></li>
     </ul>
 
-    <div class="callout warn"><span class="label">Safety</span><p>All of this lab is extra-low-voltage DC. Regulators and load resistors get hot enough to burn (80–120 °C) without any warning glow: touch briefly with a fingertip, or not at all. Batteries can deliver huge currents into a short circuit: a 12 V 7 Ah sealed lead-acid battery will melt a thin wire and can start a fire. Fuse every battery lead close to the battery. Lithium-ion cells can catch fire if punctured, shorted or charged wrongly. The 230 V side of any power supply, and wiring a 24 V AC control transformer to mains, is licensed electrician's work.</p></div>
+    <div class="callout warn"><span class="label">Safety</span><p>All of this lab is extra-low-voltage DC. Regulators and load resistors get hot enough to burn (80–120 °C) without any warning glow: keep hands off during tests and allow parts to cool before changing connections. Batteries can deliver huge currents into a short circuit: a 12 V 7 Ah sealed lead-acid battery will melt a thin wire and can start a fire. Fuse every battery lead close to the battery. Lithium-ion cells can catch fire if punctured, shorted or charged wrongly. The 230 V side of any power supply, and wiring a 24 V AC control transformer to mains, is licensed electrician's work.</p></div>
 
     <h2>1 · The 7805 linear regulator</h2>
-    <p>A <b>linear regulator</b> is a transistor in series with the load that automatically adjusts how much voltage it "throws away" so that the output stays fixed. The 7805 gives 5.0 V out from any input from about 7 V up to its maximum (around 35 V for common versions; check your datasheet).</p>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/to220-linear-regulator.jpg" alt="TS7805 linear regulator with the body marking, three leads and insulated mounting tab visible" width="960" height="641" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 641" aria-hidden="true">
+          <defs><marker id="p10-regulator-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M252,193 L255,293" fill="none" stroke="#18232a" stroke-width="18"/><path d="M252,193 L255,293" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p10-regulator-photo)"/>
+          <rect x="39" y="138" width="259" height="54" rx="7" fill="#122029"/><text x="49" y="178" style="fill:#fff;font-size:36px;font-weight:700">Mounting tab</text>
+          <path d="M699,455 L702,383" fill="none" stroke="#18232a" stroke-width="18"/><path d="M699,455 L702,383" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p10-regulator-photo)"/>
+          <rect x="614" y="457" width="202" height="54" rx="7" fill="#122029"/><text x="624" y="497" style="fill:#fff;font-size:36px;font-weight:700">Three leads</text>
+        </svg>
+      </div>
+      <figcaption>Read the part marking from the front and note the package orientation. The photographed TS7805 has an isolated tab. Verify pin functions and tab isolation using the exact part’s datasheet. The schematic below uses the pin order for a common TO-220 7805 variant.<br><small>Photo by Anonimski, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:TS7805_voltage_regulator.JPG">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p>For a standard TO-220 example, find the pin diagram, input range and thermal data before wiring. <a href="https://www.ti.com/lit/ds/symlink/lm7800.pdf">Texas Instruments LM7805 family datasheet</a>.</p>
+    <p>A <b>linear regulator</b> is a transistor in series with the load that automatically adjusts how much voltage it "throws away" so that the output stays fixed. A 7805 can keep its output near 5 V when the input has enough headroom and current and temperature stay inside the part’s operating limits. Use the recommended input range in the exact datasheet and account for the worst-case supply and load.</p>
 
     <figure>
       <svg viewBox="0 0 640 260" role="img" aria-label="7805 regulator: TO-220 pinout input ground output, with 0.33 microfarad input and 0.1 microfarad output capacitors and a load">
@@ -46,7 +60,7 @@
         <line class="s-line" x1="60" y1="130" x2="60" y2="180"/><line class="s-line" x1="85" y1="130" x2="85" y2="180"/><line class="s-line" x1="110" y1="130" x2="110" y2="180"/>
         <text class="t t-small" x="48" y="198">IN</text><text class="t t-small" x="74" y="198">GND</text><text class="t t-small" x="102" y="198">OUT</text>
         <text class="t t-small t-muted" x="30" y="222">front view, legs down</text>
-        <text class="t t-small t-muted" x="30" y="238">tab = GND on a 7805</text>
+        <text class="t t-small t-muted" x="30" y="238">check tab on exact part</text>
         <!-- schematic -->
         <rect class="f-panel s-line" x="330" y="50" width="100" height="56" rx="4"/>
         <text class="t t-bold" x="358" y="84">7805</text>
@@ -72,14 +86,14 @@
     </figure>
 
     <h3>Two limits: dropout and heat</h3>
-    <p><b>Dropout voltage</b> is the minimum difference between input and output for the regulator to keep working. For a standard 7805 it is about 2 V, so you need at least about 7 V in. Below that, the output simply follows the input down, about 2 V lower. "Low-dropout" (LDO) regulators need only a few hundred millivolts.</p>
+    <p><b>Dropout voltage</b> is the minimum difference between input and output for the regulator to keep working. For a standard 7805 it is about 2 V, so you need at least about 7 V in. Below that headroom, the output falls out of regulation. Its actual voltage depends on the part, input and load. "Low-dropout" (LDO) regulators need only a few hundred millivolts.</p>
     <p><b>Heat</b> is the bigger limit. The regulator passes the full load current while dropping (V<sub>in</sub> − V<sub>out</sub>) across itself:</p>
     <div class="formula">P = (V<sub>in</sub> − V<sub>out</sub>) × I = (12 − 5) × 0.5 A = 3.5 W
       <small>3.5 W is a lot for a part the size of a fingernail. Efficiency is only V<sub>out</sub>/V<sub>in</sub> = 5/12 = 42%: more power is wasted as heat than delivered.</small></div>
     <h3>Worked example: does it need a heatsink?</h3>
     <p>Heat flows out of the chip through <b>thermal resistances</b>, measured in °C per watt. A bare TO-220 package in still air is roughly 50–65 °C/W from junction (the silicon) to air. The chip should stay below about 125 °C (the 7805 shuts itself down if it gets too hot, which shows up as the output cutting in and out).</p>
     <ul>
-      <li>No heatsink: 3.5 W × 60 °C/W = +210 °C. Impossible: it will go into thermal shutdown.</li>
+      <li>The bare-package model predicts a 210 °C rise. This exceeds the allowed rise. Reduce the dissipation or choose a documented cooling arrangement.</li>
       <li>Allowed total rise in a 40 °C cabinet: 125 − 40 = 85 °C. Total thermal resistance allowed: 85 / 3.5 = 24 °C/W.</li>
       <li>Junction-to-case is about 5 °C/W and the thermal pad about 1 °C/W, so the heatsink must be better than about 24 − 6 = 18 °C/W. Choose one rated around 10–15 °C/W for margin.</li>
       <li>Or reduce the heat: feed it from 9 V instead of 12 V (P = 4 × 0.5 = 2 W), or use a buck converter (section 3).</li>
@@ -90,18 +104,18 @@
       <li><p><b>No load:</b> measure output. Expect 4.8–5.2 V (the 7805 is typically ±4%).</p></li>
       <li><p><b>100 Ω load (50 mA):</b> output barely changes. Regulator heat = (9 − 5) × 0.05 = 0.2 W: slightly warm.</p></li>
       <li><p><b>Dropout test:</b> swap the input to the 4×AA pack (about 6 V). Output falls to about 4 V. The regulator has run out of headroom.</p></li>
-      <li><p><b>Heat test:</b> 12 V plug-pack input, 22 Ω 5 W load (about 230 mA). P = 7 × 0.23 ≈ 1.6 W. Without a heatsink the tab gets too hot to touch within a minute (+80–100 °C). Power off, fit the heatsink, repeat: much cooler.</p></li>
+      <li><p><b>Compare calculated heat at two inputs.</b> Keep the 100 Ω, 1 W load on a suitable isolated bench setup. Power off before replacing the 9 V source with an isolated 12 V DC source. Measure input at the regulator and output across the load. Calculate I = V<sub>out</sub>/100 Ω and P = (V<sub>in</sub> − V<sub>out</sub>) × I. At 12 V in and 5 V out the estimate rises to 0.35 W. Keep hands clear of powered components. For any temperature measurement use a suitable instrument and the part’s thermal information.</p></li>
     </ol>
 
     <div class="table-wrap"><table>
-      <tr><th>Input</th><th>Load</th><th>Expected V<sub>out</sub></th><th>Regulator heat</th><th>Feel</th></tr>
-      <tr><td>9 V battery</td><td>none</td><td>4.8–5.2 V</td><td>≈ 0 W (a few mA for the chip itself)</td><td>Cold</td></tr>
-      <tr><td>9 V battery</td><td>100 Ω</td><td>4.8–5.2 V</td><td>≈ 0.2 W</td><td>Barely warm</td></tr>
-      <tr><td>4×AA (≈ 6 V)</td><td>100 Ω</td><td>≈ 3.9–4.3 V</td><td>≈ 0.1 W</td><td>Out of regulation (dropout)</td></tr>
-      <tr><td>12 V plug-pack</td><td>22 Ω 5 W</td><td>4.8–5.2 V</td><td>≈ 1.6 W</td><td>Hot without heatsink; warm with</td></tr>
+      <tr><th>Input</th><th>Load</th><th>Expected V<sub>out</sub></th><th>Regulator heat</th><th>What to record</th></tr>
+      <tr><td>9 V battery</td><td>none</td><td>4.8–5.2 V</td><td>≈ 0 W (a few mA for the chip itself)</td><td>Initial V<sub>out</sub></td></tr>
+      <tr><td>9 V battery</td><td>100 Ω</td><td>4.8–5.2 V</td><td>≈ 0.2 W</td><td>V<sub>in</sub> and V<sub>out</sub> under load</td></tr>
+      <tr><td>4×AA (≈ 6 V)</td><td>100 Ω</td><td>≈ 3.9–4.3 V</td><td>≈ 0.08 W</td><td>Measure out of regulation (dropout)</td></tr>
+      <tr><td>12 V DC source</td><td>100 Ω, 1 W</td><td>4.8–5.2 V</td><td>≈ 0.35 W</td><td>Change in dissipation from the 9 V run</td></tr>
     </table></div>
 
-    <div class="callout why"><span class="label">Why it gets hot</span><p>Power is voltage × current. The current through the regulator is the same as the load current, and the voltage across it is everything you are not using. A linear regulator is basically an automatically adjusted resistor: it can only throw voltage away as heat. Energy is conserved, so 12 V × 0.5 A going in must equal 5 V × 0.5 A going to the load plus 3.5 W of heat.</p></div>
+    <div class="callout why"><span class="label">Why it gets hot</span><p>Power is voltage × current. The current through the regulator is the same as the load current, and the voltage across it is everything you are not using. A linear regulator is basically an automatically adjusted resistor: it can only throw voltage away as heat. Energy is conserved, so 12 V × 0.5 A going in must equal 5 V × 0.5 A going to the load plus 3.5 W of heat in this calculation, which neglects the regulator’s own small ground current.</p></div>
     <a class="crosslink" href="../theory/t03-power-energy-heat.html">Theory T03 · Power, energy and heat</a>
 
     <h2>2 · The LM317: any voltage you like</h2>
@@ -256,8 +270,9 @@
     </figure>
 
     <h3>Worked example: 12 V to 5 V at 2 A</h3>
+    <p>This comparison uses a hypothetical linear regulator rated for 2 A. Use the documented part limits for an actual build. The 2 A example is a calculation.</p>
     <div class="table-wrap"><table>
-      <tr><th></th><th>7805-style linear</th><th>Buck converter at 90%</th></tr>
+      <tr><th></th><th>Hypothetical 2 A linear regulator</th><th>Buck converter at 90%</th></tr>
       <tr><td>Power to the load</td><td>5 V × 2 A = 10 W</td><td>10 W</td></tr>
       <tr><td>Power from the 12 V supply</td><td>12 V × 2 A = 24 W</td><td>10 / 0.9 = 11.1 W</td></tr>
       <tr><td>Input current</td><td>2 A (same as output)</td><td>11.1 / 12 = 0.93 A (<b>less</b> than output)</td></tr>
@@ -267,13 +282,13 @@
 
     <ol class="steps">
       <li><p><b>Set the module before connecting a load.</b> 12 V into IN+ and IN−. Meter on OUT. Turn the multi-turn trim pot until the output reads 5.0 V. (These pots can take 10–20 turns to move noticeably; some modules are shipped set near the maximum.)</p></li>
-      <li><p><b>Load it</b> with 10 Ω 5 W (0.5 A, 2.5 W).</p></li>
+      <li><p><b>Load it</b> with 10 Ω 10 W (0.5 A, 2.5 W) on a heat-resistant support.</p></li>
       <li><p><b>Measure four numbers:</b> V<sub>in</sub>, I<sub>in</sub> (meter in series with the input), V<sub>out</sub>, I<sub>out</sub>.</p></li>
-      <li><p><b>Calculate efficiency</b> = (V<sub>out</sub> × I<sub>out</sub>) / (V<sub>in</sub> × I<sub>in</sub>). Expect I<sub>in</sub> about 0.23–0.27 A and efficiency about 75–90%.</p></li>
-      <li><p><b>Feel the module.</b> Barely warm. Compare with the 7805 doing the same job: (12 − 5) × 0.5 = 3.5 W.</p></li>
+      <li><p><b>Calculate efficiency</b> = (V<sub>out</sub> × I<sub>out</sub>) / (V<sub>in</sub> × I<sub>in</sub>). Expect I<sub>in</sub> about 0.23–0.28 A if efficiency is 75–90%.</p></li>
+      <li><p><b>Compare calculated dissipation.</b> Subtract measured output power from measured input power. The linear equivalent would dissipate about (12 − 5) × 0.5 = 3.5 W. Keep the load resistor on a suitable heat-resistant surface and let it cool before handling.</p></li>
     </ol>
 
-    <div class="callout tip"><span class="label">Bench tip: cheap modules</span><p>Many low-cost buck modules use cloned chips and small inductors. Treat the headline current ("3 A") as a peak, and plan on about half of it continuously. They also make high-frequency switching noise; keep them away from sensitive analogue inputs, and add the 100 nF decoupling from P07 at the circuit you are powering.</p></div>
+    <div class="callout tip"><span class="label">Bench tip: cheap modules</span><p>Many low-cost buck modules use cloned chips and small inductors. Confirm the module’s continuous rating at your input, output and temperature. The fitted inductor, cooling and board design affect the usable current. They also make high-frequency switching noise; keep them away from sensitive analogue inputs, and add the 100 nF decoupling from P07 at the circuit you are powering.</p></div>
 
     <h2>4 · Plug-packs and building power: 12 V DC, 24 V DC, 24 V AC</h2>
     <p>Read a plug-pack label before you plug anything in: output voltage, AC or DC, current rating, and the polarity symbol (a dot with + on the centre means centre-positive, the usual for 12 V gear). DC barrels come in 2.1 mm and 2.5 mm centre-pin sizes that look almost identical: a 2.5 mm plug on a 2.1 mm socket gives an intermittent fault. Modern plug-packs are regulated switch-mode supplies; older heavy ones are transformers whose output rises well above the label at light load (P06).</p>
@@ -384,9 +399,10 @@
       <li><b>Blade fuses</b> (car type) are common in 12 V distribution because they are cheap and easy to check.</li>
       <li><b>Polyfuses</b> (PTC resettable fuses) are plastic with carbon particles. Overcurrent heats them, the plastic expands, the carbon paths break, and resistance jumps. They limit current instead of melting, and reset after the power is removed and they cool. They have a <i>hold</i> current (will not trip) and a <i>trip</i> current (about twice the hold), are slower than fuses, and drop a little voltage even when cold. Security power supplies often use one PTC per output.</li>
     </ul>
+    <p>Check each load’s power at the highest voltage it can see. For the 5 V comparison, the 6.8 Ω resistor can dissipate about 3.7 W, so use a 10 W part under its mounting conditions. Use the calculation and manufacturer curves if you lack the bench setup. Compare the series curves for the parts you actually have. <a href="https://www.littelfuse.com/assetdocs/217-227-series-time-curve?assetguid=360d3568-86d3-49c3-90df-a0116f993cb7">Littelfuse 217/227 fuse time–current curves</a> · <a href="https://www.littelfuse.com/assetdocs/littelfuse_ptc_radial_leaded_rxef_datasheet?assetguid=e9a7b6b3-79ce-478c-a39a-0a70ee48ccec">Littelfuse RXEF resettable device datasheet</a>.</p>
     <ol class="steps">
-      <li><p><b>Fuse test.</b> 12 V plug-pack → inline holder with a 0.5 A fuse → 22 Ω 5 W (0.55 A). The fuse may survive for a while (fuses are slow near their rating). Swap to 10 Ω (1.2 A): it blows within seconds. Check the fuse on continuity.</p></li>
-      <li><p><b>Polyfuse test.</b> Replace the fuse with a 0.5 A hold PTC and the 10 Ω load. After a few seconds the current drops to a few tens of milliamps as it trips (measure it, and feel the PTC: warm). Remove power, wait a minute, re-apply with the 22 Ω: it works again.</p></li>
+      <li><p><b>Fuse test.</b> Use an isolated 5 V source with current limited to 0.8 A and a holder rated for the fuse. Mount the power resistors on a suitable heat-resistant support. A 22 Ω, 5 W load draws about 0.23 A while a 10 Ω, 10 W load draws about 0.50 A. Check the exact 250 mA fuse’s time–current curve and select a documented observation window based on the curve. Power off between load changes. If the fuse opens, turn the supply off and confirm continuity on the removed fuse.</p></li>
+      <li><p><b>Resettable protection test.</b> On the same 5 V, 0.8 A limited setup, predict about 0.23 A for the 22 Ω load and up to 0.74 A for the 6.8 Ω, 10 W load before the PTC changes resistance. Compare those currents with the part’s hold and trip curves at room temperature. Record the voltage across the load to see when protection limits the current. Observe only within the rated time and conditions. Power off, let the part cool as its datasheet specifies and retest with the 22 Ω load. Keep hands away from both loads and the PTC until they cool.</p></li>
     </ol>
 
     <h2>7 · Cable voltage drop: the 12 V camera at the end of a long run</h2>
@@ -475,9 +491,9 @@
 
     <ol class="steps">
       <li><p><b>Measure your cable.</b> Twist the two conductors together at the far end of your 10–20 m length. Measure the resistance across the near end on the lowest ohms range (subtract the reading with the probes touching). That is the loop resistance. Compare with the table.</p></li>
-      <li><p><b>Load it.</b> Untwist the far end and connect the 22 Ω 5 W resistor there. Power the near end from the 12 V plug-pack.</p></li>
-      <li><p><b>Measure at both ends.</b> Voltage at the supply end, then at the resistor. The difference is the drop. Check it against I × R<sub>loop</sub> (I ≈ 12 / (22 + R<sub>loop</sub>)).</p></li>
-      <li><p><b>Double the conductors.</b> If the cable has four cores, use two in parallel for + and two for −. Loop resistance halves; so does the drop.</p></li>
+      <li><p><b>Load it.</b> With the supply off, untwist the far end and connect a 47 Ω, 10 W load on a heat-resistant support. Power the near end from an isolated 12 V DC supply. The resistor dissipates up to about 3.1 W at 12 V.</p></li>
+      <li><p><b>Measure at both ends.</b> Voltage at the supply end, then at the resistor. The difference is the drop. Check it against I × R<sub>loop</sub> (I ≈ 12 / (47 + R<sub>loop</sub>)).</p></li>
+      <li><p><b>Double the conductors.</b> If the cable has four cores, use two in parallel for + and two for −. The loop resistance halves. Recalculate the expected drop because the load current also changes slightly.</p></li>
     </ol>
 
     <div class="callout job"><span class="label">On the job</span><p>Voltage drop explains a large share of "intermittent" faults in CCTV, access control and alarms: cameras that reboot when IR comes on, maglocks that do not hold properly at the end of a long run, readers that beep and reset when the lock fires, and devices that work on the bench but not on site. Measure the voltage <b>at the device terminals, while it is drawing its highest current</b> (IR on, lock energised, siren sounding). This is also why 24 V and PoE are popular for long runs: for the same power, doubling the voltage halves the current, and the percentage drop falls to a quarter.</p></div>
@@ -522,7 +538,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

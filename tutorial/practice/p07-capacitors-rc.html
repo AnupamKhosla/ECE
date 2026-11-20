@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P07 · Capacitors: timing, smoothing and decoupling</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -34,6 +34,21 @@
     <div class="callout warn"><span class="label">Safety</span><p>Everything here is extra-low voltage: a 9 V battery and the low-voltage side of a sealed AC plug-pack. Electrolytic capacitors connected backwards, or above their voltage rating, heat up, vent and can burst with a bang and a spray of hot electrolyte. Wear safety glasses, check the stripe every time, and keep your face away the first time you power a new circuit. Never open mains equipment to look at its capacitors: large capacitors inside power supplies can stay charged to hundreds of volts after unplugging, and that work belongs to licensed people.</p></div>
 
     <h2>1 · Know your capacitors</h2>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/capacitor-package-comparison.jpg" alt="A row of ceramic, film and electrolytic capacitors with a centimetre ruler" width="717" height="265" loading="lazy" decoding="async">
+        <svg viewBox="0 0 717 265" aria-hidden="true">
+          <defs><marker id="p07-package-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M108,66 L115,98" fill="none" stroke="#18232a" stroke-width="12"/><path d="M108,66 L115,98" fill="none" stroke="#ffda64" stroke-width="5.76" marker-end="url(#p07-package-photo)"/>
+          <rect x="42" y="21" width="155" height="36" rx="7" fill="#122029"/><text x="52" y="48" style="fill:#fff;font-size:24px;font-weight:700">Ceramic disc</text>
+          <path d="M455,218 L462,164" fill="none" stroke="#18232a" stroke-width="12"/><path d="M455,218 L462,164" fill="none" stroke="#ffda64" stroke-width="5.76" marker-end="url(#p07-package-photo)"/>
+          <rect x="411" y="220" width="107" height="36" rx="7" fill="#122029"/><text x="421" y="247" style="fill:#fff;font-size:24px;font-weight:700">Film box</text>
+          <path d="M553,48 L585,99" fill="none" stroke="#18232a" stroke-width="12"/><path d="M553,48 L585,99" fill="none" stroke="#ffda64" stroke-width="5.76" marker-end="url(#p07-package-photo)"/>
+          <rect x="485" y="9" width="173" height="36" rx="7" fill="#122029"/><text x="495" y="36" style="fill:#fff;font-size:24px;font-weight:700">Electrolytic</text>
+        </svg>
+      </div>
+      <figcaption>Start by finding the ceramic disc, film box and cylindrical aluminium electrolytic. Then read the printed value and voltage rating. For a polarised aluminium electrolytic, use its polarity marking and datasheet before wiring. Package shape is only the first clue.<br><small>Photo by Aka, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Condensators.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+    </figure>
   <figure class="course-photo">
     <img src="../assets/photos/cap.jpg" alt="Several aluminium electrolytic capacitor packages side by side" width="960" height="720" loading="lazy" decoding="async">
     <figcaption>Match the package to the way it will mount. A large snap-in capacitor and a small radial capacitor can share a voltage rating while having very different terminals and ripple ratings.<br><small>Photo by Elcap. <a href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
@@ -298,7 +313,7 @@
     <div class="callout job"><span class="label">On the job</span><p>RC timing is everywhere you look once you know it: the delay on a security light, the debounce on a door contact input, the soft start in a power supply, the "hold-up time" that lets a controller ride through a short power dip. When a BMS or alarm input "misses" short pulses, an RC filter on that input is often the reason. The same maths sets how fast a temperature sensor responds inside its pocket.</p></div>
 
     <h2>3 · Smoothing the bridge rectifier from P06</h2>
-    <p>The bridge gave you pulses: 100 humps per second, from 0 V up to about 15.6 V. A big capacitor across the output fills up at each peak and then supplies the load between peaks. The output becomes nearly flat DC with a small sawtooth <b>ripple</b>.</p>
+    <p>The bridge gave you pulses: 100 humps per second, from 0 V up to about 15.6 V. A big capacitor across the output fills up at each peak and then supplies the load between peaks. The output becomes DC with <b>ripple</b>.</p>
 
     <figure>
       <svg viewBox="0 0 640 230" role="img" aria-label="Full-wave rectified pulses with a smoothing capacitor: the output follows the peaks and sags linearly between them">
@@ -386,8 +401,21 @@
 
     <div class="callout aus"><span class="label">In Australia</span><p>Mains here is nominally 230 V at 50 Hz (AS 60038), so full-wave ripple is at 100 Hz. Equipment designed for North America (60 Hz mains, 120 Hz ripple) has slightly smaller smoothing capacitors for the same ripple. That rarely matters for low-voltage plug-packs sold locally, which are designed for 50 Hz, but it is one reason imported transformers can run hotter here. Confirm supply details for a specific site with the network operator or the electrician.</p></div>
 
-    <h2>4 · Decoupling: the 100 nF next to every chip</h2>
-    <p>Open any circuit board and you will see small capacitors sitting right beside every integrated circuit (IC), from the power pin to ground. They are almost always 100 nF ceramics. They are called <b>decoupling</b> or <b>bypass</b> capacitors. Here is why they are there.</p>
+    <h2 id="4-decoupling-the-100-nf-next-to-every-chip">4 · Place a decoupling capacitor near the chip</h2>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/ceramic-capacitor-cross-section.jpg" alt="Close-up cross-section through a multilayer ceramic capacitor showing parallel metal layers and the conductive end termination" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p07-mlcc-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M242,75 L290,258" fill="none" stroke="#18232a" stroke-width="18"/><path d="M242,75 L290,258" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p07-mlcc-photo)"/>
+          <rect x="54" y="26" width="343" height="54" rx="7" fill="#122029"/><text x="64" y="66" style="fill:#fff;font-size:36px;font-weight:700">Stacked electrodes</text>
+          <path d="M701,209 L642,316" fill="none" stroke="#18232a" stroke-width="18"/><path d="M701,209 L642,316" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p07-mlcc-photo)"/>
+          <rect x="661" y="155" width="288" height="54" rx="7" fill="#122029"/><text x="671" y="195" style="fill:#fff;font-size:36px;font-weight:700">End termination</text>
+        </svg>
+      </div>
+      <figcaption>This real section through an MLCC shows many internal electrodes ending at a conductive termination. Alternate electrodes connect to the opposite ends. On an intact board use the circuit and part list to identify the device before judging its value. Similar-looking surface-mount parts can perform different jobs.<br><small>Photo by TubeTimeUS, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:MLCC_cross_section_detail.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p>Look beside an integrated circuit (IC) for capacitors between its supply and ground pins. Many designs use 100 nF ceramics there. The value, type and placement come from the chip’s datasheet and the layout. These <b>decoupling</b> or <b>bypass</b> capacitors supply short bursts of current locally.</p>
     <p>A digital chip does not draw a smooth current. Every time its internal transistors switch (millions of times per second), it gulps a short spike of current, lasting a few nanoseconds. The supply is far away along wires and copper tracks. Those have <b>inductance</b>: they resist <i>changes</i> in current. The voltage lost across an inductance is V = L × (ΔI / Δt).</p>
     <div class="formula">V = L × ΔI / Δt = 100 nH × 0.05 A / 5 ns = 1 V
       <small>A 10 cm jumper wire has roughly 100 nH of inductance (about 1 nH per millimetre is a useful rule). A 50 mA spike lasting 5 ns makes the chip's supply dip by about 1 V. On a 5 V or 3.3 V chip, that can corrupt data, reset a microcontroller, or make a 555 timer trigger at random.</small></div>
@@ -492,7 +520,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

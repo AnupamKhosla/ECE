@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P21 · Fault-finding: a technician's troubleshooting method</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 <style>
 /* Page-local widget styles. Colours come only from the shared theme variables, so dark mode works. */
 .p21-btns{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
@@ -121,6 +121,20 @@
     <div class="callout why"><span class="label">Why it works</span><p>Kirchhoff's voltage law says the voltages around a loop add up to the supply voltage. If one part is open (infinite resistance), no current flows, every other part drops I × R = 0, so the whole supply must appear across the open part. That is why a blown fuse in a connected circuit reads the full supply voltage across it.</p></div>
     <a class="crosslink" href="../theory/t04-circuit-laws.html">Theory T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a>
     <h3>2. Measure under load</h3>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" alt="Meter probes clipped to two test points on a breadboard, with a resistor and LED visible between them" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p21-probe-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M223,449 L325,399" fill="none" stroke="#18232a" stroke-width="18"/><path d="M223,449 L325,399" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p21-probe-photo)"/>
+          <rect x="32" y="444" width="251" height="54" rx="7" fill="#122029"/><text x="42" y="484" style="fill:#fff;font-size:36px;font-weight:700">Red probe point</text>
+          <path d="M624,436 L562,369" fill="none" stroke="#18232a" stroke-width="18"/><path d="M624,436 L562,369" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p21-probe-photo)"/>
+          <rect x="617" y="430" width="298" height="54" rx="7" fill="#122029"/><text x="627" y="470" style="fill:#fff;font-size:36px;font-weight:700">Black probe point</text>
+        </svg>
+      </div>
+      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <p>On a battery-powered trainer, find the two nodes you want to compare with power disconnected. Clip the meter to the supply terminals. Record the voltage first with the load disconnected, then with it operating. Next measure the voltage at the load under the same condition. A source that stays steady while the remote voltage falls points to a drop in the path. Use the same reference and repeat the measurement across each suspect connection. <a href="p04-series-parallel-dividers.html">P04 · Loading measurements</a>.</p>
     <p>A cable with one strand left in a screw terminal still shows 12.3 V with nothing connected, because the meter draws almost no current (its input resistance is about 10 MΩ). Connect the camera and that one strand cannot carry 0.5 A without dropping volts. Always measure with the device <b>connected and working</b>, and at the device's own terminals.</p>
     <h3>3. Know your reference point</h3>
     <p>"There's 12 V at the camera" is meaningless unless you know where the black probe was. Measure <b>across</b> the device (red on +, black on − at the device). Measuring from the device + back to the PSU − includes the volt drop in the return wire too, and hides half the problem.</p>
@@ -523,7 +537,7 @@ Recommend same fix, quote to follow.</p>
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>
