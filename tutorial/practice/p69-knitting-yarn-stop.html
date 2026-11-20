@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P69 · Find an intermittent yarn-stop fault on a knitting-machine trainer</title>
+<meta name="description" content="Follow one feeder station from yarn path and detector to cable and displayed stop before quoting a controller.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P69</span>
+    <h1>Find an intermittent yarn-stop fault on a knitting-machine trainer</h1>
+    <p class="lede">Follow one feeder station from yarn path and detector to cable and displayed stop before quoting a controller.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p39-plc-ladder-simulation.html">P39</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Follow the thread and find the station that called for a stop</h2>
+    <p>A circular knitting machine draws yarn from many packages. Each route can include a feed unit, tension or break detector and a guide into the knitting head. A slack or broken yarn, a dirty or sticking detector, and an intermittent harness can all produce a stop complaint. A local indicator can identify a station while the central display reports a group. Ask for the station number, exact message and whether the fault follows yarn, vibration, a warm machine or a recent change.</p>
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/knitting-museum.jpg" width="500" height="749" alt="Circular knitting machines and their yarn supply at the Textile Industry Museum" loading="lazy" decoding="async">
+        <figcaption>An earlier generation of circular knitters. Follow the yarn supply toward the circular head, then compare this layout with the current feeder in the manufacturer’s video.<br><small>Photo by Hanne Dale / Tekstilindustrimuseet, resized. <a href="https://commons.wikimedia.org/wiki/File:Circular_knitting_machines_at_Salhus_Tricotagefabrik.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    <p class="course-video"><b>Watch a positive feeder work</b> · Pause to find the yarn entry, driven feed wheel, indicator and exit path. The lower yarn detector is a separate device on systems that use one. Look up the exact product and controller together. <a href="https://www.youtube.com/watch?v=zSJXD_bNaK8">Memminger-IRO MPF L positive feeder</a> · <a href="https://memminger-iro.com/components/ufw">UFW detector photo and function</a> · <a href="https://memminger-iro.com/public/memminger-iro/Prospekte/001-MPF-L/001-906-000-01.pdf">MPF L product photos and data</a>.</p>
+    <p class="course-video"><b>See machines at the Ludhiana garment machinery show.</b> Identify which units are flat knitting machines, then compare their layout with a circular machine. The video shows a supplier and workshop equipment. Use the manufacturer’s published procedure for service. <a href="https://www.youtube.com/watch?v=42F4D_CLsAs">Ludhiana exhibitor walkthrough</a>.</p>
+
+    <h2>Build a two-station stop circuit on the bench</h2>
+    <ol class="steps">
+      <li><p>Use a switched 3×AA holder, two normally closed lever switches, a red or green LED, a 330 Ω resistor and clip leads. Connect battery positive → resistor → LED anode, then LED cathode → switch A → switch B → battery negative. The lamp means run permissive in this example, and drives no machinery. Label two extension harnesses and clip each switch to its own pair. Confirm both closed makes the lamp glow.</p></li>
+      <li><p>Actuate A then B separately. Each must extinguish the lamp. Pull one connector on the battery trainer and verify that its open cable also drops the lamp. A machine may instead use another switch polarity, a bus or a powered sensor, so obtain its own wiring diagram before any test. Keep real equipment’s stopping and guarding intact.</p></li>
+      <li><p>Use a loose clip to make an intermittent open in B. With power off and the individual passive harness detached at both ends, check each conductor end to end while gently flexing it at the clip and strain relief. Compare with the identical healthy trainer harness. Check the switch itself separately for repeatable action. If the switch repeats and the isolated harness flickers between a low reading and OL, the cable fault is proved. Restore the trainer and repeat ten actuations of each station.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What repeats</th><th scope="col">How to verify the branch</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">The stop follows a particular yarn path.</th><td>Work with the knitting technician to compare guide alignment, tension, contamination and yarn on an equivalent feeder.</td></tr>
+        <tr><th scope="row">Only one number fails, and the disconnected harness opens when flexed.</th><td>Record the station and connector, then quote the compatible lead or refer the connector repair. Log a stable repeat check.</td></tr>
+        <tr><th scope="row">Several stations disappear together.</th><td>Collect the group, shared circuit identifiers and exact alarm for the controls specialist to check common supply or communications.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Start with a job the local mechanic can refer</h2>
+    <p>Ask for a loose passive detector or harness with a matching reference. Photograph its ID and condition and bench-test it before handling urgent production work. Keep contact measurements separate from symptoms that need the whole machine. Closed and guarded installed testing belongs to the trained machine operator or service technician. Agree how they will verify a stop and normal guarded operation before the next production run. <a href="https://sunnyelectronics.co/about-us/">Example of a Ludhiana knitting-machine service business</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t04-circuit-laws.html">T04 · Series paths</a> · <a href="../theory/t34-industrial-control-signals.html">T34 · Permissive and proof</a> · <a href="p58-board-production-test.html">P58 · Make a repeatable fixture</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

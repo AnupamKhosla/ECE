@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P64 · Triage a plasma cutter that will not start</title>
+<meta name="description" content="Separate the torch, air supply and power-source branches before quoting a repair.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P64</span>
+    <h1>Triage a plasma cutter that will not start</h1>
+    <p class="lede">Separate the torch, air supply and power-source branches before quoting a repair.</p>
+    <div class="meta"><span><b>Time</b> 30–45 minutes</span><span><b>Before this</b> <a href="../welding/w01-machine-map-safety.html">W01</a> · <a href="p03-multimeter-mastery.html">P03</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find the parts the operator can describe</h2>
+    <p>The metal-cutting torch has an electrode and nozzle. A retaining cap holds the consumable stack. Some units rely on shop air; other models have an internal compressor. Start with a photo of the nameplate and the front display. Ask whether the fault occurs at startup, when air begins to flow or only after the torch is hot. Record the full fault and which set of consumables was just fitted.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/plasma-machine.jpg" width="960" height="631" alt="Portable plasma cutter with labels pointing to the pressure gauge and hand torch" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 631" aria-hidden="true">
+            <defs><marker id="plasma-machine-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M159 379 309 316" stroke="#103549" stroke-width="14"/>
+            <path d="M159 379 309 316" stroke="white" stroke-width="6" marker-end="url(#plasma-machine-arrow)"/>
+            <rect x="24" y="356" width="270" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="159" y="398" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Pressure gauge</text>
+            <path d="M672 544 360 543" stroke="#103549" stroke-width="14"/>
+            <path d="M672 544 360 543" stroke="white" stroke-width="6" marker-end="url(#plasma-machine-arrow)"/>
+            <rect x="557" y="521" width="230" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="672" y="563" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Hand torch</text>
+          </svg>
+        </div>
+        <figcaption>The front gauge and torch are visible. The return clamp is attached to the metal on the left.<br><small>Photo by Thomas S., resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Plasmaschneider.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/plasma-torch.jpg" width="619" height="960" alt="Gloved hand holding a plasma torch with its end and trigger visible" loading="lazy" decoding="async">
+        <figcaption>Close view of the torch head and trigger. Compare the end with the retaining cap and consumable stack shown in the linked manufacturer guide.<br><small>Photo by Tim Drivas, resized. <a href="https://commons.wikimedia.org/wiki/File:Plasma_Cutter.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch a real fault walkthrough</b> · Identify the front-panel indication and the consumable stack. Hypertherm distinguishes a 0-30 fault from an air-pressure indication. Its code descriptions apply to the Powermax models in the videos. <a href="https://www.youtube.com/watch?v=vQpLsep7Au4">Powermax 0-30 troubleshooting</a> · <a href="https://www.youtube.com/watch?v=jUFL5-kjOEo">Powermax low air pressure</a>.</p>
+
+    <h2>Practise separating a trigger fault from a missing permissive</h2>
+    <p>Use only a switched 3×AA battery pack, two 330 Ω resistors, two red LEDs, two switches and a breadboard. Make two branches. In the first, connect battery positive → trigger switch → resistor → LED → battery negative. In the second, connect the node after the trigger switch → second switch labelled AIR OK → resistor → second LED → battery negative. The first LED shows a trigger request and the second shows the request passed the air condition. The actual cutter stays disconnected. Leave its enclosure closed and use no compressed air or arc in this lab.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Training fault</th><th scope="col">Request / accepted LEDs when you pull the trigger</th><th scope="col">Next observation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Trigger wire disconnected</th><td>Off / off</td><td>Turn the trainer off and use continuity to check the isolated trigger switch and wire.</td></tr>
+        <tr><th scope="row">Air permissive open</th><td>On / off</td><td>Check which condition is absent. A real out-of-spec air supply belongs to the air branch.</td></tr>
+        <tr><th scope="row">Both switches closed</th><td>On / on</td><td>The trainer passed the two conditions. A real unit still has further protections and power stages.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Write a fabrication-shop intake and choose the next job</h2>
+    <ol class="steps">
+      <li><p><b>Air indication under flow.</b> An equipped operator verifies inlet pressure and flow using the model procedure and checks restrictions, moisture and filter condition. An idle gauge reading is only one observation. Record the manufacturer’s required flow and whether supply holds under the specified test.</p></li>
+      <li><p><b>Consumable warning after a tip change.</b> Check the part numbers and review installed order against the exact torch manual. The qualified technician isolates power and air before handling the torch, and checks the retaining cap and lead for damage. Matching the right consumables is a separately quotable service.</p></li>
+      <li><p><b>Fault persists with documented checks passed.</b> Send the authorised or equipped repairer the full code, model, torch family and proven observations. Cap-sense devices and other protections stay in circuit throughout service. A qualified operator records the specified function and test cut under the actual service procedure before release.</p></li>
+    </ol>
+    <p><a href="https://www.hypertherm.com/resources/more-resources/videos/powermax-0-30-fault-code/">Hypertherm fault guide</a> · <a href="https://www.hypertherm.com/resources/more-resources/videos/powermax-preventive-maintenance/">Torch lead and consumables checks</a> · <a href="../reference/r04-welding-job-sheet.html">Printable job sheet</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t04-circuit-laws.html">T04 · Open paths and voltage</a> · <a href="../theory/t34-industrial-control-signals.html">T34 · Command, permissive and proof</a> · <a href="p56-electropneumatic-sequence.html">P56 · Air supply and actuator diagnostics</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

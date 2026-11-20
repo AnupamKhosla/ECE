@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P65 · Diagnose a packaging sealer with a weak or uneven seam</title>
+<meta name="description" content="Separate pressure, material, dwell time and temperature before ordering a heater or controller.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P65</span>
+    <h1>Diagnose a packaging sealer with a weak or uneven seam</h1>
+    <p class="lede">Separate pressure, material, dwell time and temperature before ordering a heater or controller.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p08-transistor-switches.html">P08</a> · <a href="p21-fault-finding.html">P21</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Recognise a band sealer and an impulse sealer</h2>
+    <p>A bench impulse sealer clamps a stationary bag and briefly powers a heating strip. A continuous band sealer moves a bag between belts, past heating and cooling blocks. Dwell time is the time the seam spends in the heated zone. A carton taper uses tape and has a different fault path. Confirm the machine type before looking for parts.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/band-sealer.jpg" width="960" height="720" alt="Continuous band sealer with an arrow to the conveyor and another to the control panel" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 720" aria-hidden="true">
+            <defs><marker id="band-sealer-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M716 102 461 150" stroke="#103549" stroke-width="14"/>
+            <path d="M716 102 461 150" stroke="white" stroke-width="6" marker-end="url(#band-sealer-arrow)"/>
+            <rect x="626" y="79" width="180" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="716" y="121" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Controls</text>
+            <path d="M423.5 593 425 465" stroke="#103549" stroke-width="14"/>
+            <path d="M423.5 593 425 465" stroke="white" stroke-width="6" marker-end="url(#band-sealer-arrow)"/>
+            <rect x="313" y="570" width="221" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="423.5" y="612" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Conveyor</text>
+          </svg>
+        </div>
+        <figcaption>The blue conveyor supports the moving bag below the sealed belt housing. Identify the control panel before asking the operator about speed and temperature.<br><small>Photo by M5s, resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Continuous_Band_Sealer_Machine.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/impulse-sealer.jpg" width="365" height="321" alt="Tabletop impulse sealer with its top jaw raised over the sealing surface" loading="lazy" decoding="async">
+        <figcaption>On this tabletop machine a single bag rests between the upper jaw and the lower sealing surface. The appliance in the lab stays unplugged while you compare jaw pressure.<br><small>Photo by Cjp24, resized. <a href="https://commons.wikimedia.org/wiki/File:Impulse_sealer.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch a continuous sealer feed a bag</b> · Follow the bag entry, belt run and exit. Pause and identify which adjustment could affect dwell. <a href="https://www.youtube.com/watch?v=3iI2LTRywUY">Sampack continuous band sealer demonstration</a>.</p>
+
+    <h2>Prove the controller command and load separately on a 5 V model</h2>
+    <p>Make two independent branches across a regulated 5 V trainer supply, each with a switch, 330 Ω resistor and red LED in series. Name the switches COMMAND and LOAD. A partner plays the output circuit by setting LOAD according to the exercise card. The first LED represents the controller asking for heat; the second represents measured current through a load. No heater or mains relay is used.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What you see</th><th scope="col">What the model shows</th><th scope="col">Evidence a technician would need</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Command on, load off</th><td>Heat is requested with no heater current.</td><td>An open element, blown protection, lost feed or failed switch can give this result. The isolated element and path each need a documented check.</td></tr>
+        <tr><th scope="row">Command off, load on</th><td>Heat is still being delivered.</td><td>Isolate the machine and refer. A shorted switching device is one possibility. A qualified technician tests the independent safety cutout before release.</td></tr>
+        <tr><th scope="row">Command and load follow one another</th><td>The two observations agree.</td><td>Check the sensing accuracy, film compatibility, belt tracking, pressure and actual cycle. The indicators alone do not prove a good seam.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Diagnose the seam with physical evidence</h2>
+    <ol class="steps">
+      <li><p>Collect two labelled scrap pouches, the film type, customer speed and temperature settings and an example of a good seam. Bench-inspect the cold, disconnected machine under its manual. On a band sealer, look for belt wear and contamination. On an impulse machine, look at the removable sealing cover and pressure pad. Stop at any part requiring qualified access.</p></li>
+      <li><p>On an unplugged, cold hand-operated impulse sealer with the manufacturer’s normal jaw-opening mechanism, compare drag on equal paper strips placed at the left, centre and right. Keep hands away from the closing jaw. Uneven pressure on one side is a mechanical clue. It does not independently prove a failed heating strip.</p></li>
+      <li><p>Have the trained operator run the guarded machine on agreed scrap under its service procedure. With the same film, adjust only one documented variable at a time and let conditions settle. Record recurring leak channels, wrinkles or edge weakness at fixed speed. Use the owner’s approved seam test and acceptance criteria for production release. Appearance and a hand pull are workshop screens only.</p></li>
+    </ol>
+    <p>Common quotes include a clear consumables list, which belt or pad fits the model, how you will prove the repeat seal and whether pickup or site time is included. <a href="https://www.kusumtradex.com/service-amc.html">Ludhiana packaging machine service example</a> · <a href="https://www.ia.omron.com/product/cautions/18/safety_precautions.html">Omron guidance on SSR failure and independent protection</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t03-power-energy-heat.html">T03 · Electrical power and heat</a> · <a href="../theory/t18-sensor-physics.html">T18 · Temperature probes</a> · <a href="../theory/t34-industrial-control-signals.html">T34 · Command and proof</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

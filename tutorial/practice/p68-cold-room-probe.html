@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P68 · Check a cold-room temperature probe and alarm</title>
+<meta name="description" content="Use a second thermometer to distinguish a warm room from a sensor, cable or profile error.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P68</span>
+    <h1>Check a cold-room temperature probe and alarm</h1>
+    <p class="lede">Use a second thermometer to distinguish a warm room from a sensor, cable or profile error.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p12-sensors-adc.html">P12</a> · <a href="p63-bms-point-to-point.html">P63</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find the display, the sensing point and the cooling output</h2>
+    <p>A cold-room controller reads a probe and decides when to request cooling, run fans or defrost. A nearby display can show the wrong temperature if a sensor is mislocated, a cable is broken or a replacement probe has a different curve. A correct high reading can instead mean the room really is warm. Begin with a reference reading near the control probe and leave the equipment settings as found until the discrepancy is understood.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/cold-room.jpg" width="960" height="877" alt="Walk-in cold room with strip curtains, shelving and ceiling-mounted evaporator fans" loading="lazy" decoding="async">
+        <figcaption>These ceiling units move cold air through the room. The temperature at stored product can differ from the air near a discharge or door.<br><small>Photo by Ostar dcsf, resized. <a href="https://commons.wikimedia.org/wiki/File:Cold_Room.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/ntc.jpg" width="581" height="524" alt="Bead thermistors with two leads, separated from their housings" loading="lazy" decoding="async">
+        <figcaption>A bare thermistor has two leads. A cold-room probe normally packages the sensing element to suit its environment. Compare the exact probe type and its resistance table.<br><small>Photo by Ansgar Hellwig. <a href="https://commons.wikimedia.org/wiki/File:NTC_bead.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 de</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch how a cold room is laid out</b> · Follow the room and cooling equipment in the Danfoss walkthrough. Then open the ERC 214 photo and find the display and buttons. The manual lets you look up the supported input type and alarm settings for that controller. <a href="https://www.youtube.com/watch?v=Bnx3mjjuXHw">Danfoss cold-room walkthrough</a> · <a href="https://designcenter.danfoss.com/products/climate-solutions-for-cooling/electronic-controls/temperature-controls/electronic-temperature-controls/erc-211---erc-213---erc-214/p/080G3463">ERC 214 product photo</a> · <a href="https://assets.danfoss.com/documents/latest/34738/AN194386421086en-000402.pdf">ERC 214 installation guide</a>.</p>
+
+    <h2>Measure a passive probe at two stable temperatures</h2>
+    <ol class="steps">
+      <li><p>Use a known 10 kΩ NTC with a published B value near 3435 K, a multimeter, a reference thermometer, a sealable dry bag for a non-immersible element, and a container with a cool-water bath. Keep electronics and meter dry. Measure the disconnected sensor and reference together in room air, then at a cooler stable point. An immersion-rated probe may go into the bath. Keep a non-immersible probe dry and allow extra time to settle.</p></li>
+      <li><p>For the second part, connect a 10 kΩ fixed resistor from regulated 5 V to a test point and the NTC from that point to 0 V. Measure the test point in both states. Unplug the trainer before changing leads. The figures below are illustrative for a 3435 K curve, 10 kΩ at 25 °C. Use the actual probe’s resistance table to judge a customer part.</p></li>
+      <li><p>For a labelled training alarm, define warm as a measured voltage below 3.23 V for 30 seconds, and treat near-rail results as wiring faults first. Start with the cold value, then warm the sensor and time it. Log reference temperature, voltage, alarm time and recovery. Apply that logic on paper or on a low-voltage logger. The threshold illustrates roughly 10 °C with this divider and carries no storage recommendation.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Bench state</th><th scope="col">Disconnected sensor resistance</th><th scope="col">Powered trainer test point</th><th scope="col">What to log</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">25 °C</th><td>10.0 kΩ nominal</td><td>2.50 V</td><td>Warm example</td></tr>
+        <tr><th scope="row">5 °C</th><td>About 22.9 kΩ</td><td>About 3.48 V</td><td>Cold example</td></tr>
+        <tr><th scope="row">Open training cable</th><td>OL</td><td>Near 5 V</td><td>Raise sensor fault even though the voltage appears colder.</td></tr>
+        <tr><th scope="row">Shorted training cable</th><td>Near 0 Ω</td><td>Near 0 V</td><td>Raise sensor fault before assessing temperature.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Handover a temperature complaint</h2>
+    <p>Log timestamps, temperature at the probe and at the agreed storage point, door opening and the cooling and defrost icons. If the reference and display agree while the room remains warm, pass the record to the refrigeration technician. If the display disagrees, the technician checks the isolated probe, harness and model-specific profile. Start with food, retail or workshop deployments through a refrigeration partner. Have the responsible contractor sign off alarm, delay, recovery and unloading or stock decisions. Where a traceable calibration certificate is requested, use a lab with the required parameter and range in its accredited scope. <a href="https://nabl-india.org/lab-accreditation/">Find a laboratory through NABL</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18 · Thermistors and their curves</a> · <a href="../theory/t04-circuit-laws.html">T04 · Voltage division</a> · <a href="p30-iot-reliability.html">P30 · Treat stale sensor data as a fault</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

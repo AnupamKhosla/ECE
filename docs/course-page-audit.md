@@ -2,7 +2,7 @@
 
 ## Practical course comparison and route revision · 20 November 2026
 
-The current catalogue has 141 chapters. New work includes component-level audio diagnosis and theory, laptop display, cooling and inputs, Android camera diagnosis, camera installation and playback verification, and BMS point-to-point checks. Existing bench, welding, embedded, automation, robotics, camera, board design and communications lessons gained targeted comparisons. See the [course and competency comparison](practical-course-crosswalk.md) for the references, revised learning routes and remaining coverage.
+The current catalogue has 150 chapters. The India repair-shop route adds seven repair labs and a Ludhiana market guide. The job track adds a Ludhiana and Melbourne comparison based on reviewed employer ads. The previous expansion added component-level audio diagnosis and theory, laptop display and cooling, Android camera diagnosis, network camera commissioning and BMS point-to-point checks. See the [India repair-shop research](india-repair-shop-research.md), the [local job research](ludhiana-melbourne-job-market.md) and the [course and competency comparison](practical-course-crosswalk.md).
 
 ## Practical curriculum expansion · 20 November 2026
 

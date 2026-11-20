@@ -90,6 +90,15 @@ window.TOC = {
           { n: "P53", file: "practice/p53-fibre-loss-and-otdr.html", title: "Check a fibre loss budget and read an OTDR trace", d: "Calculate allowable link loss, inspect a real trace and distinguish a bad connector from distributed fibre loss." },
           { n: "P55", file: "practice/p55-pico-boot-and-swd-debugging.html", title: "Find where a Raspberry Pi Pico program stops", d: "Check power, USB and serial logging, then use SWD and GDB to distinguish a boot problem from a blocking program." },
           { n: "P58", file: "practice/p58-board-production-test.html", title: "Build a repeatable board test fixture", d: "Prove a low-voltage board test with a known-good reference, two known faults and a closing retest." }
+        ]},
+        { title: "Part L · Specialist repair for small businesses", blurb: "Train for textile, fabrication, packaging and cooling service jobs.", chapters: [
+          { n: "P69", file: "practice/p69-knitting-yarn-stop.html", title: "Find an intermittent yarn-stop fault on a knitting-machine trainer", d: "Trace one yarn path, detector and harness. Prove which opens before quoting a controller." },
+          { n: "P66", file: "practice/p66-sewing-servo-pedal.html", title: "Diagnose an industrial sewing machine that ignores the pedal", d: "Check the treadle linkage, neutral position, harness signal and motor feedback." },
+          { n: "P64", file: "practice/p64-plasma-cutter-triage.html", title: "Triage a plasma cutter that will not start", d: "Record the exact fault and distinguish consumables, air and trigger conditions." },
+          { n: "P65", file: "practice/p65-packaging-sealer-diagnostics.html", title: "Diagnose a packaging sealer with a weak or uneven seam", d: "Distinguish band and impulse sealers. Compare heater command, load, film and jaw pressure." },
+          { n: "P67", file: "practice/p67-barcode-printer-service.html", title: "Repair a barcode printer that skips labels or prints streaks", d: "Identify the thermal head and platen, print a standalone report and confirm the result with a scanner." },
+          { n: "P68", file: "practice/p68-cold-room-probe.html", title: "Check a cold-room temperature probe and alarm", d: "Compare a reference thermometer, NTC curve and controller display. Distinguish warm, open and shorted." },
+          { n: "P70", file: "practice/p70-machine-chiller-flow.html", title: "Trace a machine chiller’s low-flow alarm", d: "Use a timed volume test to tell a hydraulic restriction from a flow indicator fault." }
         ]}
       ]
     },
@@ -185,12 +194,13 @@ window.TOC = {
       ]
     },
     {
-      id: "career", title: "Australia Job Track", short: "Career",
-      blurb: "The systems Australian employers hire for: BMS, security, telecom, fibre, industrial. Plus licences and the path in.",
+      id: "career", title: "Jobs and Repair Shops", short: "Career",
+      blurb: "Australian technician careers and service businesses you can test locally in India.",
       parts: [
         { title: "Part 0 · The market", blurb: "Start with the evidence from real Australian job ads.", chapters: [
           { n: "C00", file: "career/c00-what-job-ads-ask-for.html", title: "What Australian job ads actually ask for", d: "2,764 SEEK ads from your research: competition, tickets, tools and pay for each technician family." },
-          { n: "C18", file: "career/c18-controls-robotics-and-service-careers.html", title: "Choose a path into controls, electronics test or automation", d: "Compare Australian entry routes, actual employer tasks and portfolio evidence for hands-on technician roles." }
+          { n: "C18", file: "career/c18-controls-robotics-and-service-careers.html", title: "Choose a path into controls, electronics test or automation", d: "Compare Australian entry routes, actual employer tasks and portfolio evidence for hands-on technician roles." },
+          { n: "C20", file: "career/c20-ludhiana-melbourne-technician-jobs.html", title: "Find hands-on technician work in Ludhiana and Melbourne", d: "Compare local ads, entry requirements and training pathways for repair, instrumentation, controls and HVAC site work." }
         ]},
         { title: "Part I · Building services", blurb: "The building systems trades.", chapters: [
           { n: "C01", file: "career/c01-bms-fundamentals.html", title: "BMS fundamentals: what a building management system does", d: "HVAC plant, points (AI/AO/DI/DO), controllers, front ends and alarms." },
@@ -216,6 +226,9 @@ window.TOC = {
           { n: "C12", file: "career/c12-portfolio-study-plan.html", title: "Portfolio projects, interviews and a 12-week plan", d: "What to build, how to show it, and a weekly plan that uses this whole tutorial." },
           { n: "C13", file: "career/c13-first-day-on-site.html", title: "Your first day on an Australian site", d: "Inductions, SWMS and JSAs, PPE, permits, isolation and lock-out, site etiquette, your tool bag and job notes." },
           { n: "C16", file: "career/c16-repair-work-portfolio.html", title: "Build a repair portfolio and a shop workflow", d: "Case records for BMS and repair, with intake, assessment, quoting, retesting and handover." }
+        ]},
+        { title: "India · Start a specialist repair service", blurb: "Evaluate local customers, turnaround, parts and the bench tests behind a paid repair.", chapters: [
+          { n: "C19", file: "career/c19-ludhiana-repair-shop.html", title: "Choose a specialist repair service in Ludhiana", d: "Compare paid repair opportunities in knitting, plasma, packaging, temperature controls and industrial electronics. Check the gap with a local pilot." }
         ]}
       ]
     },

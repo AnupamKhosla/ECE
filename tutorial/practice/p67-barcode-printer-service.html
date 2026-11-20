@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P67 · Repair a barcode printer that skips labels or prints streaks</title>
+<meta name="description" content="Use a standalone report, matching media and scanner proof to distinguish the printer from the host application.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P67</span>
+    <h1>Repair a barcode printer that skips labels or prints streaks</h1>
+    <p class="lede">Use a standalone report, matching media and scanner proof to distinguish the printer from the host application.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p21-fault-finding.html">P21</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Locate the paper path and consumables</h2>
+    <p>A direct thermal printer heats coated material. A thermal transfer unit uses a ribbon to transfer ink to the label. In both, the platen roller supports and drives the media under the head. The media sensor tells the printer where one label ends and the next begins, using a gap, notch or black mark that matches its setup.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/label-printer.jpg" width="960" height="640" alt="Closed Zebra GK420d desktop label printer" loading="lazy" decoding="async">
+        <figcaption>On the GK420d, identify the model marking, front label exit and top feed control.<br><small>Photo by Jiří Sedláček, resized. <a href="https://commons.wikimedia.org/wiki/File:Overview_of_label_printer_Zebra_GK420d_in_Michle%2C_Prague.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/label-open.jpg" width="960" height="640" alt="Open Zebra GK420d label printer with arrows pointing to the printhead and platen roller" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 640" aria-hidden="true">
+            <defs><marker id="label-open-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M773 135 542 91" stroke="#103549" stroke-width="14"/>
+            <path d="M773 135 542 91" stroke="white" stroke-width="6" marker-end="url(#label-open-arrow)"/>
+            <rect x="668" y="112" width="210" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="773" y="154" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Printhead</text>
+            <path d="M160 538 332 525" stroke="#103549" stroke-width="14"/>
+            <path d="M160 538 332 525" stroke="white" stroke-width="6" marker-end="url(#label-open-arrow)"/>
+            <rect x="37" y="515" width="246" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="160" y="557" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Platen roller</text>
+          </svg>
+        </div>
+        <figcaption>Compare the printhead inside the lid with the black platen roller at the front of the base. The green guides locate the label roll.<br><small>Photo by Jiří Sedláček, resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Overview_of_opened_label_printer_Zebra_GK420d_in_Michle%2C_Prague.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the media path and sensor on a ZD421-family printer</b> · Find the movable sensor, then find the test controls on your actual unit. The photos show a GK420d, so use the video sequence only for the models it names. <a href="https://www.youtube.com/watch?v=8Cl4dPWY9sc">Zebra media loading</a> · <a href="https://www.youtube.com/watch?v=zREewFiTSjs">Zebra manual media calibration</a>.</p>
+
+    <h2>Use the printer’s own report before changing the driver</h2>
+    <ol class="steps">
+      <li><p>Use an owned or training unit with its intact approved external adapter. Record roll type, width, gap or mark, ribbon type if present and current settings. Use non-customer data and ordinary label stock. Print the model’s built-in configuration or quality report with the host application out of the test. Keep it as the baseline.</p></li>
+      <li><p>If the printer skips labels in its own feed cycle, line up the guides and inspect the gap or mark sensor and correct media mode. Follow the model’s media calibration with the cover closed when the manual requires it. On the ZD421, follow the official SmartCal guide before resorting to the model’s manual calibration. Repeat with known-good, compatible media.</p></li>
+      <li><p>For a streak that stays in the same position, switch off and disconnect the printer, let the head cool, and use the manufacturer’s approved platen and printhead cleaning procedure. Repeat with known-good media. A streak remaining at the same column on the built-in report after cleaning warrants printhead or connection inspection under the exact service procedure. A mark repeating along the feed direction also warrants a roller inspection.</p></li>
+      <li><p>If the report and feeding pass, print the same label from a clean test template, then compare with the application’s label size, print method and offsets. A working built-in report rules in the parts of the print path it exercised. It can coexist with a host or data fault.</p></li>
+    </ol>
+    <p><a href="https://www.zebra.com/us/en/support-downloads/printers/desktop/zd421.html">Zebra ZD421 service resources</a> · <a href="https://support.zebra.com/article/000034892">Zebra desktop printer cleaning</a>.</p>
+
+    <h2>Produce a handover sample a warehouse can test</h2>
+    <p>Agree the stock and template. Print 20 consecutive training labels, record any skip, and check alignment and the expected decoded data with the scanner at the client’s actual station or with an equivalent bench scanner. A successful scan is a functional check. Barcode grading requires a verifier and the customer’s acceptance standard. Quote separately for an approved replacement printhead and a job that only needs media setup or cleaning. <a href="https://support.gs1.org/support/solutions/articles/43000734152-how-can-i-measure-the-quality-of-my-printed-barcodes-">GS1 guidance on measuring barcode quality</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18 · Optical sensing</a> · <a href="../theory/t34-industrial-control-signals.html">T34 · Following proof to the next stage</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

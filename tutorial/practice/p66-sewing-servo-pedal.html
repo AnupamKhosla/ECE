@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P66 · Diagnose an industrial sewing machine that ignores the pedal</title>
+<meta name="description" content="Distinguish the treadle linkage, neutral position, pedal sensor and motor feedback before replacing a control box.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P66</span>
+    <h1>Diagnose an industrial sewing machine that ignores the pedal</h1>
+    <p class="lede">Distinguish the treadle linkage, neutral position, pedal sensor and motor feedback before replacing a control box.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes</span><span><b>Before this</b> <a href="p04-series-parallel-dividers.html">P04</a> · <a href="p13-actuators-motors.html">P13</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Follow the pedal to the sewing head</h2>
+    <p>On a typical industrial lockstitch machine a floor treadle moves a rod to a pedal sensor. The control box reads the request, drives a motor and may use a position sensor to stop the needle in a particular place. A belt or direct drive transfers motion to the head. Independent causes include a sticking pedal linkage, a missing command, a jam and lost motor feedback.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/sewing-delhi.jpg" width="960" height="540" alt="Sewing workers at a Delhi garment workshop with industrial machines mounted in tables" loading="lazy" decoding="async">
+        <figcaption>A working garment unit in Delhi. Notice the table-mounted heads and the spaces beneath the tables for linkages and drive components.<br><small>Photo by urbzoo, resized. <a href="https://commons.wikimedia.org/wiki/File:Karawal_Nagar%2C_Delhi_20160413_(26435407410).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/shop/sewing-juki.jpg" width="960" height="641" alt="Close view of a JUKI sewing head showing the needle area and table mounting" loading="lazy" decoding="async">
+        <figcaption>Find the needle and presser foot on this JUKI head. The pedal and box are below the table on some models. Use the linked model manual for the actual linkage and box configuration.<br><small>Photo by Sajid213, resized. <a href="https://commons.wikimedia.org/wiki/File:Sewing_Machine_Juki.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch an industrial sewing machine being set up</b> · Identify the underside of the table and how the base, fittings and machine head come together. Use the exact suffix and controller manual when looking up adjustment or fault codes. <a href="https://www.youtube.com/watch?v=TqMt_5GYjuM">DDL-8700 assembly demonstration</a> · <a href="https://www.juki.co.jp/industrial_j/download_j/manual_j/ddl8700b7/menu/ddl8700b7/pdf/instruction_eg.pdf">JUKI DDL-8700B-7 manual with pedal adjustment and neutral compensation</a>.</p>
+
+    <h2>Make a 5 V mock pedal and sweep it slowly</h2>
+    <ol class="steps">
+      <li><p>On a breadboard place a 10 kΩ linear potentiometer across 0 V and 5 V. Connect the centre wiper through 1 kΩ to a test point. Connect a 100 kΩ resistor from the test point to 0 V. This small load pulls a deliberately disconnected test point low. Measure at the test point with the black lead on 0 V. The circuit represents one possible kind of position output. It specifies no production-machine pinout.</p></li>
+      <li><p>Mark three positions where the trainer reads approximately 1.0, 2.5 and 4.0 V. Treat 2.5 V as the model neutral. Sweep forward and back five times, pausing at the marks. Watch for sudden jumps and confirm the value returns close to 2.5 V. Set a training criterion of ±0.1 V on repeated neutral readings.</p></li>
+      <li><p>Switch off the bench supply, disconnect the lead into the 1 kΩ resistor, then turn on the trainer. The test point stays around 0 V through the sweep even though the pot’s wiper still moves. Change off-power between tests. Compare the wire measurement at each end and check the passive cable with continuity. A single zero reading could also mean a lost supply or ground, so measure the supply across the pot ends.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Direction for the next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">End-to-end supply good, sensor signal moves, harness end flat</th><td>Test the harness path before quoting electronics.</td></tr>
+        <tr><th scope="row">Sensor and harness pass; pedal sticks away from neutral</th><td>Check the isolated mechanical linkage and spring. Compare the manufacturer’s neutral procedure for this exact box.</td></tr>
+        <tr><th scope="row">Command accepted; needle position error repeats</th><td>Send the documented error and prior checks to a technician who can prove motor and position feedback on the matching machine.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Keep a ticket a sewing mechanic can use</h2>
+    <p>Record head, motor and control-box models, exact display code, pedal return, connector seating and whether the complaint appears at first start or after release. On customer equipment work with the sewing mechanic. Keep the mains box closed and the machine disconnected during external checks. A fully guarded test by a trained operator includes neutral at startup, slow speed, return to stop and normal needle position on scrap fabric. Base a warranty on the verified repair and machine combination.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t04-circuit-laws.html">T04 · Voltage divider</a> · <a href="../theory/t19-motors-vsds.html">T19 · Motors and drive control</a> · <a href="../theory/t33-robot-motion-and-feedback.html">T33 · Position feedback</a> · <a href="p69-knitting-yarn-stop.html">P69 · Try a textile-machine stop circuit</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

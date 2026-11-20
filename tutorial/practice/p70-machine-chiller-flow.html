@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P70 · Trace a machine chiller’s low-flow alarm</title>
+<meta name="description" content="Compare actual coolant flow with the reported flow before quoting a pump, sensor or controller.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P70</span>
+    <h1>Trace a machine chiller’s low-flow alarm</h1>
+    <p class="lede">Compare actual coolant flow with the reported flow before quoting a pump, sensor or controller.</p>
+    <div class="meta"><span><b>Time</b> 30–45 minutes</span><span><b>Before this</b> <a href="p56-electropneumatic-sequence.html">P56</a> · <a href="p68-cold-room-probe.html">P68</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify the separate cooling unit</h2>
+    <p>A machine chiller circulates coolant through equipment and rejects the heat it collects. Track tank → pump → chiller outlet → cooled machine → chiller inlet on a checklist. The controller may see flow and temperature separately. Find the chiller model, its two ports, flow reading and alarm at the external display. Ludhiana’s Central Tool Room shows a laser welding machine with a separate white CW-5200 chiller. Keep the laser isolated and its safeguards intact during cooling service. <a href="https://www.dcmsme.gov.in/New%20folder/8.%20CTR%20Ludhiana%20Annual%20Report%202024-25.pdf">Find “Laser Welding Machine” in the Central Tool Room report for the installed photo</a> · <a href="https://www.teyuchiller.com/industrial-chiller-cw5200-hot-selling-water-chiller-unit.html">TEYU CW-5200 front and rear product views</a>.</p>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/chiller-pumps.jpg" width="960" height="720" alt="Two installed chilled-water pumps with connected black pipework" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 720" aria-hidden="true">
+            <defs><marker id="chiller-pumps-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M110 596 270 506" stroke="#103549" stroke-width="14"/>
+            <path d="M110 596 270 506" stroke="white" stroke-width="6" marker-end="url(#chiller-pumps-arrow)"/>
+            <rect x="35" y="573" width="150" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="110" y="615" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Pump</text>
+            <path d="M826.5 278 655 325" stroke="#103549" stroke-width="14"/>
+            <path d="M826.5 278 655 325" stroke="white" stroke-width="6" marker-end="url(#chiller-pumps-arrow)"/>
+            <rect x="736" y="255" width="181" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="826.5" y="297" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Pipework</text>
+          </svg>
+        </div>
+        <figcaption>In a large installation the pump and the pipework can be seen separately. In the linked CW-5200 product views, trace the ports and follow the same loop through the external hoses.<br><small>Photo by IanVG, resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:MLC_chiller_pump_replacement-1.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+    <p class="course-video"><b>Watch where the model reports flow</b> · Find the displayed flow and the alarm threshold in the manufacturer's demonstration. Write the values and check the required limits from the actual cooled equipment. Keep the protection at its specified setting. <a href="https://www.youtube.com/watch?v=ESHSa5DxxCo">TEYU CW-5000 and CW-5200 flow display</a>.</p>
+
+    <h2>Measure flow on a tabletop model without power</h2>
+    <ol class="steps">
+      <li><p>Set a small bottle of water on a stable platform with an outlet tube into a graduated measuring cup. Use a second empty container for spills. Keep it away from electrics. Make two marks on the source bottle and begin each run at the upper one. Time 15 seconds of flow, record the collected volume and repeat three times with the same physical setup.</p></li>
+      <li><p>Repeat with the outlet line partially pinched on the water-only model. Release the pinch and repeat from the same starting level. Compare the change with the original readings. For a 15-second draw, multiply the volume in litres by four to get litres per minute.</p></li>
+      <li><p>Have a partner write an independent simulated display reading for each case and try deciding which side has the fault. Compare with the exercise data below. Use the training values only on this model. For a customer machine, the service technician uses an approved reference and procedure on the complete coolant loop.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Water trainer collection in 15 s</th><th scope="col">Calculated flow</th><th scope="col">Simulated display</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">250 mL</th><td>1.00 L/min</td><td>1.00 L/min</td><td>Record the normal reference.</td></tr>
+        <tr><th scope="row">100 mL</th><td>0.40 L/min</td><td>0.40 L/min</td><td>Investigate actual restriction, fluid level, leaks, air in the circuit and pump operation.</td></tr>
+        <tr><th scope="row">250 mL</th><td>1.00 L/min</td><td>0.00 L/min</td><td>Check how the model measures flow, its sensor wiring and the configured input. A good reference reading shifts the investigation to measurement and indication.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Write the field handover</h2>
+    <p>Record chiller model, alarm, coolant level when safe to observe, specified minimum flow, measured flow and temperature at stable load. Identify the test point and calibration of the measuring tool. Leave mains, refrigerant and the laser enclosure to the appropriate equipment technician. The final cold-circuit repair needs proof of normal flow, temperature, alarm and interlock with the service procedure and the right person signing the equipment back into use. <a href="https://www.teyuchiller.com/low-water-flow-alarm-occurs-in-the-laser-welding-machine-chiller.html">Manufacturer’s separation of blockage, sensor and pump faults</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t34-industrial-control-signals.html">T34 · Input indication and independent proof</a> · <a href="../theory/t03-power-energy-heat.html">T03 · Heat and power</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Check local demand</a></p></div>
+
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-local-markets"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>
