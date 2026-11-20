@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P42 · Repair a mobile robot’s motor, wiring or encoder</title>
+<meta name="description" content="Use a secured two-wheel trainer to distinguish a jam, a failed driver, a motor fault and lost encoder feedback.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P42</span>
+    <h1>Repair a mobile robot’s motor, wiring or encoder</h1>
+    <p class="lede">One wheel stalls, or the wheel turns but the robot reports zero speed. Start with mechanical freedom and prove each link from command to feedback.</p>
+    <div class="meta"><span><b>Time</b> 75 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="p21-fault-finding.html">P21</a> · <a href="p28-line-following-robot.html">P28</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A battery-powered two-wheel trainer with documented low-voltage motors and encoders. Use a stand that keeps the wheels clear. A Pololu Romi with its documented 32U4 controller is one reference. Start with the fault cases if you do not have hardware.</p></div>
+
+    <h2>Identify the five parts before replacing anything</h2>
+    <p>Point to the battery connector, motor driver, wheel motor and gearbox, encoder, and the controller receiving encoder counts. A <b>driver</b> carries the motor current. An <b>encoder</b> measures rotation. A powered wheel may still have an encoder fault. A healthy encoder reads zero when the wheel genuinely stops.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/robot.jpg" alt="An assembled two-wheel line-following robot with reflectance sensors" width="960" height="720" loading="lazy" decoding="async">
+        <figcaption>Find the motors and chassis before working from a wiring diagram. Write down which wheels are driven and which wheel merely supports the robot.<br><small>Photo by Marcmccomb, resized. <a href="https://commons.wikimedia.org/wiki/File:Line_follower.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/rotary.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Rotary encoder with a shaft, mounting lugs and a cable connector">
+        <figcaption>Find the shaft and electrical connector on this industrial rotary encoder. The Romi uses a small magnetic disc and sensor board to turn shaft motion into electrical edges.<br><small>Photo by Lambtron, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:VW_RotaryIncrementalEncoder.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Use the Romi guide to identify motor leads and encoder connections as well as the board’s count modes. Keep the two wiring harnesses distinct. <a href="https://www.pololu.com/docs/0J69/3.3">Pololu Romi 32U4 motor and encoder reference</a> · <a href="https://www.pololu.com/product/3542">Romi encoder kit with installation photos</a>.</p>
+
+    <h2>Prove movement before interpreting speed</h2>
+    <ol class="steps"><li>With power disconnected, check for hair, a rubbing wheel or a seized gearbox. Compare both sides by hand according to the donor’s guide. Check the motor plug and encoder plug for loose pins.</li><li>Secure the robot on the stand. With your hand clear of the wheels, use a short, low-speed command that the donor supports. Record battery voltage under load, left/right physical motion and left/right reported counts. Prove the healthy side first.</li><li>If the wheel moves with no counts, use the module pinout to verify supply, common and the two encoder channels. Turn the wheel by hand with motor commands inhibited and accessories powered as documented. Watch the count change or use the logic analyser in P15. Never drive a motor output from a meter.</li><li>Only swap a pair of identical modules with power off and connectors that are documented as compatible. Check which side the symptom follows. Restore the original wiring before the closing test.</li></ol>
+    <p class="course-video"><b>Watch on YouTube</b> · Identify the motor clips and gearmotor location before opening the donor. Compare them with the encoder installation photographs in the model guide. <a href="https://www.youtube.com/watch?v=0MP7cw9P4x8">Romi Chassis Assembly · Pololu Robotics and Electronics</a>.</p>
+
+    <h2>Use the failure pattern to pick a next measurement</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Observation</th><th scope="col">Next check</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Motor drags by hand with no power</th><td>Look for a jam, misaligned wheel or damaged gearbox</td></tr>
+          <tr><th scope="row">Command present, one motor quiet and no counts</th><td>Compare driver input and output with the good side using the documented method</td></tr>
+          <tr><th scope="row">Wheel turns, counts stay at zero</th><td>Encoder power, connector, channel signals and the selected counter</td></tr>
+          <tr><th scope="row">Both wheels stop and board resets at acceleration</th><td>Measure battery voltage under the same load and inspect its connections</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>On a differential-drive robot, wrong count polarity can make closed-loop control speed up the wrong wheel. Before floor testing, turn both wheels in the same physical direction and verify that your software interprets them consistently.</p>
+
+    <h2>Retest the repair</h2>
+    <p>Record short slow forward and reverse runs on the stand plus a stopped state. Confirm both wheel directions, counts that increase or decrease consistently, and the original fault condition. A new motor that spins is only one item in the test record.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t19-motors-vsds.html">T19 · Motors and variable speed drives</a><br><a href="../theory/t33-robot-motion-and-feedback.html">T33 · Robot motion, coordinate frames and encoder feedback</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p43-robot-arm-position-calibration.html">P43 · Calibrate a two-joint arm and check its reach</a></li>
+      <li><a href="p44-ros2-simulation-diagnostics.html">P44 · Trace a ROS 2 robot command in simulation</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -640,6 +640,23 @@
       </tbody>
     </table></div>
 
+    <h2>Find a part or instrument in the field labs</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Part or instrument</th><th scope="col">What to identify</th><th scope="col">Practice and theory</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Room temperature sensor</th><td>Full model suffix, sensing element and controller profile.</td><td><a href="../practice/p54-install-a-room-sensor.html">Mount and test</a> · <a href="../theory/t18-sensor-physics.html">Sensor physics</a></td></tr>
+          <tr><th scope="row">4–20 mA pressure transmitter</th><td>Pressure port, output mode, supply and scaling endpoints.</td><td><a href="../practice/p37-current-loop-calibration.html">Calibrate the input</a> · <a href="../theory/t35-calibration-and-condition-data.html">Calibration and uncertainty</a></td></tr>
+          <tr><th scope="row">Rotary encoder</th><td>Shaft or disc, power, channels A/B and the counts specification.</td><td><a href="../practice/p42-mobile-robot-fault-finding.html">Trace motion and counts</a> · <a href="../theory/t33-robot-motion-and-feedback.html">Encoder feedback</a></td></tr>
+          <tr><th scope="row">Stereo depth camera</th><td>Depth imagers, their baseline and the camera’s coordinate frame.</td><td><a href="../practice/p46-stereo-depth-and-robot-vision.html">Verify range</a> · <a href="../theory/t36-camera-optics-and-depth.html">Camera geometry</a></td></tr>
+          <tr><th scope="row">SWD probe</th><td>Clock, ground, bidirectional data and target-voltage requirements.</td><td><a href="../practice/p55-pico-boot-and-swd-debugging.html">Debug a Pico</a> · <a href="../theory/t41-embedded-boot-and-debug.html">Boot and debug interfaces</a></td></tr>
+          <tr><th scope="row">Pneumatic directional valve</th><td>Supply, working ports, exhausts, coil and return method.</td><td><a href="../practice/p56-electropneumatic-sequence.html">Trace a stuck actuator</a> · <a href="../theory/t42-pneumatic-force-and-feedback.html">Force and feedback</a></td></tr>
+          <tr><th scope="row">Load cell and bridge amplifier</th><td>Force direction, bridge excitation, differential signal and rated output.</td><td><a href="../practice/p51-load-cell-data-acquisition.html">Calibrate a bridge</a> · <a href="../theory/t35-calibration-and-condition-data.html">Calibration and uncertainty</a></td></tr>
+          <tr><th scope="row">VNA calibration kit</th><td>Connector type, open, short and matched load.</td><td><a href="../practice/p50-vna-reflection-calibration.html">Set the reference plane</a> · <a href="../theory/t32-rf-transmission-lines.html">Transmission lines and reflection</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <h2>Check yourself</h2>
     <details class="quiz"><summary>A ceramic capacitor is marked 104K. What is its value and tolerance?</summary><div class="answer"><p>The first two digits are 10, and the third digit 4 means four zeros: 10 × 10<sup>4</sup> = 100 000 pF. That is <b>100 nF</b> (0.1 µF). The letter K means <b>± 10 %</b>.</p></div></details>
     <details class="quiz"><summary>A resistor's bands read brown, black, orange, gold from one end. What is its value? What clue tells you that you have read it from the right end?</summary><div class="answer"><p>Brown = 1, black = 0, orange = × 1 000, so 10 × 1 000 = <b>10 kΩ</b>, gold = ± 5 %. From the other end it would start with gold, and gold is never a first digit. A gold or silver band on the left means you have it backwards.</p></div></details>
@@ -660,7 +677,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-labs"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

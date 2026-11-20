@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P39 · Build and test a start–stop PLC sequence</title>
+<meta name="description" content="Trace I/O, simulate a seal-in rung and prove stop, proof feedback, a timeout and restart behavior.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P39</span>
+    <h1>Build and test a start–stop PLC sequence</h1>
+    <p class="lede">A conveyor must run after a momentary start request, stop when the permissive drops and stay off after it returns. Make a test table before you write the rung.</p>
+    <div class="meta"><span><b>Time</b> 70 minutes</span><span><b>Before this</b> <a href="p23-din-rail-panel-build.html">P23</a> · <a href="p27-firmware-state-machine.html">P27</a> · <a href="../career/c10-plc-instrumentation.html">C10</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Use the sequence trainer on this page first. For the second pass, use your PLC vendor’s simulator or a supervised extra-low-voltage trainer with two buttons and a lamp. Use isolated simulator I/O.</p></div>
+
+    <h2>Name the inputs and outputs</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/plc.jpg" alt="Siemens LOGO controller beside a DIN-rail power supply" width="960" height="627" loading="lazy" decoding="async">
+        <figcaption>Find the supply, input bank and output bank on this PLC. Use the wiring manual for its exact terminal markings.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/panel.jpg" alt="Industrial controller modules above numbered field terminals and grey wiring duct" width="1285" height="679" loading="lazy" decoding="async">
+        <figcaption>Trace the physical field wires, the terminal strips and relay outputs. The software reads or drives addresses mapped to those terminals.<br><small>Photo by Cmarcante, with labels added. <a href="https://commons.wikimedia.org/wiki/File:PLC_AB_InstaladoV1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">PLC tag</th><th scope="col">Meaning when true</th><th scope="col">Independent check</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">START_EDGE</th><td>New press of Start</td><td>Input watch table</td></tr>
+          <tr><th scope="row">STOP_OK</th><td>Stop loop healthy</td><td>Disconnect on trainer and verify that the bit becomes false</td></tr>
+          <tr><th scope="row">GUARD_OK</th><td>Training interlock satisfied</td><td>Watch the bit change before Start</td></tr>
+          <tr><th scope="row">MOTOR_CMD</th><td>Normal logic commands the load</td><td>Lamp on a test output</td></tr>
+          <tr><th scope="row">RUN_PROOF</th><td>Auxiliary feedback shows the load running</td><td>A second switch on the trainer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Implement the sequence in a trainer</h2>
+    <p>In ladder logic, chain STOP_OK and GUARD_OK in series with a branch that accepts a new Start edge or the existing seal-in bit. Use a non-retentive run request. Use an on-delay timer while the run request is true and proof is absent. Latch the diagnostic on timeout, drop the training command, and allow reset when the request is off and permissives have returned. Program a release and new press requirement for restart.</p>
+    <div class="formula">RUN_REQUEST(next) = STOP_OK AND GUARD_OK AND NOT FAULT AND (START_EDGE OR RUN_REQUEST)<small>A timed proof failure latches FAULT until an explicit reset. Store each result before moving on.</small></div>
+    <div class="widget" data-plc-trainer>
+      <span class="label">Start, stop and proof trainer</span>
+      <label><input type="checkbox" name="stop-ok" checked> Stop loop healthy</label>
+      <label><input type="checkbox" name="guard-ok" checked> Test guard closed</label>
+      <label><input type="checkbox" name="run-proof"> Run proof present</label>
+      <div class="lab-controls">
+        <button type="button" data-start>Start</button>
+        <button type="button" data-tick>Advance 1 second</button>
+        <button type="button" data-reset>Reset fault</button>
+      </div>
+      <div class="readings">
+        <div><small>Run command</small><output class="out" data-command>Off</output></div>
+        <div><small>Waiting for proof</small><output class="out" data-elapsed>0 s</output></div>
+        <div><small>Proof timeout</small><output class="out" data-timeout>Clear</output></div>
+      </div>
+      <p role="status" data-status>Change the inputs and press Start. Use the time button to test proof.</p>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow how field wiring becomes a ladder contact. Then use the trainer to prove the extra timing and reset behavior. <a href="https://www.youtube.com/watch?v=snu8JNM-J1A">How to Convert a Basic Wiring Diagram to a PLC Program · RealPars</a>.</p>
+    <p>A normal PLC rung is ordinary machine control. Study the real separation of safety-rated stop functions and the process controller in <a href="../theory/t34-industrial-control-signals.html">T34</a>. Use the simulator or lamp for the exercises here. <a href="https://www.siemens.com/en-us/content/sce-educational-institutions/documents/">Siemens SCE training documents</a>.</p>
+
+    <h2>Try the cases a service technician would see</h2>
+    <ol class="steps"><li>With permissives true, press Start and apply proof before 3 seconds elapse. Confirm the command stays on.</li><li>Keep proof off on a second run. Advance 3 seconds. The command must drop and the fault must latch. Restore proof and observe that the command stays off.</li><li>Start with proof present, drop Stop OK, then return it. The command stays off until a deliberate new Start. Repeat for Guard OK.</li><li>Fault the logic deliberately in the simulator: bypass the test permissive in your own copy, run the checklist, then restore the rung. Record which case catches it.</li></ol>
+
+    <h2>Save evidence for the next technician</h2>
+    <p>Keep the I/O list, rung view, and test record containing starting inputs, commanded output, feedback, alarm and expected result for each row. Record the timing. Retest starting from the same state after correcting the bug.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t30-embedded-timing-states.html">T30 · Firmware timing, state machines and recovery</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+      <li><a href="p41-drive-and-condition-checks.html">P41 · Diagnose a drive trip and trend motor condition</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/labs.js" defer></script>
+</body>
+</html>

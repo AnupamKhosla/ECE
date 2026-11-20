@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P55 · Find where a Raspberry Pi Pico program stops</title>
+<meta name="description" content="Check power, USB and serial logging, then use SWD and GDB to distinguish a boot problem from a blocking program.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P55</span>
+    <h1>Find where a Raspberry Pi Pico program stops</h1>
+    <p class="lede">The LED stopped blinking after a firmware change. First establish which part of the boot path is working, then pause your own firmware and read the last point it reached.</p>
+    <div class="meta"><span><b>Time</b> 75–100 minutes</span><span><b>Before this</b> <a href="p11-arduino-first-steps.html">P11</a> · <a href="p14-serial-buses-modbus.html">P14</a> · <a href="p16-raspberry-pi-linux.html">P16</a> · <a href="p27-firmware-state-machine.html">P27</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Original RP2040 Raspberry Pi Pico with onboard LED on GPIO25, known data cable, test-only Pico firmware, the Raspberry Pi Debug Probe or compatible documented CMSIS-DAP probe and the Pico C/C++ SDK toolchain if doing SWD. On other Pico versions, follow their own LED pin and target configuration.</p></div>
+
+    <h2>Prove the board before opening the debugger</h2>
+    <p>Verify the test cable transfers data and plug it into a known-good USB port. On the original Pico hold BOOTSEL while plugging in to check the read-only boot facility presents a USB mass storage drive. Release before ordinary reset and prove a known-good LED firmware goes through initialisation. A board in BOOTSEL can still have an application image or runtime fault. Use a spare whose firmware you can replace.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/labs/pico.jpg" width="960" height="454" alt="RP2040 Raspberry Pi Pico with labelled debug pads at the left, USB connector at the right and BOOTSEL above the processor" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 454" aria-hidden="true">
+            <path d="M151,159 L103.2,174.2" stroke="#103549" stroke-width="8"/>
+            <path d="M151,159 L103.2,174.2" stroke="#fff" stroke-width="3"/>
+            <path d="M88,179 L101.4,168.4 105.1,180.0Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="151" cy="159" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="151" y="159" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">1</text>
+            <path d="M633,64 L692.5,132.0" stroke="#103549" stroke-width="8"/>
+            <path d="M633,64 L692.5,132.0" stroke="#fff" stroke-width="3"/>
+            <path d="M703,144 L687.9,136.0 697.0,128.0Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="633" cy="64" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="633" y="64" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">2</text>
+            <path d="M818,315 L863.5,252.9" stroke="#103549" stroke-width="8"/>
+            <path d="M818,315 L863.5,252.9" stroke="#fff" stroke-width="3"/>
+            <path d="M873,240 L868.4,256.5 858.6,249.3Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="818" cy="315" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="818" y="315" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">3</text>
+          </svg>
+        </span>
+        <figcaption>1 · SWD debug pads. 2 · BOOTSEL button. 3 · USB. The USB connector is at one end. At the opposite end the three SWD pads connect the debug clock, ground and data. Check the silkscreen and pinout before wiring.<br><small>Photo by Phiarc, scaled for the course, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Pico_top.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/probe.png" width="400" height="556" alt="PEmicro Multilink ACP hardware debug probe connected to a ribbon cable" loading="lazy" decoding="async">
+        <figcaption>A hardware probe converts the host’s debug requests into the target’s signal interface. This is a different probe model. For the Pico wiring below use the Raspberry Pi documentation.<br><small>Photo by KMcNeilWiki, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:PEmicro%27s_Multilink_ACP_Debug_Probe.png">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p><a href="https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html">Official probe wiring and tool commands</a> · <a href="https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html">Pico versions and pinouts</a>.</p>
+
+    <h2>Compare serial evidence with the paused program state</h2>
+    <p>For a repeatable fault, build this as the application source in a Pico SDK blink project. Enable a serial output through the SDK configuration. Use the same build and ELF file throughout the test. The LED stays lit while the request waits.</p>
+    <pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+#include "pico/stdlib.h"
+
+volatile bool ready = false;
+
+int main(void) {
+    stdio_init_all();
+    gpio_init(25);
+    gpio_set_dir(25, GPIO_OUT);
+    gpio_put(25, 1);
+    puts("before wait");
+    while (!ready) {
+        sleep_ms(20);
+    }
+    puts("after wait");
+    gpio_put(25, 0);
+    for (;;) {
+        sleep_ms(1000);
+    }
+}</code></pre>
+    <p>In a second build initialise <code>ready</code> to <code>true</code>. Compare the LEDs and the last message, with the serial viewer open before reset. If using USB stdio, enumeration may take long enough to miss an early one-time message. The probe’s UART path gives an independent check.</p>
+    <ol class="steps"><li>Keep a minimal blink firmware and a second debug build of your own. Add a line before and after a wait, and create a deliberate test fault by making the wait condition remain false. If using UART, match voltage, baud and common ground. Observe which log lines appear.</li><li>With USB power disconnected, wire SWCLK, ground and SWDIO from the probe according to the official table. The target needs its own appropriate power connection. Keep the debug and UART connectors separate. Use the <code>rp2040.cfg</code> target config for the original Pico.</li><li>Run OpenOCD in one terminal using the command below. In another terminal open GDB with the matching ELF file built with debug symbols. Start with the known blink build so you can distinguish a target connection error from a software observation.</li></ol>
+    <pre><code>openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000"</code></pre>
+    <pre><code>arm-none-eabi-gdb build/your_app.elf
+    (gdb) target extended-remote localhost:3333
+    (gdb) monitor reset halt
+    (gdb) break main
+    (gdb) continue</code></pre>
+    <p>If you flashed an older build, load your test build first by the documented method and then reset. Step from initialisation or set a breakpoint before the wait. Use <code>bt</code> after halting a running target to read the call stack. Inspect <code>ready</code> with <code>print ready</code>. On this test firmware only, try <code>set variable ready = true</code> and continue. Check that the LED goes out. Rebuild with the correct logic and verify it without the probe. Optimisation can hide variables and reorder apparent stepping.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow the moment when the debugger stops at a line and displays the variable values. The video uses an earlier Picoprobe setup. Use the written vendor instructions for the current probe wiring. <a href="https://www.youtube.com/watch?v=jnC5LrTx470">Intro to Raspberry Pi Pico and RP2040 - C/C++ Part 2: Debug with Picoprobe | Digi-Key Electronics · DigiKey</a>.</p>
+
+    <h2>Record which boundary actually failed</h2>
+    <p>USB enumeration without serial text can mean the program never reached the UART message, the wrong interface is open or the port settings differ. A reachable SWD target with breakpoints stopping at the waiting line supports the firmware hypothesis. A failed probe connection moves the next check to ground, signal wiring, target power and debugger configuration. Check these on the known-good spare before replacing your application board.</p>
+    <p>Remove the introduced fault and repeat cold startup with the debugger detached. Record the board revision, firmware build, last working log line, where the debugger stopped and a reproducible boot result.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t30-embedded-timing-states.html">T30 · Firmware timing, state machines and recovery</a><br><a href="../theory/t41-embedded-boot-and-debug.html">T41 · Microcontroller boot, symbols and debug interfaces</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p27-firmware-state-machine.html">P27 · Program a timed controller that can stop</a></li>
+      <li><a href="p49-can-bus-and-telemetry.html">P49 · Log a CAN bus and verify the frame data</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

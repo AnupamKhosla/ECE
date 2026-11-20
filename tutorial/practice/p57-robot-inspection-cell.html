@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P57 · Commission a simulated robot inspection cell</title>
+<meta name="description" content="Combine fixture signals, 3D depth and AI inspection, then simulate faults before a robot uses the decision.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P57</span>
+    <h1>Commission a simulated robot inspection cell</h1>
+    <p class="lede">Put a camera, a depth reading, an inspection model and a controller decision into one work sequence. Then make each signal fail independently and prove what the simulator does.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p39-plc-ladder-simulation.html">P39</a> · <a href="p46-stereo-depth-and-robot-vision.html">P46</a> · <a href="p47-edge-ai-inspection.html">P47</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Follow one part through the cell</h2>
+    <p>A fixture holds a part. A camera reports the part ID, a capture timestamp, a qualified depth and the model’s label and score. A separate controller receives those signals and the fixture inputs. Its simulated response can be hold, review, request inspection reject or request a simulated pick. Each new part gets its own record before image processing starts.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Pick-and-place grippers above trays of parts in a manufacturing cell">
+        <figcaption>Find the gripper and locate where a part waits in its tray. Decide what information the camera and controller each need before the part moves.<br><small>Photo by Lexington Medical, Inc, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="RealSense D435 stereo camera on a tripod">
+        <figcaption>Mount the camera relative to the fixture and record the frame coordinates. Recheck calibration if the mounting geometry changes.<br><small>Photo by Marc Auledas, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Observe which information a vision system reports and which parts of the demonstration belong to the robot. <a href="https://www.youtube.com/watch?v=-wGyW12WX8o">Pickit’s robot vision demonstration</a>.</p>
+    <p>The lab works from recorded data on an ordinary computer. Its software has no connection to equipment. Actual motion requires a validated cell design with documented safety functions, and a camera-to-robot transform verified independently of the model score.</p>
+
+    <h2>Run the normal case and deliberately fail each input</h2>
+    <p>Save both files in the same folder and run the script with Python 3. It compares each decision with the independently recorded expected result. The first failed condition is printed so you can explain the order of checks.</p>
+    <p><a href="../assets/labs/inspection-cell.py" download>Download the Python simulator</a> · <a href="../assets/labs/inspection-cell-cases.csv" download>Download the ten-case worksheet</a>.</p>
+    <pre><code>python3 inspection-cell.py</code></pre>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Case</th><th scope="col">What failed</th><th scope="col">What the controller sees</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">A01</th><td>All checks passed</td><td>Request simulated pick</td></tr>
+          <tr><th scope="row">A02–A03</th><td>Frame is stale or belongs to an earlier part</td><td>Hold and reacquire the current part</td></tr>
+          <tr><th scope="row">A04–A06</th><td>Depth missing, model uncertain or defect identified</td><td>Hold, review or request inspection reject, according to the cause</td></tr>
+          <tr><th scope="row">A07–A08</th><td>Simulator permit missing or fixture unready</td><td>Hold even with a valid high-confidence image</td></tr>
+          <tr><th scope="row">A09–A10</th><td>Target beyond acceptance range or clock mismatch</td><td>Hold and recheck geometry or timestamp</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>In the worksheet, age means time since capture using a comparable time base, with a 250 ms training limit. Depth must be valid and land between 725 and 775 mm. With normal, defect or uncertain outcome, use the model confidence cutoff chosen from validation data. The worksheet’s 0.85 cutoff is only an example.</p>
+
+    <h2>Change one variable and record the commissioning result</h2>
+    <ol class="steps">
+      <li>Copy the worksheet and add an exact-boundary case for 250 ms and one for 251 ms. Record the expected result before running either one.</li>
+      <li>Try a correctly identified part with a high-confidence model result and a failed fixture sensor. Then restore that input while retaining the previous frame ID. Explain both holds.</li>
+      <li>If you have a camera, collect new stills from <a href="p46-stereo-depth-and-robot-vision.html">P46</a> and <a href="p47-edge-ai-inspection.html">P47</a> and enter their recorded values in the worksheet. Keep image, source time, part ID, measured reference position and model version together.</li>
+      <li>For your portfolio, state which signals were from simulated values, which you measured, how you created a fault and what the same test showed after the correction.</li>
+    </ol>
+    <p>A production integrator also proves the transformation from the camera to the robot base with known targets, measures total cycle time and verifies independent safety functions. Compare the layout of commercial 3D systems. <a href="https://video.universal-robots.com/vision-handling-set-3d-r">Universal Robots 3D vision and handling demonstration</a>.</p>
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t33-robot-motion-and-feedback.html">T33 · Robot frames</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Control and proof</a><br><a href="../theory/t37-edge-ai-evaluation.html">T37 · Inspection metrics</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Freshness and timestamps</a></p>
+    </div>
+    <p><a href="../career/c18-controls-robotics-and-service-careers.html">C18 · Use a commissioning case in your job portfolio</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

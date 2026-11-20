@@ -145,6 +145,12 @@ ul.checklist input{margin-top:6px;width:18px;height:18px;accent-color:var(--acce
 .widget .readings{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
 .widget .readings div{background:var(--wash);border-radius:8px;padding:8px 12px}
 .widget .readings small{display:block;color:var(--muted);font-size:12.5px}
+.lab-controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.lab-controls button{font:600 14px var(--sans);padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--wash);color:var(--ink);cursor:pointer}
+.lab-controls button:hover{border-color:var(--accent)}
+.lab-plot{display:block;width:min(100%,370px);height:auto;margin:16px auto}
+.lab-plot[hidden]{display:none}
+.widget input[type=file]{max-width:100%;font:inherit}
 
 /* Repair worksheet: values are mirrored as wrapping text for complete printing. */
 .job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}

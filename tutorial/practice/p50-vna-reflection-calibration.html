@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P50 · Calibrate a VNA and measure RF reflections</title>
+<meta name="description" content="Make a one-port calibration, move the reference plane, and compare a 50 Ω load, an open and a terminated cable.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P50</span>
+    <h1>Calibrate a VNA and measure RF reflections</h1>
+    <p class="lede">A good 50 Ω load appears to reflect too much signal. Move the reference plane to the end of the actual cable and prove the instrument with a known standard first.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes</span><span><b>Before this</b> <a href="p15-oscilloscope-logic-analyser.html">P15</a> · <a href="p31-antenna-receive-lab.html">P31</a> · <a href="../theory/t32-rf-transmission-lines.html">T32</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A VNA such as a NanoVNA, a suitable test cable and matching open, short and 50 Ω load standards. Use only passive loads within the instrument’s ratings. Work through the numeric case if you do not have a VNA.</p></div>
+
+    <h2>Tell the instrument ports and traces apart</h2>
+    <p><b>S11</b> is the reflection coefficient seen looking into port 1. The magnitude display in dB is commonly zero for nearly total reflection and negative for lower reflection. Return loss uses the opposite sign. <b>S21</b> describes forward transmission from port 1 to port 2 in a two-port measurement.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/labs/rf.jpg" width="960" height="614" loading="lazy" decoding="async" alt="NanoVNA display with blue S11 Smith chart, yellow S21 trace, and two coax connectors">
+          <svg viewBox="0 0 960 614" aria-hidden="true">
+            <path d="M211.2,67.5 L79.6,140.5" stroke="#103549" stroke-width="7.2" fill="none"/>
+            <path d="M211.2,67.5 L79.6,140.5" stroke="#fff" stroke-width="3.1" fill="none"/>
+            <path d="M67.2,147.4 L76.6,135.1 82.6,145.9Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="211.2" cy="67.5" r="17.5" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="211.2" y="67.5" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:23.7px">1</text>
+            <path d="M220.8,356.1 L60.1,453.2" stroke="#103549" stroke-width="7.2" fill="none"/>
+            <path d="M220.8,356.1 L60.1,453.2" stroke="#fff" stroke-width="3.1" fill="none"/>
+            <path d="M48.0,460.5 L56.9,447.9 63.3,458.5Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="220.8" cy="356.1" r="17.5" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="220.8" y="356.1" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:23.7px">2</text>
+            <path d="M854.4,110.5 L737.4,289.0" stroke="#103549" stroke-width="7.2" fill="none"/>
+            <path d="M854.4,110.5 L737.4,289.0" stroke="#fff" stroke-width="3.1" fill="none"/>
+            <path d="M729.6,300.9 L732.2,285.6 742.6,292.4Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="854.4" cy="110.5" r="17.5" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="854.4" y="110.5" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:23.7px">3</text>
+          </svg>
+        </span>
+        <figcaption>1 · Port 1, labelled CH0 on this unit. 2 · The second port. 3 · Smith chart for S11. A real NanoVNA measuring an RF circuit. Separate the one-port S11 exercise from the S21 trace shown in the reference photo.<br><small>Photo by Martin Homuth-Rosemann, scaled for the course, with labels added. <a href="https://commons.wikimedia.org/wiki/File:NanoVNA_S11_S21.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/rfkit.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Open case with SMA calibration standards in fitted slots">
+        <figcaption>This kit includes male and female calibration standards. An open, short and known 50 Ω load establish the reference plane at the selected connector. Identify each correctly before confirming it.<br><small>Photo by Elgull, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:SMA_calibration_kit_for_VNA.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Calibrate at the connector you will use</h2>
+    <ol class="steps"><li>Choose a modest span over which the cable and standards are rated, such as 10–100 MHz for a suitable student kit. Select the S11 trace and note the cable configuration.</li><li>Put the standards at the end of the actual test cable. In the instrument’s calibration menu, connect and measure open, short and load in the model’s sequence. Save and activate that calibration. Support the cable and use the correct connector type.</li><li>Compare a second known load. An open should be near 0 dB magnitude and a suitable matched load should reflect far less. Avoid claiming accuracy beyond the instrument and standards. Recheck calibration if you change the cables or span.</li></ol>
+    <p class="course-video"><b>Watch on YouTube</b> · Pause on the calibration standards and identify the connector where each standard attaches. <a href="https://www.youtube.com/watch?v=FEzvLFGbsxA">How to Calibrate a NanoVNA – Every Step Explained! · mr diyguy123</a>.</p>
+    <p><a href="https://nanorfe.com/nanovna-calibration.html">NanoRFE calibration sequence and reference</a>.</p>
+
+    <h2>Make sense of return loss and mismatch</h2>
+    <div class="formula">|Γ| = 10<sup>(S11 dB ÷ 20)</sup><br>Reflected fraction of power = |Γ|²<small>At S11 = −14 dB, |Γ| ≈ 0.20 and reflected power ≈ 4%. The corresponding return loss is 14 dB.</small></div>
+    <p>An ideal 75 Ω load on a 50 Ω system gives |Γ| = |(75 − 50)/(75 + 50)| = 0.20. An open and a short can have the same magnitude yet different phase. Check the Smith chart marker position or phase if you need to distinguish them.</p>
+    <p>Calibrate a second time at the instrument port. Add the same cable after calibration and compare the phase and the measured response at its far end. Cable loss and electrical length can change the answer. Return to the desired plane before the closing test.</p>
+
+    <h2>Keep a measurement you can reproduce</h2>
+    <p>Record the span, calibration type, reference plane, load or cable ID and marker readings. Save a plot or screen photo with one known standard and the unknown load. Describe the result with the units and sign used by the display.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t32-rf-transmission-lines.html">T32 · RF transmission lines, antenna matching and link budget</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series, bus layers and evidence quality</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p53-fibre-loss-and-otdr.html">P53 · Check a fibre loss budget and read an OTDR trace</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

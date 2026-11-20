@@ -83,9 +83,10 @@
     </tbody>
     </table></div>
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t17-networking-theory.html">T17</a> explains the TCP connection underlying MQTT, and <a href="../theory/t30-embedded-timing-states.html">T30</a> covers liveness and expiry timers. A retained message is broker state, and QoS describes message delivery. Neither establishes sample freshness. An extension is to include a device session ID, sequence number and capture time so delayed and duplicate deliveries can be spotted. <a href="https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">OASIS MQTT 3.1.1 specification</a>.</p></div>
+    <p>Apply the same age check to a <a href="p49-can-bus-and-telemetry.html">virtual CAN frame</a> or handle a front end with <a href="p40-scada-trend-handover.html">separate command and proof history</a>.</p>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-labs"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

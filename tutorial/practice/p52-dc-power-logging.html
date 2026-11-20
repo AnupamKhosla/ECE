@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P52 · Log DC power and explain a short battery runtime</title>
+<meta name="description" content="Measure voltage and current together, estimate energy over an on/off duty cycle, and check a short runtime against a battery rating.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P52</span>
+    <h1>Log DC power and explain a short battery runtime</h1>
+    <p class="lede">A project uses 250 mA when active, yet the battery dies sooner than expected. Measure actual power over the full cycle and check which side of the regulator you measured.</p>
+    <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p10-power-supplies.html">P10</a> · <a href="p18-esp32-iot-mqtt.html">P18</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A current-limited 5 V bench source, resistor or your low-voltage microcontroller load, a voltmeter, and an INA219 breakout or safe inline DC meter rated for the load. The sample profile requires a spreadsheet only.</p></div>
+
+    <h2>Point to the shunt, source and load</h2>
+    <p>A shunt carries current and develops a small voltage. A high-side current monitor reads that difference near the supply positive wire. On the INA219 trainer, wire bus current through the module’s IN+ and IN− terminals in the documented direction. Its low-voltage logic connector powers and communicates with the chip. Follow the board instructions for logic voltage, load rating and common ground.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/labs/energy.jpg" width="960" height="640" loading="lazy" decoding="async" alt="INA219 breakout with blue current terminals, a shunt resistor and separate logic connections">
+          <svg viewBox="0 0 960 640" aria-hidden="true">
+            <path d="M192.0,198.4 L257.4,252.9" stroke="#103549" stroke-width="7.5" fill="none"/>
+            <path d="M192.0,198.4 L257.4,252.9" stroke="#fff" stroke-width="3.2" fill="none"/>
+            <path d="M268.8,262.4 L253.3,257.9 261.6,248.0Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="192.0" cy="198.4" r="18.3" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="192.0" y="198.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24.7px">1</text>
+            <path d="M624.0,307.2 L408.2,343.2" stroke="#103549" stroke-width="7.5" fill="none"/>
+            <path d="M624.0,307.2 L408.2,343.2" stroke="#fff" stroke-width="3.2" fill="none"/>
+            <path d="M393.6,345.6 L407.1,336.8 409.2,349.5Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="624.0" cy="307.2" r="18.3" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="624.0" y="307.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24.7px">2</text>
+            <path d="M720.0,198.4 L551.7,251.5" stroke="#103549" stroke-width="7.5" fill="none"/>
+            <path d="M720.0,198.4 L551.7,251.5" stroke="#fff" stroke-width="3.2" fill="none"/>
+            <path d="M537.6,256.0 L549.8,245.4 553.6,257.7Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="720.0" cy="198.4" r="18.3" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="720.0" y="198.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24.7px">3</text>
+          </svg>
+        </span>
+        <figcaption>1 · Current terminals. 2 · Shunt resistor. 3 · Logic header. Find the high-side shunt and the large current terminals, then distinguish them from the small logic header.<br><small>Photo by oomlout, scaled for the course, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Adafruit_INA219_high_side_DC_current_sensor_module_2.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/bench-current.jpg" width="800" height="635" loading="lazy" decoding="async" alt="Extech meter using its fused milliamp input to measure 226.9 milliamps DC in a USB boost-converter training example">
+        <figcaption>A meter in series can serve as a reference for a steady bench load. Select a safe range with the manufacturer’s specified protection before energising.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1715">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p><a href="https://www.ti.com/product/INA219">Texas Instruments INA219 reference</a> · <a href="https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout">Illustrated Adafruit breakout guide</a>.</p>
+
+    <h2>Log one full operating cycle</h2>
+    <ol class="steps"><li>At a known steady load, compare your monitor to a reference meter. With a suitable 100 Ω, 1% resistor on a 5.0 V supply you expect about 50 mA and 0.25 W. Use a 0.5 W or larger resistor and keep it clear of wiring.</li><li>Measure voltage and current at the same place for idle and active portions of the real duty cycle. If readings are averaged, sample fast enough for the shortest state of interest or explicitly record the sampling limit.</li><li>Save timestamp, state, voltage and current. Multiply to get watts and integrate power over time. With uneven sampling intervals multiply each representative sample by the interval it represents.</li></ol>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">State</th><th scope="col">Duration in a 60 s cycle</th><th scope="col">Voltage and current</th><th scope="col">Energy</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Idle</th><td>50 s</td><td>5.0 V × 30 mA = 0.15 W</td><td>7.5 J</td></tr>
+          <tr><th scope="row">Active</th><td>10 s</td><td>5.0 V × 250 mA = 1.25 W</td><td>12.5 J</td></tr>
+          <tr><th scope="row">Total</th><td>60 s</td><td>Average 0.333 W</td><td>20 J ≈ 0.00556 Wh</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Compare the logic wiring with the separate current path, then check the readings when the load changes. <a href="https://www.youtube.com/watch?v=JWUKFLCX5Os">INA219 Current Sensor Tutorial (with Arduino) · Gemsung Electronics</a>.</p>
+
+    <h2>Explain the difference between a rough estimate and a test</h2>
+    <p>At an average 0.333 W, a hypothetical battery delivering 2.0 Wh at the measured output could cover about 6 hours. A battery specification of 2.0 Wh <em>before</em> conversion yields less useful output at that load. Different cutoff voltages, current peaks, conversion losses and temperature can shorten the measured result. Compare like-for-like voltage and location. A 2 Ah rating alone cannot provide energy in Wh until you know the voltage.</p>
+    <p>Turn a software feature off and log another equal-length run. A slow monitor can miss brief peaks during Wi-Fi transmission. Compare against the unit’s published sampling and averaging settings if drops or resets persist.</p>
+
+    <h2>Hand over a measured power budget</h2>
+    <p>Write down power in idle and active, duty cycle, average energy per hour, conditions and the circuit point measured. State which assumptions the estimate uses and confirm the fix with a repeat measurement.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t03-power-energy-heat.html">T03 · Power, energy and heat</a><br><a href="../theory/t28-lithium-batteries.html">T28 · Lithium-ion cells, charging and protection</a><br><a href="../theory/t35-calibration-and-condition-data.html">T35 · Calibration, uncertainty and condition measurements</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+      <li><a href="p53-fibre-loss-and-otdr.html">P53 · Check a fibre loss budget and read an OTDR trace</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

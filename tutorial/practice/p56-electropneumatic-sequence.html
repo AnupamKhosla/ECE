@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P56 · Diagnose a pneumatic actuator from command to position</title>
+<meta name="description" content="Map a directional valve and cylinder, then simulate a clamp sequence and separate logic, valve, air and feedback faults.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P56</span>
+    <h1>Diagnose a pneumatic actuator from command to position</h1>
+    <p class="lede">The controls screen says Extend. The cylinder has not reached the confirming switch. Follow the chain through the electrical command, valve, air path and moving mechanism.</p>
+    <div class="meta"><span><b>Time</b> 50–65 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="p39-plc-ladder-simulation.html">P39</a> · <a href="../theory/t31-feedback-control.html">T31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>The printed or browser PLC trainer from P39 plus a paper schematic for the simulation. Physical observation on a purpose-built, guarded training rig under an instructor can follow the paper exercise.</p></div>
+
+    <h2>Find the valve coil, air paths and cylinder</h2>
+    <p>An electrical output energises the coil. A directional valve changes which cylinder chamber receives air and which can exhaust. A double-acting cylinder has a powered stroke in both directions. An independent switch or sensor reports position. A coil LED, if fitted, shows a local electrical condition. It cannot establish pressure or movement.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/solenoid.jpg" width="960" height="718" alt="Close-up of a DC 24 V valve solenoid coil and a clear electrical plug" loading="lazy" decoding="async">
+        <figcaption>Find the solenoid coil and its electrical connection. It moves the valve mechanism that directs air to the load.<br><small>Photo by Sarah Adrita, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Solenoid_coil_of_a_pneumatic_valve.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/cylinder.jpg" width="720" height="960" alt="Installed pneumatic cylinder with a projecting metal rod, two air fittings and two position switches" loading="lazy" decoding="async">
+        <figcaption>Find the cylinder body, rod and mounting points. Use the real part’s data and markings to identify its ports.<br><small>Photo by Mixabest, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Pneumatic_cylinder_2172.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Study the relevant valve symbol on the vendor drawing. For the exercise assume a single-coil, spring-return 5/2 valve with one supply, two work ports and two exhaust ports, and a separate extended sensor. The resting and energised air paths are defined by that valve’s two positions.</p>
+
+    <h2>Simulate the command and prove the return state</h2>
+    <p>In the P39 browser trainer, call the output <code>EXTEND_CMD</code> and the proof checkbox <code>EXTENDED</code>. Keep the permissive checks. Press Start once, then change the proof after one simulated second. Write whether the command stays on. Remove a permissive and observe that the command drops. Now apply a missing proof and prove that the timeout latches. On paper add a separate <code>RETRACTED</code> input and record how you would confirm that the actuator returned.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Observed state</th><th scope="col">Next boundary to check</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Controller output off with a permissive missing</th><td>Logic, interlocks or sensor input</td></tr>
+          <tr><th scope="row">Output commands extend while the coil indication remains off</th><td>Electrical wiring, coil supply or output module</td></tr>
+          <tr><th scope="row">Coil indication on while the actuator stays stopped</th><td>Air supply, valve state, blocked exhaust or mechanical binding</td></tr>
+          <tr><th scope="row">Cylinder visibly moved and feedback remains off</th><td>Sensor position, cable, input mapping or signal timing</td></tr>
+          <tr><th scope="row">Command dropped and the retracted switch has no proof</th><td>Use isolation and inspect return movement and its sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch the two air paths change as the cylinder reverses. The demonstration is in Portuguese and shows the sequence visually. <a href="https://www.youtube.com/watch?v=6I8Mw42i9_A">Retorno Automático de um Cilindro de Dupla Ação (Ensaio 19) · UP Educação Profissional</a>.</p>
+    <p class="course-video"><b>English demonstration</b> · Pause while the valve switches and identify which limit valve reports the end of the stroke. <a href="https://www.youtube.com/watch?v=exjMhtJzSUE">5/2 valve, double-acting cylinder and limit valves · Bob Teaches Tech</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/pneumatics.png" width="960" height="641" alt="Automated food handling equipment with blue air hoses and several pneumatic actuators" loading="lazy" decoding="async">
+      <figcaption>On this automated pretzel line trace the blue air lines to the moving gripper. Similar troubleshooting separates the controller output, air path and proof of movement.<br><small>Photo by Festo (Unternehmen), scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Festo_Pretzel-twisting-machine_Pneumatic-components.png">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+
+    <h2>Keep stored energy in the troubleshooting plan</h2>
+    <p>A blocked mechanism, a compressed chamber, an accumulator or a hanging load can move after an electrical output drops. Keep the learner exercise simulated. On training hardware use the site or instructor procedure to isolate all energy sources and verify the apparatus is safe before touching a mechanical or pneumatic part. The simulator does not test physical isolation or stopping performance.</p>
+    <p>Provide a state table for idle, extending, confirmed and timed out, plus a suspected-fault boundary and test result. Look at how the equipment vendor introduces pneumatics from symbols and connections through troubleshooting. <a href="https://www.festo.com/net/supportportal/files/10131/pneumatictrainingbrochure.pdf">Festo Didactic electro-pneumatics training</a>.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a><br><a href="../theory/t42-pneumatic-force-and-feedback.html">T42 · Pneumatic force, directional valves and independent feedback</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p39-plc-ladder-simulation.html">P39 · Build and test a start–stop PLC sequence</a></li>
+      <li><a href="p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+      <li><a href="p42-mobile-robot-fault-finding.html">P42 · Repair a mobile robot’s motor, wiring or encoder</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

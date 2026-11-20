@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P37 · Calibrate a 4–20 mA pressure input</title>
+<meta name="description" content="Wire a current source and 250 Ω receiver, record five up/down points, then diagnose a scaling error.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P37</span>
+    <h1>Calibrate a 4–20 mA pressure input</h1>
+    <p class="lede">A graphics screen reports 75 kPa while a pressure calibrator reports 50 kPa. Follow the signal from current to voltage to engineering units until you can say where the error entered.</p>
+    <div class="meta"><span><b>Time</b> 50–75 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p12-sensors-adc.html">P12</a> · <a href="../theory/t16-signals-noise-loops.html">T16</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A current calibrator with a source mode, 250 Ω 1% or better resistor rated at least 0.25 W, fused meter and leads. Start with the screen-only readings if a calibrator is unavailable. Use a passive receiver or resistor on the isolated bench.</p></div>
+
+    <h2>Trace the loop from the transmitter to the controller</h2>
+    <p>A transmitter drives a current in a two-wire loop. A <b>shunt</b> is a known resistor that converts that current into voltage for the receiver. With 250 Ω, 4 mA makes 1 V and 20 mA makes 5 V. At 20 mA the resistor dissipates 0.10 W. Give it headroom with a 0.25 W or larger part.</p>
+    <div class="formula">Pressure (kPa) = (I in mA − 4) × 100 ÷ 16<small>Worked range 0–100 kPa. If you read voltage across 250 Ω, use I in mA = 4 × V.</small></div>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/pressure.jpg" alt="Industrial pressure transmitter with process fitting and housing" width="390" height="500" loading="lazy" decoding="async">
+        <figcaption>Find the process connection where pressure enters. The transmitter’s datasheet specifies its electrical range and the terminal assignment.<br><small>Photo by Bro37. <a href="https://commons.wikimedia.org/wiki/File:Druckmessumformer.jpg">Original photo</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/loop.png" alt="Industrial valve positioner used in a current loop" width="960" height="720" loading="lazy" decoding="async">
+        <figcaption>This valve positioner is an example of a physical instrument wired into a current loop. For this bench exercise the calibrator drives a known resistor instead. The voltmeter goes across that resistor.<br><small>Photo by Dougsim, resized. <a href="https://commons.wikimedia.org/wiki/File:Smart_current_loop_positioner.png">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Prove the receiver using a known current</h2>
+    <ol class="steps"><li>At zero output and with power off, wire the calibrator’s <b>source</b> output through the resistor and back to the calibrator. Keep an external loop supply out of this setup. <b>Simulate</b> mode needs an externally powered loop. Confirm which terminals and mode your meter manual shows.</li><li>Measure voltage <em>across</em> the resistor. Set 4, 8, 12, 16 and 20 mA, then reverse the order. Record the set current, measured voltage, indicated pressure and direction at each point. A 1% shunt alone might move the 5 V reading by 0.05 V.</li><li>On a supervised controller trainer, repeat against its documented passive current input. Some receivers have an internal shunt. Use the terminal and common intended for that input before applying the current.</li></ol>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Current</th><th scope="col">Ideal reading</th><th scope="col">Expected pressure</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">4 mA</th><td>1.00 V</td><td>0 kPa</td></tr>
+          <tr><th scope="row">8 mA</th><td>2.00 V</td><td>25 kPa</td></tr>
+          <tr><th scope="row">12 mA</th><td>3.00 V</td><td>50 kPa</td></tr>
+          <tr><th scope="row">16 mA</th><td>4.00 V</td><td>75 kPa</td></tr>
+          <tr><th scope="row">20 mA</th><td>5.00 V</td><td>100 kPa</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Compare sourcing the current yourself with simulating a transmitter in an existing powered loop. Identify the current terminals before wiring. <a href="https://www.youtube.com/watch?v=iFxSLNeA42M">How To Use a Process Meter - (5 Step Guide to Source / Simulate 4-20mA) · Instrumentation &amp; Control</a>.</p>
+
+    <h2>Find the error before changing the scaling</h2>
+    <p><b>Case A.</b> Your resistor measures 3.00 V and the display reads 75 kPa. Check the displayed raw value. At a correct 12 mA raw reading, look at the programmed endpoints and units. A 0–150 kPa scale maps 12 mA to 75 kPa. Record exactly which range was wrong.</p><p><b>Case B.</b> At a 16 mA setpoint the resistor measures 3.60 V. Prove its resistance with the output off. A 225 Ω resistor would explain 3.60 V at 16 mA. If the resistor is 250 Ω, check actual delivered current and the source’s compliance-voltage limit against the loop burden. No valid reading at all may mean open wiring or missing loop supply.</p><p>A transmitter check requires a known physical pressure source or calibrated reference. This exercise proves the input and its scaling. For the field training task, look at the National Training Register unit for pressure measurement. <a href="https://training.gov.au/training/details/UEEIC0041">UEEIC0041</a>.</p>
+
+    <h2>Hand over a reproducible record</h2>
+    <p>Keep both directions of sweep and the original configuration. On the training setup, use ±1 kPa as an illustrative acceptance tolerance. Circle any point outside it. Repeat the sweep after correcting the one confirmed issue. The manufacturer or contract sets the actual tolerance on site.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t16-signals-noise-loops.html">T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a><br><a href="../theory/t24-measurement-datasheets.html">T24 · Measurement loading, tolerance and datasheets</a><br><a href="../theory/t35-calibration-and-condition-data.html">T35 · Calibration, uncertainty and condition measurements</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p38-bacnet-point-commissioning.html">P38 · Commission a BACnet room-controller point</a></li>
+      <li><a href="p51-load-cell-data-acquisition.html">P51 · Calibrate a load cell and test for drift</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T39 · Optical loss, reflections and fibre test limits</title>
+<meta name="description" content="Convert dBm to dB loss, understand backscatter distance and account for launch and receive dead zones.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T39</span>
+    <h1>Optical loss, reflections and fibre test limits</h1>
+    <p class="lede">Loss is how much optical power failed to reach the far end. A trace lets you ask where the loss or reflection occurred.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t10-em-waves-antennas-fibre.html">T10</a> · <a href="t16-signals-noise-loops.html">T16</a> · <a href="t32-rf-transmission-lines.html">T32</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Compute a link budget from powers and loss</h2>
+    <p>dBm expresses power relative to 1 mW. A launch at −4 dBm and receive at −7 dBm indicate 3 dB loss, assuming the test reference is set at the chosen endpoints. dB losses of segments and matched connection pairs add. Specification and acceptance conditions set the source, wavelength and measurement method.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/otdr.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Yokogawa AQ7270 OTDR mounted on a calibration stand">
+        <figcaption>An OTDR reports returned optical signals as a function of distance. The settings and fibre type are part of the reading.<br><small>Photo by Electron, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OTDR_-_Yokogawa_AQ7270_-_7.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/fiber.jpg" width="960" height="567" loading="lazy" decoding="async" alt="OTDR trace showing falling backscatter levels and reflection peaks versus distance">
+        <figcaption>Discrete reflection peaks and the downward change in returned level along the link give different kinds of evidence.<br><small>Image by OLC Fiber from Lakewood, CO, USA, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OTDR_trace_data_(5295373333).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow an event on the optical trace and use its location to choose a follow-up check. <a href="https://www.youtube.com/watch?v=4jz7d_IvhF8">Reading an OTDR Trace · Corning Optical Communications</a>.</p>
+
+    <h2>Work out distance from round-trip time</h2>
+    <div class="formula">Distance = c × t ÷ (2n)<small>c is light speed in vacuum, n the group index used by the instrument, and t the round-trip time.</small></div>
+    <p>For n = 1.468 and t = 10 μs, distance is about 1,021 m. Incorrect group index shifts reported distances. A large near-end reflection can hide a following event. A shorter pulse can improve separation at the cost of reach or dynamic range.</p>
+
+    <h2>Interpret reflections and apparent gains</h2>
+    <p>An interface such as a connector or open end can give a reflection. A splice may show as a step with little reflection. A splice can appear to gain power in one OTDR direction because the two fibres backscatter differently. Bidirectional comparison can improve the estimate when the procedure specifies it. Compare an end-to-end loss test to isolate whether the link really meets its budget. <a href="https://www.thefoa.org/tech/ref/testing/OTDR/OTDR.html">Fiber Optic Association reference</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../career/c09-fibre-splicing-otdr.html">C09 · Fibre optics in the field: splicing, connectors and OTDR</a></li>
+      <li><a href="../practice/p50-vna-reflection-calibration.html">P50 · Calibrate a VNA and measure RF reflections</a></li>
+      <li><a href="../practice/p53-fibre-loss-and-otdr.html">P53 · Check a fibre loss budget and read an OTDR trace</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+unit_id,board_revision,fixture_revision,known_condition,unpowered_inspection,input_v,led_anode_v,resistor_v,resistor_ohms,derived_current_ma,result,fault_evidence,retest
+A00,1.0,1.0,known good,correct LED polarity and no supply short,4.99,1.95,3.04,329,9.24,pass,,
+A01,1.0,1.0,open connection between R1 and LED pads,no supply short,4.99,,0.02,330,0.06,fail,series path open; inspect R1-to-anode net,
+A02,1.0,1.0,reversed LED,LED orientation differs from assembly drawing,not powered,,,330,,fail,mark agrees with diode-mode check after isolation,
+,,,,,,,,,,,,

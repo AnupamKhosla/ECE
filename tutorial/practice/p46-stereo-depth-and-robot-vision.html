@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P46 · Check depth accuracy before a robot uses it</title>
+<meta name="description" content="Compare stereo disparity and physical distance, then identify invalid depth, poor texture and calibration errors.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P46</span>
+    <h1>Check depth accuracy before a robot uses it</h1>
+    <p class="lede">A depth camera says a tray is 750 mm away. Check the geometry, units and missing depth before a controller uses that number for movement.</p>
+    <div class="meta"><span><b>Time</b> 65 minutes</span><span><b>Before this</b> <a href="p43-robot-arm-position-calibration.html">P43</a> · <a href="p45-2d-machine-vision.html">P45</a> · <a href="../theory/t36-camera-optics-and-depth.html">T36</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Ruler or tape, textured cardboard and a plain or shiny sample. The browser exercise uses sample stereo measurements. An actual USB stereo camera with its viewer is optional. Keep the camera stationary and use stationary objects.</p></div>
+
+    <h2>Identify the two views and coordinate frame</h2>
+    <p>Two horizontally separated images see the same detail at different pixel positions. After <b>rectification</b>, matched features lie on the same horizontal image row. Their horizontal separation is <b>disparity</b>. A textured target is easier to match than a plain wall. Know which camera frame your depth is relative to.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="RealSense D435 stereo depth camera mounted on a tripod">
+        <figcaption>Find the two horizontally separated depth imagers on the sensor. Check the product diagram before assuming all windows serve the same purpose.<br><small>Photo by Marc Auledas, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Two-finger robot grippers above a tray of pink medical components">
+        <figcaption>If a depth camera is mounted near a robot, a point measured in its camera frame needs a transform to the robot’s base or tool frame.<br><small>Photo by Lexington Medical, Inc, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <div class="formula">Z = f × B ÷ d<small>f is the rectified focal length in pixels, B is the camera baseline, and d is disparity in pixels. Z is in the same unit as B.</small></div>
+
+    <h2>Measure near and far targets</h2>
+    <p>For the training camera use a 75 mm baseline and f = 600 px. Print textured and plain panels. If you have a camera, put the textured panel at three fixed distances and compare the viewer’s median valid depth over a small central region with a ruler referenced to the camera as specified by its maker.</p>
+    <div class="widget" data-depth-trainer>
+      <span class="label">Disparity and distance</span>
+      <label for="depth-disparity">Disparity in pixels</label>
+      <input type="number" id="depth-disparity" name="disparity" min="0" step="any" value="60" inputmode="decimal">
+      <div class="readings">
+        <div><small>Estimated depth</small><output class="out" data-distance>750.0 mm</output></div>
+        <div><small>Depth with 1 extra pixel of disparity</small><output class="out" data-next-pixel>737.7 mm</output></div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Reference distance</th><th scope="col">Expected disparity</th><th scope="col">If measured disparity increases by 1 px</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">500 mm</th><td>90 px</td><td>494.5 mm</td></tr>
+          <tr><th scope="row">750 mm</th><td>60 px</td><td>737.7 mm</td></tr>
+          <tr><th scope="row">1,500 mm</th><td>30 px</td><td>1,451.6 mm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Test the plain and shiny panels. Mark missing or low-confidence regions as invalid. Measure the percentage of valid pixels as well as the median of those that remain. Raw zero or a device-specific sentinel can mean invalid depending on the API.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Look for what happens to depth when the relative camera geometry moves or is corrected. <a href="https://www.youtube.com/watch?v=GoEtPvwqMS8">Dynamic Calibration: Keeping Stereo Depth Accurate · Luxonis</a>.</p>
+
+    <h2>Separate calibration, units and poor matches</h2>
+    <p>A consistent ×1000 error is a unit mismatch candidate. A distance-dependent error can come from calibration or disparity. A hole that follows a shiny surface points toward matching or sensing conditions. If all targets are shifted after camera movement, check the camera-to-base transform. For your camera, save intrinsics, baseline, depth units, stream resolution and the data-quality setting.</p>
+    <p>Follow the official rectification/model references and your camera’s viewer documentation. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calibration and stereo models</a> · <a href="https://docs.luxonis.com/overview/toplevel-features/depth">Luxonis depth documentation</a>.</p>
+
+    <h2>Set up a defensible depth gate</h2>
+    <p>For the worked example, mark a result unusable if fewer than 80% of the region’s pixels are valid, the sample is stale or the depth error exceeds a ground-truth check you choose. Log the cause and the test distances. Produce a software-only result before associating the measurement with a physical motion controller.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t33-robot-motion-and-feedback.html">T33 · Robot motion, coordinate frames and encoder feedback</a><br><a href="../theory/t36-camera-optics-and-depth.html">T36 · Camera optics, calibration and stereo depth</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p47-edge-ai-inspection.html">P47 · Test an AI inspection model on unseen parts</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/labs.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P40 · Read a SCADA trend and write a fault handover</title>
+<meta name="description" content="Use a worked time series to separate a fan proof alarm, a stale value and a front-end mapping fault.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P40</span>
+    <h1>Read a SCADA trend and write a fault handover</h1>
+    <p class="lede">The dashboard says the motor is off. The sound in the room says otherwise. Learn to separate the command, the proof signal and the data age before writing a handover.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes</span><span><b>Before this</b> <a href="p29-bms-commissioning-lab.html">P29</a> · <a href="p30-iot-reliability.html">P30</a> · <a href="p38-bacnet-point-commissioning.html">P38</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A spreadsheet or text editor. Optional bench extension uses your own MQTT lab from P30. The sample record below needs no software or service account.</p></div>
+
+    <h2>Find the five things a trend needs</h2>
+    <p>Record tag, value, engineering unit, source timestamp and quality. Keep command, feedback and alarm as distinct tags. A front end may show the last known process value after data stops. Use source time, quality and the communications state so the stale value is clear.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+        <figcaption>A controller is a source of point values. Its measured input and the front end’s copy can disagree.<br><small>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/pi.jpg" alt="Overhead photo of a Raspberry Pi 4 Model B with USB, Ethernet, HDMI and GPIO connectors" width="960" height="641" loading="lazy" decoding="async">
+        <figcaption>A Raspberry Pi can host the P30 training dashboard and log the time a sample arrived. Keep the time from the source as a separate field when possible.<br><small>Photo by Laserlicht, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_4_Model_B_-_Top.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Look at tag diagnostics and identify where stale or bad status can surface. <a href="https://www.youtube.com/watch?v=Zy_VC6lz64A">Inductive University: Tag Diagnostics in Ignition · Inductive Automation</a>.</p>
+    <p class="course-video"><b>Watch the vendor lesson</b> · Observe where history is enabled and which settings affect the number of samples. <a href="https://inductiveuniversity.com/videos/configuring-tag-history/8.1">Configuring Tag History · Inductive University</a>.</p>
+
+    <h2>Diagnose one event from a time series</h2>
+    <p>Use this training capture. An alarm latches when the command is ON for 10 seconds without proof while quality is good. The network check marks samples stale 12 seconds after the last good update.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Display time</th><th scope="col">Source time</th><th scope="col">Command</th><th scope="col">Proof</th><th scope="col">Quality</th><th scope="col">Alarm</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">10:00:00</th><td>10:00:00</td><td>Off</td><td>Off</td><td>good</td><td>None</td></tr>
+          <tr><th scope="row">10:00:05</th><td>10:00:05</td><td>On</td><td>Off</td><td>good</td><td>None</td></tr>
+          <tr><th scope="row">10:00:15</th><td>10:00:15</td><td>On</td><td>Off</td><td>good</td><td>Proof timeout</td></tr>
+          <tr><th scope="row">10:00:20</th><td>10:00:20</td><td>On</td><td>On</td><td>good</td><td>Latched proof timeout</td></tr>
+          <tr><th scope="row">10:00:35</th><td>10:00:20</td><td>On shown</td><td>On shown</td><td>stale</td><td>Historical latch</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>At 10:00:15 prove the command and proof timeline. At 10:00:35 calculate sample age and ask what is known about the current state. Compare a local input reading on the bench before deciding that the fan or switch has failed. <a href="../assets/labs/scada-training-trend.csv" download>Download the worked trend as CSV</a>.</p>
+
+    <h2>Create a useful trend on the bench</h2>
+    <ol class="steps"><li>Put the commands and switched proof on two separate rows or series. Place the quality changes on the same time axis. Preserve the gap after the last good reading.</li><li>In the P30 setup, publish a known state, stop the publisher and restore it. Note the last source timestamp, the moment the display marks stale and the first good point after reconnection.</li><li>In a deliberately mis-mapped training sheet, display command as feedback. Confirm that the head end appears healthy immediately after Start, then use the physical proof input to expose the mistake.</li></ol>
+    <p>Look at how a real historian configures sample mode, units and deadband, and how a tag’s displayed value gets its quality. <a href="https://docs.inductiveautomation.com/docs/8.3/ignition-modules/tag-historian">Ignition historian manual</a>.</p>
+
+    <h2>Send a handover another person can act on</h2>
+    <p>Write: “Requested on at 10:00:05. Proof missing for 10 seconds with good data. Proof appeared at 10:00:20. Source stopped updating after that. Local proof must be checked before replacing hardware.” Include the controller and point IDs, evidence and the owner of the next action. Preserve the actual log when editing the summary.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series, bus layers and evidence quality</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p41-drive-and-condition-checks.html">P41 · Diagnose a drive trip and trend motor condition</a></li>
+      <li><a href="p49-can-bus-and-telemetry.html">P49 · Log a CAN bus and verify the frame data</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T38 · Time series, bus layers and evidence quality</title>
+<meta name="description" content="Sampling, aliasing, latency, stale values, frame decoding and timestamps across instruments and networks.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T38</span>
+    <h1>Time series, bus layers and evidence quality</h1>
+    <p class="lede">A number can be correct and still answer the wrong question when the clock, units or physical layer are unclear.</p>
+    <div class="meta"><span><b>Time</b> 30 minutes</span><span><b>Before this</b> <a href="t16-signals-noise-loops.html">T16</a> · <a href="t17-networking-theory.html">T17</a> · <a href="t30-embedded-timing-states.html">T30</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Separate the wire, the data and the units</h2>
+    <p>Electrical transitions are the physical signal. Frames add structure such as identifiers and checks. An application then assigns names, units, byte order and timing to frame fields. A healthy Ethernet link does not prove a BMS point is mapped. A received CAN frame does not establish the value until its payload is decoded against the agreed mapping.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/can.jpg" width="658" height="960" loading="lazy" decoding="async" alt="Connector used for CAN on equipment at the European Southern Observatory">
+        <figcaption>A physical CAN connector carries a specific pinout. Prove the correct wires and termination before reasoning about bytes.<br><small>Photo by ESO/H.H.Heyer, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ESO-CANbus-connector_(eso-canbus-0134).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/logger.png" width="960" height="614" loading="lazy" decoding="async" alt="Temperature data loggers with digital display windows">
+        <figcaption>Temperature loggers store readings together with time. If two devices have different clocks, their samples need an explicit time reference before comparison.<br><small>Photo by Pulkit Patel, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Temperature_Data_Logger.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow the frame from a send command to a dump readout. Keep the exercise on the virtual interface named in this lesson. <a href="https://www.youtube.com/watch?v=icEx1Q_U7J0">CAN-utils over VCAN | Virtual CAN Interface Tutorial | Linux SocketCAN · The EV Engineer</a>.</p>
+
+    <h2>Sampling changes what you can observe</h2>
+    <p>For a band-limited signal you need a sample rate higher than twice its highest frequency to reconstruct it in the ideal case. A 70 Hz tone sampled at 100 Hz can appear at 30 Hz. On real inputs use suitable anti-alias filtering and room for the filter transition band. A trend database may also compress, average or skip repeating values.</p><p>If a sensor reports every 200 ms but the logger publishes averaged values once per second, the streams describe different things. A meter’s steady reading cannot show a 2 ms dip unless its capture function supports it.</p>
+
+    <h2>Record data freshness and meaning</h2>
+    <p>Record timestamp of capture, timestamp of arrival, quality and units. A 10:00:00 source sample shown at 10:00:30 is 30 seconds old even if the page refreshed just now. Use compatible clocks when comparing upstream and downstream times. Use a monotonic elapsed clock for timeouts on one machine so adjustments to wall-clock time do not create false ages.</p><p>Record an expected update interval, identify which event makes data invalid and show a missing-data gap in charts. <a href="https://docs.kernel.org/networking/can.html">Linux SocketCAN documentation</a> · <a href="https://docs.inductiveautomation.com/docs/8.3/ignition-modules/tag-historian">Ignition history documentation</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p30-iot-reliability.html">P30 · Make an IoT sensor show stale data clearly</a></li>
+      <li><a href="../practice/p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+      <li><a href="../practice/p49-can-bus-and-telemetry.html">P49 · Log a CAN bus and verify the frame data</a></li>
+      <li><a href="../practice/p52-dc-power-logging.html">P52 · Log DC power and explain a short battery runtime</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

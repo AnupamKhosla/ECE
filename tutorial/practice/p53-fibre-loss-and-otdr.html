@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P53 · Check a fibre loss budget and read an OTDR trace</title>
+<meta name="description" content="Calculate allowable link loss, inspect a real trace and distinguish a bad connector from distributed fibre loss.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P53</span>
+    <h1>Check a fibre loss budget and read an OTDR trace</h1>
+    <p class="lede">An optical link is losing more power than expected. Use the power meter for end-to-end loss and the OTDR trace to decide which part of the link deserves inspection.</p>
+    <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p20-cat6-termination.html">P20</a> · <a href="../career/c09-fibre-splicing-otdr.html">C09</a> · <a href="../theory/t10-em-waves-antennas-fibre.html">T10</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A calculator or spreadsheet for the independent exercise. Use an approved optical trainer and supervised lab for physical work. Handle connector inspection and cleaning using the equipment procedure. Treat unknown fibre ends as active.</p></div>
+
+    <h2>Find the optical test port and the trace axes</h2>
+    <p>An optical loss test set uses a source at one end and a meter at the other. It compares the received power with a reference at the chosen wavelength. An optical time-domain reflectometer sends light pulses and times returned light. That reveals where an event is along the fibre. Setup, launch cable and chosen pulse width change what you can resolve.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/otdr.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Yokogawa AQ7270 OTDR mounted on a calibration stand">
+        <figcaption>Find the OTDR’s test hardware and controls. On a real job record the wavelength, pulse width, range and index settings used.<br><small>Photo by Electron, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OTDR_-_Yokogawa_AQ7270_-_7.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/fiber.jpg" width="960" height="567" loading="lazy" decoding="async" alt="OTDR trace showing falling backscatter levels and reflection peaks versus distance">
+        <figcaption>Read the horizontal position and the shape around a peak or step. Use the instrument’s event table and settings for actual distance and loss.<br><small>Image by OLC Fiber from Lakewood, CO, USA, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OTDR_trace_data_(5295373333).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow an event on the optical trace and use its location to choose a follow-up check. <a href="https://www.youtube.com/watch?v=4jz7d_IvhF8">Reading an OTDR Trace · Corning Optical Communications</a>.</p>
+
+    <h2>Calculate what an acceptable link should lose</h2>
+    <p>For the training single-mode link use 0.80 km, 0.35 dB/km at the exercise wavelength, two connector pairs at 0.30 dB each and two splices at 0.10 dB each. The sum is 0.28 + 0.60 + 0.20 = 1.08 dB. With a 0.30 dB testing allowance in the exercise, investigate loss above 1.38 dB. On a real job use the project’s design and contract limit.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Observation</th><th scope="col">What it tells you</th><th scope="col">What to do next</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Test set reads 1.95 dB</th><td>Exceeds the training limit by 0.57 dB</td><td>Confirm test reference, wavelength and connectors</td></tr>
+          <tr><th scope="row">Dominant reflection near launch end</th><td>May be a near connector event</td><td>Use launch fibre and inspect/clean per procedure</td></tr>
+          <tr><th scope="row">Lossy event near 620 m</th><td>One local feature may account for excess</td><td>Map it to the as-built and compare from the other end.</td></tr>
+          <tr><th scope="row">Steeper slope along a segment</th><td>Distributed attenuation differs from model</td><td>Check bend history, length and wavelength</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Distinguish events from measurement artefacts</h2>
+    <p>The OTDR’s dead zone can hide a next event after a large reflection. A launch fibre helps separate the first installed connector from the launch. A receive fibre helps see the final connector. A splice can look like a gain when backscatter changes. Use comparable traces in both directions when the test procedure calls for it.</p>
+    <p>After a supervised cleaning or permitted correction, repeat the end-to-end loss with the same reference procedure. Keep trace and loss as two separate records. <a href="https://www.thefoa.org/tech/ref/testing/OTDR/OTDR.html">Fiber Optic Association practical OTDR reference</a>.</p>
+
+    <h2>Hand over both measurements</h2>
+    <p>Keep link ID, endpoints, test wavelength, reference method, allowable loss, actual loss, main events and why you believe they belong to the installation. Record what changed before the final measurement.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t10-em-waves-antennas-fibre.html">T10 · Electromagnetic waves, antennas and optical fibre</a><br><a href="../theory/t32-rf-transmission-lines.html">T32 · RF transmission lines, antenna matching and link budget</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series, bus layers and evidence quality</a><br><a href="../theory/t39-optical-link-loss-and-reflectometry.html">T39 · Optical loss, reflections and fibre test limits</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../career/c09-fibre-splicing-otdr.html">C09 · Fibre optics in the field: splicing, connectors and OTDR</a></li>
+      <li><a href="../career/c18-controls-robotics-and-service-careers.html">C18 · Choose a path into controls, electronics test or automation</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

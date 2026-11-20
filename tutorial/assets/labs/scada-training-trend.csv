@@ -1,0 +1,6 @@
+display_time,source_time,command,proof,quality,alarm
+10:00:00,10:00:00,0,0,good,
+10:00:05,10:00:05,1,0,good,
+10:00:15,10:00:15,1,0,good,Proof timeout
+10:00:20,10:00:20,1,1,good,Latched proof timeout
+10:00:35,10:00:20,1,1,stale,Historical latch

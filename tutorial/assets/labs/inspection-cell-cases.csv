@@ -1,0 +1,11 @@
+fixture_id,frame_id,age_ms,depth_mm,depth_valid,model_label,model_score,fixture_ready,permit,expected
+A01,A01,120,752,1,normal,0.93,1,1,request simulated pick
+A02,A02,405,750,1,normal,0.98,1,1,hold: frame age
+A03,A02,95,751,1,normal,0.97,1,1,hold: frame belongs to another part
+A04,A04,88,0,0,normal,0.92,1,1,hold: invalid depth
+A05,A05,100,749,1,normal,0.52,1,1,review: model evidence
+A06,A06,103,750,1,defect,0.93,1,1,request inspection reject
+A07,A07,80,746,1,normal,0.95,1,0,hold: simulator permit
+A08,A08,60,755,1,normal,0.90,0,1,hold: fixture not ready
+A09,A09,93,814,1,normal,0.91,1,1,hold: target outside depth window
+A10,A10,-20,751,1,normal,0.93,1,1,hold: frame age

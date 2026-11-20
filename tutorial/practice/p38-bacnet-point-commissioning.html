@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P38 · Commission a BACnet room-controller point</title>
+<meta name="description" content="Read a BACnet point list and a discovery capture before diagnosing bad values, duplicate instances and overrides.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P38</span>
+    <h1>Commission a BACnet room-controller point</h1>
+    <p class="lede">The room controller is visible but its temperature is wrong at the head end. Identify the device, the object and the property before changing anything.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes</span><span><b>Before this</b> <a href="p19-networking-hands-on.html">P19</a> · <a href="p22-reading-drawings.html">P22</a> · <a href="../career/c02-bms-protocols-commissioning.html">C02</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>For the first pass use the training transcript below. To inspect live traffic, use a lab controller you own, its manual, a laptop with Wireshark and an isolated Ethernet switch.</p></div>
+
+    <h2>Start with the drawing and the points sheet</h2>
+    <p>Find the sensor, its wired controller input and the host displaying the value. Copy down three IDs: the controller’s <b>device instance</b>, the point’s <b>object type and instance</b>, and the <b>property</b> you need. Device 300120 can expose Analog Input 7 with Present Value 22.1, Degrees Celsius, and Status Flags clear.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+        <figcaption>A physical building controller. Locate the field terminals and the network connection using the controller’s terminal schedule.<br><small>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/switch.jpg" alt="Numbered Ethernet sockets on a managed switch" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>An Ethernet switch joins IP devices on the bench. Draw the exact laptop-to-switch-to-controller path and record which link lights show.<br><small>Photo by Ben Franske, resized. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Point tag</th><th scope="col">Device/object</th><th scope="col">Property and expected value</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Room temp</th><td>300120 / Analog Input 7</td><td>Present_Value 22.1 °C, Status_Flags clear</td></tr>
+          <tr><th scope="row">Supply command</th><td>300120 / Binary Output 2</td><td>Present_Value Inactive on an idle trainer</td></tr>
+          <tr><th scope="row">Fan proof</th><td>300120 / Binary Input 9</td><td>Present_Value Inactive on an idle trainer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Use the traffic and the value as separate checks</h2>
+    <p>On a lab network, start a capture on the test client interface. Filter with <code>bvlc || bacnet || bacapp</code>. Use the client’s documented discovery command and look for a <b>Who-Is</b>, followed by a matching <b>I-Am</b>. The client can then issue a <b>ReadProperty</b> for a known object. Discovery proves an answer was heard. The returned object and property prove which value you read.</p>
+    <pre><code>Training transcript (decoded summary)
+    09:14:00 client → broadcast  Who-Is
+    09:14:00 .31    → network    I-Am  device 300120
+    09:14:01 .31    → client     Analog Input 7 / Present Value = 22.1
+    09:14:01 .31    → client     Analog Input 7 / Units = degrees Celsius
+    09:14:08 .42    → network    I-Am  device 300120</code></pre>
+    <p>For the exercise, record the Device instance and both sender IPs. Two distinct devices claiming the same instance is a configuration problem. Put the suspect controller on the isolated bench and compare labels and programming. Broadcast discovery across routed BACnet/IP segments may require the designed BACnet mechanism such as a BBMD. Work with the network diagram and site owner for a real system.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Listen for what a common BACnet interface exposes across different vendors. Then work through the packet and object identifiers below. <a href="https://www.youtube.com/watch?v=dSbt7vAdPO4">BACnet 101: An Introduction to the BACnet Standard (Preview) · BACnetInternational</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Pause at discovery on the bench and identify which value proves that the returned device is the one you intend to test. <a href="https://www.youtube.com/watch?v=_7g27pLk8Vw">BACnet bench testing · Horner Automation</a>.</p>
+
+    <h2>Compare point value, command and physical proof</h2>
+    <p>When an output shows ON, trace command, priority and actual feedback. On a commandable output, a lower numbered active slot in the Priority Array takes precedence. An operator value occupying slot 8 can hide a schedule at slot 16. Inspect and record the array when available. Relinquishing a command on a trainer leaves other slots in effect. If none is active the Relinquish_Default applies.</p><p>For an input that reads correctly at the device but incorrectly at the front end, record the front end’s point mapping, units, timestamp and trend sample before deciding whether the issue is in the controller. For an output, prove the actuator or fan moved using independent feedback.</p>
+
+    <h2>Write the handover</h2>
+    <p>Save one point list with device ID, object ID, property, reference value, observed result and resolution. Include one case where you stopped at the wiring, device, mapping or network boundary and state the evidence. Leave your trainer’s configured output in its normal state.</p><p>Read the course outlines and exercises in the BACnet Institute’s device and building-automation training. <a href="https://thebacnetinstitute.org/courses-overview/">BACnet Institute courses</a> · <a href="https://www.wireshark.org/docs/dfref/b/bacapp.html">Wireshark BACnet application filter reference</a>.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t17-networking-theory.html">T17 · How networks really work: Ethernet, IP, TCP/UDP</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p39-plc-ladder-simulation.html">P39 · Build and test a start–stop PLC sequence</a></li>
+      <li><a href="p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

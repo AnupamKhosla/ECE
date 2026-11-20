@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T33 · Robot motion, coordinate frames and encoder feedback</title>
+<meta name="description" content="Joint space, task space, repeatability and the encoder readings that support a robot’s control loop.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T33</span>
+    <h1>Robot motion, coordinate frames and encoder feedback</h1>
+    <p class="lede">A controller commands a movement, an encoder measures part of it, and the real tool lands somewhere in space. Each quantity needs its own frame, units and interpretation.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t00-maths-toolkit.html">T00</a> · <a href="t19-motors-vsds.html">T19</a> · <a href="t31-feedback-control.html">T31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>A robot measures a coordinate from a reference</h2>
+    <p>A joint angle is measured from its configured zero. A point in task space is measured in a frame, with an origin and axes. An arm can report a consistent joint reading but place a tool incorrectly after a bracket or tool change. In the two-link example the end position is the sum of two rotated vectors. Joint 2 adds its angle to Joint 1 for the second vector.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/encoder.jpg" width="631" height="960" loading="lazy" decoding="async" alt="A wheel on a stand with a friction-driven encoder and test instruments">
+        <figcaption>This telescope test fixture uses an encoder to measure a large rotating wheel. Identify the shaft and drive relationship. A bench robot uses smaller hardware for the same measurement principle.<br><small>Photo by International Gemini Observatory/NOIRLab/NSF/AURA, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Friction-driven_Encoder_Test_(encoder_02-CC).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/servo.jpg" alt="Disassembled hobby servo with its gear train, motor and housing laid out" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>The output shaft is a measured or commanded joint. The horn establishes a physical relationship between that shaft and the link.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Two-finger robot grippers above a tray of pink medical components">
+        <figcaption>For a pick-and-place task, define the centre of the gripper at the workpiece. A tool replacement can move that point relative to the arm.<br><small>Photo by Lexington Medical, Inc, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch how joint motions combine to define the tool pose. The planar two-link exercise applies the same idea to a simpler arm. <a href="https://www.youtube.com/watch?v=cKHsil0V6Qk">Modern Robotics, Chapter 4:  Forward Kinematics Example · Northwestern Robotics</a>.</p>
+
+    <h2>Quadrature tells you direction and distance</h2>
+    <p>An incremental encoder produces two repeating signals A and B offset in phase. Logic can count edges and use their order to assign direction. If a specification means 12 cycles per motor revolution per channel, a decoder counting both edges of both channels yields 48 counts per motor revolution. A vendor may already specify decoded counts, so read its definition before multiplying.</p>
+    <p>At 50 motor revolutions per wheel revolution, the hypothetical count is 2,400 per wheel turn. A 65 mm wheel covers 204.2 mm per turn before slip. A count change of 600 then models 51.1 mm of motion. An incremental counter generally needs a new reference after loss of position. Many absolute encoders report a coded angle even after power is restored, within their specified range.</p>
+
+    <h2>Accuracy, repeatability and constraints</h2>
+    <p>A machine that reaches the same wrong spot is repeatable and miscalibrated. A different position depending on approach can come from backlash. Lifted wheels are a clean test of encoder sign, while wheel slip means floor distance and wheel counts can disagree. The controller can compare commanded and measured quantities if units, frame and time align.</p><p>Look for which error follows a sensor, which follows an axis, and which follows the load. Compare the powered commands, physical motion and reported positions separately. <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/">Modern Robotics · Forward kinematics</a> · <a href="https://www.pololu.com/docs/0J69/3.3">Romi encoder documentation</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p42-mobile-robot-fault-finding.html">P42 · Repair a mobile robot’s motor, wiring or encoder</a></li>
+      <li><a href="../practice/p43-robot-arm-position-calibration.html">P43 · Calibrate a two-joint arm and check its reach</a></li>
+      <li><a href="../practice/p44-ros2-simulation-diagnostics.html">P44 · Trace a ROS 2 robot command in simulation</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

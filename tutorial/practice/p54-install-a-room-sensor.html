@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P54 · Mount, label and check a BMS room sensor</title>
+<meta name="description" content="Practise a first installation task on a mock wall, then identify an open circuit, misplaced sensor or mismatched input profile.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P54</span>
+    <h1>Mount, label and check a BMS room sensor</h1>
+    <p class="lede">An installer has marked a room sensor position and fitted its cable. Confirm the position, make both labels match and prove the measurement before handing over.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p05-soldering-wiring.html">P05</a> · <a href="p22-reading-drawings.html">P22</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Mock wall or scrap board, cardboard, marked-up paper plan, battery-powered drill or hand tools for the bench fixture, tape measure, label materials, short two-core cable and a passive room temperature sensor or loose thermistor. An institution’s installation procedures apply to actual walls and cabling.</p></div>
+
+    <h2>Choose a position someone can find on the drawing</h2>
+    <p>Mark the sensor symbol and identify the room, wall and device tag. Put its mock position where room air reaches the sensing slots. Check that the door swing, furniture and wall equipment leave access. Ask what the sensor is supposed to represent before deciding whether sunlight, supply-air jets, drafts or local heat will bias it.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/duct.jpg" alt="Crew installing overhead duct supports" width="960" height="720" loading="lazy" decoding="async">
+        <figcaption>On a real site, coordinate the work area with the other trades. Confirm the marked location and upstream cable route before arriving with tools.<br><small>Photo by MTA Capital Construction Mega Projects, resized. <a href="https://commons.wikimedia.org/wiki/File:Installing_supports_for_HVAC_duct_work_in_the_ceiling_above_the_future_LIRR_Concourse._11-20-2019_(49106351078).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/ntc.jpg" alt="Two-wire bead thermistor" width="581" height="524" loading="lazy" decoding="async">
+        <figcaption>A passive temperature sensor contains a temperature-dependent element. These loose thermistors show the sensing part normally hidden inside a housing.<br><small>Photo by Ansgar Hellwig. <a href="https://commons.wikimedia.org/wiki/File:NTC_bead.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 de</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>The Belimo 01RT-1L-0 is a worked example of a 10 kΩ Type II NTC room unit, labelled <code>10k2</code> on its product sheet. The same-looking housing can contain another element. Verify the complete suffix and the controller’s supported profile. <a href="https://www.belimo.com/ch/shop/en_GB/p?code=01RT-1L-0">Belimo model photos and documents</a> · <a href="https://www.belimo.com/mam/general-documents/datasheets/en-gb/belimo_01RT-1.._datasheet_en-gb.pdf">Belimo passive room sensor family datasheet</a>.</p>
+
+    <h2>Mount it, leave room for service and label both ends</h2>
+    <ol class="steps"><li>Put the base on a scrap-board mock wall. Mark fixing positions from the actual base and compare with the guide. Clamp the board, make the holes suited to the fixings, and secure the backplate without distorting it.</li><li>Route a spare length of low-voltage cable to the mock controller end. Mark the drawing and put the same device tag on both ends before terminating. Leave enough access to identify and reopen the connector. Check that no bare copper shows beyond the terminal.</li><li>Check that the cover fits flush and leaves airflow through the slots. Compare the actual device tag, cable route and terminal record before signing off. Follow the site’s cable and access procedure for real installation.</li></ol>
+    <figure class="course-photo">
+      <img src="../assets/photos/terminal.jpg" alt="Installed WAGO industrial controller used for pharmaceutical monitoring" width="960" height="638" loading="lazy" decoding="async">
+      <figcaption>Find the labelled termination row at the controller side. Record the matching tag and terminal that the next technician should measure.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch where the cover releases, where the fixings go and how the cable enters the back. Compare the exact unit you have. <a href="https://www.youtube.com/watch?v=Y_W7JYJJAPM">How To: Install a Room Sensor and Room Operating Unit · Belimo</a>.</p>
+
+    <h2>Prove the wiring before trusting the screen</h2>
+    <p>With both ends disconnected from equipment, short the cores together at the far end and measure loop resistance at the near end. It should be near the resistance expected for the cable plus the leads. Remove the short and verify the now open pair. Then connect the passive sensor and measure across its two terminals, with the controller still disconnected. Near 25 °C a 10 kΩ nominal example should be around 10 kΩ according to its curve. Gentle warming should reduce an NTC’s resistance.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Observation</th><th scope="col">What to prove next</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Open at the panel even with the far end shorted</th><td>Check both cable cores and the termination</td></tr>
+          <tr><th scope="row">Sensor resistance matches room temperature, but the connected front end differs</th><td>Verify tag, raw value, profile and screenshot timestamp</td></tr>
+          <tr><th scope="row">Resistance changes correctly, room reading consistently offsets</th><td>Compare a reference beside the sensor and check mounting, drafts and controller profile.</td></tr>
+          <tr><th scope="row">Sensor tests well at the base, but the cable pair reads shorted after removing the test link</th><td>Look for a pinched cable or stray strands with both ends isolated</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Leave an installation record</h2>
+    <p>Save the marked plan, the two labels, a photo of the mounted base or assembled housing, terminal numbers and first measured reading at a recorded room temperature. Write which tool and fastener you used and which checks an installer or supervisor would need before the device is released for commissioning.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t18-sensor-physics.html">T18 · Sensor physics: how sensors turn the world into signals</a><br><a href="../theory/t24-measurement-datasheets.html">T24 · Measurement loading, tolerance and datasheets</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p37-current-loop-calibration.html">P37 · Calibrate a 4–20 mA pressure input</a></li>
+      <li><a href="p38-bacnet-point-commissioning.html">P38 · Commission a BACnet room-controller point</a></li>
+      <li><a href="../career/c17-bms-fieldwork.html">C17 · BMS fieldwork: diagnose and commission a damper</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

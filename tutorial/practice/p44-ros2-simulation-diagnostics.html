@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P44 · Trace a ROS 2 robot command in simulation</title>
+<meta name="description" content="Use turtlesim, inspect publisher and subscriber endpoints, then distinguish no command from no feedback.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P44</span>
+    <h1>Trace a ROS 2 robot command in simulation</h1>
+    <p class="lede">A robot can receive a command and still return stale or absent feedback. Practise finding which process sent the command and which process received it in a software-only workspace.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p16-raspberry-pi-linux.html">P16</a> · <a href="p27-firmware-state-machine.html">P27</a> · <a href="../theory/t30-embedded-timing-states.html">T30</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A machine with the official ROS 2 Jazzy environment and turtlesim installed. Use the Jazzy install guide for a supported OS or a compatible VM. Run every shell example inside the simulation environment, with no physical robot or external command bridge.</p></div>
+
+    <h2>Identify the camera, compute and motor-control layers</h2>
+    <p>A robot publishes measurements through a running program or <b>node</b>. A named stream of messages is a <b>topic</b>. Another node subscribes to a command or data stream. The bench exercise uses a simulated turtle whose pose provides feedback.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="TurtleBot 2 mobile base with wheels and equipment on upper shelves">
+        <figcaption>An actual TurtleBot platform. Follow the path from computing hardware to the mobile base. The lesson below uses a screen-only turtle for commands and pose feedback.<br><small>Photo by Auledas, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/pi.jpg" alt="Overhead photo of a Raspberry Pi 4 Model B with USB, Ethernet, HDMI and GPIO connectors" width="960" height="641" loading="lazy" decoding="async">
+        <figcaption>A small computer can run higher-level robot software. The host running ROS 2 may be separate from the controller driving and protecting the motors.<br><small>Photo by Laserlicht, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_4_Model_B_-_Top.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Use the Jazzy install guide and the turtlesim tutorial. <a href="https://docs.ros.org/en/jazzy/Installation.html">ROS 2 Jazzy installation</a> · <a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html">Official turtlesim exercise</a>.</p>
+
+    <h2>Prove a command and its observed result</h2>
+    <p>Make three terminals in the simulation environment and source the Jazzy environment in each according to the platform’s install instructions. Start turtlesim in terminal A and keep it running.</p>
+    <pre><code>ros2 run turtlesim turtlesim_node</code></pre>
+    <p>In terminal B, discover the interfaces and watch feedback.</p>
+    <pre><code>ros2 node list
+    ros2 topic list -t
+    ros2 topic info /turtle1/cmd_vel --verbose
+    ros2 topic echo /turtle1/pose</code></pre>
+    <p>In terminal C, run the keyboard teleop and use an arrow briefly. Return to terminal B to observe pose values. Stop the teleop and check that the command publisher disappears from the topic. Use <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop your own CLI programs.</p>
+    <pre><code>ros2 run turtlesim turtle_teleop_key</code></pre>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch the simulated command and feedback. Compare the topics it uses with the commands in the Jazzy documentation. <a href="https://www.youtube.com/watch?v=G2RxYwZuxJM">[ROS2 Q&amp;A] 226 - Work with ROS2 turtlesim · The Construct Robotics Institute</a>.</p>
+
+    <h2>Diagnose a missing path</h2>
+    <p>Use a fresh terminal with the Jazzy environment sourced, or interrupt the pose echo in terminal B. Run <code>ros2 topic info /turtle1/cmd_vel --verbose</code> before and while teleop runs. Then run <code>ros2 topic info /turtle2/cmd_vel</code> in the single-turtle simulation. A missing topic name is a different fault from publishing on a topic that has no matching subscriber. Compare exact namespace, type, endpoint count and QoS before suspecting the motor layer. A running pose stream can still repeat the same value for a stationary turtle.</p>
+    <p>A ROS topic is an interface between processes. Its health cannot establish that a real drive received usable electrical power. On real equipment, prove the stated boundary first, then move to the electrical layer under the applicable procedures.</p>
+
+    <h2>Keep command and feedback evidence</h2>
+    <p>Save node and topic lists, one pose before motion and another after motion. Keep the command path and feedback path named on a single diagram or worksheet. The official topics tutorial shows how to record rates and inspect individual message fields. <a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html">ROS 2 Jazzy topics tutorial</a>.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t17-networking-theory.html">T17 · How networks really work: Ethernet, IP, TCP/UDP</a><br><a href="../theory/t33-robot-motion-and-feedback.html">T33 · Robot motion, coordinate frames and encoder feedback</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p45-2d-machine-vision.html">P45 · Build a 2D inspection station with controlled light</a></li>
+      <li><a href="p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R05 · Practical learning library for electronics and automation</title>
+<meta name="description" content="Use trusted electronics labs, field training, robotics exercises and manufacturer guides alongside your Workbench labs.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-reference">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Reference Shelf</div>
+    <span class="eyebrow">R05</span>
+    <h1>Practical learning library for electronics and automation</h1>
+    <p class="lede">Use the source that fits the task. A general course teaches the method, a model guide shows the actual hardware, and a job standard or test sheet defines what to prove.</p>
+    <div class="meta"><span><b>Time</b> Reference</span><span><b>Before this</b> <a href="../practice/p00-foundation-roadmap.html">P00</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Learn circuits through prediction and measurement</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/bench-voltage.jpg" width="500" height="472" loading="lazy" decoding="async" alt="Meter showing 1.588 volts with the red probe at the positive tip and black probe at the negative end of an AA cell">
+        <figcaption>Measure at named points and keep the reading with the predicted result. A labelled photo gives the next learner a useful reference.<br><small>Photo by Limor Fried for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1057">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pcb.jpg" width="960" height="933" loading="lazy" decoding="async" alt="Assembled OpenSeaMap data-logger PCB with connectors and a red configuration jumper">
+        <figcaption>After a first design, return to the physical board and check whether the test points are accessible with its cables attached.<br><small>Photo by Hotelsierra1, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OpenSeaMap-Data-logger_circuit-board.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Guide</th><th scope="col">How the lesson is arranged</th><th scope="col">Use it with</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><a href='https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/labs/'>MIT 6.002 · Circuits and Electronics labs</a></th><td>Lab assignments pair theory with equipment, setup and measurements. Work out the expected result before collecting evidence.</td><td>P02–P07, P24–P26 and the prepared values in P37.</td></tr>
+          <tr><th scope="row"><a href='https://www.ibiblio.org/kuphaldt/electricCircuits/Exper/index.html'>Kuphaldt · Experiments in electric circuits</a></th><td>Parts, related theory, objectives and instructions accompany individual low-cost experiments.</td><td>P01–P15 for inexpensive equipment and a theory cross-reference.</td></tr>
+          <tr><th scope="row"><a href='https://docs.kicad.org/master/en/getting_started_in_kicad/getting_started_in_kicad.html'>KiCad · First project</a></th><td>Follows a schematic into footprints, layout and manufacturing files.</td><td>P48 for an annotated first-power and repair plan.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Find the footprints and their connections in the layout. Make room for your probe points before routing. <a href="https://www.youtube.com/watch?v=zdieFtrvjew">KiCad 9.0 – Getting Started Part 6- Laying Out Your First PCB | DigiKey · DigiKey</a>.</p>
+
+    <h2>Train for equipment commissioning and service</h2>
+    <p>The BACnet Institute uses self-paced courses on the protocol, the facility manager’s view and security. Start with its BACnet basics, then prove a point value on your isolated trainer. Siemens’ education modules build from a process and I/O list into a program and verification. The Fiber Optic Association gives workbooks and test methods that can be repeated on an actual optical trainer. <a href="https://thebacnetinstitute.org/courses-overview/">BACnet courses</a> · <a href="https://www.siemens.com/en-us/content/sce-educational-institutions/documents/">Siemens SCE training modules</a> · <a href="https://www.thefoa.org/tech/ref/quickstart/OTDR.html">FOA OTDR lab guide</a>.</p>
+    <p>When working on actual phone, laptop, robot or drive hardware, identify the exact model, revision and connector before choosing a procedure. iFixit’s close-up step sequences and manufacturer manuals in P32–P36 illustrate what model-specific instructions look like. Use the model’s final tests and preserve the original measurements.</p>
+    <p>For production electronics, follow a physical fixture build and assembly inspection sequence. Use a known-good board and a known bad board to prove the test catches a specific fault before making pass/fail decisions. <a href="https://learn.adafruit.com/how-to-build-a-testing-fixture/overview">Adafruit testing fixture build</a> · <a href="https://learn.sparkfun.com/tutorials/electronics-assembly/inspection-and-testing">SparkFun assembly inspection</a> · <a href="../practice/p58-board-production-test.html">P58 first board fixture</a>.</p>
+
+    <h2>Build a robotics exercise you can debug in layers</h2>
+    <p>Northwestern’s <em>Modern Robotics</em> pairs mathematical chapters with focused videos. ROS-Industrial’s workshop has command-line activities and solutions. OpenCV separates camera geometry, image processing and contour extraction. Edge Impulse examples connect data collection and deployment. Use these together with physical ground truth, a fixed test dataset and independent closing tests. <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/">Modern Robotics forward kinematics</a> · <a href="https://ros-industrial.github.io/ros2_i_training/_source/basics/ROS2-CLI.html">ROS-Industrial simulator exercise</a> · <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calibration</a> · <a href="https://github.com/edgeimpulse/expert-projects/blob/main/computer-vision-projects/smart-cashier-with-fomo-raspberry-pi.md">Edge Impulse worked deployment</a>.</p>
+
+    <h2>Turn each session into one piece of evidence</h2>
+    <ol class="steps"><li>Identify the actual part and write what it should do, with units where relevant.</li><li>Follow the practical sequence and record instrument, settings and a reading for each check.</li><li>Change one input, connection or condition and predict what should move. Restore it and repeat the closing test.</li><li>File one labelled photo, one measured result and a short explanation with the model, revision and source.</li></ol>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p00-foundation-roadmap.html">P00 · Your ECE foundation and learning routes</a></li>
+      <li><a href="../practice/p37-current-loop-calibration.html">P37 · Calibrate a 4–20 mA pressure input</a></li>
+      <li><a href="../practice/p39-plc-ladder-simulation.html">P39 · Build and test a start–stop PLC sequence</a></li>
+      <li><a href="../practice/p42-mobile-robot-fault-finding.html">P42 · Repair a mobile robot’s motor, wiring or encoder</a></li>
+      <li><a href="../practice/p45-2d-machine-vision.html">P45 · Build a 2D inspection station with controlled light</a></li>
+      <li><a href="../practice/p48-kicad-testable-pcb.html">P48 · Design a PCB you can probe and repair</a></li>
+      <li><a href="../practice/p53-fibre-loss-and-otdr.html">P53 · Check a fibre loss budget and read an OTDR trace</a></li>
+      <li><a href="../career/c18-controls-robotics-and-service-careers.html">C18 · Choose a path into controls, electronics test or automation</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P41 · Diagnose a drive trip and trend motor condition</title>
+<meta name="description" content="Read a simulated drive trip, separate load from electrical causes and build a repeatable vibration record.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P41</span>
+    <h1>Diagnose a drive trip and trend motor condition</h1>
+    <p class="lede">A fan stops after a speed increase. Practise using the drive’s status, a mechanical check and a repeatable trend to decide what evidence to collect next.</p>
+    <div class="meta"><span><b>Time</b> 65 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="../career/c03-hvac-for-technicians.html">C03</a> · <a href="../theory/t19-motors-vsds.html">T19</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Read-only drive log exercise and a guarded, small battery or USB fan secured on a bench. Optional smartphone accelerometer or vibration meter with suitable sampling. An installed drive is an observation and documentation exercise for a supervised learner.</p></div>
+
+    <h2>Identify what the drive can tell you</h2>
+    <p>A variable-frequency drive changes the frequency and voltage supplied to a motor. Record the exact model, speed command and physical response, then copy the actual fault code and the recorded frequency/current at the trip. The manufacturer’s fault list defines the code. Leave drive settings and any restart command untouched during observation.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/vfd.jpg" alt="Siemens variable-frequency drive keypad and display" width="960" height="1280" loading="lazy" decoding="async">
+        <figcaption>Locate the display and the enclosure label before opening any documentation. The actual fault name and its history are model-specific.<br><small>Photo by Sarah Adrita, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_VFD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/fan.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Centrifugal blower with an inlet guard and an outlet housing">
+        <figcaption>Follow the air path through the blower housing. A drive can respond to mechanical or airflow conditions elsewhere in the equipment. Use a guarded fan for the bench trend.<br><small>Photo by Zakali Jia, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Centrifugal_blower_fan.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Compare a fault with a known baseline</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Sample from a training log</th><th scope="col">Command</th><th scope="col">Observed</th><th scope="col">Next evidence</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Healthy at steady load</th><td>35 Hz</td><td>34.9 Hz, 2.8 A, proof on</td><td>Record as baseline for this load and speed</td></tr>
+          <tr><th scope="row">Fault during ramp</th><td>50 Hz</td><td>Trip at 40 Hz and 6.1 A</td><td>Compare ramp, speed, load and drive code. Mechanical inspection follows the site procedure.</td></tr>
+          <tr><th scope="row">Command present, no run</th><td>35 Hz</td><td>Ready, zero output, no fault</td><td>Read enable/permissive and local/remote mode</td></tr>
+          <tr><th scope="row">Actuator running, no proof</th><td>35 Hz</td><td>Current near baseline, proof absent</td><td>Check proof switch, mapping and stale data</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A trip after acceleration can be associated with torque demand, a mechanical obstruction, an incorrect ramp or drive settings. Preserve the log before a qualified person investigates. A generic current number cannot identify the cause on its own.</p>
+
+    <h2>Create a repeatable vibration baseline</h2>
+    <ol class="steps"><li>Clamp the little trainer fan or place it on its normal rigid mount. Use the same sensor point, mounting orientation, speed and measurement setting on each run. Keep the sensor and hands clear of the blades.</li><li>Log three stable runs. If the trainer has more than one speed, repeat at the second speed and keep the groups separate. A 1,500 rpm shaft makes 25 rotations per second. Frequency near that value can follow rotation but one peak does not establish imbalance.</li><li>In the example trend 0.8, 0.9 and 1.0 mm/s rise later to 1.8 mm/s at the same point and speed. Check that the test conditions match, try a repeat and refer for inspection. Use the machine’s limits or approved baseline on the job.</li></ol>
+    <p class="course-video"><b>Watch on YouTube</b> · Compare sensor position and a repeatable measurement on the bearing or motor housing. <a href="https://www.youtube.com/watch?v=pczXTQ-twuk">Vibration Basics and Screening With The Fluke 805 Vibration Meter · Fluke Corporation</a>.</p>
+    <p>A phone accelerometer can help compare trends on a small trainer. Dedicated instruments use documented frequency ranges and standardised mounting procedures. <a href="https://www.energy.gov/cmei/femp/operations-and-maintenance-challenges-and-solutions">U.S. DOE maintenance and condition monitoring resources</a>.</p>
+
+    <h2>Close the ticket</h2>
+    <p>Attach the fault code and timestamp, the same-speed baseline, and one next check justified by those observations. Put physical work and a retest under the site’s isolation and recommissioning procedures.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t19-motors-vsds.html">T19 · Motors and variable speed drives</a><br><a href="../theory/t35-calibration-and-condition-data.html">T35 · Calibration, uncertainty and condition measurements</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p42-mobile-robot-fault-finding.html">P42 · Repair a mobile robot’s motor, wiring or encoder</a></li>
+      <li><a href="p51-load-cell-data-acquisition.html">P51 · Calibrate a load cell and test for drift</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

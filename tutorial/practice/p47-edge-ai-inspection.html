@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P47 · Test an AI inspection model on unseen parts</title>
+<meta name="description" content="Collect independent capture sessions, compare model and rule-based decisions, and design an uncertain result.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P47</span>
+    <h1>Test an AI inspection model on unseen parts</h1>
+    <p class="lede">A model appears accurate on familiar images and misses defects when the lamp moves. Collect evidence of what it can handle before you give it any robot task.</p>
+    <div class="meta"><span><b>Time</b> 90 minutes plus collection</span><span><b>Before this</b> <a href="p45-2d-machine-vision.html">P45</a> · <a href="p46-stereo-depth-and-robot-vision.html">P46</a> · <a href="../theory/t24-measurement-datasheets.html">T24</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>A phone or webcam, two classes of ordinary bench objects and a consistent fixture. Start with the worked metrics and a rule from P45. For training use the linked Edge Impulse tutorial or a local equivalent. The acceptance exercise uses still images and decision logging.</p></div>
+
+    <h2>Define a label that an inspector can verify</h2>
+    <p>Choose two outcomes you can confirm by eye or with a gauge, such as washer present and washer missing from an empty fixture. Include an explicit path for invalid or uncertain images. A digital model only sees its camera input. Define what a wrong acceptance costs and record which class represents a fault.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/inspection.jpg" width="600" height="314" loading="lazy" decoding="async" alt="Industrial vision system diagram marking camera, illumination, part, conveyor and processing">
+        <figcaption>This layout diagram shows the camera, lighting, processing and fixture. Each physical component can alter what reaches the model.<br><small>Diagram by European Editors, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Machine_Vision_System.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/visioncamera.jpg" width="960" height="640" loading="lazy" decoding="async" alt="IDS uEye industrial camera with an open threaded lens mount and a visible image sensor">
+        <figcaption>Look at where a lens attaches to the camera. Record lens and mounting choices with the training data.<br><small>Photo by Lg123456, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Ids-machine-vision-cameras-usb2-2004.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="RealSense D435 stereo depth camera mounted on a tripod">
+        <figcaption>If you add a depth check, the extra signal needs its own calibration and missing-data tests.<br><small>Photo by Marc Auledas, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Keep a rule-based baseline from P45. Test the same set with both methods. Use a learned model only if it adds measurable value under the conditions you can reproduce.</p>
+
+    <h2>Collect images without leaking the answer</h2>
+    <ol class="steps"><li>Take at least three separate capture sessions. Move the target and vary ordinary lighting between sessions within the intended operating range. Include an empty fixture and borderline cases. Record session, physical part, conditions and verified label.</li><li>Assign complete sessions to training, validation and finished testing. If successive frames show the same part in the same pose, keep them together. Choose any confidence threshold while working with validation data. Set aside the final session until the model and rule are fixed.</li><li>Train an image classifier for fixture-level decisions, or use the linked FOMO workflow to find object centres. FOMO provides location/count information at its output resolution. A separate measurement is needed for millimetres or precise contours.</li></ol>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch detection on the device and note what the model outputs. Compare that with the measurement and reject/review rules you need. <a href="https://www.youtube.com/watch?v=-uxr59u0wnU">Edge Impulse Demonstration of FOMO: Constrained Object Detection on Embedded Devices · Edge AI and Vision Alliance</a>.</p>
+    <p><a href="https://docs.edgeimpulse.com/docs">Edge Impulse documentation</a> · <a href="https://github.com/edgeimpulse/expert-projects/blob/main/computer-vision-projects/smart-cashier-with-fomo-raspberry-pi.md">FOMO design and working examples</a>.</p>
+
+    <h2>Measure misses, false alarms and speed</h2>
+    <p>Here positive means a defect or missing part. At one example threshold, a held-out session contained 10 defects and 40 normal frames. The system flagged 8 defects and 6 normal frames. Recall is 8/10 = 80%. Precision is 8/14 ≈ 57%. Two missed defects matter even though the overall correct count is 42/50 = 84%.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Measure</th><th scope="col">Calculation</th><th scope="col">Record it per condition</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Miss rate on defects</th><td>False negatives ÷ actual defects</td><td>Light, orientation and camera distance</td></tr>
+          <tr><th scope="row">False alarm rate</th><td>False positives ÷ actual normal</td><td>Lighting and changes to the fixture</td></tr>
+          <tr><th scope="row">Review rate</th><td>Uncertain ÷ all frames</td><td>Report what happened to uncertain cases</td></tr>
+          <tr><th scope="row">Latency</th><td>Decision timestamp − capture timestamp</td><td>Use a median and a worst observed or high-percentile time</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Now change the light, occlude a target, or move the camera slightly. Route unrecognisable, stale or slow frames to human review in the simulated cell. Report performance on these cases separately. If you run inference on a device, note the model version, input resolution and hardware.</p>
+
+    <h2>Document what the robot can do with the result</h2>
+    <p>Make a decision log containing frame ID, capture session, ground truth, model version, raw score, quality flag, latency and disposition. In a simulated cell, pass an acceptance or review request to the controller. Keep interlocks and motion permissions in the validated control design independently of the vision output.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a><br><a href="../theory/t36-camera-optics-and-depth.html">T36 · Camera optics, calibration and stereo depth</a><br><a href="../theory/t37-edge-ai-evaluation.html">T37 · Edge AI, dataset leakage and inspection metrics</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p57-robot-inspection-cell.html">P57 · Commission a simulated robot inspection cell</a></li>
+      <li><a href="p44-ros2-simulation-diagnostics.html">P44 · Trace a ROS 2 robot command in simulation</a></li>
+      <li><a href="p49-can-bus-and-telemetry.html">P49 · Log a CAN bus and verify the frame data</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

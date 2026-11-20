@@ -57,6 +57,34 @@ window.TOC = {
           { n: "P34", file: "practice/p34-phone-module-service.html", title: "Android screen, speaker and headphone jack repair", d: "Learn phone parts and work through three photo-led repairs on a Google Pixel 4a." },
           { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Android charging faults and board-level triage", d: "Test USB-C charging and diagnose the flex and removable port board in a Galaxy A54 5G." },
           { n: "P36", file: "practice/p36-android-battery-service.html", title: "Diagnose and replace an Android battery", d: "Find the Pixel 4a battery and adhesive tabs, then compare charging and runtime before and after repair." }
+        ]},
+        { title: "Part I · Building controls and industrial service", blurb: "Calibrate a point, test the controller sequence and hand over the diagnosis.", chapters: [
+          { n: "P54", file: "practice/p54-install-a-room-sensor.html", title: "Mount, label and check a BMS room sensor", d: "Practise a first installation task on a mock wall, then identify an open circuit, misplaced sensor or mismatched profile." },
+          { n: "P37", file: "practice/p37-current-loop-calibration.html", title: "Calibrate a 4–20 mA pressure input", d: "Wire a current source and 250 Ω receiver, record five up/down points, then diagnose a scaling error." },
+          { n: "P38", file: "practice/p38-bacnet-point-commissioning.html", title: "Commission a BACnet room-controller point", d: "Read a BACnet point list and a discovery capture before diagnosing bad values, duplicate instances and overrides." },
+          { n: "P39", file: "practice/p39-plc-ladder-simulation.html", title: "Build and test a start–stop PLC sequence", d: "Trace I/O, simulate a seal-in rung and prove stop, proof feedback, a timeout and restart behavior." },
+          { n: "P40", file: "practice/p40-scada-trend-handover.html", title: "Read a SCADA trend and write a fault handover", d: "Use a worked time series to separate a fan proof alarm, a stale value and a front-end mapping fault." },
+          { n: "P41", file: "practice/p41-drive-and-condition-checks.html", title: "Diagnose a drive trip and trend motor condition", d: "Read a simulated drive trip, separate load from electrical causes and build a repeatable vibration record." },
+          { n: "P56", file: "practice/p56-electropneumatic-sequence.html", title: "Diagnose a pneumatic actuator from command to position", d: "Map a directional valve and cylinder, then separate logic, valve, air and feedback faults." }
+        ]},
+        { title: "Part J · Robotics, machine vision and edge AI", blurb: "Repair a robot, reason about its motion, and prove camera or model output before using it.", chapters: [
+          { n: "P42", file: "practice/p42-mobile-robot-fault-finding.html", title: "Repair a mobile robot’s motor, wiring or encoder", d: "Use a secured two-wheel trainer to distinguish a jam, a failed driver, a motor fault and lost encoder feedback." },
+          { n: "P43", file: "practice/p43-robot-arm-position-calibration.html", title: "Calibrate a two-joint arm and check its reach", d: "Map joint angles to tool position, compare measured and predicted points, and diagnose a displaced joint zero." },
+          { n: "P44", file: "practice/p44-ros2-simulation-diagnostics.html", title: "Trace a ROS 2 robot command in simulation", d: "Use turtlesim, inspect publisher and subscriber endpoints, then distinguish no command from no feedback." },
+          { n: "P45", file: "practice/p45-2d-machine-vision.html", title: "Build a 2D inspection station with controlled light", d: "Make a camera fixture, calibrate pixels to millimetres and reject a part using measured geometry." },
+          { n: "P46", file: "practice/p46-stereo-depth-and-robot-vision.html", title: "Check depth accuracy before a robot uses it", d: "Compare stereo disparity and physical distance, then identify invalid depth, poor texture and calibration errors." },
+          { n: "P47", file: "practice/p47-edge-ai-inspection.html", title: "Test an AI inspection model on unseen parts", d: "Collect independent capture sessions, compare model and rule-based decisions, and design an uncertain result." },
+          { n: "P57", file: "practice/p57-robot-inspection-cell.html", title: "Commission a simulated robot inspection cell", d: "Combine fixture signals, 3D depth and AI inspection, then simulate faults before a robot uses the decision." }
+        ]},
+        { title: "Part K · Design, test and communications", blurb: "Build a board that can be tested and measure buses, RF, sensors, power and fibre.", chapters: [
+          { n: "P48", file: "practice/p48-kicad-testable-pcb.html", title: "Design a PCB you can probe and repair", d: "Turn the tested LED circuit into a KiCad board with footprints, accessible test points, and a first-power plan." },
+          { n: "P49", file: "practice/p49-can-bus-and-telemetry.html", title: "Log a CAN bus and verify the frame data", d: "Use an isolated virtual CAN interface, decode a published training frame and check physical termination on your own unpowered trainer." },
+          { n: "P50", file: "practice/p50-vna-reflection-calibration.html", title: "Calibrate a VNA and measure RF reflections", d: "Make a one-port calibration, move the reference plane, and compare a 50 Ω load, an open and a terminated cable." },
+          { n: "P51", file: "practice/p51-load-cell-data-acquisition.html", title: "Calibrate a load cell and test for drift", d: "Wire a bridge amplifier, fit a two-point scale, and check accuracy with a reference weight you did not fit." },
+          { n: "P52", file: "practice/p52-dc-power-logging.html", title: "Log DC power and explain a short battery runtime", d: "Measure voltage and current together, estimate energy over an on/off duty cycle, and check a short runtime against a battery rating." },
+          { n: "P53", file: "practice/p53-fibre-loss-and-otdr.html", title: "Check a fibre loss budget and read an OTDR trace", d: "Calculate allowable link loss, inspect a real trace and distinguish a bad connector from distributed fibre loss." },
+          { n: "P55", file: "practice/p55-pico-boot-and-swd-debugging.html", title: "Find where a Raspberry Pi Pico program stops", d: "Check power, USB and serial logging, then use SWD and GDB to distinguish a boot problem from a blocking program." },
+          { n: "P58", file: "practice/p58-board-production-test.html", title: "Build a repeatable board test fixture", d: "Prove a low-voltage board test with a known-good reference, two known faults and a closing retest." }
         ]}
       ]
     },
@@ -113,6 +141,20 @@ window.TOC = {
           { n: "T30", file: "theory/t30-embedded-timing-states.html", title: "Firmware timing, state machines and recovery", d: "Debounce, millis rollover, watchdogs, brownouts and safe startup." },
           { n: "T31", file: "theory/t31-feedback-control.html", title: "Feedback, interlocks and control loops", d: "Open and closed loops, PID, hysteresis, permissives and independent proof." },
           { n: "T32", file: "theory/t32-rf-transmission-lines.html", title: "RF transmission lines, antenna matching and link budget", d: "Characteristic impedance, S11, SWR, antenna dimensions, polarisation and RSSI." }
+        ]},
+        { title: "Part 9 · Robotics, sensing and perception", blurb: "Motion and feedback, control I/O, calibration, camera geometry and learned inspection.", chapters: [
+          { n: "T33", file: "theory/t33-robot-motion-and-feedback.html", title: "Robot motion, coordinate frames and encoder feedback", d: "Joint space, task space, repeatability and the encoder readings that support a robot’s control loop." },
+          { n: "T34", file: "theory/t34-industrial-control-signals.html", title: "Control signals, PLC scans and independent proof", d: "Field I/O, scans, priorities, quality, interlocks and timing in building and industrial controllers." },
+          { n: "T35", file: "theory/t35-calibration-and-condition-data.html", title: "Calibration, uncertainty and condition measurements", d: "Separate accuracy, precision, drift, hysteresis and resolution in sensors and maintenance trends." },
+          { n: "T36", file: "theory/t36-camera-optics-and-depth.html", title: "Camera optics, calibration and stereo depth", d: "Perspective, pixels, distortion, focal length, lighting and the uncertainty of triangulated depth." },
+          { n: "T37", file: "theory/t37-edge-ai-evaluation.html", title: "Edge AI, dataset leakage and inspection metrics", d: "Train, validate and test with independent captures. Understand false acceptance, confidence, drift and latency." },
+          { n: "T42", file: "theory/t42-pneumatic-force-and-feedback.html", title: "Pneumatic force, directional valves and independent feedback", d: "Relate pressure and piston area to motion and distinguish air routing from electrical control." }
+        ]},
+        { title: "Part 10 · Measurement and design for service", blurb: "Timing and bus evidence, optical testing, PCB layout and EMC.", chapters: [
+          { n: "T38", file: "theory/t38-time-series-and-digital-buses.html", title: "Time series, bus layers and evidence quality", d: "Sampling, aliasing, latency, stale values, frame decoding and timestamps across instruments and networks." },
+          { n: "T39", file: "theory/t39-optical-link-loss-and-reflectometry.html", title: "Optical loss, reflections and fibre test limits", d: "Convert dBm to dB loss, understand backscatter distance and account for launch and receive dead zones." },
+          { n: "T40", file: "theory/t40-pcb-layout-and-emc.html", title: "PCB return paths, decoupling and EMC", d: "Why current follows real loops, how edges couple into other circuits, and what layout choices make boards easier to test." },
+          { n: "T41", file: "theory/t41-embedded-boot-and-debug.html", title: "Microcontroller boot, symbols and debug interfaces", d: "Distinguish ROM boot, firmware startup, USB, UART and SWD faults using observable boundaries." }
         ]}
       ]
     },
@@ -141,7 +183,8 @@ window.TOC = {
       blurb: "The systems Australian employers hire for: BMS, security, telecom, fibre, industrial. Plus licences and the path in.",
       parts: [
         { title: "Part 0 · The market", blurb: "Start with the evidence from real Australian job ads.", chapters: [
-          { n: "C00", file: "career/c00-what-job-ads-ask-for.html", title: "What Australian job ads actually ask for", d: "2,764 SEEK ads from your research: competition, tickets, tools and pay for each technician family." }
+          { n: "C00", file: "career/c00-what-job-ads-ask-for.html", title: "What Australian job ads actually ask for", d: "2,764 SEEK ads from your research: competition, tickets, tools and pay for each technician family." },
+          { n: "C18", file: "career/c18-controls-robotics-and-service-careers.html", title: "Choose a path into controls, electronics test or automation", d: "Compare Australian entry routes, actual employer tasks and portfolio evidence for hands-on technician roles." }
         ]},
         { title: "Part I · Building services", blurb: "The building systems trades.", chapters: [
           { n: "C01", file: "career/c01-bms-fundamentals.html", title: "BMS fundamentals: what a building management system does", d: "HVAC plant, points (AI/AO/DI/DO), controllers, front ends and alarms." },
@@ -178,7 +221,8 @@ window.TOC = {
           { n: "R01", file: "reference/r01-glossary.html", title: "Glossary: every term in plain English", d: "From ampere to Zener, BACnet to VLAN, with a link to where each one is taught." },
           { n: "R02", file: "reference/r02-formula-sheet.html", title: "Formula sheet with worked numbers", d: "Every formula in the course, what each symbol means, and a typical-value example." },
           { n: "R03", file: "reference/r03-symbols-parts.html", title: "Schematic symbols and part identification", d: "Read a schematic, identify a part by its body, decode markings and find theory and bench links." },
-          { n: "R04", file: "reference/r04-welding-job-sheet.html", title: "Welding repair job sheet", d: "A printable, fillable record for intake, cold tests, replacement parts and supervised return-to-service checks." }
+          { n: "R04", file: "reference/r04-welding-job-sheet.html", title: "Welding repair job sheet", d: "A printable, fillable record for intake, cold tests, replacement parts and supervised return-to-service checks." },
+          { n: "R05", file: "reference/r05-practical-learning-library.html", title: "Practical learning library for electronics and automation", d: "Use trusted electronics labs, field training, robotics exercises and manufacturer guides alongside your Workbench labs." }
         ]}
       ]
     }

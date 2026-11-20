@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T41 · Microcontroller boot, symbols and debug interfaces</title>
+<meta name="description" content="Distinguish ROM boot, firmware startup, USB, UART and SWD faults using observable boundaries.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T41</span>
+    <h1>Microcontroller boot, symbols and debug interfaces</h1>
+    <p class="lede">Pressing reset starts the chip’s boot chain. Being able to pause that chain and observe a running build changes what a firmware fault looks like.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t15-digital-logic-microcontrollers.html">T15</a> · <a href="t30-embedded-timing-states.html">T30</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>From reset to user code</h2>
+    <p>A processor starts at a hardware-defined address or a ROM stage. It may check a boot pin or image, initialise external flash, then hand over to application startup code. Startup generally sets up needed memory and runtime state before calling <code>main</code>. A watchdog, supply dip or fault handler may restart the program before you see its first status message.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/labs/pico.jpg" width="960" height="454" alt="RP2040 Raspberry Pi Pico with labelled debug pads at the left, USB connector at the right and BOOTSEL above the processor" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 454" aria-hidden="true">
+            <path d="M151,159 L103.2,174.2" stroke="#103549" stroke-width="8"/>
+            <path d="M151,159 L103.2,174.2" stroke="#fff" stroke-width="3"/>
+            <path d="M88,179 L101.4,168.4 105.1,180.0Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="151" cy="159" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="151" y="159" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">1</text>
+            <path d="M633,64 L692.5,132.0" stroke="#103549" stroke-width="8"/>
+            <path d="M633,64 L692.5,132.0" stroke="#fff" stroke-width="3"/>
+            <path d="M703,144 L687.9,136.0 697.0,128.0Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="633" cy="64" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="633" y="64" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">2</text>
+            <path d="M818,315 L863.5,252.9" stroke="#103549" stroke-width="8"/>
+            <path d="M818,315 L863.5,252.9" stroke="#fff" stroke-width="3"/>
+            <path d="M873,240 L868.4,256.5 858.6,249.3Z" fill="#fff" stroke="#103549" stroke-width="2"/>
+            <circle cx="818" cy="315" r="17" fill="#103549" stroke="#fff" stroke-width="2"/>
+            <text x="818" y="315" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:24px">3</text>
+          </svg>
+        </span>
+        <figcaption>1 · SWD debug pads. 2 · BOOTSEL button. 3 · USB. An RP2040 Pico has USB boot and program debug connections on the same board. The interfaces prove different things.<br><small>Photo by Phiarc, scaled for the course, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Pico_top.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/probe.png" width="400" height="556" alt="PEmicro Multilink ACP hardware debug probe connected to a ribbon cable" loading="lazy" decoding="async">
+        <figcaption>A hardware debug probe is a bridge between a host tool and the target’s debug interface. Match the probe’s electrical interface and voltage to the target.<br><small>Photo by KMcNeilWiki, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:PEmicro%27s_Multilink_ACP_Debug_Probe.png">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Use different tools for different observations</h2>
+    <p>Serial UART logs record events the firmware actively emits. USB enumeration checks the USB path and software state of the image that implements it. Arm SWD generally carries a data signal and clock to a debug port. It can let an appropriate probe halt execution and inspect memory or core registers. Debug facilities can be locked for production, use a different chip configuration, or be unavailable when the target lacks power.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow the moment when the debugger stops at a line and displays the variable values. The video uses an earlier Picoprobe setup. Use the written vendor instructions for the current probe wiring. <a href="https://www.youtube.com/watch?v=jnC5LrTx470">Intro to Raspberry Pi Pico and RP2040 - C/C++ Part 2: Debug with Picoprobe | Digi-Key Electronics · DigiKey</a>.</p>
+    <p>Link the debug information to the firmware actually running. ELF files can include addresses, symbols and source-line mappings. A raw binary or UF2 image used for programming serves a different purpose. Rebuilding or using a release build with optimisation can move symbols or omit the variables you want to inspect.</p>
+
+    <h2>Interpret effects the debugger introduces</h2>
+    <p>Halting changes timing with peripheral, watchdog and interface effects that depend on the device. A bug that happens only on normal power-up can disappear during a single-step session. After locating it, verify startup again with the probe detached and record one repeatable fault and recovery. <a href="https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html">Raspberry Pi debug probe reference</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p27-firmware-state-machine.html">P27 · Program a timed controller that can stop</a></li>
+      <li><a href="../practice/p55-pico-boot-and-swd-debugging.html">P55 · Find where a Raspberry Pi Pico program stops</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

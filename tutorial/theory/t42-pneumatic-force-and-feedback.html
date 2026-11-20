@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T42 · Pneumatic force, directional valves and independent feedback</title>
+<meta name="description" content="Relate pressure and piston area to motion, distinguish air routing from electrical control, and understand stored energy.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T42</span>
+    <h1>Pneumatic force, directional valves and independent feedback</h1>
+    <p class="lede">A PLC output can command air to move a load. The final motion depends on pressure, flow, mechanical constraints and measured position.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t03-power-energy-heat.html">T03</a> · <a href="t18-sensor-physics.html">T18</a> · <a href="t31-feedback-control.html">T31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Pressure and force are separate from flow and speed</h2>
+    <p>For a piston with a pressure difference Δp across effective area A, ideal force is Δp × A. For a 25 mm bore, piston area is about 491 mm². At 0.30 MPa difference the ideal cap-end force is about 147 N. Return force differs because the rod reduces area on one side. Real force is affected by friction, pressure drop and exhaust conditions.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/cylinder.jpg" width="720" height="960" alt="Installed pneumatic cylinder with a projecting metal rod, two air fittings and two position switches" loading="lazy" decoding="async">
+        <figcaption>Pressure acts on the piston inside the body. The effective area available on the rod side differs from the full bore area.<br><small>Photo by Mixabest, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Pneumatic_cylinder_2172.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/solenoid.jpg" width="960" height="718" alt="Close-up of a DC 24 V valve solenoid coil and a clear electrical plug" loading="lazy" decoding="async">
+        <figcaption>The solenoid receives an electrical command. The valve changes the pneumatic path to and from the cylinder.<br><small>Photo by Sarah Adrita, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Solenoid_coil_of_a_pneumatic_valve.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Speed comes from how quickly air moves and pressure builds under load. A high pressure indication at the supply does not prove adequate flow through the valve or tubing during a stroke.</p>
+
+    <h2>Read positions and independent sensors</h2>
+    <p>A 5/2 directional valve names five ports and two positions. Palm or solenoid actuation is distinct from the return method, which may use a spring or another operator. A mid-position or emergency response depends on the actual design. Work from the complete symbol and supporting instructions.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch the two air paths change as the cylinder reverses. The demonstration is in Portuguese and shows the sequence visually. <a href="https://www.youtube.com/watch?v=6I8Mw42i9_A">Retorno Automático de um Cilindro de Dupla Ação (Ensaio 19) · UP Educação Profissional</a>.</p>
+    <p>The controller can see a command and two limits. If both incompatible limits are true, record invalid feedback before accepting the position. If neither is true in the middle of travel, interpret it against travel timing and the specified sensing arrangement.</p>
+
+    <h2>Understand what remains after electrical power drops</h2>
+    <p>Air can remain trapped in sections of the circuit. Mechanical loads can also retain energy through gravity or springs. Switching off the electrical command alone leaves those sources to address. Real systems require a documented isolation and validation procedure suitable for their specific mechanism. Festo’s training packages show how to build up from basic symbols and components. <a href="https://www.festo.com/net/supportportal/files/10131/pneumatictrainingbrochure.pdf">Festo Didactic pneumatic training</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p39-plc-ladder-simulation.html">P39 · Build and test a start–stop PLC sequence</a></li>
+      <li><a href="../practice/p41-drive-and-condition-checks.html">P41 · Diagnose a drive trip and trend motor condition</a></li>
+      <li><a href="../practice/p56-electropneumatic-sequence.html">P56 · Diagnose a pneumatic actuator from command to position</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

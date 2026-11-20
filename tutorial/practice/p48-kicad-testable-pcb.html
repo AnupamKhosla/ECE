@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P48 · Design a PCB you can probe and repair</title>
+<meta name="description" content="Turn the tested LED circuit into a KiCad board with footprints, accessible test points, and a first-power plan.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P48</span>
+    <h1>Design a PCB you can probe and repair</h1>
+    <p class="lede">A PCB that passes layout checks can still be impossible to assemble or diagnose. Start with a working breadboard and give every important node somewhere a probe can reach.</p>
+    <div class="meta"><span><b>Time</b> 90 minutes</span><span><b>Before this</b> <a href="p02-breadboard-first-led.html">P02</a> · <a href="p05-soldering-wiring.html">P05</a> · <a href="p24-datasheets-measurement.html">P24</a> · <a href="p26-smd-rework.html">P26</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>KiCad, your P02 circuit, a 5 V regulated low-voltage supply, red through-hole LED, 330 Ω resistor, two-pin power connector, and a meter. Designing and checking the board needs no fabrication order.</p></div>
+
+    <h2>Put the actual connector and LED next to the schematic</h2>
+    <p>Draw J1 pin 1 → R1 → D1 anode. D1 cathode returns to J1 pin 2. Name the nets <code>5V_IN</code>, <code>LED_A</code> and <code>GND</code>. Add labelled test pads on all three. With a red LED dropping about 2 V, (5 − 2)/330 ≈ 9 mA. Use the actual LED’s limits and terminal polarity.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pcb.jpg" width="960" height="933" loading="lazy" decoding="async" alt="Assembled OpenSeaMap data-logger PCB with connectors and a red configuration jumper">
+        <figcaption>On this finished data-logger board locate the edge connectors and a labelled jumper. Think where a test hook would need room with the wires in place.<br><small>Photo by Hotelsierra1, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OpenSeaMap-Data-logger_circuit-board.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/smd.jpg" alt="Close view of populated PCB, component end caps and solder pads" width="1024" height="800" loading="lazy" decoding="async">
+        <figcaption>Check how the copper pads match the physical part. Symbol connections and footprint pad numbers must describe the same pin assignment.<br><small>Photo by John Fader. <a href="https://commons.wikimedia.org/wiki/File:Smt_closeup.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>For your own board, print at 1:1 without “fit to page”. Put the actual connector, resistor and LED on the print. Check pad spacing and orientation against the datasheets. Use the 3D rendering for a second check.</p>
+
+    <h2>Make the board from the schematic</h2>
+    <ol class="steps"><li>Create a project in KiCad. Draw and annotate the circuit. Run the electrical rules check (ERC). Supply pins on the connector are passive. If the design requires a supply declaration, identify the actual external power path before adding a power flag.</li><li>Assign footprints and update the PCB from the schematic. Put J1 near an edge and the test pads away from tall parts. Give the board a closed outline on Edge.Cuts. Route the supply, LED and return. Mark power polarity and test-pad names in silkscreen.</li><li>Run the design rules check (DRC). Inspect the unrouted-net count, manufacturable clearances and the outline. Open the 3D view to catch collisions, then review the actual Gerbers and drill export in the Gerber viewer. Check your chosen board maker’s fabrication requirements if you intend to build it.</li></ol>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/pcbview.png" width="960" height="580" loading="lazy" decoding="async" alt="KiCad 3D viewer showing a populated RP2350 expansion design with board connectors">
+      <figcaption>A KiCad 3D view shows component fit and connector placement. Verify actual pad numbers and exported copper in the appropriate editors.<br><small>Image by VectorVoyager, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:KiCad_3D_Viewer_Plain_Screenshot_RP2350_Expansion_Card.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch on YouTube</b> · Find the footprints and their connections in the layout. Make room for your probe points before routing. <a href="https://www.youtube.com/watch?v=zdieFtrvjew">KiCad 9.0 – Getting Started Part 6- Laying Out Your First PCB | DigiKey · DigiKey</a>.</p>
+    <p><a href="https://docs.kicad.org/master/en/getting_started_in_kicad/getting_started_in_kicad.html">KiCad’s schematic-to-board tutorial</a>.</p>
+
+    <h2>Find and prove one deliberately introduced mistake</h2>
+    <p>In a copy, reverse the LED placement or disconnect the link to R1. Open the board view and record whether ERC, DRC or your human checklist catches each fault. ERC and DRC understand declared constraints. They cannot know which connector an assembler will put in or whether the intended footprint matches the actual part.</p>
+    <p>If you build a board, inspect soldering, compare diode orientation and prove the supply and ground before power. Use a current-limited 5 V bench supply with sufficient but modest headroom for the expected LED current. Measure each test point and infer current from the resistor voltage with the measured resistance.</p>
+
+    <h2>Keep a release package for a second person</h2>
+    <p>Keep the schematic PDF, PCB revision, BOM with actual part numbers, Gerber and drill files, a tested measurement table and a test-point photo or 1:1 layout print. Write down one design decision made specifically to ease repair.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t26-pcb-rework-esd.html">T26 · PCB construction, solder joints and ESD</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series, bus layers and evidence quality</a><br><a href="../theory/t40-pcb-layout-and-emc.html">T40 · PCB return paths, decoupling and EMC</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p58-board-production-test.html">P58 · Build a repeatable board test fixture</a></li>
+      <li><a href="p49-can-bus-and-telemetry.html">P49 · Log a CAN bus and verify the frame data</a></li>
+      <li><a href="p52-dc-power-logging.html">P52 · Log DC power and explain a short battery runtime</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

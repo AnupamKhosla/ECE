@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P58 · Build a repeatable board test fixture</title>
+<meta name="description" content="Prove a low-voltage board test with a known-good reference, two known faults and a closing retest.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P58</span>
+    <h1>Build a repeatable board test fixture</h1>
+    <p class="lede">Test a known-good board, two known faults and the good board again. Learn how to tell a board failure from a bad contact in the test fixture.</p>
+    <div class="meta"><span><b>Time</b> 60–80 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03</a> · <a href="p24-datasheets-measurement.html">P24</a> · <a href="p48-kicad-testable-pcb.html">P48</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Make passing through the fixture repeatable</h2>
+    <p>Test the simple 5 V LED circuit from P48. A breadboard, taped base and clipped wires are enough for a first fixture. Use a locator that puts the board in the same position and blocks the reversed orientation. Label the connection points for 5V_IN, ground and LED_A. When you move to spring probes, match them to the board pads, support the board and keep the insulator between probes intact.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pogo.jpg" width="960" height="569" loading="lazy" decoding="async" alt="Loose gold spring contacts and several pogo-pin connector assemblies">
+        <figcaption>Find the movable contact tip and stationary body. Choose the stroke and spacing for the board and fixture design.<br><small>Photo by Jole222, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Pogo_Pin_Connectors.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pcb.jpg" width="960" height="933" loading="lazy" decoding="async" alt="Assembled circuit board from an OpenSeaMap data logger">
+        <figcaption>This assembled board shows why fixture clearance matters. Tall connectors and nearby parts change where a probe can make contact.<br><small>Photo by Hotelsierra1, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OpenSeaMap-Data-logger_circuit-board.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Find the position of the device under test and where the tester meets its pads. <a href="https://www.youtube.com/watch?v=9Bb1QzFJNCU">Adafruit’s QT Py production tester demonstration</a>.</p>
+    <p><a href="https://learn.adafruit.com/how-to-build-a-testing-fixture/overview">Adafruit’s pictured fixture build</a> · <a href="https://learn.sparkfun.com/tutorials/electronics-assembly/inspection-and-testing">SparkFun assembly inspection and testing</a>.</p>
+
+    <h2>Prove the tester before trusting the verdict</h2>
+    <ol class="steps">
+      <li>Keep power off while inserting the board. Inspect LED orientation and use continuity to check the fixture connections against your drawing. Check for a supply short before applying power.</li>
+      <li>Use a modestly current-limited 5 V bench supply. Measure IN and LED_A against ground, and measure directly across the 330 Ω resistor. With 5 V in and about 2 V at the anode, expect about 9 mA through the resistor. For the reference LED and part tolerances you select, write an acceptance band before running the unknown unit. The worksheet uses 7–11 mA and a visibly lit LED.</li>
+      <li>Reseat the known-good board three times and keep all three readings. A change after reseating can indicate a contact problem. Verify fixture ground and other probe paths before diagnosing the board.</li>
+      <li>With power off, introduce an open connection between R1 and the LED on a separate breadboard. Prove that the powered check catches it. On another board compare a reversed LED to the assembly drawing during unpowered inspection. Restore the reference board and reproduce the original pass.</li>
+    </ol>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/fixture.png" width="556" height="384" loading="lazy" decoding="async" alt="Diagram of a board held in a test fixture above a row of spring probes">
+      <figcaption>The fixture clamps the board so each probe reaches the same pad every time. Prove locator alignment and repeatable contact before blaming the board.<br><small>Illustration by Mansan321. <a href="https://commons.wikimedia.org/wiki/File:PCB_test_fixture.png">Original diagram</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+
+    <h2>Record the failure and repeat the same test after repair</h2>
+    <p>Keep unit ID, board and fixture revisions, measured voltages and calculated resistor current. The CSV includes a known-good reference, a downstream open and an orientation failure detected before power. Add separate trial rows for each reseat and retest.</p>
+    <p><a href="../assets/labs/board-test-record.csv" download>Download the board test worksheet</a>.</p>
+    <p>A useful test record leaves a second technician able to reproduce a failure. Write which observation failed, how you separated board and fixture, and the measured results after the repair. If a known-good board fails intermittently, stop using that fixture for pass/fail decisions until the contact or procedure is fixed.</p>
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t24-measurement-datasheets.html">T24 · Measurement limits</a><br><a href="../theory/t26-pcb-rework-esd.html">T26 · Pads and solder joints</a><br><a href="../theory/t40-pcb-layout-and-emc.html">T40 · Layout and probe access</a></p>
+    </div>
+    <p><a href="p48-kicad-testable-pcb.html">P48 · Design a board with accessible pads</a> · <a href="../career/c18-controls-robotics-and-service-careers.html">C18 · Electronics test and repair jobs</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

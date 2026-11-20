@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P49 · Log a CAN bus and verify the frame data</title>
+<meta name="description" content="Use an isolated virtual CAN interface, decode a published training frame and check physical termination on your own unpowered trainer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P49</span>
+    <h1>Log a CAN bus and verify the frame data</h1>
+    <p class="lede">A CAN logger receives frames but the display shows the wrong temperature. Inspect the ID, bytes, sign, scale and timeout one at a time.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes</span><span><b>Before this</b> <a href="p14-serial-buses-modbus.html">P14</a> · <a href="p16-raspberry-pi-linux.html">P16</a> · <a href="p19-networking-hands-on.html">P19</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Linux with SocketCAN and can-utils for the virtual exercise, or the worked transcript. For physical observation use your own isolated extra-low-voltage training hardware. Match transceivers, documented bit rates and termination to that bus.</p></div>
+
+    <h2>Know which layer you are checking</h2>
+    <p>A CAN transceiver turns controller-side signals into a differential signal on CAN_H and CAN_L. A frame ID participates in arbitration and indicates how the application should interpret data. It need not identify a particular destination. A signal definition supplies byte order, signedness and scale.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/can.jpg" width="658" height="960" loading="lazy" decoding="async" alt="Connector used for CAN on equipment at the European Southern Observatory">
+        <figcaption>An ESO connector used for CAN. Look up the actual wiring before assuming any connector pinout is shared by another system.<br><small>Photo by ESO/H.H.Heyer, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ESO-CANbus-connector_(eso-canbus-0134).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/uart.jpg" alt="FTDI USB-to-TTL serial adapter cable with separate signal wires" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>Serial logic signals at a chip and the physical CAN differential pair serve different electrical roles. Check where the transceiver sits between them.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:FTDI_Cable.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Send a single frame on a virtual training interface</h2>
+    <p>Use a disposable Linux VM or dedicated test computer you administer. Use <code>vcan0</code> throughout. Installation of <code>can-utils</code> depends on your distribution. The following setup needs administrative permissions for a local virtual interface.</p>
+    <pre><code>sudo modprobe vcan
+    sudo ip link add dev vcan0 type vcan
+    sudo ip link set vcan0 up</code></pre>
+    <p>Run the monitor in one terminal and your training frame in another.</p>
+    <pre><code>candump -L vcan0</code></pre>
+    <pre><code>cansend vcan0 321#F40123</code></pre>
+    <p>Expect the ID <code>321</code> in hex and payload <code>F4 01 23</code>. For the exercise, bytes 0–1 are a little-endian signed 16-bit temperature, scaled by 0.1 °C per count. Byte 2 is a counter. The temperature count <code>0x01F4</code> is 500, so report 50.0 °C and counter 35. For a cold training case try <code>321#CEFF24</code>, which encodes −5.0 °C and counter 36.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow the frame from a send command to a dump readout. Keep the exercise on the virtual interface named in this lesson. <a href="https://www.youtube.com/watch?v=icEx1Q_U7J0">CAN-utils over VCAN | Virtual CAN Interface Tutorial | Linux SocketCAN · The EV Engineer</a>.</p>
+    <p><a href="https://docs.kernel.org/networking/can.html">Linux SocketCAN documentation</a> · <a href="https://github.com/linux-can/can-utils">Official can-utils repository</a>.</p>
+
+    <h2>Ask what the virtual exercise leaves for a physical bench</h2>
+    <p>The virtual interface doesn’t model wiring or hardware arbitration. On a disconnected, unpowered bench trainer known to have two 120 Ω end terminations, measure across CAN_H and CAN_L with the selected node supplies disconnected. Two 120 Ω resistors in parallel give about 60 Ω. About 120 Ω can indicate one missing termination. Verify the actual connection and compare with the design. For physical traffic use the specified bit rate and receive setup.</p>
+    <p>Use a timing requirement in the worksheet. If the sample is intended at 5 Hz, start by marking it stale after 1 second without a valid frame. Show the last source and receive times, and restart the age timer only when the expected ID and size arrive. A virtual receive path with no frames is a useful fault case.</p>
+
+    <h2>Save a decoder check</h2>
+    <p>Save the raw capture with times, both worked frames and their decoded values. State which observations would be different on the physical wire. Stop the monitor and remove the virtual interface only if you created it. <code>sudo ip link del dev vcan0</code>.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t17-networking-theory.html">T17 · How networks really work: Ethernet, IP, TCP/UDP</a><br><a href="../theory/t34-industrial-control-signals.html">T34 · Control signals, PLC scans and independent proof</a><br><a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series, bus layers and evidence quality</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p50-vna-reflection-calibration.html">P50 · Calibrate a VNA and measure RF reflections</a></li>
+      <li><a href="p52-dc-power-logging.html">P52 · Log DC power and explain a short battery runtime</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

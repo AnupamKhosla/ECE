@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P43 · Calibrate a two-joint arm and check its reach</title>
+<meta name="description" content="Map joint angles to tool position, compare measured and predicted points, and diagnose a displaced joint zero.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P43</span>
+    <h1>Calibrate a two-joint arm and check its reach</h1>
+    <p class="lede">The same command repeatedly lands 15 mm away from the mark. Use a cardboard robot arm first so you can isolate a position error without motor settings getting in the way.</p>
+    <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="../theory/t00-maths-toolkit.html">T00</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Cardboard, two pivot fasteners, ruler, protractor and graph paper. The browser exercise uses a flat two-joint arm. A real low-torque trainer is optional and stays outside the hand-measurement exercise.</p></div>
+
+    <h2>Find the base, joints and tool centre point</h2>
+    <p>Make a flat arm with 120 mm between the first and second pivot and 80 mm from the second pivot to the pencil tip. Mark the origin under the first pivot. Point the straight arm along +X. Mark +Y to the left of someone looking along +X from the origin, or use a printed x-y grid to remove ambiguity. Read both angles counterclockwise looking down at the page. Joint 2 is measured <em>relative to link 1</em>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/fullarm.jpg" width="250" height="350" loading="lazy" decoding="async" alt="KUKA KR10 SCARA robot showing its fixed upright and two horizontal links">
+        <figcaption>On this KUKA SCARA robot, find the fixed upright, the first rotary joint and the elbow connecting the horizontal links. Use cardboard for the measurements here.<br><small>Photo by Jo Teichmann, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:KUKA_Industrial_Robot_KR10_SCARA.jpg">Original</a> · Public domain.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/servo.jpg" alt="Disassembled hobby servo with its gear train, motor and housing laid out" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>On a small powered trainer, a hobby servo moves a joint through a gearbox. Mounting its horn one tooth off can shift the joint’s mechanical zero.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>A <b>tool centre point</b> is the point on the tool you care about, such as the pencil tip. Changing the tool moves that point relative to the last link. <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/">Northwestern · Forward kinematics</a>.</p>
+
+    <h2>Predict the output and compare it to marks</h2>
+    <div class="formula">x = L₁ cos θ₁ + L₂ cos(θ₁ + θ₂)<br>y = L₁ sin θ₁ + L₂ sin(θ₁ + θ₂)<small>Use a degree-mode calculator or convert degrees to radians for software.</small></div>
+    <div class="widget" data-arm-trainer>
+      <span class="label">Move the two-joint arm</span>
+      <label for="arm-shoulder">Joint 1 from +X <span data-shoulder-angle aria-hidden="true">0°</span></label>
+      <input type="range" id="arm-shoulder" name="shoulder" min="-180" max="180" value="0">
+      <label for="arm-elbow">Joint 2 relative to link 1 <span data-elbow-angle aria-hidden="true">0°</span></label>
+      <input type="range" id="arm-elbow" name="elbow" min="-180" max="180" value="0">
+      <svg class="lab-plot" viewBox="0 0 440 440" aria-hidden="true">
+        <circle cx="220" cy="220" r="200" class="s-dash s-thin" fill="none"/>
+        <circle cx="220" cy="220" r="40" class="s-dash s-thin" fill="none"/>
+        <path d="M12 220H428M220 12V428" class="s-thin" fill="none"/>
+        <text x="404" y="210" class="t" style="font-size:20px">+X</text>
+        <text x="231" y="24" class="t" style="font-size:20px">+Y</text>
+        <polyline data-links points="220,220 340,220 420,220" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="220" cy="220" r="7" class="f-ink"/>
+        <circle data-tip cx="420" cy="220" r="9" class="f-red"/>
+      </svg>
+      <output class="out" data-arm-position>x 200.0 mm, y 0.0 mm</output>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Joint 1</th><th scope="col">Joint 2</th><th scope="col">Expected x</th><th scope="col">Expected y</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">0°</th><td>0°</td><td>200 mm</td><td>0 mm</td></tr>
+          <tr><th scope="row">90°</th><td>0°</td><td>0 mm</td><td>200 mm</td></tr>
+          <tr><th scope="row">0°</th><td>90°</td><td>120 mm</td><td>80 mm</td></tr>
+          <tr><th scope="row">30°</th><td>−60°</td><td>173.2 mm</td><td>20 mm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ol class="steps"><li>Mark all four points. Set the two angles with the protractor and compare the actual pencil tip with each mark. Log signed x and y errors for each point.</li><li>Re-approach one mark from both directions. A difference between the two approaches suggests play or flex in the mechanism.</li><li>Shift the marked elbow zero by 10°. At commanded 0°, 0°, the altered arm should land at about (198.8, 13.9) mm. Shortening either link produces a different pattern.</li></ol>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch how joint motions combine to define the tool pose. The planar two-link exercise applies the same idea to a simpler arm. <a href="https://www.youtube.com/watch?v=cKHsil0V6Qk">Modern Robotics, Chapter 4:  Forward Kinematics Example · Northwestern Robotics</a>.</p>
+
+    <h2>Report an offset and a repeatability result</h2>
+    <p>The reachable distance for the ideal arm lies between |120 − 80| = 40 mm and 200 mm. Mechanical stops can shrink that range. Record three attempts at one point, the signed error at each of the four targets, the offset you introduced and the result after correcting it. Uneven repeatability and a consistent zero offset call for different checks.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t31-feedback-control.html">T31 · Feedback, interlocks and control loops</a><br><a href="../theory/t33-robot-motion-and-feedback.html">T33 · Robot motion, coordinate frames and encoder feedback</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p44-ros2-simulation-diagnostics.html">P44 · Trace a ROS 2 robot command in simulation</a></li>
+      <li><a href="p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/labs.js" defer></script>
+</body>
+</html>

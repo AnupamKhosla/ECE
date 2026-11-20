@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T36 · Camera optics, calibration and stereo depth</title>
+<meta name="description" content="Perspective, pixels, distortion, focal length, lighting and the uncertainty of triangulated depth.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T36</span>
+    <h1>Camera optics, calibration and stereo depth</h1>
+    <p class="lede">A camera image is a projection of a scene. Reliable measurements depend on controlled geometry, lighting and calibration.</p>
+    <div class="meta"><span><b>Time</b> 30 minutes</span><span><b>Before this</b> <a href="t00-maths-toolkit.html">T00</a> · <a href="t10-em-waves-antennas-fibre.html">T10</a> · <a href="t24-measurement-datasheets.html">T24</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>A pixel to millimetre conversion has conditions</h2>
+    <p>In an ideal pinhole model, x in the image is proportional to fX/Z. The same object takes fewer pixels as it moves away. A scale marked at the table plane cannot describe a raised workpiece accurately unless the geometry is accounted for. Intrinsics describe the camera’s projection and distortion. Extrinsics describe the position and orientation relative to another frame.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/visioncamera.jpg" width="960" height="640" loading="lazy" decoding="async" alt="IDS uEye industrial camera with an open threaded lens mount and a visible image sensor">
+        <figcaption>An industrial camera can take a separate lens. Choose a lens and working distance for the field of view and the smallest feature you must resolve.<br><small>Photo by Lg123456, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Ids-machine-vision-cameras-usb2-2004.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/inspection.jpg" width="600" height="314" loading="lazy" decoding="async" alt="Industrial vision system diagram marking camera, illumination, part, conveyor and processing">
+        <figcaption>This equipment diagram shows how illumination and fixture geometry sit upstream of the software’s decision.<br><small>Diagram by European Editors, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Machine_Vision_System.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Stereo disparity estimates the distance</h2>
+    <p>After rectification of horizontal stereo images, a corresponding feature lies on the same row in both views. If the baseline B and focal length f are fixed, the difference d between horizontal pixel coordinates yields Z = fB/d. Sensitivity is approximately |ΔZ| = fB|Δd|/d² for small changes. As a target gets farther, the same one-pixel error matters more.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="RealSense D435 stereo depth camera mounted on a tripod">
+      <figcaption>On this stereo camera the separate windows can serve different sensors and illumination. The manufacturer describes the exact windows, positions and coordinate axes.<br><small>Photo by Marc Auledas, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch on YouTube</b> · Look for what happens to depth when the relative camera geometry moves or is corrected. <a href="https://www.youtube.com/watch?v=GoEtPvwqMS8">Dynamic Calibration: Keeping Stereo Depth Accurate · Luxonis</a>.</p>
+    <p><b>Example.</b> f = 600 px and B = 75 mm produce 750 mm at disparity 60 px and 1,500 mm at 30 px. One extra disparity pixel changes the results by about 12 mm and 48 mm respectively.</p>
+
+    <h2>The camera and the robot need a common frame</h2>
+    <p>A detection gives image coordinates, or under calibration a point in the camera’s coordinate frame. Transform it into the robot’s frame before interpreting it as a target position. Lighting on reflective surfaces can produce wrong or missing depth. Time can also separate a camera image from the robot pose it should be paired with. Test known targets across distance and lighting first. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calibration and geometry</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p43-robot-arm-position-calibration.html">P43 · Calibrate a two-joint arm and check its reach</a></li>
+      <li><a href="../practice/p45-2d-machine-vision.html">P45 · Build a 2D inspection station with controlled light</a></li>
+      <li><a href="../practice/p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
+      <li><a href="../practice/p47-edge-ai-inspection.html">P47 · Test an AI inspection model on unseen parts</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

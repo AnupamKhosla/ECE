@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P45 · Build a 2D inspection station with controlled light</title>
+<meta name="description" content="Make a camera fixture, calibrate pixels to millimetres and reject a part using measured geometry.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P45</span>
+    <h1>Build a 2D inspection station with controlled light</h1>
+    <p class="lede">Two similar washers move through a fixture. Use a fixed camera and a good background to measure their outside diameter, then change the lighting and see what should cause the system to reject a frame.</p>
+    <div class="meta"><span><b>Time</b> 70 minutes</span><span><b>Before this</b> <a href="p16-raspberry-pi-linux.html">P16</a> · <a href="../career/c05-cctv-ip-cameras.html">C05</a> · <a href="../theory/t24-measurement-datasheets.html">T24</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <div class="callout try"><span class="label">What you’ll use</span><p>Own phone or webcam, plain matte background, two washers, ruler or caliper, fixed support and a lamp. Use a still image and manual pixel coordinates first. OpenCV is optional.</p></div>
+
+    <h2>Put the camera, target and light in repeatable positions</h2>
+    <p>A machine-vision station has a camera, lens, light and fixture. Fix the camera so it looks square to the target at a known distance. Put the ruler in the same plane as the washer. A backlight creates a clean silhouette. Side lighting may reveal dents while making the silhouette uneven.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/visioncamera.jpg" width="960" height="640" loading="lazy" decoding="async" alt="IDS uEye industrial camera with an open threaded lens mount and a visible image sensor">
+        <figcaption>The open lens mount of this industrial USB camera exposes the sensor. Fit a suitable lens and keep the mounting distance and focus fixed.<br><small>Photo by Lg123456, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Ids-machine-vision-cameras-usb2-2004.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Two-finger robot grippers above a tray of pink medical components">
+        <figcaption>A fixed tray holds workpieces in predictable locations at a real pick-and-place station. Use a simple fixture with the ruler and part at the same height in this exercise.<br><small>Photo by Lexington Medical, Inc, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>Start with a straight-on still image. Mark a 20.0 mm distance on the ruler and record its pixel width in the image. A ruler mark 200 px wide gives 10 px/mm in that plane. Capture a second picture after moving the camera or lifting the washer. Check whether that conversion still fits.</p>
+
+    <h2>Measure three frames before setting thresholds</h2>
+    <p>Measure the outside width of each washer. At 10 px/mm, 120 px means 12.0 mm and 159 px means 15.9 mm. Use a physical reference to verify. Example training rule: accept 15.5–16.5 mm when one clearly visible target lies fully inside the region of interest. Reject partial, blended or missing outlines.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Frame</th><th scope="col">Width</th><th scope="col">Decision for the example rule</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Clear isolated large washer</th><td>159 px</td><td>Accept, 15.9 mm</td></tr>
+          <tr><th scope="row">Clear smaller washer</th><td>120 px</td><td>Reject, 12.0 mm</td></tr>
+          <tr><th scope="row">Two touching washers</th><td>252 px combined</td><td>Reject the frame. Separate the objects and take it again.</td></tr>
+          <tr><th scope="row">Glare cuts one edge</th><td>Apparent width 146 px</td><td>Reject or reacquire under suitable lighting</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Pause when the thresholded image becomes contours. Compare the original and the mask before treating a contour as the washer. <a href="https://www.youtube.com/watch?v=FKIn_UIsXy4">Contour Detection using OpenCV: A Comprehensive Guide · LearnOpenCV</a>.</p>
+
+    <h2>Inspect your own image in the browser</h2>
+    <p>Photograph a dark washer on a light background. First use the ruler photo to calculate pixels per millimetre at the camera’s original resolution. Then crop a second photo to the part area without resizing it. Keep the ruler out of that crop. Try one clear washer, two touching parts, glare and a part cut off at the edge. The trainer processes the file in this tab.</p>
+    <div class="widget" data-vision-trainer>
+      <span class="label">Washer inspection</span>
+      <label for="vision-image">Choose a cropped image</label>
+      <input id="vision-image" name="source-image" type="file" accept="image/*">
+      <label for="vision-scale">Original image pixels per millimetre</label>
+      <input id="vision-scale" name="sample-scale" type="number" min="0.01" step="any" value="10" inputmode="decimal" required>
+      <label for="vision-threshold">Dark pixel cutoff <span data-threshold-value>120</span></label>
+      <input id="vision-threshold" name="threshold" type="range" min="0" max="255" value="120">
+      <canvas class="lab-plot" role="img" aria-label="Threshold mask of the selected image" width="480" height="120" hidden></canvas>
+      <p role="status" data-vision-result>Choose a photo to see its mask and test the width.</p>
+    </div>
+    <p>White on the mask shows pixels darker than the selected cutoff. The trainer groups connected pixels, ignores tiny marks and compares the width of one remaining silhouette against the example rule. It marks multiple or clipped shapes for review. Two touching washers can merge into one wide shape, so inspect the mask as well as the decision. Keep the original pixel scale when exporting the crop.</p>
+
+    <h2>Move from manual measurement to OpenCV</h2>
+    <ol class="steps"><li>Crop the fixed region of interest. Convert to grayscale and threshold the dark silhouette against the light background. Mark the two physical ruler positions outside the part region.</li><li>Use OpenCV’s external contours and compute a bounding box. Check that exactly one candidate is present above your noise area threshold and that its box stays away from the crop border.</li><li>Save both the original and the mask. Vary exposure and lighting and compare accepted and rejected frames. If the shape changes orientation, use a better shape measurement or constrain it with the fixture.</li></ol>
+    <p>The OpenCV examples give working commands for thresholding and retrieving the contours. <a href="https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html">OpenCV thresholding</a> · <a href="https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html">OpenCV contours</a>.</p>
+
+    <h2>Record the camera settings and the acceptance rule</h2>
+    <p>Keep one accepted image with its measurements, one out-of-spec part, two unusable frames and independent measurements from the caliper. Include focus, lamp position and working distance so someone can reproduce the setup.</p>
+
+    <div class="callout why">
+      <span class="label">Why it works</span>
+      <p><a href="../theory/t36-camera-optics-and-depth.html">T36 · Camera optics, calibration and stereo depth</a></p>
+    </div>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
+      <li><a href="p47-edge-ai-inspection.html">P47 · Test an AI inspection model on unseen parts</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/labs.js" defer></script>
+</body>
+</html>

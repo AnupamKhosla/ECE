@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T37 · Edge AI, dataset leakage and inspection metrics</title>
+<meta name="description" content="Train, validate and test with independent captures. Understand false acceptance, confidence, drift and latency.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T37</span>
+    <h1>Edge AI, dataset leakage and inspection metrics</h1>
+    <p class="lede">An inspection model returns scores from camera data. An engineer still has to prove what those scores mean for the job.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t24-measurement-datasheets.html">T24</a> · <a href="t36-camera-optics-and-depth.html">T36</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Choose the output the job uses</h2>
+    <p>Classification labels an image or a region. Detection reports places where objects appear. Segmentation assigns labels pixel by pixel. A system locating a missing fastener may only need a known image patch. If the part needs an accurate outline, use a calibrated measurement stage or a segmentation output evaluated for that purpose.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/inspection.jpg" width="600" height="314" loading="lazy" decoding="async" alt="Industrial vision system diagram marking camera, illumination, part, conveyor and processing">
+        <figcaption>The physical line sets the camera pose and lighting. A model’s input changes when the lens, fixture or product changes.<br><small>Diagram by European Editors, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Machine_Vision_System.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/visioncamera.jpg" width="960" height="640" loading="lazy" decoding="async" alt="IDS uEye industrial camera with an open threaded lens mount and a visible image sensor">
+        <figcaption>The camera is part of the test conditions. Record exposure, optics and mounting if they affect the images used to train the model.<br><small>Photo by Lg123456, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Ids-machine-vision-cameras-usb2-2004.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Watch detection on the device and note what the model outputs. Compare that with the measurement and reject/review rules you need. <a href="https://www.youtube.com/watch?v=-uxr59u0wnU">Edge Impulse Demonstration of FOMO: Constrained Object Detection on Embedded Devices · Edge AI and Vision Alliance</a>.</p>
+
+    <h2>A split is about independent evidence</h2>
+    <p>Split by physical part, run or site where needed. Adjacent frames of the same part are highly correlated. Putting them in both training and testing can give an optimistic estimate. Validation data helps choose thresholds and settings. Once the model is fixed, the final test measures expected performance on independent data.</p><p>For defect detection, precision = TP/(TP+FP), recall = TP/(TP+FN), and defect miss rate = FN/(TP+FN). With only 5 defects in a batch of 100, passing everything reports 95% accuracy and zero recall on the defects. Specify which label is positive before you present metrics.</p>
+
+    <h2>Build quality and timing around model output</h2>
+    <p>A confidence score is a model output. Measure calibration before reading a score as a probability. Add a disposition for low confidence, impossible geometry, missing frames and excessive latency. Include capture, processing and decision timestamps. Models can shift after lighting, parts or camera settings change. Track held-out examples from genuine changes before releasing a revision.</p><p>In a simulated robot or inspection cell, use AI to make an inspection recommendation and keep physical motion authorisation in the validated control system. <a href="https://docs.edgeimpulse.com/docs">Edge Impulse learning material</a> · <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI Risk Management Framework</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p45-2d-machine-vision.html">P45 · Build a 2D inspection station with controlled light</a></li>
+      <li><a href="../practice/p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
+      <li><a href="../practice/p47-edge-ai-inspection.html">P47 · Test an AI inspection model on unseen parts</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T40 · PCB return paths, decoupling and EMC</title>
+<meta name="description" content="Why current follows real loops, how edges couple into other circuits, and what layout choices make boards easier to test.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T40</span>
+    <h1>PCB return paths, decoupling and EMC</h1>
+    <p class="lede">A schematic line has no length. Copper tracks do, and that matters when a circuit switches fast or carries a large current.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t05-capacitors-fields.html">T05</a> · <a href="t10-em-waves-antennas-fibre.html">T10</a> · <a href="t25-filters-resonance.html">T25</a> · <a href="t26-pcb-rework-esd.html">T26</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Every current has a return path</h2>
+    <p>A loop includes both the outgoing conductor and the return. At high frequency the return tends to flow close to the signal on a nearby reference plane to reduce loop inductance. A gap in that plane can force a longer return and increase coupling. Treat the geometry as part of the circuit.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pcb.jpg" width="960" height="933" loading="lazy" decoding="async" alt="Assembled OpenSeaMap data-logger PCB with connectors and a red configuration jumper">
+        <figcaption>The component side shows connectors and traces. A multilayer board may carry the return through a plane you cannot see from this side. Check the layout before assuming its path.<br><small>Photo by Hotelsierra1, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:OpenSeaMap-Data-logger_circuit-board.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/labs/pcbview.png" width="960" height="580" loading="lazy" decoding="async" alt="KiCad 3D viewer showing a populated RP2350 expansion design with board connectors">
+        <figcaption>A 3D view helps with mechanical fit. Inspect the copper layers and return path in the PCB editor itself.<br><small>Image by VectorVoyager, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:KiCad_3D_Viewer_Plain_Screenshot_RP2350_Expansion_Card.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Find the footprints and their connections in the layout. Make room for your probe points before routing. <a href="https://www.youtube.com/watch?v=zdieFtrvjew">KiCad 9.0 – Getting Started Part 6- Laying Out Your First PCB | DigiKey · DigiKey</a>.</p>
+
+    <h2>Keep switching current close to its source</h2>
+    <p>A local decoupling capacitor supplies fast changes in current at a device. Its effective path includes pad, trace, via and plane. Position and loop area matter along with capacitance. For a rough ideal estimate, a 10 mA increase lasting 100 ns moves 1 nC. An ideal 100 nF capacitor would drop 10 mV. Real inductance and resistance add to the transient.</p>
+    <p>A clock can have a low repetition rate yet fast edges, which contain high-frequency energy. A scope probe’s long ground clip can also add loop inductance. Compare with the instrument’s documented short-ground attachment on safe nodes before claiming a board fault.</p>
+
+    <h2>Design access before assembly</h2>
+    <p>Leave space for a ground probe beside important test points. Use polarity and connector labels that can be read after the wires are installed. Keep switch-node copper compact on a converter according to its vendor layout example. Measure rail voltage and noise at a repeatable point. EMC performance still requires suitable emissions and immunity tests for the finished product. <a href="https://docs.kicad.org/master/en/getting_started_in_kicad/getting_started_in_kicad.html">KiCad layout walkthrough</a> · <a href="https://www.analog.com/media/en/training-seminars/tutorials/MT-101.pdf">Analog Devices · Decoupling techniques</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p15-oscilloscope-logic-analyser.html">P15 · Seeing signals: oscilloscope and logic analyser</a></li>
+      <li><a href="../practice/p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a></li>
+      <li><a href="../practice/p48-kicad-testable-pcb.html">P48 · Design a PCB you can probe and repair</a></li>
+      <li><a href="../practice/p52-dc-power-logging.html">P52 · Log DC power and explain a short battery runtime</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

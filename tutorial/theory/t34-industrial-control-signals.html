@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T34 · Control signals, PLC scans and independent proof</title>
+<meta name="description" content="Field I/O, scans, priorities, quality, interlocks and timing in building and industrial controllers.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T34</span>
+    <h1>Control signals, PLC scans and independent proof</h1>
+    <p class="lede">A button, an input bit, a command, a coil and a feedback contact can all disagree. Read each as evidence at a different boundary.</p>
+    <div class="meta"><span><b>Time</b> 30 minutes</span><span><b>Before this</b> <a href="t16-signals-noise-loops.html">T16</a> · <a href="t17-networking-theory.html">T17</a> · <a href="t31-feedback-control.html">T31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Map the field signal to a controller value</h2>
+    <p>Digital input means the electronics detect an electrical state at a terminal. Analogue input is sampled continuously and represented as numbers with scaling. Software also stores desired commands, alarms and communications status. A status tag may represent data from a local input, a remote device or a formula, so verify the map before trusting it.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/plc.jpg" alt="Siemens LOGO controller beside a DIN-rail power supply" width="960" height="627" loading="lazy" decoding="async">
+        <figcaption>Inputs and outputs are electrical connections to a controller. Internal logic works with mapped variables and scan timing.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/terminal.jpg" alt="Installed WAGO industrial controller used for pharmaceutical monitoring" width="960" height="638" loading="lazy" decoding="async">
+        <figcaption>A terminal row is a physical boundary. A points schedule connects its labels to wire numbers and a software name.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Follow how field wiring becomes a ladder contact. Then use the trainer to prove the extra timing and reset behavior. <a href="https://www.youtube.com/watch?v=snu8JNM-J1A">How to Convert a Basic Wiring Diagram to a PLC Program · RealPars</a>.</p>
+
+    <h2>Scans, asynchronous data and timing</h2>
+    <p>Many cyclic controllers refresh an input image, execute logic and update outputs. Actual timing and immediate I/O vary by platform. A 10 ms task may miss a pulse shorter than its interval if no input latch or fast counter captures the pulse. A software timestamp may describe when the front end received a value. A field timestamp, quality and freshness limit help you detect stale samples.</p><p><b>Example.</b> A 3 s proof timer begins when the command energises. If feedback starts after 3.4 s, the late transition can still leave a latched diagnostic. Record the event timeline and the reset policy.</p>
+
+    <h2>Command priority and machine safety</h2>
+    <p>BACnet commandable objects can take commands at different priorities. A BMS operator command at 8 can mask a schedule at 16 until the command relinquishes. Physical feedback must be proved independently. An ordinary control interlock can help normal operation. Safety-related functions use equipment and design appropriate to the risk assessment, with validation by competent people.</p><p>Use the low-voltage or software trainer here to learn the behavior of inputs, scans and feedback. For actual machinery, follow the equipment’s documented controls and the site’s safety process. <a href="https://thebacnetinstitute.org/courses-overview/">BACnet Institute</a> · <a href="https://www.siemens.com/en-us/content/sce-educational-institutions/documents/">Siemens PLC training modules</a>.</p>
+
+    <h2>Related lessons</h2>
+    <ul>
+      <li><a href="../practice/p37-current-loop-calibration.html">P37 · Calibrate a 4–20 mA pressure input</a></li>
+      <li><a href="../practice/p38-bacnet-point-commissioning.html">P38 · Commission a BACnet room-controller point</a></li>
+      <li><a href="../practice/p39-plc-ladder-simulation.html">P39 · Build and test a start–stop PLC sequence</a></li>
+      <li><a href="../practice/p40-scada-trend-handover.html">P40 · Read a SCADA trend and write a fault handover</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-labs"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>
