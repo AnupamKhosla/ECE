@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T50 · Inside SSDs: flash wear, spare blocks and health reports</title>
+<meta name="description" content="Follow a logical block into NAND flash, distinguish remapped blocks from interface errors, and interpret NVMe and SATA health evidence.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T50</span>
+    <h1>Inside SSDs: flash wear, spare blocks and health reports</h1>
+    <p class="lede">Follow a logical block into NAND flash, distinguish remapped blocks from interface errors, and interpret NVMe and SATA health evidence.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t49-dram-chips-memory-faults.html">T49 DRAM theory</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Follow one host write through the controller</h2>
+    <p>A drive responds to host requests for logical block addresses. Its flash translation layer records which physical flash pages hold each logical block. NAND can read and program pages and erase larger groups of pages called blocks. To update data, the controller can write a replacement page elsewhere and later reclaim the older space. Wear levelling distributes erase activity. Error correction and spare blocks let the controller deal with some weak pages or unusable blocks behind the interface. This is different from deleting one visible DRAM package on a memory rank. <a href="https://www.kingston.com/en/ssd/data-protection">Kingston on error correction and spare blocks</a> · <a href="https://www.kingston.com/en/blog/pc-performance/overprovisioning">Kingston on over-provisioning</a> · <a href="t49-dram-chips-memory-faults.html">T49 comparison with DRAM</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/sata-ssd-controller-side.jpg" width="960" height="663" loading="lazy" decoding="async" alt="Controller side of an Intel SSD showing the SandForce chip, SATA contacts and empty package positions">
+        <svg viewBox="0 0 960 663" aria-hidden="true">
+          <defs><marker id="t50-ctrl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M308,374 L305,284" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M308,374 L305,284" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t50-ctrl)"/>
+          <rect x="257" y="363" width="201" height="56" rx="6" fill="#122029"/><text x="270" y="404" style="fill:#fff;font-size:37px;font-weight:700">Controller</text>
+          <path d="M157,144 L55,270" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M157,144 L55,270" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t50-ctrl)"/>
+          <rect x="116" y="97" width="282" height="56" rx="6" fill="#122029"/><text x="129" y="138" style="fill:#fff;font-size:37px;font-weight:700">SATA connector</text>
+        </svg>
+      </div>
+        <figcaption>The controller governs communication and flash access. The large empty footprints on this intact board are unused positions. Compare with the other side before judging missing parts.<br><small>Photo by Phiarc, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Intel_SSD_330_Series_Sandforce_controller_PCB.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/sata-ssd-nand-side.jpg" width="960" height="678" loading="lazy" decoding="async" alt="Inside an Intel 330 SATA SSD showing NAND packages on the board">
+        <svg viewBox="0 0 960 678" aria-hidden="true">
+          <defs><marker id="t50-nand" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M470,333 L461,190" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M470,333 L461,190" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t50-nand)"/>
+          <rect x="364" y="305" width="239" height="56" rx="6" fill="#122029"/><text x="377" y="346" style="fill:#fff;font-size:37px;font-weight:700">NAND flash</text>
+        </svg>
+      </div>
+        <figcaption>One side of the Intel 330 SATA SSD PCB carries NAND packages. The controller uses multiple packages and can manage spare blocks internally. This photo documents the board. You can query health with the drive still assembled.<br><small>Photo by Phiarc, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Intel_SSD_330_Series_NAND_flash_PCB.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Watch where the storage packages and controller go onto the board. Look for the tests that follow board assembly. <a href="https://www.youtube.com/watch?v=e03pqzG-Veo">Kingston’s SSD manufacturing demonstration on YouTube</a>.</p>
+    <p>A smaller partition changes the logical range that the file system allocates. It does not certify the NAND or repair a drive that drops offline. A controller can lose a power rail, its firmware state or access to a NAND channel. Its mapping and encryption can also make a chip transplant unhelpful for data recovery. Treat an unstable device as a recovery or disposal decision, based on ownership and data value. <a href="../practice/p93-qualify-used-ssd.html">P93 read-only bench checks</a>.</p>
+    <h2>Use the report field that answers your question</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Reading</th><th scope="col">What it helps establish</th><th scope="col">What to compare</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">NVMe critical warning</th><td>Current warning flags reported by the device, such as low spare capacity or a reliability condition.</td><td>Decode the actual bits against the specification and the model’s guidance. A clear warning field is one observation.</td></tr>
+        <tr><th scope="row">NVMe available spare and percentage used</th><td>Estimated remaining spare capacity and a vendor estimate of endurance consumed. They describe different quantities.</td><td>Compare available spare with its threshold. Relate used endurance to the workload and exact model. A value of 100% for percentage used is an estimate of consumed rated endurance.</td></tr>
+        <tr><th scope="row">NVMe media and data integrity errors</th><td>A cumulative record of unrecovered data-integrity errors detected by the controller.</td><td>Compare count changes. The separate error information log can also record command errors, so distinguish which field rose.</td></tr>
+        <tr><th scope="row">SATA CRC or vendor-specific health attributes</th><td>A rising supported interface CRC count can point to a connection fault. Media and wear attributes have model-specific meanings.</td><td>Compare cables, ports and manufacturer definitions. Inspect changes over time under comparable conditions.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Many NVMe reports show <b>Data Units Written</b>. One reported data unit is 1,000 × 512 bytes, so 80,000,000 units represent about <b>40.96 TB</b> of host writes. The controller can perform additional internal writes. Use the model’s endurance information and the other health evidence together. <a href="https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-2.0e-2024.07.29-Ratified.pdf">NVM Express SMART and health information definitions</a>.</p>
+    <details><summary>A drive reports 10% used but sometimes disappears. Can you qualify it from the wear reading?</summary><p>First reproduce the disappearance through a reliable native connection and a known-good reference drive. Watch device detection and capacity, temperature, the warning field and changes in error counters. A low wear estimate cannot resolve a stability fault. Stop testing customer data when evidence points to a failing drive, and follow the authorised recovery decision.</p></details>
+    <p>A returned drive needs a separate, authorised data-handling procedure. Partition removal and formatting are different from verified sanitisation. Follow the drive-specific instructions and an appropriate sanitisation standard. <a href="https://csrc.nist.gov/pubs/sp/800/88/r2/final">NIST media sanitisation guidance</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

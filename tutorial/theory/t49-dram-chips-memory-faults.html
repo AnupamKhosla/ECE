@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T49 · Inside laptop RAM: cells, chips, ranks and spare rows</title>
+<meta name="description" content="Trace a DRAM cell and read a SO-DIMM label. Explain why removing a failed chip or limiting usable memory cannot normally restore a module.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T49</span>
+    <h1>Inside laptop RAM: cells, chips, ranks and spare rows</h1>
+    <p class="lede">Trace a DRAM cell and read a SO-DIMM label. Explain why removing a failed chip or limiting usable memory cannot normally restore a module.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t15-digital-logic-microcontrollers.html">T15 digital logic</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Why a soldering iron cannot reach a bad bit</h2>
+    <p>A common DRAM cell is a tiny capacitor and an access transistor formed on silicon. A wordline switches on a row of access transistors. A bitline carries the small charge change to a sense amplifier. The amplifier resolves the value and restores the charge. The memory subsystem periodically refreshes rows because their charge leaks over time. A static RAM cell usually uses several transistors to hold its state while powered. A flip-flop is another storage circuit used in logic. These are useful distinctions when deciding what a failed “bit” could mean. <a href="https://www.ibm.com/history/dram">IBM’s account of the one-transistor DRAM cell</a> · <a href="t15-digital-logic-microcontrollers.html">T15 digital storage and logic</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/samsung-ddr4-sodimm.jpg" width="960" height="475" loading="lazy" decoding="async" alt="Samsung laptop SO-DIMM showing the 8 GB, 1Rx8 and PC4-3200 markings, edge contacts and orientation notch">
+        <svg viewBox="0 0 960 475" aria-hidden="true">
+          <defs><marker id="t49-sodimm" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M377,122 L393,236" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M377,122 L393,236" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t49-sodimm)"/>
+          <rect x="309" y="68" width="204" height="56" rx="6" fill="#122029"/><text x="322" y="109" style="fill:#fff;font-size:37px;font-weight:700">8 GB 1Rx8</text>
+          <path d="M633,336 L708,402" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M633,336 L708,402" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t49-sodimm)"/>
+          <rect x="495" y="328" width="255" height="56" rx="6" fill="#122029"/><text x="508" y="369" style="fill:#fff;font-size:37px;font-weight:700">Edge contacts</text>
+        </svg>
+      </div>
+        <figcaption>The shop can record the full part number and the label’s <b>8 GB, 1Rx8, PC4-3200</b> markings before checking the laptop model. The gold fingers mate with the socket. The edge notch keys the module.<br><small>Photo by D-Kuru, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:DDR_4_RAM_SO-DIMM_8GB_by_Samsung-top_front_PNr%C2%B00838.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/micron-dram-package.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Top of a Micron memory package with the D9WFH marking and circular corner mark">
+        <svg viewBox="0 0 960 540" aria-hidden="true">
+          <defs><marker id="t49-chip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M339,329 L355,271" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M339,329 L355,271" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t49-chip)"/>
+          <rect x="161" y="324" width="263" height="56" rx="6" fill="#122029"/><text x="174" y="365" style="fill:#fff;font-size:37px;font-weight:700">Package code</text>
+          <path d="M136,396 L132,430" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M136,396 L132,430" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#t49-chip)"/>
+          <rect x="154" y="375" width="233" height="56" rx="6" fill="#122029"/><text x="167" y="416" style="fill:#fff;font-size:37px;font-weight:700">Corner mark</text>
+        </svg>
+      </div>
+        <figcaption>This chip has a short package code, <b>D9WFH</b>. Look up the full identity and then check its datasheet and orientation drawing. The silicon and solder joints are below this view.<br><small>Photo by Raimond Spekking, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Micron_80E75_D9WFH-9996.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Locate the cell array, wordline and sense amplifier when the animation moves inside the memory chip. <a href="https://www.youtube.com/watch?v=7J7X7aZvMXQ">Branch Education’s computer memory walkthrough on YouTube</a>.</p>
+    <h2>Read 1Rx8 as a map of how the module answers</h2>
+    <p>In a simplified non-ECC DDR4 example, a rank is a group of DRAM devices selected together to provide a 64-bit data width. Each <b>x8</b> device supplies eight data lines. Eight such devices cover 64 lines. A module labelled <b>1Rx8</b> has one rank built from x8 DRAM. A second rank can use the same signal path and a different select. Rank count is a logical property. Counting sides with chips does not reliably identify it, especially with packages containing several dies. DDR5 client modules can divide their data path into independent subchannels. Use the actual module’s specification when identifying a donor. <a href="https://www.kingston.com/datasheets/kvr24s17s6_4.pdf">Kingston example of module organisation</a> · <a href="https://www.micron.com/products/memory/dram-components/ddr5-sdram">Micron DDR5 device information</a>.</p>
+    <div class="formula">8 devices × 8 Gibit/device ÷ 8 bits/byte = 8 GiB
+      <small>Capacity and width answer different questions. In this example each device contributes eight data lines to the same selected rank. One failed x8 device affects lanes across many transfers.</small></div>
+    <p>The memory controller maps host addresses into channel, rank, bank, row and column. Interleaving can spread adjacent requests between channels or banks. It also trains timing at boot. A diagnostic shows the address and bits that differed. The hardware’s own mapping is needed to associate those results with a package or lane. A tool that decodes some systems still needs model support. <a href="https://www.memtest86.com/tech_DIMM_Decoding.html">PassMark’s supported decoding explanation</a>.</p>
+    <h2>Which ways of working around errors actually exist?</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Mechanism</th><th scope="col">Where it works</th><th scope="col">What it leaves out</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Removing or swapping a whole module</th><td>A laptop can run with less memory if its documented population allows. An exact replacement can restore the supported configuration.</td><td>It helps only when the fault follows the removed module or its configuration.</td></tr>
+        <tr><th scope="row">DRAM spare row and post-package repair (PPR)</th><td>A supported chip and platform can substitute an internal spare row under the platform’s firmware and service procedure. Spare resources are limited.</td><td>A burned package, broken trace or bad socket needs another diagnosis. Laptop support and visibility vary.</td></tr>
+        <tr><th scope="row">Correcting errors with ECC</th><td>DDR5 on-die correction protects the array internally. System ECC uses a supported module, controller and platform to protect data across a broader path, according to the ECC scheme.</td><td>On-die ECC cannot protect the external memory bus. ECC does not make a board with reproducible errors a suitable donor.</td></tr>
+        <tr><th scope="row">Reserving a physical memory region</th><td>Some operating systems can reserve selected addresses so their allocator avoids them.</td><td>Firmware can still use memory before that policy takes effect. A fault may move, spread or affect a data lane across many addresses. Use of an address mask does not qualify the module for sale.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Changing the total memory limit hides a range of host addresses. It cannot remove the need for the data lines served by a chip that participates in a working rank. Even a narrow repeatable fault calls for the documented platform approach or a verified replacement. <a href="https://www.dell.com/support/contents/en-uk/videos/videoplayer/how-to-ddr4-post-package-repair-memory-retraining-enhancements-on-dell-emc-poweredge-servers/1698182738626991142">Dell server example of PPR</a> · <a href="https://www.micron.com/about/micron-glossary/ecc-memory">Micron on ECC</a> · <a href="https://www.memtest86.com/blacklist-ram-badram-badmemorylist.html">PassMark on address reservation</a>.</p>
+    <details><summary>A 1Rx8 module shows multiple wrong bits with one byte lane involved. Can I remove that chip and keep 7 GiB?</summary><p>Each chip supplies lanes to the same 64-bit rank. With one missing, the module loses part of its data width or fails training. A repeated lane clue points to the lane’s path, including its contact, supply, connected device and host channel. The result alone cannot prove the silicon failed. Use <a href="../practice/p91-test-used-laptop-ram.html">P91 to map the fault to a location</a> and <a href="../practice/p92-inspect-repair-damaged-ram.html">P92 to decide whether to repair the module</a>.</p></details>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

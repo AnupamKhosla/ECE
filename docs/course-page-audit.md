@@ -1,5 +1,13 @@
 # ECE Workbench page audit
 
+## Laptop salvage and component decisions · 20 November 2026
+
+Added five practice chapters and two theory chapters. [Benchtop route](../tutorial/index.html#laptop-salvage)
+
+- Use [P90](../tutorial/practice/p90-laptop-donor-lot.html) for lot intake and safe parts sorting before paying. The revenue example uses fictional prices and test yield.
+- Use [P91](../tutorial/practice/p91-test-used-laptop-ram.html) for a bootable module and socket comparison. [P92](../tutorial/practice/p92-inspect-repair-damaged-ram.html) covers contacts, support components, SPD and BGA decision-making. [T49](../tutorial/theory/t49-dram-chips-memory-faults.html) explains which faults a row spare, ECC or address exclusion can address.
+- Use [P93](../tutorial/practice/p93-qualify-used-ssd.html) and [T50](../tutorial/theory/t50-ssd-health-and-bad-blocks.html) for SSD identification and health evidence. [P94](../tutorial/practice/p94-salvage-laptop-cooling.html) compares matching fan and thermal assemblies. Each new practice chapter includes photographs and an existing demonstration.
+
 ## Device service and foundations · 20 November 2026
 
 Reviewed all 174 chapter pages at the device-service release. The audit counted distinct inline raster images and identified direct video links. Counts identify where to review the media by hand. A raster image may be a diagram or a screenshot, and a video link may need a more precise demonstration.

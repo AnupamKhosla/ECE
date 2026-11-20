@@ -186,6 +186,7 @@
     </figure>
 
     <h2 id="bench-exercise-on-a-removable-ssd">Bench exercise on a removable SSD</h2>
+    <p>For an unknown used drive, follow <a href="p93-qualify-used-ssd.html">P93 to verify the interface and health without opening files</a>. Decide how to handle data before powering a donor drive.</p>
     <p>Use the existing scratch drive for a remove-and-refit exercise first. For a replacement, check the manual for <b>interface</b> (SATA or NVMe), <b>form factor</b> (such as M.2 2280), and any allowed thickness or thermal pad arrangement. In 2280, 22 is the width and 80 is the length in millimetres. A card that fits the screw position may still use the wrong interface.</p>
   <figure class="course-photo">
     <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
@@ -201,6 +202,7 @@
     <div class="callout try"><span class="label">Practise a no-boot fault</span><p>With a backed-up spare and no customer data, compare the observed state before and after removing its scratch drive and properly reassembling. Does the computer still reach firmware? Is that drive listed? Refit it and confirm the original state returns. If a real drive is intermittent and its data is important, preserve it and hand off before writes or repeated tests.</p></div>
 
     <h2>Bench exercise on removable RAM</h2>
+    <p>If the fault might follow a used module or a socket, use the <a href="p91-test-used-laptop-ram.html">P91 swap matrix</a> and the <a href="p92-inspect-repair-damaged-ram.html">cold inspection decision in P92</a> before buying or heating parts.</p>
     <p>Find out whether the RAM is removable. In the Ryzen 7040 Framework example it is DDR5 SO-DIMM. Choose a supported part, voltage, generation and capacity from the documentation. The socket photograph below shows the physical concept on a different board.</p>
     <div class="photo-pair">
       <figure class="course-photo">
@@ -234,7 +236,7 @@
     <p><a class="crosslink" href="p60-laptop-display-cooling-input.html">P60 · Diagnose display, cooling and inputs</a> <a class="crosslink" href="p33-laptop-power-diagnostics.html">P33 · Learn power-rail diagnostics</a></p>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/toc.js?v=20261120-laptop-salvage"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>
