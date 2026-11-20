@@ -69,6 +69,19 @@
 
     <h2>Apply the decision to a donor motherboard</h2>
     <p>Use the correct service isolation, including its battery supplies, before cold measurements. Confirm that the suspect component is the documented protection device. If its in-circuit reading is ambiguous, a parallel path can mask an open. Use the board documentation and an approved isolation approach before condemning it. Check whether the downstream load looks abnormal compared with the exact reference. Never bridge an open fuse or increase its rating to see what happens.</p>
+    <figure class="course-photo" style="max-width:20rem;margin-inline:auto">
+      <div class="photo-annotation">
+        <img src="../assets/photos/shop-labs/asus-gl552vw-backlight-fuse.jpg" width="270" height="600" loading="lazy" decoding="async" alt="ASUS GL552VW motherboard close-up showing the F4502 backlight fuse position above the display connector">
+        <svg viewBox="0 0 270 600" aria-hidden="true">
+          <defs><marker id="p105-laptop-fuse" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M202,215 L152,244" fill="none" stroke="#18232a" stroke-width="6"/><path d="M202,215 L152,244" fill="none" stroke="#ffda64" stroke-width="2.5" marker-end="url(#p105-laptop-fuse)"/>
+          <rect x="178" y="193" width="88" height="24" rx="4" fill="#122029"/><text x="184" y="209" style="fill:#fff;font-size:12px;font-weight:700">F4502 fuse</text>
+          <path d="M141,327 L94,287" fill="none" stroke="#18232a" stroke-width="6"/><path d="M141,327 L94,287" fill="none" stroke="#ffda64" stroke-width="2.5" marker-end="url(#p105-laptop-fuse)"/>
+          <rect x="128" y="324" width="125" height="24" rx="4" fill="#122029"/><text x="134" y="340" style="fill:#fff;font-size:12px;font-weight:700">Display connector</text>
+        </svg>
+      </div>
+      <figcaption>On this ASUS GL552VW, fuse F4502 protects a display circuit downstream of the main input. Use the photo to practise distinguishing a branch fuse from nearby parts. The workshop’s 1206 part belongs to the separate trainer. A photo and visible discoloration cannot establish the cause of a failure.<br><small>Photo by Amir Akbari on iFixit. ECE Workbench added arrows using the identification in the accepted reply. <a href="https://www.ifixit.com/Answers/View/890856">Original repair thread</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+    </figure>
     <p>Use the specified part or an approved equivalent for the actual circuit. Compare DC voltage, current, time-current response, inrush withstand, interrupt capability, footprint and temperature limits. Cold continuity and a same-size body cannot verify those ratings. A repeated open or recurring power fault needs diagnosis of the protected circuit before another replacement. <a href="https://www.littelfuse.com/assetdocs/fuse-466-datasheet?assetguid=dbe9bcd7-6072-4adf-bf5b-d33e52a6b90f">Littelfuse 466 actual data sheet</a> · <a href="https://www.littelfuse.com/assetdocs/fuseology-selection-guide?assetguid=fa4aa360-f6c4-4eec-88a6-3d7ec3fe57d5">Littelfuse on fuse selection</a>.</p>
     <div class="callout good"><span class="label">Keep the accepted measurements</span><p>Record the labelled points, why you called the device open, evidence from the protected load, exact replacement number and the test after rework. If the original cause is unresolved, show what remains uncertain.</p></div>
   </main>
