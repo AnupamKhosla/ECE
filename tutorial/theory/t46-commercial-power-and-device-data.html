@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T46 · Commercial power measurement, 24 V distribution and smart sensor data</title>
+<meta name="description" content="Separate a supply problem from a meter scaling error or an invalid field value by testing each boundary in the signal path.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T46</span>
+    <h1>Commercial power measurement, 24 V distribution and smart sensor data</h1>
+    <p class="lede">Separate a supply problem from a meter scaling error or an invalid field value by testing each boundary in the signal path.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t03-power-energy-heat.html">T03 power</a> · <a href="t38-time-series-and-digital-buses.html">T38 data evidence</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Power, energy and current ratio</h2>
+    <p>A meter combines voltage and current measurements to compute real power. For a sinusoidal single-phase load, <b>P = V<sub>RMS</sub>I<sub>RMS</sub>cosφ</b>. For a balanced sinusoidal three-phase load, <b>P = √3 V<sub>line</sub>I<sub>line</sub>cosφ</b>. Industrial meters may compute power from simultaneous samples and add the phases, which matters for unbalanced or non-sinusoidal loads. Pair each phase current with the corresponding voltage reference. Meter sign depends on reference direction and load flow.</p>
+    <p>A 200:5 current-output CT has a nominal ratio of 40. A compatible meter with that configured ratio may already display primary amps. CT ratings, direction, burden and meter input are equipment-specific. Keep an energised current-output CT secondary safely connected under the electrical worker's procedure. A kWh counter measures energy. Take its change over a known interval and divide by elapsed hours for mean kW, allowing for possible rollover or meter reset. <a href="../practice/p81-commercial-power-meter.html">P81 meter case</a> · <a href="https://www.se.com/uk/en/faqs/FA291186/">Schneider meter configuration example</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/three-phase-current-transformers.jpg" alt="Three ring-shaped current transformers mounted around separate conductors, with smaller secondary cables" width="330" height="151" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 458" aria-hidden="true">
+            <defs><marker id="parts-three-phase-current-transformers" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M216,66 L215,191" fill="none" stroke="#18232a" stroke-width="14"/><path d="M216,66 L215,191" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-three-phase-current-transformers)"/>
+            <rect x="16" y="36" width="200" height="57" rx="8" fill="#122029"/><text x="28" y="76" style="fill:#fff;font-size:35px;font-weight:700">CT window</text>
+          </svg></div>
+        <figcaption>The thick conductor passes through each current transformer. Smaller leads carry the secondary signal. Use the installation drawing and labels to associate each measurement with its phase.<br><small>Photo by Ali@gwc.org.uk, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:CurrentTransformers.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/din-rail-control-panel.jpg" alt="DIN-rail control equipment with branch protection, power-supply indicators and terminal strips" width="500" height="889" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1778" aria-hidden="true">
+            <defs><marker id="parts-din-rail-control-panel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M340,395 L504,780" fill="none" stroke="#18232a" stroke-width="14"/><path d="M340,395 L504,780" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-din-rail-control-panel)"/>
+            <rect x="60" y="343" width="286" height="57" rx="8" fill="#122029"/><text x="72" y="383" style="fill:#fff;font-size:35px;font-weight:700">Supply modules</text>
+            <path d="M338,1513 L527,1583" fill="none" stroke="#18232a" stroke-width="14"/><path d="M338,1513 L527,1583" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-din-rail-control-panel)"/>
+            <rect x="55" y="1500" width="284" height="57" rx="8" fill="#122029"/><text x="67" y="1540" style="fill:#fff;font-size:35px;font-weight:700">Terminal strips</text>
+          </svg></div>
+        <figcaption>Trace the cabinet from its upper devices to labelled outgoing terminal blocks. Use its drawing and labels to identify actual supply voltages and which branch each protective device serves.<br><small>Photo by Angga Panca Alam Anugrah, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:MCB_dan_Power_Supply_5_VDC,_24_VDC_serta_terminal_konektor.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Shared resistance makes one load affect another</h2>
+    <p>Each positive and return path has resistance. If two loads share a piece of conductor, their combined current sets its voltage drop. With 0.30 Ω of total shared resistance and 2 A added load, the extra drop is 0.60 V. Many drops also occur around a terminal or a common return. Measure across the actual supply terminals and then across the actual load terminals in the same state to locate the boundary. The source itself can also sag, current-limit or fold back. Different scopes lead to different checks.</p>
+    <p>A fuse and an electronic branch protector have different opening characteristics. A coordinated system should tolerate expected inrush and limit how much one branch failure disturbs others. Selecting a device requires the prospective fault current, cable ratings, source behaviour, load characteristics and manufacturer instructions. A trip indication identifies a branch and supports an investigation of the downstream cause. <a href="../practice/p83-24v-branch-protection.html">P83 branch lab</a> · <a href="https://www.phoenixcontact.com/en-us/us-lp-us-caparoc">Phoenix Contact electronic protection example</a>.</p>
+
+    <h2>Separate the IO-Link port and the upstream bus</h2>
+    <p>The IO-Link sensor link is point-to-point. The master talks to higher levels over another protocol such as PROFINET or EtherNet/IP, depending on the model. A typical three-wire connection has L+, L− and C/Q for signalling. Physical connector size alone does not establish compatibility. Ports with auxiliary power add wiring and isolation considerations. Check the manufacturer's pinout and both current limits.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Evidence</th><th scope="col">What to verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Identity</th><td>Vendor, device and revision compatibility. Select the IODD for that device.</td></tr>
+        <tr><th scope="row">Cyclic process value</th><td>Byte or bit layout, signedness, units and scale. Prove it responds to an actual target.</td></tr>
+        <tr><th scope="row">Parameter</th><td>Teach point, requested limits and configured master storage direction. Check the transferred values after replacement.</td></tr>
+        <tr><th scope="row">Validity and freshness</th><td>Port state and any PLC or gateway validity flag. Confirm what the programme does with last-known data after disconnect.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Field numbers can look plausible while a device has stopped communicating. A readback of position or distance proves more when paired with an independent reference and a recorded time. Check data quality before queueing further actions. <a href="../practice/p82-io-link-sensor-replacement.html">P82 IO-Link replacement case</a> · <a href="https://www.ifm.com/us/en/shared/technologies/io-link/technology/technology">ifm IO-Link reference</a>.</p>
+
+    <div class="callout try"><span class="label">Check yourself</span><p>Three sensors go offline at the same instant. The PLC remains reachable. Which supply readings would tell you whether a shared 24 V branch failed? If branch voltage stays normal, which master and device observations would help you locate the missing data?</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

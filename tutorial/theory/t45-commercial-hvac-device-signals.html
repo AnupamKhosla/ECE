@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T45 · Commercial HVAC devices, signals and independent proof</title>
+<meta name="description" content="Read the mechanical, electrical and software states separately when a commercial air or water system seems to disagree with the screen.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T45</span>
+    <h1>Commercial HVAC devices, signals and independent proof</h1>
+    <p class="lede">Read the mechanical, electrical and software states separately when a commercial air or water system seems to disagree with the screen.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t18-sensor-physics.html">T18 sensor physics</a> · <a href="t34-industrial-control-signals.html">T34 control signals</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Use a device sheet to identify what each reading means</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Device</th><th scope="col">Physical interface</th><th scope="col">Electrical or network result</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Differential-pressure switch</th><td>Two air ports and a calibrated switching point.</td><td>A binary state changes around the setpoint. Hysteresis separates the pickup and release pressures.</td></tr>
+        <tr><th scope="row">Differential-pressure transmitter</th><td>Two pressure ports and a named span.</td><td>A scaled analogue signal or numeric network value. Find zero, range and units in the schedule.</td></tr>
+        <tr><th scope="row">Damper or valve actuator</th><td>Clamp, shaft, linkage or stem. Travel must match the device.</td><td>On/off, floating, modulating or network command. Model-specific feedback may be a switch or a position signal.</td></tr>
+        <tr><th scope="row">Current switch</th><td>Senses one intended conductor through its window.</td><td>A status output at a threshold. Its contacts or solid-state output have model-specific ratings and behaviour.</td></tr>
+        <tr><th scope="row">Room air quality sensor</th><td>Air enters the device at the intended mounting position.</td><td>Concentration, humidity or temperature with a defined range, response time and calibration.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/bms/damper-actuator-shaft.jpg" alt="Belimo rotary damper actuator showing the clamp and scale" width="886" height="591" loading="lazy" decoding="async">
+        <figcaption>The clamp drives the shaft while the scale shows actuator position. In service, compare that indication with the physical damper or stem.<br><small>Photo by Belimo Automation AG. <a href="https://commons.wikimedia.org/wiki/File:Klappenstellantrieb.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/water-manometer.jpg" alt="Wall-mounted transparent U-tube differential manometer with a vertical scale" width="680" height="907" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1334" aria-hidden="true">
+            <defs><marker id="parts-water-manometer" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M490,699 L415,703" fill="none" stroke="#18232a" stroke-width="14"/><path d="M490,699 L415,703" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-water-manometer)"/>
+            <rect x="489" y="668" width="212" height="57" rx="8" fill="#122029"/><text x="501" y="708" style="fill:#fff;font-size:35px;font-weight:700">Liquid scale</text>
+          </svg></div>
+        <figcaption>Follow both legs of this real gauge. Read the two liquid levels against the scale. Their vertical separation gives the pressure difference.<br><small>Photo by Neurotronix, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>What differential pressure measures</h2>
+    <p>A two-port instrument reads <b>Δp = p<sub>high</sub> − p<sub>low</sub></b>. Both sides may be below atmospheric pressure. If upstream is −60 Pa and downstream is −160 Pa relative to the room, the filter difference is +100 Pa. A water column balances the pressure force against a difference in liquid weight. With density ρ, gravitational acceleration g and difference in levels h, <b>Δp = ρgh</b>. At 20 °C, 1 mm of water is about 9.8 Pa.</p>
+    <p>A filter's pressure drop depends on airflow as well as the filter. For a velocity pressure pickup in a VAV box, airflow is often calculated using a box-specific coefficient and a square-root relationship to differential pressure. Controller units, sign, zero and the pickup geometry all matter. Use the documented coefficient and test procedure for the box. Compare a local pressure observation with the controller input before adjusting. <a href="../practice/p77-duct-differential-pressure.html">P77 pressure lab</a> · <a href="https://assets.dwyeromega.com/spec/605.pdf">Dwyer Series 605 example</a> · <a href="https://docs.johnsoncontrols.com/ductedsystems/r/Johnson-Controls/en-US/Johnson-Controls-Application-Guide-Variable-Air-Volume-for-Rooftop-Units/2024-05-24/VAV-systems/VAV-terminal-unit">Johnson Controls VAV pickup gain</a>.</p>
+
+    <h2>Separate actuator command, position and result</h2>
+    <p>With two-position control, the signal selects one of two states. A three-point or <em>floating</em> controller sends open or close while it wants movement and stops driving when it wants the actuator to hold. A controller that estimates position from elapsed travel can be wrong after a power failure or manual movement. A modulating actuator uses a voltage, current or digital setpoint. For 2–10 V direct-acting demand, 50% corresponds to 6 V. Check the model for signal common, direction and whether 0 V has a defined behaviour.</p>
+    <p>Three different observations answer three different questions. A 6 V reading at the actuator measures demand. The travel indication or feedback reports movement at that device. An independently observed blade, stem, airflow or water response establishes what the mechanism actually achieved. Even full valve travel gives no useful flow when the pump is off or the isolation valve is closed. Loss of signal and loss of supply can cause different responses. Find both in the model sheet and sequence. <a href="../practice/p78-hydronic-valve-stroke.html">P78 valve stroke</a> · <a href="../practice/p79-fan-run-proof.html">P79 fan proof</a> · <a href="https://www.belimo.com/us/shop/en_US/p?code=NFB24-SR">Belimo modulating spring-return example</a>.</p>
+
+    <h2>Know what a room sensor can tell you</h2>
+    <p>CO₂ concentration in ppm is a fraction by volume. A true CO₂ instrument uses a measurement sensitive to CO₂ absorption. Relative humidity gives water vapour relative to saturation at the measured temperature. A VOC channel and particle sensor measure different quantities. Poor placement, self-heating and incorrect scaling can introduce bias. Polling intervals and data quality determine whether a displayed number is recent enough to use. Agree on an appropriate comparison and calibration procedure before changing any offset. <a href="../practice/p80-room-air-quality-sensor.html">P80 room sensor lab</a> · <a href="https://sensirion.com/products/catalog/SCD30">SCD30 optical CO₂ device example</a>.</p>
+
+    <div class="callout try"><span class="label">Check yourself</span><p>A screen requests 75% open. The actuator sees 8 V on its 2–10 V input. Its feedback also reads 8 V, but the valve stem stays in the same position. Which part of the chain did each observation prove? What would you inspect during approved isolation?</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

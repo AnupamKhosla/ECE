@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P77 · Find a fault in a duct pressure measurement</title>
+<meta name="description" content="Trace the two air tubes, make a water manometer, and separate a bad pressure reading from a dirty filter.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P77</span>
+    <h1>Find a fault in a duct pressure measurement</h1>
+    <p class="lede">Trace the two air tubes, make a water manometer, and separate a bad pressure reading from a dirty filter.</p>
+    <div class="meta"><span><b>Time</b> 35–50 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03 meter</a> · <a href="p37-current-loop-calibration.html">P37 current loop</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find the filter, the two taps and the signal</h2>
+    <p>In an air handler, find the filter on the drawing before following its tubes. One tap measures upstream static pressure and the other measures downstream static pressure. For a filter with flow in the intended direction, the upstream side is usually higher. A differential-pressure gauge shows the difference locally. A transmitter sends a number to the controller. A pressure switch provides an on/off proof or alarm at a set difference. Identify the range, units, fittings and output type before comparing them. <a href="../theory/t45-commercial-hvac-device-signals.html">T45 · Pressure, range and proof</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/bms/air-handler.jpg" alt="Commercial air handler in a plant room with connected ductwork and access doors" width="1109" height="738" loading="lazy" decoding="async">
+        <figcaption>Find the air handler and its accessible compartments first. The unit drawing shows the airflow direction, filter section and approved pressure taps.<br><small>Photo by P199. <a href="https://commons.wikimedia.org/wiki/File:Air_handling_unit.JPG">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public Domain Mark</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/water-manometer.jpg" alt="Wall-mounted transparent U-tube differential manometer with a vertical scale" width="680" height="907" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1334" aria-hidden="true">
+            <defs><marker id="parts-water-manometer" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M490,699 L415,703" fill="none" stroke="#18232a" stroke-width="14"/><path d="M490,699 L415,703" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-water-manometer)"/>
+            <rect x="489" y="668" width="212" height="57" rx="8" fill="#122029"/><text x="501" y="708" style="fill:#fff;font-size:35px;font-weight:700">Liquid scale</text>
+          </svg></div>
+        <figcaption>Follow both legs of this real gauge. Read the two liquid levels against the scale. Their vertical separation gives the pressure difference.<br><small>Photo by Neurotronix, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch DwyerOmega’s Magnehelic demonstration.</b> Find the two pressure connections and the units on the gauge. Compare the dial with the electronic transmitter's output in the 605 datasheet. <a href="https://www.youtube.com/watch?v=iI2pdyttlTs">DwyerOmega’s Magnehelic demonstration on YouTube</a>.</p>
+
+    <h2>Build a water-column reference</h2>
+    <ol class="steps">
+      <li><p>Use about 1 m of clear flexible tube, a ruler, a board, clips or ties, coloured water and a small clean syringe. Secure the tubing in a U on the board with both ends up. Add enough water to leave a visible level in each leg and generous air space above the water. Keep this rig on the bench, away from electronics.</p></li>
+      <li><p>With both ends open, the heights should be equal. Read the two surfaces at eye level. Connect the empty syringe directly to the air space at one top end, leaving the other leg open. Move the plunger a little and stop at a stable height difference of 10–20 mm. Keep water away from the syringe and do not seal the second leg.</p></li>
+      <li><p>Measure the vertical difference between the <em>two</em> water levels, even though each one moved. For room-temperature water, 10 mm is about 98 Pa and 20 mm about 196 Pa. The lower liquid surface is on the higher-pressure side. Vent the first leg and verify the zero returns.</p></li>
+    </ol>
+    <p>Keep the liquid rig disconnected from an electronic transmitter unless its manufacturer specifies a compatible dry test setup. To practise the electrical side, use the simulator in <a href="p37-current-loop-calibration.html">P37</a>. On a unidirectional 0–250 Pa transmitter with a 4–20 mA linear output, a known 100 Pa should give 10.4 mA. A 250 Ω shunt would show 2.60 V. Measure the output and the controller input separately in a real low-voltage trainer.</p>
+
+    <h2>Compare the reading before you replace a part</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Next check</th><th scope="col">What you can establish</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Gauge rises at the same airflow and filter type</th><td>Compare actual pressure with the clean baseline and documented changeout criterion.</td><td>Filter loading is plausible. A change in airflow can also move the reading.</td></tr>
+        <tr><th scope="row">Reading reverses after tubing work</th><td>Trace both ends of each tube. Compare with the HIGH/LOW labels and airflow direction.</td><td>Identify reversed tubing or an unexpected pressure direction. Some one-way transmitters saturate near their low limit.</td></tr>
+        <tr><th scope="row">Local gauge 100 Pa, independent 10.4 mA, screen 200 Pa</th><td>Compare controller input configuration with the 0–250 Pa nameplate and diagram.</td><td>A mismatched scale can double the displayed value while the sensor works.</td></tr>
+        <tr><th scope="row">Display stays near zero while airflow changes</th><td>Look for a disconnected, kinked or obstructed pressure tube. Check the actual taps and the sensor zero through the approved procedure.</td><td>Find the first point where the change stops. A blocked tap can trap a pressure and give a stale reading.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save a photo of your 10–20 mm reading, the calculated pressure, the transmitter scale calculation and a sketch showing which tap goes to HIGH. Use the <a href="p79-fan-run-proof.html">fan proof lesson</a> to distinguish airflow from a motor command.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

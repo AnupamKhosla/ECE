@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P78 · Prove a heating or cooling valve moves and flows</title>
+<meta name="description" content="Match the valve to its actuator, check its command and travel, and test the water side on an unpressurised trainer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P78</span>
+    <h1>Prove a heating or cooling valve moves and flows</h1>
+    <p class="lede">Match the valve to its actuator, check its command and travel, and test the water side on an unpressurised trainer.</p>
+    <div class="meta"><span><b>Time</b> 35–50 minutes</span><span><b>Before this</b> <a href="../career/c03-hvac-for-technicians.html">C03 HVAC</a> · <a href="../career/c17-bms-fieldwork.html">C17 damper</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read both nameplates</h2>
+    <p>Trace the pipe going to an air-handler or fan-coil heating or cooling coil. A two-way valve throttles a single passage. A three-way valve has a common port and two branches and may mix or divert, depending on its design. The valve body carries the flow direction and port markings. The actuator drives a stem or shaft through a linkage, usually with a position reference or travel indication. Find both model numbers before matching parts. In the schedule, identify power, command, stroke or angle, feedback type and the designed loss-of-power position. <a href="../theory/t45-commercial-hvac-device-signals.html">T45 · Command, position and process response</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/needle-valve-actuator.jpg" alt="Metal test enclosure with piping, a gauge and an electrically operated needle valve" width="960" height="720" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 750" aria-hidden="true">
+            <defs><marker id="parts-needle-valve-actuator" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M672,164 L652,243" fill="none" stroke="#18232a" stroke-width="14"/><path d="M672,164 L652,243" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-needle-valve-actuator)"/>
+            <rect x="669" y="130" width="157" height="57" rx="8" fill="#122029"/><text x="681" y="170" style="fill:#fff;font-size:35px;font-weight:700">Actuator</text>
+          </svg></div>
+        <figcaption>Industrial example of an actuated valve in a pipe assembly. The actuator sits on the upper horizontal branch. Look for the valve body and drive as separate parts.<br><small>Photo by Ie edits, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Automated_needle_valve_with_electric_actuator.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/thermal-actuator-manifold.jpg" alt="Several thermal actuators screwed onto an underfloor heating manifold" width="960" height="469" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 489" aria-hidden="true">
+            <defs><marker id="parts-thermal-actuator-manifold" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M459,133 L486,168" fill="none" stroke="#18232a" stroke-width="14"/><path d="M459,133 L486,168" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-thermal-actuator-manifold)"/>
+            <rect x="268" y="90" width="195" height="57" rx="8" fill="#122029"/><text x="280" y="130" style="fill:#fff;font-size:35px;font-weight:700">Valve head</text>
+            <path d="M559,403 L555,374" fill="none" stroke="#18232a" stroke-width="14"/><path d="M559,403 L555,374" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-thermal-actuator-manifold)"/>
+            <rect x="493" y="402" width="171" height="57" rx="8" fill="#122029"/><text x="505" y="442" style="fill:#fff;font-size:35px;font-weight:700">Manifold</text>
+          </svg></div>
+        <figcaption>Each actuator controls one branch of this heating manifold. These thermal heads are a different device family from the modulating motor used in the stroke case.<br><small>Photo by Harold2013, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Thermische_Stellantriebe,_Thermische_Antriebe,_Fussbodenheizung,_thermal_actuator,_actuateur_thermique.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch Belimo’s ZoneTight actuator demonstration.</b> Look for how the replacement actuator locks to the body. Locate the flow direction separately on the approved product drawing. <a href="https://www.youtube.com/watch?v=QxQFjQTzVXs">Belimo’s ZoneTight actuator demonstration on YouTube</a>.</p>
+    <p>See examples of the commercial valve family and where the body and actuator are shown as a pair. <a href="https://www.belimo.com/belimo-master/en_US/products-eu/valves/product-documentation/pressure-independent-control-valves">Belimo control valve equipment photos and datasheets</a>.</p>
+
+    <h2>Prove each stage on a dry bench</h2>
+    <p>Begin with the paper case below and a salvaged loose assembly or its manual. Use a powered actuator only if its exact datasheet permits your isolated ELV supply and you can secure the mechanism on the bench. Some units use 24 V AC only, or have a mains rating. Keep clear of the linkage during travel and disconnect power before fitting or removing the actuator. Installed pressurised piping, hot water and automatic controls require the responsible technician and site procedure.</p>
+    <ol class="steps">
+      <li><p>For a sample direct-acting 2–10 V unit, make a test sheet for 2 V, 6 V and 10 V against the specified common. Predicted demand is 0%, 50%, 100%. Check whether the model has a feedback terminal and how its feedback scales. Record when at rest after the specified travel time.</p></li>
+      <li><p>For each demand, separately record the signal at the actuator, its own indicator or feedback, and a mark on the valve stem or shaft. On a paper trainer, use two movable marks representing the actuator and stem, then deliberately leave one at its original position. Recover the correct linkage after diagnosing the missing movement.</p></li>
+      <li><p>Optional water demonstration. Use a manual valve and short flexible tubing on a separate open gravity rig, with a small reservoir above a catch container. Mark a fixed starting level. Time a measured volume at closed, half travel and open using the same starting head. Disconnect powered devices from the demonstration. Flow changes with head, valve characteristic and piping restriction, so half travel can give something quite different from half flow.</p></li>
+    </ol>
+
+    <h2>Decide which layer failed</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Demand and observations</th><th scope="col">Check next</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">100% on screen, 2 V at a direct-acting actuator</th><td>Verify the controller output, common and cable. Compare the measured signal and the specified signal type.</td></tr>
+        <tr><th scope="row">10 V and actuator position changes, stem mark stays still</th><td>Inspect the coupling, adaptor and anti-rotation fitting under the approved isolation procedure.</td></tr>
+        <tr><th scope="row">Command and stem agree, coil stays cold during a heating demand</th><td>Confirm the plant has hot supply water and prove flow through the expected branch. Consider closed isolation valves, clogged strainers, balance or air in the loop.</td></tr>
+        <tr><th scope="row">Actuator stops wherever it was when power is removed</th><td>Compare with the specified fail-safe behaviour. A spring return, stored-energy actuator and a non-fail-safe device have different loss-of-power behaviour.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Keep the valve and actuator IDs, the expected port and failure position, and a command, movement and flow test matrix. State which observations are measured on hardware and which are from the paper case.</p></div>
+    <p>Continue with <a href="p29-bms-commissioning-lab.html">the air-handler sequence</a> or <a href="p63-bms-point-to-point.html">point-to-point commissioning</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

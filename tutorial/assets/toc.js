@@ -106,6 +106,15 @@ window.TOC = {
           { n: "P74", file: "practice/p74-mobile-network-triage.html", title: "Triage a mobile coverage or activation fault", d: "Compare LTE and 5G readings, SIM or eSIM activation, data and voice at repeatable locations." },
           { n: "P75", file: "practice/p75-voip-one-way-audio.html", title: "Diagnose one-way audio on an IP phone call", d: "Check SIP call setup and both RTP media paths, then report where the missing audio was last seen." },
           { n: "P76", file: "practice/p76-hfc-coax-diagnosis.html", title: "Find a fault on an HFC coax trainer", d: "Identify cable modem ports, check spare coax with a meter and interpret a DOCSIS signal report." }
+        ]},
+        { title: "Part N · Commercial building and machine devices", blurb: "Identify and test the actual sensors, actuators, meters and protectors used in commercial controls.", chapters: [
+          { n: "P77", file: "practice/p77-duct-differential-pressure.html", title: "Find a fault in a duct pressure measurement", d: "Trace HIGH and LOW tubes, calculate Pa from a water manometer, then verify transmitter and BMS scaling." },
+          { n: "P78", file: "practice/p78-hydronic-valve-stroke.html", title: "Prove a heating or cooling valve moves and flows", d: "Distinguish an actuator command, physical valve stroke, fail state and independent water flow." },
+          { n: "P79", file: "practice/p79-fan-run-proof.html", title: "Distinguish a fan command from proof of airflow", d: "Identify a current switch and air-pressure proof. Reproduce a missing or stuck status with an ELV simulator." },
+          { n: "P80", file: "practice/p80-room-air-quality-sensor.html", title: "Check a room CO₂ sensor against a second meter", d: "Compare true CO₂, temperature and humidity and locate drift, placement or a stale BMS point." },
+          { n: "P81", file: "practice/p81-commercial-power-meter.html", title: "Check a commercial power meter reading", d: "Use CT ratios, phase pairing, Modbus units and kWh differences to diagnose a meter and BMS mismatch." },
+          { n: "P82", file: "practice/p82-io-link-sensor-replacement.html", title: "Replace an IO-Link sensor and verify its data", d: "Identify a sensor, select its IODD, check parameter storage and prove live data and validity." },
+          { n: "P83", file: "practice/p83-24v-branch-protection.html", title: "Find why a 24 V panel resets when a load switches", d: "Reproduce a shared voltage drop and distinguish a supply dropout from a single electronic branch trip." }
         ]}
       ]
     },
@@ -178,6 +187,10 @@ window.TOC = {
           { n: "T39", file: "theory/t39-optical-link-loss-and-reflectometry.html", title: "Optical loss, reflections and fibre test limits", d: "Convert dBm to dB loss, understand backscatter distance and account for launch and receive dead zones." },
           { n: "T40", file: "theory/t40-pcb-layout-and-emc.html", title: "PCB return paths, decoupling and EMC", d: "Why current follows real loops, how edges couple into other circuits, and what layout choices make boards easier to test." },
           { n: "T41", file: "theory/t41-embedded-boot-and-debug.html", title: "Microcontroller boot, symbols and debug interfaces", d: "Distinguish ROM boot, firmware startup, USB, UART and SWD faults using observable boundaries." }
+        ]},
+        { title: "Part 11 · Commercial field equipment", blurb: "Pressure, airflow, actuator commands, energy measurement and industrial device data.", chapters: [
+          { n: "T45", file: "theory/t45-commercial-hvac-device-signals.html", title: "Commercial HVAC devices, signals and independent proof", d: "Differential pressure, VAV pickup, actuator signals, fan proof and CO₂ sensor readings." },
+          { n: "T46", file: "theory/t46-commercial-power-and-device-data.html", title: "Commercial power measurement, 24 V distribution and smart sensor data", d: "CT scaling, energy metering, selective branch protection and IO-Link process data, identities and validity." }
         ]}
       ]
     },
