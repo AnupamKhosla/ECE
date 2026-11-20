@@ -135,6 +135,16 @@
         <figcaption><b>Balled solder.</b> The rounded blob leaves you little view of how the solder wets the pad. Photo by Tlapicka. <a href="https://commons.wikimedia.org/wiki/File:Soldering-PCB-bad.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
       </figure>
     </div>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/joint-cold.jpg" width="640" height="479" loading="lazy" decoding="async" alt="Close-up of an uneven through-hole solder joint with a ridged mound around the pin">
+        <figcaption><b>Cold joint.</b> Look for a ridged, uneven mound around the lead. Judge the joint by its shape and where the solder flowed. Lead-free solder can look dull even on a sound joint.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1972">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/joint-poor-wetting.jpg" width="640" height="477" loading="lazy" decoding="async" alt="Two through-hole pins with solder beads climbing their leads and leaving the surrounding pad largely uncovered">
+        <figcaption><b>Poor pad wetting.</b> The solder follows the pins, then stops abruptly. Look at the ring where the solder should spread onto the pad. Heat both surfaces so the joint becomes one continuous fillet.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1974">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
     <p>Compare your stripboard joints with these photos under a light. See <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s photographs of bridges and lifted pads</a>, then try <a href="p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> after your stripboard build.</p>
     <figure>
       <svg viewBox="0 0 660 230" role="img" aria-label="Cross-sections of four through-hole joints: a good concave fillet, a cold joint, a dry joint, and a solder bridge">
@@ -198,7 +208,8 @@
       <li><b>Desoldering braid (wick)</b>: fine copper braid soaked in flux. Lay it on the joint, press the iron on top of it, and molten solder is drawn up into the braid by capillary action. Cut off the used, silver section and repeat. Best for clearing bridges and flattening pads.</li>
       <li><b>Solder sucker (pump)</b>: cock the spring plunger, melt the joint, bring the nozzle in alongside the tip, and press the button. It sucks the molten solder out of the hole. Best for clearing through-holes.</li>
     </ul>
-    <div class="callout tip"><span class="label">Bench tip</span><p>Old or factory joints often resist removal. Add <b>fresh</b> solder first: it brings fresh flux and makes a bigger molten pool that conducts heat better. Then braid or pump it out. It feels backwards, but it works every time.</p></div>
+    <p class="course-video"><b>Watch on YouTube</b> · Look for the fluxed wick on the pad, the iron pressing from above and the used section changing colour as it takes up solder. Lift the wick and iron together while the solder is still molten. <a href="https://www.youtube.com/watch?v=TwclE6pJV2I">Andonstar’s solder-wick demonstration</a>.</p>
+    <div class="callout tip"><span class="label">Bench tip</span><p>Old or factory joints often resist removal. A little fresh solder adds flux and makes a larger molten pool that transfers heat. Then use braid or a pump.</p></div>
 
     <h2>Build: the P02 circuit on stripboard</h2>
     <p><b>Stripboard</b> (often called Veroboard) has a grid of holes at 0.1 inch (2.54 mm) pitch, with copper strips on the underside running in one direction. Every hole on a strip is connected, like a very long breadboard strip. Where you need to break a strip, you cut the copper at a hole with a <b>track cutter</b> or a 3–4 mm drill bit twisted by hand. We will build two LEDs, each with its own resistor (the correct parallel circuit from P02), sharing the supply strips.</p>
@@ -452,7 +463,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

@@ -18,6 +18,29 @@
     <div class="meta"><span><b>Time</b> 90 min</span><span><b>Before this</b> P24, P26, P32</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <h2>Learn the four checks on one regulator</h2>
+    <p>A <b>rail</b> is a supply connection shared by parts that need the same voltage. A 3.3 V rail can feed the logic for many devices. <b>IN</b> is the voltage presented to the regulator. <b>EN</b> (enable) is a control signal that requests operation. <b>OUT</b> is the voltage it makes. Some regulators also give a <b>power-good</b> signal when the output is in range. A regulator can have input power and a correct zero reading at its output while it waits for EN.</p>
+    <figure>
+      <svg viewBox="0 0 660 240" role="img" aria-labelledby="rail-map-title rail-map-desc">
+        <title id="rail-map-title">Power and enable paths in the two-rail trainer</title>
+        <desc id="rail-map-desc">The 5 volt supply reaches both regulator inputs through one removable jumper. Regulator A is always requested when that supply is present. Its 3.3 volt standby output sends an enable request to regulator B through a switch. Regulator B produces the run rail when enabled. Both regulators share the supply return.</desc>
+        <defs><marker id="rail-map-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0 0 10 5 0 10Z"/></marker></defs>
+        <g class="f-panel s-thin"><rect x="17" y="55" width="123" height="49" rx="8"/><rect x="224" y="55" width="144" height="49" rx="8"/><rect x="224" y="160" width="144" height="49" rx="8"/><rect x="481" y="55" width="159" height="49" rx="8"/><rect x="481" y="160" width="159" height="49" rx="8"/></g>
+        <g class="s-line" fill="none" marker-end="url(#rail-map-arrow)">
+          <path d="M140 80H223"/><path d="M186 80V185H223"/><path d="M368 80H480"/><path d="M368 185H480"/>
+          <path d="M433 80V134H296V159" class="s-dash"/>
+        </g>
+        <g class="t t-bold" text-anchor="middle" style="font-size:19px">
+          <text x="78" y="86">5 V source</text><text x="296" y="86">Regulator A</text><text x="296" y="191">Regulator B</text>
+          <text x="560" y="86">STBY · 3.3 V</text><text x="560" y="191">RUN · 3.3 V</text>
+        </g>
+        <g class="t" text-anchor="middle" style="font-size:17px"><text x="185" y="68">Jumper</text><text x="376" y="124">Request switch</text></g>
+      </svg>
+      <figcaption>The solid lines carry supply voltage. The dashed path requests the run rail. In the actual trainer below, the 10 kΩ resistor holds EN low when the switch is open. The diagram omits the common return and the load for clarity.</figcaption>
+    </figure>
+    <p>Before measuring, draw a row for <b>source, input after the jumper, standby output, B’s EN and run output</b>. Put the meter in DC volts and reference every measurement to the same ground or supply return. See <a href="p03-multimeter-mastery.html#voltage-measure-across">P03’s voltage probe setup</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=GSzVs7_aW-Y">Afrotechmods builds a supply with a linear regulator</a>. Locate input, ground and output in the demonstration. The extra EN connection is what you will control in the trainer below.</p>
+
     <h2>Build a two-rail trainer</h2>
     <p>Use an isolated 5 V bench supply, a DMM, a switch, two documented 3.3 V regulator breakout boards with active-high enable pins, a 10 kΩ resistor and a 1 kΩ resistor. Choose breakouts rated for 5 V input, with their required capacitors fitted, that accept 3.3 V on EN and have no permanent enable strap. The TLV755P in P24 is an example of the regulator type. Use the breakout instructions and pin labels. Power off for each wiring change.</p>
     <ol class="steps">
@@ -25,9 +48,22 @@
       <li><p><b>Wire the run command.</b> Put the 10 kΩ resistor from regulator B’s EN to ground. Connect STBY to B’s EN through the switch. Label B’s output <b>RUN</b> and attach 1 kΩ from RUN to return as its load.</p></li>
       <li><p><b>Capture both states.</b> With a low current limit suited to the two modules and the load, measure source, after-jumper input, STBY, B’s EN and RUN against return. With input connected, the first two nodes are about 5 V and STBY about 3.3 V. With the switch open, EN and RUN settle near zero. With it closed, EN and RUN are about 3.3 V. The load draws about 3.3 mA.</p></li>
     </ol>
-    <p>Turn off power and remove the input jumper. Ask a partner to give the same “run rail missing” report as they would with the switch left open. Use measurements to distinguish missing input from a missing request. Restore the baseline and repeat. Record why replacing regulator B would fail to fix either case.</p>
+    <div class="table-wrap"><table>
+      <caption>Expected readings on the 5 V trainer. Record your actual voltages beside a copy of this table.</caption>
+      <thead><tr><th scope="col">State</th><th scope="col">Source</th><th scope="col">After jumper</th><th scope="col">STBY</th><th scope="col">EN at B</th><th scope="col">RUN</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input present, request off</th><td>5 V</td><td>5 V</td><td>3.3 V</td><td>Near 0 V</td><td>Near 0 V</td></tr>
+        <tr><th scope="row">Input present, request on</th><td>5 V</td><td>5 V</td><td>3.3 V</td><td>3.3 V</td><td>3.3 V</td></tr>
+        <tr><th scope="row">Jumper removed, request on</th><td>5 V</td><td>Unpowered</td><td>Near 0 V after settling</td><td>Near 0 V</td><td>Near 0 V</td></tr>
+      </tbody>
+    </table></div>
+    <p>Turn off power before removing the input jumper. Bring the current-limited trainer back up and measure each node. The same zero at RUN can mean the regulator received no request or that supply never reached it. Put the jumper back with power off and prove both rails again. Replacing regulator B would leave either fault in place.</p>
 
     <h2>Transfer the sequence to a donor laptop</h2>
+    <figure class="course-photo">
+      <img src="../assets/photos/laptop.jpg" width="960" height="723" loading="lazy" decoding="async" alt="Open Framework Laptop 13 with a wide battery below the compact motherboard, display cable and cooling fan">
+      <figcaption>Use the wide view before a microscope view. Start at the battery and the side where a charging module connects. Ask which wires and connectors carry power and which are data or control. Use the exact board documents to assign names and voltages. <a href="p32-laptop-service.html#find-the-same-parts-inside-a-laptop">P32 photo with labels</a> · <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Photo by Ogidya, resized</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</figcaption>
+    </figure>
   <figure class="course-photo">
     <img src="../assets/photos/laptopfault.jpg" alt="Magnified failed step-down regulator on a laptop motherboard" width="960" height="720" loading="lazy" decoding="async">
     <figcaption>Record the damaged regulator marking and the nearby inductor and capacitors. Use a board reference to map the entire rail before choosing a replacement.<br><small>Photo by Profpcde, resized. <a href="https://commons.wikimedia.org/wiki/File:Microscope_close-up_of_blown_step-down_regulator_on_laptop_PCB.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
@@ -47,7 +83,7 @@
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t27-board-power-sequencing.html">T27</a> explains standby, EN and PG. <a href="../theory/t13-mosfet-physics.html">T13</a> covers protection switches, <a href="../theory/t21-switching-converters-control.html">T21</a> covers converters, and <a href="../theory/t24-measurement-datasheets.html">T24</a> covers why in-circuit readings need a reference.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

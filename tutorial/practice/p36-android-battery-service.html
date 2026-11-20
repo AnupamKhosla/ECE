@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P36 · Diagnose and replace an Android battery</title>
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261119-photos">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P36</span>
+    <h1>Diagnose and replace an Android battery</h1>
+    <p class="lede">Work out why a phone loses charge quickly. Then find the battery adhesive, remove the battery on a Pixel 4a and repeat the same checks after reassembly.</p>
+    <div class="meta"><span><b>Training handset</b> Google Pixel 4a (4G)</span><span><b>Before this</b> <a href="p34-phone-module-service.html">P34</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Check what the phone actually does</h2>
+    <p>The battery stores energy so the phone can run unplugged. The charging circuit controls how that energy is put back. The battery percentage is the phone’s estimate of charge remaining. An older cell can hold less energy when the phone says 100% or drop in voltage when asked to supply more current. For the underlying measurements, read <a href="../theory/t28-lithium-batteries.html">T28 · Lithium-ion cells, charging and protection</a>.</p>
+    <p>Back up your own donor phone and confirm it is the Pixel 4a with the 5.81-inch screen. Check the edges for a lifted screen or cover and look for impact damage before charging or running tests. For swelling or damage, stop using and charging the phone and hand it over for safe handling. See the <a href="p35-phone-board-triage.html#do-a-cold-check-on-a-documented-donor">Galaxy A13 swelling photo in P35</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What the owner sees</th><th scope="col">First check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">The charge lasts much less time</th><td>Review Battery usage in Settings. Record starting and ending percentages for a short, repeatable activity using the same brightness and radio settings. Background apps and signal conditions can change the result.</td></tr>
+        <tr><th scope="row">It shuts off with charge showing</th><td>Note the displayed percent and the activity at the shutdown. Repeat a normal activity at room temperature on a physically sound phone. A tired battery is a suspect. Record whether normal startup returns on a known-good charger.</td></tr>
+        <tr><th scope="row">Charging repeatedly starts and stops</th><td>Rule out the charger, cable and port first, using <a href="p35-phone-board-triage.html#build-a-known-good-charging-comparison">P35’s external charging comparison</a>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A 2025 battery-management update changed usable capacity and charging performance on some Pixel 4a units. Ask when the symptom started and compare it with the model’s update history before you quote a repair. Google’s battery performance program ended in January 2026. <a href="https://support.google.com/pixelphone/answer/15701861?hl=en">Google’s Pixel 4a battery update notice</a>.</p>
+
+    <h2>Find the pack and the two adhesive tabs</h2>
+    <p>For this exercise use an intact, unmodified donor and a replacement specifically listed for the Pixel 4a 4G. Have new battery adhesive and screen adhesive ready before opening. Discharge the working donor below 25%, shut it down and unplug it. Use the plastic opening tools and fastener map from P34. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563">Complete Pixel 4a battery guide</a> · <a href="https://www.ifixit.com/products/google-pixel-4a-battery-genuine">Battery and model compatibility reference</a>.</p>
+    <p>The battery lies in a shallow recess in the midframe. Its flex plugs into the mainboard. Use <a href="p34-phone-module-service.html#exercise-with-a-documented-display-replacement">P34 to remove the display</a>, then <a href="p34-phone-module-service.html#open-farther-to-reach-the-sound-modules">P34 to reach and unplug the battery</a>. The battery guide has the additional SIM tray and back-cover steps. Before lifting the rear cover fully, release its two flex connectors in the guide. Turn over the freed midframe and look for black tape at two openings near the bottom edge. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277777">iFixit · Rear-cover disconnection</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/pixel-battery-tape.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Tweezers lifting a piece of black tape from a rectangular opening in the Pixel 4a midframe">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M195.4,142.1 L264.8,210.2" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M195.4,142.1 L264.8,210.2" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M272.3,217.6 L261.1,214.0 268.6,206.4Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="195.4" cy="142.1" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="195.4" y="142.1" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          </svg>
+        </span>
+        <figcaption>1 · Black tape covering one battery adhesive opening. Find the matching covered opening on the other side of the midframe.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277796">iFixit guide, step 30</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/pixel-battery-tabs.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Exposed white battery adhesive tab visible through a small opening in the midframe">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M254.6,217.6 L300.7,267.6" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M254.6,217.6 L300.7,267.6" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M307.8,275.3 L296.8,271.2 304.6,263.9Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="254.6" cy="217.6" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="254.6" y="217.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          </svg>
+        </span>
+        <figcaption>1 · White stretch-release tab under the removed tape. Lift its edge gently. Pick up the tab itself and keep tool tips clear of the pouch.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277797">iFixit guide, step 31</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · Pause after the rear shell comes away. Find the two places where the strips pass through the frame and observe the direction of the pull. <a href="https://www.youtube.com/watch?v=eQ84Gdm4cLM">DIYgeardo’s Google Pixel 4a battery replacement</a>.</p>
+
+    <h2>Release the adhesive and fit the replacement</h2>
+    <ol class="steps">
+      <li><p>Expose both tabs through the midframe openings. Lift just enough of a tab to catch it between your fingers. Keep tool tips away from the pouch.</p></li>
+      <li><p>Pull one strip at a time towards the bottom end of the phone. Keep it flat and low to the frame as it lengthens. The battery should come free when both strips have released. If a strip snaps under the battery and the pack stays stuck, stop pulling on the pack. Follow the guide’s stuck-strip procedure with experienced help. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277798">iFixit · Release and stuck-strip recovery</a>.</p></li>
+      <li><p>Compare both packs on the bench. Check the outline and flex position. Use fresh model-fit adhesive and seat the pack flat in its recess with the flex aligned to the socket. Keep the charger unplugged and the battery flex disconnected while seating the pack. Reassemble with the battery, rear-cover and display connections in the model guide’s order.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/pixel-battery-pull.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Long white stretch-release adhesive emerging flat from the bottom of the Pixel 4a midframe">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M509.1,293.0 L446.2,241.9" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M509.1,293.0 L446.2,241.9" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M438.1,235.3 L449.6,237.8 442.9,246.1Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="509.1" cy="293.0" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="509.1" y="293.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          </svg>
+        </span>
+        <figcaption>1 · White strip stretching towards the bottom of the phone. The midframe lies flat while the strip is pulled along it.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277798">iFixit guide, step 32</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/pixel-battery-out.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a battery lifted above the open phone showing the battery cable and the empty midframe tray">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M219.0,79.9 L209.7,118.6" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M219.0,79.9 L209.7,118.6" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M207.2,128.8 L204.5,117.3 214.9,119.8Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="219.0" cy="79.9" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="219.0" y="79.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+            <path d="M177.6,293.0 L239.5,258.2" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M177.6,293.0 L239.5,258.2" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M248.6,253.1 L242.1,262.9 236.9,253.6Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="177.6" cy="293.0" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="177.6" y="293.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">2</text>
+          </svg>
+        </span>
+        <figcaption>1 · Battery flex. 2 · Empty recess in the midframe. The pack lifts free once its adhesive releases.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Battery+Replacement/139563#s277799">iFixit guide, step 33</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Repeat the same test after reassembly</h2>
+    <ol class="steps">
+      <li><p>Confirm the screen and back sit flat. Boot unplugged, then charge with the same proven adapter and cable. Record whether the percentage rises and whether the phone stays on when unplugged.</p></li>
+      <li><p>Repeat the original activity at comparable starting charge, brightness and temperature. Record the duration, percentages and any unexpected shutdown. Check touch, buttons, and the fingerprint reader because their connections were disturbed.</p></li>
+      <li><p>On the job sheet, record the initial symptom, why the battery was selected, and what improved. Take the old pack to a battery collection point or recycler that accepts phone batteries. Keep the battery out of household waste. <a href="https://support.google.com/pixelphone/answer/15701861?hl=en">Google’s disposal guidance</a>.</p></li>
+    </ol>
+    <details class="quiz"><summary>The phone shows 100% when unplugged. What would tell you the repair helped?</summary><div class="answer"><p>Repeat the same activity under comparable conditions. A longer run or a missing shutdown supports improvement. Also prove the phone still gains charge and starts unplugged.</p></div></details>
+    <p><a href="p35-phone-board-triage.html">P35 · Diagnose a phone that still won’t charge</a> · <a href="../career/c16-repair-work-portfolio.html">C16 · Record the job</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-android"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -26,6 +26,25 @@
 
     <p>A pad is exposed copper with a solderable finish. A plated via joins selected layers. Planes spread current and conduct heat away from pads. Solder mask covers most of the copper, and the laminate bonds the layers together. A through-hole barrel may join inner layers, so bridging a lifted pad to the first visible trace may restore only one branch of the net. A multilayer repair starts with the actual net and all of its destinations.</p>
 
+    <h2>Recognise the connector before moving it</h2>
+    <p>A ribbon cable has a short row of exposed contacts. Its connector holds those contacts in alignment. The mechanics differ. If a plug resists, look up the socket and support it before trying another direction.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
+        <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-screen-plug.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Spudger beside the Pixel 4a display flex press connector">
+        <figcaption>Follow the flex back from the screen to the plug. Lift at the edge shown in the guide. Align the replacement plug before pressing its ends down.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277766">iFixit guide, step 14</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <ul>
+      <li><b>Flat cable in a latch socket.</b> A zero-insertion-force (ZIF) socket has a tab or bar that releases the cable. Open the latch in the direction shown by the manual and slide the cable out along its plane. Inspect the contacts and reseat the cable straight before locking the latch.</li>
+      <li><b>Press connector.</b> The small Pixel display plug mates straight down. Lift the plug only where its guide shows. Keep the tool clear of the soldered board socket and align the plug before seating it.</li>
+      <li><b>Sliding connector.</b> Some battery and fan plugs slide out along the board. Grip the housing as indicated by the guide and keep tension off the wires.</li>
+    </ul>
+    <p>A connector levered off the board may tear the thin copper pads under it. Practise identifying the release style on an isolated spare before you put a tool against a populated board. <a href="https://www.ifixit.com/Guide/Recognizing+%26+Disconnecting+Cable+Connectors/25629">iFixit’s connector types and release directions</a> · <a href="../practice/p34-phone-module-service.html#exercise-with-a-documented-display-replacement">P34’s visual screen practice</a>.</p>
+
     <h2>Wetting and heat transfer</h2>
   <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Collin&#x27;s Lab: Soldering · Adafruit Industries</a><br>Watch how the solder first flows onto a heated joint. Compare the resulting shape with the surface-mount joint in the photo.</p>
 
@@ -41,7 +60,7 @@
     <p><a class="crosslink" href="../practice/p26-smd-rework.html">Practice P26 · SMD rework on a training PCB</a></p>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

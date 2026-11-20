@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>P35 · Phone charging faults and board-level triage</title>
+<title>P35 · Android charging faults and board-level triage</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 </head>
@@ -13,19 +13,38 @@
   <main class="page">
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
     <span class="eyebrow">P35</span>
-    <h1>Phone charging faults and board-level triage</h1>
+    <h1>Android charging faults and board-level triage</h1>
     <p class="lede">Compare a phone’s external charging behaviour, locate the suspect path on an unpowered donor, and rehearse component work on a training board.</p>
     <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P24, P26, P33, P34</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <h2>Follow the charging path before measuring it</h2>
+    <p>Start with five physical parts you can point to. The wall adapter supplies power to the <b>cable</b>. The cable plugs into the <b>receptacle</b>. On some phones that receptacle sits on a small <b>daughterboard</b> connected to the main board by a flat <b>interconnect flex</b>. The main board manages charging the <b>battery</b>. A damaged plug, worn port, torn flex and failed battery can all end up reported as “won’t charge”.</p>
+    <p>There are three common repairs to distinguish. A phone may use a port on a replaceable flex, a port on a replaceable daughterboard like the Galaxy A54 below, or a port soldered to a larger board that requires board-level rework. The separate headphone module in <a href="p34-phone-module-service.html">P34’s Pixel 4a</a> is a different assembly serving audio. Find the exact arrangement in the parts diagram before ordering anything.</p>
+
     <h2>Build a known-good charging comparison</h2>
   <figure class="course-photo">
-    <img src="../assets/photos/usb.webp" alt="USB-C cable plug next to an iPad USB-C receptacle" width="960" height="539" loading="lazy" decoding="async">
-    <figcaption>Compare the test cable and device port before using a USB power meter. If a connector is visibly deformed or loose, record that observation first.<br><small>Photo by Wikideas1, resized. <a href="https://commons.wikimedia.org/wiki/File:USB-C_connector_and_receptacle.webp">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+    <img src="../assets/photos/repair/android-usb-port.jpg" alt="Macro photo looking squarely into a Nokia 8 USB-C receptacle, showing the central tongue and its gold contacts" width="960" height="458" loading="lazy" decoding="async">
+    <figcaption>A Nokia 8 viewed straight into its USB-C port. The narrow tongue in the middle carries the contacts. The outer shell guides the plug. Compare the shape with the suspect phone under a light for a tilted tongue, damage or debris before trying another cable.<br><small>Photo by D-Kuru, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Nokia_8-USB-C_port_PNr%C2%B00490.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/at/deed.en">CC BY-SA 3.0 AT</a>.</small></figcaption>
   </figure>
   <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=eCsUkQvHHlU">USB-C Power Delivery · STMicroelectronics</a><br>Follow how the source and device agree on a power profile. Use that distinction when comparing readings from your two cables.</p>
 
-    <p>Use your own physically sound USB-C phone, a compatible known-good source and cable, and an optional rated pass-through USB meter that supports the required negotiation. Measure the known-good setup first, then try the suspect phone or accessory by changing one item at a time. Compare both plug orientations at the phone and direct operation without the meter. Record charge state, source, cable, orientation, VBUS, input current, phone indication and whether it can transfer data with a known-good data cable. Data testing belongs on a device you own and can unlock normally.</p>
+    <p>Use your physically sound USB-C phone, a compatible charger and a known-good cable. Start with the normal connection. A USB power meter is optional and goes <b>in line</b>, between the charger and phone. Check that it passes the required USB-C negotiation and is rated for the voltage and current. Install it in the direction marked by its maker. The display reports voltage and current at the USB connection. The phone may be using some of that power while it runs.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/usbtypec.jpg" width="960" height="1703" loading="lazy" decoding="async" alt="Unpowered UNI-T USB meter with Type-C and Type-A connector leads" style="max-width:min(100%, 310px)">
+        <figcaption>Match the meter’s connector and capabilities to your power path. The presence of a USB-C plug alone does not establish Power Delivery pass-through support.<br><small>Photo by Dmitry G, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:UT658DUAL.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/usbinline.jpg" width="960" height="641" loading="lazy" decoding="async" alt="A pass-through USB-A meter showing a voltage and current reading in a live example">
+        <figcaption>Read the separate V and A digits. This USB-A example shows 4.69 V and 0.33 A. For the USB-C test use a USB-C PD-compatible pass-through meter rated for the charger and phone.<br><small>Photo by Jacek Rużyczka, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:USB_Multimeter.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <ol class="steps">
+      <li><p><b>Prove your setup.</b> Note the known-good phone’s charge level and temperature. Once charging settles, record voltage, current and the charge indicator. Compare the charge indicator with and without the meter in the path.</p></li>
+      <li><p><b>Change one item.</b> Connect the suspect phone using the same adapter and cable. Turn the plug over at the phone end and repeat. Try a second known-good cable if one orientation fails. Compare at similar charge levels where possible.</p></li>
+      <li><p><b>Test data on its own.</b> On a device you own and can unlock normally, check data with a known-good data cable directly to a computer. A phone may still charge with a failed data path or a charge-only cable. Keep charging and data results separate in the record.</p></li>
+    </ol>
     <div class="table-wrap"><table>
     <thead><tr><th scope="col">What you observed</th><th scope="col">Next test</th></tr></thead>
     <tbody>
@@ -35,22 +54,98 @@
     <tr><th scope="row">Black screen, but the device vibrates or reports to a trusted host.</th><td>Follow the display branch of the manual. A partial response narrows the fault and does not by itself verify boot completion.</td></tr>
     </tbody>
     </table></div>
+    <p><b>Example.</b> The reference phone charges with either orientation. The suspect phone shows a charge icon and about 0.9 A in one orientation, but the icon disappears and the meter shows near zero current in the other. A second cable gives the same pattern, and it also happens directly without the meter. That repeatable difference justifies inspection of the port and its attachment path. The numbers are examples. Charge current depends on the phone, charger, temperature, battery state and activity.</p>
+
+    <h2>Identify the USB-C board inside a Galaxy A54</h2>
+    <p>The photo example is a <b>Samsung Galaxy A54 5G</b>. Check your model code in Settings or on its label before comparing guides or buying a daughterboard. This design opens from the back and has a covered lower circuit board. Set out a suction handle, plastic picks and spudger, a Phillips #000 screwdriver, a screw map and fresh back-cover adhesive. <a href="https://downloadcenter.samsung.com/content/EU/202304/20230417105719919/SM-A546B_RepairGuide_Open_Fre_Rev.1.0_230414a.pdf">Samsung SM-A546B repair guide (French PDF)</a> · <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504">iFixit A54 board guide (English)</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · Find the upper battery connection and the separate lower port board. Compare the different shapes of the flex and antenna connectors. <a href="https://www.youtube.com/watch?v=uAG2JEHnbnk">DIYgeardo’s Galaxy A54 charging-port board replacement</a> · <a href="https://www.youtube.com/watch?v=dEAUQxrZwAQ">PBKreviews’ Galaxy A54 teardown</a>.</p>
+    <p><b>1. Reach and isolate the battery.</b> After the external tests, shut down, unplug and remove the SIM tray. Follow the Samsung procedure for releasing the rear glass and exposing the upper battery connector. Disconnect the battery flex before unplugging the lower board’s connections. The iFixit photos below document the lower board area. <a href="https://downloadcenter.samsung.com/content/EU/202304/20230417105719919/SM-A546B_RepairGuide_Open_Fre_Rev.1.0_230414a.pdf#page=32">Samsung manual · Battery connector photos on page 32</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/galaxy-back-glass.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Galaxy A54 with its rear glass set beside the phone, exposing the battery and its upper electronics cover">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M130.2,288.6 L216.0,236.3" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M130.2,288.6 L216.0,236.3" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M225.0,230.9 L218.8,240.9 213.2,231.8Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="130.2" cy="288.6" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="130.2" y="288.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+            <path d="M473.6,279.7 L437.2,213.4" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M473.6,279.7 L437.2,213.4" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M432.2,204.2 L441.9,210.9 432.5,216.0Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="473.6" cy="279.7" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="473.6" y="279.7" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">2</text>
+          </svg>
+        </span>
+        <figcaption>1 · Battery under the black sheet. 2 · Removed rear glass. The battery’s mainboard connector is at the upper end. See page 32 of the Samsung manual for the disconnect photos.<br><small>Photo by Martyna Bilski for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s427026">iFixit guide, step 5</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/galaxy-board-cover.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Lower Galaxy A54 board cover with seven screw locations circled in red">
+        <figcaption>The seven circled screws hold the lower cover. The port board and the ends of its flex cables sit underneath.<br><small>Photo by Martyna Bilski for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426389">iFixit guide, step 6</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p><b>2. Expose and map the lower board.</b> The lower cover has seven Phillips screws in this example. Store them with the cover and keep the small daughterboard screw separate. Photograph the seated flexes and each antenna route. The wide connectors release straight up. The narrow antenna cables end in round snap-on plugs. Release them by the plug using the guide’s tool placement, keeping the cable itself slack.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/galaxy-interconnect.jpg" width="800" height="600" loading="lazy" decoding="async" alt="Open Galaxy A54 phone showing two broad black flex cables and a red coaxial lead at the lower circuit board">
+        <figcaption>The wide flex connectors and small round coax connectors release differently. Photograph their positions before disconnecting them.<br><small>Photo by Martyna Bilski for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426390">iFixit guide, step 7</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/galaxy-coax.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Galaxy A54 lower board with a red coax lead and the tip of tweezers near its small snap connector">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M444.0,390.7 L429.3,343.0" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M444.0,390.7 L429.3,343.0" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M426.2,333.0 L434.4,341.5 424.2,344.6Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="444.0" cy="390.7" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="444.0" y="390.7" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          </svg>
+        </span>
+        <figcaption>1 · Red antenna lead at the board. The white antenna lead runs beside it. Note their original routing and lift at the connector when releasing a snap plug.<br><small>Photo by Martyna Bilski for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426392">iFixit guide, step 8</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p><b>3. Lift the port board and compare the replacement.</b> Once the two broad flexes and the antenna plugs are released, remove the board screw and release the fingerprint and display connectors at the locations shown in the guide. The display connection has adhesive. Check that nothing still holds the board before lifting it. Compare the new board with the removed one, including the port opening and each connector. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426393">iFixit · Board screw and remaining connectors</a>.</p>
+    <figure class="course-photo">
+      <span class="photo-annotation" style="display:block">
+        <img src="../assets/photos/repair/galaxy-port-board.jpg" width="800" height="600" loading="lazy" decoding="async" alt="Removed Galaxy A54 5G daughterboard next to the open phone with its interconnect flexes">
+        <svg viewBox="0 0 800 600" aria-hidden="true">
+          <path d="M712.0,330.0 L675.8,460.3" fill="none" stroke="#103549" stroke-width="7.2"/>
+          <path d="M712.0,330.0 L675.8,460.3" fill="none" stroke="#fff" stroke-width="3.1"/>
+          <path d="M672.0,474.0 L668.8,458.4 682.8,462.3Z" fill="#fff" stroke="#103549" stroke-width="1.9"/>
+          <circle cx="712.0" cy="330.0" r="17.3" fill="#103549" stroke="#fff" stroke-width="2.3"/>
+          <text x="712.0" y="330.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.8px">1</text>
+          <path d="M504.0,474.0 L580.3,526.0" fill="none" stroke="#103549" stroke-width="7.2"/>
+          <path d="M504.0,474.0 L580.3,526.0" fill="none" stroke="#fff" stroke-width="3.1"/>
+          <path d="M592.0,534.0 L576.2,532.0 584.3,520.0Z" fill="#fff" stroke="#103549" stroke-width="1.9"/>
+          <circle cx="504.0" cy="474.0" r="17.3" fill="#103549" stroke="#fff" stroke-width="2.3"/>
+          <text x="504.0" y="474.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.8px">2</text>
+          <path d="M232.0,360.0 L323.7,412.9" fill="none" stroke="#103549" stroke-width="7.2"/>
+          <path d="M232.0,360.0 L323.7,412.9" fill="none" stroke="#fff" stroke-width="3.1"/>
+          <path d="M336.0,420.0 L320.1,419.2 327.3,406.7Z" fill="#fff" stroke="#103549" stroke-width="1.9"/>
+          <circle cx="232.0" cy="360.0" r="17.3" fill="#103549" stroke="#fff" stroke-width="2.3"/>
+          <text x="232.0" y="360.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:25.8px">3</text>
+        </svg>
+      </span>
+      <figcaption>1 · Removed lower board. 2 · USB-C receptacle. 3 · Broad interconnect flex. The receptacle is attached to the removable board.<br><small>Photo by Martyna Bilski for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426401">iFixit guide, step 12</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <p><b>4. Reassemble and prove the result.</b> Use the documented flex and antenna routing and fresh back-cover adhesive. Recheck charging in both orientations and USB data first. Check voice recording, speaker output, display and fingerprint function because their connections were worked around or disconnected during the repair. Compare with your intake record.</p>
 
     <h2>Do a cold check on a documented donor</h2>
   <figure class="course-photo">
-    <img src="../assets/photos/phonebad.jpg" alt="Swollen pouch cell visibly expanded inside an older iPhone" width="960" height="498" loading="lazy" decoding="async">
-    <figcaption>A lifted cover or an expanded pouch changes the job. Stop charging and handling the device when you see damage like this.<br><small>Photo by Mpt-matthew, resized. <a href="https://commons.wikimedia.org/wiki/File:Expanded_lithium-ion_polymer_battery_from_an_Apple_iPhone_3GS.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+    <img src="../assets/photos/repair/android-swollen.jpg" alt="Side view of an already removed Samsung Galaxy A13 battery with a bowed pouch" width="960" height="720" loading="lazy" decoding="async">
+    <figcaption>Side view of a swollen Samsung Galaxy A13 battery that has already been removed. Watch for a bowed battery or a new gap along the phone’s screen or back. If you suspect swelling, disconnect the charger, keep the phone off and refer it for safe handling.<br><small>Photo by Saimmx, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:20250807_200849_Swollen_Samsung_battery,_side.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
   </figure>
 
-    <p>Follow the model’s isolation sequence, then trace a documented path from the port or daughterboard through its flex and protection to an accessible point. Record visible connector or pad damage. With the board isolated and unpowered, compare continuity between identified points and compare diode-mode readings with a known-good board of the same revision using the same meter and orientation. Keep references and results attached to the job record. If the port is modular and the evidence supports it, follow the manufacturer’s procedure to replace and verify it.</p>
+    <p>Follow the model’s isolation sequence, then trace a documented path from the port or daughterboard through its flex and protection to an accessible point. Record visible connector or pad damage. With the board isolated and unpowered, compare continuity between identified points and compare diode-mode readings with a known-good board of the same revision using the same meter and orientation. Write down which point was confirmed, including the connector or pad name and both probe positions. <a href="p03-multimeter-mastery.html#resistance-continuity-and-diode-test">Practise continuity and diode mode in P03</a>.</p>
     <p>For a soldered port, practise on an unpowered, battery-free connector training board with labelled breakout pads. Map ground and shell where the board specifies they are connected, VBUS and the available signal pads. After a supervised practice replacement, verify each routed pin-to-test-point connection and check adjacent independent nets for bridges. Work up from the resistor and castellated exercises in P26. A densely packed phone board may need microscope work, controlled heat and a qualified technician. Refer packed multilayer, data-critical, battery-damaged or undocumented cases.</p>
 
     <h2>Write the closing test</h2>
     <p>Recheck charge in both orientations with the recorded known-good combination. Where relevant, test data, mic, speaker, wireless, and any functions the port board carries. Record a later battery percentage under comparable use. For a referral, write the last confirmed node and why you stopped, so the next tech can begin there.</p>
+    <p>If the phone accepts a charge in both orientations but runs for less time unplugged, use <a href="p36-android-battery-service.html">P36’s battery runtime and shutdown checks</a>.</p>
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t29-usb-c-power-delivery.html">T29</a> explains CC, VBUS and PD, <a href="../theory/t28-lithium-batteries.html">T28</a> explains the distinction between input power and battery charge, and <a href="../theory/t26-pcb-rework-esd.html">T26</a> explains protection arrays and inspectable joints. <a href="../theory/t27-board-power-sequencing.html">T27</a> helps when charging is normal but startup still fails.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

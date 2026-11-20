@@ -1,8 +1,16 @@
 # ECE Workbench page audit
 
-## Media update · 20 November 2026
+## Android repair revision · 20 November 2026
 
-All **100 current chapters** now contain a real photo and at least one direct YouTube link. The figures include alt text, an observation to make and the source credit. They use local image files so the photos load with the lesson. The standalone semiconductor lesson also has a photo of a banded diode. [Live course hub](https://anupamkhosla.github.io/ECE/tutorial/)
+- **P34, Pixel 4a.** Rebuilt around one Android model. Start outside the handset and separate display, touch, earpiece, loudspeaker, headphone and microphone symptoms. The screen, bottom loudspeaker and jack each have their own procedure, close-ups, model-matched video and closing tests. [P34](../tutorial/practice/p34-phone-module-service.html)
+- **P35, Galaxy A54 5G.** Added a known-good cable and two-orientation charge comparison, a real meter readout and a photo sequence for replacing the USB-C daughterboard. The sequence shows the rear cover, lower board cover, flexes, coax and removed board. [P35](../tutorial/practice/p35-phone-board-triage.html)
+- **P36, Pixel 4a battery.** Added a lesson on draining fast versus charging intermittently, where the two battery tabs sit and how to repeat the intake checks after replacement. The photo sequence shows the tabs and the removed pack. [P36](../tutorial/practice/p36-android-battery-service.html)
+- **PC and bench foundation.** P32 now identifies desktop and laptop parts before asking the learner to remove an SSD or RAM module. P33 shows how to reason from input power to startup rails. P03 and P05 have new close-ups of actual probe placements and solder joint faults. [P32](../tutorial/practice/p32-laptop-service.html) · [P33](../tutorial/practice/p33-laptop-power-diagnostics.html) · [P03](../tutorial/practice/p03-multimeter-mastery.html) · [P05](../tutorial/practice/p05-soldering-wiring.html)
+- **Further Android lessons to develop.** Add a camera fault comparison and replacement, picture a torn connector or lifted pad through a microscope, and source cold-measurement photos for a documented training board. The historical tables still list the wider course work.
+
+## First media pass · 20 November 2026
+
+The **100 chapters at the time** received a real photo and at least one direct YouTube link. This table records media coverage. The lesson-by-lesson review under it records where a practical sequence needs more photos, instruction or a more specific video. [Live course hub](https://anupamkhosla.github.io/ECE/tutorial/)
 
 | Area | Chapters | Chapters with photos | Chapters with direct videos |
 | --- | ---: | ---: | ---: |

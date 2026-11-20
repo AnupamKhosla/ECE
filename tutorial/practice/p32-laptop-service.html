@@ -14,30 +14,97 @@
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
     <span class="eyebrow">P32</span>
     <h1>Laptop repair from intake to module replacement</h1>
-    <p class="lede">Sort no power, no POST, no boot and no video. Then remove, refit and verify a serviceable module on a laptop you can use for practice.</p>
-    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P21, P22, P26</span></div>
+    <p class="lede">Start with the parts of a desktop PC. Find the same jobs being done inside a laptop, then practise servicing an SSD or RAM and proving the result.</p>
+    <div class="meta"><span><b>Time</b> Three bench sessions</span><span><b>Bench skills</b> <a href="p21-fault-finding.html">P21 diagnosis</a> · <a href="../theory/t26-pcb-rework-esd.html">T26 ESD</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Classify the complaint while the laptop is closed</h2>
-    <p>Write the exact model, what happened before the failure, the adapter model, and whether preserving data is the priority. Note current condition and any cracks, missing screws or accessories. Start on your own working or repairable spare with a backup and a scratch drive. Stop applying power if there is visible swelling, signs of liquid ingress or unusual heat and follow the maker’s handling guidance.</p>
+    <h2>Start with a desktop computer</h2>
+    <p>Start with the case, monitor and keyboard of a desktop PC. The <b>motherboard</b> is the large circuit board that joins the components. The <b>processor (CPU)</b> runs instructions. The <b>RAM</b> is the temporary workspace for the running program, and the <b>SSD</b> is where files and the operating system stay when power is off. The <b>power supply</b> feeds the board and drives. The graphics hardware supplies the image to the monitor. It can be on a separate card or built into the processor.</p>
+    <figure>
+      <svg viewBox="0 0 680 300" role="img" aria-labelledby="pc-map-title pc-map-desc">
+        <title id="pc-map-title">How the main parts of a desktop PC connect</title>
+        <desc id="pc-map-desc">On the motherboard, the processor exchanges data with RAM and communicates with the storage drive. The graphics hardware sends the image to the monitor. The power supply feeds the motherboard and can also power drives directly.</desc>
+        <defs><marker id="pc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="f-ink" d="M0 0 10 5 0 10Z"/></marker></defs>
+        <rect x="158" y="28" width="366" height="246" rx="16" class="f-wash s-thin"/>
+        <g class="f-panel s-thin">
+          <rect x="8" y="109" width="123" height="64" rx="10"/>
+          <rect x="179" y="108" width="135" height="66" rx="10"/>
+          <rect x="368" y="108" width="132" height="55" rx="10"/>
+          <rect x="368" y="170" width="132" height="55" rx="10"/>
+          <rect x="550" y="55" width="123" height="61" rx="10"/>
+          <rect x="550" y="167" width="123" height="61" rx="10"/>
+        </g>
+        <g class="s-line" fill="none" marker-end="url(#pc-arrow)">
+          <path d="M132 139H156"/><path d="M500 197H548"/>
+          <path d="M314 136H366" marker-start="url(#pc-arrow)"/>
+          <path d="M314 150L366 196"/><path d="M246 106V85H548" marker-start="url(#pc-arrow)"/>
+        </g>
+        <g class="t t-bold" text-anchor="middle">
+          <text style="font-size:21px" x="69" y="137">Power</text><text style="font-size:21px" x="69" y="160">supply</text>
+          <text style="font-size:21px" x="246" y="137">Processor</text><text style="font-size:21px" x="246" y="160">(CPU)</text>
+          <text style="font-size:21px" x="434" y="144">RAM</text><text style="font-size:21px" x="434" y="205">Graphics</text>
+          <text style="font-size:21px" x="611" y="93">SSD</text><text style="font-size:21px" x="611" y="206">Monitor</text>
+          <text style="font-size:21px" x="341" y="256">Motherboard</text>
+        </g>
+      </svg>
+      <figcaption>Follow the data as you open a file. The operating system reads it from the SSD, the running app works on it in RAM, and the graphics hardware draws it on the monitor. Saving writes changes back to storage. A SATA drive also has a separate power connection. An M.2 SSD can mount directly on the board.</figcaption>
+    </figure>
+    <figure class="course-photo">
+      <span class="photo-annotation" style="display:block">
+        <img src="../assets/photos/repair/desktoptower.jpg" width="960" height="720" loading="lazy" decoding="async" alt="Open ATX desktop with the CPU cooler, RAM, motherboard, power supply and drive bays visible">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <path d="M172.8,180.0 L271.5,204.7" fill="none" stroke="#103549" stroke-width="8.7"/>
+          <path d="M172.8,180.0 L271.5,204.7" fill="none" stroke="#fff" stroke-width="3.7"/>
+          <path d="M288.0,208.8 L269.4,213.1 273.6,196.3Z" fill="#fff" stroke="#103549" stroke-width="2.3"/>
+          <circle cx="172.8" cy="180.0" r="20.7" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+          <text x="172.8" y="180.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.0px">1</text>
+          <path d="M518.4,151.2 L472.1,203.3" fill="none" stroke="#103549" stroke-width="8.7"/>
+          <path d="M518.4,151.2 L472.1,203.3" fill="none" stroke="#fff" stroke-width="3.7"/>
+          <path d="M460.8,216.0 L465.6,197.5 478.6,209.0Z" fill="#fff" stroke="#103549" stroke-width="2.3"/>
+          <circle cx="518.4" cy="151.2" r="20.7" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+          <text x="518.4" y="151.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.0px">2</text>
+          <path d="M537.6,424.8 L475.6,459.7" fill="none" stroke="#103549" stroke-width="8.7"/>
+          <path d="M537.6,424.8 L475.6,459.7" fill="none" stroke="#fff" stroke-width="3.7"/>
+          <path d="M460.8,468.0 L471.4,452.1 479.9,467.2Z" fill="#fff" stroke="#103549" stroke-width="2.3"/>
+          <circle cx="537.6" cy="424.8" r="20.7" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+          <text x="537.6" y="424.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.0px">3</text>
+          <path d="M163.2,511.2 L246.5,586.2" fill="none" stroke="#103549" stroke-width="8.7"/>
+          <path d="M163.2,511.2 L246.5,586.2" fill="none" stroke="#fff" stroke-width="3.7"/>
+          <path d="M259.2,597.6 L240.7,592.7 252.3,579.8Z" fill="#fff" stroke="#103549" stroke-width="2.3"/>
+          <circle cx="163.2" cy="511.2" r="20.7" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+          <text x="163.2" y="511.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.0px">4</text>
+          <path d="M777.6,417.6 L688.9,405.5" fill="none" stroke="#103549" stroke-width="8.7"/>
+          <path d="M777.6,417.6 L688.9,405.5" fill="none" stroke="#fff" stroke-width="3.7"/>
+          <path d="M672.0,403.2 L690.0,396.9 687.7,414.1Z" fill="#fff" stroke="#103549" stroke-width="2.3"/>
+          <circle cx="777.6" cy="417.6" r="20.7" fill="#103549" stroke="#fff" stroke-width="2.8"/>
+          <text x="777.6" y="417.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:31.0px">5</text>
+        </svg>
+      </span>
+      <figcaption>1 · CPU cooler, with the CPU under it. 2 · RAM beside the cooler. 3 · Motherboard behind the parts. 4 · Enclosed power supply. 5 · Drive bay area. An SSD can be in a bay, behind the tray or on the board. Keep the power supply closed.<br><small>Photo by Bretwa, scaled for the course, with labels added. <a href="https://commons.wikimedia.org/wiki/File:ATX_computer_case_-_left_-_2018-05-18.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
     <div class="table-wrap"><table>
-    <thead><tr><th scope="col">Symptom</th><th scope="col">First evidence to collect</th><th scope="col">What you can narrow down</th></tr></thead>
-    <tbody>
-    <tr><th scope="row">No power</th><td>No response to Power. Check wall supply using a known-working outlet, adapter rating, supported cable and the specified charge port. Record adapter and charge LEDs if fitted.</td><td>Use a known-good supported adapter and cable before investigating the board. An open-circuit adapter reading alone gives little evidence about current delivery.</td></tr>
-    <tr><th scope="row">No POST</th><td>Fans or LEDs respond, but firmware never completes its power-on self-test. Record LED and beep patterns and check the exact model’s code table.</td><td>Use the documented preboot tests and isolate compatible removable memory if the model permits. Keep one known baseline configuration.</td></tr>
-    <tr><th scope="row">No boot</th><td>Firmware setup opens but the OS does not start. Check whether the firmware sees the drive and identify the boot error.</td><td>Storage detection, boot configuration or OS is the next branch. Preserve user data before any write, reinstallation or recovery action.</td></tr>
-    <tr><th scope="row">No video</th><td>Machine appears to run with a black or failed internal screen. Try the supported display self-test and an external monitor where supported.</td><td>External display or a successful LCD self-test changes the next check. Record exactly what each test exercises on the model.</td></tr>
-    </tbody>
+      <thead><tr><th scope="col">Part</th><th scope="col">What to look for</th><th scope="col">A repair clue</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Motherboard and CPU</th><td>Look for the large board that sockets and cables plug into. The CPU is under the heatsink and may be soldered on a laptop.</td><td>Fans or LEDs can come on before the CPU and firmware finish their startup checks.</td></tr>
+        <tr><th scope="row">RAM</th><td>Desktop sticks usually stand in long DIMM slots. Replaceable laptop sticks lie flat in shorter SO-DIMM sockets. Some laptops use soldered RAM.</td><td>A bad or incompatible module can prevent startup. More RAM does not add file storage.</td></tr>
+        <tr><th scope="row">SSD or hard drive</th><td>A cabled or bay-mounted drive can be a rectangular SATA device. A screw-retained M.2 SSD looks like a narrow circuit board. Match the interface as well as the shape.</td><td>When a drive is missing, many PCs can still enter firmware setup. The installed operating system may fail to start or a boot error may appear.</td></tr>
+        <tr><th scope="row">Cooling</th><td>The heatsink touches the chip through thermal material. Its fan moves air through the fins.</td><td>A rattling fan and a silent machine with a blocked vent call for different checks.</td></tr>
+      </tbody>
     </table></div>
-    <p>LED codes and preboot shortcuts are model-specific. Check the maker’s instructions before changing firmware or firmware settings, particularly where drive encryption is enabled. <a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell’s symptom and diagnostics guide</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/desktopram.jpg" width="960" height="448" loading="lazy" decoding="async" alt="Long desktop DDR2 DIMM above a shorter laptop DDR2 SO-DIMM">
+        <figcaption>The gold contact edge has a keyed notch. Compare the lengths and look for the notch on each stick. The photo shows DDR2 form factors so you can see the size difference. The Framework example needs DDR5.<br><small>Photo by SaltyCruton, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:DDR2_DIMM_SODIMM_Comparison.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/sata.jpg" width="960" height="720" loading="lazy" decoding="async" alt="A 2.5-inch Intel SATA SSD, showing its two L-shaped connector sections">
+        <figcaption>The narrow section carries SATA data. The wider section carries power. Compare this end of a cabled drive with the narrow M.2 card in the SSD exercise.<br><small>Photo by Dsimic, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_DC_S3700_SSD_series,_bottom_side_of_a_100_GB_SATA_3.0_model.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=JvRaaFRUc8o">Kingston’s desktop CPU, cooling and RAM walkthrough</a>. Pause when the cooler goes on. Point to the processor socket, the long RAM slots and the cooler fan before watching the assembly.</p>
 
-    <h2>Bench exercise on a removable SSD</h2>
-  <figure class="course-photo">
-    <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
-    <figcaption>Find the contacts at one end and the screw notch at the other. Check length, keying and interface against your laptop before buying a drive.<br><small>Photo by Kent Madsen (Designermadsen), resized. <a href="https://commons.wikimedia.org/wiki/File:WesterDigital-Black-NVMe-SSD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
-  </figure>
-  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=U-yzFxpQLgs">Framework Laptop 13th Gen Intel Upgrade - 30% More Battery Life &amp; Big Performance Boost! · iFixit</a><br>Pause at the internal layout and find the storage slot and retaining screw. Match the components to the service guide for your own Framework generation.</p>
-
+    <h2>Find the same parts inside a laptop</h2>
+    <p>A laptop combines the monitor, keyboard, touchpad, battery and speakers with the same core computing parts. Its charger and charge circuitry take the place of the desktop power supply. A laptop often uses thin flexible cables for the screen or controls. The connectors are small and may open by lifting a latch, by sliding a plug parallel to the board or by lifting a press connector straight up. Check the manual for that socket before applying force.</p>
     <figure class="course-photo">
     <div class="photo-annotation">
       <img src="../assets/photos/laptop.jpg" alt="Open Framework Laptop 13 showing fan, motherboard, battery and removable parts" width="960" height="723" loading="lazy" decoding="async">
@@ -66,18 +133,94 @@
     </div>
     <figcaption>Find the parts before disconnecting anything. Compare the layout with the exact model’s service guide.<br><b>1 · Cooling fan. 2 · M.2 SSD. 3 · Battery. 4 · Memory module area.</b><br><small>Photo by Ogidya, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
   </figure>
-    <ol class="steps">
-      <li><p><b>Pick a known starting point.</b> Confirm a working baseline in firmware setup and use an already backed-up, non-customer test drive. Identify the supported interface and form factor from the manual. M.2 length alone does not establish SATA or NVMe compatibility.</p></li>
-      <li><p><b>Follow the exact service sequence.</b> Shut down, disconnect the charger and follow the manufacturer’s service mode or internal battery isolation instructions before touching modules. Use an ESD mat and wrist strap on the unpowered work area. Map screw lengths, connector routing and any thermal shield or pad. Use the manual’s release methods for clips and sockets. On a non-Rugged Latitude 5420 with a 2280 drive, the SSD instructions illustrate the thermal plate and retaining screws. <a href="https://www.dell.com/support/manuals/en-lk/latitude-5420-laptop/5420_sp14_sm/removing-the-m2-2280-solid-state-drive?guid=guid-d3705b0e-b956-46c2-92ba-dee2d53d7308&amp;lang=en-us">Dell Latitude 5420 illustrated SSD removal</a>.</p></li>
-      <li><p><b>Change one part.</b> Refit the existing test drive first to practise alignment, then fit a known-good compatible spare if you have one. Restore the thermal plate and reassemble as specified before powering. For a similar exercise on a laptop with removable RAM, change one module or slot at a time and compare preboot memory diagnostics.</p></li>
-      <li><p><b>Verify the scope of the fix.</b> Check that firmware sees the expected drive and capacity and run the supported read-only diagnostic. Boot a prepared test OS only if the drive already has one and you are authorised to use it. Check charging, the original symptom and functions disturbed during the work, then record every pass or skipped check.</p></li>
+    <p><b>Observe a running computer before you open it.</b> On a working Windows PC, open Task Manager and choose <b>Performance</b>. Record the CPU name, installed memory and disk model or capacity as three separate entries. On your own spare, enter firmware setup using the maker’s instructions and record any drive and memory information it reports. Leave settings as they are. Compare those entries with the photograph and the parts list for the exact model.</p>
+
+    <h2>Follow power, startup and boot in order</h2>
+    <ol>
+      <li><b>Power arrives.</b> The adapter or battery makes energy available to the board. A charging light can appear while the computer itself is still off.</li>
+      <li><b>Firmware runs its startup checks.</b> Firmware is the board’s startup program. Its power-on self-test (POST) checks or initialises hardware such as RAM. The manufacturer may report a problem with an LED pattern, beeps or a screen message.</li>
+      <li><b>Firmware loads a boot program from the selected device.</b> A healthy board can enter firmware setup even when the SSD is missing. A blank or unbootable SSD can be detected without being able to start an operating system.</li>
+      <li><b>The running system displays an image.</b> A failed panel, backlight or cable can leave the internal screen dark even if the computer reaches the operating system.</li>
     </ol>
-    <p>Build a fault case by removing your own scratch drive, reassembling and observing the changed firmware or boot state. Refit it and verify recovery. If a customer drive disappears intermittently and the data matters, limit further power cycles and refer to a recovery specialist before writing or reinstalling.</p>
+
+    <h2>Classify the complaint while the laptop is closed</h2>
+    <p>Write the exact model, what happened before the failure, the adapter model, and whether preserving data is the priority. Note current condition and any cracks, missing screws or accessories. Start on your own working or repairable spare with a backup and a scratch drive. Stop applying power if there is visible swelling, signs of liquid ingress or unusual heat and follow the maker’s handling guidance.</p>
+    <div class="table-wrap"><table>
+    <thead><tr><th scope="col">Symptom</th><th scope="col">First evidence to collect</th><th scope="col">What you can narrow down</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">No power</th><td>No response to Power. Check wall supply using a known-working outlet, adapter rating, supported cable and the specified charge port. Record adapter and charge LEDs if fitted.</td><td>Use a known-good supported adapter and cable before investigating the board. An open-circuit adapter reading alone gives little evidence about current delivery.</td></tr>
+    <tr><th scope="row">No POST</th><td>Fans or LEDs respond, but firmware never completes its power-on self-test. Record LED and beep patterns and check the exact model’s code table.</td><td>Use the documented preboot tests and isolate compatible removable memory if the model permits. Keep one known baseline configuration.</td></tr>
+    <tr><th scope="row">No boot</th><td>Firmware setup opens but the OS does not start. Check whether the firmware sees the drive and identify the boot error.</td><td>Storage detection, boot configuration or OS is the next branch. Preserve user data before any write, reinstallation or recovery action.</td></tr>
+    <tr><th scope="row">No video</th><td>Machine appears to run with a black or failed internal screen. Try the supported display self-test and an external monitor where supported.</td><td>External display or a successful LCD self-test changes the next check. Record exactly what each test exercises on the model.</td></tr>
+    </tbody>
+    </table></div>
+    <p>LED codes and preboot shortcuts are model-specific. Check the maker’s instructions before changing firmware or firmware settings, particularly where drive encryption is enabled. <a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell’s symptom and diagnostics guide</a>.</p>
+
+    <h2>Prepare a spare laptop and identify its fasteners</h2>
+    <p>Use a working spare that belongs to you. Back up important data, keep the recovery information for an encrypted drive, and note the working charge, display, storage and memory results. Find the full model and generation from the label or firmware. Download the manual before opening the case and keep it open on another screen. The pictured example is a Framework Laptop 13 with the AMD Ryzen 7040 Series mainboard. The bottom cover on many other laptops opens differently.</p>
+    <ul class="kit">
+      <li><b>Matching driver and plastic opener</b><small>Confirm the fastener head in the manual. The Framework example uses a T5 bit for its cover and storage fasteners.</small></li>
+      <li><b>Screw tray or paper map</b><small>Record positions and lengths as they come out, including brackets and shields.</small></li>
+      <li><b>Nonconductive workspace and ESD precautions</b><small>Use good light and static protection for isolated electronics. Unplug external power and follow the model’s internal battery isolation procedure.</small></li>
+      <li><b>Spare drive or memory</b><small>Use a compatible part and a test drive you are allowed to change. Identify the correct storage interface and RAM generation first.</small></li>
+    </ul>
+    <p>On the Framework, the keyboard and touchpad are part of a removable top <b>Input Cover</b>. The cover stays tethered while you first lift it. Support it and check the touchpad connector before moving it away. Keep the charger unplugged and use the service guide for opening and disconnecting the battery on an assembled unit. The Framework guide shows the battery plug sliding straight out in the plane of the board. Compare that with the touchpad’s press plug, which lifts up. <a href="https://guides.frame.work/Guide/Mainboard+Replacement+for+Framework+Laptop+13/79#s4212">Framework’s assembled-unit opening and battery procedure</a>.</p>
+
+    <figure class="course-photo">
+      <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
+      <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+    </figure>
+
+    <h2 id="bench-exercise-on-a-removable-ssd">Bench exercise on a removable SSD</h2>
+    <p>Use the existing scratch drive for a remove-and-refit exercise first. For a replacement, check the manual for <b>interface</b> (SATA or NVMe), <b>form factor</b> (such as M.2 2280), and any allowed thickness or thermal pad arrangement. In 2280, 22 is the width and 80 is the length in millimetres. A card that fits the screw position may still use the wrong interface.</p>
+  <figure class="course-photo">
+    <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
+    <figcaption>Find the contacts at one end and the screw notch at the other. Check length, keying and interface against your laptop before buying a drive.<br><small>Photo by Kent Madsen (Designermadsen), resized. <a href="https://commons.wikimedia.org/wiki/File:WesterDigital-Black-NVMe-SSD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>.</small></figcaption>
+  </figure>
+    <p class="course-video"><b>Watch the manufacturer’s SSD installation clip</b> · <a href="https://guides.frame.work/Guide/Framework+Laptop+13+(AMD+Ryzen%E2%84%A2+7040+Series)+DIY+Edition+Quick+Start+Guide/211#s1829">Framework Laptop 13 AMD Ryzen 7040, step 5</a>. Identify the contact edge being seated while the card is angled up, then watch the far end come down to the standoff.</p>
+    <ol class="steps">
+      <li><p><b>Record the baseline and isolate.</b> In the firmware or the operating system, note which drive is detected. Shut down, unplug and isolate the battery as documented. Photograph the existing card, retaining screw and any heat shield.</p></li>
+      <li><p><b>Remove the existing drive.</b> For the Framework example, keep a finger on the free end while removing the retaining screw. Let the card rise gently, then slide it out following its insertion angle. On a SATA drive, use the specified pull tab, cable or tray procedure instead.</p></li>
+      <li><p><b>Refit one drive.</b> Align the notch and seat the contacts in the socket before holding the free end down. The screw secures an already seated drive. Restore the original thermal pad or shield as specified. Reconnect the battery and close the case following the manual.</p></li>
+      <li><p><b>Verify detection before working on software.</b> Confirm the expected drive and capacity. Run the supported read-only test where available. A confirmed blank replacement needs a separate, authorised plan for restoring or installing the system.</p></li>
+    </ol>
+    <div class="callout try"><span class="label">Practise a no-boot fault</span><p>With a backed-up spare and no customer data, compare the observed state before and after removing its scratch drive and properly reassembling. Does the computer still reach firmware? Is that drive listed? Refit it and confirm the original state returns. If a real drive is intermittent and its data is important, preserve it and hand off before writes or repeated tests.</p></div>
+
+    <h2>Bench exercise on removable RAM</h2>
+    <p>Find out whether the RAM is removable. In the Ryzen 7040 Framework example it is DDR5 SO-DIMM. Choose a supported part, voltage, generation and capacity from the documentation. The socket photograph below shows the physical concept on a different board.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/laptopram.jpg" width="960" height="215" loading="lazy" decoding="async" alt="Close-up of an empty SO-DIMM socket with a keyed bar and side clips">
+        <figcaption>Find the key in the contact slot and the two side clips. The card enters along an angle and the clips hold its outside edges when it lies flat.<br><small>Photo by D-Kuru, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:DDR_SO-DIMM_slot_PNr%C2%B00341.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/at/deed.en">CC BY-SA 3.0 at</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/raminstalled.jpg" width="960" height="600" loading="lazy" decoding="async" alt="An installed Crucial DDR4 SO-DIMM on a laptop motherboard">
+        <figcaption>Look at how flat the installed card sits, with the metal side retainers holding it. This board and the DDR4 stick illustrate the mechanism. Use only the generation specified by your laptop.<br><small>Photo by Diego Torres Silvestre, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Crucial_CT4G4SFS8213_on_laptop_motherboard_20171218.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the manufacturer’s RAM installation clip</b> · <a href="https://guides.frame.work/Guide/Framework+Laptop+13+(AMD+Ryzen%E2%84%A2+7040+Series)+DIY+Edition+Quick+Start+Guide/211#s1828">Framework Laptop 13 AMD Ryzen 7040, step 4</a>. Watch the keyed edge enter the socket before the two latches engage. That guide identifies Channel 0 for one module and explains the different socket orientation.</p>
+    <ol class="steps">
+      <li><p><b>Set a known baseline.</b> Note installed capacity and slot use, then power down and isolate. Release the two retaining clips as the manual shows. On a typical SO-DIMM socket the module rises at an angle and slides out along that angle.</p></li>
+      <li><p><b>Fit the known-good configuration.</b> Match the notch, seat the contacts fully and press the module down until both clips hold it. Retest the original module before trying a spare. Change only one module or one supported slot at a time.</p></li>
+      <li><p><b>Verify startup and memory.</b> Give the first startup the time the maker specifies for memory training. Record LED patterns if it fails. Check recognized capacity and run the maker’s memory diagnostic before drawing a conclusion.</p></li>
+    </ol>
+
+    <h2>Work a fan, screen or keyboard complaint</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Complaint</th><th scope="col">First comparison</th><th scope="col">What to identify in the manual</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Fan rattles or machine overheats</th><td>Note when the noise occurs, check that air can enter and leave, and compare temperatures under the same supported load before and after work. Stop a test if the system reports overheating.</td><td>Fan plug, duct and fin stack, heatsink fastener sequence and the correct paste or pad locations. <a href="https://guides.frame.work/Guide/Heatsink+and+Fan+Replacement+Guide/84">Framework’s illustrated cooling service procedure</a>.</td></tr>
+        <tr><th scope="row">Internal screen dark</th><td>Look for startup signs and try a known-good supported external display or the maker’s built-in panel test. Record whether the issue changes as the lid moves.</td><td>Exact panel type, display cable and hinges. Use the model’s screen procedure with the battery isolated. An external image narrows the failed path but does not identify the failed part by itself.</td></tr>
+        <tr><th scope="row">A row of keys or the touchpad fails</th><td>Compare a known-good external input device and any supported preboot input test. Record which physical keys or gestures fail.</td><td>Keyboard or touchpad flex, connector and latch. Inspect a disconnected flex or donor socket under magnification before replacing the whole cover.</td></tr>
+      </tbody>
+    </table></div>
+    <p>After reassembly, retest the original complaint and everything you disconnected. A storage job on a top-opening laptop can disturb the touchpad. Record the exact model, part, evidence and results. Use <a href="../career/c16-repair-work-portfolio.html">C16’s job workflow</a> for your record and <a href="p33-laptop-power-diagnostics.html">P33</a> when the external no-power checks pass and you want to learn board-level diagnosis.</p>
+
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> covers ESD and connector protection. <a href="../theory/t27-board-power-sequencing.html">T27</a> covers the path to POST, <a href="../theory/t28-lithium-batteries.html">T28</a> covers battery health and <a href="../theory/t29-usb-c-power-delivery.html">T29</a> covers charger and cable negotiation.</p></div>
     <p><a class="crosslink" href="p33-laptop-power-diagnostics.html">Next · P33 laptop power-rail diagnostics</a></p>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

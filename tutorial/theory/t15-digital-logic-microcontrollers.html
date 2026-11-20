@@ -717,6 +717,19 @@ out  0x05, r16     ; copy r16 to I/O address 0x05 (PORTB): PB5 goes HIGH, LED on
     <div class="callout job"><span class="label">On the job</span><p>The BMS field controller on a plant room wall, the access-control door controller, the PLC in an industrial panel and the alarm panel are all microcontroller boards running this cycle. Their "DI/DO" points are GPIO pins behind protection circuits; their "AI" points are ADC channels behind signal conditioning; their RS-485 and Ethernet ports are UART and network peripherals. Hex and bits show up daily: Modbus registers are 16-bit words where each bit can be an alarm flag, status words are often shown in hex, a Wiegand 26-bit card read is 1 parity bit + 8-bit facility code + 16-bit card number + 1 parity bit, and a /24 subnet mask is 24 binary ones. A technician who can decode 0x0024 into "bits 2 and 5 are set" can read a fault that others have to phone in.</p></div>
     <div class="callout aus"><span class="label">In Australia</span><p>Uno-compatible boards are sold by Jaycar, Altronics and Core Electronics (indicatively ~A$15–40 for a compatible board, more for a genuine Arduino), and much cheaper but slower to arrive from AliExpress. element14 and RS Components stock bare ATmega328P chips and datasheets if you want to go deeper. The ATmega328P datasheet is free from Microchip's website; the "I/O Ports" and "ADC" chapters match this page closely.</p></div>
 
+    <h2>From a microcontroller to a desktop, laptop or phone</h2>
+    <p>A microcontroller often puts the CPU, working RAM, flash storage and I/O on one chip. A desktop spreads the same jobs across parts you can often remove. A laptop or phone integrates more of them. Follow the job each part does before assuming where to find it or whether it can be changed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Job</th><th scope="col">Where you see it in hardware</th><th scope="col">What the repair test tells you</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Execute instructions</th><td>The processor fetches instructions it can address, usually through caches and RAM. A phone’s processor may share a package or chip with graphics and other controllers.</td><td>A charging indicator can light before the processor and operating system have started.</td></tr>
+        <tr><th scope="row">Hold active programs and data</th><td>RAM keeps working state while powered. A desktop commonly has DIMMs, while a laptop can have removable SO-DIMMs or chips soldered to the board.</td><td>Read installed RAM in firmware or run a supported memory test. That reading is separate from the storage capacity.</td></tr>
+        <tr><th scope="row">Keep files and programs when off</th><td>An SSD or embedded flash keeps data without power. An SSD’s controller translates read and write requests to operations on its flash chips.</td><td>Check device detection before changing software. A drive can appear in firmware even when it contains no working boot program.</td></tr>
+        <tr><th scope="row">Get the machine started</th><td>Startup firmware brings up hardware, including RAM, before attempting to load the operating system from storage.</td><td>Firmware setup still opening after a scratch drive is removed is evidence that some earlier startup stages work.</td></tr>
+      </tbody>
+    </table></div>
+    <p>When you open a photo, the saved file stays on storage. The operating system loads data as needed into RAM. The processor decodes it and the graphics hardware prepares an image for the screen. Follow the same stages in <a href="../practice/p32-laptop-service.html#start-with-a-desktop-computer">P32’s desktop diagram and laptop photos</a>.</p>
+
     <h2>See it on the bench</h2>
     <p>Every idea on this page shows up in the practice labs:</p>
     <ul>
@@ -753,7 +766,7 @@ out  0x05, r16     ; copy r16 to I/O address 0x05 (PORTB): PB5 goes HIGH, LED on
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

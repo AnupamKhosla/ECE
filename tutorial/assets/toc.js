@@ -51,11 +51,12 @@ window.TOC = {
           { n: "P30", file: "practice/p30-iot-reliability.html", title: "Make an IoT sensor show stale data clearly", d: "Use MQTT and Node-RED to distinguish device status, broker outage and stale telemetry." },
           { n: "P31", file: "practice/p31-antenna-receive-lab.html", title: "Build and compare an indoor receive antenna", d: "Assemble an FM dipole and compare reception as you change orientation and placement." }
         ]},
-        { title: "Part H · Laptop and phone repair", blurb: "Work through symptom triage, module service and introductory board diagnosis.", chapters: [
-          { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Distinguish no power, no POST, no boot and no video. Practise replacing an SSD or testing removable RAM." },
+        { title: "Part H · Laptop and Android repair", blurb: "Identify parts, test symptoms and replace documented modules.", chapters: [
+          { n: "P32", file: "practice/p32-laptop-service.html", title: "Laptop repair from intake to module replacement", d: "Identify desktop and laptop parts, follow the boot sequence, then practise SSD and RAM service." },
           { n: "P33", file: "practice/p33-laptop-power-diagnostics.html", title: "Laptop board diagnosis and power rails", d: "Build a two-rail trainer and trace input, standby, enable and run voltages." },
-          { n: "P34", file: "practice/p34-phone-module-service.html", title: "Phone repair, module replacement and final tests", d: "Use model-specific procedures for displays and other modules, then check touch, charge and affected functions." },
-          { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Phone charging faults and board-level triage", d: "Compare USB-C charging, investigate a port or flex on a donor, and practise connector checks." }
+          { n: "P34", file: "practice/p34-phone-module-service.html", title: "Android screen, speaker and headphone jack repair", d: "Learn phone parts and work through three photo-led repairs on a Google Pixel 4a." },
+          { n: "P35", file: "practice/p35-phone-board-triage.html", title: "Android charging faults and board-level triage", d: "Test USB-C charging and diagnose the flex and removable port board in a Galaxy A54 5G." },
+          { n: "P36", file: "practice/p36-android-battery-service.html", title: "Diagnose and replace an Android battery", d: "Find the Pixel 4a battery and adhesive tabs, then compare charging and runtime before and after repair." }
         ]}
       ]
     },

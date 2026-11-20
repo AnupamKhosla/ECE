@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>P34 · Phone repair, module replacement and final tests</title>
+<title>P34 · Android screen, speaker and headphone jack repair</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261119-photos">
 </head>
@@ -13,59 +13,177 @@
   <main class="page">
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
     <span class="eyebrow">P34</span>
-    <h1>Phone repair, module replacement and final tests</h1>
-    <p class="lede">Practise a documented display or other replaceable module procedure on a spare phone. Record the original symptom, the affected functions and the results after reassembly.</p>
-    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> P26, P32</span></div>
+    <h1>Android screen, speaker and headphone jack repair</h1>
+    <p class="lede">Learn what’s inside an Android phone, then repair the Google Pixel 4a’s screen, bottom loudspeaker or 3.5 mm headphone jack. Diagnose first and change one part at a time.</p>
+    <div class="meta"><span><b>Training handset</b> Google Pixel 4a (4G)</span><span><b>Order</b> Identify, test, open, replace, retest</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Start with a working baseline</h2>
-    <p>Use a spare phone you own with no important data and a physically sound battery. Record the exact model and variant, the reported fault, exterior condition and charge state. Test screen image and touch, buttons, speakers, microphones, cameras, charge, wireless and the sensors you may disturb. Where the phone is usable, back up data and check the documented diagnostic or repair mode. Plan for model-required calibration before ordering a part.</p>
-    <p>Begin with a module the manufacturer documents as replaceable and for which you have the tools, parts and service instructions. The iPhone 15 manual lists separate display, speaker, camera and USB-C procedures, plus repair videos and views. Samsung publishes an illustrated generic screen workflow and model-specific manuals. Google links Pixel diagnostics and guides. <a href="https://support.apple.com/en-us/104900">Apple iPhone 15 repair manual, diagrams and video index</a> · <a href="https://www.samsung.com/uk/support/mobile-devices/how-to-self-repair-your-phone-screen/">Samsung screen-repair walkthrough</a> · <a href="https://support.google.com/pixelphone/answer/14257407?hl=en">Google Pixel repair and diagnostics</a>.</p>
-
-    <h2>Exercise with a documented display replacement</h2>
-  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=ZQErjW5uR0k">We Found Apple’s Secret iPhone 14 Redesign - iPhone 14 Teardown · iFixit</a><br>Watch the iPhone 14 being opened and compare its internal layout with the iPhone 6s photo. Use the display guide for your own model.</p>
-
+    <h2 id="start-with-a-working-baseline">Identify the phone and its parts</h2>
+    <p>Use a spare that belongs to you and can be backed up. On the Pixel, check <b>Settings → About phone → Model</b> before looking up a part. These photos show the <b>Google Pixel 4a</b> with a 5.81-inch screen and a round headphone jack at the top. The Pixel 4a 5G is a different design. Android’s menus can look similar across phones whose brackets, flexes and opening direction differ. <a href="https://support.google.com/pixelphone/answer/16043605?hl=en">Google’s model and hardware specifications</a>.</p>
+    <p><b>Start outside.</b> Find the earpiece at the top of the screen, the headphone jack at the top edge, the USB-C port and the loudspeaker outlet at the bottom, and the rear fingerprint sensor. The glass, image panel and touch sensor are serviced here as one screen assembly. This model uses an <b>OLED</b> panel, whose pixels produce light. The touch sensor reports where your finger is. One function can fail while the other still works.</p>
     <figure class="course-photo">
-    <div class="photo-annotation">
-      <img src="../assets/photos/phoneopen.jpg" alt="Open iPhone 6s with the display assembly on the left and the battery and logic board on the right" width="960" height="960" loading="lazy" decoding="async">
-      <svg viewBox="0 0 960 960" aria-hidden="true">
-        <path d="M 96.0,182.4 L 156.6,250.6" fill="none" stroke="#142b38" stroke-width="9.7"/>
-        <path d="M 96.0,182.4 L 156.6,250.6" fill="none" stroke="#fff" stroke-width="4.3"/>
-        <path d="M 172.8,268.8 L 148.0,258.3 165.3,242.9 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
-        <circle cx="96.0" cy="182.4" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
-        <text x="96.0" y="182.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">1</text>
-        <path d="M 566.4,220.8 L 615.1,262.6" fill="none" stroke="#142b38" stroke-width="9.7"/>
-        <path d="M 566.4,220.8 L 615.1,262.6" fill="none" stroke="#fff" stroke-width="4.3"/>
-        <path d="M 633.6,278.4 L 607.6,271.4 622.7,253.8 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
-        <circle cx="566.4" cy="220.8" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
-        <text x="566.4" y="220.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">2</text>
-        <path d="M 873.6,432.0 L 859.2,504.1" fill="none" stroke="#142b38" stroke-width="9.7"/>
-        <path d="M 873.6,432.0 L 859.2,504.1" fill="none" stroke="#fff" stroke-width="4.3"/>
-        <path d="M 854.4,528.0 L 847.8,501.9 870.6,506.4 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
-        <circle cx="873.6" cy="432.0" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
-        <text x="873.6" y="432.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">3</text>
-        <path d="M 652.8,873.6 L 686.1,873.6" fill="none" stroke="#142b38" stroke-width="9.7"/>
-        <path d="M 652.8,873.6 L 686.1,873.6" fill="none" stroke="#fff" stroke-width="4.3"/>
-        <path d="M 710.4,873.6 L 686.1,885.2 686.1,862.0 Z" fill="#fff" stroke="#142b38" stroke-width="2.4"/>
-        <circle cx="652.8" cy="873.6" r="27.0" fill="#103549" stroke="#fff" stroke-width="3.4"/>
-        <text x="652.8" y="873.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">4</text>
-      </svg>
-    </div>
-    <figcaption>This opened iPhone 6s shows the separate assemblies. Follow the display guide for your own model to identify its opening side and connector sequence.<br><b>1 · Display assembly. 2 · Battery. 3 · Logic board. 4 · Lightning port.</b><br><small>Photo by Raimond Spekking, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:IPhone_6s_-_opened-92987.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
-  </figure>
+      <span class="photo-annotation" style="display:block">
+        <img src="../assets/photos/repair/pixel-open.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Google Pixel 4a mainboard and battery on the left and separated back shell on the right">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <path d="M94.7,328.6 L131.5,253.6" fill="none" stroke="#103549" stroke-width="5.3"/>
+          <path d="M94.7,328.6 L131.5,253.6" fill="none" stroke="#fff" stroke-width="2.3"/>
+          <path d="M136.2,244.2 L136.3,256.0 126.7,251.3Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+          <circle cx="94.7" cy="328.6" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+          <text x="94.7" y="328.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          <path d="M260.5,368.5 L260.5,308.0" fill="none" stroke="#103549" stroke-width="5.3"/>
+          <path d="M260.5,368.5 L260.5,308.0" fill="none" stroke="#fff" stroke-width="2.3"/>
+          <path d="M260.5,297.5 L265.8,308.0 255.1,308.0Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+          <circle cx="260.5" cy="368.5" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+          <text x="260.5" y="368.5" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">2</text>
+          <path d="M491.4,111.0 L438.6,178.2" fill="none" stroke="#103549" stroke-width="5.3"/>
+          <path d="M491.4,111.0 L438.6,178.2" fill="none" stroke="#fff" stroke-width="2.3"/>
+          <path d="M432.2,186.5 L434.4,174.9 442.8,181.5Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+          <circle cx="491.4" cy="111.0" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+          <text x="491.4" y="111.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">3</text>
+        </svg>
+      </span>
+      <figcaption>1 · Battery. 2 · Mainboard. 3 · Fingerprint sensor in the back cover. The screen has already been removed. Its cable plugged into the body from the other side.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277778">iFixit guide, step 29</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <p><b>Find the same functions inside.</b> The <b>mainboard</b> contains the processor, memory and surrounding electronics. The <b>battery</b> feeds it. A <b>flex</b> is a thin bendable printed circuit joining a module to the board. A plug may press down, slide out or use a latch. The loudspeaker turns an electrical signal into sound. A microphone turns sound into a signal. The earpiece and lower loudspeaker are separate parts, and media on a stereo phone can play through both.</p>
+    <p>This is an older training handset. Use one with a sound battery and an intact enclosure. Google has a separate battery program notice for this model, including changes that can affect charging and runtime on some units. Stop if the case is raised by swelling, the phone is heating unusually or the battery is damaged. <a href="https://support.google.com/pixelphone/answer/15701861?hl=en">Google’s Pixel 4a battery notice</a>.</p>
+
+    <h2>Choose the repair while the phone is closed</h2>
+    <p>On a working donor, take the same notes you would take on a faulty phone. Record the model, original symptom and which functions pass. Test touch, charging, normal call audio, speakerphone and a voice recording. Repeat the same tests after the work.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Complaint</th><th scope="col">First comparison</th><th scope="col">Next branch</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">No image</th><td>Look for ringing, vibration or a response to a call. Test a known-good charger as in P35 if there is no sign of startup.</td><td>A response with a dark panel supports investigating the screen and its connection. A fully unresponsive unit needs the power and startup path checked too.</td></tr>
+        <tr><th scope="row">Image works, touch fails</th><td>Remove any damaged protector. On an unlocked spare, drag or draw across the screen and note where the line stops following your finger.</td><td>Repeat at a different orientation or in another app. A consistently dead screen region makes the touch path a candidate.</td></tr>
+        <tr><th scope="row">No sound, crackle or low volume</th><td>Disconnect Bluetooth audio. Compare the same audio clip, a normal call at the earpiece, speakerphone and known-good headphones. Check the exterior grilles according to the manufacturer’s cleaning guidance.</td><td>A normal earpiece and headphone result with a repeatably weak lower outlet points to the lower speaker path. The grille, contact and module remain separate checks.</td></tr>
+        <tr><th scope="row">Wired audio cuts out</th><td>Test two pairs of compatible headphones that work on another device. Remove any case blocking the plug and inspect the jack under good light.</td><td>Repeatable failure with both pairs while the built-in speakers work points toward the jack path. Prove it before you open the phone.</td></tr>
+        <tr><th scope="row">Others can’t hear you</th><td>Record your voice, then listen to the recording on known-good headphones or another device you own.</td><td>A bad recording is evidence about audio input. A good recording with bad local playback sends you back to the output tests.</td></tr>
+      </tbody>
+    </table></div>
+    <p><a href="https://support.google.com/pixelphone/answer/9706190?hl=en">Google’s Pixel sound troubleshooting</a>.</p>
+
+    <h2 id="exercise-with-a-documented-display-replacement">Replace the Pixel 4a screen</h2>
+    <p>Use a compatible screen assembly and the <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544">complete Pixel 4a screen guide</a>. Its opening diagram and limits are part of the procedure. Check whether your part includes the top adhesive and earpiece mesh. Keep the guide open beside the bench.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=5WU9LwQFBwA">Joe Winston’s Pixel 4a screen replacement</a>. Pause to locate the opening seam and then the cable bracket. Use the photo guide for tool depth, cable handling and screw positions.</p>
+    <ul class="kit">
+      <li><b>T3 Torx driver and screw map</b><small>Keep the connector bracket screws separate from the longer internal ones.</small></li>
+      <li><b>Suction handle, plastic picks and spudger</b><small>Use the pick between layers and the spudger at the connector, where the guide shows.</small></li>
+      <li><b>Recommended adhesive and opening supplies</b><small>Use the guide’s controlled adhesive-release method. For broken glass, follow its containment instructions and wear eye protection.</small></li>
+    </ul>
+    <figure class="course-photo">
+      <img src="../assets/photos/repair/spudgers.jpg" width="467" height="365" loading="lazy" decoding="async" alt="Two spudgers with different widths and tip profiles">
+      <figcaption>For small electronics, choose the plastic tool shown by the model’s guide. Use it on the plug or latch, keeping the tip off exposed circuitry and cells.<br><small>Photo by Michael Anderson, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Spudgers.jpg">Original photo</a> · Public domain.</small></figcaption>
+    </figure>
     <ol class="steps">
-      <li><p><b>Rule out other faults first.</b> On a spare with a display complaint, establish whether the phone boots or responds, whether touch or image fails, and whether there are visible impact marks. Record each sign. Use the model’s diagnostic steps to narrow display, flex, or board-level causes before ordering a screen.</p></li>
-      <li><p><b>Set up and isolate.</b> Read the manual’s first steps, battery and glass safety, removal, reassembly and post-repair sections. Set the charge level required by the manual. Gather the correct drivers, ESD tools, parts, adhesives and model-specified fixture or heat source. Stop for swelling, puncture, unexpected heat or liquid damage. Follow the manual’s battery disconnection order before touching flex connectors.</p></li>
-      <li><p><b>Document the mechanical work.</b> Draw a screw map, keep brackets paired with their screws, and note flex locations. Follow model-specific opening direction, depth limits and adhesive instructions. Lift connector covers and latches in their documented direction. Inspect sockets under magnification and use the exact part and seal specified.</p></li>
-      <li><p><b>Close and verify.</b> Reassemble in the manual’s order and run any official post-repair configuration. Verify uniform image, brightness, touch across the full screen and proximity response. Compare front camera, call audio, buttons and charge against baseline. Record part history or calibration messages, functions unavailable for testing, and what the reassembly process establishes about sealing. <a href="https://support.apple.com/en-sg/120579">Apple Repair Assistant and supported parts</a>.</p></li>
+      <li><p><b>Power off and identify the right seam.</b> Discharge an intact working donor below 25%, unplug the charger and shut down completely. Look for the seam directly under the display. The deeper seam between the frame and back shell stays closed for this screen job.</p>
+        <figure class="course-photo">
+          <img src="../assets/photos/repair/pixel-seams.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Close-up of two seams on a Pixel 4a, marked red and orange">
+          <figcaption>The red line marks the screen seam you use first. The orange line marks the deeper frame seam, which is still held by screws.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277733">iFixit guide, step 1</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+        </figure>
+      </li>
+      <li><p><b>Lift and work the adhesive.</b> Use the guide’s controlled warmth and suction at the right edge. Start with only the pick tip in the screen seam, then use the angle and depth limits for each side. The guide shows the fragile cable near the bottom-right and the earpiece mesh at the top. If the pick snags, stop and check what it touched.</p>
+        <div class="photo-pair">
+          <figure class="course-photo">
+            <img src="../assets/photos/repair/pixel-pick.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Suction handle lifting the right side of the Pixel 4a screen, with a blue pick at the gap">
+            <figcaption>Look how little of the pick enters at first. The guide specifies a maximum of 1 mm at this first entry.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277735">iFixit guide, step 3</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+          </figure>
+          <figure class="course-photo">
+            <img src="../assets/photos/repair/pixel-screen-fold.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a screen folded glass-side down over the lower edge with its flex cable still connected">
+            <figcaption>The loose panel rests on the work surface. Note the short flex that limits its travel.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277742">iFixit guide, step 10</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+          </figure>
+        </div>
+      </li>
+      <li><p><b>Support the display and free its plug.</b> When the perimeter releases, move the panel as the guide shows and rest it flat so the cable carries no weight. Move the tape, map the two bracket screws, remove the bracket and release the press connector with a plastic spudger. On this design the screen connector is reached with the phone shut down and unplugged. The internal battery plug sits behind another bracket and is reached later for deeper repairs.</p>
+        <div class="photo-pair">
+          <figure class="course-photo">
+            <img src="../assets/photos/repair/pixel-screen-bracket.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a display connector bracket and two Torx fasteners highlighted in the guide">
+            <figcaption>The highlighted screws secure the small bracket above the display connector. Record where the tape and bracket sit before removing them.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277764">iFixit guide, step 12</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+          </figure>
+          <figure class="course-photo">
+            <img src="../assets/photos/repair/pixel-screen-plug.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Spudger beside the Pixel 4a display flex press connector">
+            <figcaption>Follow the flex back from the screen to the plug. Lift at the edge shown in the guide. Align the replacement plug before pressing its ends down.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277766">iFixit guide, step 14</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+          </figure>
+        </div>
+      </li>
+      <li><p><b>Fit and verify the replacement.</b> Compare old and new parts for the connector and earpiece mesh. Align the new display plug over its socket and seat its ends as the guide shows. Refit the bracket and tape. Use the exact adhesive and follow the reassembly procedure. Check image, brightness and touch across the panel, including corners. Make a call to check the earpiece and that the display responds to proximity.</p></li>
     </ol>
 
-    <h2>Decide what to offer next</h2>
-    <p>For a phone that rings and shows a black screen, start with the documented display checks. For a no-charge case, do the external comparison in <a href="p35-phone-board-triage.html">P35</a> before ordering a connector. Confirm whether the port is a replaceable assembly, part of a daughterboard or soldered to a board on that model. A spare handset is the place to learn adhesive release and connector handling. Record the mentor and procedure you would use before quoting a first repair on a different design.</p>
-    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> explains pads and ESD, <a href="../theory/t28-lithium-batteries.html">T28</a> covers battery safety and the charging path, and <a href="../theory/t18-sensor-physics.html">T18</a> explains optical and proximity sensing.</p></div>
+    <h2>Open farther to reach the sound modules</h2>
+    <p>The loudspeaker and jack are reached behind the back cover on this Pixel. To reach them you first remove the SIM tray and the screen using the sound-module guide. Read the whole guide before starting, including how to reassemble the display. Practise the screen job first because an otherwise usable screen can break during a deeper repair.</p>
+    <ol class="steps">
+      <li><p>After the screen comes off, remove the midframe fasteners and free the back cover as shown. Spring contacts sit near the edge. The guide limits the pick at this second seam to 2 mm after the fasteners are removed. Support the back cover because the buttons and fingerprint sensor are still connected.</p></li>
+      <li><p>Map the separate motherboard bracket screws. Free the fingerprint ribbon where it attaches to the bracket, remove the bracket and disconnect the battery plug with the guide’s plastic tool method.</p></li>
+      <li><p>With the battery now isolated, disconnect the button and fingerprint flexes as directed and remove the cover. Keep each fastener with the part it secured.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-midframe.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a with screen removed and midframe fasteners highlighted">
+        <figcaption>These fasteners hold the back in place. They were left fitted for the screen-only job.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277768">iFixit guide, step 17</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <span class="photo-annotation" style="display:block">
+          <img src="../assets/photos/repair/pixel-battery-plug.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Plastic spudger positioned at the Pixel 4a battery connector beneath the removed mainboard bracket">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <path d="M373.0,177.6 L303.9,237.3" fill="none" stroke="#103549" stroke-width="5.3"/>
+            <path d="M373.0,177.6 L303.9,237.3" fill="none" stroke="#fff" stroke-width="2.3"/>
+            <path d="M296.0,244.2 L300.4,233.3 307.4,241.4Z" fill="#fff" stroke="#103549" stroke-width="1.4"/>
+            <circle cx="373.0" cy="177.6" r="12.8" fill="#103549" stroke="#fff" stroke-width="1.7"/>
+            <text x="373.0" y="177.6" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:19.1px">1</text>
+          </svg>
+        </span>
+        <figcaption>The black battery flex makes a turn toward the board. The spudger releases the plug at its end. Work at the connector, clear of the battery pouch.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course, with labels added. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277776">iFixit guide, step 27</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Replace the bottom loudspeaker</h2>
+    <p>The lower speaker has an acoustic enclosure and an antenna flex in the same area. A failing speakerphone test alone cannot identify the speaker. Confirm the audio checks above and compare the exterior grille first. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562">Full Pixel 4a loudspeaker guide</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=AdPUqt4QmM4">DIYgeardo’s Pixel 4a bottom speaker replacement</a>. Find the black speaker assembly at the lower edge and watch how the technician turns it over to reach the flex.</p>
+    <ol class="steps">
+      <li><p>With the screen and back cover removed and battery disconnected, identify the two lower speaker fasteners. Photograph the speaker, antenna flex and the outlet that lines up with the case.</p></li>
+      <li><p>Lift and turn the housing over as the guide shows, then disconnect the antenna flex before freeing the module from its tape. Keep tools clear of its membranes.</p></li>
+      <li><p>Compare the new and old speaker housings and mount the replacement in the same position. Refit the antenna flex and route all cables as recorded. After reassembly, repeat the same media clip and a speakerphone call. Verify charging and any wireless functions disturbed by the repair.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-speaker-screws.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a speaker enclosure in place with two small screws marked at the bottom of the phone">
+        <figcaption>Find both speaker fasteners before lifting the enclosure. Record the position of the adjacent USB-C receptacle and the speaker outlet.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277791">iFixit guide, step 30</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-speaker-flex.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a bottom loudspeaker turned over to expose the antenna flex connection">
+        <figcaption>The thin flex still ties the module to the phone. Identify its press connector before the housing moves farther.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277794">iFixit guide, step 32</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-speaker-out.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a loose loudspeaker assembly held beside the lower mainboard and USB-C socket">
+        <figcaption>Compare the black removable enclosure with the open space in the frame. The rectangular USB-C socket is still installed.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Loudspeaker+Replacement/139562#s277795">iFixit guide, step 33</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2>Replace the 3.5 mm headphone jack</h2>
+    <p>The Pixel 4a has a separate jack module near the top of the phone. Find the round socket, its short flex and the plug where the flex joins the mainboard. Charge through the bottom USB-C port is a separate path on this handset. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Headphone+Jack+Replacement/139558">Full Pixel 4a headphone-jack guide</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=bhbByNLfUEY">DIYgeardo’s Pixel 4a headphone-jack replacement</a>. Look for the short flex beside the round socket. Watch the module lift out of its seat after the plug has been released.</p>
+    <ol class="steps">
+      <li><p>Confirm the original fault with two known-good sets of headphones. Record left and right sound and whether the output changes when you insert and remove the plug.</p></li>
+      <li><p>Follow the guide through screen removal, back cover and battery isolation. Identify the headphone flex connector and release it as shown.</p></li>
+      <li><p>Release the jack’s adhesive with a plastic pick and compare the replacement with the original. Match the opening and orientation when fitting it, then restore the plug, brackets and other flexes.</p></li>
+      <li><p>After reassembly, check plug detection, both stereo channels and the headset microphone if your known-good headset supports one. Unplug the headphones and check that the phone’s own speaker output returns. Retest the side buttons and fingerprint sensor, whose flexes were disturbed.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-jack-connector.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Pixel 4a mainboard detail with plastic tool at the short 3.5 mm headphone-jack flex connector">
+        <figcaption>The tool lifts the short flex’s plug first. Compare this small plug with the wider display connector earlier.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Headphone+Jack+Replacement/139558#s277786">iFixit guide, step 30</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/pixel-jack-out.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Blue plastic pick releasing the 3.5 mm headphone jack from its seat in the Pixel 4a">
+        <figcaption>The round jack and short flex leave the frame together. Match the replacement to the opening and the original flex direction.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Headphone+Jack+Replacement/139558#s277782">iFixit guide, step 31</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+
+    <h2 id="decide-what-to-offer-next">Close the job and transfer it to another Android model</h2>
+    <p>For the job record, write the original fault, the comparison that isolated the suspect path, the part you worked on and each result after reassembly. If a new fault appears, check the connections you disturbed. Use the exact model’s procedure and any required diagnostics on your next Android phone. Parts, adhesives, panel opening side and connector placement vary, even within one brand.</p>
+    <p><a href="p36-android-battery-service.html">Continue on the Pixel 4a · Diagnose and replace the battery</a> · <a href="p35-phone-board-triage.html">Galaxy A54 charging-port diagnosis and repair</a> · <a href="https://support.google.com/pixelphone/answer/14257407?hl=en">Google Pixel repair and diagnostics</a> · <a href="../career/c16-repair-work-portfolio.html">C16 · Record the job</a>.</p>
+    <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> explains connectors, solder pads and static protection. <a href="../theory/t28-lithium-batteries.html">T28</a> explains battery protection and <a href="../theory/t18-sensor-physics.html">T18</a> explains sensing including proximity.</p></div>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

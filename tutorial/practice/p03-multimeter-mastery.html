@@ -103,6 +103,10 @@
       <figcaption>Figure 1. The two ways to connect a meter. A voltmeter goes across a part and has a very high resistance, so it barely disturbs the circuit. An ammeter replaces a piece of wire and has a very low resistance, so the circuit current flows through it.</figcaption>
     </figure>
     <h3>Lab: DC volts</h3>
+      <figure class="course-photo">
+        <img src="../assets/photos/bench-voltage.jpg" width="500" height="472" loading="lazy" decoding="async" alt="Meter showing 1.588 volts with the red probe at the positive tip and black probe at the negative end of an AA cell">
+        <figcaption>Red touches the raised positive end and black touches the flat negative end. The two probes span the cell. This meter shows 1.588 V on its manual 2 V DC range. For the other batteries below choose a higher range.<br><small>Photo by Limor Fried for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1057">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
     <ol class="steps">
       <li><p><b>Set up.</b> Black lead in COM, red lead in VΩ. Dial to V⎓ (DC volts). On a manual meter choose the 20 V range.</p></li>
       <li><p><b>Measure an AA cell.</b> Red on +, black on −. A new alkaline cell reads 1.55–1.62 V. A "flat" one reads under about 1.2 V (but see the tip below).</p></li>
@@ -123,6 +127,16 @@
 
     <h2>Current: measure in series</h2>
     <p>Current is a <b>flow</b>: charge per second past a point. To measure it, the current has to flow <b>through</b> the meter. You must open the circuit and make the meter part of the loop (Figure 1, right).</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/bench-current.jpg" width="800" height="635" loading="lazy" decoding="async" alt="Extech meter using its fused milliamp input to measure 226.9 milliamps DC in a USB boost-converter training example">
+        <figcaption>The meter in this USB boost-converter example shows 226.9 mA on the DC milliamp range. Check the units on the display and find COM and the current socket on your own meter. Your LED exercise uses a much smaller current.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1715">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/bench-series-probes.jpg" width="600" height="790" loading="lazy" decoding="async" alt="Close-up of clip leads joining a red meter probe and a black meter probe to opposite sides of a break in the positive wire feeding a boost converter">
+        <figcaption>Follow the positive path through the close-up. The red probe connects to the red supply lead through the red clip. The black probe connects via the green jumper and its clips to the converter’s red input lead. The meter bridges this break so current can flow around the loop.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1719">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
     <ol class="steps">
       <li><p><b>Power off.</b> Always open the circuit with the power off.</p></li>
       <li><p><b>Move the red lead</b> to the <b>mA</b> jack or the shared jack marked for mA. This LED circuit is expected to draw about 8 mA. Verify that the jack and selected DC mA range support that current.</p></li>
@@ -368,7 +382,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js"></script>
+<script src="../assets/toc.js?v=20261120-android"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>
