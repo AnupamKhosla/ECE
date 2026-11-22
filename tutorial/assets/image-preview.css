@@ -1,0 +1,110 @@
+.preview-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem .5rem;
+  margin-top: .55rem;
+}
+
+.preview-trigger,
+.image-preview-close {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: .35rem .65rem;
+  border: 1px solid var(--line);
+  border-radius: .45rem;
+  background: var(--panel);
+  color: var(--accent);
+  font: 650 .85rem/1.4 var(--sans);
+  text-decoration: none;
+}
+
+.preview-trigger:hover,
+.image-preview-close:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.preview-trigger:focus-visible,
+.image-preview-close:focus-visible,
+.image-preview-figure:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.image-preview-figure {
+  display: block;
+  cursor: zoom-in;
+}
+
+.image-preview {
+  box-sizing: border-box;
+  width: min(46rem, calc(100% - 1.5rem));
+  max-width: none;
+  max-height: calc(100% - 1.5rem);
+  padding: clamp(.8rem, 3vw, 1.25rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--sans);
+  overscroll-behavior: contain;
+}
+
+.image-preview::backdrop {
+  background: rgb(5 13 24 / 76%);
+}
+
+.image-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .8rem;
+}
+
+.image-preview-header h2,
+.image-preview-header form {
+  margin: 0;
+}
+
+.image-preview-header h2 {
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.image-preview-close {
+  cursor: pointer;
+}
+
+.image-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 62svh;
+  object-fit: contain;
+  border-radius: .4rem;
+  background: white;
+}
+
+.image-preview [hidden] {
+  display: none;
+}
+
+.image-preview-status {
+  padding: 1.25rem .75rem;
+  background: var(--wash);
+}
+
+.image-preview-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem 1rem;
+  margin-top: .75rem;
+  font-size: .875rem;
+}
+
+.image-preview-footer a {
+  color: var(--accent);
+}
