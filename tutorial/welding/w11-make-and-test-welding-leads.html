@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W11 · Make and test a welding lead set</title>
+<meta name="description" content="Cut and terminate 25 mm² stick-welding leads, source the parts in India and make a four-wire milliohm test fixture for manual production.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Equipment</div>
+    <span class="eyebrow">W11</span>
+    <h1>Make and test a welding lead set</h1>
+    <p class="lede">Make a 3 m electrode lead and a 2 m work-return lead for the 120 A stick welder. Fit both ends by hand and measure the finished connections before the leads reach the powered test bay.</p>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/gys.jpg" data-image-preview="Real stick welder with recessed output sockets" data-preview-source="w11-gys" aria-haspopup="dialog" aria-label="Enlarge the commercial stick welder photo">
+        <img src="../assets/photos/gys.jpg" width="370" height="370" alt="Compact GYS inverter stick welder with two brass output sockets recessed into its front panel.">
+      </a>
+      <figcaption>The two front sockets on this commercial welder connect the electrode holder and work-return clamp to the welding circuit. Verify the exact socket and plug as a pair on your pilot.<br><small>Photo by Bruno Bouygues. <a id="w11-gys" href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch the four-wire meter demonstration.</b> Identify the clip leads, the low-resistance range and the offset compensation setting. Keep this setup at the disconnected cable bench. <a href="https://www.youtube.com/watch?v=6Q1G_g7flYM">Hioki · RM3548-50 introduction</a>.</p>
+    <p class="course-video"><b>Watch the lead hookup.</b> Observe how the machine sockets and the workpiece clamp connect before welding. Consult the electrode instructions to select polarity. <a href="https://www.youtube.com/watch?v=WJadlatCNy4">Miller Electric · Stick-welding setup</a>.</p>
+
+    <h2>Order the parts in India</h2>
+    <p>Buy enough for one pair and a trial termination before ordering for ten machines. Price references are from 22 November 2026 using one-unit listings unless stated. Ask for GST, freight, lead time and installation instructions with each quote.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Qty and part</th><th scope="col">Specification and India source</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">5.5 m · 25 mm² copper cable
+          <span class="preview-links"><a class="preview-trigger" href="https://cms.polycab.com/media/rd1bsqgg/enrc00448_img_01.png" data-image-preview="Polycab H01N2-D flexible welding cable" data-preview-source="w11-cable" aria-haspopup="dialog">View cable</a></span>
+        </th><td>Polycab H01N2-D, 25 mm² fine-stranded bare copper, nominal stranding 760 × 0.2 mm, about 11 mm outside diameter. Maximum conductor resistance is 0.78 Ω/km at 20 °C. Quote a cut length and request cable markings, batch details and the current/duty data for your use. A separate retail comparison is Techno Tronics 25 mm² at about ₹1,469 per 5 m. Obtain its own resistance and duty data if substituting. <a id="w11-cable" href="https://polycab.com/polycab-h01n2-d-bsen-50525-2-81-100100v-ac/pt-13197/p-55592">Polycab · Product and enquiry</a> · <a href="https://cms.polycab.com/media/442lthst/enrc00448_ds_01.pdf">Polycab · Datasheet</a> · <a href="https://www.moglix.com/techno-tronics-5m-25sqmm-welding-machine-cable/mp/msnr50nm30d251">Moglix · Price comparison</a>.</td></tr>
+        <tr><th scope="row">2 · DINSE DIX SKM 25 plugs
+          <span class="preview-links"><a class="preview-trigger" href="https://www.kewell-shop.de/images/product_images/info_images/Dinse%20Steckerteil%20SKM%2025.png" data-image-preview="DINSE DIX SKM 25 cable plug" data-preview-source="w11-plug" aria-haspopup="dialog">View plug</a></span>
+        </th><td>Buy DINSE <b>122100020</b> with its rubber boot, clamping sleeve and M8 screw. Request the insert for 25 mm² and confirm the boot fits the measured jacket. The manufacturer rates the 16–25 mm² version at 190 A at 60% duty and lists replacement sleeve 199200015. Get the importer to confirm the complete assembly and current installation sheet. <a href="https://www.dinse.eu/fileadmin/DINSE/Dokumente/Produktkatalog/EN/Product_catalogue_EN_plugs_and_sockets_2022.pdf">DINSE · Catalogue</a> · <a href="https://www.rajyogenterprises.com/welding/Dinse_Type_Male_Plug_for_Joining_Cable_/638">Rajyog Enterprises, Pune · Request exact parts and a quote</a> · <a id="w11-plug" href="https://www.kewell-shop.de/Zubehoer/Kabel-und-Zubehoer/DINSE-Kabelkupplung-Kabelstecker-Mini-DIX-SKM-25.html">Kewell · Plug photograph</a>.</td></tr>
+        <tr><th scope="row">1 extra · DINSE DIX BEM 25 test socket
+          <span class="preview-links"><a class="preview-trigger" href="https://www.kewell-shop.de/images/product_images/info_images/10-2101a.jpg" data-image-preview="DINSE DIX BEM 25 panel socket" data-preview-source="w11-socket" aria-haspopup="dialog">View socket</a></span>
+        </th><td>Buy a matching <b>121300020</b> in addition to the two installed on the machine. The rear M8 terminal gives a repeatable test contact. Mount it in a rigid scrap insulating plate, drill to the fitting drawing and label it <b>Meter fixture only</b>. Price this separately with the plug order. <a id="w11-socket" href="https://www.kewell-shop.de/Zubehoer/Kabel-und-Zubehoer/Dinse-Einbaukupplung-Einbaubuchse-Mini-DIX-BEM-25.html">Kewell · Socket photo</a> · <a href="https://www.dinse.eu/fileadmin/DINSE/Dokumente/Produktkatalog/EN/Product_catalogue_EN_plugs_and_sockets_2022.pdf">DINSE · Socket and installation dimensions</a>.</td></tr>
+        <tr><th scope="row">1 · APS holder
+          <span class="preview-links"><a class="preview-trigger" href="https://www.apswelding.com/wp-content/uploads/ARC-ACC.pdf-image-016.webp" data-image-preview="APS EHL 200A electrode holder" data-preview-source="w11-holder" aria-haspopup="dialog">View holder</a></span>
+        </th><td>APS EHL 200A <b>38400506</b>, listed at 200 A at 35% duty and 150 A at 60%. Its stated ranges are 16–35 mm² cable and 2.4–4.0 mm electrode. Ask APS to quote the holder, approved lug geometry, bolt torque, strain relief and the assembly sheet. <a id="w11-holder" href="https://www.apswelding.com/products/electrode-holders/">APS Welding · India quote, photo and duty ratings</a>.</td></tr>
+        <tr><th scope="row">1 · Metal Arc work-return clamp
+          <span class="preview-links"><a class="preview-trigger" href="https://cdn.moglix.com/p/w6qzXSuYy58j7-xxlarge.jpg" data-image-preview="Metal Arc UE3B2 brass work-return clamp" data-preview-source="w11-clamp" aria-haspopup="dialog">View clamp</a></span>
+        </th><td>Metal Arc UE3B2 <b>2100008751</b>, brass jaws, bolt-down termination. The single-piece Moglix listing quotes <b>₹862 including taxes</b> with availability on request. Ask Metal Arc to confirm the duty at 120 A, mating lug, bolt torque and minimum order. The manufacturer's listed bulk estimate is ₹300 each at a 20-piece minimum. Get a written quote. <a id="w11-clamp" href="https://www.moglix.com/metal-arc-ue3b2-200a-brass-earth-clamp-2100008751/mp/msno5wnd4l1r51">Moglix · Single piece</a> · <a href="https://www.metalarc.in/metal-earth-clamp.html">Metal Arc · Manufacturer specs and bulk enquiry</a>.</td></tr>
+        <tr><th scope="row">2 production lugs plus samples
+          <span class="preview-links"><a class="preview-trigger" href="https://static01.galaxus.com/productimages/3/2/4/0/7/9/6/6/4/0/3/6/1/9/6/4/5/8/4/4a4dbbc3-6d0b-4fc0-9add-7a738e4adbba_cropped.jpg_720.jpeg" data-image-preview="Klauke 25 mm² F-series tubular lug" data-preview-note="Photo shows the 704F8MS inspection-hole variant. Match the lug eye to the actual terminal and the barrel to the cable class." data-preview-source="w11-lug" aria-haspopup="dialog">View lug</a></span>
+        </th><td>Use fine-stranded copper lugs of the approved bolt size for the holder and clamp. Klauke <b>704F6</b> (M6) and <b>704F8</b> (M8) are 25 mm² examples. Confirm palm width and clearance under the covers before ordering. Ask for the compatible K5/K5SP hand tool or quote the two terminations from a local harness shop. Include the manufacturer's specified boot, hardware and retention parts with each accessory. <a href="https://www.klauke.com/in/en/tubular-cable-lugs-cu-f-range-4948">Klauke India · Dimensions and enquiry</a> · <a id="w11-lug" href="https://www.galaxus.nl/en/s4/product/klauke-tubular-cable-lug-cable-joints-36765446">Galaxus · Inspection-hole variant shown</a>.</td></tr>
+        <tr><th scope="row">1 set · Copper test pieces
+          <span class="preview-links"><a class="preview-trigger" href="https://cdn.moglix.com/p/lw7cPGMSzfilC-xxlarge.jpg" data-image-preview="25 × 3 mm copper flat-bar stock" data-preview-source="w11-test-stock" aria-haspopup="dialog">View flat bar</a></span>
+        </th><td>Use a clean 25 × 3 × 60 mm copper flat for the work clamp and a bare Ø3.2 × 60 mm copper pin for the electrode holder. Get short C110 copper offcuts from a local stockist or request a machined pin. Deburr both pieces and mark the jaw position and the two clip points on each. <a href="https://dgmetals.in/buy/copper-bars/">DG Metals · Quote cut copper stock</a> · <a id="w11-test-stock" href="https://www.moglix.com/rs-pro-3mm-copper-flat-bar-684327-pack-of-4/mp/msng9vnxxwp6kp">Moglix · 25 × 3 mm stock shown</a>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The example cable comparison and exact clamp add up to <b>₹2,331</b> at the listed quantities. Get exact cable, plugs, holder and lugs quoted before pricing a pair. Keep the test socket and coupons as reusable fixture costs. For a hand-build versus buy comparison, see the <a href="https://www.moglix.com/fireweld-3m-welding-electrode-holder-2m-earth-clamp-with-25-sqmm-copper-cable-set/mp/msne5n833rv0kl">Fireweld 3 m + 2 m retail set</a> and verify cable resistance, actual mating fit and duty on any sample.</p>
+
+    <h2>Set up the cutting and assembly bench</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Tool</th><th scope="col">What to check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Copper cable shears
+          <span class="preview-links"><a class="preview-trigger" href="https://images.knipex.com/square_md/product-api-assets/fd89784/1bdabe46-0278-4799-9eab-9ab585a7476b.png" data-image-preview="Knipex 95 11 165 cable shears" data-preview-source="w11-shears" aria-haspopup="dialog">View shears</a></span>
+        </th><td>Knipex 95 11 165, rated up to 50 mm² stranded copper and 15 mm diameter. Use it to make a square cut without flattening the bundle. Use a tape for cut length and a caliper for connector and strip settings. <a id="w11-shears" href="https://www.knipex.com/products/cable-and-wire-rope-shears/cable-shears/cable-shears/9511165">Knipex · Photo and capacity</a> · <a href="https://www.digikey.in/en/products/detail/knipex-tools-lp/95-11-165/10451632">DigiKey India · ₹3,789.20 listed</a>.</td></tr>
+        <tr><th scope="row">Adjustable jacket stripper
+          <span class="preview-links"><a class="preview-trigger" href="https://web-assets.knipex.com/sites/default/files/styles/knipex_product_detail/public/1630135SB-00-3.jpg?itok=3HpeLc8s" data-image-preview="Knipex 16 30 135 SB round cable stripper" data-preview-source="w11-stripper" aria-haspopup="dialog">View stripper</a></span>
+        </th><td>Knipex 16 30 135 SB, Ø6–29 mm. Adjust blade depth on a scrap of the same cable and inspect the copper under good light before cutting production pieces. <a id="w11-stripper" href="https://www.knipex-tools.com/products/wire-strippers-and-dismantling-tools/dismantling-tools/dismantling-tool/1630135SB">Knipex · Adjustable blade and photo</a> · <a href="https://in.element14.com/knipex/16-30-135-sb/cable-stripper-4-5-28-5mm/dp/875934">element14 India · Order 875934</a>.</td></tr>
+        <tr><th scope="row">Torque wrench and hex socket
+          <span class="preview-links"><a class="preview-trigger" href="https://mm.digikey.com/Volume0/opasdata/d220001/derivates/1/008/968/MFG_05075604001_sml%28200x200%29.jpg" data-image-preview="Wera Click-Torque A5 wrench" data-preview-source="w11-torque" aria-haspopup="dialog">View wrench</a></span>
+        </th><td>A calibrated 2.5–25 N·m tool covers the DINSE plug's 8 N·m setting. Fit a straight 4 mm hex bit socket with a matching drive. Borrow or use the harness shop's wrench for the first pair. <a id="w11-torque" href="https://www.digikey.in/en/products/detail/wera-tools-na-inc/05075604001/25965321">DigiKey India · Wera A5, ₹25,210.54 listed</a>.</td></tr>
+        <tr><th scope="row">Indent crimper
+          <span class="preview-links"><a class="preview-trigger" href="https://cdn.klauke.com/resources/images/58f368e6-8c3c-46db-9776-cd561880f2d7" data-image-preview="Klauke K5 fine-strand cable lug crimping tool" data-preview-source="w11-crimp" aria-haspopup="dialog">View crimper</a></span>
+        </th><td>Klauke K5 or ratcheting K5SP is the manufacturer's manual tool family for these fine-stranded lugs. Quote the die and exact lug combination together. Ask a shop to crimp a sacrificial specimen and quote pull testing to the approved requirement. <a id="w11-crimp" href="https://www.klauke.com/au/en/k-5-k-5-sp-crimping-tool-6-50-mm">Klauke · K5/K5SP</a> · <a href="https://www.spectraconnectronics.com/klauke.html">Spectra, Mumbai · Ask for the specified tool and lugs</a>.</td></tr>
+        <tr><th scope="row">Four-wire milliohm meter
+          <span class="preview-links"><a class="preview-trigger" href="https://shop.hioki.eu/media/02/e3/ea/1771320496/hioki-rm3548-50-portable-resistance-meter-3mohm-to-3mega-ohm-with-l2107.webp" data-image-preview="Hioki RM3548-50 with four-terminal test leads" data-preview-source="w11-meter" aria-haspopup="dialog">View meter and leads</a></span>
+        </th><td>Use a calibrated meter and a traceable check resistor near 2–3 mΩ. The Hioki RM3548-50 has a 3 mΩ range, 1 A measuring current and offset voltage compensation. Request a test session or rental quote for early batches. <a href="https://www.hioki.com/in-en/products/resistance-meters/resistance/id_1267045">Hioki India · Instrument and quotation</a> · <a href="https://omnixsys.com/product/electrical-system-solutions/resistance-meters/index.html">Omnix India · Hire enquiry</a> · <a id="w11-meter" href="https://shop.hioki.eu/HIOKI-RM3548-50-Portable-Resistance-Meter">Hioki · Meter and leads photograph</a>.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Make the two leads</h2>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/stick-supply/lead-kelvin-test.svg" data-image-preview="Lead cut dimensions and four-wire test wiring" aria-haspopup="dialog" aria-label="Enlarge the lead cut and test drawing">
+        <img src="../assets/labs/stick-supply/lead-kelvin-test.svg" width="980" height="475" alt="Cable cut lengths of 3,000 and 2,000 mm, with four-wire meter current clips and sense clips shown on a socket and copper test piece." loading="lazy">
+      </a>
+      <figcaption>Cut dimensions are measured on the bare cable stock before stripping. The lower drawing shows the test circuit for one finished lead. <a href="../assets/labs/stick-supply/lead-kelvin-test.svg" download>Download the drawing</a>.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><b>Lay out the lengths.</b> Stretch the cable gently along the bench. Cut 3,000 ±20 mm for the holder and 2,000 ±20 mm for the work clamp. Mark the two pieces, record their actual lengths and reserve the offcut for strip and crimp samples.</li>
+      <li><b>Set strip lengths using the actual fittings.</b> Measure the plug sleeve and lug insertion depths. Transfer each required strip length from the supplied instructions to the build traveller. Trial-fit the sheath to the plug boot. Strip the scrap first and inspect for nicked or missing strands. Trim and re-cut any scored conductor.</li>
+      <li><b>Fit each DINSE plug.</b> Slide the boot on first. Gather the strands, insert them fully in the DINSE clamping sleeve and seat the assembly in the brass insert. Use the maker's specified 4 mm hex and 8 N·m for the SKM 25 version in Table 1. Confirm that value against the part supplied and record it. Pull the boot into the tongue-and-groove seat until flush. Check retention using the maker's approved method. <a href="https://assets.hoelzle.ch/image/upload/pdf/dixsk70_t.pdf#page=6">DINSE · Assembly instructions and Table 1</a>.</li>
+      <li><b>Fit the holder and work clamp.</b> Slide the required covers or supports onto the cables before crimping. Seat all strands to the approved depth. Use the selected lug maker's crimp count, tool setting and crimp placement. Check full insertion and absence of split barrels or stray strands. Bolt the lug flat to each accessory using its approved hardware and torque. Restore all insulating covers and cable retention. Keep the work clamp's current path and any factory braid intact.</li>
+      <li><b>Record the build.</b> Label each lead by function and by pair or batch number. Log cable batch, plug and accessory part numbers, crimp tooling, torques and visual inspection. Twist-lock each plug into its matching unpowered fixture socket. Check positive engagement and a fully seated boot before measurements.</li>
+    </ol>
+
+    <h2>Measure the milliohms before first power</h2>
+    <p>At the datasheet limit, the bare 3.00 m cable contributes <b>2.34 mΩ</b> and the 2.00 m cable contributes <b>1.56 mΩ</b> at 20 °C. At 120 A, that 3.90 mΩ total drops 0.468 V and dissipates about 56 W while current flows. An extra 0.50 mΩ at one joint alone generates 7.2 W there. Check the connectors separately during powered qualification.</p>
+    <ol class="steps">
+      <li><b>Set up at room temperature.</b> Fully disconnect both leads from the welder. Use a clean, dry bench near 20 ±2 °C and let the leads stabilize. Check the meter against its reference, select the 3 mΩ range and enable offset voltage compensation. Use the <a href="https://www.hioki.com/download/41701">Hioki manual</a> to verify lead orientation and setup.</li>
+      <li><b>Measure one lead at a time.</b> Lock its plug into the spare socket. Grip the clean test pin with the holder or the flat coupon with the work clamp. Attach the current clips farther from the jaws and socket body than the voltage-sense clips, as in the drawing. Put the two sense tips on the same marked points each time. Each reading includes the mated socket and the jaw contact used by the fixture.</li>
+      <li><b>Take three readings.</b> Unseat and re-seat the socket and coupon between readings. Record each value and ambient temperature. Investigate any spread above <b>0.10 mΩ</b> by cleaning and rechecking the fixture, plug and jaw retention. Verify repeatability with a known good pair before attributing variation to a new build.</li>
+      <li><b>Compare with the pilot screen.</b> At 20 ±2 °C, use <b>0.78 × actual length in metres + 0.40 mΩ</b> as a provisional ceiling for each finished lead. The worked ceilings are <b>2.74 mΩ</b> for the holder and <b>1.96 mΩ</b> for the return. The 0.40 mΩ is the design allowance for the contacts and fixture included in each measurement. Establish the production limit and measurement uncertainty with accepted samples, the final jig and qualification data.</li>
+    </ol>
+    <div class="callout"><b>Example record.</b> A 3.00 m holder lead reads 2.49, 2.51 and 2.48 mΩ. A 2.00 m work lead reads 1.72, 1.71 and 1.73 mΩ. All readings pass the example cold screen. If a lead fails, check the fixture with a reference lead, then remake the suspect termination under the documented procedure. Record the before and after readings. These values are worked examples.</div>
+    <p>Finish release on the guarded load bench with the covers fitted. Log connector, grip, clamp and cable temperatures at the intended duty profile, using the accessory and cable limits specified for the pilot. Add the checked lead IDs to each machine's final test record. Use the fixture and the same approved accessories for the first batch.</p>
+    <a class="crosslink" href="w10-qualify-and-sell-a-stick-welding-set.html">W10 · Load-test and qualify the pilot with these leads</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261122-leads"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
+</body>
+</html>

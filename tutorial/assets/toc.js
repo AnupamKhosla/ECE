@@ -357,7 +357,8 @@ window.TOC = {
         ]},
         { title: "Part D · Make and sell a welding set", blurb: "Design one inverter stick welder, assemble the first units by hand and qualify the model for sale.", chapters: [
           { n: "W09", file: "welding/w09-build-a-shop-made-stick-welding-set.html", title: "Build a shop-made DC stick welding set", d: "Specify the 230 V inverter, fabricate the steel chassis and assemble the first unit." },
-          { n: "W10", file: "welding/w10-qualify-and-sell-a-stick-welding-set.html", title: "Qualify and sell a stick welding set in India", d: "Load-test, qualify and cost a manual pilot with evidence for every serial number." }
+          { n: "W10", file: "welding/w10-qualify-and-sell-a-stick-welding-set.html", title: "Qualify and sell a stick welding set in India", d: "Load-test, qualify and cost a manual pilot with evidence for every serial number." },
+          { n: "W11", file: "welding/w11-make-and-test-welding-leads.html", title: "Make and test a welding lead set", d: "Cut 25 mm² copper, fit the holder and work clamp, and screen milliohm resistance on a bench jig." }
         ]}
       ]
     },

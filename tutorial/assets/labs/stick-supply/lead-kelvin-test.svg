@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="475" viewBox="0 0 980 475" role="img" aria-labelledby="title desc">
+  <title id="title">Welding lead lengths and four-wire test fixture</title>
+  <desc id="desc">A 3 metre electrode cable and 2 metre work-return cable both use 25 square millimetre copper. A separate test socket and test coupon give the resistance meter distinct current and sense connections.</desc>
+  <defs><marker id="end" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto-start-reverse"><path d="m1 1 5 3-5 3" fill="none" stroke="#41566c" stroke-width="1.3"/></marker></defs>
+  <rect width="980" height="475" rx="14" fill="#f4f7fa"/>
+  <g font-family="system-ui, sans-serif" fill="#172b3b">
+    <text x="30" y="42" font-size="25" font-weight="700">W11 · Lead cut lengths and cold resistance jig</text>
+    <text x="30" y="68" font-size="15">25 mm² flexible copper · Cut lengths measured before stripping · Drawing is schematic</text>
+    <rect x="30" y="89" width="920" height="130" rx="8" fill="#fff" stroke="#c5d1dc"/>
+    <g fill="none" stroke="#41566c" stroke-width="1.3" marker-start="url(#end)" marker-end="url(#end)">
+      <path d="M262 119H772"/><path d="M262 174H602"/>
+    </g>
+    <g fill="none" stroke="#172b3b" stroke-width="9" stroke-linecap="round">
+      <path d="M237 148H794"/><path d="M237 203H624"/>
+    </g>
+    <g fill="#42617d"><rect x="181" y="138" width="71" height="20" rx="4"/><rect x="181" y="193" width="71" height="20" rx="4"/></g>
+    <rect x="779" y="137" width="90" height="22" rx="6" fill="#234561"/>
+    <path d="M618 203l26-12h28l-13 10 13 11h-28z" fill="#b27736"/>
+    <g font-size="14"><text x="52" y="153">DIX SKM 25</text><text x="52" y="208">DIX SKM 25</text><text x="464" y="111">3,000 ± 20 mm</text><text x="380" y="167">2,000 ± 20 mm</text><text x="784" y="127">Electrode holder</text><text x="688" y="208">Work-return clamp</text></g>
+    <text x="30" y="253" font-size="20" font-weight="700">Measure one lead using the meter and jig only</text>
+    <rect x="31" y="287" width="151" height="122" rx="9" fill="#fff" stroke="#8094a6"/>
+    <text x="48" y="319" font-size="17" font-weight="700">Four-wire meter</text>
+    <text x="48" y="349" font-size="14">DC source · 1 A</text>
+    <text x="48" y="376" font-size="14">Reads ΔV / I</text>
+    <path d="M182 305H305V348M182 394H873V348" fill="none" stroke="#bc5523" stroke-width="3"/>
+    <path d="M182 328H331V348M182 367H845V348" fill="none" stroke="#24658e" stroke-width="3"/>
+    <path d="M305 348H873" fill="none" stroke="#172b3b" stroke-width="7"/>
+    <rect x="344" y="335" width="93" height="26" rx="4" fill="#b27736"/>
+    <rect x="437" y="335" width="100" height="26" rx="4" fill="#42617d"/>
+    <rect x="672" y="335" width="125" height="26" rx="4" fill="#42617d"/>
+    <g fill="#bc5523"><circle cx="305" cy="348" r="6"/><circle cx="873" cy="348" r="6"/></g>
+    <g fill="#24658e"><circle cx="331" cy="348" r="6"/><circle cx="845" cy="348" r="6"/></g>
+    <g font-size="14"><text x="196" y="298" fill="#9c4319">SOURCE A</text><text x="195" y="321" fill="#205b83">SENSE A</text><text x="196" y="360" fill="#205b83">SENSE B</text><text x="196" y="387" fill="#9c4319">SOURCE B</text>
+    <text x="322" y="319">Spare BEM 25 socket</text><text x="457" y="381">SKM 25 plug</text><text x="666" y="319">Holder or work clamp</text><text x="812" y="319">Copper test piece</text>
+    <text x="30" y="448">Place sense tips inside the source clips, close to the socket body and jaw contact. Record both points for every test.</text></g>
+  </g>
+</svg>
