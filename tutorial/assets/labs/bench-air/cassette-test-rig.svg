@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 660" role="img" aria-labelledby="title desc">
+  <title id="title">Filter cassette and airflow traverse bench</title>
+  <desc id="desc">Top drawing shows room air passing through a sealed cassette, protected blower and outlet adapter into a straight measuring duct. High and low pressure taps straddle the filter. The duct is 1250 millimetres long, with probe ports 850 millimetres after its inlet. Lower views show the one hundred millimetre square duct with sixteen equal-area sample positions and the cassette seat with rails and latches.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5 0 10Z" fill="#205b82"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="660" rx="16" fill="#f3f8fc"/>
+  <g font-family="system-ui,sans-serif" fill="#193148">
+    <text x="32" y="48" font-size="28" font-weight="750">P136 · Filter cassette and airflow test bench</text>
+    <text x="32" y="75" font-size="16">Dimensions in mm · Transfer the cassette seat from the delivered filter</text>
+    <rect x="28" y="96" width="984" height="254" rx="12" fill="#fff" stroke="#b8cada"/>
+    <rect x="28" y="365" width="468" height="268" rx="12" fill="#fff" stroke="#b8cada"/>
+    <rect x="512" y="365" width="500" height="268" rx="12" fill="#fff" stroke="#b8cada"/>
+    <text x="49" y="128" font-size="19" font-weight="700">Flow path and pressure taps · schematic side view</text>
+    <text x="49" y="397" font-size="19" font-weight="700">Duct traverse · looking into the duct</text>
+    <text x="534" y="397" font-size="19" font-weight="700">Cassette frame · looking at the inlet</text>
+    <g fill="#eaf3fa" stroke="#32546f" stroke-width="2">
+      <path d="M92 201h224v68H92Z"/>
+      <path d="M316 213h72v44h-72z"/>
+      <path d="M388 213l51-12v68l-51-12z"/>
+      <rect x="439" y="201" width="518" height="68"/>
+      <rect x="178" y="191" width="29" height="88" rx="2" fill="#d0e6da"/>
+      <rect x="70" y="430" width="160" height="160"/>
+      <rect x="545" y="425" width="170" height="170"/>
+      <rect x="558" y="438" width="144" height="144" rx="3" fill="#d0e6da"/>
+      <rect x="571" y="451" width="118" height="118" fill="#fff"/>
+    </g>
+    <g fill="none" stroke="#205b82" stroke-width="1.8">
+      <path d="M229 201v-40h-78v40" stroke-dasharray="4 3"/>
+      <path d="M794 200v70" stroke-dasharray="5 4"/>
+      <path d="M439 269v62M794 269v37M957 269v62"/>
+      <path d="M439 300H794M794 300h163M439 325h518" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <path d="M54 235h89" marker-end="url(#arrow)"/>
+      <path d="M245 235h49" marker-end="url(#arrow)"/>
+      <path d="M344 235h26" marker-end="url(#arrow)"/>
+      <path d="M469 235h122" marker-end="url(#arrow)"/>
+      <path d="M855 235h111" marker-end="url(#arrow)"/>
+      <path d="M70 470h160M70 510h160M70 550h160M110 430v160M150 430v160M190 430v160" stroke-dasharray="3 4" opacity=".65"/>
+      <path d="M708 450h35M684 510h59M699 578h44"/>
+      <path d="M548 431v154M711 431v154" stroke-width="4"/>
+    </g>
+    <g fill="#205b82">
+      <circle cx="151" cy="202" r="4"/><circle cx="229" cy="202" r="4"/>
+      <circle cx="90" cy="450" r="3.5"/><circle cx="130" cy="450" r="3.5"/><circle cx="170" cy="450" r="3.5"/><circle cx="210" cy="450" r="3.5"/>
+      <circle cx="90" cy="490" r="3.5"/><circle cx="130" cy="490" r="3.5"/><circle cx="170" cy="490" r="3.5"/><circle cx="210" cy="490" r="3.5"/>
+      <circle cx="90" cy="530" r="3.5"/><circle cx="130" cy="530" r="3.5"/><circle cx="170" cy="530" r="3.5"/><circle cx="210" cy="530" r="3.5"/>
+      <circle cx="90" cy="570" r="3.5"/><circle cx="130" cy="570" r="3.5"/><circle cx="170" cy="570" r="3.5"/><circle cx="210" cy="570" r="3.5"/>
+    </g>
+    <g font-size="15">
+      <text x="46" y="217">Air</text>
+      <text x="190" y="151" text-anchor="middle">ΔP meter</text>
+      <text x="141" y="189" text-anchor="end">H</text><text x="239" y="189">L</text>
+      <text x="191" y="296" text-anchor="middle">Cassette</text>
+      <text x="348" y="196" text-anchor="middle">Guarded blower</text>
+      <text x="764" y="188">Probe plane</text>
+      <text x="616" y="294" text-anchor="middle">850</text>
+      <text x="875" y="294" text-anchor="middle">400</text>
+      <text x="698" y="319" text-anchor="middle">1,250 straight</text>
+      <text x="251" y="449" font-weight="700">100 × 100 inside</text>
+      <text x="251" y="478">Four heights and</text>
+      <text x="251" y="500">four insertion depths</text>
+      <text x="251" y="532">12.5, 37.5,</text>
+      <text x="251" y="554">62.5 and 87.5</text>
+      <text x="251" y="584">Start at the inner wall.</text>
+      <text x="752" y="455">Rail holds frame square</text>
+      <text x="752" y="515">Keep media opening clear</text>
+      <text x="752" y="583">Continuous gasket under rim</text>
+      <text x="544" y="617">Latch the frame evenly against the gasket.</text>
+    </g>
+  </g>
+</svg>

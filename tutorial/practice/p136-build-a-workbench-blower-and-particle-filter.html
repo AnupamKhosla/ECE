@@ -7,6 +7,7 @@
 <meta name="description" content="Assemble a guarded 12 V air mover, measure installed airflow and filter resistance, and price a serviceable product for an Indian shop.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -20,55 +21,91 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <figure class="course-photo">
-      <img src="../assets/bms/air-handler.jpg" width="1109" height="738" loading="lazy" alt="Commercial air handling unit in a plant room. Numbered arrows identify the supply duct, fan compartment, flex joint, coil section, filter compartment and mixed-air duct.">
-      <figcaption>This large air handler separates the filter and fan compartments. Look for the straight sections where airflow and filter pressure can be measured.<br><small>Photo by P199. <a href="https://commons.wikimedia.org/wiki/File:Air_handling_unit.JPG">Original photograph</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+      <a class="image-preview-figure" href="../assets/bms/air-handler.jpg" data-image-preview="Commercial air-handling equipment" data-preview-source="p136-ahu-credit" aria-haspopup="dialog" aria-label="Enlarge the commercial air handling unit">
+        <img src="../assets/bms/air-handler.jpg" width="1109" height="738" loading="lazy" alt="Commercial air handling unit in a plant room. Numbered arrows identify the supply duct, fan compartment, flex joint, coil section, filter compartment and mixed-air duct.">
+      </a>
+      <figcaption>This large air handler separates the filter and fan compartments. Look for the straight sections where airflow and filter pressure can be measured.<br><small>Photo by P199. <a id="p136-ahu-credit" href="https://commons.wikimedia.org/wiki/File:Air_handling_unit.JPG">Original photograph</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
     </figure>
-    <p class="course-video"><b>Watch.</b> Watch the meter setup and sample storage before measuring velocity across your own test duct. <a href="https://www.youtube.com/watch?v=snwbPOpL4Ok">TSI · Instrument set-up for a duct traverse</a>.</p>
+    <p class="course-video"><b>Watch the measurement setup.</b> In the first video, follow probe orientation and sample storage. In the second, see how two pressure connections measure the drop across a filter. <a href="https://www.youtube.com/watch?v=snwbPOpL4Ok">TSI · Instrument set-up for a duct traverse</a> · <a href="https://www.youtube.com/watch?v=Jp2pZydCp28">HVAC School · Static pressure and manometer basics</a>.</p>
     <h2>Choose which customer problem to test</h2>
     <p>For the blower, start with directed cooling of an unpowered jig or a clean bench enclosure. For the filtration option, make a recirculating particles-only prototype for an ordinary indoor space. Give each its own airflow, noise, service and price target. Keep hazardous processes outside this prototype’s scope. Welding fume needs suitable source extraction and exposure controls. A bench jet can spread dust. <a href="https://www.epa.gov/indoor-air-quality-iaq/guide-air-cleaners-home">EPA · Air cleaners</a> · <a href="https://www.osha.gov/sites/default/files/publications/OSHA_FS-3647_WELDING.pdf">OSHA · Welding fume and gases</a>.</p>
     <p>For a training target, use at least 35 m³/h installed at the guarded nozzle, 35 m³/h with a clean filter and 30 m³/h at a simulated service restriction. Save the current and noise at those operating points. Ask customers which task takes time, what they use now and whether they can source the replacement filter locally. These targets are for screening a prototype.</p>
 
-    <h2>Make the guarded 12 V assembly</h2>
+    <h2>Buy the blower parts, cassette and test equipment</h2>
+    <p>Use the sourceable, guarded 12 V assembly from P133 as the starting hardware. Keep its intake and outlet guards in both test configurations. The worked model further down uses examples from a Delta curve, so use the NMB curve for a bench built with the P133 module. <a href="p133-hand-build-a-bench-blower.html">P133 · Exact blower, power parts and case drawings</a>.</p>
     <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Part</th><th scope="col">Selection and fit</th></tr></thead>
+      <thead><tr><th scope="col">Qty and part</th><th scope="col">Selection and fit</th><th scope="col">India source and price</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Centrifugal blower</th><td>Use a 12 V brushless blower with a published pressure–airflow curve and documented startup behaviour. The example Delta BFB1012M-A lists 0.66 A maximum input current and about 46.6 m³/h free airflow. Verify the exact suffix, connector and rotation direction.</td></tr>
-        <tr><th scope="row">Supply and harness</th><td>Use a protected, isolated external 12 V supply sized for the measured startup and steady current, such as a suitable 1.5 A bench supply for this case. Use a keyed DC input, a DC-rated switch, strain relief and branch protection coordinated with the measured startup and wire ratings.</td></tr>
-        <tr><th scope="row">Case and air path</th><td>Use an insulated or suitably earthed enclosure appropriate to the external supply arrangement. For this low-voltage trainer use a stiff insulated case, secured blower, finger guards on accessible openings, rubber mounting and a replaceable nozzle or cassette.</td></tr>
-        <tr><th scope="row">Filter and test points</th><td>Try a roughly 200 × 200 mm framed filter with a manufacturer pressure-drop curve, a continuous closed-cell gasket and a positive latch. Measure the purchased frame before cutting. Add capped, flush pressure taps on either side of the cassette.</td></tr>
+        <tr>
+          <th scope="row">1 · Guarded blower and supply <span class="preview-links"><a class="preview-trigger" href="https://nmbtc.com/wp-content/uploads/parts/images/09533GA%20product%20picture.jpg" data-image-preview="NMB 09533GA centrifugal blower" data-preview-note="Locate the face inlet and rectangular discharge. Use the 12M-AA-00 in the P133 housing." data-preview-source="p136-nmb-credit" aria-haspopup="dialog">View blower</a></span></th>
+          <td>P133 specifies the NMB 09533GA-12M-AA-00 and external 12 V / 2.08 A adapter. A supply change calls for the same startup, wiring and protection checks.</td>
+          <td><a href="p133-hand-build-a-bench-blower.html">See the P133 India buying table</a> · <a id="p136-nmb-credit" href="https://nmbtc.com/parts/09533ga-12m-aa-00/">NMB · Photo and specifications</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">2 · Framed filter samples <span class="preview-links"><a class="preview-trigger" href="https://www.sunfil.in/images/Products/Hepa-Filter---Mini-Plated.jpg" data-image-preview="Sun Filtration mini-pleat filter" data-preview-note="Reference for a rigid frame and pleated media. Quote your own frame dimensions and resistance in the actual flow range." data-preview-source="p136-filter-credit" aria-haspopup="dialog">View filter frame</a></span></th>
+          <td>Request a nominal 200 × 200 mm frame with about 45–50 mm depth if available. State the particulate efficiency target and request both price and clean pressure drop at 30, 35 and 45 m³/h. Use 20 Pa at 35 m³/h as an initial clean-filter pressure allowance for the worked example. Verify fit and flow on one sample before ordering replacements or a second lot.</td>
+          <td>Request a small custom-size quote and documentation. <a id="p136-filter-credit" href="https://www.sunfil.in/products/air-filters/hepa-filter-mini-plated">Sun Filtration, Chennai</a> · <a href="https://www.aeriusindustries.co.in/hepa-filters.html">Aerius, Faridabad</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 set · Duct, seat and taps <span class="preview-links"><a class="preview-trigger" href="https://upload.wikimedia.org/wikipedia/commons/f/fa/Perforated_steel.jpg" data-image-preview="Perforated sheet for the intake guard" data-preview-note="Example stock. Keep a rigid guard in place when swapping the cassette or using a restriction plate." data-preview-source="p136-sheet-credit" aria-haspopup="dialog">View guard stock</a></span></th>
+          <td>1 mm aluminium for the duct, external joining angle, two case rails, rigid mount plate, continuous 3 mm closed-cell gasket, two latches, two flush pressure taps, caps and matching tubing. Ask the fabricator to quote the long straight duct and tapered adapter separately. The blower carries its own guards.</td>
+          <td><a href="https://www.kanakratnametalindustries.co.in/aluminium-sheet.html">Kanakratna · Aluminium sheet enquiry</a> · <a id="p136-sheet-credit" href="https://commons.wikimedia.org/wiki/File:Perforated_steel.jpg">Guard photo · Tahini, CC BY 2.0</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 · Hot-wire anemometer <span class="preview-links"><a class="preview-trigger" href="https://static.testo.com/image/upload/c_pad,h_490,w_860/f_auto/q_auto/v1/HQ/testo-405i-velocity-side-v2.jpg" data-image-preview="Testo 405i hot-wire anemometer" data-preview-note="The sensing tip goes through a capped probe port. Mark insertion depth from the inside face. Set the sensing direction as the manufacturer shows." data-preview-source="p136-testo-velocity" aria-haspopup="dialog">View velocity probe</a></span></th>
+          <td>Testo 405i, part 0560 1405, with a compatible device for readings. At 0–2 m/s, Testo quotes ±(0.10 m/s + 5% of reading). Borrow it or quote a calibrated equivalent with a slender probe and better low-speed accuracy when the results are close to the target.</td>
+          <td><a id="p136-testo-velocity" href="https://www.testo.com/en-IN/testo-405i-thermal-anemometer-with-smartphone-operation/p/0560-1405">Testo India · ₹19,175</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 · Differential manometer <span class="preview-links"><a class="preview-trigger" href="https://static.testo.com/image/upload/c_pad,h_490,w_860/f_auto/q_auto/v1/HQ/0563-0510-druck-set-testo-510.jpg" data-image-preview="Testo 510 differential pressure kit" data-preview-note="Connect both tubes across the cassette, with H upstream and L downstream. Equalise and zero the gauge first." data-preview-source="p136-testo-pressure" aria-haspopup="dialog">View pressure kit</a></span></th>
+          <td>Testo 510 kit, part 0563 0510, with two dry hose paths. At 0–30 Pa, quoted accuracy is ±3 Pa, with 1 Pa display resolution. Check the calibration and zero before use.</td>
+          <td><a id="p136-testo-pressure" href="https://www.testo.com/en-IN/p/0563-0510">Testo India · ₹14,430</a>.</td>
+        </tr>
       </tbody>
     </table></div>
+    <p>The two documented instrument prices total ₹33,605 as checked on 22 November 2026. Price the meters as shared shop equipment or borrow a calibrated set for the first measurement run. Confirm tax, delivery and calibration terms with the supplier.</p>
+    <h2>Build the cassette and measuring duct</h2>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/bench-air/cassette-test-rig.svg" data-image-preview="Filter cassette and airflow bench drawing" aria-haspopup="dialog" aria-label="Enlarge the filter cassette and duct drawing">
+        <img src="../assets/labs/bench-air/cassette-test-rig.svg" width="1040" height="660" loading="lazy" decoding="async" alt="Dimensioned 1,250 mm test duct, the locations of two filter pressure taps and sixteen equal-area airflow measurement points">
+      </a>
+      <figcaption>Build the four-port measuring section and swap the cassette from the upstream side. <a href="../assets/labs/bench-air/cassette-test-rig.svg" download>Download the shop drawing</a>.</figcaption>
+    </figure>
     <ol class="steps">
-      <li>Mark the blower outline and outlet from the supplier drawing. Cut the mounting plate for the exact part, fit the guards, and secure the blower without twisting the frame. Keep the supply outside the case.</li>
-      <li>With power disconnected, wire DC positive through branch protection and the switch to blower positive. Return blower negative to DC negative. Verify the documented pinout and the harness continuity before connecting the unit to the current-limited supply. Take the initial current and airflow readings through the guarded opening.</li>
-      <li>For the blower version, fit a short detachable nozzle to the outlet so air reaches the target without a long narrow restriction. For the filter version, put the gasketed cassette upstream of a plenum and the blower, with a guard over the inlet and outlet. Keep the cassette accessible for replacement and separate the intake from the discharge so the jet does not immediately return to the inlet.</li>
-      <li>Check the gasket around the entire filter perimeter so air passes through the media. A gap can increase measured flow while letting unfiltered air bypass the media. Fix fit and latch repeatability before comparing performance. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · Drawing, current rating and fan curve</a>.</li>
+      <li>Take the blower’s baseline voltage and running current through the guarded nozzle before adding the filter. Use a common outlet adapter to the same measuring duct for each configuration. Photograph and record the joints so the second bench run uses the same geometry.</li>
+      <li>Dry-fit the cassette into a removable upstream plenum. Start with the inside distance between the rails 2 mm wider than the measured frame. Size the aperture to the clear media area and leave a full flat land for the gasket. Drill the seat and fit two positive latches to compress the gasket evenly. Close the cassette on a paper strip at each corner and along each side. Adjust the seat or latch if any section fails to grip the strip. Keep the cassette and blower guard independently attached.</li>
+      <li>Put one pressure tap in a flat wall upstream of the filter and one downstream in the same-cross-section plenum, away from the fan inlet and turn into the blower. Drill and deburr each opening and seat each tap flush on the inside face. Run the hoses clear of the impeller and label H upstream and L downstream. Connect them to the corresponding gauge ports, then zero the gauge with both at the same pressure before measuring. Cap unused taps. <a href="https://www.dwyeromega.com/en-us/resources/air-filter-gages-and-switches">DwyerOmega · Filter pressure connections</a>.</li>
+      <li>For a 100 × 100 mm clear duct, cut two 1,250 × 102 mm top and bottom blanks and two 1,250 × 100 mm wall blanks from 1 mm sheet. Trap the side walls between the caps. Use exterior angles and a continuous seal, with no protrusions in the flow path. Deburr, square and support the duct on two stable stands. Fit a gradual, sealed adapter between the guarded outlet and the straight duct. Measure the actual inside width and height after assembling.</li>
+      <li>Mark the probe plane 850 mm after the straight duct begins, leaving 400 mm before the exit. Drill four side ports at heights of 12.5, 37.5, 62.5 and 87.5 mm from the inside base, sized to the probe and its removable seal. The equivalent diameter of the 100 mm square duct is about 113 mm by the method in the TSI note. Keep the exit clear and account for nearby obstructions if the setup changes. <a href="https://tsi.com/getmedia/4f2a0494-eec5-47b5-af17-f41652fad93b/TSI-106?ext=.pdf">TSI · Traverse geometry and placement</a>.</li>
     </ol>
 
     <h2>Predict and then measure installed airflow</h2>
     <p>The fan curve gives pressure that the blower can develop at each flow. The duct, guard, filter and enclosure demand pressure at that same flow. Their intersection sets the operating point. The <a href="../assets/labs/bench-air/airflow.py" download>Python calculation</a> uses a few approximate readings from Delta’s 12 V curve and illustrative quadratic resistance curves. Run <code>python3 airflow.py</code> and compare the <a href="../assets/labs/bench-air/operating-points.csv" download>calculated results</a>. These are predictions for example restrictions. Replace the example values with measurements before choosing a product fan. <a href="https://webcontent.greenheck.com/atg-cms-prod/docs/librariesprovider2/application-articles/application-articles/perf_basics.pdf">Greenheck · Fan and system curves</a>.</p>
     <figure class="course-photo">
-      <img src="../assets/labs/bench-air/blower-operating-points.png" width="1180" height="676" loading="lazy" decoding="async" alt="The blower curve intersects the clean-filter curve near 38 cubic metres per hour and the loaded-filter curve near 31.">
-      <figcaption>The estimate gives 40.59 m³/h at the nozzle, 38.42 with a clean cassette, and 31.39 with the harder restriction. Free-air flow is about 46.6 m³/h for this blower.</figcaption>
+      <a class="image-preview-figure" href="../assets/labs/bench-air/blower-operating-points.png" data-image-preview="Example fan and system curves" aria-haspopup="dialog" aria-label="Enlarge the modeled fan and system curves">
+        <img src="../assets/labs/bench-air/blower-operating-points.png" width="1180" height="676" loading="lazy" decoding="async" alt="The Delta blower model intersects the clean-filter curve near 38 cubic metres per hour and the loaded-filter curve near 31.">
+      </a>
+      <figcaption>The Delta example gives 40.59 m³/h at the nozzle, 38.42 with a clean cassette, and 31.39 with the harder restriction. Its modelled free-air flow is about 46.6 m³/h. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · Model curve source</a>.</figcaption>
     </figure>
     <ol class="steps">
-      <li>Fit a straight temporary measuring duct that collects the whole outlet. With a known cross-section, measure normal air velocity across multiple equal-area positions away from the turbulent jet. Multiply the area-weighted mean in m/s by area in m² and by 3,600 for m³/h. For example, 1.36 m/s across a 100 mm round section is about 38.5 m³/h. Record the duct and its effect on the setup. Use a calibrated flow hood or a test lab for more defensible product figures.</li>
-      <li>Log installed supply voltage and current, startup peaks, airflow, cassette differential pressure, case temperature and noise at a documented distance and background level. Repeat with the clean cassette removed and refitted, then add a clean restriction plate to simulate higher resistance within the supplier’s limits. Leave the existing guards in place and keep the intake clear of loose material.</li>
+      <li>With the complete outlet flow collected, take four readings through each of the four ports at insertion depths of 12.5, 37.5, 62.5 and 87.5 mm from the inside wall. Orient the probe as specified for the normal flow component. Keep the other ports capped. Use the same settling and averaging time for all sixteen positions. Average the sixteen velocity readings and multiply by inside area and by 3,600. For a 100 mm square duct the factor is 36, so a mean of 0.97 m/s is about 35 m³/h.</li>
+      <li>Log installed voltage, steady and peak current, all sixteen velocities, cassette differential pressure, case temperature and noise at a documented distance and background level. Check the baseline, clean cassette and clean restriction plate within the blower’s operating limits, then reseat the clean filter and repeat. Keep the existing guards in place. The pressure drop across the cassette differs from the model’s total system resistance.</li>
       <li>Repeat with two or more assembly builds and two filter lots. Track the lowest installed flow and highest noise, current and temperature. Use a marked filter lot or service threshold tied to measured airflow before deciding when to replace the filter.</li>
     </ol>
+    <p>At 35 m³/h in this duct, the 405i’s stated velocity tolerance alone is equivalent to about ±5.4 m³/h. Add uncertainty from flow profile, internal area, leaks and repeatability. If the uncertainty overlaps the target, record the test as inconclusive and repeat with a better calibrated setup. Use a test lab for product airflow claims. <a href="https://www.testo.com/en-IN/testo-405i-thermal-anemometer-with-smartphone-operation/p/0560-1405">Testo · Velocity specification</a>.</p>
     <p>For a fixed particle size, a rough clean-air estimate is airflow × captured fraction. With 85% capture through the media and an assumed 4% unfiltered bypass, 38.42 × 0.85 × 0.96 is about 31.35 m³/h. Dividing by a 30 m³ room gives about 1.04 equivalent clean-air changes per hour under a well-mixed assumption. If the customer needs three, the target would be 90 m³/h. A laboratory assembly-level CADR test provides evidence for a product claim. The filter media label and free-air fan specification alone cannot establish it. <a href="https://www.epa.gov/air-research/research-diy-air-cleaners-reduce-wildfire-smoke-indoors">EPA · DIY filter performance tests</a>.</p>
 
     <h2>Work out the India pilot before ordering stock</h2>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Illustrative small-batch cost</th><th scope="col">Rupees per filter unit</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Blower, filter and external supply</th><td>₹820 + ₹360 + ₹420</td></tr>
-        <tr><th scope="row">Case, guards and hardware</th><td>₹640 + ₹190</td></tr>
-        <tr><th scope="row">Assembly and checks, packaging, service reserve</th><td>₹350 + ₹140 + ₹180</td></tr>
-        <tr><th scope="row">Total variable cost</th><td>₹3,100</td></tr>
+        <tr><th scope="row">Blower, adapter, holder and two fuses</th><td>₹4,670 based on P133 supplier listings</td></tr>
+        <tr><th scope="row">Filter, case and guards, remaining electrical parts</th><td>₹550 + ₹790 + ₹700 assumed for the exercise</td></tr>
+        <tr><th scope="row">Assembly and checks, packaging, service reserve</th><td>₹350 + ₹140 + ₹180 assumed for the exercise</td></tr>
+        <tr><th scope="row">Worked variable cost</th><td>₹7,380 before any unbudgeted delivery or tax</td></tr>
       </tbody>
     </table></div>
-    <p>At fictional net receipts of ₹4,200 per unit after channel and shipping fees and excluding tax, contribution is ₹1,100. An illustrative ₹55,000 in fixed tooling and test costs would take 50 units to recover. Replace each figure with landed supplier quotes, measured labour, channel terms and a test-lab quote. Include spares, returns and replacement filter availability. Record whether customers have an actual task, a price they can pay and enough repeat demand for a pilot.</p>
+    <p>At hypothetical net receipts of ₹8,500 per unit after channel and shipping fees and excluding tax, the contribution would be ₹1,120 in this example. An assumed ₹55,000 in fixed tooling and test costs would take 50 units to recover. Replace the assumptions with landed quotes, measured labour, actual channel terms and a lab quote before pricing a pilot. Include spares and replacement filter availability.</p>
     <p>Get the exact model classified before selling. The 2026 household, commercial and similar appliances Quality Control Order expressly includes DC and battery air purifiers in item 90 and specifies IS 302 Part 1. The BIS catalogue identifies IS 17531:2021 as the portable indoor purifier performance specification. Confirm the current safety standard, relevant order and implementation date with BIS for the finished assembly and its intended use. Get a separate classification for the blower. Treat the external adapter and the finished product as separate items when checking approvals. <a href="https://www.bis.gov.in/wp-content/uploads/2026/04/Safety-of-Household-Commercial-and-Similar-Electrical-Appliances-Quality-Control-Order-2026.pdf">India Gazette · Appliances QCO 2026</a> · <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en">BIS · Current Scheme I list</a>.</p>
     <p>For the pilot record, keep a versioned BOM, per-unit test sheet, filter specification, warranty and spares plan. Check Legal Metrology retail-package declarations and CPCB applicability for your specific product and business. If the blower and filter cost too much for the measured benefit, use the same process on a local fixture, equipment bracket or replaceable enclosure that solves a confirmed customer problem. <a href="https://consumeraffairs.gov.in/index.php/pages/legal-metrology-overview">Department of Consumer Affairs · Legal Metrology</a> · <a href="https://cpcb.nic.in/uploads/Projects/E-Waste/FAQ_ewaste_23012024.pdf">CPCB · E-waste scope</a>.</p>
     <a class="crosslink" href="../career/c19-ludhiana-repair-shop.html">C19 · Compare the prototype with other work your shop customers need</a>
@@ -76,5 +113,6 @@
 </div>
 <script src="../assets/toc.js?v=20261121-robotics"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>
