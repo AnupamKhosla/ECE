@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img" aria-labelledby="title desc">
+  <title id="title">W09 inverter power and interface map</title>
+  <desc id="desc">A functional drawing from the documented mains entry to the inverter and isolated DC output. Auxiliary controls connect to the controller. Protective earth follows a distinct path to the case and approved accessible metal bonds.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 7 4 0 8z" fill="#385474"/></marker></defs>
+  <style>
+    text{font-family:system-ui,sans-serif;fill:#142637;font-size:16px}.title{font-size:27px;font-weight:700}.head{font-size:18px;font-weight:700}
+    .box{fill:#edf5fb;stroke:#385474;stroke-width:1.5}.module{fill:#fff3da;stroke:#866316;stroke-width:1.5}.bond{fill:#edf8ed;stroke:#35713e;stroke-width:1.5}
+    .path{fill:none;stroke:#385474;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <rect width="1000" height="420" fill="white"/>
+  <text x="34" y="43" class="title">W09 · Power and harness interfaces</text>
+  <text x="34" y="73">Functional drawing · use the released schematic and terminal IDs for the chosen assembly</text>
+  <g text-anchor="middle">
+    <rect x="35" y="118" width="210" height="98" rx="8" class="box"/>
+    <text x="140" y="150" class="head">AC entry</text><text x="140" y="176">Cord, anchorage, switch</text><text x="140" y="198">Approved line protection</text>
+    <rect x="305" y="118" width="390" height="98" rx="8" class="module"/>
+    <text x="500" y="150" class="head">Documented inverter assembly</text><text x="500" y="176">Filter, bus, switching and isolated transformer</text><text x="500" y="198">Rectifier, choke, regulation and shutdown</text>
+    <rect x="755" y="118" width="210" height="98" rx="8" class="box"/>
+    <text x="860" y="150" class="head">DC welding output</text><text x="860" y="176">Insulated panel sockets</text><text x="860" y="198">Electrode and work leads</text>
+    <rect x="305" y="266" width="390" height="62" rx="8" class="box"/>
+    <text x="500" y="291" class="head">Controls, feedback and cooling</text><text x="500" y="314">Setpoint, indicators, fan and thermal sensing</text>
+    <rect x="35" y="266" width="210" height="62" rx="8" class="bond"/>
+    <text x="140" y="291" class="head">Protective earth</text><text x="140" y="314">Chassis and panel bonds</text>
+    <text x="894" y="288">Work return stays in the</text><text x="894" y="310">welding circuit.</text>
+  </g>
+  <g class="path"><path d="M250 167H298M701 167H748M500 262V222M140 222V260"/></g>
+  <text x="35" y="378">Record connector IDs, wire and lug approvals, torque, intended routing and the inspection method on the harness drawing.</text>
+</svg>

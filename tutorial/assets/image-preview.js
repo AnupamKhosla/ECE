@@ -1,6 +1,23 @@
 (() => {
-  const dialog = document.querySelector('#image-preview');
-  if (!dialog || typeof dialog.showModal !== 'function') return;
+  if (!document.querySelector('a[data-image-preview]')) return;
+  const dialog = document.createElement('dialog');
+  if (typeof dialog.showModal !== 'function') return;
+  dialog.id = 'image-preview';
+  dialog.className = 'image-preview';
+  dialog.setAttribute('aria-labelledby', 'image-preview-title');
+  dialog.innerHTML = `
+    <div class="image-preview-header">
+      <h2 id="image-preview-title">Image preview</h2>
+      <form method="dialog"><button class="image-preview-close" autofocus>Close</button></form>
+    </div>
+    <img alt="" hidden referrerpolicy="no-referrer">
+    <p class="image-preview-status" role="status" hidden></p>
+    <p id="image-preview-note" hidden></p>
+    <div class="image-preview-footer">
+      <a class="image-preview-original" target="_blank" rel="noopener noreferrer">Open full-size image</a>
+      <a class="image-preview-credit" target="_blank" rel="noopener noreferrer" hidden></a>
+    </div>`;
+  document.body.append(dialog);
 
   const title = dialog.querySelector('#image-preview-title');
   const image = dialog.querySelector('img');
