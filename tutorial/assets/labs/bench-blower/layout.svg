@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 660" role="img" aria-labelledby="title desc">
+  <title id="title">P133 enclosure and wiring for the external-adapter bench blower</title>
+  <desc id="desc">Drawing of a 160 by 140 by 80 millimetre case. The fan faces the outlet end and has a top intake. The guard frames and guarded outlet transition sit outside the case. The opposite end has a DC jack and switch. The external supply connects through positive fuse and switch to the blower, with a separate negative return.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5 0 10Z" fill="#1c5676"/>
+    </marker>
+  </defs>
+  <rect width="1020" height="660" rx="16" fill="#f4f8fc"/>
+  <g font-family="system-ui,sans-serif" fill="#193148">
+    <text x="32" y="47" font-size="29" font-weight="750">P133 · External-adapter bench blower</text>
+    <text x="32" y="74" font-size="16">Rev A · Dimensions in mm · Transfer part cutouts from the physical parts</text>
+    <rect x="30" y="94" width="495" height="350" rx="12" fill="#fff" stroke="#b9cadd"/>
+    <rect x="541" y="94" width="449" height="350" rx="12" fill="#fff" stroke="#b9cadd"/>
+    <text x="50" y="126" font-size="19" font-weight="750">Top view · lid and blower</text>
+    <text x="561" y="126" font-size="19" font-weight="750">Side view · air path and enclosure</text>
+    <g stroke="#294a64" stroke-width="2">
+      <rect x="133" y="157" width="288" height="252" fill="#f8fbff"/>
+      <rect x="154" y="195" width="184" height="180" rx="8" fill="#eaf3fa" stroke-dasharray="6 4"/>
+      <circle cx="251" cy="283" r="52" fill="#fff"/>
+      <path d="M240 283H262M251 272V294"/>
+      <rect x="117" y="246" width="17" height="75" fill="#e4eef6"/>
+      <path d="M154 269H133M154 299H133" stroke-dasharray="4 3"/>
+      <rect x="626" y="209" width="288" height="144" fill="#f8fbff"/>
+      <rect x="650" y="220" width="173" height="59" rx="4" fill="#eaf3fa" stroke-dasharray="6 4"/>
+      <rect x="660" y="187" width="158" height="22" fill="#e4eef6"/>
+      <path d="M660 187H818" stroke-dasharray="4 3"/>
+      <path d="M650 235L588 219V319L650 273Z" fill="#e4eef6"/>
+      <path d="M588 219V319" stroke-dasharray="4 3"/>
+      <path d="M914 262h-15M914 285h-15" stroke-width="4"/>
+      <path d="M656 353v8h23v-8M855 353v8h23v-8"/>
+    </g>
+    <g stroke="#1c5676" stroke-width="1.6" fill="none">
+      <path d="M133 409V431M421 409V431M421 157H457M421 409H457"/>
+      <path d="M133 427H421" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <path d="M450 157V409" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <path d="M133 283H99" marker-end="url(#arrow)"/>
+      <path d="M738 154V181" marker-end="url(#arrow)"/>
+      <path d="M631 262H571" marker-end="url(#arrow)"/>
+      <path d="M914 209H953M914 353H953"/>
+      <path d="M945 209V353" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    </g>
+    <g font-size="15">
+      <text x="277" y="422" text-anchor="middle">160</text>
+      <text x="463" y="288">140</text>
+      <text x="128" y="151" text-anchor="end">Datum A</text>
+      <text x="224" y="221" font-weight="650">Fan below lid</text>
+      <text x="251" y="315" text-anchor="middle">Intake</text>
+      <text x="345" y="383">Power end</text>
+      <text x="139" y="389">Outlet end</text>
+      <text x="738" y="149" text-anchor="middle">Intake guard · 12 mm spacer</text>
+      <text x="954" y="285">80</text>
+      <text x="565" y="390">Join scroll mouth to wider guarded outlet.</text>
+      <text x="565" y="415">J1 and S1 mount at the opposite end.</text>
+    </g>
+    <rect x="30" y="462" width="960" height="171" rx="12" fill="#fff" stroke="#b9cadd"/>
+    <text x="51" y="493" font-size="19" font-weight="750">Electrical · 12 V DC inside the case</text>
+    <g stroke="#193b56" stroke-width="2.5" fill="none" stroke-linejoin="round">
+      <path d="M167 544H385 M476 544H565 M621 544H783 M783 591H167"/>
+      <path d="M565 544L612 526"/>
+      <rect x="385" y="533" width="91" height="22"/>
+      <rect x="783" y="524" width="173" height="80" rx="8"/>
+    </g>
+    <g fill="#fff" stroke="#193b56" stroke-width="2.5">
+      <circle cx="294" cy="544" r="5"/><circle cx="294" cy="591" r="5"/>
+      <circle cx="565" cy="544" r="4"/><circle cx="621" cy="544" r="4"/>
+    </g>
+    <g font-size="15">
+      <text x="51" y="548">12 V adapter +</text>
+      <text x="51" y="595">Adapter return</text>
+      <text x="294" y="525" text-anchor="middle">J1 centre +</text>
+      <text x="294" y="614" text-anchor="middle">J1 sleeve −</text>
+      <text x="430" y="523" text-anchor="middle">F1 · 2 A</text>
+      <text x="593" y="581" text-anchor="middle">S1 · ON/OFF</text>
+      <text x="754" y="535">Red</text>
+      <text x="735" y="581">Black</text>
+      <text x="869" y="558" text-anchor="middle" font-weight="700">M1 · NMB blower</text>
+      <text x="869" y="578" text-anchor="middle">09533GA-12M-AA-00</text>
+    </g>
+  </g>
+</svg>

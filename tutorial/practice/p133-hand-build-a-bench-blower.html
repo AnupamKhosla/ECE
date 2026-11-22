@@ -7,6 +7,7 @@
 <meta name="description" content="Mark, cut, drill and assemble a guarded bench blower housing, then use a simple jig and test sheet to make a small batch in an Indian workshop.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -15,43 +16,101 @@
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
     <span class="eyebrow">P133</span>
     <h1>Hand-build a 12 V bench blower</h1>
-    <p class="lede">Make a metal housing, fit a guarded blower and build a second unit from the same drawing and drill jig. Use it to direct clean air at a bench fixture.</p>
+    <p class="lede">Make a metal housing, fit a guarded centrifugal blower and run it from an external 12 V adapter. Use the first passing case to make a drilling pattern for a second unit.</p>
     <div class="meta"><span><b>Time</b> 2–3 workshop sessions</span><span><b>Before wiring</b> <a href="p13-actuators-motors.html">P13 · Motors and supplies</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <figure class="course-photo">
-      <img src="../assets/photos/labs/fan.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Centrifugal blower with an inlet guard and an outlet housing">
-      <figcaption>The impeller sits inside the curved scroll. Use the outlet position to set the duct line on the enclosure blank.<br><small>Photo by Zakali Jia, scaled. <a href="https://commons.wikimedia.org/wiki/File:Centrifugal_blower_fan.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      <a class="image-preview-figure" href="../assets/photos/labs/fan.jpg" data-image-preview="Centrifugal blower and scroll housing" data-preview-source="p133-blower-example" aria-haspopup="dialog" aria-label="Enlarge the centrifugal blower photograph">
+        <img src="../assets/photos/labs/fan.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Centrifugal blower with an inlet guard and an outlet housing">
+      </a>
+      <figcaption>Reference blower showing the round inlet and side discharge. The parts table identifies the smaller module used for the build.<br><small>Photo by Zakali Jia, scaled. <a id="p133-blower-example" href="https://commons.wikimedia.org/wiki/File:Centrifugal_blower_fan.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
     </figure>
     <p class="course-video"><b>Watch.</b> Follow the cutter setup and workholding before marking your own fan inlet. <a href="https://www.youtube.com/watch?v=dlvSUNcsEeY">Malco · HC1/HC2 sheet-metal hole cutter</a>.</p>
 
     <h2>Buy the sample parts and lay them out</h2>
-    <p>Ask a local sheet-metal stockist for 1 mm aluminium and small angle offcuts. Ask an electronics supplier for a 12 V centrifugal blower with a dimension drawing and an airflow curve, an isolated external 12 V supply, a keyed DC connector, a DC-rated switch, a fuse holder, insulated terminals and wire. Get finger guards for the inlet and discharge, M4 enclosure hardware, rubber feet, a closed-cell gasket and cable clips. Buy one set and record the exact part numbers and landed prices in rupees before ordering a batch.</p>
-    <p>Orient the module flat under the lid, with the intake towards the lid and the discharge towards one end panel. Put the DC inlet and switch at the opposite end. Allow space to unplug the harness and remove the lid with a screwdriver. Check the vent opening, fastener lengths, electrical ratings and startup draw for the actual suffix. The Delta BFB1012M-A drawing is a starting example. Delta publishes a separate specification for BFB1012M-AF00. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · BFB1012M-A drawing and ratings</a> · <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-AF00.pdf">Delta · BFB1012M-AF00 specification</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Qty and part</th><th scope="col">What to buy and check</th><th scope="col">India source and example price</th></tr></thead>
+      <tbody>
+        <tr>
+          <th scope="row">1 · M1 centrifugal blower <span class="preview-links"><a class="preview-trigger" href="https://nmbtc.com/wp-content/uploads/parts/images/09533GA%20product%20picture.jpg" data-image-preview="NMB 09533GA centrifugal blower" data-preview-note="Family reference photo. Identify the mounting ears, axial inlet and tangential outlet. Order the 12M-AA-00 suffix with two leads." data-preview-source="p133-motor-photo" aria-haspopup="dialog">View blower</a></span></th>
+          <td>NMB 09533GA-12M-AA-00, 12 V DC brushless, ball bearings, 1.03 A nominal free-air current, 3,700 rpm and 28.6 CFM free airflow. The motor, windings, bearings, driver, impeller and scroll come assembled. Plan for the 97 × 93.5 × 33 mm outline and two Ø4.5 mm mounting holes in the series drawing. Red is positive and black is negative.</td>
+          <td><a href="https://www.digikey.in/en/products/detail/nmb-technologies-corporation/09533GA-12M-AA-00/15219278">DigiKey India · ₹2,485.22 quote snapshot</a> · <a href="https://nmbtc.com/wp-content/uploads/parts/documents/09533GA%20data%20sheet.pdf">NMB · Dimensions and M-class curve</a> · <a id="p133-motor-photo" href="https://nmbtc.com/parts/09533ga-12m-aa-00/">NMB · Family photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 · Adapter and mains cord <span class="preview-links"><a class="preview-trigger" href="https://cdn.shopify.com/s/files/1/1034/1611/products/ed7d9ba640f7aaf025b20e63a8ab3f15_16ff05f1-c3c3-46e5-8273-87f5152be43e.jpg?v=1576008088" data-image-preview="MEAN WELL GST25A desktop adapter" data-preview-note="Series photo. Check that the nameplate reads GST25A12-P1J. The detachable earthed IEC C13 power cord is ordered separately." data-preview-source="p133-adapter-photo" aria-haspopup="dialog">View adapter</a></span></th>
+          <td>MEAN WELL GST25A12-P1J, isolated external 12 V / 2.08 A. P1J has a 5.5 mm outer, 2.1 mm inner, 11 mm long centre-positive plug. Buy a matching earthed Indian 3-pin to C13 cord for its C14 inlet. Verify the adapter label and local certification for the supplied unit and cord. Use the intact adapter outside the blower case.</td>
+          <td><a href="https://in.element14.com/mean-well/gst25a12-p1j/adaptor-ac-dc-12v-2-08a/dp/2815879">element14 India · 2815879 · ₹1,393.53</a> · <a href="https://www.meanwell.com/Upload/PDF/GST25A/GST25A-SPEC.PDF">MEAN WELL · Adapter specification</a> · <a href="https://deltacab.co.in/brochure/PowerCords.pdf">Deltacab · C13 cord, ask for a quote</a> · <a id="p133-adapter-photo" href="https://www.tanotis.com/products/mean-well-gst25a12-p1j-ac-dc-power-supply-1-output-25-w-12-v-2-08-a">Tanotis · Adapter photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 · J1 panel DC jack <span class="preview-links"><a class="preview-trigger" href="https://www.mouser.sg/images/switchcraft/images/712AU_SPL.jpg" data-image-preview="Switchcraft sealed DC jack family" data-preview-note="Family reference. Order the 721AU 2.1 mm pin. Identify the mounting nut and three lugs. Leave the shunt lug isolated." data-preview-source="p133-jack-photo" aria-haspopup="dialog">View jack</a></span></th>
+          <td>Switchcraft 721AU, 2.1 mm centre pin, 5 A at 24 V DC. Test that the actual adapter plug seats fully and makes firm contact before cutting the panel. If needed to isolate the jack from metal, fit it on a small rigid insulating panel that covers a larger clearance window. Use only the centre and sleeve connections.</td>
+          <td><a href="https://in.element14.com/switchcraft-conxall/721au/dc-power-jack-2-1mm-5a-24v-soldr/dp/4734649">element14 India · 4734649</a> · <a href="https://www.switchcraft.com/assets/1/6/721AU_CD.pdf">Switchcraft · Mounting and contacts</a> · <a id="p133-jack-photo" href="https://www.mouser.sg/en/ProductDetail/Switchcraft/721AU">Mouser · Family photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 · S1 toggle switch <span class="preview-links"><a class="preview-trigger" href="https://mm.digikey.com/Volume0/opasdata/d220001/derivates/1/003/209/156/MN11SS1W01_sml%28200x200%29.jpg" data-image-preview="NKK MN11SS1W01 maintained toggle" data-preview-note="Check bushing, nut and solder lugs against the drawing. Mark the actual installed ON/OFF direction." data-preview-source="p133-switch-product" aria-haspopup="dialog">View switch</a></span></th>
+          <td>NKK MN11SS1W01, maintained SPST ON/OFF, 4 A at 30 V DC for a resistive load. Verify switching duty with NKK against measured startup current and the motor controller input. Use the drawing for the bushing, flat or lock washer, and solder lugs.</td>
+          <td><a id="p133-switch-product" href="https://www.digikey.in/en/products/detail/nkk-switches/MN11SS1W01/20840209">DigiKey India · MN11SS1W01</a> · <a href="https://www.nkkswitches.com/pdf/MN_ToggleSections_DP.pdf">NKK · DC rating and panel detail</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 holder + 2 fuses · F1 <span class="preview-links">
+            <a class="preview-trigger" href="https://assets.rs-online.com/image/upload/v1524798289/70278130.jpg" data-image-preview="Littelfuse covered ATO fuse holder" data-preview-note="Secure the body where the cap can be opened after unplugging the adapter and removing the lid." data-preview-source="p133-holder-photo" aria-haspopup="dialog">View holder</a>
+            <a class="preview-trigger" href="https://res.cloudinary.com/rsc/image/upload/b_rgb%3AFFFFFF%2Cc_pad%2Cdpr_2.625%2Cf_auto%2Ch_214%2Cq_auto%2Cw_380/c_pad%2Ch_214%2Cw_380/F7874126-01?pgw=1" data-image-preview="Littelfuse 2 A blade fuse" data-preview-note="Fit one grey 2 A fuse and retain a spare. Confirm the stamped rating and ATO size." data-preview-source="p133-fuse-photo" aria-haspopup="dialog">View fuse</a>
+          </span></th>
+          <td>Littelfuse FHAC0001ZXJ covered holder with 0287002.PXCN 2 A, 32 V DC fuses. Put F1 close to J1 in the positive lead. Match the crimp splices to the holder lead and harness wire. Check the fuse curve against measured startup and the supply current limit.</td>
+          <td><a href="https://www.digikey.in/en/product-highlight/l/littelfuse-commercial-vehicle-products/fhac-fhm-series-in-line-fuse-holders">DigiKey India · Holder · ₹704.20</a> · <a href="https://www.digikey.in/en/products/detail/littelfuse-inc/0287002-PXCN/3102552">Fuses · ₹43.75 each</a> · <a id="p133-holder-photo" href="https://us.rs-online.com/product/littelfuse/fhac0001zxj/70278130/">RS · Holder photo</a> · <a id="p133-fuse-photo" href="https://in.rsdelivers.com/product/littelfuse/0287002pxcn/littelfuse-2a-grey-car-fuse-32v-dc/7874126P">RS India · Fuse photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 set · Case, guards and harness <span class="preview-links">
+            <a class="preview-trigger" href="https://upload.wikimedia.org/wikipedia/commons/f/fa/Perforated_steel.jpg" data-image-preview="Perforated guard stock" data-preview-note="Pattern reference. Use 1 mm stainless with 3 mm holes on 4.5 mm staggered pitch and verify open area." data-preview-source="p133-guard-photo" aria-haspopup="dialog">View guard stock</a>
+            <a class="preview-trigger" href="../assets/photos/shop-labs/wire-end-ferrules.jpg" data-image-preview="Terminated wire examples" data-preview-note="Use insulated splices for this harness and insulated solder lugs at the jack and switch. Ferrules apply only if you add a compatible screw-clamp connection." data-preview-source="p133-wire-photo" aria-haspopup="dialog">View wire terminations</a>
+          </span></th>
+          <td>1 mm 5052 aluminium, 300 mm of 15 × 15 × 1.5 mm angle, 24 M4 case screws with washers and locknuts, two M4 blower fasteners sized after dry fit, four feet, separate mount screws for feet and guards, closed-cell gasket and perforated 304 stainless. Buy 0.5 mm² insulated red and black stranded wire, splices that fit the blower’s 26 AWG leads, heat-shrink and two cable clips.</td>
+          <td><a href="https://www.kanakratnametalindustries.co.in/aluminium-sheet.html">Kanakratna · Sheet quote</a> · <a id="p133-guard-photo" href="https://commons.wikimedia.org/wiki/File:Perforated_steel.jpg">Guard photo · Tahini, CC BY 2.0</a> · <a id="p133-wire-photo" href="p104-m12-sensor-cable-termination.html">P104 · Termination photo and credit</a>.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p>The blower, adapter, covered holder and two fuses total about ₹4,670 in the one-unit listings checked on 22 November 2026. Add the cord, jack, switch, harness, metalwork, guards, delivery and tax. For a local comparison, Vijay Sales in Ludhiana advertises 97 mm Delta blowers. Ask for a nameplate photo, exact suffix, new or used condition, curve and a one-unit landed quote before changing the cut pattern. <a href="https://www.blackairindia.com/blower-fans.html">Vijay Sales · Local blower enquiry</a>.</p>
 
     <h2>Make a cardboard pattern and cut the metal</h2>
-    <p>For a blower roughly 97 × 94 × 33 mm, start by mocking up a 160 × 140 × 80 mm box. The 1 mm lid and base cap the side walls. The two end panels fit between the long sides. Check the sample blower, guard flanges, mounting hardware, connector depth and wire bend in cardboard before committing to these blank sizes.</p>
+    <p>Start with a 160 × 140 × 80 mm case, measured without feet, guard or outlet transition. Orient the blower under the lid with the inlet up and the outlet toward the short end. Put the NMB outlet face about 12 mm inboard of the end panel’s inside face and start with the inlet centred across the 140 mm width. Dry-fit in cardboard, then mark the true opening, wires, mount holes and clearances from the parts.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/bench-blower/layout.svg" data-image-preview="P133 enclosure and wiring drawing" aria-haspopup="dialog" aria-label="Enlarge the P133 drawing">
+        <img src="../assets/labs/bench-blower/layout.svg" width="1020" height="660" loading="lazy" decoding="async" alt="Dimensioned top and side views of the P133 steel-guarded aluminium case, plus the 12 V fuse, switch and blower circuit">
+      </a>
+      <figcaption>Use the top and side views to register the blanks and plan the air path. Transfer each cutout after checking the actual hardware. <a href="../assets/labs/bench-blower/layout.svg" download>Download enclosure and wiring drawing</a>.</figcaption>
+    </figure>
+    <p>Set out a steel rule, square, caliper, scriber, centre punch, clamps, drill and HSS bits, metal hole cutter, nibbler, file, hand seamer and M4 drivers. Keep a wire stripper, correctly sized splice crimper, soldering iron, multimeter and current-limited bench supply for wiring and tests.</p>
+    <div class="preview-links">
+      <a class="preview-trigger" href="../assets/photos/caliper.jpg" data-image-preview="Digital caliper" data-preview-note="Measure the inlet diameter, outlet mouth and the actual threaded connector diameters." data-preview-source="p133-caliper-photo" aria-haspopup="dialog">View caliper</a>
+      <a class="preview-trigger" href="https://upload.wikimedia.org/wikipedia/commons/a/a6/Drills.JPG" data-image-preview="Drill press with workholding vice" data-preview-note="Clamp the backed blank before drilling. Set the fence to register the same reference corner on every lid." data-preview-source="p133-drill-photo" aria-haspopup="dialog">View drill press</a>
+      <a class="preview-trigger" href="https://www.malcotools.com/wp-content/uploads/2023/05/Malco_HC1_Catalog1.jpg" data-image-preview="Adjustable sheet-metal circle cutter" data-preview-note="Identify the pilot and the cutter arm. Check the tool’s diameter and material range against the measured inlet." data-preview-source="p133-cutter-photo" aria-haspopup="dialog">View intake cutter</a>
+      <a class="preview-trigger" href="../assets/photos/meter.jpg" data-image-preview="Digital multimeter" data-preview-note="Check jack polarity with DC volts and continuity with the adapter unplugged." data-preview-source="p133-meter-photo" aria-haspopup="dialog">View multimeter</a>
+    </div>
+    <p><small>Tool photos. <a id="p133-caliper-photo" href="https://commons.wikimedia.org/wiki/File:2020_Suwmiarka_cyfrowa.jpg">Caliper · Jacek Halicki, CC BY-SA 4.0</a> · <a id="p133-drill-photo" href="https://commons.wikimedia.org/wiki/File:Drills.JPG">Drill press · Plbcr, CC BY-SA 3.0</a> · <a id="p133-cutter-photo" href="https://www.malcotools.com/product/gold-standard-malco-hole-cutters/">Cutter · Malco</a> · <a id="p133-meter-photo" href="https://commons.wikimedia.org/wiki/File:UT61D_digital_multimeter_front.jpg">Meter · Anselm Schüler, CC BY-SA 4.0</a>.</small></p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Piece</th><th scope="col">Quantity</th><th scope="col">Starting blank, mm</th><th scope="col">Mark during the mock-up</th></tr></thead>
       <tbody>
         <tr><th scope="row">Lid and base</th><td>2</td><td>160 × 140</td><td>Guard and blower on the lid. Feet on the base.</td></tr>
         <tr><th scope="row">Long sides</th><td>2</td><td>160 × 78</td><td>Internal angle brackets clear of the impeller and harness.</td></tr>
         <tr><th scope="row">Ends</th><td>2</td><td>138 × 78</td><td>Outlet guard on one end. DC inlet and switch on the other.</td></tr>
+        <tr><th scope="row">Joining angles</th><td>12</td><td>25 mm lengths of 15 × 15 angle</td><td>Fasten walls and both caps. Transfer the hole centres with the parts clamped square.</td></tr>
+        <tr><th scope="row">Guard faces and frames</th><td>2</td><td>100 × 100 clear inlet face, 90 × 55 clear outlet face</td><td>Add solid mounting rims. Raise the inlet guard 12 mm on a rigid perimeter frame. Form a short tapered collar from the measured scroll mouth to the larger outlet face.</td></tr>
       </tbody>
     </table></div>
     <ol class="steps">
       <li><b>Pick two reference edges.</b> Mark the outlet end and one adjacent edge on each lid blank. Draw the intake centre and blower screw locations as offsets from those edges. Check the print scale against a dimension on the manufacturer's drawing and offer up the actual part. Trace the outlet onto the end-panel pattern with the lid and blower in their fitted positions.</li>
       <li><b>Cut and deburr.</b> Use a hand shear or have a local fabricator shear the rectangular blanks. Use a metal-cutting hole saw for the intake and a hand nibbler or appropriate metal-cutting saw for the outlet. Test on scrap of the same thickness. Clamp the sheet to a backing board and wear eye protection. Keep guards in place and hands, gloves and loose clothing clear of rotating tools. File and deburr both faces, including every hole. <a href="https://www.osha.gov/sites/default/files/2021-04/Drill%20Press%20-%20Trainer%20Script.pdf">OSHA · Drill press workholding and guarding</a>.</li>
       <li><b>Drill and dry-assemble.</b> Centre-punch the case fastener positions and drill clearance holes to suit the screws. Bolt the base, walls and lid through short internal angle brackets. Keep the lid removable and leave tool access to its nuts or use captive nuts. Check that the box sits flat and that the lid and guards fit without pulling the panels into shape. Remove all swarf before fitting the blower or wiring.</li>
-      <li><b>Fit the air path.</b> Seal the inlet perimeter against the lid with a gasket that clears the opening. Mount the blower on its intended fixings without distorting it. Fit a short, sealed transition between the rectangular blower mouth and end panel so air exits through the guard. Leave clearance from the impeller at both ends. Fasten both guards with tool-removable hardware and check their fit and access with power disconnected. Poorly fitting transitions, guards and nearby surfaces can reduce installed airflow. <a href="https://www.greenheck.com/resources/blog/understanding-fan-system-effects">Greenheck · Fan installation effects</a>.</li>
+      <li><b>Fit the air path.</b> Seal the inlet perimeter against the lid with a gasket clear of the opening. Use the two blower mounting ears, washers and fasteners with measured clearance from the impeller. Avoid distorting the scroll as you tighten the hardware. Fit the folded collar and both guards with tool-removable fasteners. At about 40% open area, the 90 × 55 mm perforated outlet face provides about 1,980 mm² net area before blockage by rims or fasteners. Check usable open area against the measured scroll opening. Verify guard rigidity and blade access with power unplugged. <a href="https://www.greenheck.com/resources/blog/understanding-fan-system-effects">Greenheck · Fan installation effects</a>.</li>
     </ol>
 
     <h2>Wire and test the first blower</h2>
     <ol class="steps">
-      <li>Keep mains in the external supply. With the DC input unplugged, take positive from the inlet through the fuse and switch to the blower positive. Return blower negative to the inlet negative through the harness. Use the connector pinout for your suffix and individually insulate any unused signal lead. Select the fuse and wire together using the blower's startup requirements and the DC ratings of the harness and supply.</li>
+      <li>With the DC input unplugged, wire J1 centre → F1 → S1 → M1 red. Wire M1 black directly back to the J1 sleeve. Meter-check the jack contacts with an unpowered mating plug and insulate the unused shunt lug. Mount the fuse close to the jack and the harness clear of the case edges. The adapter’s current limit may operate before the 2 A fuse opens. Check the adapter’s documented fault behaviour and size the whole harness for its available current.</li>
       <li>Secure the harness clear of the impeller, sharp edges and screw ends. Use insulated terminals, abrasion protection at metal openings and strain relief. With the supply and blower unplugged, check end-to-end polarity and switch action, and check that the two supply conductors are isolated from one another and from the case. Reconnect the blower, close the case and check both guards before applying power.</li>
-      <li>Start on a current-limited 12 V bench supply set to suit the module and harness. Verify that it starts consistently and that the outlet delivers air. Disconnect power if the blower rubs, trips its supply or draws more steady current than its rating. Investigate the mounting, wiring and air path before repeating the test.</li>
-      <li>Measure voltage, startup and steady current, airflow, noise and case temperature at specified test conditions. Keep the same duct, nozzle, microphone position and elapsed run time on later builds. Use the duct traverse and the example target of 35 m³/h at the guarded nozzle in <a href="p136-build-a-workbench-blower-and-particle-filter.html">P136 · Measure airflow and pressure</a>, or set a target from the airflow your fixture needs. A short bench run gives a comparison point for the builds. Establish any continuous duty claim with a separate thermal test.</li>
+      <li>First use an isolated current-limited 12 V bench supply. With the guards fitted, confirm that the blower starts and air exits the nozzle. Capture peak current and start duration with a suitably fast current logger or shunt and scope. Use the measurements to check the switch, fuse and adapter. If the motor rubs, fails to accelerate or cycles through restart, switch off and inspect rather than repeating the start.</li>
+      <li>Run five start and stop cycles on the specified adapter. As first-piece checks, record 11.8–12.2 V across M1 in steady operation, a stable current consistent with the supplier's installed operating point and at least 35 m³/h at the guarded outlet for the example fixture. Ask NMB for allowable current at your installed duty point if the reading differs substantially from its 1.03 A free-air nominal. Log sound at 1 m and case temperature after 15 minutes for comparison. Use the <a href="p136-build-a-workbench-blower-and-particle-filter.html">P136 duct traverse</a> with this blower's own fan curve and your measured values. These are prototype checkout targets. Measure the full duty cycle before assigning a continuous rating.</li>
     </ol>
 
     <h2>Build a second unit from the same drawing</h2>
@@ -73,5 +132,6 @@
 </div>
 <script src="../assets/toc.js?v=20261122-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>
