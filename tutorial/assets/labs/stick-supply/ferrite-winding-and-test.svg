@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="600" viewBox="0 0 980 600" role="img" aria-labelledby="title desc">
+  <title id="title">Ferrite transformer winding layers and test circuit</title>
+  <desc id="desc">The primary has two layers of 12 turns and the secondary has one layer of 12 turns. Both windings turn the same way. For the 10 kilohertz test, two oscilloscope probes share the generator return and a 100 ohm resistor limits current.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto-start-reverse"><path d="m1 1 5 3-5 3" fill="none" stroke="#34495a" stroke-width="1.3"/></marker></defs>
+  <rect width="980" height="600" rx="14" fill="#f4f7fa"/>
+  <g font-family="system-ui,sans-serif" fill="#172b3b">
+    <text x="27" y="40" font-size="25" font-weight="700">W12 · Wind 24 : 12 turns and verify polarity</text>
+    <rect x="27" y="60" width="926" height="255" rx="9" fill="#fff" stroke="#c6d1db"/>
+    <text x="49" y="91" font-size="18" font-weight="700">Layer stack on the B66243B1018T001 bobbin</text>
+    <path d="M86 158V273H450V158" fill="none" stroke="#34495a" stroke-width="9" stroke-linejoin="round"/>
+    <rect x="101" y="245" width="335" height="16" rx="2" fill="#b26a37"/>
+    <rect x="101" y="235" width="335" height="6" fill="#ebb337"/>
+    <rect x="101" y="215" width="335" height="16" rx="2" fill="#b26a37"/>
+    <rect x="101" y="198" width="335" height="12" fill="#ebb337"/>
+    <rect x="101" y="178" width="335" height="16" rx="2" fill="#307290"/>
+    <rect x="101" y="166" width="335" height="7" fill="#ebb337"/>
+    <g stroke="#fff" stroke-width="2" fill="none"><path d="M120 253h295m-7-4 7 4-7 4"/><path d="M416 223H121m7-4-7 4 7 4"/><path d="M121 186h295m-7-4 7 4-7 4"/></g>
+    <path d="M87 144h14" stroke="#34495a" stroke-width="1.3" marker-end="url(#arrow)" fill="none"/>
+    <path d="M87 139v10m14-10v10" stroke="#34495a" stroke-width="1.3"/>
+    <text x="101" y="123" font-size="15">Start ≥2 mm clear of flange</text>
+    <text x="86" y="296" font-size="14">Arrows show travel across the bobbin. Rotation stays the same for all three layers.</text>
+    <g font-size="15">
+      <text x="474" y="171">Outer tape wrap</text>
+      <text x="474" y="191">Secondary · 12 turns · S1 to S2</text>
+      <text x="474" y="208">Two overlapping tape wraps between windings</text>
+      <text x="474" y="229">Primary · turns 13–24 · finish at P2</text>
+      <text x="474" y="243">One tape wrap between primary layers</text>
+      <text x="474" y="260">Primary · turns 1–12 · start at P1</text>
+    </g>
+    <text x="30" y="352" font-size="20" font-weight="700">10 kHz bench test · 1.0–2.0 Vpp measured at P1–P2</text>
+    <rect x="32" y="374" width="189" height="127" rx="8" fill="#fff" stroke="#6d879a"/>
+    <text x="51" y="409" font-size="17" font-weight="700">Function generator</text>
+    <text x="51" y="435" font-size="14">Sine · zero DC offset</text>
+    <text x="51" y="460" font-size="14">Open output ≤3 Vpp</text>
+    <g fill="none" stroke="#234561" stroke-width="2.3" stroke-linecap="round">
+      <path d="M221 413h89l7-8 10 16 10-16 10 16 10-16 8 8h176v29"/>
+      <path d="M541 442c-20 0-20 12 0 12-20 0-20 12 0 12-20 0-20 12 0 12-20 0-20 12 0 12v27"/>
+      <path d="M646 413v29c20 0 20 12 0 12 20 0 20 12 0 12 20 0 20 12 0 12 20 0 20 12 0 12v27"/>
+      <path d="M571 440v53m13-53v53M221 473h35v44h529 M646 413h127"/>
+    </g>
+    <g fill="#234561"><circle cx="553" cy="444" r="4"/><circle cx="633" cy="444" r="4"/><circle cx="541" cy="413" r="4"/><circle cx="646" cy="413" r="4"/><circle cx="541" cy="517" r="4"/><circle cx="646" cy="517" r="4"/></g>
+    <g font-size="15">
+      <text x="300" y="394">100 Ω · ¼ W</text><text x="444" y="402">CH1 probe tip</text>
+      <text x="665" y="402">CH2 probe tip</text><text x="503" y="436">P1</text>
+      <text x="657" y="436">S1</text><text x="503" y="504">P2</text><text x="657" y="504">S2</text>
+      <text x="412" y="477">24 turns</text><text x="695" y="477">12 turns</text>
+      <text x="302" y="544">Both probe ground clips and generator return use this same point.</text>
+      <text x="32" y="575">Remove the P2–S2 link for the independent continuity and inductance measurements.</text>
+    </g>
+  </g>
+</svg>

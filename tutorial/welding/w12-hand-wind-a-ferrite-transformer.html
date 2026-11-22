@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W12 · Hand-wind and test a ferrite transformer</title>
+<meta name="description" content="Wind a 24-to-12-turn ferrite transformer by hand and measure inductance, turns ratio and polarity on a low-voltage bench. Includes parts and India pricing.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-welding">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Equipment</div>
+    <span class="eyebrow">W12</span>
+    <h1>Hand-wind and test a ferrite transformer</h1>
+    <p class="lede">Wind 24 primary turns and 12 secondary turns on a matched ferrite core and bobbin. Check the winding resistance, then use a small AC signal to check the ratio and polarity. This is a milliwatt bench trainer for learning the process used to make inverter magnetics.</p>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/ferrite-transformer-pc-psu.jpg" data-image-preview="Commercial ferrite transformer removed from a PC power supply" data-preview-source="w12-ferrite-photo" aria-haspopup="dialog" aria-label="Enlarge the commercial ferrite transformer photo">
+        <img src="../assets/photos/ferrite-transformer-pc-psu.jpg" width="1425" height="960" alt="Several views of a commercial ferrite transformer removed from a computer power supply. The views show the ferrite, winding wrap and pin connections.">
+      </a>
+      <figcaption>Find the two core halves, the covered winding and the pins on this commercial example. Mark the same features on the parts you buy for the trainer.<br><small>Photograph by Hans Haase. <a id="w12-ferrite-photo" href="https://commons.wikimedia.org/wiki/File:Main_Transformer_PW-0003-Y_of_a_PC_PSU_IMG11710.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch the hand-winding technique.</b> At 1:46 look at how the former is held. At 2:57 identify the start and finish pins, then watch the insulation and lead routing at 5:59. Use the turns and bench limits on this page for your build. <a href="https://www.youtube.com/watch?v=fQmyrBEPsek&amp;t=106s">SDG Electronics · Winding and assembly demonstration</a>.</p>
+    <div class="callout"><b>Bench supply limit.</b> Use only the 10 kHz generator circuit below, at up to 3 Vpp at its open output. Keep the trainer separate from a welder, inverter or mains circuit. The trainer's tape, clearances and continuity check are for this low-voltage exercise.</div>
+
+    <h2>Buy one matched core set and one bobbin</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">Specification and India source</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">2 · E42/21/20 ferrite halves
+          <span class="preview-links"><a class="preview-trigger" href="https://mm.digikey.com/Volume0/opasdata/d220001/derivates/1/010/863/134/MFG_B66329G0000X197_sml.jpg" data-image-preview="TDK B66329 ferrite core half" data-preview-source="w12-core" aria-haspopup="dialog">View core</a></span>
+        </th><td>TDK <b>B66329G0000X197</b>, N97, ungapped. Buy two pieces, each one E-shaped half. The set has an effective area of 234 mm² and nominal inductance factor 5,400 nH/turn². Check the suffix and inspect mating faces for chips. <a id="w12-core" href="https://www.digikey.in/en/products/detail/tdk/B66329G0000X197/3914758">DigiKey India · ₹570.84 per half, price reference and photo</a> · <a href="https://product.tdk.com/en/search/ferrite/ferrite/ferrite-core/info?part_no=B66329G0000X197">TDK · Specs</a>.</td></tr>
+        <tr><th scope="row">1 · One-section bobbin
+          <span class="preview-links"><a class="preview-trigger" href="https://mm.digikey.com/Volume0/opasdata/d220001/derivates/1/002/450/991/B66243B1018T1_sml%28200x200%29.jpg" data-image-preview="TDK B66243B1018T001 18-pin coil former" data-preview-source="w12-bobbin" aria-haspopup="dialog">View bobbin</a></span>
+        </th><td>TDK <b>B66243B1018T001</b>, 18 pins, one winding compartment for E42/21/20. Inspect flanges and pin fit. Dry-fit both core halves before winding. <a id="w12-bobbin" href="https://www.digikey.in/en/products/detail/tdk/B66243B1018T001/3914573">DigiKey India · ₹300.03 listing</a> · <a href="https://www.tdk-electronics.tdk.com/inf/80/db/fer/e_42_21_20.pdf#page=4">TDK · Former dimensions and pin drawing</a>.</td></tr>
+        <tr><th scope="row">1 · Reel of winding wire
+          <span class="preview-links"><a class="preview-trigger" href="https://projectpoint.in/image/cache/catalog/winding-wires-800x800.jpg" data-image-preview="Super-enamelled copper winding wire reel" data-preview-source="w12-wire" aria-haspopup="dialog">View wire reel</a></span>
+        </th><td>26 SWG enamelled copper, approximately <b>0.457 mm bare diameter</b>. Ask for 100% copper and the coating and temperature class. The 50 g listing gives about 0.491 mm over enamel and 0.105 Ω/m. Allow about 3.3 m for primary and 1.9 m for secondary including tails, with spare left for practice. <a id="w12-wire" href="https://onlineelectronics.in/index.php?product_id=498295401351&amp;route=product%2Fproduct">Project Point · ₹270.64 per 50 g reel</a> · <a href="https://www.emsons.co/pdf/QC.pdf">Emsons India · Bare and finished wire dimensions by gauge</a>.</td></tr>
+        <tr><th scope="row">About 1 m · PET winding tape
+          <span class="preview-links"><a class="preview-trigger" href="https://parkerelectronics.in/wp-content/uploads/2024/11/71DWRtjssVL._SL1500_-600x974.jpg" data-image-preview="3M 1350F-1 yellow polyester winding tape" data-preview-note="Parker's pictured roll is 25.4 mm wide. Use a 12 mm roll or slit a clean strip to fit the wound area." data-preview-source="w12-tape" aria-haspopup="dialog">View tape</a></span>
+        </th><td>3M <b>1350 12MM</b>, 12 mm wide, approximately 0.065 mm thick. Use a clean offcut from a winding shop or buy a roll. A wider 1350F-1 roll is also available. Slit clean strips on a release liner if needed. <a href="https://in.element14.com/3m/1350-12mm/electrical-insultape-pet-film/dp/726977">element14 India · ₹1,778.02 per 66 m roll</a> · <a id="w12-tape" href="https://parkerelectronics.in/product/3m-1350f-1-yellow-electrical-tape-1-width-x-72yd-length-1-roll/">Parker Electronics · ₹650 for 25.4 mm tape shown</a>.</td></tr>
+        <tr><th scope="row">4 × 25 mm · Lead sleeving
+          <span class="preview-links"><a class="preview-trigger" href="https://5.imimg.com/data5/SELLER/Default/2022/9/JX/KJ/LR/3978332/rohs-approved-ptfe-sleeves-500x500.jpg" data-image-preview="PTFE insulation sleeve examples" data-preview-source="w12-sleeve" aria-haspopup="dialog">View sleeves</a></span>
+        </th><td>Use thin PTFE slip-on sleeves with about 1 mm clear bore to cover the magnet wire where it crosses the bobbin flange. Confirm the supplier's measured stock dimensions and ask for a short length. <a id="w12-sleeve" href="https://www.ptfewiresindia.com/ptfe-sleeves.html">PTFE Electronics, Ghaziabad · Photo and enquiry</a>.</td></tr>
+        <tr><th scope="row">1 · Series test resistor
+          <span class="preview-links"><a class="preview-trigger" href="https://www.mouser.in/images/yageo/images/yageo_ITP_Yageo_MFR_t_G.JPG" data-image-preview="Yageo axial metal-film resistor family" data-preview-source="w12-resistor" aria-haspopup="dialog">View resistor</a></span>
+        </th><td><b>100 Ω, ¼ W</b>. Place it between the generator and the primary, with insulated test clips and a return jumper. A Yageo MFR-25FBF52-100R is listed at ₹4.52 per resistor with a 10-piece minimum. A local electronics shop can sell one. <a href="https://in.element14.com/yageo/mfr-25fbf52-100r/res-100r-0-25w-axial-metal-film/dp/3951794">element14 India · Order 3951794</a> · <a id="w12-resistor" href="https://www.mouser.in/en/ProductDetail/YAGEO/MFR-25FBF52-100R">Mouser India · Photo</a>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Listed prices checked 22 November 2026. Two halves, one bobbin and the 50 g reel total <b>₹1,712.35</b> before other items, shipping and any taxes. With the wider tape and ten resistors the listed purchase subtotal is <b>₹2,407.55</b>. With the 12 mm roll it is <b>₹3,535.57</b>. Ask a winding shop to quote tape, sleeving and bench access by the job when making the first unit.</p>
+
+    <h2>Set out the tools and test equipment</h2>
+    <p>Use a rule, caliper, side cutters, fine abrasive for the wire ends and a temperature-controlled soldering iron with local fume extraction. Keep the ferrite out of the bobbin while winding. Hold the former by its flanges and count aloud, or use a hand winder with soft spacers sized to the former's opening. The demonstration shows one way to adapt the shaft. Use the bobbin drawing to locate the pin numbering before marking it.</p>
+    <div class="preview-links">
+      <a class="preview-trigger" href="../assets/photos/caliper.jpg" data-image-preview="Digital caliper for bobbin and wire measurements" data-preview-source="w12-caliper" aria-haspopup="dialog">View caliper</a>
+      <a class="preview-trigger" href="../assets/photos/solde.jpg" data-image-preview="Soldering iron at a through-hole joint" data-preview-source="w12-iron" aria-haspopup="dialog">View soldering iron</a>
+      <a class="preview-trigger" href="../assets/photos/meter.jpg" data-image-preview="Digital multimeter for continuity and resistance" data-preview-source="w12-dmm" aria-haspopup="dialog">View multimeter</a>
+    </div>
+    <p><small>Tool photographs. <a id="w12-caliper" href="https://commons.wikimedia.org/wiki/File:2020_Suwmiarka_cyfrowa.jpg">Caliper · Jacek Halicki, CC BY-SA 4.0</a> · <a id="w12-iron" href="https://learn.adafruit.com/assets/1996">Soldering · Bill Earl and Adafruit, CC BY-SA 3.0</a> · <a id="w12-dmm" href="https://commons.wikimedia.org/wiki/File:UT61D_digital_multimeter_front.jpg">Meter · Anselm Schüler, CC BY-SA 4.0</a>.</small></p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test equipment</th><th scope="col">Setting and source</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">LCR meter
+          <span class="preview-links"><a class="preview-trigger" href="https://images.toolworld.in/product/UT612-1.jpg" data-image-preview="UNI-T UT612 LCR meter" data-preview-source="w12-lcr" aria-haspopup="dialog">View LCR meter</a></span>
+        </th><td>Use an open/short-compensated 10 kHz LCR meter with short leads. UNI-T UT612 supports 10 kHz and 0.6 V RMS nominal test excitation. <a id="w12-lcr" href="https://www.toolworld.in/product.php?pid=4829">ToolWorld · ₹15,850 listed including GST</a>.</td></tr>
+        <tr><th scope="row">Sine generator
+          <span class="preview-links"><a class="preview-trigger" href="https://www.salicontech.co.in/wp-content/uploads/2019/11/1-63.jpg" data-image-preview="Rigol DG811 waveform generator" data-preview-source="w12-generator" aria-haspopup="dialog">View generator</a></span>
+        </th><td>Use a bench generator with 10 kHz sine, adjustable amplitude and DC offset. A shop's Rigol DG811 or equivalent is sufficient. Measure the generator's high-impedance output yourself before connecting the trainer. <a id="w12-generator" href="https://www.salicontech.co.in/product/rigol-dg811/">Salicon India · DG811 example</a> · <a href="https://www.rigol.com/intl/products/function-arbitrary-waveform-generator/DG800.html">Rigol · Settings and manual</a>.</td></tr>
+        <tr><th scope="row">Two-channel scope
+          <span class="preview-links"><a class="preview-trigger" href="https://revinetech.com/products/1748516950_68384056592da.jpg" data-image-preview="Rigol DS1102Z-E two-channel oscilloscope" data-preview-source="w12-scope" aria-haspopup="dialog">View scope</a></span>
+        </th><td>Use two matched, compensated probes with both tips measured against the common return. Match attenuation settings in the scope and on the probes. A basic 2-channel bench scope suffices. <a id="w12-scope" href="https://revinetech.com/product/all-rigol-oscilloscopes/rigol-ds1102z-e">Revine Tech, Pune · Rigol example, ₹41,064 listed</a>.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Wind and assemble the trainer</h2>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/stick-supply/ferrite-winding-and-test.svg" data-image-preview="Ferrite winding layers and 10 kHz scope test" aria-haspopup="dialog" aria-label="Enlarge the transformer winding and test diagram">
+        <img src="../assets/labs/stick-supply/ferrite-winding-and-test.svg" width="980" height="600" alt="Two primary layers of 12 turns each, one 12-turn secondary layer, and the circuit for a shared-return sine-wave scope test." loading="lazy">
+      </a>
+      <figcaption>Wind the primary as two 12-turn layers and the secondary as one 12-turn layer. The arrows describe how the wire moves across the former. <a href="../assets/labs/stick-supply/ferrite-winding-and-test.svg" download>Download the winding and test drawing</a>.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li><b>Check the bobbin against the core.</b> Slide both halves in without tools and make sure they meet. Take them out before winding. Mark four bobbin pins and record their physical positions on a sketch. Use P1 and P2 for the primary start and finish and S1 and S2 for the secondary start and finish. Select one pair on each pin bank to make the wires easy to trace.</li>
+      <li><b>Start the primary.</b> Cut about 3.3 m. Leave an 80 mm starting tail and slide a sleeve over the part that crosses the flange. Tape the tail to the outside temporarily. Keep the wire at least 2 mm from sharp flange edges. Lay the first 12 turns side by side from the start end. One complete loop around the centre tube counts as one turn. Hold the wire gently taut.</li>
+      <li><b>Finish the primary.</b> Cover the first layer with one turn of tape plus overlap, protecting the layer crossover. Keep the same rotation as you add 12 turns back across the former. Sleeve the finish lead over the exit edge and mark P2. Check 24 turns on the tally before covering with two tape wraps. Overlap seams and cover the entire wound area.</li>
+      <li><b>Wind the secondary.</b> Cut about 1.9 m, reserve two tails and sleeve the exit points. Start at S1 and wind 12 turns in the same rotational sense as P1. Finish at S2. Add the outer tape wrap. Bring the tails to their selected pins without trapping them at a ferrite face.</li>
+      <li><b>Terminate and close.</b> Strip enamel only from the ends that connect to the pins. Tin the cleaned copper, loop each tail around its assigned pin and briefly solder. Inspect for bridges and confirm that the sleeving stays over the flange edge. Slide in the clean core halves, seat the mating faces with gentle pressure and retain them with a removable nonconductive wrap. Measure before changing the fit or applying adhesive.</li>
+    </ol>
+
+    <h2>Measure resistance, ratio and polarity</h2>
+    <ol class="steps">
+      <li><b>Check the disconnected trainer.</b> Short the multimeter leads to record their resistance. Measure P1–P2 and S1–S2 and subtract the lead reading if the meter resolves the difference. TDK's 100 mm nominal mean turn length gives about 0.27 Ω for the primary and 0.14 Ω for the secondary including about 160 mm of wire tails. Use actual installed length × roughly 0.105 Ω/m for a better estimate. With all instruments except the DMM removed, verify the meter indicates open between the separate windings and between each winding and any accessible conductive fixture.</li>
+      <li><b>Measure each inductance separately.</b> Use series inductance at 10 kHz, leaving the other winding open. The calculation <var>L</var> = <var>A</var><sub>L</sub><var>N</var>² gives 3.11 mH primary and 0.778 mH secondary. The core's published −20% to +30% spread implies about 2.49–4.04 mH and 0.62–1.01 mH. Use those as diagnostic ranges and record actual meter frequency, core seating and temperature. Investigate a low result by inspecting air gaps, core part numbers, turn counts and winding damage. <a href="https://www.tdk-electronics.tdk.com/inf/80/db/fer/e_42_21_20.pdf">TDK · Inductance factor and tolerance</a>.</li>
+      <li><b>Set the generator and scope.</b> Start with a 10 kHz sine and zero DC offset. Confirm the open output is at most 3 Vpp using a high-impedance scope input. With the generator output off, wire its centre conductor through 100 Ω to P1. Jumper P2 and S2 to the generator return, and attach both scope ground clips to this same common point. Put the probe tips on P1 and S1. Enable the output and adjust to 1.0–2.0 Vpp measured across the primary. At the 3 Vpp open-output limit the external resistor alone bounds ideal short-circuit peak current to about 15 mA.</li>
+      <li><b>Check ratio and winding sense.</b> With the secondary connected only to the scope, both waves should rise together at P1 and S1. Compute secondary Vpp divided by primary Vpp. The target is 0.500 with an example ±5% screen (0.475–0.525). A reversed wave calls for checking your winding labels and scope channel inversion. An unexpected ratio calls for checking probe settings, turn count and loading.</li>
+    </ol>
+    <p>At 2.0 Vpp measured across 24 turns and 10 kHz, the sine-wave estimate <var>B</var><sub>peak</sub> = <var>V</var><sub>pp</sub>/(4π<var>fNA</var><sub>e</sub>) gives about 2.8 mT. Lower frequency raises flux at the same voltage. In a welder transformer, the actual switching waveform determines the applied volt-seconds. The production design also needs measured loss, temperature rise, insulation qualification and repeatable winding construction. <a href="../theory/t08-transformers.html">T08 · Transformer principles</a>.</p>
+    <div class="callout"><b>Worked test entry.</b> P1–P2 3.05 mH, S1–S2 0.76 mH. CH1 1.80 Vpp, CH2 0.90 Vpp and rising zero crossings aligned. Log 0.500, same phase, both inductances within the diagnostic range. Store the photo, pin sketch and oscilloscope trace with the winding revision. These numbers are examples.</div>
+    <a class="crosslink" href="w09-build-a-shop-made-stick-welding-set.html">W09 · Apply the winding record to the commercial magnetics brief</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261122-magnetics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
+</body>
+</html>
