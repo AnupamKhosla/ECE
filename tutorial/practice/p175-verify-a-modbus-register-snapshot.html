@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P175 · Verify a Modbus register snapshot before using it</title>
+<meta name="description" content="Run a real loopback Modbus/TCP client and server. Find a torn 32-bit value and check version and source epoch before accepting a coherent reading.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P175</span>
+    <h1>Verify a Modbus register snapshot before using it</h1>
+    <p class="lede">Two successful Modbus replies can assemble a position the device never published. Reproduce the rollover fault, then deliberately read one multi-register response during a source update and check what the application must validate.</p>
+    <div class="meta"><span><b>Time</b> 55–75 min</span><span><b>Before this</b> <a href="p14-serial-buses-modbus.html">P14 · Modbus and serial buses</a> · <a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series and evidence</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the device map as a contract</h2>
+    <p>The training position is a signed 32-bit number in micrometres. It occupies two contiguous holding registers, high word first. Function 03 reads 16-bit registers. The protocol defines high byte first within each word. The device map defines the order, signedness and scale of the combined value. A drawing that numbers the first holding register as 40001 corresponds to starting address zero in the request for this map. <a href="https://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf">Modbus application protocol, section 6.3</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Zero-based address</th><th scope="col">Field</th><th scope="col">Training meaning</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">0</th><td>Epoch</td><td>Source instance or commissioning generation. The receiver expects 7.</td></tr>
+        <tr><th scope="row">1</th><td>Version</td><td>Even for a complete published value. Odd while the writer changes the words.</td></tr>
+        <tr><th scope="row">2</th><td>Position high word</td><td>Bits 31–16 of the signed value.</td></tr>
+        <tr><th scope="row">3</th><td>Position low word</td><td>Bits 15–0 of the signed value.</td></tr>
+      </tbody>
+    </table></div>
+    <h2>Run the real loopback transactions</h2>
+    <p>Download <a href="../assets/labs/modbus-snapshot/CMakeLists.txt" download>CMakeLists.txt</a> and <a href="../assets/labs/modbus-snapshot/modbus_snapshot.c" download>modbus_snapshot.c</a> to one writable directory. Use Linux with a C compiler, CMake, pkg-config and libmodbus. The program binds a temporary loopback port and includes its own read-only training client and server.</p>
+    <pre><code>sudo apt install build-essential cmake pkg-config libmodbus-dev
+cmake -S . -B build
+cmake --build build
+./build/modbus_snapshot &gt; readings.csv</code></pre>
+    <p>Both endpoints run in one process with separate TCP sockets. The server advances its simulated register map at specific request boundaries. This makes reading during an update repeatable without relying on operating system scheduling. Read the <a href="../assets/labs/modbus-snapshot/observed-reads.csv" download>observed transaction decisions</a> from libmodbus 3.1.10. <a href="https://libmodbus.org/reference/modbus_read_registers/">libmodbus holding-register read API</a>.</p>
+
+    <h2>Explain why a valid response can carry a mixed value</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test</th><th scope="col">Words or metadata</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Two reads across a rollover</th><td>Position advances from <code>0001 FFFF</code> to <code>0002 0000</code>. Independent reads assemble <code>0001 0000</code>.</td><td>65.536 mm was never published. The real positions in the case are 131.071 and 131.072 mm.</td></tr>
+        <tr><th scope="row">One grouped read while stable</th><td><code>0002 0000</code> in the same response.</td><td>131.072 mm under the known stable condition.</td></tr>
+        <tr><th scope="row">One grouped read during update</th><td>Metadata moves from epoch 7 version 12 to epoch 7 version 14. The intervening reply contains <code>FFFF 0000</code>.</td><td>The decoded −65.536 mm came from a partly updated server buffer. Retry under the agreed policy.</td></tr>
+        <tr><th scope="row">Grouped read after update</th><td>Version 14 even and equal before and after the read. Both epoch values are 7. Words <code>FFFF FFFF</code>.</td><td>Accept −0.001 mm under the declared contract.</td></tr>
+        <tr><th scope="row">Restart across the reads</th><td>Version 14 unchanged, epoch 7 becomes 8.</td><td>Retry. Equal version alone would miss the changed source.</td></tr>
+        <tr><th scope="row">Coherent data from unapproved epoch</th><td>Epoch 8, version 14 stable around <code>0002 0001</code>.</td><td>Hold the value until the new source identity is reconciled.</td></tr>
+        <tr><th scope="row">Unmapped register</th><td>Request address 8 outside the four-register map.</td><td>Exception 02 establishes that the server responded with an address error. Inspect the table and offset.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Match the protection to the device behavior</h2>
+    <p>Read the epoch and version together as a stable pair, read both position words together, then re-read the pair. Accept after matching the expected epoch and verifying equal even versions. The writer must publish odd before changing the words and even after the complete value is visible. The guard assumes no complete version wrap between the metadata reads. With this 16-bit version and two increments per update, a stable number repeats after 32,768 publications. Bound the read interval and the publication rate. Recheck these assumptions whenever the mapping protocol changes.</p>
+    <p>Use an atomic device snapshot or latch if the vendor provides one. The client cannot invent an epoch or version guarantee absent from the device map. A coherent value can still be old, so keep the quality, age and source reconciliation checks as well. Record the raw words, scale, accepted version, epoch and elapsed poll time.</p>
+    <details class="quiz"><summary>Why can grouping both words into a single Function 03 response still fail?</summary><div class="answer"><p>The response groups the words that the server supplies for that request. If the device application updates the high word before the low word and exposes the intermediate state, the reply contains an internally mixed value. Require a supported hold, snapshot or writer version contract.</p></div></details>
+    <a class="crosslink" href="../career/c10-plc-instrumentation.html">Career C10 · Apply the register and commissioning checks to industrial instrumentation</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

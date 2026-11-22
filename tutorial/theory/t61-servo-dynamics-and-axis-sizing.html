@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T61 · Industrial servo dynamics, sizing and feedback</title>
+<meta name="description" content="Work through reflected inertia, peak and RMS torque, nested loops, following error and independent load measurement.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T61</span>
+    <h1>Industrial servo dynamics, sizing and feedback</h1>
+    <p class="lede">The load determines how much torque an axis needs. The encoder and drive configuration determine which part of the actual motion the controller can see.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="t19-motors-vsds.html">T19</a> · <a href="t31-feedback-control.html">T31</a> · <a href="t58-robot-actuators-and-loads.html">T58</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Reflect load inertia to the motor shaft</h2>
+    <p>Torque accelerates rotational inertia according to τ = Jα. With an ideal reduction G in motor turns per load turn, the load rotates at 1/G of motor speed. Matching kinetic energy on both sides gives reflected inertia J<sub>load</sub>/G² at the motor. The motor rotor and coupling also accelerate. Account for gravity, friction and transmission efficiency separately. In a six-axis arm the effective inertia can change substantially with joint configuration and payload.</p>
+    <p>Consider an ideal reduction of 5:1, a load inertia of 0.020 kg·m² and motor-side inertia of 0.00020 kg·m². The combined motor-side inertia is 0.0010 kg·m². A load acceleration of 40 rad/s² requires 200 rad/s² at the motor, or 0.20 N·m just to accelerate those inertias. If load-side resistance adds 0.30 N·m in the same direction and we ignore transmission losses, it adds 0.06 N·m at the motor. The total is 0.26 N·m in this snapshot. Run the calculation again with the load resisting differently on reversal or descent.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/servo.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Motor, gear train and output shaft from a small servo">
+      <figcaption>Keep motor-side components and load-side components on their own speed bases before adding equivalent inertia.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+
+    <h2>Use peak and repeated torque for different decisions</h2>
+    <p>As a first approximation for motor heating, evaluate torque RMS over a complete repeating cycle, including holding torque during dwell. With 0.80 N·m for 0.25 s, 0.25 N·m for 0.50 s, −0.70 N·m for 0.25 s and 0.15 N·m for 1.00 s, RMS torque is about 0.41 N·m. Peak magnitude is 0.80 N·m. Short braking torque contributes to heating even with a negative sign.</p>
+    <div class="formula">τ<sub>RMS</sub> = √[Σ(τ<sub>i</sub>² × Δt<sub>i</sub>) / ΣΔt<sub>i</sub>]</div>
+    <p>Check peak torque at the speed where it occurs, peak-time limits for the specific drive and motor, repeated duty, gearbox rating and deceleration energy. RMS is a useful screening calculation when losses track current squared. The manufacturer’s speed, temperature and cooling limits remain part of sizing. A holding brake supports the load in documented conditions. Check separately how the application controls and verifies stopping and load holding.</p>
+
+    <h2>Trace the three servo loops</h2>
+    <p>A trajectory generator provides position and velocity references. The position loop adjusts the velocity request, the velocity loop calls for torque, and the current loop controls the motor current that develops torque. These loops usually operate at different bandwidths. The available current and speed limits constrain requests between loops. Some drives add velocity or acceleration feedforward to reduce tracking error during a move.</p>
+    <p>An axis may build following error as it accelerates because the drive reaches a torque limit. If actual motor position follows and independent tool position is late, look between the encoder and load. A belt, coupling, ballscrew or gear train can add compliance or lost motion. Reversing direction and watching both measurements reveals when the lost motion appears. For drive alarms, check the model’s units and documented test channels before interpreting the configured error window. <a href="https://literature.rockwellautomation.com/idc/groups/literature/documents/um/motion-um001_-en-p.pdf">Rockwell Automation · Servo loop and axis attribute example</a>.</p>
+    <p class="course-video"><b>Watch</b> · Follow how arm motion and a tool load relate to joint velocities and torques. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/velocity-kinematics-and-statics/">Northwestern · Velocity kinematics and statics</a>.</p>
+
+    <a class="crosslink" href="../practice/p148-servo-axis-fault-traces.html">P148 · Separate load tracking error from mechanical lost motion</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

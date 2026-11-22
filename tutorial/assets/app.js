@@ -6,6 +6,8 @@
   var inSub = /\/(practice|theory|career|reference|welding)\/[^\/]*$/.test(path);
   var ROOT = inSub ? "../" : "";
   var here = inSub ? path.split("/").slice(-2).join("/") : "index.html";
+  var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
+  var fromFile = location.protocol === "file:";
 
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || "null"); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   var done = store("ece-done") || {};
@@ -13,19 +15,26 @@
   /* flatten chapters */
   var all = [];
   TOC.books.forEach(function (b) { b.parts.forEach(function (p) { p.chapters.forEach(function (c) { c.book = b.id; c.part = p.title; all.push(c); }); }); });
+  var byFile = new Map(all.map(function (c) { return [c.file, c]; }));
   var current = all.filter(function (c) { return c.file === here; })[0];
   if (current) document.body.classList.add("book-" + current.book);
 
+  function loadInParallel(chapters, load) {
+    var next = 0;
+    async function worker() {
+      while (next < chapters.length) await load(chapters[next++]);
+    }
+    return Promise.all(Array.from({ length: Math.min(12, chapters.length) }, worker));
+  }
+
   /* ---- existence + modified time via HEAD (works when served over http) ---- */
-  var meta = {}; // file -> {ok, lm}
+  var meta = {}; // file -> {ok, lm, len}
   function head(file) {
     return fetch(ROOT + file, { method: "HEAD", cache: "no-store" })
       .then(function (r) { return { ok: r.ok, lm: r.headers.get("Last-Modified"), len: r.headers.get("Content-Length") }; })
-      .catch(function () { return { ok: location.protocol === "file:", lm: null }; });
+      .catch(function () { return { ok: false, lm: null }; });
   }
-  function checkAll() {
-    return Promise.all(all.map(function (c) { return head(c.file).then(function (m) { meta[c.file] = m; }); }));
-  }
+  all.forEach(function (c) { meta[c.file] = { ok: !c.planned, lm: null }; });
 
   /* ---- sidebar ---- */
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
@@ -117,7 +126,7 @@
   function markPending() {
     document.querySelectorAll(".side a.nav").forEach(function (a) {
       var m = meta[a.dataset.file];
-      var c = all.filter(function (x) { return x.file === a.dataset.file; })[0];
+      var c = byFile.get(a.dataset.file);
       a.classList.toggle("pending", !!m && !m.ok && !c.planned);
       a.classList.toggle("planned", !!m && !m.ok && !!c.planned);
     });
@@ -226,7 +235,7 @@
   /* ---- live reload: if this page's file changes on disk, reload in place ---- */
   var myStamp = null;
   function liveReload() {
-    if (location.protocol === "file:") return;
+    if (fromFile) return;
     fetch(location.pathname, { method: "HEAD", cache: "no-store" }).then(function (r) {
       var s = (r.headers.get("Last-Modified") || "") + "|" + (r.headers.get("Content-Length") || "");
       if (myStamp === null) myStamp = s;
@@ -235,63 +244,146 @@
   }
   try { var y = sessionStorage.getItem("ece-scroll:" + location.pathname); if (y) { sessionStorage.removeItem("ece-scroll:" + location.pathname); addEventListener("load", function () { scrollTo(0, +y); }); } } catch (e) {}
 
-  /* toast for new chapters while reading */
-  var known = null;
+  /* Watch available chapters on the hub and pending chapters while reading locally. */
+  var watched = LOCAL || !inSub ? all : all.filter(function (c) { return c.planned; });
+  var checking = false;
+  var checkedOnce = false;
   function toast(msg) { var t = document.querySelector(".toast") || document.body.appendChild(el("div", "toast")); t.textContent = msg; t.classList.add("show"); setTimeout(function () { t.classList.remove("show"); }, 5000); }
 
-  function tick() {
-    checkAll().then(function () {
-      var ready = all.filter(function (c) { return meta[c.file] && meta[c.file].ok; }).map(function (c) { return c.file; });
-      if (known) ready.forEach(function (f) { if (known.indexOf(f) < 0) { var c = all.filter(function (x) { return x.file === f; })[0]; toast("New chapter ready: " + c.n + " · " + c.title); } });
-      known = ready;
-      markPending(); renderHub();
-    });
-    liveReload();
+  async function tick() {
+    if (fromFile || (LOCAL && document.hidden)) return;
+    if (LOCAL) liveReload();
+    if (checking || !watched.length) return;
+    checking = true;
+    var changed = false;
+    try {
+      await loadInParallel(watched, async function (c) {
+        var before = meta[c.file];
+        var after = await head(c.file);
+        meta[c.file] = after;
+        if (before.ok !== after.ok || before.lm !== after.lm || before.len !== after.len) changed = true;
+        if (checkedOnce && after.ok && !before.ok) toast("New chapter ready: " + c.n + " · " + c.title);
+      });
+      checkedOnce = true;
+      if (inSub) watched = watched.filter(function (c) { return !meta[c.file].ok; });
+      if (changed) { markPending(); renderHub(); }
+    } finally {
+      checking = false;
+    }
   }
 
-  /* ---- full-text search on the hub: fetches each written chapter once, then searches its text ---- */
+  /* ---- hub search: show catalogue matches immediately, then add matches in chapter text ---- */
   function setupSearch() {
     var box = document.getElementById("search");
     var out = document.getElementById("search-out");
     if (!box || !out) return;
-    var cache = {}; // file -> plain text
-    var allLoaded;
-    function load(c) {
-      return fetch(ROOT + c.file, { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (h) {
-        var doc = new DOMParser().parseFromString(h, "text/html");
+    var contents = new Map();
+    var catalogue = all.map(function (c) {
+      return { chapter: c, code: simplify(c.n), title: simplify(c.title), description: simplify(c.d) };
+    });
+    var loading;
+    var complete = fromFile;
+    var missingText = false;
+
+    function simplify(text) {
+      return text.normalize("NFKC").trim().toLowerCase();
+    }
+
+    async function load(c) {
+      try {
+        var response = await fetch(ROOT + c.file, { cache: LOCAL ? "no-store" : "default" });
+        if (!response.ok) throw new Error("Chapter unavailable");
+        var doc = new DOMParser().parseFromString(await response.text(), "text/html");
         doc.querySelectorAll("script,style,svg,nav,aside").forEach(function (n) { n.remove(); });
         doc.querySelectorAll("td,th,li,p,h1,h2,h3,h4,div,br,summary,figcaption").forEach(function (n) { n.append(" "); });
-        var m = doc.querySelector("main");
-        cache[c.file] = m ? m.textContent.replace(/\s+/g, " ") : "";
-      }).catch(function () { cache[c.file] = ""; });
+        var main = doc.querySelector("main");
+        if (!main) throw new Error("Chapter text missing");
+        var text = main.textContent.trim().replace(/\s+/g, " ");
+        contents.set(c.file, { text: text, normalized: simplify(text) });
+      } catch (error) {
+        if (!c.planned) missingText = true;
+      }
     }
-    function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+    function paint(q) {
+      var words = Array.from(new Set(q.split(/\s+/)));
+      var hits = [];
+      catalogue.forEach(function (entry) {
+        var chapter = entry.chapter;
+        var content = contents.get(chapter.file);
+        var text = content ? content.normalized : "";
+        var metadata = entry.code + " " + entry.title + " " + entry.description;
+        if (!words.every(function (word) { return metadata.includes(word) || text.includes(word); })) return;
+        var score = entry.code === q ? 500 : 0;
+        if (entry.title.includes(q)) score += 60;
+        if (entry.description.includes(q)) score += 20;
+        words.forEach(function (word) {
+          if (entry.title.includes(word)) score += 30;
+          if (entry.description.includes(word)) score += 8;
+          for (var index = text.indexOf(word), count = 0; index !== -1 && count < 12; count++, index = text.indexOf(word, index + word.length)) score++;
+        });
+        hits.push({ entry: entry, content: content, score: score });
+      });
+      hits.sort(function (a, b) { return b.score - a.score; });
+      var fragment = document.createDocumentFragment();
+      var focused = out.contains(document.activeElement) ? document.activeElement.getAttribute("href") : null;
+      var refocus;
+      var phrase = new RegExp(words.slice().sort(function (a, b) { return b.length - a.length; })
+        .map(function (word) { return word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|"), "ig");
+      hits.slice(0, 12).forEach(function (hit) {
+        var c = hit.entry.chapter;
+        var link = el("a", "ch " + c.book);
+        var id = el("span", "n");
+        var title = el("b");
+        var snippet = el("span", "d");
+        var text = c.d;
+        var offset = hit.content ? hit.content.text.search(phrase) : -1;
+        if (offset !== -1 && !hit.entry.title.includes(q) && hit.entry.code !== q) {
+          var first = Math.max(0, offset - 65);
+          var last = Math.min(hit.content.text.length, offset + 135);
+          text = (first ? "…" : "") + hit.content.text.slice(first, last) + (last < hit.content.text.length ? "…" : "");
+        }
+        link.href = ROOT + c.file;
+        if (link.getAttribute("href") === focused) refocus = link;
+        id.textContent = c.n;
+        title.textContent = c.title;
+        var cursor = 0;
+        for (var match of text.matchAll(phrase)) {
+          var mark = el("mark");
+          mark.textContent = match[0];
+          snippet.append(text.slice(cursor, match.index), mark);
+          cursor = match.index + match[0].length;
+        }
+        snippet.append(text.slice(cursor));
+        link.append(id, title, snippet);
+        fragment.append(link);
+      });
+      var status = "";
+      if (!complete) status = "Checking chapter text…";
+      else if (fromFile) status = hits.length ? "Showing matches in chapter titles and summaries." : "No title or summary matches.";
+      else if (missingText) status = hits.length ? "Some chapter text could not be loaded." : "No matches in the chapters that could be searched.";
+      else if (!hits.length) status = "No chapter matches.";
+      if (status) {
+        var note = el("p", "pill");
+        note.textContent = status;
+        fragment.append(note);
+      }
+      out.replaceChildren(fragment);
+      if (refocus) refocus.focus({ preventScroll: true });
+    }
+
     var timer = null;
     function run() {
-      var q = box.value.trim().toLowerCase();
-      if (q.length < 2) { out.innerHTML = ""; return; }
-      out.innerHTML = '<div class="pill">Searching…</div>';
-      if (!allLoaded) allLoaded = Promise.all(all.map(load));
-      allLoaded.then(function () {
-        if (q !== box.value.trim().toLowerCase()) return;
-        var words = q.split(/\s+/);
-        var hits = [];
-        all.forEach(function (c) {
-          var t = cache[c.file] || "", lt = t.toLowerCase(), score = 0;
-          if (!words.every(function (w) { return lt.indexOf(w) >= 0; })) return;
-          words.forEach(function (w) { var i = -1; while ((i = lt.indexOf(w, i + 1)) >= 0) score++; if ((c.title).toLowerCase().indexOf(w) >= 0) score += 50; });
-          var at = lt.indexOf(words[0]);
-          var snip = t.slice(Math.max(0, at - 70), at + 130);
-          hits.push({ c: c, score: score, snip: snip });
+      var q = simplify(box.value);
+      if (q.length < 2) { out.replaceChildren(); return; }
+      paint(q);
+      if (!complete && !loading) {
+        loading = loadInParallel(all, load).then(function () {
+          complete = true;
+          var latest = simplify(box.value);
+          if (latest.length >= 2) paint(latest);
         });
-        hits.sort(function (a, b) { return b.score - a.score; });
-        if (!hits.length) { out.innerHTML = '<p class="pill">No chapter mentions that yet.</p>'; return; }
-        out.innerHTML = hits.slice(0, 12).map(function (h) {
-          var s = esc(h.snip);
-          words.forEach(function (w) { s = s.replace(new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig"), "<mark>$1</mark>"); });
-          return '<a class="ch ' + h.c.book + '" href="' + ROOT + h.c.file + '"><span class="n">' + h.c.n + '</span><b>' + h.c.title + '</b><span class="d">…' + s + '…</span></a>';
-        }).join("");
-      });
+      }
     }
     box.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(run, 250); });
     var initialQuery = new URLSearchParams(location.search).get("q");
@@ -307,10 +399,13 @@
   if (topSwitch) topSwitch.appendChild(themeSwitch());
   paintTheme();
   chapterExtras();
+  markPending();
   renderHub();
   tick();
   // Live updates only while the course is being written locally; the public site checks once.
-  var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname);
-  if (LOCAL) setInterval(tick, 8000);
+  if (LOCAL && !fromFile) {
+    setInterval(tick, 8000);
+    document.addEventListener("visibilitychange", tick);
+  }
   else document.querySelectorAll(".livepill").forEach(function (el) { el.remove(); });
 })();

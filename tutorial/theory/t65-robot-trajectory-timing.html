@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T65 · Robot trajectories, acceleration and synchronized axes</title>
+<meta name="description" content="Derive triangular and trapezoidal move times, synchronize two axes and size a smooth time scaling against velocity, acceleration and jerk limits.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T65</span>
+    <h1>Robot trajectories, acceleration and synchronized axes</h1>
+    <p class="lede">A path tells you which poses to pass through. A trajectory adds the time at each pose, which sets speed, acceleration and load. Calculate a move duration and check what happens when two joints follow the same timing.</p>
+    <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="t33-robot-motion-and-feedback.html">T33</a> · <a href="t61-servo-dynamics-and-axis-sizing.html">T61</a> · <a href="../practice/p142-robot-arm-path-planning.html">P142</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find out whether an axis can reach top speed</h2>
+    <p>For a rest-to-rest move of length D, use equal acceleration and braking magnitude a and speed limit V. Each ramp covers V²/(2a) if the axis reaches V. For D ≥ V²/a, accelerate for V/a, cruise for (D − V²/a)/V and brake for V/a. For a shorter move the two ramps meet at a lower peak speed √(Da). The time is 2√(D/a). A negative move uses the same duration with the direction reversed.</p>
+    <p>For D = 240 mm, V = 120 mm/s and a = 240 mm/s², the ramps use 60 mm in total. The axis accelerates for 0.50 s, cruises for 1.50 s and brakes for 0.50 s. At D = 30 mm it peaks at 84.9 mm/s and takes 0.707 s. A short move can take longer than distance divided by the speed limit because the ramps dominate. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/">Northwestern · Timing profiles video</a>.</p>
+
+    <h2>Make two joints follow the same progress</h2>
+    <p>Let a shared progress variable s run from 0 to 1. For each joint, use q = q<sub>start</sub> + Δq × s. If two joints travel +90° and −30°, at s = 0.5 they have moved +45° and −15°. Each nonzero travel imposes a limit on the common profile. Divide the joint’s positive speed limit by |Δq| to bound |ds/dt|. Divide its acceleration and jerk limits by |Δq| to bound the corresponding derivatives. Use the tightest limit from any moving joint for each derivative. A stationary joint stays at its initial position.</p>
+    <p>With joint 1 limited to 60°/s and 120°/s², and joint 2 to 90°/s and 180°/s², the shared limits for this pair are 0.667 s⁻¹ and 1.333 s⁻². The normalized move takes 2.00 s with trapezoidal timing. Joint 2 on its own could stop after 0.816 s. Running both independent moves from time zero reaches the same endpoint but follows a different path between endpoints. Check tool and link clearances along whichever path will actually run.</p>
+    <p>For a curved joint path q(s), acceleration also includes a term from the curvature of q with respect to s. A Cartesian straight line can require very different joint speeds along its length, especially near a kinematic singularity. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-1-of-2/">Northwestern · Separating path and time scaling</a>.</p>
+
+    <h2>Calculate a smooth profile within the real limits</h2>
+    <p>Jerk is the time derivative of acceleration. Constant-acceleration ramps have step changes in acceleration at their boundaries. A ramp with bounded jerk spreads the load change across time. One simple smooth progress profile uses normalized time u = t/T and s = 10u³ − 15u⁴ + 6u⁵. It starts and ends at rest with zero acceleration. Its largest normalized speed, acceleration magnitude and jerk magnitude are 1.875, 10√3/3 and 60. Differentiating with respect to real time divides the three values by T, T² and T³ respectively.</p>
+    <p>Use the largest of the three resulting duration bounds. For a 90° joint limited to 60°/s, 120°/s² and 480°/s³, the bounds are about 2.81, 2.08 and 2.24 s. Speed determines the duration for this quintic profile. The profile may help reduce vibration, and a measured settling test establishes the effect on cycle time. Other smooth profiles such as segmented S-curves can use the limits differently. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/">Northwestern · Polynomial and jerk-limited timing</a>.</p>
+
+    <h2>Check what the controller really interpolates</h2>
+    <p>Sending waypoints with only positions can produce different derivatives from the plan you calculated. In the Jazzy ROS 2 joint trajectory controller’s spline mode, positions use linear interpolation, adding consistent waypoint velocities allows cubic interpolation, and including accelerations allows quintic interpolation. Check time-from-start, units, joint order, start state, limits and controller configuration. With inconsistent waypoint derivatives, a spline can overshoot. Compare commanded and measured traces through the transition, then record arrival, settling and the separate proof that tooling is ready. <a href="https://control.ros.org/jazzy/doc/ros2_controllers/joint_trajectory_controller/doc/trajectory.html">ROS 2 Control · Trajectory representation and interpolation</a>.</p>
+    <a class="crosslink" href="../practice/p159-time-a-two-axis-robot-move.html">P159 · Time the same move with three different profiles</a>
+    <a class="crosslink" href="t69-robot-paths-collisions-and-planning-scenes.html">T69 · Verify clearance after trajectory time parameterization</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

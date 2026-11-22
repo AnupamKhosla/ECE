@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
 <style>
   .term-out{min-height:220px;max-height:360px;overflow:auto;white-space:pre;margin:0 0 8px}
-  .term-in{display:flex;gap:8px;align-items:center;font:14px var(--mono)}
-  .term-in input{flex:1;font:14px var(--mono);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+  .term-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:14px var(--mono)}
+  .term-in input{flex:1 1 7rem;min-width:0;font:14px var(--mono);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
   .chips button{font:13px var(--mono);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:4px 8px;border-radius:6px;cursor:pointer}
   #pin-svg g{cursor:pointer}
@@ -30,7 +30,7 @@
     <nav class="otp" data-auto></nav>
 
     <h2>Computer or microcontroller?</h2>
-    <p>In P11–P15 you used an Arduino. An Arduino board carries a <b>microcontroller</b>: one chip that holds a small processor, its program memory (flash), a little working memory (RAM) and the input/output hardware. It runs exactly one program, your sketch, from the moment power arrives. There is no operating system. When the sketch says "turn pin 13 on", the pin turns on within a microsecond, every time.</p>
+    <p>In P11–P15 you used an Arduino. Its <b>microcontroller</b> contains a processor, program memory (flash), working memory (RAM) and input/output hardware. After startup the Uno runs your sketch directly and services any enabled interrupts. GPIO timing depends on the code path, hardware timers and interrupt load. Measure it or use a timer output when you need a specific edge time. <a href="https://github.com/arduino/ArduinoCore-avr/blob/1.8.8/cores/arduino/wiring_digital.c">Arduino AVR core GPIO implementation</a>.</p>
     <p>A Raspberry Pi is a <b>single-board computer</b>. Its main chip is a <b>system on a chip</b> (SoC): several fast processor cores, a graphics unit, USB, Ethernet and more. RAM is a separate chip. The program storage is a microSD card (or an SSD), and on it sits a full <b>operating system</b>: Linux. Linux runs many programs at once, called <b>processes</b>, and shares the processor between them thousands of times a second. That gives you networking, a file system, a web server, Python, databases and remote login — but it also means your program can be paused for a few milliseconds while Linux does something else.</p>
 
     <figure>

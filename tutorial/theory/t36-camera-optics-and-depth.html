@@ -43,6 +43,11 @@
 
     <h2>The camera and the robot need a common frame</h2>
     <p>A detection gives image coordinates, or under calibration a point in the camera’s coordinate frame. Transform it into the robot’s frame before interpreting it as a target position. Lighting on reflective surfaces can produce wrong or missing depth. Time can also separate a camera image from the robot pose it should be paired with. Test known targets across distance and lighting first. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calibration and geometry</a>.</p>
+    <p>For an undistorted, rectified pinhole model with principal point (c<sub>x</sub>, c<sub>y</sub>) and focal lengths f<sub>x</sub>, f<sub>y</sub> in pixels, a point with axial depth Z back-projects to X = (u − c<sub>x</sub>)Z/f<sub>x</sub> and Y = (v − c<sub>y</sub>)Z/f<sub>y</sub>. Use the optical frame convention from the camera model. With u = 400 px, c<sub>x</sub> = 320 px, f<sub>x</sub> = 600 px and Z = 750 mm, X = 100 mm. At that bearing, a 12 mm error in depth alone shifts X by about 1.6 mm. If the camera interface returns distance along the ray, convert it to axial depth before using these formulas.</p>
+    <p>A calibration can have small image reprojection error and still miss physical positions when the camera mount or fixture moves. Check an independently known target in the region and height where the part is handled. At robot speed 0.20 m/s, pairing a target with a robot pose 50 ms late adds 10 mm of potential translation along the direction of motion, even with a good static transform.</p>
+
+    <h2>Exposure has a time and a duration</h2>
+    <p>For constant sideways motion in a calibrated image region, blur travel in pixels equals target speed × exposure duration × image scale. At 400 mm/s, 2 ms and 4 px/mm, travel is 3.2 px. A global exposure pairs all rows with the same interval. In a rolling shutter, two rows have different exposure midpoints, so shortening their integration reduces blur and the time difference can still distort shape. Check the trigger-to-exposure delay and the meaning of any image timestamp before pairing frames with an encoder. <a href="../practice/p176-test-machine-vision-on-a-moving-belt.html">P176 · Reproduce blur and rolling-shutter shear</a>.</p>
 
     <h2>Related lessons</h2>
     <ul>
@@ -50,6 +55,8 @@
       <li><a href="../practice/p45-2d-machine-vision.html">P45 · Build a 2D inspection station with controlled light</a></li>
       <li><a href="../practice/p46-stereo-depth-and-robot-vision.html">P46 · Check depth accuracy before a robot uses it</a></li>
       <li><a href="../practice/p47-edge-ai-inspection.html">P47 · Test an AI inspection model on unseen parts</a></li>
+      <li><a href="../practice/p143-camera-to-robot-calibration.html">P143 · Fit and verify a camera-to-robot work frame</a></li>
+      <li><a href="t67-robot-hand-eye-calibration.html">T67 · Derive the transform for a wrist or fixed camera</a></li>
     </ul>
   </main>
 </div>

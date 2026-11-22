@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T71 · Fleet traffic, timed clearance and uncertain occupancy</title>
+<meta name="description" content="Reason about two mobile robots crossing under a timed plan, then decide how to handle load changes, delays and missing confirmation.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T71</span>
+    <h1>Fleet traffic, timed clearance and uncertain occupancy</h1>
+    <p class="lede">Two mobile robots may use the same point on different jobs. For a fleet decision, track where each full footprint will be at each time and hold access when the occupancy can no longer be established.</p>
+    <div class="meta"><span><b>Time</b> 40 min</span><span><b>Before this</b> <a href="t64-robot-maps-costmaps-and-route-search.html">T64 · Maps and footprint clearance</a> · <a href="../practice/p145-mobile-robot-fleet.html">P145 · Fleet capacity and occupancy</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>A path occupies space over time</h2>
+    <p>Use two equal-speed robots travelling on perpendicular straight paths in the same map frame. Their centres reach the crossing at times <em>t<sub>A</sub></em> and <em>t<sub>B</sub></em>. When both are moving on these segments at speed <em>v</em>, the squared centre distance is <code>d²(t) = v²[(t − t<sub>A</sub>)² + (t − t<sub>B</sub>)²]</code>. The minimum is at the midpoint of the two crossing times if it lies inside both segments. There <code>d<sub>min</sub> = v × |t<sub>B</sub> − t<sub>A</sub>| / √2</code>.</p>
+    <p>Compare the distance with the sum of the disk radii. At 1 m/s and 1.2 s separation, the minimum is 0.849 m. Empty disks with combined radius 0.62 m leave 0.229 m of modeled clearance. Loaded disks with combined radius 0.96 m overlap by about 0.111 m. The waypoints and start times are identical in both cases. Use appropriate polygon or envelope models for turning loads whose outlines cannot be represented well by one disk.</p>
+    <p>For the two ideal straight trajectories, the first modeled contact is when the distance equals the combined radius before the midpoint. The endpoints can be clear while the interpolated motion overlaps. A continuous or conservatively bounded test is needed if point spacing can skip potential contact. Use consistent units, map revision and time basis for each trajectory.</p>
+    <h2>Allow for geometry and timing uncertainty</h2>
+    <p>A revised 1.6 s separation raises the ideal minimum to 1.131 m, leaving 0.171 m between the loaded disks. If each centre can be off by up to 0.08 m in the adverse direction, a conservative combined position allowance consumes 0.16 m. There is about 0.011 m left before counting timing errors. If departure separation may also shrink by 0.15 s, the ideal minimum drops to 1.025 m. Combined position allowance plus radius is 1.12 m, so this revised plan needs more margin under those assumptions.</p>
+    <p>Set allowances from measured localization, load drawing, steering limits, update delay and tracking variation. Independently decide which robot waits and where it can wait without blocking an exit. If waiting for the next zone can form a cycle, reserve an entire short critical section in one operation or use a tested yielding rule with safe waiting locations.</p>
+    <h2>Record when a forecast becomes uncertain</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Changed evidence</th><th scope="col">Fleet action</th><th scope="col">Condition to release</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Known delay or measured pose changed</th><td>Update the timed plan and recheck the conflict.</td><td>Current vehicle state and confirmed route revision agree.</td></tr>
+        <tr><th scope="row">Link lost after entry</th><td>Retain the zone as occupied or unknown. Hold new grants.</td><td>Verified clearance or a site-approved recovery procedure with independent confirmation.</td></tr>
+        <tr><th scope="row">The robot reports exit</th><td>Match the report to mission, route and reservation identity.</td><td>Full footprint past the boundary and any required clearance proof present.</td></tr>
+        <tr><th scope="row">Cancellation while queued</th><td>Remove the request and retain a trace of the decision.</td><td>A new current request for that mission or robot may be considered.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Traffic prediction manages mission scheduling. Installed vehicle protection, personnel detection and stop functions have separate design and validation. Review where supervision must confirm a blocked zone, and measure wait time and interventions under real loads before estimating throughput. <a href="https://openrmf.readthedocs.io/projects/rmf-traffic/en/latest/">Open-RMF traffic API</a> · <a href="https://www.vda.de/en/press/press-releases/2026/260421_PM_VDA_5050_EN">VDA 5050 zone and path-sharing concepts</a>.</p>
+    <details class="quiz"><summary>Can an elapsed expected clear time release a crossing after communication loss?</summary><div class="answer"><p>The elapsed time establishes only that the planned exit time has passed. If the last position was inside, occupancy remains uncertain until new evidence clears the zone. Record both the expired forecast and the evidence used for the final release.</p></div></details>
+    <a class="crosslink" href="../practice/p170-check-a-fleet-crossing-with-open-rmf.html">Practice P170 · Run a timed crossing through Open-RMF</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

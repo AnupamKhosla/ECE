@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T64 · Robot maps, costmaps and route search</title>
+<meta name="description" content="Convert positions to occupancy-grid cells, track live obstacle evidence and see how footprint and path costs affect route search.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T64</span>
+    <h1>Robot maps, costmaps and route search</h1>
+    <p class="lede">A mobile robot stores the geometry it knows and the observations it has just received. Those layers answer different questions. Work through a mapped wall, a moving crate and a payload that changes which aisles the robot can use.</p>
+    <div class="meta"><span><b>Time</b> 50 minutes</span><span><b>Before this</b> <a href="t59-localization-and-navigation.html">T59</a> · <a href="t63-robot-state-estimation.html">T63</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Convert metres to map indices</h2>
+    <p>An occupancy grid records whether cells are free, occupied or unknown according to the mapping convention. The map includes resolution in metres per cell, width and height in cells and an origin pose. Convert the position into the grid’s coordinate system by undoing that origin pose, including its rotation when present. Then divide coordinates by resolution and round down. A grid width of 100 cells uses index <code>row × 100 + column</code> in a row-major array.</p>
+    <p>Take a grid with zero origin rotation, origin (−2.0, −1.0) m and resolution 0.10 m. World position (−1.73, −0.74) m is (0.27, 0.26) m relative to the origin, so it occupies column 2 and row 2. The centre of that cell is world position (−1.75, −0.75) m. Check both bounds before indexing. An image file often counts rows down from the top, which matters when comparing image pixels with map data. <a href="https://github.com/ros2/common_interfaces/blob/jazzy/nav_msgs/msg/OccupancyGrid.msg">ROS 2 · OccupancyGrid message layout</a>.</p>
+
+    <h2>Trace the observation that marked a cell</h2>
+    <p>A range ray supplies evidence along a line in the sensor’s frame. A usable hit can mark its endpoint as occupied. Where configured, a valid clearing ray provides free evidence along the visible path. Cells behind the hit remain unobserved by that ray. A change in scan stamp helps establish freshness, and the matching transform places the ray onto the right part of the map. Each source has its own range limits, frame and marking or clearing rules.</p>
+    <p>A static map can provide walls and the approximate layout of a plant. A current obstacle layer can add a newly parked crate. The crate may stay in the layer until a valid later observation clears its location. Look for line of sight, scan delivery and transforms before deciding that a marked cell is a software bug. Check if a wall comes from the static layer, because clearing behavior and layer combination determine what appears in the combined map. <a href="https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/costmap_2d/costmap_plugins/obstacle/">Nav2 · Obstacle marking and clearing</a>.</p>
+
+    <h2>Work the aisle clearance before planning</h2>
+    <p>A circular trainer with envelope diameter 0.42 m has 90 mm of physical clearance on each side when centred in a 0.60 m aisle. If position error can move the centre 40 mm toward the wall, 50 mm remains on that side before accounting for map discretization, wall survey error and control variation. A wider load can consume that margin. For a rectangular vehicle the footprint changes with yaw in the map, especially while turning through an entrance. Test the whole swept path at the maximum configured load.</p>
+    <p>An inflation layer adds cost around obstacles. A planner can prefer a wider path because accumulated traversal cost is lower, even when the shortest path is open. Lethal obstacle geometry, footprint collision and softer proximity penalties serve different purposes. The planning footprint, resolution and update rates still need verification in the operating environment. <a href="https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/costmap_2d/costmap_plugins/inflation/">Nav2 · Inflation layer</a> · <a href="https://docs.nav2.org/jazzy/configuration_and_development/tuning_guide/">Nav2 · Planning and footprint tuning</a>.</p>
+
+    <h2>Tell a route search from a tracking problem</h2>
+    <p>In a four-connected training grid, A* scores a node by cost already incurred plus a lower-bound estimate of the remaining cost. Manhattan distance times the minimum cost of one step works for cardinal movement with no cheaper transitions. A successful search gives a series of cells. A real planner also has to account for the configured robot geometry and path constraints. A controller tries to follow the path while observing the current local costmap and vehicle motion.</p>
+    <ul>
+      <li>If there is no route, check goal frame, map bounds and the relevant obstacle or footprint layer.</li>
+      <li>If a route exists but progress stops, compare near-field observations, velocity commands and odometry at matched times.</li>
+      <li>If a route passes through an apparently blocked aisle, look at when each costmap was updated, which frames were available and what footprint was active.</li>
+    </ul>
+    <p>Navigation evidence helps diagnose the simulated task. Installed protective functions follow the validation process in <a href="t62-robot-stop-functions-and-evidence.html">T62</a>.</p>
+    <a class="crosslink" href="../practice/p157-route-around-a-blocked-aisle.html">P157 · Replan a route after a footprint change and an obstacle</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

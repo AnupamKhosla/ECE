@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P141 · Bring up and diagnose a ROS 2 navigation stack</title>
+<meta name="description" content="Work through a recorded ROS 2 navigation incident, then reproduce frame and simulated-clock checks in a Jazzy Nav2 demo.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P141</span>
+    <h1>Bring up and diagnose a ROS 2 navigation stack</h1>
+    <p class="lede">A ROS 2 node can be alive while the robot has no usable pose. Follow the clock, transform tree and navigation action before you tune the controller.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes with the trace, 90 minutes with simulation</span><span><b>Before this</b> <a href="p44-ros2-simulation-diagnostics.html">P44</a> · <a href="p140-wheel-odometry.html">P140</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Locate each publisher and consumer</h2>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Mobile robot platform with computing and base-drive hardware">
+      <figcaption>Separate the base producing odometry from the computer estimating pose and planning goals. Gazebo models the plant, while RViz displays ROS data.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Identify the robot in Gazebo and the goal and route displayed in RViz. <a href="https://www.youtube.com/watch?v=cAEibVaxTvE">TurtleBot3 navigation in Gazebo Harmonic and ROS 2 Jazzy · Dávid Dudás</a>.</p>
+    <p>A URDF defines links and joints. The robot state publisher uses the model and joint states to publish transforms. A bridge transfers configured data between Gazebo and ROS. The base produces odometry, the scanner publishes measurements, localization links <code>map</code> to <code>odom</code>, and the navigation action coordinates planning and execution. Record actual publisher names using the running system. Similar tools can publish the same topic, so verify who owns each transform.</p>
+
+    <h2>Diagnose three reported runs</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Run</th><th scope="col">Evidence</th><th scope="col">Prove next</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">A</th><td>Clock advancing, odometry and scans fresh, odom to base available, map to odom missing before initial pose.</td><td>Set a plausible initial pose at the robot’s location in RViz. Confirm the localizer becomes usable, then send a goal.</td></tr>
+        <tr><th scope="row">B</th><td>Clock at 48.3 s, scans stamped 48.2 s, a diagnostic node looks up a transform at Unix epoch seconds.</td><td>Compare <code>use_sim_time</code> on that node with the publishers. After configuring the same clock, verify that lookup at a scan’s timestamp works.</td></tr>
+        <tr><th scope="row">C</th><td>Scan publisher appears in <code>topic info</code>. It offers best effort and an endpoint requests reliable. That endpoint receives zero samples.</td><td>Inspect QoS by endpoint. In the isolated demo use a compatible subscriber and compare sample delivery. Reliable publishers can serve best-effort subscribers, while the reverse pairing is incompatible.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A topic count proves discovery. A changing stamp proves updates. A usable transform at that stamp proves geometry is available for the measurement. For each run, write down which of these checks first fails.</p>
+
+    <h2>Reproduce the first case in the simulator</h2>
+    <p>On a compatible Ubuntu 24.04 ROS 2 Jazzy environment, follow the <a href="https://docs.nav2.org/jazzy/getting_started/quickstart/quickstart/">Nav2 Jazzy quickstart</a> for its Gazebo Harmonic simulation packages. Run in a local VM or isolated simulator session with no hardware bridge. Use the recorded runs above if Gazebo is unavailable.</p>
+    <pre><code>ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False</code></pre>
+    <p>Use separate terminals with the same sourced Jazzy environment. Use the exact topic names and frame IDs your instance reports. These are common names in the unnamespaced quickstart. End a continuous observer with <kbd>Ctrl</kbd>+<kbd>C</kbd> before using that terminal for another command.</p>
+    <pre><code>ros2 topic list -t
+ros2 topic echo /clock --once
+ros2 topic info /scan --verbose
+ros2 topic echo /scan --qos-reliability best_effort --once --field header
+ros2 run tf2_ros tf2_echo odom base_link
+ros2 run tf2_ros tf2_echo map odom
+ros2 lifecycle get /amcl
+ros2 lifecycle get /bt_navigator
+ros2 action info /navigate_to_pose</code></pre>
+    <p>Observe the transform checks before setting the initial pose and again after. Set the pose as soon as RViz displays the map. Waiting through the costmap’s transform timeout can leave the navigator inactive even after AMCL publishes a correct transform. A listed action server can reject a goal while inactive. Once the navigator is active, send a reachable goal. Keep a start and end pose, action outcome and one intermediate command/odometry pair.</p>
+    <p>Use <code>ros2 topic info /cmd_vel --verbose</code> where that is the drive topic to identify the command endpoints and message type. Pause Gazebo from its UI and check whether simulated time ceases advancing. Resume and check time, data and goal state independently. When diagnosing a real stack, verify namespaces, parameters, command type and documented controller timeout as well as physical response. <a href="https://gazebosim.org/docs/harmonic/ros_installation/">Gazebo Harmonic and ROS pairing</a> · <a href="https://github.com/ros2/geometry2/blob/jazzy/tf2_ros/src/tf2_echo.cpp">Jazzy tf2_echo implementation</a>.</p>
+
+    <details class="quiz"><summary>Run the same demonstration without a graphical desktop</summary><div class="answer">
+      <p>Use the packaged Jazzy TurtleBot3 sandbox without custom spawn arguments. The initial x, y and yaw below match that sandbox’s default spawn. Open a second sourced terminal as soon as the main launch starts.</p>
+      <pre><code>ros2 launch nav2_bringup tb3_simulation_launch.py \
+  headless:=True use_rviz:=False gz_args:=--headless-rendering</code></pre>
+      <p>After <code>/amcl</code> reports active and a scan arrives, publish the approximate initial pose. The 36 entries encode a 6 × 6 pose covariance. This example puts variances of 0.04 m² on x and y and about 0.069 rad² on yaw.</p>
+      <pre><code>ros2 topic pub --once /initialpose geometry_msgs/msg/PoseWithCovarianceStamped '
+header: {frame_id: map}
+pose:
+  pose:
+    position: {x: -2.0, y: -0.5}
+    orientation: {w: 1.0}
+  covariance: [0.04, 0, 0, 0, 0, 0,
+               0, 0.04, 0, 0, 0, 0,
+               0, 0, 0, 0, 0, 0,
+               0, 0, 0, 0, 0, 0,
+               0, 0, 0, 0, 0, 0,
+               0, 0, 0, 0, 0, 0.0685]'</code></pre>
+      <p>If the late-pose timeout already happened, confirm that <code>map → odom</code> is now available. In this disposable simulation, reset the navigation lifecycle group and start it again. The localization group stays up. Continue after both service calls return <code>success: true</code> and <code>/bt_navigator</code> reports active.</p>
+      <pre><code>ros2 service call /lifecycle_manager_navigation/manage_nodes \
+  nav2_msgs/srv/ManageLifecycleNodes '{command: 3}'
+ros2 service call /lifecycle_manager_navigation/manage_nodes \
+  nav2_msgs/srv/ManageLifecycleNodes '{command: 0}'
+ros2 lifecycle get /bt_navigator</code></pre>
+      <p>Send one nearby goal in the default sandbox. Run the base transform check again after it finishes. Compare the final map position against the command and the configured goal tolerance.</p>
+      <pre><code>ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
+  '{pose: {header: {frame_id: map}, pose: {position: {x: -1.2, y: -0.5}, orientation: {w: 1.0}}}}'
+ros2 run tf2_ros tf2_echo map base_link</code></pre>
+      <p>On the verified headless Jazzy run, the robot published odometry and scans before AMCL had an initial pose. The bridge offered reliable scan delivery, which worked with AMCL’s best-effort subscription. Initializing after the startup timeout restored the transform. The navigator became active after lifecycle restart, and the action finished with status <code>SUCCEEDED</code>. The final estimated pose was approximately (−1.406, −0.525) m, within the configured 0.25 m goal tolerance. <a href="https://github.com/ros-navigation/navigation2/blob/jazzy/nav2_msgs/srv/ManageLifecycleNodes.srv">Nav2 · Lifecycle commands</a>.</p>
+    </div></details>
+
+    <p>If the ROS graph shows the scan publisher and a subscriber yet the reader gets no samples, compare offer and request using <a href="p174-debug-ros2-topic-delivery-and-qos.html">P174 · Debug QoS matching and deadlines</a>.</p>
+    <a class="crosslink" href="p150-ros2-navigation-trace.html">P150 · Diagnose a downloadable navigation trace and record your own case</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

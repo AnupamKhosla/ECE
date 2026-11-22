@@ -33,6 +33,24 @@
     <p>A switch can bounce between levels for several milliseconds. Record the time of the last raw edge, then accept the new stable state once it has held long enough. Trigger from the accepted edge so a held button cannot continually reissue a one-shot command. Choose whether an input needs an immediate fail-off path or can wait through debounce. A training software stop is different from a rated physical safety stop.</p>
     <p>A watchdog resets a controller if healthy execution stops servicing it. A brownout detector resets on an inadequate supply. Decide what happens after either reset and keep outputs in a defined state during pin startup. External pull resistors can hold a driver disabled until the firmware is ready. Telemetry and display work should have bounded time so control keeps running. <a href="https://docs.arduino.cc/built-in-examples/digital/Debounce/">Arduino debounce example and circuit</a>.</p>
 
+    <h2>Budget the time from event to output</h2>
+    <p>Consider a 10 ms periodic control task with 2 ms of input filtering, up to 3 ms of measured task execution, and up to 5 ms to apply the next output update. An edge just after the relevant input sample can wait almost a full 10 ms for another sample. For those assumed bounds, the event-to-output budget is 2 + 10 + 3 + 5 = 20 ms, before any actuator response. Include interrupts, bus retries or competing tasks if they can delay any of those steps. Use the longest observed execution time as evidence from the test conditions and establish the required worst-case bound separately.</p>
+    <p>Log four timestamps on the same monotonic clock where possible. Record sample time, command creation, output update and independent proof. A 70 ms proof delay means different things if the command already arrived 50 ms late or if the actuator alone took 70 ms. Replace a blocking network query with a bounded state or a background task. When a periodic task runs late, record the missed deadline and use elapsed time where appropriate. Rapidly replaying several stale control updates gives the actuator little time to respond between them.</p>
+
+    <p>For an RTOS task, include the time a lower-priority task holds a shared buffer and the higher-priority work that can arrive before the deadline. Run the same workload against two synchronization objects in <a href="../practice/p168-measure-a-freertos-control-task-delay.html">P168 · FreeRTOS control task timing</a>.</p>
+
+    <h2>A reset changes what the controller knows</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Current state</th><th scope="col">Event</th><th scope="col">Next state and action</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Initialising</th><td>Power-up, watchdog or brownout</td><td>Disable the training output and check input validity. Reconcile any retained job record with the present fixture state.</td></tr>
+        <tr><th scope="row">Ready</th><td>Fresh request with current job ID</td><td>Accept once and record the deadline. A held request retains the same ID.</td></tr>
+        <tr><th scope="row">Running</th><td>Proof disappears or times out</td><td>Go to fault, clear the command and record the first failing condition and the ID.</td></tr>
+        <tr><th scope="row">Fault</th><td>Cause cleared and reset requested</td><td>Return to ready after checking the inputs. Wait for a new start request.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Test the boundary just before and just after timeout, then present stop and start in the same update. Reset during the interval between accepting a job and recording its completion. On startup the fixture may contain a part even if the controller has lost its job ID. A documented reconciliation step prevents a second action on the same part. Apply this in <a href="../practice/p144-robot-plc-handshake.html">P144 · Robot and PLC handshake</a>.</p>
+
     <h2>Check yourself</h2>
     <details class="quiz"><summary>A button drives a five-second output. What happens if the button is held for 20 seconds?</summary><div class="answer"><p>In an edge-triggered design the output runs once and returns to idle at timeout. A second command requires a release and a new press. Verify it at the bench as an explicit test.</p></div></details>
     <p><a class="crosslink" href="../practice/p27-firmware-state-machine.html">Practice P27 · Build and test a timed controller</a></p>

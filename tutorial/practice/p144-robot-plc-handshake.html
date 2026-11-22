@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P144 · Prove a robot-to-PLC handshake through faults and restart</title>
+<meta name="description" content="Replay robot-cell transaction states for duplicate requests, bad placement evidence and lost communication.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P144</span>
+    <h1>Prove a robot-to-PLC handshake through faults and restart</h1>
+    <p class="lede">A busy bit can show that work started. A completion bit can linger from the previous part. Couple both to the current job ID and verify the physical result before incrementing the production count.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p39-plc-ladder-simulation.html">P39</a> · <a href="p57-robot-inspection-cell.html">P57</a> · <a href="../theory/t60-industrial-robot-integration.html">T60</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Map a single outstanding job</h2>
+    <figure class="course-photo">
+      <img src="../assets/photos/plc.jpg" width="960" height="627" loading="lazy" decoding="async" alt="Small industrial PLC and DIN rail power supply">
+      <figcaption>A PLC can own the part sequence and robot request. Confirm its program variables correspond to the agreed I/O or fieldbus map.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Follow field input through a PLC before mapping the two logical directions below. <a href="https://www.youtube.com/watch?v=snu8JNM-J1A">RealPars · Wiring to PLC program</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Owner</th><th scope="col">Data</th><th scope="col">Meaning in this trainer</th></tr></thead>
+      <tbody><tr><th scope="row">PLC</th><td>Request 42, recipe, fixture-ready, completion consumed</td><td>Writes the complete request, then waits for acceptance for that ID. Consumes one matching result.</td></tr>
+      <tr><th scope="row">Robot controller</th><td>Ready, accepted ID, busy, result ID and code</td><td>Accepts one current job. A repeated request for 42 reports the same status. It cannot start the action again.</td></tr>
+      <tr><th scope="row">Fixture inputs and record</th><td>Destination placement evidence, current part ID</td><td>In the trainer the position sensor is proved clear before start and the expected part is tracked. The PLC checks the new placement evidence before recording one good part.</td></tr>
+    </table></div>
+    <p>For a persistent fieldbus request, keep the recipe and ID stable until the corresponding acknowledgment. Hold the result until consumed or recover it from a retained result record. Establish a consistent snapshot if several words can update separately. Use explicit ownership and define which record survives a restart. A heartbeat helps detect loss of fresh data. In a real cell the normal sequence runs alongside independently designed and validated safeguards.</p>
+
+    <h2>Replay interruptions</h2>
+    <p>The training sequence allows 250 ms to get an acknowledgment. An acknowledgment exactly at 250 ms is accepted when processed before timeout; anything later is held. A lost link after acceptance means disposition is unknown. Reconcile the part position and retained result before assigning another job.</p>
+    <div class="widget" id="handshake-trainer">
+      <label for="handshake-case">Case</label><select id="handshake-case"><option value="normal">Normal completion</option><option value="duplicate">Held or repeated request</option><option value="boundary">Acknowledgment at 250 ms</option><option value="late">Acknowledgment at 251 ms</option><option value="stale">Old completion ID</option><option value="no-proof">Completion without placement proof</option><option value="disconnect">Link loss and recovery</option></select>
+      <div class="lab-controls"><button type="button" id="run-handshake">Replay job 42</button></div>
+      <p id="handshake-summary" role="status">Choose a case and predict the start and good-part counts.</p>
+      <div class="table-wrap" id="handshake-readings" hidden><table>
+        <caption>Simulated sequence and PLC decisions</caption>
+        <thead><tr><th scope="col">Time (ms)</th><th scope="col">Event</th><th scope="col">PLC decision</th><th scope="col">State after event</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Enable JavaScript for replay. Use the rules and the worked outcomes below to check your predictions.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Run each case. Save the first failed condition, final state, reported starts and committed parts. A repeated request during work should still record one accepted start and one counted part after verified completion.</li>
+      <li>Explain why the PLC holds after link loss even if the switch at the destination is on. One sensor value may refer to the previous part, so reconcile with durable records and the observed state. In the replay a matching retained result and placement evidence resolve the hold.</li>
+      <li>Write a case for both controllers restarting with a part still in the gripper. Specify who confirms its identity, where the evidence is recorded and which new command must wait. Include a stuck-on destination sensor as a separate failure from lost communication.</li>
+    </ol>
+    <details class="quiz"><summary>Check the 250 ms timeout and production accounting</summary><div class="answer"><p>Job 42 times out on the late acknowledgment. Actual robot execution is unknown in that case. A report for job 41 leaves job 42 waiting. Without placement proof a matching result stays held, with zero parts committed. After valid recovery, a replayed result is consumed only once.</p></div></details>
+
+    <p><a href="p146-robot-cell-acceptance.html">P146 · Record the commercial acceptance decision</a></p>
+    <a class="crosslink" href="p161-compile-and-replay-a-plc-robot-station.html">P161 · Compile a scan-based Structured Text version</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

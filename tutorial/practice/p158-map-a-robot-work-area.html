@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P158 · Build, save and reload a mobile robot map</title>
+<meta name="description" content="Run SLAM Toolbox in a Jazzy simulation, compare two measured occupancy grids and verify a saved map with a fresh map server.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P158</span>
+    <h1>Build, save and reload a mobile robot map</h1>
+    <p class="lede">Start with a single vantage point, collect scans from three navigation legs and save two different mapping artifacts. Then start a fresh map server and verify that it can load the same grid.</p>
+    <div class="meta"><span><b>Time</b> 55 minutes offline or 90 minutes with simulation</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141</a> · <a href="p157-route-around-a-blocked-aisle.html">P157</a> · <a href="../theory/t64-robot-maps-costmaps-and-route-search.html">T64</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read two grids from the same robot</h2>
+    <div class="map-comparison">
+      <figure>
+        <img src="../assets/labs/ros-slam-start.png" width="222" height="204" alt="Initial occupancy grid with a narrow observed wedge and a broad grey unknown region" loading="lazy" decoding="async">
+        <figcaption>Start · 111 × 102 cells, origin (−0.939, −2.063) m.</figcaption>
+      </figure>
+      <figure>
+        <img src="../assets/labs/ros-slam-return.png" width="224" height="206" alt="Occupancy grid after the survey, with visible circular obstacles, more free space and remaining unknown shadows" loading="lazy" decoding="async">
+        <figcaption>After three goal legs · 112 × 103 cells, origin (−0.953, −2.074) m.</figcaption>
+      </figure>
+    </div>
+    <p>These are measured trinary grids from the TurtleBot3 sandbox, at 0.05 m per cell. The black cells are occupied, white cells are free and grey cells are unknown. Locate a newly visible obstacle and an unknown shadow still behind it. Estimate the final grid extent from its resolution and dimensions. Use origin and resolution to compare positions between exports, since the bounding box shifted. <a href="https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation">Nav2 minimal TurtleBot3 simulation · Apache 2.0</a>.</p>
+
+    <h2>Run SLAM and gather geometry</h2>
+    <p>Use the isolated Jazzy simulator from P141 with SLAM Toolbox installed. Close any earlier sandbox first. Launch from a sourced terminal, then use a second terminal for the commands below. SLAM Toolbox supplies <code>map → odom</code> in this run. Verify the map frame and observed cells before choosing goal coordinates. The commands use the default sandbox and headless rendering. You can use RViz for visualization on a graphical installation.</p>
+    <pre><code>ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True \
+  headless:=True use_rviz:=False use_composition:=False gz_args:=--headless-rendering</code></pre>
+    <pre><code>ros2 topic info /map --verbose
+ros2 topic echo /map --qos-durability transient_local --qos-reliability reliable --once --field info
+ros2 run tf2_ros tf2_echo map base_link
+ros2 lifecycle get /bt_navigator</code></pre>
+    <p>When the navigator is active and your map confirms the goal lies in free space, send this first goal. The measured run continued to (1.05, 0.60) m facing +90° using quaternion <code>{z: 0.7071, w: 0.7071}</code>, then returned to (0, 0) m facing +x. Wait for the outcome of each goal before sending another. Check obstacle coverage and orientation after each leg. The return alone gives no proof of loop closure. Look for an accepted loop constraint and a corresponding graph update before reporting one.</p>
+    <pre><code>ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
+  '{pose: {header: {frame_id: map}, pose: {position: {x: 1.05, y: 0.0}, orientation: {w: 1.0}}}}'</code></pre>
+    <p>All three actions succeeded in the measured run. The estimate when the return goal began was about (1.35, 0.53) m, about 0.31 m from the previous target. That message arrived after the earlier result. Measure final pose at a defined time and check an independent reference when placement accuracy matters.</p>
+    <p>SLAM Toolbox matches new scans using the transform and previous geometry. A pose graph can represent successive views along with constraints from revisits. A wrongly matched revisit in a repeated aisle can distort the map. Compare stable landmarks, wall alignment and repeated approaches before using the map for deployment. <a href="https://github.com/SteveMacenski/slam_toolbox">SLAM Toolbox · Mapping and services</a>.</p>
+
+    <h2>Save and restore the two kinds of map data</h2>
+    <p>Capture a grid at the start and after the route. Run the same map saver command with different prefixes for the two exports. The image and YAML metadata are a pair. The serialized graph and data pair is for continuing mapping or graph-based localization. The image has no stored sequence of laser observations or graph constraints.</p>
+    <pre><code>ros2 run nav2_map_server map_saver_cli -f survey --fmt png \
+  --ros-args -p map_subscribe_transient_local:=true
+ros2 service call /slam_toolbox/serialize_map slam_toolbox/srv/SerializePoseGraph \
+  "{filename: '$PWD/survey'}"</code></pre>
+    <p>Check the map saver result and the graph service response. A successful graph save returns <code>result: 0</code>. Confirm that both <code>survey.posegraph</code> and <code>survey.data</code> exist before archiving them. For restoring the grid, use your output or download the <a href="../assets/labs/ros-slam-return.png" download>survey PNG</a> and its <a href="../assets/labs/ros-slam-return.yaml" download>matching YAML</a> into the same folder. Keep their names paired.</p>
+    <p>Stop the mapping simulation and use an isolated ROS session with no other map publisher. Start a fresh map server from the directory containing your export. With the course download, substitute <code>ros-slam-return.yaml</code> for <code>survey.yaml</code>. In the observer terminal, configure and activate the new lifecycle node, and read the metadata via a transient-local subscription.</p>
+    <pre><code>ros2 run nav2_map_server map_server --ros-args -p yaml_filename:="$PWD/survey.yaml"</code></pre>
+    <pre><code>ros2 lifecycle set /map_server configure
+ros2 lifecycle set /map_server activate
+ros2 topic echo /map --qos-durability transient_local --qos-reliability reliable --once --field info</code></pre>
+    <details class="quiz"><summary>Check the export and reuse evidence</summary><div class="answer"><p>The final grid extents are 5.60 m × 5.15 m, including unknown cells. The fresh map server should publish 0.05 m resolution, 112 columns, 103 rows and origin approximately (−0.953, −2.074) m when using the provided pair. That proves the grid loads and is available to a late subscriber. Localization and route clearance still need their own tests with the restored map. <a href="https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/map_server/configuring_map_saver/">Nav2 · Map saver</a>.</p></div></details>
+    <a class="crosslink" href="p145-mobile-robot-fleet.html">P145 · Put map versions and route restrictions into the fleet handover</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

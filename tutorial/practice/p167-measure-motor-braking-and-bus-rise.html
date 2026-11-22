@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P167 · Measure motor braking current and DC bus rise</title>
+<meta name="description" content="Run a 12 V H-bridge model and distinguish coasting, short braking and bus regeneration when a load drives the motor.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P167</span>
+    <h1>Measure motor braking current and DC bus rise</h1>
+    <p class="lede">A robot wheel can slow with its outputs off, brake through a winding current or feed power back into the supply. Use the current direction and rail voltage to tell which case you have.</p>
+    <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="../theory/t58-robot-actuators-and-loads.html">T58</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Predict which path takes the energy</h2>
+    <p>Download <a href="../assets/labs/motor-braking/motor-braking.cir" download>the ngspice motor and bridge model</a>. The three model branches have the same winding, torque constant, inertia and friction. Each begins with a charged 12 V bus capacitor and zero winding current. The first two shafts start at 180 rad/s. The third represents a shaft already driven by its mechanical load to 280 rad/s. The simulation starts after the drive command has been removed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Branch</th><th scope="col">Bridge and motor conditions</th><th scope="col">Predict a measurement</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Coast</th><td>Outputs off. Initial back EMF is 10.8 V.</td><td>Check speed after 300 ms and look for a rise on the bus.</td></tr>
+        <tr><th scope="row">Short brake</th><td>Both low-side switches on. Initial back EMF is 10.8 V.</td><td>Find the signed winding-current peak while its two terminals are held near ground.</td></tr>
+        <tr><th scope="row">Back-driven coast</th><td>Outputs off. Initial back EMF is 16.8 V.</td><td>Trace a loop through the motor, two bridge diodes and the bus capacitor. Check if the rail crosses 15 V.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The netlist reports winding current as positive from terminal A through the motor toward terminal B. Positive current produces positive torque in the sign convention. While speed stays positive, negative current produces braking torque. In short brake the current circulates locally through the winding and low switches. In back-driven coast, the diode path conducts when the motor voltage can push current against the bus and both diode drops. <a href="https://www.ti.com/lit/ds/symlink/drv8833.pdf">Texas Instruments · Bridge recirculation paths</a>.</p>
+
+    <h2>Run and measure the independent cases</h2>
+    <pre><code>ngspice -b motor-braking.cir</code></pre>
+    <p>The model uses 2 Ω and 2 mH for the winding, a 0.060 V/(rad/s) back-EMF constant, a 0.060 N·m/A torque constant and 0.0002 kg·m² inertia. The speed outputs use 1 V of simulation signal per rad/s. The current outputs use 1 V per A of winding current. Divide the motor’s back EMF by the short-loop resistance to estimate the initial brake current after the electrical transient. The current begins at zero and approaches the estimate as the shaft is already decelerating.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/motor-braking/motor-braking.png" width="1260" height="915" loading="lazy" decoding="async" alt="The short brake slows the shaft from 180 to about 11 radians per second in 300 milliseconds and draws about 5 amperes of reverse current. A separately back-driven motor raises its bus to 16 volts.">
+      <figcaption>ngspice 42 results. The top panel compares equal initial speeds. The two shorter time axes show the winding current and the bus that receives energy from the back-driven branch.</figcaption>
+    </figure>
+    <details class="quiz"><summary>Check the signs, speeds and rail limits</summary><div class="answer"><p>The coast branch is still at 143.73 rad/s after 300 ms. Short brake reaches 10.82 rad/s and its winding current reaches −4.97 A. Both buses stay near 12 V. The back-driven branch sends a brief negative winding current into its diode path with minimum current −0.92 A. The 470 µF bus reaches 16.01 V in about 3.64 ms, above the exercise’s 15 V limit. Its peak extra stored bus energy is ½ × 470 µF × (16.01² − 12²) ≈ 26 mJ.</p></div></details>
+
+    <h2>Try a larger bus capacitor and a source that can sink</h2>
+    <ol class="steps">
+      <li>Save a copy and set <code>bus_cap=2200u</code>. Compare the peak and the time to the peak. The larger capacitor reaches about 15.35 V at 25.75 ms and still exceeds the exercise limit.</li>
+      <li>In a different copy, keep 470 µF and replace <code>max(0, (12-v(vbus))/0.10)</code> in <code>Bsource</code> with <code>(12-v(vbus))/0.10</code>. The model source can now absorb current as the voltage rises above 12 V. The measured peak drops to about 12.15 V for this particular model.</li>
+      <li>Leave a margin in the real design for supply limits, repeated braking, capacitor voltage and ripple ratings, driver current and actual energy absorption. Capture signed current and bus voltage close to the driver. Log both alongside a motion signal when diagnosing a drive that trips only on deceleration.</li>
+    </ol>
+    <p>The netlist models selected current paths with ideal switches and a simplified supply. A real driver may use a PWM state that returns energy even when static back EMF is less than the source voltage. Use that driver’s switching and protection behavior when transferring this result to a system. <a href="https://www.ti.com/lit/ta/ssztch8/ssztch8.pdf">Texas Instruments · Regeneration and DC motor supply rise</a>.</p>
+    <a class="crosslink" href="p148-servo-axis-fault-traces.html">P148 · Diagnose an industrial axis from command and feedback traces</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

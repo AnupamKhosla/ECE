@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P160 · Run and diagnose a ROS 2 joint trajectory</title>
+<meta name="description" content="Activate a real Jazzy controller with mock hardware, send a time-stamped joint move and distinguish a rejected request from lost feedback.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P160</span>
+    <h1>Run and diagnose a ROS 2 joint trajectory</h1>
+    <p class="lede">Run the two-joint profile from P159 through a real ROS 2 controller. Compare a valid goal, a wrong joint name and a mock interface that stops updating position. All three use software-only hardware.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141</a> · <a href="p159-time-a-two-axis-robot-move.html">P159</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Start the controller and identify the feedback path</h2>
+    <p>Use ROS 2 Jazzy on an isolated Ubuntu training system with no physical robot interfaces. Install the Jazzy controller manager, joint-state broadcaster, joint-trajectory controller, ROS 2 control CLI and robot state publisher packages for your installation. Save these three downloads to the same directory.</p>
+    <ul>
+      <li><a href="../assets/labs/joint-trajectory/two-joint.urdf" download>Robot description</a> declares two joints and a software position interface for each.</li>
+      <li><a href="../assets/labs/joint-trajectory/controllers.yaml" download>Controller settings</a> select the controllers, update rate and tolerances.</li>
+      <li><a href="../assets/labs/joint-trajectory/trajectory_lab.launch.py" download>Launch file</a> publishes the robot model and starts the manager.</li>
+    </ul>
+    <p>Run the first command from that directory in a sourced Jazzy terminal. When the manager starts, run the spawner and observers in a second terminal from the same directory. Confirm both controllers become active and both position command interfaces are claimed.</p>
+    <pre><code>ros2 launch "$PWD/trajectory_lab.launch.py"</code></pre>
+    <pre><code>ros2 run controller_manager spawner joint_state_broadcaster arm_controller \
+  --param-file "$PWD/controllers.yaml"
+ros2 control list_controllers
+ros2 control list_hardware_interfaces
+ros2 topic echo /joint_states --once</code></pre>
+    <p>The position state comes from mock hardware. In the baseline the mock copies drive commands into position state. The joint-state broadcaster reports that state, and the trajectory controller compares state with its reference. A successful run establishes that these software connections and parameters work. Physical servo response, calibration, payload and collision clearance require other evidence. <a href="https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html">ROS 2 Control · Controller manager</a>.</p>
+
+    <h2>Prove the goal contract and execution</h2>
+    <p>At startup the two joints read 0 rad. The goal moves them to about +90° and −30°. Both waypoint entries specify position, velocity and acceleration. With the default spline interpolator the 2.813 s zero-speed, zero-acceleration endpoints describe the quintic exercise. Joint names fix the order of the arrays. In another terminal, monitor controller state or add <code>--feedback</code> to the action command for a live trace.</p>
+    <pre><code>ros2 topic echo /arm_controller/controller_state --field error.positions</code></pre>
+    <pre><code>ros2 action send_goal /arm_controller/follow_joint_trajectory \
+  control_msgs/action/FollowJointTrajectory '
+trajectory:
+  joint_names: [joint_1, joint_2]
+  points:
+    - positions: [0.0, 0.0]
+      velocities: [0.0, 0.0]
+      accelerations: [0.0, 0.0]
+      time_from_start: {sec: 0}
+    - positions: [1.5708, -0.5236]
+      velocities: [0.0, 0.0]
+      accelerations: [0.0, 0.0]
+      time_from_start: {sec: 2, nanosec: 813000000}'</code></pre>
+    <ol class="steps">
+      <li>First send the goal with <code>joint_typo</code> in place of <code>joint_2</code>. Record the goal rejection and the normal controller state. Restore the correct name.</li>
+      <li>Send the corrected goal from the known zero state. Keep the accepted response, a changing position sample, the successful result and both final positions.</li>
+      <li>Close the first launch with <kbd>Ctrl</kbd>+<kbd>C</kbd>. Start it again with the argument <code>freeze_feedback:=true</code>. Spawn the controllers again and send the same valid goal once. The mock leaves positions at their starting values while the controller computes a changing reference.</li>
+    </ol>
+    <p>Read the <code>trajectory</code> and <code>goal</code> tolerances under each joint in the YAML. An accepted goal can abort during the path. In the verified frozen run the controller returned <code>ABORTED</code> with <code>error_code: -4</code>, a path tolerance violation. The manager reported the configured URDF position and velocity limits. P159 checks acceleration and jerk in the planned profile separately. <a href="https://control.ros.org/jazzy/doc/ros2_controllers/joint_trajectory_controller/doc/userdoc.html">ROS 2 Control · Joint trajectory action and tolerances</a>.</p>
+
+    <h2>Compare the two measured runs</h2>
+    <p><a href="../assets/labs/joint-trajectory/follow-trajectory-feedback.csv" download>Download the measured controller feedback</a> from the Jazzy mock runs. The observer recorded elapsed wall time from sending the goal and downsampled feedback to about five rows per second. Compare reference, feedback and error in radians at about 0.6 s. Explain why the last recorded frozen row can still be within the 0.12 rad limit when the action aborts.</p>
+    <details class="quiz"><summary>Check the first failed boundary</summary><div class="answer"><p>The wrong name fails the controller’s goal contract before execution. In the accepted frozen case, joint 1 at about 0.60 s has a reference near 0.103 rad and feedback at zero. The controller checks error at its update rate. The observer samples less often, so a violation can occur between two retained rows. Confirm the action result and check message times and the feedback source before considering a tolerance change.</p></div></details>
+    <p>For your portfolio, attach the approved joint order, limits, claimed command interfaces, correct and invalid action results, a desired-versus-measured trace and the behavior following a detected feedback fault. For an installed robot, connect those records to the drive and tooling measurements.</p>
+    <a class="crosslink" href="p148-servo-axis-fault-traces.html">P148 · Diagnose the same following-error symptom on an industrial axis</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

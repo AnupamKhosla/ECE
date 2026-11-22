@@ -1,0 +1,55 @@
+12-bit training ADC: two channel histories, source impedance and local charge
+* Ideal voltage switch and sample capacitor. No quantizer or real part model.
+* The input is 0.50 V during acquisition. At 1 ms it steps towards 0.85 V.
+Vsensor source 0 PWL(0 0.50 1m 0.50 1.001m 0.85)
+Vacq acq 0 PWL(0 0 9.998u 0 10u 1 23.998u 1 24u 0)
+.model ADC_SWITCH SW(Ron=1k Roff=1e12 Vt=0.5 Vh=0)
+
+* Same channel, two possible voltages already held by the sample capacitor.
+Rnom source pin_nom 47k
+Snom pin_nom hold_nom acq 0 ADC_SWITCH
+Cnom hold_nom 0 20p IC=2.8
+Rlow source pin_low 47k
+Slow pin_low hold_low acq 0 ADC_SWITCH
+Clow hold_low 0 20p IC=0.1
+
+* Higher impedance and sample capacitance with the same acquisition schedule.
+Rcorner source pin_corner 56.4k
+Scorner pin_corner hold_corner acq 0 ADC_SWITCH
+Ccorner hold_corner 0 24p IC=2.8
+
+* Low-impedance target. This resistor models output resistance only.
+Rbuffer source pin_buffer 250
+Sbuffer pin_buffer hold_buffer acq 0 ADC_SWITCH
+Cbuffer hold_buffer 0 20p IC=2.8
+
+* Two pin capacitors on the same high-impedance source.
+Rsmall source pin_small 47k
+Csmall_pin pin_small 0 10n IC=0.5
+Ssmall pin_small hold_small acq 0 ADC_SWITCH
+Csmall_hold hold_small 0 20p IC=2.8
+Rlarge source pin_large 47k
+Clarge_pin pin_large 0 220n IC=0.5
+Slarge pin_large hold_large acq 0 ADC_SWITCH
+Clarge_hold hold_large 0 20p IC=2.8
+
+.control
+set wr_singlescale
+set wr_vecnames
+tran 2n 24.5u 0 5n uic
+meas tran nominal_2us FIND v(hold_nom) AT=12u
+meas tran low_history_2us FIND v(hold_low) AT=12u
+meas tran nominal_10us FIND v(hold_nom) AT=20u
+meas tran corner_10us FIND v(hold_corner) AT=20u
+meas tran corner_13us FIND v(hold_corner) AT=23u
+meas tran buffer_2us FIND v(hold_buffer) AT=12u
+meas tran ten_nf_2us FIND v(hold_small) AT=12u
+meas tran two_twenty_nf_2us FIND v(hold_large) AT=12u
+wrdata adc-acquisition.dat v(hold_nom) v(hold_low) v(hold_corner) v(hold_buffer) v(hold_small) v(hold_large)
+tran 2u 22m 0 5u uic
+meas tran ten_nf_step_2ms FIND v(pin_small) AT=3.001m
+meas tran two_twenty_nf_step_2ms FIND v(pin_large) AT=3.001m
+wrdata adc-step-tracking.dat v(source) v(pin_small) v(pin_large)
+quit
+.endc
+.end

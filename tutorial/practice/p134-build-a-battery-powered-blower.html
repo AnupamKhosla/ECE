@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P134 · Build a battery-powered workshop blower</title>
+<meta name="description" content="Fit a protected rechargeable pack to a guarded blower and measure runtime, startup and cutoff under load.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P134</span>
+    <h1>Build a battery-powered workshop blower</h1>
+    <p class="lede">Fit a protected rechargeable pack to a guarded blower and measure runtime, startup and cutoff under load.</p>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Choose the battery and motor together</h2>
+    <p>Use the guarded 12 V assembly in <a href="p133-hand-build-a-bench-blower.html">P133</a> for a portable fixture-cooling prototype. Record its startup and steady current and the precise motor voltage range. A packaged 12.8 V, 3 Ah four-cell LiFePO₄ battery can reach 14.6 V when its pack specification allows 3.65 V per cell. The example Delta BFB1012M-A specifies up to 13.2 V. Use a regulated 12 V buck-boost module sized to the pack's documented voltage range and the blower's startup draw. Verify the charging and discharge limits for the purchased pack. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · Blower operating limits</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Part</th><th scope="col">Fit and rating check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Pack and charger</th><td>Documented protected pack, compatible charger and keyed dock or connector. Record BMS shutdown behaviour, discharge current, temperature limits and charger model.</td></tr>
+        <tr><th scope="row">DC harness</th><td>Rated fuse and holder near pack positive, rated DC switch, covered wiring and terminals and a regulator with an appropriate input range and thermal margin.</td></tr>
+        <tr><th scope="row">Mechanical parts</th><td>Retained battery bay with cable protection and removable pack. Keep the pack clear of the blower outlet, moving parts, hot components and screw ends.</td></tr>
+      </tbody>
+    </table></div>
+    <h2>Assemble and verify</h2>
+    <ol class="steps">
+      <li>With the pack removed, dry-fit the dock and regulator and route pack positive through branch protection and the switch to the converter input. Route pack negative to converter input return. From the converter output, use the blower's approved connector and observe polarity.</li>
+      <li>Use a current-limited bench supply to set the converter output and verify 12 V across the specified pack-voltage range, including blower starts and low-voltage shutdown. Use the pack maker's discharge limit when configuring cutoff. Verify the assembled housing has guards, strain relief and no unintended continuity to the case.</li>
+      <li>Fit the protected pack and run the closed blower under the normal air restriction. Log battery and motor voltage, startup and steady current, converter and pack temperature, airflow and time. Observe end-of-run cutoff and confirm the blower remains off after pack replacement with the switch off. Charge the detached pack with its matched charger.</li>
+    </ol>
+    <h2>Compare compact and high-flow cordless designs</h2>
+    <p>A 12.8 V × 3 Ah pack stores 38.4 Wh nominally. With an assumed 80% usable window and 90% conversion efficiency, about 27.6 Wh reaches the load. At 8 W the estimate is about 3.5 hours. A larger design using an 18 V, 5 Ah pack and a 150 W load would give roughly 26 minutes with those same illustrative assumptions. That design needs a higher-current pack, controller, wiring, motor and impeller qualified together. Measure usable watt-hours and runtime on the actual design before making a battery-life claim.</p>
+    <p>When selling a cordless model, confirm the product, charger and portable battery conformity requirements with BIS. Check whether your brand and battery supply arrangement create producer obligations under the Battery Waste Management Rules. <a href="https://www.bis.gov.in/wp-content/uploads/2019/03/IS-16046_Part-2_2018-final-1.pdf">BIS · Portable lithium battery test reporting</a> · <a href="https://cpcb.nic.in/uploads/hwmd/Notice_for_BMW.pdf">CPCB · Battery producer registration</a>.</p>
+    <a class="crosslink" href="p135-build-a-corded-mains-blower.html">P135 · Build a direct-mains corded blower</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261122-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

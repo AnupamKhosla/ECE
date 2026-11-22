@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P161 · Compile and replay a PLC robot station</title>
+<meta name="description" content="Translate a Structured Text function block with MatIEC and replay acknowledgment, proof, heartbeat and clock-wrap cases.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P161</span>
+    <h1>Compile and replay a PLC robot station</h1>
+    <p class="lede">Turn the PLC handshake into a Structured Text function block. Step through a job at controlled scan times, then prove that an old result, a late acknowledgment and a lost link cannot create an extra good part.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes with the trace or 100 minutes with compilation</span><span><b>Before this</b> <a href="p144-robot-plc-handshake.html">P144</a> · <a href="../theory/t30-embedded-timing-states.html">T30</a> · <a href="../theory/t34-industrial-control-signals.html">T34</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Give each signal a single owner</h2>
+    <p>This software-only lab processes input images. A call reads one set of simulated inputs and produces one resulting state. The C replay supplies clock values and selected scan images. There are no physical outputs. Structured Text is one of the PLC languages specified by IEC 61131-3. <a href="https://webstore.iec.ch/en/publication/68533">IEC 61131-3 · Programming language scope</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Owner</th><th scope="col">Signal or record</th><th scope="col">Evidence needed</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Station or operator</th><td>Review edge, start edge, requested job ID, fixture clear</td><td>Known empty station before authorizing a new job. The job ID increases within the simulated session.</td></tr>
+        <tr><th scope="row">Robot controller</th><td>Idle state, acknowledgment ID, result ID and outcome</td><td>The receiver keeps each related set of fields coherent. The robot holds the reported result until it observes a matching consumption acknowledgment.</td></tr>
+        <tr><th scope="row">Independent station check</th><td>Placement valid and proved job ID</td><td>A current reading associated with the placed part. An unchanged switch alone cannot identify the part.</td></tr>
+        <tr><th scope="row">Sequencer</th><td>Request, matching consumption acknowledgment, first fault and good-part count</td><td>Only one open job. The station counts after it sees a good result and current matching proof in the same input image.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A link-loss input tells the sequencer that its remote evidence is no longer current. The lab treats it as an ordinary process condition. The installation’s protective functions and recovery procedures are separate work. <a href="../theory/t62-robot-stop-functions-and-evidence.html">T62 · Safeguard validation</a>.</p>
+
+    <h2>Read the output of the actual replay</h2>
+    <p><a href="../assets/labs/plc-station/replay-example.csv" download>Download the verified scan trace</a>. Work from the columns <code>interface_job_id</code>, <code>last_issued_id</code> and <code>last_committed_id</code>. The first is meaningful for a request or acknowledgment when its associated flag is set. A last-issued ID is history and does not prove a part was placed.</p>
+    <ol class="steps">
+      <li>In <code>complete</code>, compare 260 ms with 270 ms. The station started waiting at 20 ms. The matching acknowledgment at elapsed 250 ms qualifies because the policy accepts it on the deadline scan. In <code>late_ack</code>, the deadline scan has no qualifying acknowledgment and the next scan remains held.</li>
+      <li>Find when the good count changes. Explain why a good result at 510 ms gives zero parts, and why the count stays at one while the result is repeated. Inspect the renewed consumption acknowledgment after the link returns at 570 ms.</li>
+      <li>In <code>missing_proof</code>, explain why job 42’s good result plus job 41’s proof records zero. In <code>wrap_and_loss</code>, compute elapsed time across the 32-bit clock wrap and explain why the link fault takes priority over a matching result and proof.</li>
+      <li>In <code>boot_and_rearm</code>, identify the observations that allow a fresh review and start. The two edge memories initialize to the held state, which requires seeing each button released before accepting its first press.</li>
+    </ol>
+    <details class="quiz"><summary>Check the rollover and loss decisions</summary><div class="answer"><p>The acknowledgment at clock value 209 follows the request at 4,294,967,255 by 250 ms. From the request until the clock reaches zero takes 41 ms. Add 209 ms after zero. At value 219 the link is unhealthy, so the block enters review, cancels request output and records no new part. A new sequence must wait for a fresh review of actual disposition.</p></div></details>
+
+    <h2>Translate the Structured Text and run it</h2>
+    <p>Save <a href="../assets/labs/plc-station/station.st" download>station.st</a> and <a href="../assets/labs/plc-station/replay.c" download>replay.c</a> to the same writable training directory. Build the open-source MatIEC compiler in a separate writable training directory using its build instructions. This replay was verified against commit <code>c316fe57e335381cbe91f61c7366857198580ac7</code>. The harness uses that emitter’s generated C declarations. <a href="https://github.com/beremiz/matiec/tree/c316fe57e335381cbe91f61c7366857198580ac7">Pinned MatIEC source</a> · <a href="https://beremiz.readthedocs.io/en/stable/install.html#build-matiec-compiler">Beremiz · Build MatIEC</a>.</p>
+    <p>In the lab directory set <code>MATIEC</code> to the path of the built compiler’s source directory. Run each command and check the first error if a step fails. The replay executes the generated IEC function-block code, using the C program as a clock and input adapter.</p>
+    <pre><code>MATIEC=/absolute/path/to/built/matiec
+mkdir -p generated
+"$MATIEC/iec2c" -I "$MATIEC/lib" -T generated station.st
+cc -std=gnu11 -O2 -I generated -I "$MATIEC/lib/C" replay.c -lm -o generated/station-replay
+./generated/station-replay &gt; generated/replay.csv</code></pre>
+    <p>The terminal reports <code>All station replay assertions passed.</code> and the CSV shows selected transitions. Move the valid acknowledgment in the complete case from 270 to 280 ms, recompile the harness and explain the assertion failure. Restore the input, then add a test for proof that arrives on the exact result deadline. State why the clock, result and proof must come from one coherent input image.</p>
+
+    <h2>Plan the first real recovery evidence</h2>
+    <p>Within a running instance the count persists through simulated link loss. A process restart resets the training block and starts in review. A deployed station needs tested rules for record retention, uniquely identifying a job across reboots and reconciling actual part location with retained records. A production counter and a separate remote write can fail between updates. In your acceptance plan say who owns the durable record, how a repeated job is detected and which physical proof lets the next part proceed.</p>
+    <p><a href="p146-robot-cell-acceptance.html">P146 · Assign acceptance tests and ownership for the deployed station</a></p>
+    <a class="crosslink" href="p162-recover-a-robot-station-journal.html">P162 · Recover a good-part record after a process exit</a>
+    <a class="crosslink" href="p177-wait-for-a-durable-station-receipt.html">P177 · Replay a lost journal acknowledgment through compiled PLC logic</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

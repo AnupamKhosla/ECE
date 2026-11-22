@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P165 · Audit a robot cell trial before signing acceptance</title>
+<meta name="description" content="Reconcile a synthetic production timeline and see why pooled throughput, cycle P155 and zero failures can hide a weak recipe.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P165</span>
+    <h1>Audit a robot cell trial before signing acceptance</h1>
+    <p class="lede">The trial delivers 331 good parts in an hour of planned production. Find out whether both recipes meet the cycle deadline and whether the inspection sample supports a 1% placement-failure limit.</p>
+    <div class="meta"><span><b>Time</b> 60–85 minutes</span><span><b>Before this</b> <a href="../theory/t68-robot-cell-acceptance-evidence.html">T68</a> · <a href="p146-robot-cell-acceptance.html">P146</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Write the decision rule before opening the results</h2>
+    <p>The pilot covers minute 0 through minute 70 on one elapsed-time clock. Ten scheduled break minutes are outside production. All other time, including changeover and line waits, remains in the planned window. Both recipes must meet the sample cycle limit and the independent placement-evidence limit. The fictional team selected these three gates.</p>
+    <ul>
+      <li>At least 320 unique good units per planned production hour for the cell.</li>
+      <li>Nearest-rank P155 cycle duration of at most 9.5 s for each recipe, using all completed attempts.</li>
+      <li>A recorded placement check on each cycle using the exercise limit of 0.50 mm absolute axial offset from the fixture reference. Each recipe needs a one-sided 95% upper binomial bound of at most 1%, conditional on the independent common-rate model.</li>
+    </ul>
+    <p>Download the <a href="../assets/labs/shift-acceptance/pilot-trial.csv" download>synthetic pilot timeline</a> and the <a href="../assets/labs/shift-acceptance/summarize.py" download>Python trial report</a> into the same folder. Five parts are rejected for a separate surface condition. Their placement inspections remain in the denominator. The timeline includes completed attempts and classifies all other intervals. In a real trial, also retain any aborted attempts and the first fault for each.</p>
+
+    <h2>Reconcile time and counts from the timeline</h2>
+    <p>Rows are half-open time intervals in elapsed milliseconds. A row begins where the previous one ends. For each, subtract <code>start_ms</code> from <code>end_ms</code>. Total the durations by <code>interval</code> and subtract only the scheduled exclusion from the wall time. For cycles, use the serial to keep a unique count and the <code>result</code> field to distinguish good and reject.</p>
+    <pre><code>python3 summarize.py pilot-trial.csv</code></pre>
+    <p>Compute the good rate and find the largest classified loss interval category. Compare your result with the report. The script checks contiguous timing, expected window length, allowed classifications and duplicate serials. The agreed schedule supplies the meaning of an exclusion. An interval’s label still needs corroborating evidence from the trial.</p>
+    <details class="quiz"><summary>Check the denominator and the time losses</summary><div class="answer"><p>The wall window is 70.00 min and the planned window is 60.00 min. Running time is 48.86 min. The 331 good parts pass at 331 units per planned hour. Starvation uses 313.69 s in two intervals, the largest category of classified production loss. Report both intervals by reason and time range before deciding where to investigate.</p></div></details>
+
+    <h2>Find the slow recipe and quantify the evidence gap</h2>
+    <p>Calculate the pooled P155 and each recipe’s P155. For each, retain the serial at the selected rank. Count placement failures and determine the one-sided upper bound from the number actually checked. Then assess whether conditions were sufficiently representative. Recipe A spans two lots. Recipe B has only one lot and comes after one changeover.</p>
+    <details class="quiz"><summary>Review the pooled result and the two recipe decisions</summary><div class="answer">
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Group</th><th scope="col">P155 and cycle</th><th scope="col">Placement failures</th><th scope="col">95% upper bound</th></tr></thead>
+        <tbody><tr><th scope="row">Pooled diagnostic</th><td>9.272 s, A-0256</td><td>0 / 336</td><td>0.888% under a shared-rate assumption</td></tr>
+        <tr><th scope="row">Recipe A</th><td>9.233 s, A-0009</td><td>0 / 320</td><td>0.932%</td></tr>
+        <tr><th scope="row">Recipe B</th><td>11.500 s, B-0016</td><td>0 / 16</td><td>17.075%</td></tr></tbody>
+      </table></div>
+      <p>Hold release. The combined cell rate passed. The pooled P155 hides B’s slow cycles, and the pooled zero-failure count overstates the inspection evidence for B. At least 299 independent inspections with zero failures are needed for its 1% bound under the exercise model. Choose test exposures across lots and new changeovers. Include a reason for any use of earlier observations after a process change.</p>
+    </div></details>
+
+    <h2>Challenge the report and write the remaining acceptance work</h2>
+    <p>Copy the CSV. Change one A placement result to <code>unchecked</code> and compare both the bound and the coverage decision. In another copy remove a production row entirely and find the timing error. For a third trial set one independent placement result to <code>fail</code>. Compare the adjusted bound and investigate the affected serial against the station’s good result. A disagreement deserves a reconciliation before changing the official count.</p>
+    <p>Draft a retest plan for recipe B with a cycle event trace, representative lots and a known measurement reference. Record the exact rate and placement decision rules, which software and recipe revisions they apply to, who owns the timing or process correction and when acceptance can be reviewed. Repeat interruption and restart tests separately after relevant changes.</p>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Add the pilot decision to the factory and site handover</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

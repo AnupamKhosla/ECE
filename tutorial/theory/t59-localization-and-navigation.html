@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T59 · Wheel odometry, localization and mobile navigation</title>
+<meta name="description" content="Derive differential-drive motion, interpret odometry drift, learn ROS frames and distinguish planning from execution.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T59</span>
+    <h1>Wheel odometry, localization and mobile navigation</h1>
+    <p class="lede">A wheel measures rotation. An odometry estimate integrates motion. A localizer compares current evidence with a map. Each result has its own frame and failure modes.</p>
+    <div class="meta"><span><b>Time</b> 40 minutes</span><span><b>Before this</b> <a href="t31-feedback-control.html">T31</a> · <a href="t33-robot-motion-and-feedback.html">T33</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Calculate centre travel and heading change</h2>
+    <p>For a differential-drive model, let L and R be signed wheel travel in metres over the same interval and b be the effective track width in metres. Forward centre travel is their average. The distance difference is the angle turned multiplied by the track width. Right travel greater than left travel turns the body anticlockwise in the convention x forward, y left, z up.</p>
+    <div class="formula">s = (R + L) / 2 &nbsp; · &nbsp; Δθ = (R − L) / b</div>
+    <p>If the robot is at heading θ, for straight travel add s cos θ to x and s sin θ to y. Under constant curvature for a nonzero turn, the centre follows an arc of radius s/Δθ. Therefore Δx = (s/Δθ)[sin(θ+Δθ) − sin θ] and Δy = (s/Δθ)[cos θ − cos(θ+Δθ)]. Turn in place gives s = 0. For short samples a midpoint heading θ + Δθ/2 approximates the arc. Use signed cumulative count differences with rollover handled in the counter’s numeric range.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Two-wheel TurtleBot chassis supporting computing and sensor equipment">
+      <figcaption>On a mobile chassis, measure wheel separation and the offset from the body frame to each sensor.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Follow the transformation from wheel increments to body motion. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-4-odometry/">Northwestern · Odometry video</a>.</p>
+
+    <h2>Use continuous local motion and global corrections</h2>
+    <p>In the common ROS frame tree, <code>odom → base_link</code> provides smooth short-term motion and may drift. <code>map → odom</code> corrects that drift relative to the map and may change abruptly. An observation from a lidar or camera needs a transform from its frame at the observation time. The base-to-sensor mount is typically static. A transform from the wrong instant gives especially visible offsets during turns.</p>
+    <p>Wheel scale error accumulates with distance. Unequal rolling radii produce drift in yaw during straight travel. An IMU can help estimate yaw rate, but gyro bias integrates into heading drift. Two estimates from the same encoders share errors. An estimator that treats them as independent can become overconfident. With a known map, a localizer such as AMCL compares laser observations with candidate poses. SLAM estimates both a map and robot poses when the map is being built. Revisiting a known place can correct drift accumulated earlier.</p>
+
+    <h2>Distinguish an unreachable goal from poor tracking</h2>
+    <p>A global planner looks for a route through traversable space. A controller follows it while accounting for current motion and nearby obstacles. A costmap describes occupied areas and clearance costs. Use the actual footprint including payload. Compare goal acceptance, global path, velocity commands, odometry and stopping evidence in that order. A valid global path can still fail if the local path is blocked, the wheel scale is wrong or the drive stops receiving fresh commands. See <a href="t64-robot-maps-costmaps-and-route-search.html">T64 · Costmaps and route search</a> for a clearance calculation and layer diagnostics.</p>
+    <p>Navigation obstacle avoidance supports the task. For industrial vehicles the operating zone, stopping performance and protective functions are separately assessed for their intended use. <a href="https://docs.nav2.org/rolling/configuration_and_development/first_time_robot_setup_guide/transformation/setup_transforms/">Nav2 frame guide</a> · <a href="https://control.ros.org/jazzy/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html">ros2_control differential drive</a> · <a href="https://www.iso.org/standard/83545.html">ISO driverless industrial trucks scope</a>.</p>
+
+    <p><a href="../practice/p140-wheel-odometry.html">P140 · Verify scale and track width</a> · <a href="t63-robot-state-estimation.html">T63 · Calculate a sensor fusion update</a> · <a href="../practice/p141-ros2-mobile-bringup.html">P141 · Diagnose a live software simulation</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

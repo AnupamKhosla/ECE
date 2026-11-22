@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P140 · Calibrate wheel odometry against floor measurements</title>
+<meta name="description" content="Replay wheel encoder counts and compare the estimated path with a measured straight-and-turn reference.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P140</span>
+    <h1>Calibrate wheel odometry against floor measurements</h1>
+    <p class="lede">Drive an L-shaped route on paper. Fit wheel scale with a straight run and track width with a turn, then check both on a different route.</p>
+    <div class="meta"><span><b>Time</b> 55–80 minutes</span><span><b>Before this</b> <a href="p42-mobile-robot-fault-finding.html">P42</a> · <a href="../theory/t59-localization-and-navigation.html">T59</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find two independent references</h2>
+    <p>Count 2,400 decoded counts per wheel turn. In your recorded straight calibration, both wheels report 23,506 counts for 2.000 m of measured floor travel. The travel scale is approximately 0.0851 mm per count, corresponding to about 65.0 mm diameter. In a separate 360° counterclockwise spin, the left and right wheels report −5,538 and +5,538 counts. Estimate effective track width from the difference in wheel travel divided by 2π. Compare repeated clockwise and anticlockwise measurements to detect slip or asymmetry.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="TurtleBot wheeled chassis viewed from a low angle">
+      <figcaption>Calibration measures the contact geometry on the floor under its normal load. A ruler across the outside of the tyres gives a different dimension from the effective track width.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Relate the wheel measurements to body motion. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-4-odometry/">Northwestern · Odometry video</a>.</p>
+
+    <h2>Replay an independent route</h2>
+    <p>Start at (0, 0) facing +x. For each leg, convert signed counts to distance using circumference ÷ decoded counts per revolution. Integrate using <a href="../theory/t59-localization-and-navigation.html">T59</a>. The floor survey of this synthetic validation run gives (1.000 m, 0.500 m) at about +90°. The replay changes the estimator’s scale or the input log while keeping that surveyed reference fixed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Leg</th><th scope="col">Left counts</th><th scope="col">Right counts</th></tr></thead>
+      <tbody><tr><th scope="row">Straight</th><td>11,753</td><td>11,753</td></tr><tr><th scope="row">Turn left</th><td>−1,385</td><td>1,385</td></tr><tr><th scope="row">Straight</th><td>5,876</td><td>5,876</td></tr></tbody>
+    </table></div>
+    <div class="widget" id="odometry-trainer">
+      <label for="odom-diameter">Model wheel diameter (mm)</label><input id="odom-diameter" type="number" min="40" max="100" step="any" value="65" required>
+      <label for="odom-track">Model track width (mm)</label><input id="odom-track" type="number" min="90" max="250" step="any" value="150" required>
+      <label for="odom-fault">Encoder log</label><select id="odom-fault"><option value="normal">Original counts</option><option value="slip">Right wheel spin on last leg</option><option value="sign">Left encoder sign reversed</option></select>
+      <div class="lab-controls"><button type="button" id="run-odometry">Replay encoder log</button></div>
+      <p id="odom-summary" role="status">Replay the log to compare the estimated pose with the floor survey.</p>
+      <div class="table-wrap" id="odom-readings" hidden><table>
+        <caption>Estimated pose after each leg</caption>
+        <thead><tr><th scope="col">Leg</th><th scope="col">Left counts</th><th scope="col">Right counts</th><th scope="col">x (m)</th><th scope="col">y (m)</th><th scope="col">Yaw (°)</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Enable JavaScript for replay. You can also use the signed counts above and check the answers below.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Replay 65 mm and 150 mm, then try track width 165 mm. Explain why the first straight leg still matches and the heading after the turn is low.</li>
+      <li>Try the reversed sign. Explain why equal physical wheel travel now becomes a modelled spin. For the spin-on-last-leg log, find the first segment where the estimate disagrees with the physical survey.</li>
+      <li>If you have a small trainer, repeat the two calibration manoeuvres in a clear flat area, then validate on a distinct route. Record surface, payload, speed, wheel wear and errors at intermediate points. Stop the trainer before handling it.</li>
+    </ol>
+    <details class="quiz"><summary>Check the calibration and expected headings</summary><div class="answer"><p>Track width is about 150 mm. At 65 mm diameter and 150 mm track, the turn gives about 90.03°. At 165 mm it gives about 81.84°. A correct start and a heading error after the turn point to track width or slip. The location of the first disagreement helps distinguish them.</p></div></details>
+
+    <p><a href="p141-ros2-mobile-bringup.html">P141 · Trace odometry, transforms and a navigation goal in ROS 2</a></p>
+    <a class="crosslink" href="p156-fuse-wheel-and-landmark-position.html">P156 · Correct accumulated wheel error using occasional landmarks</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

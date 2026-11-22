@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T70 · Task priority, blocking and control deadlines</title>
+<meta name="description" content="Use a fixed-priority timing budget to reason about shared resources, priority inversion and a control loop that responds late.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T70</span>
+    <h1>Task priority, blocking and control deadlines</h1>
+    <p class="lede">A control task can miss its deadline even when the arithmetic in the task takes a fraction of the available time. Trace who owns the resource it needs, which other tasks are runnable, and how much time remains after it becomes ready.</p>
+    <div class="meta"><span><b>Time</b> 35 min</span><span><b>Before this</b> <a href="t30-embedded-timing-states.html">T30 · Firmware timing and recovery</a> · <a href="t31-feedback-control.html">T31 · Feedback control</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Follow the task that can make progress</h2>
+    <p>On the single-core scheduler in this exercise, a ready task with higher priority preempts a lower-priority task. A task blocked on a queue, lock or timeout cannot run even when it has the highest task priority. An interrupt can delay dispatch as well. Measure a deadline from the relevant event through scheduling, computation and output, then add actuator response if it belongs in the requirement.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Trace state</th><th scope="col">What the task needs</th><th scope="col">Signal to record</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Ready</th><td>CPU time</td><td>Event or wake tick and first scheduled instruction.</td></tr>
+        <tr><th scope="row">Running</th><td>CPU until preempted or blocked</td><td>Entry and exit or scheduler trace with task switches.</td></tr>
+        <tr><th scope="row">Blocked</th><td>A resource, external event or deadline</td><td>Request, resource owner, timeout and successful acquisition.</td></tr>
+      </tbody>
+    </table></div>
+    <h2>See the inversion in three tasks</h2>
+    <ol>
+      <li>A low-priority logger holds a shared record buffer when a high-priority control update arrives.</li>
+      <li>The control task blocks on the owner. A medium-priority analysis task remains runnable. With a binary semaphore for the shared buffer, it runs ahead of the logger and delays the control task indirectly.</li>
+      <li>With a FreeRTOS mutex in this single-lock example, the owner inherits the waiting control task’s priority. The logger can finish its critical section, release the buffer and let control run. The analysis task still gets its CPU time afterward.</li>
+    </ol>
+    <p>A binary semaphore suits event signalling. A mutex expresses ownership and gives FreeRTOS a way to inherit priority across the wait. Hold it for the bounded data copy, release it, then format logs or perform storage and network I/O. Inheritance still leaves the control task waiting for the owner to finish. FreeRTOS uses a simplified inheritance scheme, so retest when an owner holds several locks. Use ISR-safe signalling APIs for interrupt-to-task events and check each API’s constraints. <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/04-Mutexes">FreeRTOS mutexes and priority inheritance</a>.</p>
+    <h2>Calculate a small response-time budget</h2>
+    <p>Suppose control takes at most 4 ms of CPU and can be blocked for up to 8 ms by one lower-priority resource owner. A higher-priority task needs 3 ms every 10 ms. Use independent periodic higher-priority work, fixed-priority preemptive scheduling and measured or analysed upper bounds as assumptions. There is no extra jitter, blocking chain, interrupt workload or self-suspension in this model.</p>
+    <p>Start with control execution plus blocking, <code>R₀ = 4 + 8 = 12 ms</code>. Up to two releases of the higher-priority task fit into that interval. The next result is <code>R₁ = 4 + 8 + ceil(12/10) × 3 = 18 ms</code>. Repeating with 18 ms gives the same answer. Under the assumptions, a 20 ms deadline fits. If blocking grows to 12 ms, the sequence becomes 16, 22 and 25 ms. It crosses the deadline even though control still takes 4 ms. Include dispatch, interrupts, release jitter and other resources when analysing a target that has them.</p>
+    <h2>Decide what a late task may do</h2>
+    <p>Give the controller a bounded wait, count missed releases and define what happens to output and data freshness when the budget expires. A deadline miss may require holding a defined output, degrading the mode or requesting a stop through designed interfaces. Test the response with delayed work, missed samples and clustered interrupts. Hardware watchdogs and independent safeguards address different failure modes.</p>
+    <details class="quiz"><summary>Why can a fast idle-bench loop still miss updates during logging?</summary><div class="answer"><p>CPU timing for the control calculation omits blocking. A logger may hold a buffer, and unblocked medium-priority work can extend the wait. Record the delay from the control release to actual acquisition under simultaneous workloads.</p></div></details>
+    <a class="crosslink" href="../practice/p168-measure-a-freertos-control-task-delay.html">Practice P168 · Measure a control task waiting on FreeRTOS</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

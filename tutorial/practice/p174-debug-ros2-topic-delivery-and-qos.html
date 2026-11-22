@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P174 · Debug ROS 2 topic delivery with QoS evidence</title>
+<meta name="description" content="Run two ROS 2 Jazzy middleware implementations to distinguish discovered endpoints, matched endpoints, retained messages and missed deadlines.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P174</span>
+    <h1>Debug ROS 2 topic delivery with QoS evidence</h1>
+    <p class="lede">A scan topic appears in the graph, but the laptop sees no samples. Inspect the policy offer and request, then reproduce three more cases involving late subscribers, a missed update and expired history.</p>
+    <div class="meta"><span><b>Time</b> 55–75 min</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141 · ROS 2 navigation stack</a> · <a href="p150-ros2-navigation-trace.html">P150 · Diagnose navigation timing</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build the diagnosis around matched endpoints</h2>
+    <p>A publisher offers a QoS profile. A subscriber requests a profile. A best-effort offer can satisfy a best-effort request. A reliable request needs a reliable offer. In discovery both endpoints can be listed under the same topic, while an incompatible pair exchanges no messages. Use endpoint properties, match count and the incompatible-policy event together. <a href="https://github.com/ros2/ros2_documentation/blob/jazzy/source/Concepts/Intermediate/About-Quality-of-Service-Settings.rst">ROS 2 Jazzy QoS compatibility rules</a>.</p>
+    <p>Durability determines what a late reader is eligible to receive. In this exercise a transient-local publisher retains a sample and a matching late reader receives it while that publisher remains alive. A volatile late reader sees only new publications. Deadline tests the interval between updates. Lifespan limits how long a published sample remains deliverable.</p>
+
+    <h2>Run the local Jazzy exercise</h2>
+    <p>Download <a href="../assets/labs/ros-qos/check_qos.py" download>check_qos.py</a>. Use a separate Ubuntu 24.04 VM or an unused local ROS domain with Jazzy, <code>rclpy</code> and <code>std_msgs</code>. The script starts two temporary nodes in one Python process and publishes synthetic integers under <code>/ece_qos_lab/</code>. No navigation, camera or motor nodes are needed.</p>
+    <pre><code>source /opt/ros/jazzy/setup.bash
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DOMAIN_ID=74
+RMW_IMPLEMENTATION=rmw_fastrtps_cpp python3 check_qos.py &gt; fast-dds.csv</code></pre>
+    <p>To repeat with Cyclone DDS, install its Jazzy middleware package. Keep the discovery scope local and use an unused domain. Each check stops with an error if evidence is missing or the result differs.</p>
+    <pre><code>sudo apt install ros-jazzy-rmw-cyclonedds-cpp
+RMW_IMPLEMENTATION=rmw_cyclonedds_cpp python3 check_qos.py &gt; cyclone-dds.csv</code></pre>
+    <p>Read the results by case and observation. Elapsed times use a local monotonic clock and mark when the check recorded each result. Download the <a href="../assets/labs/ros-qos/observed-fast-dds.csv" download>observed Fast DDS run</a> and <a href="../assets/labs/ros-qos/observed-cyclone-dds.csv" download>observed Cyclone DDS run</a>.</p>
+
+    <h2>Explain the four outcomes</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Case</th><th scope="col">Condition tested</th><th scope="col">Outcome in both observed runs</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Reliability</th><td>Best-effort publisher. One reader requests reliable, one best effort.</td><td>Graph discovers two readers, publisher matches one. The rejected reader reports <code>RELIABILITY</code>. The matched reader gets 10, 11 and 12.</td></tr>
+        <tr><th scope="row">Durability</th><td>Publisher sends 40 before two subscribers join, then sends 41 after both match.</td><td>The transient-local reader sees 40 before the new publication. The volatile reader first sees 41. Both get 41.</td></tr>
+        <tr><th scope="row">Deadline</th><td>Publisher offers 120 ms. Readers ask for 60 and 120 ms. Pause the publisher after three readings.</td><td>The 60 ms request reports <code>DEADLINE</code> incompatibility. The 120 ms reader remains matched through three observed deadline misses and receives value 24 when publication resumes.</td></tr>
+        <tr><th scope="row">Lifespan</th><td>Transient-local publisher sets a 160 ms lifespan. Reader starts after more than 450 ms.</td><td>The matched late reader receives no expired 301 value. It receives the new 302 value.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Deadline events tell you that expected updates did not arrive. They leave the endpoint connection in place. Lifespan starts from middleware publication, so a queued sensor sample may already be old before this limit begins. A robot still needs application checks for the acquisition timestamp, data quality and the expected map or mission generation.</p>
+
+    <h2>Use the sequence on a failing subscriber</h2>
+    <ol>
+      <li>On the isolated ROS domain, use <code>ros2 topic info -v</code> on the active topic in P141. Compare publisher and subscriber types, reliability and durability. If both endpoints exist, find which pair is actually matched.</li>
+      <li>Change the durability reader in the fixture to volatile. Update the expected observation and explain why waiting longer cannot recover its old publication. Restore the original settings for the remaining cases.</li>
+      <li>Before treating a fresh callback as reauthorization, verify the message belongs to the current operation. For a scan, inspect message stamp, clock and transform availability. For a retained configuration, require the current map or recipe revision.</li>
+    </ol>
+    <p>This test exercises middleware on one host with short queues and synthetic messages. Measure transport behavior, executor load and application age separately in the target system.</p>
+    <a class="crosslink" href="p150-ros2-navigation-trace.html">Practice P150 · Follow a scan and transform through a failing navigation trace</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

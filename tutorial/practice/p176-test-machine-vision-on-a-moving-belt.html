@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P176 · Test machine vision at conveyor speed</title>
+<meta name="description" content="Measure synthetic motion blur and rolling-shutter shear in OpenCV, then qualify defect detection and geometric accuracy independently.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P176</span>
+    <h1>Test machine vision at conveyor speed</h1>
+    <p class="lede">A stationary sample passes inspection. At production speed the same camera can miss a defect or shift two reference marks by different amounts. Recreate both failures and test the image timing before changing the robot pick.</p>
+    <div class="meta"><span><b>Time</b> 60–80 min</span><span><b>Before this</b> <a href="p45-2d-machine-vision.html">P45 · Controlled-light inspection</a> · <a href="p152-conveyor-robot-tracking.html">P152 · Align a frame with conveyor position</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Calculate how far the target moves during exposure</h2>
+    <p>At 400 mm/s and a local image scale of 4 pixels per mm, the image moves at 1,600 pixels/s. It travels 3.2 px during a 2 ms exposure and 12.8 px during 8 ms. That travel is the ideal horizontal smear distance for each feature. If a specific feature must smear by at most 2 px, use an exposure of at most 1.25 ms at the same speed and scale. Check brightness and sensor noise at that exposure.</p>
+    <p>The global-shutter model exposes all rows together. The rolling model has a 35 µs step between adjacent rows’ exposure midpoints. The two reference marks lie 80 rows apart. Their exposures are separated by 2.8 ms, so the predicted horizontal displacement difference is 1.12 mm. Reducing the per-row exposure reduces blur. The interval between rows still gives shear when the target moves. Use the actual camera’s shutter and readout documentation. <a href="https://docs.baslerweb.com/electronic-shutter-types">Basler electronic shutter types and row timing</a>.</p>
+
+    <h2>Run the same inspection on the four image sets</h2>
+    <p>Download <a href="../assets/labs/vision-exposure/check_exposure.py" download>check_exposure.py</a>. Use Python 3 and its OpenCV and NumPy packages. The verification used OpenCV 4.6.0 on Ubuntu 24.04. The script writes a representative image per condition and a CSV of all trials. Give it a new directory name for the images. The synthetic images use fixed brightness across exposure conditions to isolate motion effects, small seeded noise and the same twelve object variations in every comparison.</p>
+    <pre><code>sudo apt install python3-opencv python3-numpy
+python3 check_exposure.py example-images &gt; readings.csv</code></pre>
+    <p>For each image the detector counts pixels below intensity 120 in the orange region and rejects at five or more. A separate weighted centre calculation tracks each dark reference dot. The exercise expects all six clean coupons accepted, all six defect coupons rejected, and at most 0.30 mm measured difference in the estimated horizontal positions of the two reference dots. <a href="../assets/labs/vision-exposure/observed-exposure.csv" download>Observed 48 measurement rows</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/vision-exposure/vision-exposure.png" width="1260" height="990" loading="lazy" decoding="async" alt="Four simulated images of the same defective coupon. A long moving global exposure smears out the defect. The short rolling shutter still detects it but shifts the upper and lower reference marks in different directions.">
+      <figcaption>Coupon 7 in the four cases. The orange rectangle outlines the detector’s region. The blue line joins the measured references, which should share the same horizontal coordinate.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Capture</th><th scope="col">Predicted smear</th><th scope="col">Missed defects out of six</th><th scope="col">Max reference difference</th><th scope="col">Model outcome</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Stationary, global, 8 ms</th><td>0 px</td><td>0</td><td>0.002 mm</td><td>Both criteria pass.</td></tr>
+        <tr><th scope="row">Moving, global, 2 ms</th><td>3.2 px</td><td>0</td><td>0.004 mm</td><td>Both criteria pass.</td></tr>
+        <tr><th scope="row">Moving, global, 8 ms</th><td>12.8 px</td><td>6</td><td>0.011 mm</td><td>Defect inspection misses the criterion.</td></tr>
+        <tr><th scope="row">Moving, rolling, 2 ms</th><td>3.2 px per row</td><td>0</td><td>1.123 mm</td><td>Reference geometry misses the criterion.</td></tr>
+      </tbody>
+    </table></div>
+    <p>All four conditions accepted the six clean coupons. In the long moving global case the defect’s dark-pixel count fell from 29 while still to zero or one. In the short rolling case the classifier passed while the references failed. A model can find the requested feature and still supply a misleading coordinate to the robot.</p>
+
+    <h2>Check which timestamp belongs to the coordinate</h2>
+    <p>At constant motion under a symmetric global exposure, a well-tracked feature’s centroid corresponds approximately to the exposure midpoint. If software uses the exposure end instead, an 8 ms exposure adds a 4 ms offset, or 1.6 mm at 400 mm/s. Trigger, exposure, end of readout, arrival and callback time can all differ. In a rolling camera record which row or region the timestamp represents.</p>
+    <ol>
+      <li>Repeat at the fastest expected belt speed, with exposure and lighting logged. Include both a geometry reference and known defect samples.</li>
+      <li>Use held-out physical samples across variation in materials and orientation before accepting a recipe. The twelve repeated synthetic coupons compare capture conditions. They provide no field defect rate.</li>
+      <li>Preserve exposure and trigger settings, camera revision, image scale, sample identities and the encoder-count pairing in the production trial. Use a separate acceptance decision for detectability and pose error.</li>
+    </ol>
+    <a class="crosslink" href="p165-audit-a-robot-cell-pilot.html">Practice P165 · Qualify inspection and throughput by production recipe</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+check,decision,last_recorded_event,good_serials,detail
+live_at_backup,observed,robot-205,PART-042|PART-043,
+main_file_only,hold,fixture-302,PART-042,SQLite integrity passes but committed WAL history is absent
+sqlite_backup_api,cutoff_verified,robot-205,PART-042|PART-043,
+live_after_backup,observed,robot-206,PART-042|PART-043|PART-044,
+changed_bytes,hold,,,bundle hash mismatch
+valid_hash_wrong_release,hold,,,commissioned identity mismatch for camera_transform
+restore_without_suffix,hold,robot-205,PART-042|PART-043,Verified backup is behind the independent production record
+restore_plus_replayed_suffix,ready_for_offline_checks,robot-206,PART-042|PART-043|PART-044,All 4 repeated deliveries returned stored outcomes

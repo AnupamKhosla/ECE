@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P138 · Size a robot drive and trace a startup fault</title>
+<meta name="description" content="Calculate wheel torque, speed and peak current, then use loaded voltage evidence to find a startup fault.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P138</span>
+    <h1>Size a robot drive and trace a startup fault</h1>
+    <p class="lede">Select a motor at its loaded operating point. Then use voltage at the source and driver to find out why the controller resets when both wheels start.</p>
+    <div class="meta"><span><b>Time</b> 50–70 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="../theory/t24-measurement-datasheets.html">T24</a> · <a href="../theory/t58-robot-actuators-and-loads.html">T58</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Work backward from the floor</h2>
+    <p>The example chassis and payload total 4 kg. It must accelerate at 0.50 m/s² on a 5° ramp and reach 0.50 m/s. Two driven wheels share the longitudinal force equally. Each wheel has a 50 mm rolling radius and the estimated rolling resistance coefficient is 0.03.</p>
+    <ol class="steps">
+      <li>Use 9.81 m/s² for gravity and calculate each force term before adding them. Convert total force to per-wheel torque and calculate wheel rpm.</li>
+      <li>Apply a 1.5 training margin to wheel torque. With 30:1 reduction and 0.75 efficiency, find the motor’s operating torque at the same vehicle speed.</li>
+      <li>Compare the synthetic choices below. Keep the motor speed and shaft torque requirements together. Check efficiency, duty and gearbox ratings in a real data sheet.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Candidate</th><th scope="col">Continuous torque near 2,865 rpm</th><th scope="col">Continuous gearbox output rating</th></tr></thead>
+      <tbody><tr><th scope="row">A</th><td>0.009 N·m</td><td>0.35 N·m</td></tr><tr><th scope="row">B</th><td>0.014 N·m</td><td>0.40 N·m</td></tr><tr><th scope="row">C</th><td>0.020 N·m</td><td>0.20 N·m</td></tr></tbody>
+    </table></div>
+    <details class="quiz"><summary>Check the operating point and pick</summary><div class="answer"><p>2.00 + 3.42 + 1.17 ≈ 6.59 N. At 0.050 m radius this is 0.165 N·m per wheel. With margin, use 0.247 N·m. Wheel speed is 95.5 rpm, so motor speed is about 2,865 rpm and motor torque is about 0.011 N·m. B clears both torque checks. A misses motor torque and C misses the gearbox output requirement.</p></div></details>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/encoder.jpg" width="631" height="960" loading="lazy" decoding="async" alt="A rotary encoder driven by a wheel on a test fixture">
+      <figcaption>Identify the boundary between the driven wheel and measured shaft. In your own chassis, mark one wheel turn and compare mechanical motion with the reported count.<br><small>Photo by International Gemini Observatory/NOIRLab/NSF/AURA, scaled. <a href="https://commons.wikimedia.org/wiki/File:Friction-driven_Encoder_Test_(encoder_02-CC).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Compare common mobile drive types and the motion each permits. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-1-wheeled-mobile-robots/">Northwestern · Wheeled mobile robots video</a>.</p>
+
+    <h2>Locate a loaded voltage drop</h2>
+    <p>For sizing, assume a training driver limits each motor winding to 1.5 A. A simultaneous start at full duty plus 0.25 A electronics load implies about 3.25 A from the source in this simplified case. Compare the source, harness and driver channel ratings at their own terminals and duty. 1.5 A winding current at lower duty does not imply 1.5 A average source current. Use a current-limited isolated bench supply and a secured small motor for a hardware comparison. Use the recorded case below for peak values.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Measurement</th><th scope="col">Idle</th><th scope="col">Start event</th></tr></thead>
+      <tbody><tr><th scope="row">Supply terminals</th><td>6.05 V</td><td>5.95 V</td></tr>
+      <tr><th scope="row">Driver supply terminals</th><td>6.02 V</td><td>4.67 V</td></tr>
+      <tr><th scope="row">Positive path drop</th><td>0.02 V</td><td>1.18 V</td></tr>
+      <tr><th scope="row">Return path drop</th><td>0.01 V</td><td>0.10 V</td></tr>
+      <tr><th scope="row">Supply current</th><td>0.22 A</td><td>3.20 A</td></tr></tbody>
+    </table></div>
+    <p>Predict which path fails and calculate its effective resistance during the event. Propose a comparison after inspecting the de-energised connector and wiring. Repeat at the same test load to confirm the repair. For a real trainer, power down before moving connections and use the motor gently within its limits. Measure voltage at both ends of a wire while it carries load.</p>
+    <details class="quiz"><summary>Check the diagnosis</summary><div class="answer"><p>The measured start-event drop is 1.28 V, of which 1.18 V is in the positive path. That path’s effective resistance is about 0.37 Ω at the observed load. The supply terminals remain close to 6 V. After repair, verify the driver input stays above its documented limit and the controller stays up at the same load. Compare with the <a href="https://www.pololu.com/docs/0J69/3.3">Pololu Romi driver and encoder guide</a> for model-specific details.</p></div></details>
+
+    <p>Keep the operating-point calculation and voltage-drop record. <a href="p139-wheel-speed-control.html">P139 · Tune a wheel speed loop</a>.</p>
+    <a class="crosslink" href="p179-find-a-motor-start-brownout.html">P179 · Separate source sag, connector loss and a logic brownout in ngspice</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

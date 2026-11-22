@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P149 · Recover a CNC tending cycle with a part between the gripper and chuck</title>
+<meta name="description" content="Walk a CNC machine-tending sequence, assign part ownership and rehearse recovery after loss of grip, proof or communications.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P149</span>
+    <h1>Recover a CNC tending cycle with a part between the gripper and chuck</h1>
+    <p class="lede">An interrupted transfer can leave a part in the gripper, in the chuck or held by both. A controller restart cannot tell you which one happened. Recover from physical evidence.</p>
+    <div class="meta"><span><b>Time</b> 70–95 minutes</span><span><b>Before this</b> <a href="p144-robot-plc-handshake.html">P144</a> · <a href="p146-robot-cell-acceptance.html">P146</a> · <a href="p147-gripper-and-vacuum-diagnostics.html">P147</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Work with a part and two holders</h2>
+    <p>Draw a door, spindle chuck and robot gripper on paper or use two binder clips and a paper part on a table. Label the part 42 and designate separate robot and CNC controllers. This exercise rehearses ordinary sequencing with no machine connected. The actual installed application has a separate engineered and validated safety system for hazardous motion, access and energy. <a href="https://www.iso.org/standard/73934.html">ISO 10218-2 · Industrial robot applications and cells</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Gripper holding a part over a manufacturing fixture">
+      <figcaption>Identify the tool and stationary fixture. In the CNC example the chuck becomes the second holder and must prove its grasp before the gripper releases.<br><small>Photo by Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Identify the order of blank pickup, approach, part transfer and retreat. <a href="https://video.universal-robots.com/machine-tending-with-collaborative">Universal Robots · CNC and lathe tending demonstration</a>.</p>
+
+    <h2>Assign ownership through the normal transfer</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Phase</th><th scope="col">Part ownership</th><th scope="col">Evidence to advance in the exercise</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Wait outside</th><td>Gripper</td><td>Current job and recipe match; fresh grip, CNC ready for loading and loading position confirmed.</td></tr>
+        <tr><th scope="row">Present blank</th><td>Gripper</td><td>Part at seating position, chuck open, correct blank orientation.</td></tr>
+        <tr><th scope="row">Close and prove</th><td>Gripper until clamp proof, then shared</td><td>Independent evidence of chuck clamping a correctly seated blank. Clamp motion alone might be an empty closure.</td></tr>
+        <tr><th scope="row">Release gripper</th><td>Chuck</td><td>Gripper release confirmed and chuck retains proof. Establish clearance before robot retreat.</td></tr>
+        <tr><th scope="row">Retreat and hand over</th><td>Chuck</td><td>Robot outside the loading volume, door in its required state, correct part and recipe still confirmed. CNC retains its own cycle-start conditions.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Before changing ownership, record the job ID, part location, fresh observations and both controllers’ phases. A process flag saying the robot is outside helps sequencing. Its use for protecting people or controlling a hazardous machine function requires the safety function specified in the design and a separate validation record.</p>
+
+    <h2>Interrupt three handoffs</h2>
+    <ol class="steps">
+      <li><b>Empty chuck closure.</b> The close request was sent and the chuck closed signal is on, but seating proof is missing. Name the last confirmed holder and which two actions must wait.</li>
+      <li><b>Restart during shared hold.</b> Part 42 is still between both holders. The PLC restarts and the CNC reports clamp pressure but its part record is unavailable. Decide which record and observed evidence must agree before release or retreat.</li>
+      <li><b>Stale robot clearance.</b> The chuck has the part, but the robot-clear message stopped before the last movement. The machine control must keep its next step held. Explain which current source would prove actual clearance in the approved design.</li>
+    </ol>
+    <details class="quiz"><summary>Check the recovery decisions</summary><div class="answer"><p>In the first case the gripper remains the last confirmed holder. Hold release and machining. In the second case record the shared or uncertain hold and use the approved recovery procedure. Identify job 42, establish its physical seating and prove both holder states before the responsible team selects a recovery. In the third case a retained clearance flag is stale. Verify current position and the independent condition required by the design before advancing.</p></div></details>
+    <p>Repeat the exercise for unloading. Establish grip before relinquishing the chuck, then verify that the part left and the chuck and robot are ready for the next job. For handover keep the job history, first fault, record reconciliation, observed holder proof and signed outcome. <a href="https://www.universal-robots.com/articles/ur/interface-communication/profinet-how-to-guide-e-series/">Universal Robots · Example mapping between a robot and PLC</a>.</p>
+
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Record the restart and recovery as an acceptance test</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

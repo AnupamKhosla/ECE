@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P173 · Test compiled wheel firmware against a motor model</title>
+<meta name="description" content="Build the Uno sketch twice and execute the firmware with emulated GPIO, encoder edges, PWM, serial telemetry and a modeled mechanical load.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P173</span>
+    <h1>Test compiled wheel firmware against a motor model</h1>
+    <p class="lede">A control equation can work in a spreadsheet while the code mishandles a held button or lost encoder. Run the same compiled firmware that you would load onto the Uno and compare its actual pin and serial behavior with the modeled shaft.</p>
+    <div class="meta"><span><b>Time</b> 70–100 min</span><span><b>Before this</b> <a href="p153-close-the-loop-on-a-real-wheel.html">P153 · Wheel-speed sketch</a> · <a href="p139-wheel-speed-control.html">P139 · Tune a wheel model</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build two sketches for the same board</h2>
+    <p>Use a new writable exercise directory with Node.js, npm and Arduino CLI. Download <a href="../assets/labs/wheel-speed-trainer/wheel-speed-trainer.ino" download>wheel-speed-trainer.ino</a> into a folder named <code>wheel-speed-trainer</code>. Keep <code>closedLoop</code> false for the first build. Install the pinned Uno core if necessary, then compile the sketch. There is no board to connect or upload in this lab.</p>
+    <pre><code>arduino-cli core update-index
+arduino-cli core install arduino:avr@1.8.8
+arduino-cli compile --fqbn arduino:avr:uno --output-dir open-build wheel-speed-trainer</code></pre>
+    <p>Set <code>closedLoop</code> to <code>true</code> in your copy and build the PI version separately.</p>
+    <pre><code>arduino-cli compile --fqbn arduino:avr:uno --output-dir pi-build wheel-speed-trainer</code></pre>
+    <p>Download <a href="../assets/labs/wheel-emu/firmware-bench.mjs" download>firmware-bench.mjs</a> into the exercise directory alongside both build folders. Use the application HEX files without the bootloader suffix. The harness runs the AVR instructions, timers, UART and GPIO with <a href="https://github.com/wokwi/avr8js">AVR8js</a>.</p>
+    <pre><code>npm init -y
+npm install --ignore-scripts --save-exact avr8js@0.21.1
+node firmware-bench.mjs open-build/wheel-speed-trainer.ino.hex pi-build/wheel-speed-trainer.ino.hex evidence</code></pre>
+    <p>Use a new evidence folder name for each run. The process asserts the expected pin transitions and modeled speed ranges. Each run emits the serial log, bridge-enable edges and plant samples. Keep the source revision and build configurations with these files.</p>
+
+    <h2>Trace the loop across its real pins</h2>
+    <p>The harness reads D4 standby, D5 PWM and both direction inputs from the emulated bridge pins. It calculates the fraction of active drive cycles and updates a first-order motor with a 220 ms time constant. The model’s steady speed is <code>max(0, 130 × duty − equivalent load)</code> in rpm. The modeled shaft drives D2 pulses at about 301 rising edges per turn, so the firmware has to count pins and convert the measured interval itself. D11 selects 55 rpm and D12 supplies a simulated hold-to-run switch.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/wheel-emu/wheel-firmware-replay.png" width="1260" height="915" loading="lazy" decoding="async" alt="Both PI policies regain 55 rpm with moderate load. During encoder loss the prior policy accelerates the model to about 77 rpm. The updated policy holds its last duty and peaks near 56 rpm.">
+      <figcaption>Three compiled Uno configurations drive the same motor model. Bridge duty is measured from drive-high cycles in 25 ms windows.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test</th><th scope="col">What the harness applied</th><th scope="col">Observed result</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Boot and debouncing</th><td>Hold run at boot, release, then press for 20 ms. Give a sustained press starting at 550 ms.</td><td>The first enable edge occurs near 590.0 ms in both runs.</td></tr>
+        <tr><th scope="row">Moderate load</th><td>Subtract an 18 rpm equivalent load from 2.1 to 5.5 s.</td><td>Mean over the last half-second is 36.8 rpm open loop and 55.0 rpm with PI.</td></tr>
+        <tr><th scope="row">Heavy load</th><td>Increase the modeled load to a 40 rpm equivalent from 5.5 to 6.8 s.</td><td>The PI command reaches the 60% limit. Load exceeds what that duty can hold at 55 rpm.</td></tr>
+        <tr><th scope="row">Feedback gone</th><td>Stop supplying encoder edges at 8.500 s while the run input stays pressed.</td><td>The prior PI policy raises duty and the model reaches 76.8 rpm. With the edge-age check, PI holds duty and the model peaks at 56.4 rpm. Drive disables near 9.293 s in both PI runs.</td></tr>
+        <tr><th scope="row">Feedback returns and operator releases</th><td>Restore edges at 9.650 s. Release run at 10 s, then give a sustained new press at 10.250 s. Release again at 11.150 s.</td><td>No automatic restart on restored feedback. A new enable occurs near 10.289 s. The final release disables promptly without waiting for the next speed measurement.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The 700 ms grace is timed from the last 100 ms measurement window that contained edges. The PI runs disable about 793 ms after the pin stops producing edges. The first window affected by the interruption can still contain a few pulses. The edge-age check ignores that incomplete measurement when the last edge is older than 30 ms, and ignores empty windows altogether. Holding duty limits the acceleration in this specific test. A real drive needs a response and timeout established for its operating envelope, including slower speeds and partial pulse loss.</p>
+    <p>Download the observed logs. <a href="../assets/labs/wheel-emu/open-plant.csv" download>Open-loop model</a> · <a href="../assets/labs/wheel-emu/pi-plant.csv" download>PI model</a> · <a href="../assets/labs/wheel-emu/open-serial.txt" download>Open-loop UART</a> · <a href="../assets/labs/wheel-emu/pi-serial.txt" download>PI UART</a> · <a href="../assets/labs/wheel-emu/open-enable.csv" download>Open-loop pin</a> · <a href="../assets/labs/wheel-emu/pi-enable.csv" download>PI pin</a>.</p>
+
+    <h2>Reproduce the previous policy in the emulator</h2>
+    <p>With <code>closedLoop</code> still true, build a third image with the old PI update policy for comparison in the emulator. Find the zero-rpm and 0.600-duty rows in the <a href="../assets/labs/wheel-emu/pi-prior-policy-serial.txt" download>prior UART log</a> and compare them with the <a href="../assets/labs/wheel-emu/pi-prior-policy-plant.csv" download>prior motor-model speed</a> and <a href="../assets/labs/wheel-emu/pi-prior-policy-enable.csv" download>bridge-enable transitions</a>. Use the default build for the bench lesson.</p>
+    <pre><code>arduino-cli compile --fqbn arduino:avr:uno --output-dir pi-prior-build \
+  --build-property compiler.cpp.extra_flags=-DWHEEL_ALLOW_OLD_PI_UPDATE=1 wheel-speed-trainer
+node firmware-bench.mjs open-build/wheel-speed-trainer.ino.hex pi-build/wheel-speed-trainer.ino.hex evidence-compare pi-prior-build/wheel-speed-trainer.ino.hex</code></pre>
+
+    <h2>Separate the firmware test from the hardware tests</h2>
+    <ol>
+      <li>Check model speed and firmware speed separately as the load changes. At 60% and a 40 rpm equivalent load, steady speed in the model is 38 rpm. Explain why PI cannot deliver the requested 55 rpm at that limit.</li>
+      <li>Move the simulated disconnection earlier or later within a sample window. Check the largest plausible update from a partial window and what changes if you shorten the maximum edge age. Define startup separately from steady motion and include low valid speeds in the tests.</li>
+      <li>List the bench measurements still required. Include encoder quality at the receiver, supply current, stop behavior and independent physical speed. The emulator checks the application behavior under the stated model and inputs.</li>
+    </ol>
+    <a class="crosslink" href="p154-encoder-signal-integrity.html">Practice P154 · Measure whether the physical encoder edges reach the input</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

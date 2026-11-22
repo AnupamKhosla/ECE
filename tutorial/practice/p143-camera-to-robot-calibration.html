@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P143 · Calibrate a fixed camera to a robot work frame</title>
+<meta name="description" content="Fit a planar rigid transform, check held-out points and trace camera, tool and fixture calibration errors.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P143</span>
+    <h1>Calibrate a fixed camera to a robot work frame</h1>
+    <p class="lede">The camera reports a point in its own frame. Move the point into the robot work frame and compare with an independent measurement before using the result.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p43-robot-arm-position-calibration.html">P43</a> · <a href="p45-2d-machine-vision.html">P45</a> · <a href="../theory/t36-camera-optics-and-depth.html">T36</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Mark which frame owns each measurement</h2>
+    <p>Use two labelled paper grids or a spreadsheet. This exercise starts with corrected metric coordinates on one flat plane. Intrinsic calibration and the mapping from images into that plane are already assumed. With camera C fixed relative to base B, use p<sub>B</sub> = R<sub>BC</sub>p<sub>C</sub> + t<sub>BC</sub>. R rotates camera coordinates into the base axes. t is the camera-frame origin expressed in base coordinates. To go back into C, subtract t before applying R’s transpose.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Stereo camera mounted on a tripod">
+      <figcaption>A fixed mount establishes the camera’s relationship to the work area. Take a new check when the camera or fixture shifts.<br><small>Photo by Marc Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Identify where the camera is mounted and what frame the target needs before the pick. <a href="https://www.youtube.com/watch?v=-wGyW12WX8o">Pickit · Robot vision demonstration</a>.</p>
+
+    <h2>Fit with two marks and verify two more</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Mark</th><th scope="col">Camera (mm)</th><th scope="col">Independently measured in base (mm)</th><th scope="col">Role</th></tr></thead>
+      <tbody><tr><th scope="row">A</th><td>(10, 20)</td><td>(400, 110)</td><td>Fit</td></tr>
+      <tr><th scope="row">B</th><td>(90, 20)</td><td>(400, 190)</td><td>Fit</td></tr>
+      <tr><th scope="row">C</th><td>(100, 50)</td><td>(371, 199)</td><td>Hold out</td></tr>
+      <tr><th scope="row">D</th><td>(140, 70)</td><td>(353, 238)</td><td>Hold out</td></tr>
+    </table></div>
+    <ol class="steps">
+      <li>Draw A→B in each frame. The camera’s +x becomes the base’s +y, so the planar rotation is +90°.</li>
+      <li>Rotate A, then subtract it from the base observation of A. Write out the resulting formulas for x and y. Apply them to B and verify agreement.</li>
+      <li>Predict the position of C and D. Calculate the Euclidean norm of each residual. The contract permits 2.0 mm per validation point and all must pass. Give a release decision. Apply the inverse transform to your prediction for D and check units and signs.</li>
+    </ol>
+    <details class="quiz"><summary>Check the transform and decision</summary><div class="answer"><p>x<sub>B</sub> = −y<sub>C</sub> + 420 and y<sub>B</sub> = x<sub>C</sub> + 100. Predictions for C and D are (370, 200) and (350, 240). Their errors are approximately 1.41 and 3.61 mm. Hold release. Compare edge points and repeated captures. A residual that grows with distance may indicate scale, distortion or angular error. Collect more spatially distributed references before assigning a cause.</p></div></details>
+
+    <h2>Verify a real camera without a moving arm</h2>
+    <p>Mount a phone or webcam above graph paper. Mark a work origin and two axes. Use the four corners of a rectangle on the plane to map image points into work coordinates with a planar perspective transform. Measure the printed rectangle with a ruler before using it as a reference. With OpenCV, supply four corresponding corners in the same order to <code>getPerspectiveTransform</code> and map point coordinates with <code>perspectiveTransform</code>. For a narrow field with roughly overhead mounting you can also start with the pixel-scale method in P45.</p>
+    <p>Hold out three points spread across the paper. Independently measure their work coordinates with the ruler and compare. Repeat with one target lifted on a block without changing the planar mapping. Then return the target to the paper and move the camera slightly. Log measured and predicted position, target height and camera mount revision. Explain why the plane or mounting change calls for a new model or calibration.</p>
+    <p><a href="https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html">OpenCV perspective transformation reference</a>.</p>
+
+    <h2>Transfer the method to 3D work</h2>
+    <p>Intrinsics connect pixels and rays. A pose estimate or depth measurement adds geometry. Extrinsics relate camera, fixture and robot frames. TCP calibration separately relates the tool tip or grasp point to the flange. Check several target locations, heights and wrist orientations using a reference independent of the fitted transform. An error that rotates with the wrist suggests a TCP offset. A similar shift everywhere after a fixture moves suggests an outdated fixture frame. A growing error at a different height can indicate that a planar model is being used outside its calibrated plane.</p>
+    <p>For an eye-in-hand camera, the camera-to-tool transform is fixed and base-to-tool changes with the robot pose. Pair each image with the corresponding robot transform at capture time. Hand–eye solvers use several well-separated poses with rotations about different axes. Check the frame direction expected by the exact function. Keep capture time, calibration version, frame IDs and a held-out residual plot with the result. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calibration, pose and hand–eye interfaces</a>.</p>
+
+    <a class="crosslink" href="p164-test-hand-eye-calibration.html">P164 · Recover a wrist or fixed mount from paired robot poses</a>
+    <p><a href="p57-robot-inspection-cell.html">P57 · Qualify an inspection result</a> → <a href="p144-robot-plc-handshake.html">P144 · Hand the current part to the cell</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

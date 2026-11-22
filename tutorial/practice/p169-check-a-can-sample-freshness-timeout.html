@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P169 · Check CAN data freshness through dropouts and restart</title>
+<meta name="description" content="Run an encoder-monitor replay on virtual CAN. Compare new samples with duplicate, frozen, rejected and old-generation frames.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P169</span>
+    <h1>Check CAN data freshness through dropouts and restart</h1>
+    <p class="lede">The CAN monitor can show steady bus traffic while the controller has no new valid wheel-speed sample. Send a fixed sequence through Linux virtual CAN and trace exactly which sample resets the freshness timer.</p>
+    <div class="meta"><span><b>Time</b> 45–65 min</span><span><b>Before this</b> <a href="p49-can-bus-and-telemetry.html">P49 · Decode a virtual CAN frame</a> · <a href="../theory/t38-time-series-and-digital-buses.html">T38 · Sampling, buses and evidence</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Define what can refresh the signal</h2>
+    <p>This training wheel monitor expects a valid frame on standard ID <code>0x421</code> approximately every 100 ms. It becomes stale after 350 ms without an accepted sample, measured by the receiver’s monotonic clock. An explicit supervised generation change clears the previous evidence. The fictional format below uses little-endian fields and has no link to a vehicle or a production CAN protocol.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Payload bytes</th><th scope="col">Interpretation</th><th scope="col">Use in the receiver</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">0–1</th><td>Unsigned generation</td><td>Only the generation armed by the test supervisor is accepted.</td></tr>
+        <tr><th scope="row">2</th><td>Unsigned counter, modulo 256</td><td>Advance 1–127 to accept. Zero is a duplicate. Larger steps are old or ambiguous.</td></tr>
+        <tr><th scope="row">3</th><td>Quality enumeration</td><td>Only value 1 identifies a usable measurement.</td></tr>
+        <tr><th scope="row">4–5</th><td>Signed wheel speed, 0.1 rpm per count</td><td>Decode the sign before multiplying by the scale.</td></tr>
+        <tr><th scope="row">6–7</th><td>Source sample tick, 1 ms per count modulo 65,536</td><td>When a prior sample exists, advance 1–32,767 ticks to accept. A repeated tick can indicate that publication continued while acquisition froze.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Relative modular ordering assumes the unseen advance is smaller than half the field range. A long and ambiguous interruption needs an explicit resynchronization policy. Use the source tick to check progression within one generation. Subtracting it from the receiver’s clock would mix different clock origins, and freshly received queued data can still be old. For a source-to-use age requirement, measure or bound acquisition, queueing, link and scheduling delay as well.</p>
+
+    <h2>Run the same replay through two paths</h2>
+    <p>Download <a href="../assets/labs/can-freshness/can_freshness.py" download>can_freshness.py</a>. The deterministic replay uses Python 3.10 or newer and needs no CAN interface. It exercises exact programmed times and shows how the receiver’s decoding and freshness logic work.</p>
+    <pre><code>python3 can_freshness.py replay &gt; replay.csv</code></pre>
+    <p>For the measured run, use only a disposable Linux VM or an isolated test host you administer with Python, <code>ip</code> and <code>can-utils</code>. Create the virtual interface if you have not already set it up in P49. If the running kernel lacks <code>vcan</code>, use its matching optional modules package or stay with replay mode. <a href="https://docs.kernel.org/networking/can.html">Linux SocketCAN and the virtual CAN driver</a>.</p>
+    <pre><code>sudo modprobe vcan
+sudo ip link add dev vcan0 type vcan
+sudo ip link set vcan0 up</code></pre>
+    <p>Run the monitor in one terminal. Its timestamps below are deltas between successive frames. Use a separate terminal for the sender and receive logic. Keep other senders off this training interface.</p>
+    <pre><code>candump -t d -n 14 vcan0</code></pre>
+    <pre><code>python3 can_freshness.py vcan &gt; measured.csv</code></pre>
+    <p>The second command uses separate SocketCAN send and receive sockets and checks the received bytes before feeding the monitor. The recorded decisions carry monotonic time since the script started. This virtual link exercises Python and Linux CAN handling. Physical wiring, bus arbitration delays, EMC and firmware timing need a hardware bench. Remove the virtual interface with <code>sudo ip link del dev vcan0</code> if you created it solely for these exercises.</p>
+
+    <h2>Explain the confirmed decisions</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Elapsed time in the observed run</th><th scope="col">Evidence</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">22.7–220.8 ms</th><td>Source tick 65,520 → 84 on wrap. Counter 254 → 255 → 0. Speed bytes <code>DD FF</code> at counter zero.</td><td>All three advance and refresh. The third sample is −3.5 rpm.</td></tr>
+        <tr><th scope="row">323.1–520.2 ms</th><td>Duplicate sequence, unrelated ID, short payload, poor quality, then an advancing counter with a frozen sample tick.</td><td>Traffic continues. Each frame leaves the last accepted time at about 220.8 ms.</td></tr>
+        <tr><th scope="row">575.3 ms</th><td>First observed timer check after the 350 ms timeout.</td><td>Stale, about 354.4 ms after the last valid sample in this host run. Deterministic replay expires at exactly 350 ms.</td></tr>
+        <tr><th scope="row">620.6–820.3 ms</th><td>Old counter 255, valid counter 1, then counter 3.</td><td>The old reading is rejected. Counter 1 restores freshness. Counter 3 exposes one missing sample.</td></tr>
+        <tr><th scope="row">901.4–1023.7 ms</th><td>Supervisor arms generation 18. Generation 17 arrives again. A valid generation 18 reading follows.</td><td>Awaiting, then fresh. No old-generation frame restores the value.</td></tr>
+        <tr><th scope="row">1475.0 ms</th><td>Link quiet after the last valid frame near 1124.4 ms.</td><td>Stale again without a new frame to trigger the check.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Try identifying the timeout from the raw dump before opening the decision log. Explain why a sample can be displayed as stale even when a raw-frame count is increasing, and which two clocks the files describe. <a href="../assets/labs/can-freshness/observed-candump.txt" download>Observed candump</a> · <a href="../assets/labs/can-freshness/observed-decisions.csv" download>Observed receiver decisions</a>.</p>
+
+    <h2>Make the edge cases observable</h2>
+    <ol>
+      <li>Add an invalid frame one millisecond before timeout. Confirm it cannot postpone expiry. Compare with a new valid reading before the deadline.</li>
+      <li>Make the first valid recovery sample arrive exactly on the deadline in deterministic replay. Keep the expiry record and the recovery record so both decisions are visible.</li>
+      <li>For a production monitoring plan, specify the receiver’s maximum check interval, a clock and queue-latency budget and how a known session is exchanged. Decide how a display handles stale readings and what a separate controller is allowed to do when evidence expires.</li>
+    </ol>
+    <p>The generation, counter and timer are application checks in a software monitor. Freshness recovery reports data health. Motion authorization and independent stop functions have their own interfaces and acceptance tests.</p>
+    <a class="crosslink" href="p154-encoder-signal-integrity.html">Practice P154 · Check the encoder signal at its electrical input</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

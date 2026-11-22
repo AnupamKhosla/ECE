@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P168 · Measure a control task waiting on FreeRTOS</title>
+<meta name="description" content="Compile FreeRTOS on Linux and capture the scheduling order when a low-priority logger owns a resource needed for control.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P168</span>
+    <h1>Measure a control task waiting on FreeRTOS</h1>
+    <p class="lede">Run the same three-task workload with a binary semaphore and a mutex. Compare which task runs while control waits, what priority the logger runs at, and whether the shared-resource wait fits a 25-tick exercise budget.</p>
+    <div class="meta"><span><b>Time</b> 45–70 min</span><span><b>Before this</b> <a href="../theory/t70-rtos-priorities-blocking-and-deadlines.html">T70 · Tasks, blocking and deadlines</a> · Basic C and terminal use</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build the Linux exercise</h2>
+    <p>Use Linux with a C compiler, GNU Make or another CMake generator, CMake 3.16 or newer and the POSIX headers. No board or robot is required. Download <a href="../assets/labs/rtos-priority/CMakeLists.txt" download>CMakeLists.txt</a>, <a href="../assets/labs/rtos-priority/FreeRTOSConfig.h" download>FreeRTOSConfig.h</a> and <a href="../assets/labs/rtos-priority/robot_task_latency.c" download>robot_task_latency.c</a> into one directory. Download the source archive from the <a href="https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/tag/V11.2.0">FreeRTOS-Kernel V11.2.0 release</a> and unpack it beside those files. Replace the kernel path below if the directory has a different name.</p>
+    <pre><code>cmake -S . -B build -DFREERTOS_KERNEL="$PWD/FreeRTOS-Kernel-11.2.0"
+cmake --build build
+timeout 10 ./build/robot_task_latency binary &gt; binary.csv
+timeout 10 ./build/robot_task_latency mutex &gt; mutex.csv</code></pre>
+    <p>Each process runs a fresh scheduler and prints CSV once the tasks finish. Keep stderr visible for the control wait and check that each command exits with status zero. For this exercise the semaphore starts with its one token available. While holding the token or mutex, the logger signals control, which makes analysis ready just before attempting to take the resource. The logger has eight ticks of synthetic ready work left, and analysis stays ready for eighty ticks. Priority values 1, 2 and 3 belong to logger, analysis and control. The supervisor waits for task completion before ending the host scheduler.</p>
+    <h2>Read the wait from the trace</h2>
+    <p>Subtract the tick on <code>control_waits</code> from <code>control_takes</code>. Use the sequence column to order events recorded on the same tick. The Linux host run used a 1 kHz configured tick. Host scheduling and tick delivery can vary.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/rtos-priority/timeline.png" width="1260" height="727" loading="lazy" decoding="async" alt="The binary semaphore run delays control for 89 ticks while analysis runs before the logger. The mutex run delays control for eight ticks while the logger inherits its priority and completes first.">
+      <figcaption>Captured FreeRTOS POSIX run on Ubuntu 24.04 ARM64. The dashed line marks the 25-tick lab budget. Download <a href="../assets/labs/rtos-priority/observed-tasks.csv" download>both observed event streams</a>.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Resource</th><th scope="col">Who runs first after control blocks?</th><th scope="col">Logger’s effective priority on resumption</th><th scope="col">Observed wait</th><th scope="col">25-tick budget</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Binary semaphore</th><td>Analysis</td><td>1</td><td>89 ticks</td><td>Miss</td></tr>
+        <tr><th scope="row">Mutex</th><td>Logger</td><td>3</td><td>8 ticks</td><td>Pass for this run</td></tr>
+      </tbody>
+    </table></div>
+    <p>Check that the logger entered the critical section before control arrived. In the semaphore case it already owned the token when analysis started, so the high-priority wait includes the analysis interval. Changing that object to a mutex keeps the logger at priority 3 for its remaining work and lets the controller take the buffer before analysis starts. The lab measures resource wait in scheduler ticks. Target execution time, real interrupt latency, stack margin and actuator reaction need separate evidence.</p>
+    <h2>Reproduce a missed deadline with the mutex</h2>
+    <ol>
+      <li>Change <code>LOGGER_WORK_TICKS</code> from <code>8</code> to <code>35</code>, rebuild and run mutex mode. Predict which task will run first and whether the wait will cross 25 ticks.</li>
+      <li>Split a real logging operation into a bounded copy inside the lock and slow formatting or I/O after release. Explain who owns each buffer and what happens if logging cannot keep up. Re-run with eight ticks inside the lock as the shortened model.</li>
+      <li>Write a test record with release event, resource owner, maximum observed wait, load conditions, deadline and observed late behavior. On a real target repeat with a timestamp or GPIO marker that has known resolution and instrumentation overhead.</li>
+    </ol>
+    <p>In 15 runs of each original variant, the binary semaphore wait was 88–89 ticks and the mutex wait was 8 ticks. The 35-tick variant still let the logger run next at priority 3. The measured wait was 35 ticks, over the exercise budget.</p>
+    <details class="quiz"><summary>Does a 35-tick critical section hit the 25-tick budget once it inherits priority?</summary><div class="answer"><p>No. The logger still needs roughly 35 ticks before it can release the mutex. Inheritance keeps analysis from running ahead of it. The remaining hold time still dominates the control wait.</p></div></details>
+    <a class="crosslink" href="p153-close-the-loop-on-a-real-wheel.html">Practice P153 · Apply the timing checks to an encoder and motor loop</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

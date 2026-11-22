@@ -1,0 +1,15 @@
+mode,sequence,tick_from_start,event,effective_priority
+binary,1,0,logger_takes,1
+binary,2,0,control_waits,3
+binary,3,0,analysis_starts,2
+binary,4,80,analysis_finishes,2
+binary,5,80,logger_resumes,1
+binary,6,88,logger_gives,1
+binary,7,89,control_takes,3
+mutex,1,0,logger_takes,1
+mutex,2,0,control_waits,3
+mutex,3,0,logger_resumes,3
+mutex,4,8,logger_gives,3
+mutex,5,8,control_takes,3
+mutex,6,9,analysis_starts,2
+mutex,7,89,analysis_finishes,2

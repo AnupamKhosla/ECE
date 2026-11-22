@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P162 · Recover a robot station journal after interruption</title>
+<meta name="description" content="Replay PLC, camera, fixture and robot evidence into a local database, then recover from a real process exit before and after commit.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P162</span>
+    <h1>Recover a robot station journal after interruption</h1>
+    <p class="lede">Follow three jobs through a simulated station and inspect which evidence qualifies a good count. Restart the journal process at two transaction boundaries and verify that repeated deliveries preserve the same outcome.</p>
+    <div class="meta"><span><b>Time</b> 65–85 minutes</span><span><b>Before this</b> <a href="p161-compile-and-replay-a-plc-robot-station.html">P161</a> · <a href="../theory/t66-robot-station-identity-and-durable-completion.html">T66</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the station’s input contract</h2>
+    <p>Download <a href="../assets/labs/station-journal/station-events.csv" download>the synthetic station transcript</a> and <a href="../assets/labs/station-journal/journal.py" download>the Python replay</a> into one writable folder. Use Python 3 with SQLite from its standard library. The files describe an offline exercise. The transcript is in receiver order and the timestamps come from different source clocks.</p>
+    <p>A PLC registration declares the job key, part serial and recipe. For a good part the journal needs matching camera inspection, independent placement proof and a good robot result in the current evidence generation. The source labels are assigned in the exercise. A deployment would verify those origins at its interface.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Record to inspect</th><th scope="col">Work out the expected result</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><code>fixture-301</code></th><td>Placement reports the previous part under the current job. Which identity check fails?</td></tr>
+        <tr><th scope="row"><code>plc-003</code> and <code>operator-001</code></th><td>A link drops and the operator completes a review. Why does the next generation require new proof?</td></tr>
+        <tr><th scope="row"><code>robot-203</code></th><td>A good result uses a previous recipe. Which record finally completes this job?</td></tr>
+        <tr><th scope="row"><code>CELL4:8:42</code></th><td>The numeric sequence restarts under a new session. Which field prevents double-counting the same physical part?</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Establish the baseline and replay it</h2>
+    <p>Use a new database filename for each experimental run. The report shows exactly which evidence IDs were committed for each serial. Running <code>apply</code> twice against the same file reproduces the station’s event replies from retained history.</p>
+    <pre><code>python3 journal.py apply baseline.sqlite station-events.csv
+python3 journal.py report baseline.sqlite
+python3 journal.py apply baseline.sqlite station-events.csv
+python3 journal.py report baseline.sqlite</code></pre>
+    <p>Record the final good count, the held job and the three source events proving each counted part. Find a repeated delivery that received the same stored decision. Compare its ID and payload before and after replay.</p>
+
+    <h2>Exit the process just before and just after commit</h2>
+    <p>Both cases stop the Python process on <code>fixture-302</code>, the last piece of evidence needed for the first good part. The before-commit case exits after the writes have been staged. The after-commit case exits after the transaction finishes but before a reply appears. Look up the retained count before replaying each transcript, then compare the final reports.</p>
+    <pre><code>python3 journal.py apply before.sqlite station-events.csv \
+  --crash-event fixture-302 --crash-stage before-commit
+python3 journal.py report before.sqlite
+python3 journal.py apply before.sqlite station-events.csv
+python3 journal.py report before.sqlite</code></pre>
+    <pre><code>python3 journal.py apply after.sqlite station-events.csv \
+  --crash-event fixture-302 --crash-stage after-commit
+python3 journal.py report after.sqlite
+python3 journal.py apply after.sqlite station-events.csv
+python3 journal.py report after.sqlite</code></pre>
+    <p>The injected exits intentionally return nonzero. Run the commands as separate steps so you can inspect the database after each exit. This experiment exercises process failure on a local store. Installed power-loss behavior depends on the chosen persistence design and needs its own validation. <a href="https://www.sqlite.org/pragma.html#pragma_synchronous">SQLite · Synchronization and durability</a>.</p>
+    <details class="quiz"><summary>Check the two interruption results</summary><div class="answer"><p>The baseline records PART-042 with <code>fixture-302</code> and PART-043 with <code>robot-204</code>. Job CELL4:8:42 has a new job key but repeats PART-042, so it remains held as a duplicate part. Before commit the report has zero good parts. After commit it has one. Replaying the whole transcript brings both to two. In the after case, the original first-good reply is returned as a replay from the stored event.</p></div></details>
+
+    <h2>Turn the replay into a handover test</h2>
+    <p>Copy the transcript and change the timestamp under an existing event ID while keeping its job and part. Reapply against an existing training database and compare the error and count. Then write four acceptance checks covering a late result, loss before reply, resumed evidence and duplicate physical serial. Include the first human verification of fixture state and who can release that hold. Keep the report JSON as part of the evidence record.</p>
+    <a class="crosslink" href="p177-wait-for-a-durable-station-receipt.html">P177 · Join the journal to a compiled PLC receipt gate</a>
+    <a class="crosslink" href="p171-rehearse-a-robot-cell-restore.html">P171 · Restore a checked backup and reconcile newer events</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

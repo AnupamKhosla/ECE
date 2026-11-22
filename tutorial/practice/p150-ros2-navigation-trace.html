@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P150 · Find the first failing boundary in a ROS 2 navigation trace</title>
+<meta name="description" content="Compare scan timestamps, TF history, navigation commands and odometry using a downloadable trace and an optional Jazzy rosbag.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P150</span>
+    <h1>Find the first failing boundary in a ROS 2 navigation trace</h1>
+    <p class="lede">A topic can keep publishing an old stamp. A valid transform for the latest frame can be too old for the scan. Reconstruct what the navigation stack could know at each sample.</p>
+    <div class="meta"><span><b>Time</b> 45–70 minutes offline, plus an optional Gazebo recording</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141</a> · <a href="../theory/t38-time-series-and-digital-buses.html">T38</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Keep arrival time, source time and transform time separate</h2>
+    <p>A logger records when it receives each observation. A stamped sensor message represents when the producer says the observation happened. TF2 needs a suitable transform chain at that source time. For a chain with several dynamic edges, the common interval is the intersection of the edge histories. The newest transform on one edge can be too recent or too old relative to the history available on another. A static camera mount transform has different timing semantics. <a href="https://github.com/ros2/geometry2/blob/jazzy/tf2_ros/src/tf2_echo.cpp">ROS 2 Jazzy · TF inspection tool</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Mobile robot platform with electronics mounted above the driven base">
+      <figcaption>Follow sensor measurements and wheel feedback to the computer. Each can arrive with a different delay while the base moves.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p>At 30°/s yaw, a pose paired 120 ms late is rotated by 3.6°. A feature 2 m away can appear displaced sideways by about 126 mm. Confirm whether the observation time and transform time share the same clock before blaming calibration.</p>
+
+    <h2>Work a trace without ROS installed</h2>
+    <p><a href="../assets/labs/ros-navigation-trace.csv" download>Download the navigation trace</a>. The compact synthetic worksheet represents snapshots of a trace, with all times in milliseconds. Use a spreadsheet or subtract by hand. Each run has three rows. Only compare times within a single run.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Columns</th><th scope="col">Interpretation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">host_elapsed_ms, sim_clock_ms</th><td>Host monotonic time since case start and the most recently observed simulation clock. Use consecutive rows to detect a frozen simulation clock.</td></tr>
+        <tr><th scope="row">scan_stamp_ms</th><td>Time written in the most recent scan header. Compare it with simulation time and with the previous scan stamp.</td></tr>
+        <tr><th scope="row">tf_first_ms, tf_last_ms</th><td>Earliest and latest common lookup times across the required dynamic TF chain at the snapshot.</td></tr>
+        <tr><th scope="row">cmd_mps, odom_x_m, odom_stamp_ms</th><td>Training velocity command, reported x position and odometry source time. The route is straight. A different run would also need yaw and lateral position.</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Calculate scan age as simulation clock minus scan stamp. A scan over 150 ms old exceeds this lesson’s training limit. A negative age calls for a clock or timestamp check. Calculate how far a valid scan falls outside the common TF interval.</li>
+      <li>Compare the host clock and simulation clock across rows. Identify which row first proves loss of progress. Then check command and feedback only after time and geometry make sense.</li>
+      <li>For each case, give the first failing boundary, one next observation that disambiguates the cause, and the values that would prove a recovery. Keep timing evidence from before and after the change.</li>
+    </ol>
+    <details class="quiz"><summary>Check the trace diagnoses</summary><div class="answer">
+      <p><b>A.</b> Healthy reference. Scan age is 70 ms and falls inside the TF history. Command stays at 0.18 m/s and estimated position progresses by 0.036 m each 200 ms.</p>
+      <p><b>B.</b> By the second row TF ends 70 ms before the scan. Wait for suitable transform history or investigate the delayed publisher. Verify each dynamic edge at scan time.</p>
+      <p><b>C.</b> The host progresses while simulation clock and source stamps stay unchanged. Check whether Gazebo is paused or the clock bridge stopped before adjusting the controller.</p>
+      <p><b>D.</b> The scan stamp is far in the future relative to simulation time. Compare the sensor publisher clock and <code>use_sim_time</code> across the simulator and its consumers.</p>
+      <p><b>E.</b> Scan and TF timing are healthy and odometry time advances, but estimated position stays fixed with a persistent nonzero command. Check the command subscriber, controller state, wheel feedback and independent motion before deciding between a drive and odometry fault.</p>
+      <p><b>F.</b> Simulation time advances while the scan stamp stays at 47,930 ms. The scan is 270 ms old by the second row, although the transform interval includes it. Check new scans at the sensor publisher and bridge, then compare whether the consumer receives unique source stamps.</p>
+      <p><b>G.</b> The second scan is 70 ms old, but requires a lookup 30 ms earlier than the first available transform. Check for a TF publisher restart or an incomplete buffer. In the third row the dynamic history covers the current scan again.</p>
+    </div></details>
+
+    <h2>Compare with an observed simulator pause</h2>
+    <p><a href="../assets/labs/ros-navigation-pause-run.csv" download>Download the measured pause run</a>. The data comes from a headless ROS 2 Jazzy and Gazebo Harmonic TurtleBot3 sandbox. A subscriber sampled the last received clock and scan stamp at approximately half-second intervals measured by the observer’s monotonic clock. These are snapshots of delivered values. Keep phase labels hidden for a first pass and find the longest interval over which both simulation timestamps stay fixed.</p>
+    <details class="quiz"><summary>Check what the real pause evidence establishes</summary><div class="answer"><p>Between observer times 3.352 s and 5.852 s, at least 2.500 observable seconds elapsed with <code>/clock</code> at 280.149 s and the last scan stamped 280.002 s. A fixed difference of 147 ms alone gives no indication that the stream was frozen. The next sampled run state at 6.412 s contains a newer clock and scan stamp. This run had a deliberate Gazebo pause. For a new investigation, check simulator state and the clock bridge to distinguish the causes of a similar gap.</p></div></details>
+
+    <h2>Record a comparable case in the isolated simulator</h2>
+    <p>After completing P141, discover which topics your local simulation actually publishes and use their names below. In a new terminal in that same isolated simulation, record a normal run and a separate run with a short controlled pause in the simulator. Keep the two bags distinct and record the scenario in a note. Stop the recorder with <kbd>Ctrl</kbd>+<kbd>C</kbd> after the run. The recorder waits for the first simulation clock sample when given <code>--use-sim-time</code>.</p>
+    <pre><code>ros2 bag record --use-sim-time -o nav_case --topics /clock /tf /tf_static /scan /odom /cmd_vel
+ros2 bag info nav_case</code></pre>
+    <p>Check topic types and message counts first. A topic may be listed with a count of zero if the robot never moved or the recorder did not receive it. Use the host time you observed or logged at pauses, because the bag’s recording time also follows simulation time in this configuration. Header timestamps are part of the message. Keep both when investigating timing. The example below replays only sensor, clock and transform topics in a separate isolated software session after the simulator closes.</p>
+    <pre><code>ros2 bag play nav_case --topics /clock /tf /tf_static /scan /odom</code></pre>
+    <p>Repeat the same observation with live playback topics. A compressed gap in simulated time may only be visible in the host notes. Save the run conditions, relevant message stamps, transform evidence and the first change after recovery. In one measured goal run, the MCAP recorded 178 scans, 990 odometry messages and 62 velocity messages. Compare message counts with actual run duration and topic behavior. <a href="https://github.com/ros2/rosbag2/tree/jazzy">ROS 2 Jazzy · Recording and playback reference</a>.</p>
+
+    <a class="crosslink" href="p145-mobile-robot-fleet.html">P145 · Use the same evidence when a fleet mission stops making progress</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

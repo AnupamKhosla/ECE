@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T66 · Robot station identity, evidence and durable completion</title>
+<meta name="description" content="Tie PLC, camera, fixture and robot evidence to one job, then reason through duplicate delivery and a process restart during commit.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T66</span>
+    <h1>Robot station identity, evidence and durable completion</h1>
+    <p class="lede">A PLC requests work, a camera inspects it, a fixture provides independent proof, and a robot reports a result. Establish which job each observation describes, then record completion so a repeated message cannot count another part.</p>
+    <div class="meta"><span><b>Time</b> 50 minutes</span><span><b>Before this</b> <a href="t34-industrial-control-signals.html">T34</a> · <a href="t38-time-series-and-digital-buses.html">T38</a> · <a href="../practice/p161-compile-and-replay-a-plc-robot-station.html">P161</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Keep four identities available</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Field</th><th scope="col">What it identifies</th><th scope="col">Mistake it exposes</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Job key</th><td>One commissioned job, for example CELL4:7:42 for cell 4, session 7 and sequence 42</td><td>A PLC or robot restarts and reuses a sequence number.</td></tr>
+        <tr><th scope="row">Part serial and recipe revision</th><td>The physical workpiece and the settings used to inspect or process it</td><td>A result refers to the previous part, or to the same part under a different recipe.</td></tr>
+        <tr><th scope="row">Evidence generation</th><td>The current set of observations for that job after review</td><td>Delayed proof from before a lost link arrives after a fresh review.</td></tr>
+        <tr><th scope="row">Event ID and source</th><td>One message from an assigned producer, stable during retransmission</td><td>The same message arrives twice, or a reused event ID carries changed data.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Choose an identity scope that survives controller restarts. A job key remains stable while that job is retried. A genuinely new job gets a fresh key. Physical identification needs a process such as marking, scanning or controlled fixture ownership. A substring match or a copied PLC register cannot establish which piece is in a fixture. Record which component is permitted to make each assertion.</p>
+
+    <h2>Prove the observation belonged to the same input image</h2>
+    <p>A robot may update its result flag and ID in different transfers. If the PLC reads the new complete flag alongside the previous result ID, that image cannot prove completion. Use a vendor-supported atomic data transfer, or a documented producer-and-consumer scheme that lets the reader detect a partial update. For a versioned buffer, verify that the whole snapshot was copied while the version was stable and marked complete. Confirm the controller’s actual memory ordering and communication behavior with a trace.</p>
+    <p>Log source timestamp, clock identity and receiving order. A camera’s timestamp of 4,939 ms and a PLC’s 995 ms can both describe one part even if their local clocks began at different times. A job match links the two records. Synchronization or calibrated offsets are necessary before subtracting timestamps to estimate latency. <a href="t38-time-series-and-digital-buses.html">T38 · Time and timestamp uncertainty</a> · <a href="../practice/p152-conveyor-robot-tracking.html">P152 · Exposure times and part tracking</a>.</p>
+
+    <h2>Commit once and keep the evidence together</h2>
+    <p>A result can be recorded and the reply lost. On retry, look up the event ID and compare its payload. Return the stored decision for an identical retry. A different payload under the same ID needs investigation. A unique job key and a unique part serial in the good-part table protect different invariants. In this training station each serial can enter the good count once even if it is registered under a second job.</p>
+    <p>In a local transactional store, save the evidence decision, the completed-job state and the good-part row in the same transaction. An interrupted write before commit leaves those changes uncommitted. A process that stops after commit can look up the same decision after it returns. Count durable good-part rows so a separate counter write cannot drift from the record. A store still depends on its filesystem, configuration and hardware. <a href="https://www.sqlite.org/atomiccommit.html">SQLite · Atomic commit and storage assumptions</a> · <a href="https://www.sqlite.org/lang_transaction.html">SQLite · Transaction boundaries</a>.</p>
+
+    <h2>Recover the application and the physical workpiece</h2>
+    <p>A database transaction can make several records agree. The robot and fixture may already have moved by the time the database records the event. When that disposition is uncertain, hold the ordinary process for review, locate the actual part, reconcile the retained controller records and then acquire current evidence against the agreed identity. A reboot test establishes the software behavior. The installed cell’s approved procedure covers safely observing, accessing and recovering equipment.</p>
+    <details class="quiz"><summary>Check a retry after connection loss</summary><div class="answer"><p>Job CELL4:7:42 committed PART-042 and the reply was lost. A retry with the same event and payload returns the stored commit decision. A new job CELL4:8:42 can use the same numerical sequence 42 under a new session. If it claims PART-042 as a second good part, the physical serial already belongs to the durable count and requires review.</p></div></details>
+    <a class="crosslink" href="../practice/p162-recover-a-robot-station-journal.html">P162 · Interrupt the process on both sides of commit</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

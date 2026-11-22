@@ -1,0 +1,7 @@
+case,a_start_s,b_start_s,a_radius_m,b_radius_m,result,first_conflict_s
+same_crossing_time,0.000000,0.000000,0.320000,0.300000,conflict,2.561594
+empty_plan,0.000000,1.200000,0.320000,0.300000,clear,
+load_same_plan,0.000000,1.200000,0.560000,0.400000,conflict,3.282178
+a_falls_behind,0.600000,1.200000,0.320000,0.300000,conflict,3.580302
+load_b_delayed,0.000000,1.600000,0.560000,0.400000,clear,
+lost_link_a_still_there,3.200000,1.600000,0.560000,0.400000,conflict,3.661064

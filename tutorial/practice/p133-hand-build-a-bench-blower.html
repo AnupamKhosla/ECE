@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P133 · Hand-build a 12 V bench blower</title>
+<meta name="description" content="Mark, cut, drill and assemble a guarded bench blower housing, then use a simple jig and test sheet to make a small batch in an Indian workshop.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P133</span>
+    <h1>Hand-build a 12 V bench blower</h1>
+    <p class="lede">Make a metal housing, fit a guarded blower and build a second unit from the same drawing and drill jig. Use it to direct clean air at a bench fixture.</p>
+    <div class="meta"><span><b>Time</b> 2–3 workshop sessions</span><span><b>Before wiring</b> <a href="p13-actuators-motors.html">P13 · Motors and supplies</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Buy the sample parts and lay them out</h2>
+    <p>Ask a local sheet-metal stockist for 1 mm aluminium and small angle offcuts. Ask an electronics supplier for a 12 V centrifugal blower with a dimension drawing and an airflow curve, an isolated external 12 V supply, a keyed DC connector, a DC-rated switch, a fuse holder, insulated terminals and wire. Get finger guards for the inlet and discharge, M4 enclosure hardware, rubber feet, a closed-cell gasket and cable clips. Buy one set and record the exact part numbers and landed prices in rupees before ordering a batch.</p>
+    <p>Orient the module flat under the lid, with the intake towards the lid and the discharge towards one end panel. Put the DC inlet and switch at the opposite end. Allow space to unplug the harness and remove the lid with a screwdriver. Check the vent opening, fastener lengths, electrical ratings and startup draw for the actual suffix. The Delta BFB1012M-A drawing is a starting example. Delta publishes a separate specification for BFB1012M-AF00. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · BFB1012M-A drawing and ratings</a> · <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-AF00.pdf">Delta · BFB1012M-AF00 specification</a>.</p>
+
+    <h2>Make a cardboard pattern and cut the metal</h2>
+    <p>For a blower roughly 97 × 94 × 33 mm, start by mocking up a 160 × 140 × 80 mm box. The 1 mm lid and base cap the side walls. The two end panels fit between the long sides. Check the sample blower, guard flanges, mounting hardware, connector depth and wire bend in cardboard before committing to these blank sizes.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Piece</th><th scope="col">Quantity</th><th scope="col">Starting blank, mm</th><th scope="col">Mark during the mock-up</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Lid and base</th><td>2</td><td>160 × 140</td><td>Guard and blower on the lid. Feet on the base.</td></tr>
+        <tr><th scope="row">Long sides</th><td>2</td><td>160 × 78</td><td>Internal angle brackets clear of the impeller and harness.</td></tr>
+        <tr><th scope="row">Ends</th><td>2</td><td>138 × 78</td><td>Outlet guard on one end. DC inlet and switch on the other.</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li><b>Pick two reference edges.</b> Mark the outlet end and one adjacent edge on each lid blank. Draw the intake centre and blower screw locations as offsets from those edges. Check the print scale against a dimension on the manufacturer's drawing and offer up the actual part. Trace the outlet onto the end-panel pattern with the lid and blower in their fitted positions.</li>
+      <li><b>Cut and deburr.</b> Use a hand shear or have a local fabricator shear the rectangular blanks. Use a metal-cutting hole saw for the intake and a hand nibbler or appropriate metal-cutting saw for the outlet. Test on scrap of the same thickness. Clamp the sheet to a backing board and wear eye protection. Keep guards in place and hands, gloves and loose clothing clear of rotating tools. File and deburr both faces, including every hole. <a href="https://www.osha.gov/sites/default/files/2021-04/Drill%20Press%20-%20Trainer%20Script.pdf">OSHA · Drill press workholding and guarding</a>.</li>
+      <li><b>Drill and dry-assemble.</b> Centre-punch the case fastener positions and drill clearance holes to suit the screws. Bolt the base, walls and lid through short internal angle brackets. Keep the lid removable and leave tool access to its nuts or use captive nuts. Check that the box sits flat and that the lid and guards fit without pulling the panels into shape. Remove all swarf before fitting the blower or wiring.</li>
+      <li><b>Fit the air path.</b> Seal the inlet perimeter against the lid with a gasket that clears the opening. Mount the blower on its intended fixings without distorting it. Fit a short, sealed transition between the rectangular blower mouth and end panel so air exits through the guard. Leave clearance from the impeller at both ends. Fasten both guards with tool-removable hardware and check their fit and access with power disconnected. Poorly fitting transitions, guards and nearby surfaces can reduce installed airflow. <a href="https://www.greenheck.com/resources/blog/understanding-fan-system-effects">Greenheck · Fan installation effects</a>.</li>
+    </ol>
+
+    <h2>Wire and test the first blower</h2>
+    <ol class="steps">
+      <li>Keep mains in the external supply. With the DC input unplugged, take positive from the inlet through the fuse and switch to the blower positive. Return blower negative to the inlet negative through the harness. Use the connector pinout for your suffix and individually insulate any unused signal lead. Select the fuse and wire together using the blower's startup requirements and the DC ratings of the harness and supply.</li>
+      <li>Secure the harness clear of the impeller, sharp edges and screw ends. Use insulated terminals, abrasion protection at metal openings and strain relief. With the supply and blower unplugged, check end-to-end polarity and switch action, and check that the two supply conductors are isolated from one another and from the case. Reconnect the blower, close the case and check both guards before applying power.</li>
+      <li>Start on a current-limited 12 V bench supply set to suit the module and harness. Verify that it starts consistently and that the outlet delivers air. Disconnect power if the blower rubs, trips its supply or draws more steady current than its rating. Investigate the mounting, wiring and air path before repeating the test.</li>
+      <li>Measure voltage, startup and steady current, airflow, noise and case temperature at specified test conditions. Keep the same duct, nozzle, microphone position and elapsed run time on later builds. Use the duct traverse and the example target of 35 m³/h at the guarded nozzle in <a href="p136-build-a-workbench-blower-and-particle-filter.html">P136 · Measure airflow and pressure</a>, or set a target from the airflow your fixture needs. A short bench run gives a comparison point for the builds. Establish any continuous duty claim with a separate thermal test.</li>
+    </ol>
+
+    <h2>Build a second unit from the same drawing</h2>
+    <p>Mark the first passing pattern with its revision. Screw two square fences to a rigid backing board to register the same lid edges each time. Fit a drill guide plate or use the pattern to transfer hole centres, then remove the pattern and clamp the work before drilling. Check the next lid against the first with the same blower and guard. If the holes only line up when enlarged or forced, correct the pattern or fixture and repeat the fit check before cutting a batch.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Record for each serial number</th><th scope="col">Check against the drawing or test setup</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Parts and fit</th><td>Drawing revision, blower suffix and guard. Flush lid, smooth edges, secure fasteners and clear air path.</td></tr>
+        <tr><th scope="row">Power and performance</th><td>Polarity and isolation checks, stable starts, running voltage and current, airflow, noise and case temperature. Use the same test conditions for both units.</td></tr>
+        <tr><th scope="row">Time and cost</th><td>Cutting, drilling, deburring, wiring and test minutes. Record scrap and rework separately. Add the quoted material and component cost to the measured labour cost.</td></tr>
+        <tr><th scope="row">Result</th><td>Pass, rework or reject against the agreed limits. Record the cause and repeat the affected checks after rework.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Use the first builds to decide whether the batch needs a better jig, a cleaner cutout or a simpler harness. Keep the drawing and test method with the unit records. The same measured build time and defect records will help you decide which operation is worth mechanising later.</p>
+    <a class="crosslink" href="p134-build-a-battery-powered-blower.html">P134 · Build the battery-powered version</a>
+    <a class="crosslink" href="p135-build-a-corded-mains-blower.html">P135 · Build a 230 V corded blower</a>
+    <a class="crosslink" href="../welding/w09-build-a-shop-made-stick-welding-set.html">W09 · Build a stick welding set in your shop</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261122-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

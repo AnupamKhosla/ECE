@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P163 · Compare two ways to switch off a robot valve coil</title>
+<meta name="description" content="Run an ngspice solenoid model, measure the time to a release-current threshold and budget switch voltage at the supply corner.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P163</span>
+    <h1>Compare two ways to switch off a robot valve coil</h1>
+    <p class="lede">A valve output can switch off electrically while coil current still holds the actuator. Compare two current paths and see how a shorter electrical release time uses more switch-voltage headroom.</p>
+    <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p08-transistor-switches.html">P08</a> · <a href="../theory/t06-magnetism-inductors.html">T06</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Predict the off-state current path</h2>
+    <p>Download <a href="../assets/labs/coil-release/coil-release.cir" download>the ngspice circuit</a>. It has two separate 100 mH, 80 Ω windings and identical low-side switches, both fed by an ideal 12 V rail. Trace conventional current from the rail through the winding and switch before turn-off. When the switch opens, the winding current still flows toward the switching node. It returns to the rail through the clamp.</p>
+    <pre><code>Freewheel branch     switch node → diode forward → +12 V rail
+Faster branch        switch node → diode forward → Zener in breakdown → +12 V rail</code></pre>
+    <p>In the second branch the clamp sits across the whole winding and the switch node rises by roughly the clamp voltage above the rail. The ordinary series diode blocks current from the rail through the clamp when the switch is on. Use the netlist to locate its anode and both cathodes. The winding energy is approximately ½LI², about 1.12 mJ just before turn-off in this simulation. The winding and clamp dissipate it as current decays. <a href="https://www.ti.com/document-viewer/lit/html/SNVAA45">Texas Instruments · Inductive load discharge paths</a>.</p>
+
+    <h2>Measure current threshold and switch voltage</h2>
+    <pre><code>ngspice -b coil-release.cir</code></pre>
+    <p>Use the gate’s falling 2.5 V crossing as time zero. The exercise treats 30 mA as a release-current threshold. Read <code>free_delay_ms</code> and <code>fast_delay_ms</code> from the simulation, and compare them with the peak voltage from drain to ground in each branch. The nominal result below comes from ngspice 42.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/coil-release/coil-release.png" width="1260" height="772" loading="lazy" decoding="async" alt="Both currents begin at 150 mA. The Zener branch crosses 30 mA near 0.61 milliseconds at a switch peak near 25 volts. The freewheel branch crosses near 1.78 milliseconds at a peak near 12.7 volts.">
+      <figcaption>Nominal transient from the downloadable netlist. The modeled 100 pF at each switch node interacts with the coil when the clamp stops conducting. The residual oscillation depends heavily on the assumed parasitics and damping.</figcaption>
+    </figure>
+    <p>Approximate the decay while the clamp can be treated as a constant voltage <var>V</var><sub>c</sub> opposing current. The loop gives <var>L</var> d<var>I</var>/d<var>t</var> + <var>R</var><var>I</var> = −<var>V</var><sub>c</sub>. The time to <var>I</var><sub>th</sub> is <var>L</var>/<var>R</var> × ln[(<var>I</var><sub>0</sub> + <var>V</var><sub>c</sub>/<var>R</var>)/(<var>I</var><sub>th</sub> + <var>V</var><sub>c</sub>/<var>R</var>)]. Use 0.7 V or 12.9 V for a first estimate. The simulator uses current-dependent diode voltages. <a href="https://ngspice.sourceforge.io/docs/ngspice-42-manual.pdf">ngspice 42 · Transient measurements</a>.</p>
+
+    <h2>Re-run at a supply and winding corner</h2>
+    <p>Copy the netlist and set the first parameters to <code>supply=13.2 resistance=70 inductance=120m</code>. Predict which curve changes most. For this exercise, the model has a 1.00 ms threshold deadline and a 25.0 V peak limit. Record each branch’s disposition at nominal and corner conditions.</p>
+    <details class="quiz"><summary>Check the nominal and corner results</summary><div class="answer">
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Model condition</th><th scope="col">Freewheel time and peak</th><th scope="col">Diode plus Zener time and peak</th></tr></thead>
+        <tbody><tr><th scope="row">12.0 V, 80 Ω, 100 mH</th><td>1.781 ms, 12.71 V</td><td>0.610 ms, 24.97 V</td></tr>
+        <tr><th scope="row">13.2 V, 70 Ω, 120 mH</th><td>2.773 ms, 13.92 V</td><td>0.951 ms, 26.21 V</td></tr></tbody>
+      </table></div>
+      <p>The freewheel branch misses the time limit both times. The faster branch passes both nominal model limits with only 0.03 V of modeled voltage headroom. It exceeds the voltage limit at the tested corner. The corner begins near 188 mA and stores about 2.13 mJ.</p>
+    </div></details>
+
+    <h2>Connect electrical release to station proof</h2>
+    <p>In a station, a current crossing can explain a delayed valve. The actual valve must move, air must flow, and the tool or part must reach its verified position. Specify what you would timestamp on one capture of the command, coil current and independent destination signal. Use the actual driver’s repetitive stress limits, clamp tolerance, harness effects and duty cycle to define its electrical test. The model uses an ideal switch and a fixed inductance and has no armature, pneumatic load or receiver latency.</p>
+    <a class="crosslink" href="p147-gripper-and-vacuum-diagnostics.html">P147 · Follow the release command through to part proof</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

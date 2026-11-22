@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P177 · Wait for a durable station receipt before clearing a result</title>
+<meta name="description" content="Run actual compiled PLC scans against a SQLite production journal that can exit before or after commit.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P177</span>
+    <h1>Wait for a durable station receipt before clearing a result</h1>
+    <p class="lede">A robot has placed a part and the record service stops answering. Use a compiled PLC function block and a real SQLite journal to decide when the station can acknowledge that result.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p161-compile-and-replay-a-plc-robot-station.html">P161 · PLC scan replay</a> · <a href="p162-recover-a-robot-station-journal.html">P162 · Durable records</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Separate the part, the record and the receipt</h2>
+    <p>In this training cell, the robot holds its completed result until the station acknowledges it. The pending candidate binds the cell session, job ordinal, part serial and proof generation. The journal counts a good part only after its own inspection and placement checks. The PLC accepts a positive receipt for that same record while the candidate is still present and the link is healthy. The exercise uses no equipment or motion outputs.</p>
+    <p>A delivery timeout leaves two plausible histories. The worker may have exited before committing, or it may have committed and exited before replying. The PLC returns to review in both cases. Once the part evidence has been checked and a fresh review edge arrives, the same event ID is retried. The first history creates the record and the second returns the recorded outcome.</p>
+
+    <h2>Build the function block and run the interrupted worker</h2>
+    <p>Save these files into one directory. Use a Linux C compiler, Python 3 with SQLite, and the <a href="p161-compile-and-replay-a-plc-robot-station.html">MatIEC setup from P161</a>. The observed run used Ubuntu 24.04 ARM64 and MatIEC commit <code>c316fe57e335381cbe91f61c7366857198580ac7</code>.</p>
+    <ul>
+      <li><a href="../assets/labs/durable-station-ack/receipt_gate.st" download>IEC function block</a> · <a href="../assets/labs/durable-station-ack/receipt_adapter.c" download>C adapter</a> · <a href="../assets/labs/durable-station-ack/replay_receipts.py" download>Python replay</a></li>
+      <li><a href="../assets/labs/station-journal/journal.py" download>P162 journal</a> · <a href="../assets/labs/station-journal/station-events.csv" download>P162 training events</a> · <a href="../assets/labs/durable-station-ack/observed.csv" download>Observed scan and database trace</a></li>
+    </ul>
+    <pre><code>MATIEC="$HOME/matiec"
+mkdir -p generated
+"$MATIEC/iec2c" -I "$MATIEC/lib" -T generated receipt_gate.st
+cc -std=gnu11 -O2 -fPIC -shared -I generated -I "$MATIEC/lib/C" \
+  receipt_adapter.c -lm -o generated/receipt_gate.so
+python3 replay_receipts.py generated/receipt_gate.so station-events.csv run-one</code></pre>
+    <p>Set <code>MATIEC</code> to your built checkout. Choose a fresh last argument for repeat runs. The replay drives scan times from a synthetic millisecond clock and creates separate training databases for each scenario. The two worker exits and SQLite commits occur in real processes.</p>
+
+    <h2>Compare the visible state with the committed count</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Attempt</th><th scope="col">What the station sees</th><th scope="col">What the record proves</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Normal delivery</th><td>Wrong part receipt at 30 ms leaves the gate waiting. Matching receipt at 210 ms is accepted, exactly 200 ms after review.</td><td>One committed part. The same result can read acknowledgment until its evidence disappears.</td></tr>
+        <tr><th scope="row">Exit before commit</th><td>No reply at 70 ms. Review state at 210 ms. Link recovery alone leaves the gate in review.</td><td>Zero committed parts before retry. After a new review at 250 ms, the retry commits once.</td></tr>
+        <tr><th scope="row">Exit after commit</th><td>The timeout and review are identical. Even a later status response does not clear the hold by itself.</td><td>One committed part before retry. After a new review, the same event ID returns the committed outcome and the count stays one.</td></tr>
+        <tr><th scope="row">Prior proof or late receipt</th><td>Generation 1 cannot satisfy a request for generation 2. A matching receipt at 201 ms across clock wrap is rejected.</td><td>The old completion remains stored and is insufficient proof for a different candidate. A separate check at exactly 200 ms accepts the matching receipt.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The receipt deadline is a policy in this example. The wait starts at the review scan. At the deadline, an already visible matching receipt wins over timeout. A later receipt stays held. The PLC must continue scanning for that policy to take effect. Choose a separate supervision mechanism and budget from measured delays for a live controller.</p>
+
+    <h2>Decide what to do with an ambiguous handoff</h2>
+    <ol class="steps">
+      <li>Find the first row in each interrupted trace where the PLC is in review. Keep the physical part evidence and the committed record separate in your diagnosis.</li>
+      <li>Compare the job, part and proof generation before retry. A changed candidate needs new verification and an event appropriate to that candidate.</li>
+      <li>Retry the original event ID once the same candidate has been reviewed. Confirm the resulting record and count. Save the before-and-after rows as evidence for the acceptance check.</li>
+    </ol>
+    <details class="quiz"><summary>The process exited and the count is already one. Can you issue a new completion ID?</summary><div class="answer"><p>Use the original ID to query or replay its outcome once the same candidate is verified. A new ID describes a new event and may hide ambiguity about the first. In this lab, the part and job uniqueness checks give another defence. The check does not reconstruct missing physical evidence or authorise motion.</p></div></details>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Turn the interrupted handoff into an acceptance test</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

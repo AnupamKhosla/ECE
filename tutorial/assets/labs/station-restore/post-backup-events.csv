@@ -1,0 +1,5 @@
+event_id,source,kind,job,part,recipe,generation,source_ms
+plc-005,plc,register,CELL4:8:43,PART-044,R-C,1,22000
+camera-105,camera,inspection_good,CELL4:8:43,PART-044,R-C,1,19500
+fixture-306,fixture,placement_proved,CELL4:8:43,PART-044,R-C,1,90542
+robot-206,robot,result_good,CELL4:8:43,PART-044,R-C,1,4900

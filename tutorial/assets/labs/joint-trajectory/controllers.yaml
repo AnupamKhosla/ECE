@@ -1,0 +1,19 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+    enforce_command_limits: true
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+arm_controller:
+  ros__parameters:
+    joints: [joint_1, joint_2]
+    command_interfaces: [position]
+    state_interfaces: [position]
+    allow_partial_joints_goal: false
+    constraints:
+      goal_time: 0.25
+      joint_1: {trajectory: 0.12, goal: 0.05}
+      joint_2: {trajectory: 0.12, goal: 0.05}

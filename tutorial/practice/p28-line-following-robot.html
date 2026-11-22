@@ -87,7 +87,7 @@
     <h2>Run three trials</h2>
     <p>Put the robot at the same start line for each run. Measure time and count stops or departures. Adjust one parameter at a time. If it oscillates, reduce speed or steering correction. If a slow wheel stalls, try a higher low duty or a lower overall speed with suitable gearing. If the Arduino resets during starts, measure the supply and return for dips and check driver and motor power wiring. For an extension, add wheel encoders and control the difference between requested and measured speed under changing load.</p>
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t18-sensor-physics.html">T18</a> covers optical sensors, <a href="../theory/t19-motors-vsds.html">T19</a> covers back-EMF and stall current, and <a href="../theory/t31-feedback-control.html">T31</a> explains why steering correction can track the line or make oscillation worse.</p></div>
-    <p>If a wheel turns but its counts stay at zero, <a href="p42-mobile-robot-fault-finding.html">work through the motor and encoder diagnosis</a>. If it moves reliably and you want to verify where an arm goes, <a href="p43-robot-arm-position-calibration.html">calibrate a two-joint arm</a>.</p>
+    <p>If a wheel turns but its counts stay at zero, <a href="p42-mobile-robot-fault-finding.html">work through the motor and encoder diagnosis</a>. Once count and direction agree, <a href="p139-wheel-speed-control.html">compare open-loop and closed-loop wheel speed</a> or follow the <a href="p137-robotics-roadmap.html">full robotics route</a>.</p>
   </main>
 </div>
 <script src="../assets/toc.js?v=20261120-workshop"></script>

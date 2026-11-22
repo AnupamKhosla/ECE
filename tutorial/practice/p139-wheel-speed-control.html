@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P139 · Tune wheel speed and test recovery from saturation</title>
+<meta name="description" content="Compare open-loop, P and PI speed control. Use a browser simulator to measure load response, sensor delay and integral windup.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P139</span>
+    <h1>Tune wheel speed and test recovery from saturation</h1>
+    <p class="lede">Set a wheel speed, add a load and see how quickly the controller recovers. Keep the duty request and applied duty on your record so you can tell whether a larger command could help.</p>
+    <div class="meta"><span><b>Time</b> 50–75 minutes</span><span><b>Before this</b> <a href="p42-mobile-robot-fault-finding.html">P42</a> · <a href="../theory/t31-feedback-control.html">T31</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Predict the unloaded and loaded speeds</h2>
+    <p>The trainer uses a 20 ms control step. At full duty the unloaded steady speed is 200 rpm. At 50% it is 100 rpm. A disturbance at 2.5 s subtracts the equivalent of 40 rpm from the steady speed. A first-order response with a 0.22 s time constant moves the wheel toward that steady speed. Speed never goes below zero in this model. In the load test, predict 60 rpm in open loop and explain why the model uses 70% duty to hold 100 rpm after the load.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/encoder.jpg" width="631" height="960" loading="lazy" decoding="async" alt="Physical wheel and encoder running on a test fixture">
+      <figcaption>Speed is inferred from how far the encoder moves over a time window. Check the scale with a marked turn first.<br><small>International Gemini Observatory/NOIRLab/NSF/AURA, scaled. <a href="https://commons.wikimedia.org/wiki/File:Friction-driven_Encoder_Test_(encoder_02-CC).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Compare a feedforward command with a proportional correction in a motion controller. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/11-3-motion-control-with-velocity-inputs-part-1-of-3/">Northwestern · Motion control with velocity inputs</a>.</p>
+
+    <h2>Compare four runs</h2>
+    <div class="widget" id="wheel-speed-trainer">
+      <label for="wheel-control">Controller</label>
+      <select id="wheel-control"><option value="open">Open loop</option><option value="p">P with feedforward</option><option value="pi">PI with feedforward</option><option value="high">High-gain PI</option></select>
+      <label for="wheel-scenario">Demand</label>
+      <select id="wheel-scenario"><option value="load">100 rpm, then add load</option><option value="saturation">260 rpm for 2 s, then 100 rpm</option></select>
+      <label><input id="wheel-delay" type="checkbox"> Add 120 ms measurement delay</label>
+      <label><input id="wheel-windup" type="checkbox" checked> Use integral anti-windup in PI modes</label>
+      <div class="lab-controls"><button type="button" id="run-wheel">Run five-second test</button></div>
+      <p id="wheel-summary" role="status">Run the test to compare wheel speed, demand and applied duty.</p>
+      <canvas id="wheel-plot" class="lab-plot" width="460" height="250" hidden role="img" aria-label="Speed and duty over time. See the test readings below for data." aria-describedby="wheel-legend"></canvas>
+      <p id="wheel-legend" hidden>Solid line shows speed. Dashed line shows target. Dotted line shows applied duty on the right axis.</p>
+      <div class="table-wrap" id="wheel-readings" hidden><table>
+        <caption>Readings every 0.5 s</caption>
+        <thead><tr><th scope="col">Time (s)</th><th scope="col">Target (rpm)</th><th scope="col">Speed (rpm)</th><th scope="col">Feedback (rpm)</th><th scope="col">Requested duty (%)</th><th scope="col">Applied duty (%)</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Enable JavaScript to run the trainer. The worked results below use the same model.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Run open loop, then P. Both use a feedforward duty of target ÷ 200. P adds 0.004 duty per rpm of error. Compare the final values and explain the remaining P error. Once settled, the model gives approximately 60 rpm for open loop and 77.8 rpm for P.</li>
+      <li>Use PI (same K<sub>p</sub>, K<sub>i</sub> = 0.018 duty/(rpm·s)) to reduce the remaining error. Record overshoot and the speed at 5 s. Compare with the same run using high gain (K<sub>p</sub> = 0.020, K<sub>i</sub> = 0.040) and 120 ms delay. Distinguish an oscillating response from a steady offset.</li>
+      <li>Choose the 260 rpm test in regular PI. Compare anti-windup on and off. During the first 2 s the demanded speed exceeds physical capability. At 2 s the target drops. Look for requested duty still exceeding 100% even after the drop.</li>
+      <li>Pick settings for this training plant that keep final error within 5 rpm on the load run. Save one failing and one passing response. State which conditions the test covered.</li>
+    </ol>
+    <details class="quiz"><summary>Check the model outcomes</summary><div class="answer"><p>At 5 s regular PI with no added measurement delay reads about 100 rpm on the load test. The delayed high-gain run is still oscillating. In the saturation run with regular PI and no added delay, the request at 2 s is about 305% with anti-windup off and 6% with it on. The driver applies only 0–100%. The clamped integrator lets the wheel decelerate promptly when the demand drops.</p></div></details>
+
+    <a class="crosslink" href="p140-wheel-odometry.html">P140 · Turn wheel counts into a chassis pose</a>
+    <a class="crosslink" href="p153-close-the-loop-on-a-real-wheel.html">P153 · Run open loop and PI on a secured geared motor</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

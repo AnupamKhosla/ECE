@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P154 · Find missed and extra encoder pulses at the receiver</title>
+<meta name="description" content="Measure an open-drain edge on a 5 V trainer, then separate cable loading, switching noise and count configuration.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P154</span>
+    <h1>Find missed and extra encoder pulses at the receiver</h1>
+    <p class="lede">A counter can disagree with a marked turn because the wire distorted the pulse, the input saw two edges, or the software counted a different kind of edge. Prove each boundary.</p>
+    <div class="meta"><span><b>Time</b> 55–80 minutes</span><span><b>Before this</b> <a href="p15-oscilloscope-logic-analyser.html">P15</a> · <a href="p42-mobile-robot-fault-finding.html">P42</a> · <a href="../theory/t40-pcb-layout-and-emc.html">T40</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Start with a repeatable pattern</h2>
+    <p>Ask what the instrument counts. One rising edge of channel A, both edges of A and all valid quadrature transitions produce different numbers per revolution. Use a known number of pulses or a marked turn, then record source waveform, receiver waveform, accepted transitions and the configured count mode. On a two-channel encoder, also check that nearby transitions retain their expected order.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/scope.jpg" width="960" height="1106" loading="lazy" decoding="async" alt="Four-channel digital oscilloscope displaying several traces">
+      <figcaption>Use the receiver’s own signal reference and document the probe arrangement. Probe capacitance becomes part of the load you measure.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+
+    <h2>Measure a slow rising edge on an isolated 5 V bench</h2>
+    <p>With the Uno powered off, put a 4.7 kΩ resistor from D7 to its 5 V rail. There is no motor or field wiring in this exercise. Power the Uno by USB. Tie the scope reference to the trainer ground and probe D7 with an appropriately configured 10× probe. D7 alternates between driving low and going high impedance. The external pull-up creates the rising edge.</p>
+    <pre><code>void setup() {
+  digitalWrite(7, LOW);
+}
+
+void loop() {
+  pinMode(7, OUTPUT);
+  delayMicroseconds(40);
+  pinMode(7, INPUT);
+  delayMicroseconds(40);
+}</code></pre>
+    <ol class="steps">
+      <li>Capture the rise with no external capacitor. Add a 150 pF ceramic from D7 to ground with power off, then repeat. Compare again with 680 pF. Keep the same probe, reference and time setting. The capacitor represents the load a signal might see on a long cable.</li>
+      <li>Measure time to 70% of the final voltage as a modelling exercise. With 680 pF and 4.7 kΩ, predict about 3.85 µs ignoring probe and stray capacitance. The receiver’s real threshold and edge-rate limits come from its data sheet. Compare your measurement with the model.</li>
+      <li>Switch the scope to a logic view if available. Compare threshold-based transitions with the analogue waveform. Explain why a logic trace can hide the low high-level margin in a short pulse. Use the recorded fault table for short pulses and load-switching evidence.</li>
+    </ol>
+
+    <h2>Choose the smallest check that separates the causes</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Case</th><th scope="col">Known input and observed result</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">A</th><td>1,000 rising source edges. Receiver captures 1,000. High level approaches 5 V.</td><td>Record a baseline trace with cable and probe settings.</td></tr>
+        <tr><th scope="row">B</th><td>1,000 sharp source edges, 910 receiver counts. Short pulses at the receiver reach only 1.6 V with the long cable. Supply stays steady.</td><td>Compare the shortest pulses with receiver thresholds and cable capacitance. Repeat with the documented interface and a shorter test lead.</td></tr>
+        <tr><th scope="row">C</th><td>1,000 expected edges, 1,038 accepted only with load switching. Extra crossings align with PWM transitions and the receiver reference moves 160 mV.</td><td>Compare signal and return at the receiver. Change the test routing or shared return path for a controlled comparison.</td></tr>
+        <tr><th scope="row">D</th><td>1,000 valid A/B transitions at the input. The application reports 250 repeatedly at every test speed.</td><td>Check whether the decoder counts one rising edge per quadrature cycle rather than all four transitions.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A longer software debounce can suppress a fast burst and still drop legitimate pulses at top speed. Before changing it, compare the shortest valid interval with the signal and receiver specifications. Keep one trace before the change and one after at the same pulse rate. <a href="https://www.ti.com/document-viewer/lit/html/scea046">Texas Instruments · Slow inputs and hysteresis</a>.</p>
+
+    <a class="crosslink" href="p153-close-the-loop-on-a-real-wheel.html">Use the proven encoder input in P153 · Close the loop around a real motor</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

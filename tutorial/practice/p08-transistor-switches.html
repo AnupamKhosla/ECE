@@ -337,7 +337,7 @@
 
     <h3>Why the coil kicks back</h3>
     <p>A coil is an <b>inductor</b>. Its magnetic field stores energy (½LI²), and it resists any sudden change in its current: V = L × ΔI/Δt. When the transistor switches off in a microsecond, the coil "tries" to keep its 30 mA flowing. Put numbers in: a relay coil of, say, 0.5 H, with 30 mA stopping in 1 µs, would need 0.5 × 0.03 / 0.000001 = 15 000 V. In reality the voltage climbs until something conducts: the transistor's collector junction breaks down (a BC547 is rated 45 V), or a tiny arc forms. Each event damages the transistor a little; eventually it fails shorted, and the relay stays on forever.</p>
-    <p>The <b>flyback diode</b> (also called a freewheeling or snubber diode) sits across the coil, reverse-biased in normal operation (band to +12 V). At switch-off, the coil's voltage reverses, the diode conducts, and the coil current circulates through the diode until its energy is spent as heat in the coil's resistance. The collector never goes above about 12.7 V.</p>
+    <p>The <b>flyback diode</b> sits across the coil, reverse-biased in normal operation (band to +12 V). At switch-off, the coil's voltage reverses, the diode conducts, and current circulates as the coil and diode dissipate its energy. The collector’s ideal clamp level is about 12.7 V. Lead inductance and the diode’s behavior can create a short overshoot.</p>
     <div class="callout why"><span class="label">Why it works</span><p>An inductor stores energy in its magnetic field, and the field cannot vanish instantly: collapsing it induces a voltage that tries to keep the current flowing (Faraday's and Lenz's laws). The faster you try to stop the current, the bigger that voltage. The diode gives the current a gentle path, so the stored ½LI² turns into a little heat instead of a spike.</p></div>
     <a class="crosslink" href="../theory/t06-magnetism-inductors.html">Theory T06 · Magnetism and inductors</a>
 
@@ -346,10 +346,11 @@
       <li><p><b>Click it.</b> Control to 5 V: relay clicks; measure continuity COM–NO (beeps) and COM–NC (open). Control to 0 V: the opposite.</p></li>
       <li><p><b>Measure the coil</b> (power off) on the ohms range: about 400 Ω for a 12 V relay, about 70 Ω for a 5 V relay. Coil current = V/R.</p></li>
       <li><p><b>Use the contacts.</b> Wire a separate LED + 1 kΩ from the 12 V supply through COM and NO. Then move it to NC and see the logic reverse.</p></li>
-      <li><p><b>If you have a scope</b> (P15), look at the collector at switch-off with and without the diode. Without it, use a spare transistor, keep switching to a few clicks only, and expect the spike to be clipped by breakdown somewhere above 45 V. Do not touch the circuit while doing this. Refit the diode afterwards.</p></li>
+      <li><p><b>If you have a scope</b> (P15), keep the diode in place. Connect the probe reference to circuit ground on the isolated low-voltage supply. Trigger on the collector’s rising edge and compare its clamp plateau with the supply voltage measured on the same circuit.</p></li>
     </ol>
 
-    <div class="callout tip"><span class="label">Bench tip: diode side effects</span><p>A plain flyback diode lets the coil current die away slowly, so the relay releases a few milliseconds later than it would otherwise. Usually that does not matter. Where fast release matters, designers put a Zener in series with the diode, which lets the voltage rise to a safe, higher level and dumps the energy faster. For AC coils (24 V AC relays and contactors), a diode cannot be used; use the RC snubber or varistor that the relay maker specifies.</p></div>
+    <div class="callout tip"><span class="label">Bench tip on release time</span><p>A plain flyback diode allows a gentle current decay. A diode and Zener in series can speed up release at the cost of a higher switch voltage. For AC coils, use the suppressor the relay maker specifies, such as an RC snubber or varistor.</p></div>
+    <a class="crosslink" href="p163-compare-solenoid-release-clamps.html">P163 · Compare two valve-coil clamps in simulation</a>
 
     <h3>Relay modules</h3>
     <p>The common "5 V relay module" boards contain everything in Figure 3: a transistor, base resistor, flyback diode and an indicator LED, sometimes an optocoupler (an LED and phototransistor in one package for isolation). Know their quirks:</p>
@@ -435,7 +436,7 @@
       <li><input type="checkbox"><span>I can choose a logic-level MOSFET by reading R<sub>DS(on)</sub> at my gate voltage, not V<sub>GS(th)</sub>.</span></li>
       <li><input type="checkbox"><span>I fit a gate resistor and a pull-down, and I can explain both.</span></li>
       <li><input type="checkbox"><span>I can estimate switch heat with P = I² × R<sub>DS(on)</sub> or P = V<sub>CE</sub> × I.</span></li>
-      <li><input type="checkbox"><span>I always fit a flyback diode across DC relay coils, motors and locks, band to +.</span></li>
+      <li><input type="checkbox"><span>I can identify the specified current path for a DC inductive load at switch-off, and orient a simple coil flyback diode correctly.</span></li>
       <li><input type="checkbox"><span>I can explain COM, NO, NC, dry contacts and interposing relays.</span></li>
       <li><input type="checkbox"><span>I know which contact a fail-safe maglock and a fail-secure strike use.</span></li>
     </ul>

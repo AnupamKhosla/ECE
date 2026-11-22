@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P159 · Time a two-axis robot move</title>
+<meta name="description" content="Compare independent and synchronized joint moves, expose triangular and speed-limited profiles, and budget time for motion, settling and proof.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P159</span>
+    <h1>Time a two-axis robot move</h1>
+    <p class="lede">Give two joints the same endpoint and compare their progress with independent trapezoids, a shared trapezoid and a smooth shared profile. Calculate the motion time before adding a measured settling interval and tooling proof.</p>
+    <div class="meta"><span><b>Time</b> 60–75 minutes</span><span><b>Before this</b> <a href="p142-robot-arm-path-planning.html">P142</a> · <a href="../theory/t65-robot-trajectory-timing.html">T65</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Calculate the motion before running it</h2>
+    <p>Each axis starts at relative position 0° and at rest. The lab uses these fictional operating limits. For the shared profiles, divide each limit by the magnitude of the corresponding travel and take the tightest value for each derivative.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Joint</th><th scope="col">Speed (°/s)</th><th scope="col">Acceleration (°/s²)</th><th scope="col">Jerk (°/s³)</th></tr></thead>
+      <tbody><tr><th scope="row">Joint 1</th><td>60</td><td>120</td><td>480</td></tr><tr><th scope="row">Joint 2</th><td>90</td><td>180</td><td>720</td></tr></tbody>
+    </table></div>
+    <p>The model applies the jerk limits to quintic timing. The two constant-acceleration profiles have ideal acceleration steps. Their outputs are useful for timing comparisons and assume a drive that can approximate the ramps.</p>
+    <div class="widget" id="trajectory-trainer">
+      <label for="trajectory-first">Joint 1 travel (°)</label><input id="trajectory-first" type="number" min="-180" max="180" step="0.1" value="90" required>
+      <label for="trajectory-second">Joint 2 travel (°)</label><input id="trajectory-second" type="number" min="-180" max="180" step="0.1" value="-30" required>
+      <label for="trajectory-profile">Time scaling</label><select id="trajectory-profile"><option value="shared">Shared constant-acceleration ramps</option><option value="independent">Independent constant-acceleration ramps</option><option value="smooth">Shared quintic with bounded jerk</option></select>
+      <div class="lab-controls"><button type="button" id="run-trajectory">Calculate trajectory</button></div>
+      <p id="trajectory-summary" role="status">Calculate the trajectory to compare move durations and joint speeds.</p>
+      <canvas class="lab-plot" id="trajectory-plot" width="460" height="253" hidden aria-label="Joint speed against time. Values follow in the table."></canvas>
+      <p id="trajectory-legend" hidden>Solid line · joint 1. Dashed line · joint 2. Negative speed is travel in the opposite direction.</p>
+      <div class="table-wrap" id="trajectory-readings" hidden><table>
+        <caption>Sampled relative position, speed and acceleration</caption>
+        <thead><tr><th scope="col">Time (s)</th><th scope="col">J1 angle (°)</th><th scope="col">J1 speed (°/s)</th><th scope="col">J1 accel. (°/s²)</th><th scope="col">J2 angle (°)</th><th scope="col">J2 speed (°/s)</th><th scope="col">J2 accel. (°/s²)</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Use the equations in T65. For the default travels, the shared ramp move takes 2.000 s. The independent joint 2 completes at 0.816 s. The shared quintic takes 2.813 s rounded to three decimals.</p></noscript>
+    </div>
+
+    <h2>Compare endpoints, intermediate positions and the cycle</h2>
+    <ol class="steps">
+      <li>Compare the default shared and independent ramps at t = 1 s. Both finish the full move at t = 2 s. Record why the joint 2 positions differ and how you would check tool clearance for each path.</li>
+      <li>Keep endpoints and switch to the quintic. Record the limiting derivative and compare acceleration at the start and end. Then set joint 1 to 18° and joint 2 to −6° and compare the short moves. Which ramp shape and which quintic constraint apply?</li>
+      <li>Suppose you measured 0.37 s from a shared ramp’s scheduled end until the axis held ±0.4° for 100 ms. Your simulated grip proof then takes 0.32 s. The station’s agreed deadline is 2.70 s from motion start to confirmed grip. Compute the margin and propose an evidence-based change. For quintic timing the observed settling interval is 0.12 s and grip proof still takes 0.32 s. Work both cases.</li>
+    </ol>
+    <details class="quiz"><summary>Check the timing and cycle decisions</summary><div class="answer"><p>At 1 s the shared profile reaches +45° and −15°. For independent ramps joint 2 has already stopped at −30°. For the 18° and −6° case, the shared ramp profile is triangular and takes about 0.775 s. The short quintic is jerk-limited at about 1.310 s. The long shared ramps reach grip proof at 2.69 s, only 10 ms before the deadline. The long quintic reaches it at about 3.25 s despite the faster settling. Review repeated timing, clamp proof and mechanical response in the configured payload range before changing the move.</p></div></details>
+    <p>Keep the chosen profile, axis limits, a speed and position trace, worst observed settling and the time of part proof. A successful move command and a confirmed grip are separate events in the station sequence.</p>
+    <p><a href="p148-servo-axis-fault-traces.html">P148 · Compare commanded motion with the measured servo trace</a></p>
+    <a class="crosslink" href="p160-debug-a-joint-trajectory-controller.html">P160 · Run the quintic on a software-only ROS 2 controller</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

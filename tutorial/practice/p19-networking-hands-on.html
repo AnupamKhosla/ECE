@@ -9,9 +9,13 @@
 <style>
   .wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px}
   .widget input[type=text]{font:15px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;max-width:220px}
-  .poe-row{display:grid;grid-template-columns:1fr 80px 90px 90px;gap:8px;align-items:center;font-size:14.5px;padding:4px 0;border-bottom:1px dashed var(--line)}
-  .poe-row input{max-width:80px!important}
+  .poe-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(3rem,80px) minmax(0,90px) minmax(0,90px);gap:8px;align-items:center;font-size:14.5px;padding:4px 0;border-bottom:1px dashed var(--line)}
+  .poe-row input[type=number]{min-width:0;width:100%}
   .poe-row small{color:var(--muted)}
+  @media(max-width:520px){
+    .poe-row{grid-template-columns:minmax(0,1.4fr) 3rem minmax(0,1fr) minmax(0,1fr);gap:6px}
+    .poe-row input[type=number]{padding-inline:5px}
+  }
   .bar{height:16px;background:var(--wash);border-radius:99px;overflow:hidden;margin:10px 0 4px}
   .bar i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
   .bar.amber i{background:var(--amber)} .bar.red i{background:var(--red)}
@@ -277,7 +281,7 @@ netsh interface ipv4 set address name="Ethernet" source=dhcp      &lt;-- put it 
       var D=[['Fixed dome camera (af)',4,'3',15.4,7,5],['IR bullet camera (af)',2,'3',15.4,10,7],['PTZ camera (at / PoE+)',1,'4',30,25,18],['Wi-Fi 6 access point (at)',1,'4',30,22,14],['Door intercom (af)',0,'3',15.4,9,6],['VoIP desk phone (af)',0,'2',7,5,3.5]];
       var rows=document.getElementById('poe-rows');
       D.forEach(function(d,i){var r=document.createElement('div');r.className='poe-row';
-        r.innerHTML='<span>'+d[0]+'</span><input type="number" min="0" step="1" value="'+d[1]+'" id="poe-c'+i+'" aria-label="count"><small>class '+d[2]+' · '+d[3]+' W</small><small>'+d[4]+' / '+d[5]+' W</small>';rows.appendChild(r);});
+        r.innerHTML='<span>'+d[0]+'</span><input type="number" min="0" step="1" value="'+d[1]+'" id="poe-c'+i+'" aria-label="'+d[0]+' count"><small>class '+d[2]+' · '+d[3]+' W</small><small>'+d[4]+' / '+d[5]+' W</small>';rows.appendChild(r);});
       function upd(){
         var b=+document.getElementById('poe-budget').value||0,ports=+document.getElementById('poe-ports').value||0,mode=document.getElementById('poe-mode').value,tot=0,n=0,needAt=0;
         D.forEach(function(d,i){var c=Math.max(0,Math.floor(+document.getElementById('poe-c'+i).value||0));n+=c;tot+=c*(mode==='class'?d[3]:mode==='max'?d[4]:d[5]);if(d[2]==='4')needAt+=c;});

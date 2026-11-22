@@ -67,6 +67,7 @@ window.TOC = {
           { n: "P63", file: "practice/p63-bms-point-to-point.html", title: "Prove a BMS point from the room to the screen", d: "Match two devices to cable tags and terminal numbers, then identify a swapped screen point with a directed test." },
           { n: "P37", file: "practice/p37-current-loop-calibration.html", title: "Calibrate a 4–20 mA pressure input", d: "Wire a current source and 250 Ω receiver, record five up/down points, then diagnose a scaling error." },
           { n: "P38", file: "practice/p38-bacnet-point-commissioning.html", title: "Commission a BACnet room-controller point", d: "Read a BACnet point list and a discovery capture before diagnosing bad values, duplicate instances and overrides." },
+          { n: "P175", file: "practice/p175-verify-a-modbus-register-snapshot.html", title: "Verify a Modbus register snapshot before using it", d: "Read real loopback transactions and detect split-word, in-progress and prior-generation values." },
           { n: "P39", file: "practice/p39-plc-ladder-simulation.html", title: "Build and test a start–stop PLC sequence", d: "Trace I/O, simulate a seal-in rung and prove stop, proof feedback, a timeout and restart behavior." },
           { n: "P40", file: "practice/p40-scada-trend-handover.html", title: "Read a SCADA trend and write a fault handover", d: "Use a worked time series to separate a fan proof alarm, a stale value and a front-end mapping fault." },
           { n: "P41", file: "practice/p41-drive-and-condition-checks.html", title: "Diagnose a drive trip and trend motor condition", d: "Read a simulated drive trip, separate load from electrical causes and build a repeatable vibration record." },
@@ -86,18 +87,23 @@ window.TOC = {
           { n: "P49", file: "practice/p49-can-bus-and-telemetry.html", title: "Log a CAN bus and verify the frame data", d: "Use an isolated virtual CAN interface, decode a published training frame and check physical termination on your own unpowered trainer." },
           { n: "P50", file: "practice/p50-vna-reflection-calibration.html", title: "Calibrate a VNA and measure RF reflections", d: "Make a one-port calibration, move the reference plane, and compare a 50 Ω load, an open and a terminated cable." },
           { n: "P51", file: "practice/p51-load-cell-data-acquisition.html", title: "Calibrate a load cell and test for drift", d: "Wire a bridge amplifier, fit a two-point scale, and check accuracy with a reference weight you did not fit." },
+          { n: "P172", file: "practice/p172-measure-an-adc-acquisition-error.html", title: "Measure ADC acquisition error after a channel change", d: "Simulate sampling memory, source impedance and a filter capacitor that slows a real sensor step." },
           { n: "P52", file: "practice/p52-dc-power-logging.html", title: "Log DC power and explain a short battery runtime", d: "Measure voltage and current together, estimate energy over an on/off duty cycle, and check a short runtime against a battery rating." },
           { n: "P53", file: "practice/p53-fibre-loss-and-otdr.html", title: "Check a fibre loss budget and read an OTDR trace", d: "Calculate allowable link loss, inspect a real trace and distinguish a bad connector from distributed fibre loss." },
           { n: "P55", file: "practice/p55-pico-boot-and-swd-debugging.html", title: "Find where a Raspberry Pi Pico program stops", d: "Check power, USB and serial logging, then use SWD and GDB to distinguish a boot problem from a blocking program." },
           { n: "P58", file: "practice/p58-board-production-test.html", title: "Build a repeatable board test fixture", d: "Prove a low-voltage board test with a known-good reference, two known faults and a closing retest." }
         ]},
-        { title: "Part L · Specialist repair for small businesses", blurb: "Train for bench repair in fabrication, packaging, label printing and cooling.", chapters: [
+        { title: "Part L · Specialist repair and shop products", blurb: "Train for bench repair in fabrication, packaging, label printing and cooling. Prototype an air mover you can test and service.", chapters: [
           { n: "P66", file: "practice/p66-sewing-servo-pedal.html", title: "Diagnose an industrial sewing machine that ignores the pedal", d: "Check the treadle linkage, neutral position, harness signal and motor feedback." },
           { n: "P64", file: "practice/p64-plasma-cutter-triage.html", title: "Triage a plasma cutter that will not start", d: "Record the exact fault and distinguish consumables, air and trigger conditions." },
           { n: "P65", file: "practice/p65-packaging-sealer-diagnostics.html", title: "Diagnose a packaging sealer with a weak or uneven seam", d: "Distinguish band and impulse sealers. Compare heater command, load, film and jaw pressure." },
           { n: "P67", file: "practice/p67-barcode-printer-service.html", title: "Repair a barcode printer that skips labels or prints streaks", d: "Identify the thermal head and platen, print a standalone report and confirm the result with a scanner." },
           { n: "P68", file: "practice/p68-cold-room-probe.html", title: "Check a cold-room temperature probe and alarm", d: "Compare a reference thermometer, NTC curve and controller display. Distinguish warm, open and shorted." },
-          { n: "P70", file: "practice/p70-machine-chiller-flow.html", title: "Trace a machine chiller’s low-flow alarm", d: "Use a timed volume test to tell a hydraulic restriction from a flow indicator fault." }
+          { n: "P70", file: "practice/p70-machine-chiller-flow.html", title: "Trace a machine chiller’s low-flow alarm", d: "Use a timed volume test to tell a hydraulic restriction from a flow indicator fault." },
+          { n: "P133", file: "practice/p133-hand-build-a-bench-blower.html", title: "Hand-build a 12 V bench blower", d: "Cut and drill a guarded housing, wire and test it, then use a drill jig to make a second unit in an Indian workshop." },
+          { n: "P134", file: "practice/p134-build-a-battery-powered-blower.html", title: "Build a battery-powered workshop blower", d: "Fit a protected rechargeable pack and measure startup, runtime and cutoff." },
+          { n: "P135", file: "practice/p135-build-a-corded-mains-blower.html", title: "Build a 230 V corded workshop blower", d: "Fabricate a case around a direct-mains centrifugal blower and test the finished Class I assembly." },
+          { n: "P136", file: "practice/p136-build-a-workbench-blower-and-particle-filter.html", title: "Build a low-voltage bench blower and particle-filter prototype", d: "Measure installed airflow, compare restrictions, and work out what it would take to sell a serviceable unit in India." }
         ]},
         { title: "Part M · Telecommunications service", blurb: "Troubleshoot broadband, fibre, mobile and business voice services and practise fault handovers.", chapters: [
           { n: "P71", file: "practice/p71-nbn-service-desk-triage.html", title: "Find where an NBN broadband service stops", d: "Use a router, wired test, optical indicator and outage record to separate a local fault from the access service." },
@@ -106,6 +112,49 @@ window.TOC = {
           { n: "P74", file: "practice/p74-mobile-network-triage.html", title: "Triage a mobile coverage or activation fault", d: "Compare LTE and 5G readings, SIM or eSIM activation, data and voice at repeatable locations." },
           { n: "P75", file: "practice/p75-voip-one-way-audio.html", title: "Diagnose one-way audio on an IP phone call", d: "Check SIP call setup and both RTP media paths, then report where the missing audio was last seen." },
           { n: "P76", file: "practice/p76-hfc-coax-diagnosis.html", title: "Find a fault on an HFC coax trainer", d: "Identify cable modem ports, check spare coax with a meter and interpret a DOCSIS signal report." }
+        ]},
+        { title: "Part N · Robotics from bench to production", blurb: "Size and tune a drive, bring up mobile navigation, plan an arm path and prove a commercial deployment.", chapters: [
+          { n: "P137", file: "practice/p137-robotics-roadmap.html", title: "Learn robotics from the first motor to a production cell", d: "Choose a practical route through robot drives, ROS 2 navigation, arms, vision and factory integration." },
+          { n: "P138", file: "practice/p138-robot-drive-sizing.html", title: "Size a robot drive and trace a startup fault", d: "Calculate wheel torque, speed and current, then find the startup voltage drop under load." },
+          { n: "P139", file: "practice/p139-wheel-speed-control.html", title: "Tune wheel speed and test recovery from saturation", d: "Simulate a loaded motor, compare P and PI, and test sensor delay and anti-windup." },
+          { n: "P140", file: "practice/p140-wheel-odometry.html", title: "Calibrate wheel odometry against floor measurements", d: "Fit wheel scale and track width, replay an encoder log and diagnose wheel slip or reversed sign." },
+          { n: "P141", file: "practice/p141-ros2-mobile-bringup.html", title: "Bring up and diagnose a ROS 2 navigation stack", d: "Trace a Nav2 goal, simulated clock, localization and TF frames in a recorded case or Gazebo." },
+          { n: "P142", file: "practice/p142-robot-arm-path-planning.html", title: "Plan an arm path around a fixture", d: "Compare inverse kinematics branches, fixture collisions, singularities and joint motion timing." },
+          { n: "P143", file: "practice/p143-camera-to-robot-calibration.html", title: "Calibrate a fixed camera to a robot work frame", d: "Fit a camera-to-base transform and prove its accuracy with independent targets." },
+          { n: "P144", file: "practice/p144-robot-plc-handshake.html", title: "Prove a robot-to-PLC handshake through faults and restart", d: "Replay stale completion, duplicate requests, missing proof and link loss with a current job ID." },
+          { n: "P145", file: "practice/p145-mobile-robot-fleet.html", title: "Commission a mobile robot fleet on a paper warehouse", d: "Size an AMR fleet and check aisle reservations, docking, charging and mission recovery." },
+          { n: "P146", file: "practice/p146-robot-cell-acceptance.html", title: "Accept, hand over and troubleshoot a commercial robot cell", d: "Check payload and reach, design FAT and SAT, calculate OEE and payback, then diagnose a post-handover fault." },
+          { n: "P147", file: "practice/p147-gripper-and-vacuum-diagnostics.html", title: "Prove a gripper can pick, keep and release a part", d: "Calculate jaw and suction forces. Diagnose seal failure, dropped grip, stale proof and failed release." },
+          { n: "P148", file: "practice/p148-servo-axis-fault-traces.html", title: "Diagnose a servo axis from following error and tool motion", d: "Compare command, encoder, independent measured position and torque through a reversal or a drive fault." },
+          { n: "P149", file: "practice/p149-cnc-machine-tending-recovery.html", title: "Recover a CNC tending cycle with a part between the gripper and chuck", d: "Prove part ownership through handoff. Rehearse empty closure, restart during shared hold and stale clearance." },
+          { n: "P150", file: "practice/p150-ros2-navigation-trace.html", title: "Find the first failing boundary in a ROS 2 navigation trace", d: "Use a trace to separate scan and TF timing, a paused clock and failure to move after a command." },
+          { n: "P151", file: "practice/p151-offline-industrial-robot-program.html", title: "Build and prove a pick path on a virtual industrial controller", d: "Compare MoveJ and MoveL in an offline PolyScope simulation and verify stopping points and grip proof." },
+          { n: "P152", file: "practice/p152-conveyor-robot-tracking.html", title: "Track a moving part from camera trigger to robot pick", d: "Use encoder travel after exposure and test a missed pick deadline on a moving conveyor." },
+          { n: "P153", file: "practice/p153-close-the-loop-on-a-real-wheel.html", title: "Close the speed loop on a small geared motor", d: "Count a real encoder on an Uno and compare logged open-loop and PI motor speed." },
+          { n: "P154", file: "practice/p154-encoder-signal-integrity.html", title: "Measure an encoder input before tuning the loop", d: "Measure a pulled-up encoder edge, verify receiver timing and distinguish signal faults from wrong count settings." },
+          { n: "P155", file: "practice/p155-review-a-robot-stop-test.html", title: "Review a robot stop and restart test", d: "Review stop timing, uncertainty and reset behavior against a training cell's acceptance criteria." },
+          { n: "P156", file: "practice/p156-fuse-wheel-and-landmark-position.html", title: "Fuse wheel travel with a landmark position", d: "Replay wheel odometry and sparse landmarks with a missing observation, a wrong position and an innovation gate." },
+          { n: "P157", file: "practice/p157-route-around-a-blocked-aisle.html", title: "Route a mobile robot through a changing aisle", d: "Compare a robot’s empty and loaded footprints, a stale obstacle mark and a fresh clearing observation." },
+          { n: "P158", file: "practice/p158-map-a-robot-work-area.html", title: "Build, save and reload a mobile robot map", d: "Compare measured SLAM grids and verify a saved map in a fresh map server." },
+          { n: "P159", file: "practice/p159-time-a-two-axis-robot-move.html", title: "Time a two-axis robot move", d: "Compare synchronized and independent axis timing, jerk limits, settling and grip proof." },
+          { n: "P160", file: "practice/p160-debug-a-joint-trajectory-controller.html", title: "Run and diagnose a ROS 2 joint trajectory", d: "Start a real software-only controller, then distinguish an invalid goal from a path tolerance abort." },
+          { n: "P161", file: "practice/p161-compile-and-replay-a-plc-robot-station.html", title: "Compile and replay a PLC robot station", d: "Translate actual Structured Text and test acknowledgment deadlines, mismatched proof, disconnects and clock wrap." },
+          { n: "P162", file: "practice/p162-recover-a-robot-station-journal.html", title: "Recover a robot station journal after interruption", d: "Test duplicate delivery, stale evidence and process failure on either side of a good-part commit." },
+          { n: "P163", file: "practice/p163-compare-solenoid-release-clamps.html", title: "Compare two ways to switch off a robot valve coil", d: "Measure coil-current decay and switch-node voltage in ngspice, then repeat at a supply and winding corner." },
+          { n: "P164", file: "practice/p164-test-hand-eye-calibration.html", title: "Test a robot camera calibration on unseen poses", d: "Fit wrist and fixed camera mounts in OpenCV, then expose bad image-to-pose pairing with held-out data." },
+          { n: "P165", file: "practice/p165-audit-a-robot-cell-pilot.html", title: "Audit a robot cell trial before signing acceptance", d: "Reconcile production and losses, then check recipe-specific cycle time and placement evidence." },
+          { n: "P166", file: "practice/p166-check-a-moveit-planning-scene.html", title: "Plan around a fixture in a live MoveIt simulation", d: "Compare a partial Cartesian move, a validated joint-space detour and a rejected timed route." },
+          { n: "P167", file: "practice/p167-measure-motor-braking-and-bus-rise.html", title: "Measure motor braking current and DC bus rise", d: "Use ngspice to compare coast, short braking and regeneration from a back-driven motor." },
+          { n: "P168", file: "practice/p168-measure-a-freertos-control-task-delay.html", title: "Measure a control task waiting on FreeRTOS", d: "Compare a binary semaphore and a mutex using task order, inherited priority and a measured wait." },
+          { n: "P169", file: "practice/p169-check-a-can-sample-freshness-timeout.html", title: "Check CAN data freshness through dropouts and restart", d: "Send a training encoder stream through SocketCAN and track validity, sample progress and expiry." },
+          { n: "P170", file: "practice/p170-check-a-fleet-crossing-with-open-rmf.html", title: "Check a fleet crossing with Open-RMF", d: "Run live Open-RMF conflict queries with changed footprints, arrival delays and unknown occupancy." },
+          { n: "P171", file: "practice/p171-rehearse-a-robot-cell-restore.html", title: "Rehearse a robot cell restore before handover", d: "Restore a configuration and SQLite backup, then catch an old cutoff or mismatched calibration before release." },
+          { n: "P173", file: "practice/p173-test-compiled-wheel-firmware-in-an-emulator.html", title: "Test compiled wheel firmware against a motor model", d: "Run both Uno builds with emulated PWM, encoder failure, loading and release-to-restart logic." },
+          { n: "P174", file: "practice/p174-debug-ros2-topic-delivery-and-qos.html", title: "Debug ROS 2 topic delivery with QoS evidence", d: "Use two real Jazzy middleware implementations to check matching, history, deadline and lifespan." },
+          { n: "P176", file: "practice/p176-test-machine-vision-on-a-moving-belt.html", title: "Test machine vision at conveyor speed", d: "Measure exposure blur, rolling-shutter shear and detection errors on repeatable synthetic images." },
+          { n: "P177", file: "practice/p177-wait-for-a-durable-station-receipt.html", title: "Wait for a durable station receipt before clearing a result", d: "Run compiled PLC scans and a real journal through two kinds of lost acknowledgment." },
+          { n: "P178", file: "practice/p178-qualify-a-production-measurement-fixture.html", title: "Qualify a production measurement fixture", d: "Separate operator, fixture and part effects and test classification near tolerance limits." },
+          { n: "P179", file: "practice/p179-find-a-motor-start-brownout.html", title: "Find a motor-start brownout at the power rail", d: "Simulate six power paths and distinguish a controller reset, a low driver rail and a weak source." }
         ]}
       ]
     },
@@ -171,7 +220,22 @@ window.TOC = {
           { n: "T35", file: "theory/t35-calibration-and-condition-data.html", title: "Calibration, uncertainty and condition measurements", d: "Separate accuracy, precision, drift, hysteresis and resolution in sensors and maintenance trends." },
           { n: "T36", file: "theory/t36-camera-optics-and-depth.html", title: "Camera optics, calibration and stereo depth", d: "Perspective, pixels, distortion, focal length, lighting and the uncertainty of triangulated depth." },
           { n: "T37", file: "theory/t37-edge-ai-evaluation.html", title: "Edge AI, dataset leakage and inspection metrics", d: "Train, validate and test with independent captures. Understand false acceptance, confidence, drift and latency." },
-          { n: "T42", file: "theory/t42-pneumatic-force-and-feedback.html", title: "Pneumatic force, directional valves and independent feedback", d: "Relate pressure and piston area to motion and distinguish air routing from electrical control." }
+          { n: "T42", file: "theory/t42-pneumatic-force-and-feedback.html", title: "Pneumatic force, directional valves and independent feedback", d: "Relate pressure and piston area to motion and distinguish air routing from electrical control." },
+          { n: "T58", file: "theory/t58-robot-actuators-and-loads.html", title: "Robot actuators, loads and drive limits", d: "Translate task force into driver and motor requirements. Check gearing, heat, payload and feedback." },
+          { n: "T59", file: "theory/t59-localization-and-navigation.html", title: "Wheel odometry, localization and mobile navigation", d: "Derive differential-drive motion and separate drifty local odometry from map-based corrections." },
+          { n: "T60", file: "theory/t60-industrial-robot-integration.html", title: "Industrial robot cells, interfaces and acceptance", d: "Compare industrial robot types, assign part ownership and specify evidence for production acceptance." },
+          { n: "T61", file: "theory/t61-servo-dynamics-and-axis-sizing.html", title: "Industrial servo dynamics, sizing and feedback", d: "Reflect load inertia, calculate peak and RMS torque, and trace nested position, velocity and current loops." },
+          { n: "T62", file: "theory/t62-robot-stop-functions-and-evidence.html", title: "Robot stop functions and validation evidence", d: "Distinguish process, protective and emergency stops, safe torque off and energy isolation." },
+          { n: "T63", file: "theory/t63-robot-state-estimation.html", title: "Robot state estimation and sensor uncertainty", d: "Calculate a Kalman update, evaluate an innovation and check local and map frame ownership." },
+          { n: "T64", file: "theory/t64-robot-maps-costmaps-and-route-search.html", title: "Robot maps, costmaps and route search", d: "Convert positions to grid cells, identify marking and clearing evidence and account for the loaded footprint." },
+          { n: "T65", file: "theory/t65-robot-trajectory-timing.html", title: "Robot trajectories, acceleration and synchronized axes", d: "Calculate triangular, trapezoidal and smooth time profiles subject to joint speed, acceleration and jerk limits." },
+          { n: "T66", file: "theory/t66-robot-station-identity-and-durable-completion.html", title: "Robot station identity, evidence and durable completion", d: "Verify job, part and recipe identity. Keep production decisions correct through retries and restarts." },
+          { n: "T67", file: "theory/t67-robot-hand-eye-calibration.html", title: "Hand-eye calibration for wrist and fixed cameras", d: "Derive frame chains and explain why low pixel error can coexist with a bad robot-space result." },
+          { n: "T68", file: "theory/t68-robot-cell-acceptance-evidence.html", title: "How much evidence supports a robot cell acceptance decision?", d: "Agree on throughput and cycle denominators, then bound the failure rate for each sampled condition." },
+          { n: "T69", file: "theory/t69-robot-paths-collisions-and-planning-scenes.html", title: "Robot paths, collision checks and planning scenes", d: "Separate endpoint validity, swept paths, scene revisions and final trajectory checks." },
+          { n: "T70", file: "theory/t70-rtos-priorities-blocking-and-deadlines.html", title: "Task priority, blocking and control deadlines", d: "Apply priority inheritance and fixed-priority response-time bounds to shared resources." },
+          { n: "T71", file: "theory/t71-fleet-traffic-and-timed-clearance.html", title: "Fleet traffic, timed clearance and uncertain occupancy", d: "Calculate clearance between two timed paths and decide when to hold a shared zone." },
+          { n: "T72", file: "theory/t72-robot-cell-backup-and-recovery.html", title: "Robot cell backups, software rollback and production recovery", d: "Validate configuration, event cutoff and physical state before returning a cell to service." }
         ]},
         { title: "Part 10 · Measurement and design for service", blurb: "Timing and bus evidence, optical testing, PCB layout and EMC.", chapters: [
           { n: "T38", file: "theory/t38-time-series-and-digital-buses.html", title: "Time series, bus layers and evidence quality", d: "Sampling, aliasing, latency, stale values, frame decoding and timestamps across instruments and networks." },
@@ -182,8 +246,8 @@ window.TOC = {
       ]
     },
     {
-      id: "welding", title: "Welding Repair Track", short: "Welding",
-      blurb: "A second practical pathway for the family power-tools shop in India: welding power-source diagnosis, linked to the physics behind every part.",
+      id: "welding", title: "Welding Equipment", short: "Welding",
+      blurb: "Build, qualify and service welding power sources for a small Indian workshop.",
       parts: [
         { title: "Part A · Start and understand", blurb: "Know the machine and build the small experiments before working on customer equipment.", chapters: [
           { n: "W00", file: "welding/w00-start-here.html", title: "Welding-set repair: your learning and shop plan", d: "Start here: scope, a six-stage study route, a device-to-physics map and practical milestones." },
@@ -195,9 +259,14 @@ window.TOC = {
           { n: "W04", file: "welding/w04-switches-drivers.html", title: "MOSFETs, IGBTs and the gate-driver neighbourhood", d: "Test loose switches, scope a 5 V PWM trainer and trace a missing gate pulse before working with equipment." },
           { n: "W05", file: "welding/w05-fault-cases.html", title: "Worked faults: dead, tripping, weak and overheating", d: "Five training cases with measurements, alternative explanations and repair verification." }
         ]},
-        { title: "Part C · Complete the job", blurb: "Turn a repair into a documented service and build a reliable reference library.", chapters: [
+        { title: "Part C · Return to service and design a set", blurb: "Document a repair, then build a low-voltage trainer for the current-control stage of a stick welder.", chapters: [
           { n: "W06", file: "welding/w06-repair-return-to-service.html", title: "Parts, first power-up and return to service", d: "Replacement criteria, insulation and cooling, model-specific recommissioning and a shop handover record." },
-          { n: "W07", file: "welding/w07-tutorials-manuals.html", title: "Video tutorials, service manuals and a study workbook", d: "Practical English and Hindi/Urdu videos, manufacturer references and exercises for learning scientifically." }
+          { n: "W07", file: "welding/w07-tutorials-manuals.html", title: "Video tutorials, service manuals and a study workbook", d: "Practical English and Hindi/Urdu videos, manufacturer references and exercises for learning scientifically." },
+          { n: "W08", file: "welding/w08-build-a-stick-welder-current-source-trainer.html", title: "Design a DC stick welding set and build its current-control trainer", d: "Wire a 9 V current regulator, measure its limits, and turn the results into a production power-source design brief." }
+        ]},
+        { title: "Part D · Make and sell a welding set", blurb: "Design one inverter stick welder, assemble the first units by hand and qualify the model for sale.", chapters: [
+          { n: "W09", file: "welding/w09-build-a-shop-made-stick-welding-set.html", title: "Build a shop-made DC stick welding set", d: "Specify the 230 V inverter, fabricate the steel chassis and assemble the first unit." },
+          { n: "W10", file: "welding/w10-qualify-and-sell-a-stick-welding-set.html", title: "Qualify and sell a stick welding set in India", d: "Load-test, qualify and cost a manual pilot with evidence for every serial number." }
         ]}
       ]
     },

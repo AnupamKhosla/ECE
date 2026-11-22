@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P171 · Rehearse a robot cell restore before handover</title>
+<meta name="description" content="Copy and restore a simulated station in fresh folders. Check whether file integrity, the approved configuration and latest production history agree.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P171</span>
+    <h1>Rehearse a robot cell restore before handover</h1>
+    <p class="lede">A training station loses its main computer after the backup. Restore to a clean folder, verify the commissioned setup and bring the production journal up to its independent latest record.</p>
+    <div class="meta"><span><b>Time</b> 60–85 min</span><span><b>Before this</b> <a href="p162-recover-a-robot-station-journal.html">P162 · Station journal</a> · <a href="../theory/t72-robot-cell-backup-and-recovery.html">T72 · Cell recovery</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Gather the packet and commissioning record</h2>
+    <p>Use Python 3 with the standard SQLite module and a local writable directory. Put <a href="../assets/labs/station-restore/restore_drill.py" download>restore_drill.py</a>, <a href="../assets/labs/station-journal/journal.py" download>journal.py</a>, <a href="../assets/labs/station-journal/station-events.csv" download>station-events.csv</a> and <a href="../assets/labs/station-restore/post-backup-events.csv" download>post-backup-events.csv</a> in the same directory. The exercise creates only simulated files in a new directory. Run with a fresh name for each attempt.</p>
+    <pre><code>python3 restore_drill.py run-01 station-events.csv post-backup-events.csv &gt; restore-log.csv
+python3 journal.py report run-01/restored/journal.sqlite</code></pre>
+    <p>The release record expects <code>CELL4-R12</code>, PLC program <code>PLC-P09</code>, robot program <code>ROBOT-P14</code>, fixture <code>FIXTURE-V3</code> and camera transform <code>CAM-CELL4-FIXTURE3-C17</code>. These are fixed in the teaching script as if they came from a commissioning sign-off. The independent production record expects <code>PART-042</code> and <code>PART-043</code> through event <code>robot-205</code> at backup. It expects <code>PART-044</code> as well through <code>robot-206</code> afterward.</p>
+
+    <h2>Explain each gate decision</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Check</th><th scope="col">What the run found</th><th scope="col">Decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Copy only the live main database file</th><td>One good serial through <code>fixture-302</code> even though the live source had two. SQLite opened the copy and its integrity checks passed.</td><td>Hold. The second committed part was in the WAL.</td></tr>
+        <tr><th scope="row">Use SQLite’s backup API</th><td>Two good serials through <code>robot-205</code>. The backup matches the expected cutoff.</td><td>Verify this backup point. Keep later events separately.</td></tr>
+        <tr><th scope="row">Change configuration bytes after backup</th><td>The camera transform points to another cell, and its file’s hash differs from the manifest.</td><td>Hold at file verification.</td></tr>
+        <tr><th scope="row">Prepare matching hashes for the wrong calibration</th><td>All bytes match their manifest. The independent release still requires the current cell’s transform.</td><td>Hold at configuration verification.</td></tr>
+        <tr><th scope="row">Restore the right bundle without later events</th><td>Two good serials through <code>robot-205</code> instead of the current three through <code>robot-206</code>.</td><td>Hold at the production reconciliation gate.</td></tr>
+        <tr><th scope="row">Apply the ordered suffix twice</th><td>Three expected good serials and the current cutoff. Each of the four repeated deliveries returned a stored outcome without adding another part.</td><td>Ready for offline checks.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The deliberately incomplete copy is made with the source connection still open. The first good part was checkpointed to the main file, while later commits still sit in the WAL. The supported snapshot captures those later committed records. The exercise matches the last recorded event ID and the exact set of good serials, because matching counts alone would accept a swapped serial. <a href="../assets/labs/station-restore/observed-restore.csv" download>Observed restore decisions</a> · <a href="https://www.sqlite.org/backup.html">SQLite backup operation</a>.</p>
+
+    <h2>Use the restore evidence in service</h2>
+    <ol>
+      <li>Open the restored report and find <code>PART-044</code>. Match its robot, placement and inspection evidence to the separate event suffix. Inspect the job still held for repeating <code>PART-042</code>.</li>
+      <li>Remove the final robot event from a copy of <code>post-backup-events.csv</code>. Repeat in another new directory. Record which assertion fails, the missing evidence and who owns checking the fixture and physical part. Never invent a completion receipt to fit a counter.</li>
+      <li>Draft the first four offline checks for the approved configuration. Include a readback of the selected release, independent I/O check, known fixture reference at separate orientations and link-loss recovery. Record who approves each physical check.</li>
+      <li>Report the backup cutoff, latest recovered cutoff, uncertain units, elapsed restore time and conditions still open. A clean SQLite restore does not exercise physical motion, tool calibration or safeguarding.</li>
+    </ol>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">Practice P146 · Put the tested restore in a handover packet</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

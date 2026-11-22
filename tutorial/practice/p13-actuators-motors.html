@@ -59,7 +59,7 @@
       <li><b>S1 + S4 closed:</b> current flows from the supply, down through S1, left to right through the motor, down through S4 to ground. The motor turns <b>forwards</b>.</li>
       <li><b>S3 + S2 closed:</b> current flows right to left through the motor. The motor turns <b>backwards</b>.</li>
       <li><b>S2 + S4 closed (both bottom switches):</b> the motor's two terminals are shorted together. The spinning motor acts as a generator into a short, which makes a strong braking force. This is <b>brake</b>.</li>
-      <li><b>All open:</b> the motor is disconnected and freewheels to a stop. This is <b>coast</b>.</li>
+      <li><b>All switches off:</b> the motor is commanded to <b>coast</b>. Winding current can still flow through practical bridge diodes. A fast back-driven shaft can raise the supply voltage.</li>
       <li><b>S1 + S2 (or S3 + S4) closed:</b> the supply is shorted straight to ground through one side. This is called <b>shoot-through</b>. It destroys the transistors. Driver chips have logic that prevents it.</li>
     </ul>
 
@@ -104,7 +104,7 @@
         s+='<circle class="f-accent-soft s-line" cx="260" cy="150" r="28"/><text class="t t-bold" x="260" y="156" text-anchor="middle">M</text>';
         var fwd=st[1]&&st[4]&&!st[2]&&!st[3], rev=st[3]&&st[2]&&!st[1]&&!st[4], shootL=st[1]&&st[2], shootR=st[3]&&st[4];
         var brakeLo=st[2]&&st[4]&&!st[1]&&!st[3], brakeHi=st[1]&&st[3]&&!st[2]&&!st[4];
-        var m='coasting', t='All switches open: the motor is disconnected and freewheels to a stop.';
+        var m='coasting', t='All switches are off. This ideal switch drawing leaves the motor open. A real bridge can still conduct through its diodes.';
         if(shootL||shootR){ m='SHORT CIRCUIT'; t='Shoot-through! '+(shootL?'S1 and S2':'S3 and S4')+' connect +V straight to GND. Huge current flows and the transistors burn out. Real driver chips include logic that makes this impossible.';
           if(shootL) s+='<path class="s-red" d="M136 34 V266" marker-end="url(#p13-hbarr)"/>';
           if(shootR) s+='<path class="s-red" d="M384 34 V266" marker-end="url(#p13-hbarr)"/>';
@@ -129,7 +129,8 @@
     })();
     </script>
 
-    <div class="callout tip"><span class="label">Bench tip</span><p>When a transistor in the bridge turns off, the motor's current must keep flowing for a moment (it is an inductor). Each MOSFET has a built-in "body diode" that gives that current a safe path back to the supply, which is why H-bridge modules do not need the external flyback diode you fitted in P08. Older bipolar bridges like the L298 need external diodes; good modules include them.</p></div>
+    <div class="callout tip"><span class="label">Motor current during switching</span><p>The winding holds current briefly when the bridge changes state. Follow the recirculation path in the driver's switching diagrams. MOSFET body diodes can route current to the rail, and active switches may recirculate it locally. Check whether the module needs external diodes and where its returned energy goes. A reversing motor needs current paths for both polarities.</p></div>
+    <a class="crosslink" href="p167-measure-motor-braking-and-bus-rise.html">P167 · Simulate coast, short brake and DC bus rise</a>
 
     <h2>Lab 1: a DC motor with the TB6612FNG</h2>
     <p>The <b>TB6612FNG</b> is a small dual H-bridge chip (two motors) built from MOSFETs. Its datasheet rates it at about 1.2 A continuous per channel (3.2 A short peaks) and a motor supply (VM) up to about 13.5 V, with 2.7–5.5 V logic. Because MOSFETs have low on-resistance, it wastes little voltage and stays cool.</p>
@@ -193,6 +194,7 @@
       <tr><td>LOW</td><td>LOW</td><td>HIGH</td><td>HIGH</td><td>Stop (coast, outputs off)</td></tr>
       <tr><td>any</td><td>any</td><td>any</td><td>LOW</td><td>Standby: everything off</td></tr>
     </table></div>
+    <p>On this TB6612FNG, a low PWM input during a forward or reverse command selects short brake during that phase. Use direction inputs low and PWM high for the documented high-impedance stop state. <a href="https://toshiba.semicon-storage.com/info/TB6612FNG_datasheet_en_20141001.pdf?did=10660&amp;prodName=TB6612FNG">Toshiba · TB6612FNG control table and switching states</a>.</p>
 
     <h3>PWM sets the speed</h3>
     <p><code>analogWrite(pin, value)</code> on a PWM pin (3, 5, 6, 9, 10, 11 on the Uno) switches the pin fully on and off very fast: about 490 Hz on most pins and about 980 Hz on pins 5 and 6. The value 0–255 sets the <b>duty cycle</b>, the fraction of time it is on. The motor's inductance and its spinning mass smooth the pulses, so it responds to the <b>average</b>: 50% duty from a 6 V supply acts roughly like 3 V. You built the same idea with a 555 in P09.</p>
@@ -211,9 +213,11 @@ void setMotor(int speed) {
   } else if (speed &lt; 0) {              // reverse
     digitalWrite(AIN1, LOW);
     digitalWrite(AIN2, HIGH);
-  } else {                             // zero: both LOW = coast
+  } else {                             // coast: direction LOW, PWM HIGH
     digitalWrite(AIN1, LOW);
     digitalWrite(AIN2, LOW);
+    digitalWrite(PWMA, HIGH);
+    return;
   }
   analogWrite(PWMA, abs(speed));       // duty cycle 0..255 sets the speed
 }
@@ -223,6 +227,8 @@ void setup() {
   pinMode(AIN2, OUTPUT);
   pinMode(PWMA, OUTPUT);
   pinMode(STBY, OUTPUT);
+  digitalWrite(STBY, LOW);
+  setMotor(0);
   digitalWrite(STBY, HIGH);            // wake the driver up
 }
 

@@ -16,7 +16,7 @@
     <span class="eyebrow">T33</span>
     <h1>Robot motion, coordinate frames and encoder feedback</h1>
     <p class="lede">A controller commands a movement, an encoder measures part of it, and the real tool lands somewhere in space. Each quantity needs its own frame, units and interpretation.</p>
-    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="t00-maths-toolkit.html">T00</a> · <a href="t19-motors-vsds.html">T19</a> · <a href="t31-feedback-control.html">T31</a></span></div>
+    <div class="meta"><span><b>Time</b> 40 minutes</span><span><b>Before this</b> <a href="t00-maths-toolkit.html">T00</a> · <a href="t19-motors-vsds.html">T19</a> · <a href="t31-feedback-control.html">T31</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2>A robot measures a coordinate from a reference</h2>
@@ -44,11 +44,24 @@
     <h2>Accuracy, repeatability and constraints</h2>
     <p>A machine that reaches the same wrong spot is repeatable and miscalibrated. A different position depending on approach can come from backlash. Lifted wheels are a clean test of encoder sign, while wheel slip means floor distance and wheel counts can disagree. The controller can compare commanded and measured quantities if units, frame and time align.</p><p>Look for which error follows a sensor, which follows an axis, and which follows the load. Compare the powered commands, physical motion and reported positions separately. <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/">Modern Robotics · Forward kinematics</a> · <a href="https://www.pololu.com/docs/0J69/3.3">Romi encoder documentation</a>.</p>
 
+    <h2>Find joint angles for a target</h2>
+    <p>For a planar arm, link lengths a and b are measured between joint centres and between the final joint and the point of interest. Joint q₁ is measured from base +x. Joint q₂ is measured relative to link 1. The target position fixes the diagonal r from base to tool, which forms a triangle with the links.</p>
+    <div class="formula">c = (x² + y² − a² − b²) / (2ab)<br>q₂ = ±acos(c)<br>q₁ = atan2(y, x) − atan2(b sin(q₂), a + b cos(q₂))</div>
+    <p>If |c| exceeds 1, the target is unreachable in this ideal model. At a regular point the two signs give different elbow configurations for the same tool position. For a = 150 mm, b = 100 mm and target (180, 75) mm, c ≈ 0.184 and q₂ ≈ ±79.4°. Substituting gives q₁ ≈ −7.6° or +52.9° respectively. Check by adding the vectors a(cos q₁, sin q₁) and b(cos(q₁+q₂), sin(q₁+q₂)). Reject solutions outside real joint limits or with collisions.</p>
+
+    <h2>See why extension is difficult to control</h2>
+    <p>The Jacobian J gives a local relationship between joint velocity and tool velocity, v = Jq̇. Each column is the tool velocity resulting from rotating just one joint at one radian per second. At full extension along +x, both joints can move the tool only sideways to first order. Their two columns point in the same direction, so the Jacobian loses rank. In this arm det(J) = ab sin(q₂), which also vanishes at a fully folded configuration. Near a singularity, a small commanded change in some tool directions can call for very large joint speed. Move through a better-conditioned configuration or adjust the process path. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/velocity-kinematics-and-statics/">Northwestern · Jacobian and joint velocities</a>.</p>
+
+    <h2>Chain frames before adding any offsets</h2>
+    <p>Write T<sub>AB</sub> for the transform that expresses B-frame coordinates in A. A tool point moves to the base with T<sub>base,flange</sub>T<sub>flange,tool</sub> applied from right to left. The tool offset rotates with the flange. For example, a tool tip 50 mm along flange +x lands 50 mm along base +y from the flange origin after a +90° rotation about z. Adding 50 mm along base x would introduce a 70.7 mm position error in this example. Mark the source and destination frame on every pose, including a camera measurement and any saved fixture coordinate.</p>
+
     <h2>Related lessons</h2>
     <ul>
       <li><a href="../practice/p42-mobile-robot-fault-finding.html">P42 · Repair a mobile robot’s motor, wiring or encoder</a></li>
       <li><a href="../practice/p43-robot-arm-position-calibration.html">P43 · Calibrate a two-joint arm and check its reach</a></li>
       <li><a href="../practice/p44-ros2-simulation-diagnostics.html">P44 · Trace a ROS 2 robot command in simulation</a></li>
+      <li><a href="../practice/p142-robot-arm-path-planning.html">P142 · Check both inverse kinematics solutions and plan a path</a></li>
+      <li><a href="../practice/p143-camera-to-robot-calibration.html">P143 · Verify a camera-to-base frame transform</a></li>
     </ul>
   </main>
 </div>

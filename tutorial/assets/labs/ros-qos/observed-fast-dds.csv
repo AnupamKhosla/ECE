@@ -1,0 +1,15 @@
+rmw,elapsed_s,case,observation,value
+rmw_fastrtps_cpp,0.010,reliability,discovered_readers,2
+rmw_fastrtps_cpp,0.010,reliability,matched_readers,1
+rmw_fastrtps_cpp,0.010,reliability,incompatible_policy,RELIABILITY
+rmw_fastrtps_cpp,0.010,reliability,reliable_reader_values,0
+rmw_fastrtps_cpp,0.010,reliability,best_effort_reader_values,10|11|12
+rmw_fastrtps_cpp,0.267,durability,transient_received_before_new_sample,40
+rmw_fastrtps_cpp,0.267,durability,volatile_received_before_new_sample,0
+rmw_fastrtps_cpp,0.267,durability,both_received_live,41
+rmw_fastrtps_cpp,0.268,deadline,shorter_requested_policy_rejected,DEADLINE
+rmw_fastrtps_cpp,0.769,deadline,misses_during_pause,3
+rmw_fastrtps_cpp,0.769,deadline,matched_readers_during_pause,1
+rmw_fastrtps_cpp,0.770,deadline,received_after_pause,24
+rmw_fastrtps_cpp,1.472,lifespan,expired_retained_values_received,0
+rmw_fastrtps_cpp,1.472,lifespan,unexpired_live_value,302

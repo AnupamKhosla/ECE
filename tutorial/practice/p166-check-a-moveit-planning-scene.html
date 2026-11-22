@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P166 · Plan around a fixture in a live MoveIt simulation</title>
+<meta name="description" content="Request the same transfer in a MoveIt scene with and without a fixture, compare partial Cartesian motion and check a timed RRTConnect detour.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P166</span>
+    <h1>Plan around a fixture in a live MoveIt simulation</h1>
+    <p class="lede">The two end configurations are valid even with a fixture between them. Reproduce a partial Cartesian result, compare it with a joint-space detour and investigate a path that fails after time parameterization.</p>
+    <div class="meta"><span><b>Time</b> 65–90 minutes</span><span><b>Before this</b> <a href="../theory/t69-robot-paths-collisions-and-planning-scenes.html">T69</a> · <a href="p142-robot-arm-path-planning.html">P142</a> · <a href="p160-debug-a-joint-trajectory-controller.html">P160</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read two recorded runs</h2>
+    <p>Use <a href="../assets/labs/moveit-scene/path-samples.csv" download>the validated route samples</a> and <a href="../assets/labs/moveit-scene/rejected-path.csv" download>the rejected route samples</a> for the recorded exercise. Both come from MoveIt 2.12.4 with the Panda example model on ROS 2 Jazzy. For each, compare flange Y at the first and last points of each named path. Inspect whether the other axes stayed constant, and use the duration of the last sample to compare the two complete paths.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/moveit-scene/moveit-paths.png" width="1260" height="735" loading="lazy" decoding="async" alt="Two projections of flange motion. The empty scene line reaches Y 0.28 metres. Adding a fixture shortens the straight result to Y 0.01 metres, and a curved joint-space route reaches the same Y goal.">
+      <figcaption>Flange position from forward kinematics of returned trajectory samples. Both projections show the same three plans. The box is a fixture projection and the picture excludes the full geometry of the moving arm.</figcaption>
+    </figure>
+    <p>The target is 0.28 m farther along base-frame Y and keeps the starting orientation. The worksheet uses <code>panda_link8</code> as the flange frame. A tool fitted farther out needs its own frame and collision geometry. The modeled box is 50 × 50 × 80 mm, centered halfway along the requested line in the base frame.</p>
+
+    <h2>Launch the same test with no robot controllers</h2>
+    <p>Use Ubuntu 24.04 with a sourced ROS 2 Jazzy installation. With the standard ROS package repository already configured, install the packages and download <a href="../assets/labs/moveit-scene/planning_lab.launch.py" download>the launch file</a> and <a href="../assets/labs/moveit-scene/plan.py" download>the planning exercise</a> into the same folder.</p>
+    <pre><code>sudo apt install ros-jazzy-moveit ros-jazzy-moveit-resources-panda-moveit-config \
+  ros-jazzy-joint-state-publisher</code></pre>
+    <p>Open two shells in the folder. Source Jazzy in each and choose the same unused domain with discovery restricted to the local machine. The launch file publishes a fixed simulated joint state. Its planning services have no trajectory execution action. Run the launch in the first shell.</p>
+    <pre><code>source /opt/ros/jazzy/setup.bash
+export ROS_DOMAIN_ID=83 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+ros2 launch ./planning_lab.launch.py</code></pre>
+    <p>In the second shell, list the relevant services and request the trial. Use a new output CSV filename for each run. No physical robot or visualization window is needed.</p>
+    <pre><code>source /opt/ros/jazzy/setup.bash
+export ROS_DOMAIN_ID=83 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+ros2 service list -t
+python3 plan.py local-samples.csv</code></pre>
+
+    <h2>Find the boundaries where each result changes</h2>
+    <ol class="steps">
+      <li>Check the empty scene first. The straight interpolation completes with fraction 1.000 and ends at base Y ≈ 0.280 m.</li>
+      <li>Add the fixture as a scene diff and read its ID back. Check the start, the goal configuration from the first run and the middle state from the former line. The middle produces contact with the hand and link 7 even though both end states still pass.</li>
+      <li>Run the straight request with collision checks again. The service reports code 1 alongside fraction 0.034 and stops near Y = 0.0097 m. Almost all the requested move remains. A successful service calculation can return a usable prefix for diagnosis.</li>
+      <li>Plan to the same goal configuration with RRTConnect and compare the timed solution. In the recorded 61-point example it reaches Y ≈ 0.280 m in 5.94 s. The empty-scene straight result took 2.10 s. The fixture is then removed and the full straight path returns.</li>
+    </ol>
+    <p>The CSV checks the returned sample configurations with the planner’s state-validity service while each scene is active. The script labels a returned failed route <code>rejected_rrtconnect</code>. A valid recorded sample count and an accepted joint goal do not establish the clearance of a physical tool. <a href="https://github.com/moveit/moveit_msgs/blob/ros2/srv/GetCartesianPath.srv">MoveIt · Cartesian path service fields</a>.</p>
+
+    <h2>Inspect a route rejected after time parameterization</h2>
+    <p>Stop your simulation launch with Ctrl+C and rerun it with <code>edge_fraction:=0.01</code>. The default 0.001 requests a finer OMPL edge sampling interval for the Panda group. Try several independent runs with each setting. With the larger interval, one observed detour returned 73 points and error code 99999. The pipeline log showed <code>ValidateSolution</code> rejecting it after time parameterization. In that file, samples 65 and 66 collide.</p>
+    <p>Keep the fixture, frame and start fixed when comparing runs. The planner samples alternative paths, so a pass or fail on one pair of runs cannot isolate the cause. A path can cut close to a collision boundary after interpolation or retiming. Compare the final validation evidence, point locations and configured checks before changing the target geometry or tuning. <a href="https://moveit.picknik.ai/main/doc/examples/time_parameterization/time_parameterization_tutorial.html">MoveIt · Trajectory time processing</a>.</p>
+    <details class="quiz"><summary>What evidence clears the transfer in this exercise?</summary><div class="answer"><p>Use a response that accepts the full intended motion, with valid final states and verified scene contents. For a straight process move require completion of the required segment and its orientation and approach constraints. For a joint-space transfer compare the actual swept path, tool state and final trajectory checks. Keep lead-in and transfer motions separate when the approach must stay straight.</p></div></details>
+    <a class="crosslink" href="p160-debug-a-joint-trajectory-controller.html">P160 · Compare planning acceptance with mock controller execution</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

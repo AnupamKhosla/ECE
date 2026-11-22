@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P164 · Test a robot camera calibration on unseen poses</title>
+<meta name="description" content="Use OpenCV to recover wrist and fixed mounts, expose swapped image-to-pose pairings, and verify station-space residuals on withheld poses.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P164</span>
+    <h1>Test a robot camera calibration on unseen poses</h1>
+    <p class="lede">Recover a camera mount from projected board corners. Then swap two image-to-pose pairings and see how the robot-space error changes while the pixel error stays the same.</p>
+    <div class="meta"><span><b>Time</b> 55–75 minutes</span><span><b>Before this</b> <a href="../theory/t67-robot-hand-eye-calibration.html">T67</a> · <a href="p143-camera-to-robot-calibration.html">P143</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Run a reproducible simulation</h2>
+    <p>Download <a href="../assets/labs/hand-eye/calibrate.py" download>the calibration exercise</a> and run it with Python 3, NumPy and OpenCV. Ubuntu 24.04 provides <code>python3-opencv</code> and <code>python3-numpy</code>. The measured examples below use OpenCV 4.6.0 and NumPy 1.26.4. No camera, robot or recorded images are required.</p>
+    <pre><code>python3 calibrate.py --mount wrist
+python3 calibrate.py --mount fixed
+python3 calibrate.py --mount wrist --frames 4</code></pre>
+    <p>The model has a 1280 × 1280 image, known intrinsics and distortion, and a 7 × 5 set of board corners spaced 28 mm apart. It projects those corners with <code>projectPoints</code>, adds Gaussian corner jitter of 0.16 px per component and calls <code>solvePnP</code> to obtain a camera-from-target pose. It uses the first 12 robot and camera pairs to fit the mount with OpenCV’s Park solver. The remaining six pairs stay out of the fit and preserve the true pairing in every run. <a href="https://docs.opencv.org/4.6.0/d9/d0c/group__calib3d.html">OpenCV · Projection, pose estimation and hand-eye calibration</a>.</p>
+
+    <h2>Separate image error from station acceptance</h2>
+    <p>For every held-out sample, reconstruct the stationary board in base coordinates for the wrist camera, or the tool board in tool coordinates for the fixed camera. Compare it with the known board transform in the simulator. Set an exercise limit of 5 mm translation and 0.50° rotation at each held-out pose. Keep the per-pose results even when the final line says <code>PASS</code>.</p>
+    <p>For the wrist run using one image per pose, find the pose that causes the hold. Repeat with four independently jittered images averaged at each preserved pose. Name the physical assumptions required to collect such a set at a station.</p>
+    <details class="quiz"><summary>Compare the aligned runs</summary><div class="answer"><p>The wrist run has a maximum held-out shift of 3.07 mm and a maximum turn of 0.515° at pose 13, so it holds on angle. With four images those maxima are 1.29 mm and 0.373° and it passes. The fixed-camera run with one image passes at 2.85 mm and 0.347°. The simulator isolates independent corner jitter. Averaging assumes a stationary target and robot within each set. It leaves shared effects such as a wrong lens model or a shifted timestamp in place.</p></div></details>
+
+    <h2>Replay two collection faults</h2>
+    <pre><code>python3 calibrate.py --mount wrist --scenario mismatched
+python3 calibrate.py --mount wrist --scenario mismatched --frames 4
+python3 calibrate.py --mount wrist --scenario single-axis</code></pre>
+    <p><code>mismatched</code> swaps two of the fitted camera poses after the image calculation. <code>single-axis</code> collects the fit set using only turns about a common axis. Its one-dimensional relative rotation check holds the run before fitting. The exercise uses the ratio of the second to first singular value of the relative rotation vectors and treats values below 0.05 as insufficient spread. That threshold belongs to this exercise and gives no general calibration guarantee.</p>
+    <details class="quiz"><summary>What changes when two fit pairings are swapped?</summary><div class="answer"><p>The median fit-image residual is still 0.215 px in the one-image wrist run. Held-out translation grows from a maximum of 3.07 mm to 26.87 mm. Four images per pose reduce the image residual to 0.116 px and the mismatched run still has up to 25.85 mm of position error. Check image IDs, actual exposure timestamps and feedback sample identity before optimizing image precision.</p></div></details>
+
+    <h2>Write a camera-mount acceptance record</h2>
+    <p>Record which mount transform the station uses, its reference frames and its trigger-to-feedback pairing rule. Specify several independent witness points across the working volume and define an angular limit for the jaw or tool’s direction of approach. On a real station, use a separately surveyed reference or physical witness set to replace the simulator’s known geometry. Add a retest trigger for any adjustment to the camera, lens, tool frame or mount. Attach the pose-level evidence to the cell handover.</p>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Turn the calibration residuals into a handover check</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

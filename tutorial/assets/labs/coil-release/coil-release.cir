@@ -1,0 +1,34 @@
+Compare two clamps on a 12 V solenoid model
+* The two independent branches have the same winding and switch.
+.param supply=12 resistance=80 inductance=100m
+Vs rail 0 {supply}
+Vgate gate 0 PULSE(0 5 1m 1u 1u 19m 50m)
+
+Rfree rail free_winding {resistance}
+Lfree free_winding free_drain {inductance}
+Sfree free_drain 0 gate 0 LabSwitch
+Dfree free_drain rail LabDiode
+Cfree free_drain 0 100p
+
+Rfast rail fast_winding {resistance}
+Lfast fast_winding fast_drain {inductance}
+Sfast fast_drain 0 gate 0 LabSwitch
+Dblock fast_drain clamp LabDiode
+Dz rail clamp LabZener
+Cfast fast_drain 0 100p
+
+.model LabSwitch SW(RON=0.05 ROFF=1e10 VT=2.5 VH=0)
+.model LabDiode D(IS=5n N=1.5 RS=0.15)
+.model LabZener D(IS=5n N=1.5 RS=0.3 BV=12 IBV=1m)
+
+.options method=gear
+.tran 1u 26m 0 1u
+.measure tran off_s when v(gate)=2.5 fall=1
+.measure tran on_a find i(Lfree) at=20m
+.measure tran free_threshold_s when i(Lfree)=0.030 fall=1 td=20m
+.measure tran fast_threshold_s when i(Lfast)=0.030 fall=1 td=20m
+.measure tran free_delay_ms param='1000*(free_threshold_s-off_s)'
+.measure tran fast_delay_ms param='1000*(fast_threshold_s-off_s)'
+.measure tran free_peak_v max v(free_drain) from=20m to=26m
+.measure tran fast_peak_v max v(fast_drain) from=20m to=26m
+.end

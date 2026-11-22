@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T67 · Hand-eye calibration for wrist and fixed cameras</title>
+<meta name="description" content="Derive the transform chains for wrist and fixed cameras and explain why low image error can coexist with a bad robot-space result.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T67</span>
+    <h1>Hand-eye calibration for wrist and fixed cameras</h1>
+    <p class="lede">A camera can measure a target precisely in its own image while the robot uses the wrong world position. Hand-eye calibration estimates the rigid mounting transform from paired robot poses and camera observations.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="t36-camera-optics-and-depth.html">T36</a> · <a href="../practice/p143-camera-to-robot-calibration.html">P143</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Name the frame each transform maps into</h2>
+    <p>Write <code>T(a←b)</code> for a transform that maps a point from frame <var>b</var> into frame <var>a</var>. With column vectors, apply the rightmost factor first. Robot reports supply <code>Gᵢ = T(base←tool)</code>. The camera’s perspective pose estimate supplies <code>Cᵢ = T(camera←target)</code> for the image paired to the same robot pose. Here <em>tool</em> means the rigid flange or tool frame selected for the entire calibration.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Physical arrangement</th><th scope="col">Unknown mount</th><th scope="col">Invariant through motion</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Camera on wrist. Board fixed to cell.</th><td><code>X = T(tool←camera)</code></td><td><code>Gᵢ X Cᵢ = T(base←target)</code></td></tr>
+        <tr><th scope="row">Camera fixed to cell. Board fastened to tool.</th><td><code>X = T(base←camera)</code></td><td><code>Gᵢ⁻¹ X Cᵢ = T(tool←target)</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>The fixed-camera chain follows from the two ways to map the board into the base. The image route gives <code>X Cᵢ</code>. The robot route gives <code>Gᵢ T(tool←target)</code>. Multiplying by <code>Gᵢ⁻¹</code> puts both sides in tool coordinates. Use the same length unit for the robot translations and the board dimensions.</p>
+
+    <h2>Remove the unknown constant board pose</h2>
+    <p>Call the leftmost factor <code>Mᵢ</code>, so it is <code>Gᵢ</code> for a wrist camera and <code>Gᵢ⁻¹</code> for a fixed camera. For two captures the invariant gives <code>M₁ X C₁ = M₂ X C₂</code>. Multiply by <code>M₂⁻¹</code> on the left and by <code>C₁⁻¹</code> on the right.</p>
+    <pre><code>A = M₂⁻¹ M₁
+B = C₂ C₁⁻¹
+A X = X B</code></pre>
+    <p>The relative motions are observed in different frames. The same mount <code>X</code> explains them across capture pairs. The ideal problem needs motions around at least two nonparallel rotation axes. Many repeated turns about one axis leave mounting components underdetermined. Capture enough well-spread poses for the actual mounting geometry while keeping the target visible and rigid. <a href="https://docs.opencv.org/4.6.0/d9/d0c/group__calib3d.html">OpenCV · Hand-eye and robot-world calibration</a>. <a href="https://doi.org/10.1109/70.326576">Park and Martin · Solving AX = XB</a>.</p>
+
+    <h2>Validate across frames and in physical space</h2>
+    <ol>
+      <li><b>Image fit.</b> Project the observed target’s known geometry back into its own image. Compute residual error in pixels. Exact robot timing is outside this calculation.</li>
+      <li><b>Paired pose fit.</b> Join each capture to robot feedback at exposure, with frame names, clock references and units retained. Check whether the rebuilt invariant is consistent across unused captures. Translation norm and relative rotation angle report different error modes.</li>
+      <li><b>Independent station check.</b> For the wrist setup, compare against a separately located target or witness feature in base coordinates. For the fixed setup, check the tool-mounted board reference or a separate witness pick. Closely agreeing results can share a calibration bias. Test near and far positions and the actual approach directions.</li>
+    </ol>
+    <p>At a 200 mm offset, a 0.30° orientation error can move the predicted point by about 1.05 mm perpendicular to its rotation axis. Allocate error to orientation and translation based on the end feature you need to locate. Save raw observations and calibration version with each station result so a sensor replacement, lens change or mount movement can trigger a controlled retest.</p>
+    <details class="quiz"><summary>A wrist camera is calibrated with 20 nearly identical hand rotations. Every image fits below 0.3 px. What should you check?</summary><div class="answer"><p>Check the rotation axes in the robot feedback. Add tilts about a second axis and retain independent test poses. Also verify camera-to-target and base-to-tool transform directions and inspect the join between image exposure and robot feedback. They can fail even when the image fit remains excellent.</p></div></details>
+    <a class="crosslink" href="../practice/p164-test-hand-eye-calibration.html">P164 · Solve and test both mounting arrangements with OpenCV</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

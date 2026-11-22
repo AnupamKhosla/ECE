@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P136 · Build a low-voltage bench blower and particle-filter prototype</title>
+<meta name="description" content="Assemble a guarded 12 V air mover, measure installed airflow and filter resistance, and price a serviceable product for an Indian shop.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P136</span>
+    <h1>Build a low-voltage bench blower and particle-filter prototype</h1>
+    <p class="lede">Build one 12 V test platform with two air paths: a guarded blower nozzle for clean bench work and a removable particle-filter cassette. Use measured airflow and supplier costs to judge which version is worth developing for your shop.</p>
+    <div class="meta"><span><b>Time</b> 2–3 bench sessions</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13 · Motors and supplies</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 · Indian shop product and service ideas</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Choose which customer problem to test</h2>
+    <p>For the blower, start with directed cooling of an unpowered jig or a clean bench enclosure. For the filtration option, make a recirculating particles-only prototype for an ordinary indoor space. Give each its own airflow, noise, service and price target. Keep hazardous processes outside this prototype’s scope. Welding fume needs suitable source extraction and exposure controls. A bench jet can spread dust. <a href="https://www.epa.gov/indoor-air-quality-iaq/guide-air-cleaners-home">EPA · Air cleaners</a> · <a href="https://www.osha.gov/sites/default/files/publications/OSHA_FS-3647_WELDING.pdf">OSHA · Welding fume and gases</a>.</p>
+    <p>For a training target, use at least 35 m³/h installed at the guarded nozzle, 35 m³/h with a clean filter and 30 m³/h at a simulated service restriction. Save the current and noise at those operating points. Ask customers which task takes time, what they use now and whether they can source the replacement filter locally. These targets are for screening a prototype.</p>
+
+    <h2>Make the guarded 12 V assembly</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Part</th><th scope="col">Selection and fit</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Centrifugal blower</th><td>Use a 12 V brushless blower with a published pressure–airflow curve and documented startup behaviour. The example Delta BFB1012M-A lists 0.66 A maximum input current and about 46.6 m³/h free airflow. Verify the exact suffix, connector and rotation direction.</td></tr>
+        <tr><th scope="row">Supply and harness</th><td>Use a protected, isolated external 12 V supply sized for the measured startup and steady current, such as a suitable 1.5 A bench supply for this case. Use a keyed DC input, a DC-rated switch, strain relief and branch protection coordinated with the measured startup and wire ratings.</td></tr>
+        <tr><th scope="row">Case and air path</th><td>Use an insulated or suitably earthed enclosure appropriate to the external supply arrangement. For this low-voltage trainer use a stiff insulated case, secured blower, finger guards on accessible openings, rubber mounting and a replaceable nozzle or cassette.</td></tr>
+        <tr><th scope="row">Filter and test points</th><td>Try a roughly 200 × 200 mm framed filter with a manufacturer pressure-drop curve, a continuous closed-cell gasket and a positive latch. Measure the purchased frame before cutting. Add capped, flush pressure taps on either side of the cassette.</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Mark the blower outline and outlet from the supplier drawing. Cut the mounting plate for the exact part, fit the guards, and secure the blower without twisting the frame. Keep the supply outside the case.</li>
+      <li>With power disconnected, wire DC positive through branch protection and the switch to blower positive. Return blower negative to DC negative. Verify the documented pinout and the harness continuity before connecting the unit to the current-limited supply. Take the initial current and airflow readings through the guarded opening.</li>
+      <li>For the blower version, fit a short detachable nozzle to the outlet so air reaches the target without a long narrow restriction. For the filter version, put the gasketed cassette upstream of a plenum and the blower, with a guard over the inlet and outlet. Keep the cassette accessible for replacement and separate the intake from the discharge so the jet does not immediately return to the inlet.</li>
+      <li>Check the gasket around the entire filter perimeter so air passes through the media. A gap can increase measured flow while letting unfiltered air bypass the media. Fix fit and latch repeatability before comparing performance. <a href="https://www.delta-fan.com/Download/Spec/BFB1012M-A.pdf">Delta · Drawing, current rating and fan curve</a>.</li>
+    </ol>
+
+    <h2>Predict and then measure installed airflow</h2>
+    <p>The fan curve gives pressure that the blower can develop at each flow. The duct, guard, filter and enclosure demand pressure at that same flow. Their intersection sets the operating point. The <a href="../assets/labs/bench-air/airflow.py" download>Python calculation</a> uses a few approximate readings from Delta’s 12 V curve and illustrative quadratic resistance curves. Run <code>python3 airflow.py</code> and compare the <a href="../assets/labs/bench-air/operating-points.csv" download>calculated results</a>. These are predictions for example restrictions. Replace the example values with measurements before choosing a product fan. <a href="https://webcontent.greenheck.com/atg-cms-prod/docs/librariesprovider2/application-articles/application-articles/perf_basics.pdf">Greenheck · Fan and system curves</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/bench-air/blower-operating-points.png" width="1180" height="676" loading="lazy" decoding="async" alt="The blower curve intersects the clean-filter curve near 38 cubic metres per hour and the loaded-filter curve near 31.">
+      <figcaption>The estimate gives 40.59 m³/h at the nozzle, 38.42 with a clean cassette, and 31.39 with the harder restriction. Free-air flow is about 46.6 m³/h for this blower.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li>Fit a straight temporary measuring duct that collects the whole outlet. With a known cross-section, measure normal air velocity across multiple equal-area positions away from the turbulent jet. Multiply the area-weighted mean in m/s by area in m² and by 3,600 for m³/h. For example, 1.36 m/s across a 100 mm round section is about 38.5 m³/h. Record the duct and its effect on the setup. Use a calibrated flow hood or a test lab for more defensible product figures.</li>
+      <li>Log installed supply voltage and current, startup peaks, airflow, cassette differential pressure, case temperature and noise at a documented distance and background level. Repeat with the clean cassette removed and refitted, then add a clean restriction plate to simulate higher resistance within the supplier’s limits. Leave the existing guards in place and keep the intake clear of loose material.</li>
+      <li>Repeat with two or more assembly builds and two filter lots. Track the lowest installed flow and highest noise, current and temperature. Use a marked filter lot or service threshold tied to measured airflow before deciding when to replace the filter.</li>
+    </ol>
+    <p>For a fixed particle size, a rough clean-air estimate is airflow × captured fraction. With 85% capture through the media and an assumed 4% unfiltered bypass, 38.42 × 0.85 × 0.96 is about 31.35 m³/h. Dividing by a 30 m³ room gives about 1.04 equivalent clean-air changes per hour under a well-mixed assumption. If the customer needs three, the target would be 90 m³/h. A laboratory assembly-level CADR test provides evidence for a product claim. The filter media label and free-air fan specification alone cannot establish it. <a href="https://www.epa.gov/air-research/research-diy-air-cleaners-reduce-wildfire-smoke-indoors">EPA · DIY filter performance tests</a>.</p>
+
+    <h2>Work out the India pilot before ordering stock</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Illustrative small-batch cost</th><th scope="col">Rupees per filter unit</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Blower, filter and external supply</th><td>₹820 + ₹360 + ₹420</td></tr>
+        <tr><th scope="row">Case, guards and hardware</th><td>₹640 + ₹190</td></tr>
+        <tr><th scope="row">Assembly and checks, packaging, service reserve</th><td>₹350 + ₹140 + ₹180</td></tr>
+        <tr><th scope="row">Total variable cost</th><td>₹3,100</td></tr>
+      </tbody>
+    </table></div>
+    <p>At fictional net receipts of ₹4,200 per unit after channel and shipping fees and excluding tax, contribution is ₹1,100. An illustrative ₹55,000 in fixed tooling and test costs would take 50 units to recover. Replace each figure with landed supplier quotes, measured labour, channel terms and a test-lab quote. Include spares, returns and replacement filter availability. Record whether customers have an actual task, a price they can pay and enough repeat demand for a pilot.</p>
+    <p>Get the exact model classified before selling. The 2026 household, commercial and similar appliances Quality Control Order expressly includes DC and battery air purifiers in item 90 and specifies IS 302 Part 1. The BIS catalogue identifies IS 17531:2021 as the portable indoor purifier performance specification. Confirm the current safety standard, relevant order and implementation date with BIS for the finished assembly and its intended use. Get a separate classification for the blower. Treat the external adapter and the finished product as separate items when checking approvals. <a href="https://www.bis.gov.in/wp-content/uploads/2026/04/Safety-of-Household-Commercial-and-Similar-Electrical-Appliances-Quality-Control-Order-2026.pdf">India Gazette · Appliances QCO 2026</a> · <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en">BIS · Current Scheme I list</a>.</p>
+    <p>For the pilot record, keep a versioned BOM, per-unit test sheet, filter specification, warranty and spares plan. Check Legal Metrology retail-package declarations and CPCB applicability for your specific product and business. If the blower and filter cost too much for the measured benefit, use the same process on a local fixture, equipment bracket or replaceable enclosure that solves a confirmed customer problem. <a href="https://consumeraffairs.gov.in/index.php/pages/legal-metrology-overview">Department of Consumer Affairs · Legal Metrology</a> · <a href="https://cpcb.nic.in/uploads/Projects/E-Waste/FAQ_ewaste_23012024.pdf">CPCB · E-waste scope</a>.</p>
+    <a class="crosslink" href="../career/c19-ludhiana-repair-shop.html">C19 · Compare the prototype with other work your shop customers need</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

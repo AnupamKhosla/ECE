@@ -1,0 +1,8 @@
+check,decision,before_epoch,before_version,after_epoch,after_version,high,low,position_um
+split_reads,torn_position,,,,,0001,0000,65536
+grouped_stable,correct_position,,,,,0002,0000,131072
+grouped_during_update,retry_inconsistent,7,12,7,14,FFFF,0000,-65536
+grouped_after_update,accept,7,14,7,14,FFFF,FFFF,-1
+restart_between_reads,retry_inconsistent,7,14,8,14,0002,0001,131073
+coherent_new_epoch,hold_unknown_epoch,8,14,8,14,0002,0001,131073
+unmapped,exception_02,,,,,,,

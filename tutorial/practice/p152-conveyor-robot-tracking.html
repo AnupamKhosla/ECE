@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P152 · Track a moving part from camera trigger to robot pick</title>
+<meta name="description" content="Calibrate conveyor encoder scale, pair a camera frame with its exposure count, and calculate the available pick window.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P152</span>
+    <h1>Track a moving part from camera trigger to robot pick</h1>
+    <p class="lede">A camera sees the part at exposure time. The robot reaches it later. Use the encoder and the part ID to carry the measurement forward to the pick.</p>
+    <div class="meta"><span><b>Time</b> 55–80 minutes</span><span><b>Before this</b> <a href="p140-wheel-odometry.html">P140</a> · <a href="p143-camera-to-robot-calibration.html">P143</a> · <a href="p144-robot-plc-handshake.html">P144</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Measure the conveyor in its own frame</h2>
+    <p>Draw a belt with +x along travel. Add a fixed camera and mark where the robot can pick. This exercise uses simulated readings and works on paper. An encoder coupled to the belt measures displacement. If you put it on a motor shaft, its count also depends on gearing and the roller’s effective diameter. Independent belt marks reveal a wrong distance scale or slip.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/encoder.jpg" width="631" height="960" loading="lazy" decoding="async" alt="Encoder mounted near a large driven wheel">
+      <figcaption>A rotating element transfers motion into the encoder. Identify which errors a belt measurement would catch after the encoder’s contact point.<br><small>Photo by International Gemini Observatory/NOIRLab/NSF/AURA, scaled. <a href="https://commons.wikimedia.org/wiki/File:Friction-driven_Encoder_Test_(encoder_02-CC).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <p>A marked 0.500 m of travel advances 1,000 decoded counts in the direction of transport. Scale is 2,000 counts/m. Repeat against a different length and speed. If the belt runs at 0.40 m/s, expect 800 counts/s. A probe or camera trigger must be paired with the same part throughout the process. <a href="https://www.universal-robots.com/manuals/EN/HTML/SW5_26/Content/prod-usr-man/software/PolyScope/content/installation_g5/conveyor_tracking_setup_en.htm">Universal Robots · Conveyor encoder and travel direction setup</a>.</p>
+
+    <h2>Predict where job 42 will be when the arm arrives</h2>
+    <p>The exposure result gives the part’s x position in the fixed belt frame. Transport after exposure adds the measured displacement since that moment. For this case the training pick window is 0.120–0.200 m. The additional delay from the current decision to estimated contact is 75 ms. Assume 0.40 m/s over that last prediction interval.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Event</th><th scope="col">Time from trigger</th><th scope="col">Encoder</th><th scope="col">Observation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Part ID 42 assigned</th><td>0 ms</td><td>20,000</td><td>Upstream trigger</td></tr>
+        <tr><th scope="row">Camera exposure</th><td>100 ms</td><td>20,080</td><td>Position x = 0.010 m in fixed frame</td></tr>
+        <tr><th scope="row">Planner starts</th><td>400 ms</td><td>20,320</td><td>Job 42 and pose confirmed</td></tr>
+      </tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Calculate x at 400 ms using the count at exposure. Then estimate x after the additional 75 ms. Check whether the pick fits the window.</li>
+      <li>Repeat with the count from the trigger instead of exposure. Record the resulting error and explain its source.</li>
+      <li>Calculate how long the current position will remain before the end of the pick window under the same speed assumption. Run a separate delayed case with 220 ms after decision. Decide whether to request the pick.</li>
+    </ol>
+    <details class="quiz"><summary>Check the position and deadline</summary><div class="answer"><p>Displacement since exposure is (20,320 − 20,080) ÷ 2,000 = 0.120 m. Current x is 0.130 m, rising to 0.160 m at 75 ms. Using the trigger count adds 0.040 m. At 0.40 m/s the remaining time from x = 0.130 m to x = 0.200 m is 175 ms. At 220 ms predicted x is 0.218 m, so the recipe should treat the pick window as missed.</p></div></details>
+
+    <h2>Prove why a pick missed</h2>
+    <p>Record part ID, trigger, exposure, matching count, pose frame, decision time and pick proof on one timeline. A stale image, duplicated part ID and count reset produce different mismatches. When speed changes, measured counts explain travel up to the present. For the remaining approach, use the approved tracking method and verify timing under acceleration. Exercise the case where the belt stops after exposure and confirm your calculation adds zero movement while the count is constant.</p>
+    <p>Compare the observed position of a marked part at two checkpoints to catch belt or part slip. A throughput problem can come from frames arriving too late even if the robot has enough reach. Report the first missed deadline and track the part’s disposition rather than simply retrying the same coordinates.</p>
+
+    <p>If the belt position agrees and the image still fails at speed, check the capture itself in <a href="p176-test-machine-vision-on-a-moving-belt.html">P176 · Compare exposure and row timing</a>.</p>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Add a moving-part acceptance case and a missed-pick record</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

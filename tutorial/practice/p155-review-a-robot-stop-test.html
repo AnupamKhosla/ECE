@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P155 · Review a robot stop and restart acceptance record</title>
+<meta name="description" content="Work a synthetic stop-time and restart acceptance case with measured evidence, exceptions and a clear release decision.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P155</span>
+    <h1>Review a robot stop and restart acceptance record</h1>
+    <p class="lede">The simulated cell stops every time on the test sheet. Check whether it stopped within the agreed boundary, remained held and required the right restart evidence.</p>
+    <div class="meta"><span><b>Time</b> 55–75 minutes</span><span><b>Before this</b> <a href="p146-robot-cell-acceptance.html">P146</a> · <a href="../theory/t62-robot-stop-functions-and-evidence.html">T62</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the test contract for a synthetic cell</h2>
+    <p>This exercise uses recorded observations for a guarded stationary robot. The training contract sets a maximum of 450 ms from guard-request marker to the defined physical stopped state. Use an instrument uncertainty bound of ±10 ms on the full measured interval. An interval entirely below or equal to the limit supports a pass. An interval entirely above is a fail. A result spanning the limit is inconclusive. After the guard is restored the training scenario requires manual reset, then a distinct start command. The limits and names belong to this exercise. Qualified technicians use the applicable design and validated site procedure for equipment.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Robot end effector above a production fixture">
+      <figcaption>Annotate where physical motion is observed. The process controller’s last command has a separate timestamp.<br><small>Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+
+    <h2>Calculate the full response and classify each run</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Run</th><th scope="col">Guard request</th><th scope="col">Drive response marker</th><th scope="col">Physical stopped state</th><th scope="col">Test condition</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">A</th><td>120 ms</td><td>165 ms</td><td>530 ms</td><td>Light load, approach.</td></tr>
+        <tr><th scope="row">B</th><td>200 ms</td><td>246 ms</td><td>645 ms</td><td>Normal load, retreat.</td></tr>
+        <tr><th scope="row">C</th><td>160 ms</td><td>207 ms</td><td>632 ms</td><td>Heaviest test load, retreat.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Subtract the guard request from the physical stop for each run. Split the result at the drive marker and see which part grew. Choose the evidence you would request before a repeat test.</p>
+    <details class="quiz"><summary>Check the measured intervals and decisions</summary><div class="answer"><p>A is 410 ms, bounded by 400–420 ms, and passes this case. B is 445 ms, bounded by 435–455 ms, and is inconclusive. C is 472 ms, bounded by 462–482 ms, and fails. Guard-to-drive intervals are 45, 46 and 47 ms. Drive-to-physical-stop intervals are 365, 399 and 425 ms. Investigate which conditions affect the later interval and retain the load, direction and profile in the repeat record.</p></div></details>
+
+    <h2>Read the restart evidence as a second requirement</h2>
+    <p>In the next record the guard closes at 2,480 ms and reset is acknowledged at 2,620 ms. Start is still held from the original cycle. The motion monitor reports movement at 2,630 ms. There is no fresh start event. Identify which requirement failed and how to reproduce it on the simulator. Include another trial with a start request only after readiness. Keep guard restoration, reset acknowledgement, new start request and actual motion on separate lines in your report.</p>
+    <p>In your release note identify the failed or inconclusive requirement, evidence and owner. For this record the stop limit and restart behaviour both need resolution. An individual passing run only covers its recorded setup. <a href="https://www.iso.org/standard/73934.html">ISO 10218-2 · Robot cell scope</a>.</p>
+
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Add required evidence and open issues to the acceptance record</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

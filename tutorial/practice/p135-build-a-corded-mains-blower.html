@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P135 · Build a 230 V corded workshop blower</title>
+<meta name="description" content="Design a corded blower around a direct-mains motor module, fabricate its case and qualify the finished assembly.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P135</span>
+    <h1>Build a 230 V corded workshop blower</h1>
+    <p class="lede">Design a corded blower around a direct-mains motor module, fabricate its case and qualify the finished assembly.</p>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the motor nameplate and define the job</h2>
+    <p>Design for a 230 V AC, 50 Hz single-phase supply. A 250 V AC marking on a cord, switch or connector is its component rating. Read supply voltage and input current from the finished machine's nameplate. A commercial corded example is the Bosch GBL 620, rated 230 V and 620 W with a stated 3.5 m³/min air flow. That is about 210 m³/h at the manufacturer's stated condition. Use one test setup to compare installed airflow and nozzle pressure between builds. <a href="https://www.bosch-professional.com/in/en/products/gbl-620-06019805F0">Bosch India · Corded blower data</a>.</p>
+    <p>Make a fixed bench blower with a documented 230 V AC or EC centrifugal motor–impeller–scroll assembly. Select it against the target pressure, airflow, supply range, duty, input and mounting orientation. A handheld high-speed universal-motor blower adds brush service, rotor balance, speed control, vibration and mechanical protection requirements. Treat that as a distinct SKU and get the tool classification from your lab.</p>
+
+    <h2>Build the case and route power</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Assembly</th><th scope="col">Workshop build and inspection</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Case and airflow</th><td>Mark the motor footprint, inlet, outlet and baffles from the module drawing. Shear, drill and deburr the metal panels. Bolt the motor to its intended mounts and guard both openings. Keep the duct joint sealed and preserve motor cooling.</td></tr>
+        <tr><th scope="row">Mains entry</th><td>Fit the rated earthed cord set, strain relief, disconnection switch and protective components specified for the actual module. Keep terminals enclosed and free of pull, abrasion and heat. Use the engineer's approved schematic for the OEM module's line and neutral assignments and for any capacitor or EC control wiring.</td></tr>
+        <tr><th scope="row">Class I protection</th><td>Bond the cord's protective-earth conductor to the designated chassis terminal and bond accessible metal parts as required by the released design. Keep protective earth continuous through operation. Use the approved connection hardware and verify bonding after coating and final assembly.</td></tr>
+        <tr><th scope="row">Mechanical fit</th><td>Fit guards and panels with secured, tool-removable fasteners. Check impeller clearance, change in airflow at the guard and that the loaded unit stays stable on its feet.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The workshop operator fabricates and dry-fits the assembly with the cord disconnected. Have a competent electrical technician terminate mains, inspect the finished routing and perform the authorised first power and test sequence. Protect insulation distances, creepage and motor ventilation throughout. A Class II handheld product needs a qualified double or reinforced insulation design with the applicable tests.</p>
+
+    <h2>Test and classify the corded product</h2>
+    <ol class="steps">
+      <li>Check the cord anchorage, enclosure, guards, accessibility and protective-earth bond before powered tests. Perform electrical strength, insulation and leakage checks according to the selected standard and released test plan using a suitable test station.</li>
+      <li>Run the complete enclosed unit on the specified supply. Record startup, steady input power and current, outlet flow and noise, and case and motor temperatures at the declared airflow restriction and duty. Verify restart behaviour after supply interruption. Evaluate abnormal conditions using the lab's controlled test procedures.</li>
+      <li>Give BIS or your lab the intended use, motor architecture, enclosure class and operating environment. Confirm which Indian standards, product orders and implementation dates cover the finished fixed blower and its cord set. Classify handheld tools separately. The household and commercial appliance QCO and the IEC power-tool and fan standards have distinct scopes. <a href="https://www.bis.gov.in/wp-content/uploads/2026/04/Safety-of-Household-Commercial-and-Similar-Electrical-Appliances-Quality-Control-Order-2026.pdf">India Gazette · 2026 appliances order</a> · <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-1/?lang=en">BIS · Current Scheme I orders</a> · <a href="https://webstore.iec.ch/en/publication/7448">IEC · Electric tool safety</a>.</li>
+    </ol>
+    <a class="crosslink" href="p136-build-a-workbench-blower-and-particle-filter.html">P136 · Measure installed airflow and nozzle performance</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261122-workshop"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

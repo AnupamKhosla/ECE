@@ -1,0 +1,23 @@
+Stick welding current-control principle on a 9 V resistive trainer
+* Static teaching model of an adjustable linear regulator with a 10 ohm set
+* resistor. The regulator model rolls off near an assumed 2.5 V dropout.
+* It does not describe open-circuit behavior, transients or a welding arc.
+Vin in 0 9
+Vload ohms 0 1
+Breg in set I={max(0,min(0.125,(V(in)-2.5-V(set))/0.10))}
+Rset set out 10
+Bload out 0 I={V(out)/max(1,V(ohms))}
+.options reltol=1e-7 abstol=1e-11 vntol=1e-8
+.control
+set wr_singlescale
+set wr_vecnames
+dc Vload 1 100 1
+let load_ohms = v(ohms)
+let load_v = v(out)
+let load_a = -i(Vin)
+let load_w = load_v * load_a
+let regulator_w = (v(in)-v(set))*load_a
+wrdata load_sweep.txt load_ohms load_v load_a load_w regulator_w
+quit
+.endc
+.end

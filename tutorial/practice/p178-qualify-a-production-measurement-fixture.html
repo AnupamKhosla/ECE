@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P178 · Qualify a production measurement fixture</title>
+<meta name="description" content="Separate operator, seating and part effects in a crossed gauge study, then test what happens at the decision limit.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P178</span>
+    <h1>Qualify a production measurement fixture</h1>
+    <p class="lede">A production station measures a 20 mm feature. The same reference part passes on one shift and fails on another. Use a crossed measurement study to find the source and test a fixture change.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="../theory/t24-measurement-datasheets.html">T24 · Measurement and uncertainty</a> · <a href="p58-board-production-test.html">P58 · Board test fixture</a> · <a href="p164-test-hand-eye-calibration.html">P164 · Held-out calibration</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Cross operators with the same reference parts</h2>
+    <p>The nominal dimension is 20.000 mm and the acceptable interval is 19.850–20.150 mm. Compare a flat support with a revised fixture that locates the feature against a defined datum. Use the same ten reference parts for both fixtures, including known good and out-of-limit samples. Each of three operators measures every part twice per fixture, removing and reseating the part each time. This gives 60 readings per fixture. In a live study, blind the operators to the reference readings and previous results, randomise each run, and record the gauge revision, master and environment.</p>
+    <p>Run this synthetic study with <a href="../assets/labs/fixture-study/measurements.csv" download>the 120 measurements</a> and <a href="../assets/labs/fixture-study/fixture_study.py" download>the Python analysis</a>. The dataset has declared reference values. Real reference values also carry uncertainty and need a defensible basis before you use them to judge classification errors.</p>
+    <pre><code>python3 fixture_study.py measurements.csv</code></pre>
+
+    <h2>Separate repeatability from operator and seating effects</h2>
+    <p>Fit the balanced crossed model: reading = overall mean + part + operator + part × operator + repeat error. The interaction captures a measurement method that behaves differently for particular parts depending on who seats them. If each operator measured a different set of parts, those effects would be confounded. Repeatability comes from the spread within the same part and operator. Between-operator and interaction estimates describe changing operators on this fixture.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Component</th><th scope="col">Variance estimate from mean squares</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Repeat error</th><td><var>MS</var><sub>within</sub></td></tr>
+        <tr><th scope="row">Part × operator</th><td>(<var>MS</var><sub>interaction</sub> − <var>MS</var><sub>within</sub>) ÷ 2 repeats</td></tr>
+        <tr><th scope="row">Operator</th><td>(<var>MS</var><sub>operator</sub> − <var>MS</var><sub>interaction</sub>) ÷ (10 parts × 2 repeats)</td></tr>
+        <tr><th scope="row">Part</th><td>(<var>MS</var><sub>part</sub> − <var>MS</var><sub>interaction</sub>) ÷ (3 operators × 2 repeats)</td></tr>
+      </tbody>
+    </table></div>
+    <p>Each mean square is a sum of squares divided by its degrees of freedom. Here the four denominators are 30 within, 18 for interaction, 2 for operator and 9 for part. The script reports the raw component estimates and uses zero for any negative operator or interaction estimate when combining measurement variances. A negative estimate in a small study can reflect sampling uncertainty. The ten part sizes were selected for coverage and their variance is excluded from the gauge spread.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/fixture-study/fixture-study.png" width="1224" height="892" loading="lazy" decoding="async" alt="Two matched plots. On the flat support operator C reads high and A generally low, with magnitude varying by part. With the locating fixture the operator lines cluster near zero.">
+      <figcaption>The same scales show the effect of establishing the datum. Each marker is an average of two independent seatings. The locating fixture retains a small positive mean error.</figcaption>
+    </figure>
+    <p>The flat fixture’s repeatability standard deviation is 4.968 µm. Combining its operator and interaction variances gives 37.927 µm of reproducibility variation within this study. The locating fixture gives 3.517 µm and 5.401 µm. Take the square root of the sum of those two variances, multiply by six, then divide by the 300 µm tolerance width. The result falls from 76.50% to 12.89%. This spread ratio leaves out absolute bias, drift and the reference uncertainty. Mean bias remains +5.400 µm after the fixture change. <a href="https://www.itl.nist.gov/div898/handbook/mpc/section4/mpc46.htm">NIST · Gauge studies and uncertainty</a>.</p>
+
+    <h2>Keep ambiguous readings out of the automatic count</h2>
+    <p>First classify any reading inside the declared interval as good. Then try an illustrative 25 µm guard band: accept 19.875–20.125 mm, reject below 19.825 mm or above 20.175 mm, and send everything between those decisions to an independent reference check. The boundaries belong to this experiment. A production band follows the approved decision rule and uncertainty budget.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Fixture and rule</th><th scope="col">False accepts</th><th scope="col">False rejects</th><th scope="col">Review</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Flat, binary</th><td>10</td><td>6</td><td>0</td></tr>
+        <tr><th scope="row">Flat, guarded</th><td>2</td><td>2</td><td>21</td></tr>
+        <tr><th scope="row">Locating, binary</th><td>4</td><td>1</td><td>0</td></tr>
+        <tr><th scope="row">Locating, guarded</th><td>0</td><td>0</td><td>28</td></tr>
+      </tbody>
+    </table></div>
+    <p>Part F09 has a reference dimension of 20.157 mm. Operator A reads 20.122 and 20.117 mm on the flat support, inside even the guarded acceptance interval. Widening a review band cannot correct a poor seating method on its own. The improved setup’s 28 reviews are repeated measurements from a sample deliberately concentrated near the limits. A production throughput estimate needs the production part mix and the time required to resolve a review.</p>
+    <details class="quiz"><summary>Can you use these 60 readings to calculate production Cpk?</summary><div class="answer"><p>Collect independent output from a stable production process after qualifying the measurement. Here the same deliberately selected parts were repeatedly measured and their distribution represents the study design. A capability index needs the distribution of actual production output and an applicable calculation. <a href="https://www.itl.nist.gov/div898/handbook/pmc/section1/pmc16.htm">NIST · Process capability</a>.</p></div></details>
+    <p>Save the operator order, component estimates, which individual records changed classification and a proposed independent reference check. Add a follow-up check across shifts and after a fixture change before using the station to release parts. <a href="https://www.itl.nist.gov/div898/handbook/mpc/section4/mpc4.htm">NIST · Planning a gauge study</a>.</p>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Turn measurement evidence into a cell acceptance decision</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

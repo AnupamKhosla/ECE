@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P157 · Route a mobile robot through a changing aisle</title>
+<meta name="description" content="Compare route reachability for two robot footprints, a newly marked crate and stale obstacle evidence in a browser grid.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P157</span>
+    <h1>Route a mobile robot through a changing aisle</h1>
+    <p class="lede">An empty robot takes a short route. With a larger load it needs the wider aisle. Reproduce a blocked run and prove what changes when a fresh observation clears a stale obstacle mark.</p>
+    <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141</a> · <a href="../theory/t64-robot-maps-costmaps-and-route-search.html">T64</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Set the geometry and keep the same goal</h2>
+    <p>Each square measures 0.25 m. Start at column 2, row 4 and finish at column 10, row 4. A vertical wall at column 6 has openings at row 4 and rows 7–9. Movement in the model is from cell centre to cell centre, one cardinal step at a time. The centre is blocked when a circular envelope touches an occupied square. The two envelope radii are 0.10 m and 0.23 m. Compare both with half the width of the narrow opening.</p>
+    <p>The grid combines a fixed wall with one optional obstacle mark at column 6, row 8. Treat the marked square as occupied until a valid simulated clearing observation reaches it.</p>
+    <div class="widget" id="aisle-trainer">
+      <label for="aisle-radius">Circular envelope</label><select id="aisle-radius"><option value="0.10">Empty · 0.10 m radius</option><option value="0.23">Loaded · 0.23 m radius</option></select>
+      <label for="aisle-scene">Crate and sensor evidence</label><select id="aisle-scene"><option value="clear">No crate mark</option><option value="marked">Crate inserted and marked</option><option value="stale">Crate removed, clearing sightline blocked</option><option value="cleared">Crate removed, fresh clearing observation</option></select>
+      <div class="lab-controls"><button type="button" id="run-aisle">Plan route</button></div>
+      <p id="aisle-summary" role="status">Plan a route to see where the centre can travel.</p>
+      <div class="table-wrap" id="aisle-map" hidden><table class="map-replay-grid">
+        <caption>Grid by row and column. S start, G goal, # wall, X marked crate, × footprint blocked, + route and · open.</caption>
+        <thead><tr><th scope="col">Row</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th><th scope="col">7</th><th scope="col">8</th><th scope="col">9</th><th scope="col">10</th><th scope="col">11</th><th scope="col">12</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Work the opening widths by hand. The narrow opening is 0.25 m. The wider opening is 0.75 m and a marked middle cell leaves 0.25 m openings on either side.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Run the empty vehicle with no crate. Mark the barrier crossing and record route length. Repeat loaded. The goal stays the same and the planned route changes.</li>
+      <li>Keep the loaded vehicle and insert the crate. Then select the removed crate with blocked sightline. Explain why both produce the same planner result even though the real aisle differs.</li>
+      <li>Apply a new clearing observation. Record the cell that changed and check that the opening is usable again. In a real trace find the observation time, the sensor frame and the valid transform that would support clearing.</li>
+      <li>Make an acceptance table with payload, shortest available route, physical obstruction, current mark and outcome. Add a test that would catch a planner claiming a route with the wrong footprint selected.</li>
+    </ol>
+    <details class="quiz"><summary>Check the routes and clearance</summary><div class="answer"><p>For a 0.10 m radius the centre can pass row 4 with 25 mm of geometric margin on either side. The direct route is eight steps or 2.00 m. For 0.23 m the row 4 opening is blocked. The route through row 8 is sixteen steps or 4.00 m with the wider opening clear. A mark on the middle square blocks that wider opening for the loaded robot. Removing the crate and blocking the clearing view leaves the mark active.</p></div></details>
+    <p>The model isolates footprint clearance and observation state. Before applying the lesson in a fleet, check footprint orientation, allowable unknown space, costmap update rates, control behavior and installed safety validation. <a href="https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/costmap_2d/">Nav2 · Costmap configuration</a>.</p>
+    <p><a href="p145-mobile-robot-fleet.html">P145 · Decide how a blocked aisle affects a fleet mission</a></p>
+    <a class="crosslink" href="p158-map-a-robot-work-area.html">P158 · Produce a map and verify a clean restore</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

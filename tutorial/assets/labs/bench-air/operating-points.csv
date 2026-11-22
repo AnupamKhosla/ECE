@@ -1,0 +1,4 @@
+case,drop_at_35_m3_per_h_pa,installed_m3_per_h,installed_drop_pa
+guarded_nozzle,45.0,40.593,60.531
+clean_filter,65.0,38.417,78.312
+simulated_loaded_filter,150.0,31.391,120.664

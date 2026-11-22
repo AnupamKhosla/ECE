@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P146 · Accept, hand over and troubleshoot a commercial robot cell</title>
+<meta name="description" content="Work a commercial cell selection, factory and site acceptance, throughput, payback and maintenance case.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P146</span>
+    <h1>Accept, hand over and troubleshoot a commercial robot cell</h1>
+    <p class="lede">Turn a supplier demonstration into a decision you can stand behind. Follow one simulated machine-tending project from requirements to production handover and the first service call.</p>
+    <div class="meta"><span><b>Time</b> 90–120 minutes</span><span><b>Before this</b> <a href="p142-robot-arm-path-planning.html">P142</a> · <a href="p144-robot-plc-handshake.html">P144</a> · <a href="../theory/t60-industrial-robot-integration.html">T60</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Define the task before selecting a robot</h2>
+    <p>The customer needs to load a CNC machine with two families of parts. The larger wrist assembly consists of a 1.8 kg gripper, a 0.4 kg adapter and a 1.2 kg workpiece. Their centres along the flange axis are 70, 25 and 180 mm from the flange. The combined payload is 3.4 kg, at about (1.8×70 + 0.4×25 + 1.2×180) ÷ 3.4 ≈ 104 mm in this simplified geometry. The empty tool is 2.2 kg at about 62 mm. Check both conditions against the manufacturer’s load, inertia and offset limits.</p>
+    <p>Choose a candidate layout. A six-axis arm can orient the workpiece to pass the CNC door and insert into a chuck. A gantry may be viable with fixed vertical access. Check every approach and retreat with the door open, actual tooling in the model and the worst part envelope. Compare grip proof, chuck and door feedback, part ID, access for service and a recovery path after an interrupted transfer.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Manufacturing robot grippers over a tray of components">
+      <figcaption>Separate proof of jaw actuation, workpiece retention and arrival at the destination. Look for the fixtures that establish part position.<br><small>Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Identify the recipe, workpiece and end effector you would specify before an integration trial. <a href="https://video.universal-robots.com/vision-handling-set-3d-r">Universal Robots · Vision and handling demo</a>.</p>
+
+    <h2>Write factory and site checks with an owner</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Requirement</th><th scope="col">Factory test (FAT)</th><th scope="col">Site test (SAT)</th></tr></thead>
+      <tbody><tr><th scope="row">Two part families</th><td>Prove both tool and recipe choices on representative samples.</td><td>Use actual lots and confirm part position after a changeover.</td></tr>
+      <tr><th scope="row">Traceable completion</th><td>Demonstrate a lost acknowledgment before and after commit. Run the <a href="p177-wait-for-a-durable-station-receipt.html">compiled receipt replay</a> against the intended identity and retry policy.</td><td>Match the cell record and unit identity after an interrupted cycle.</td></tr>
+      <tr><th scope="row">Good-part measurement</th><td>Run a <a href="p178-qualify-a-production-measurement-fixture.html">crossed gauge study</a> on reference parts. Show what happens to borderline readings.</td><td>Verify the installed gauge, datum and reference check with trained operators. Include any review time in the production trial.</td></tr>
+      <tr><th scope="row">320 good units per planned production hour and P155 cycle ≤9.5 s</th><td>Record both measures with agreed sample mix, measurement boundaries and timing rules.</td><td>Repeat on an agreed shift using installed equipment, with downtime counted in the throughput window.</td></tr>
+      <tr><th scope="row">Installed safeguards</th><td>Review the approved design and planned verification records with the responsible safety specialist. Practise reviewing sample evidence in <a href="p155-review-a-robot-stop-test.html">P155 · Stop and restart records</a>.</td><td>The designated competent team validates the installed application and records the required evidence.</td></tr></tbody>
+    </table></div>
+
+    <h2>Decide from the trial instead of the headline rate</h2>
+    <p>In one synthetic eight-hour shift, 30 min are scheduled outside production. Of 450 planned production minutes, 390 are running. The cell counts 2,500 parts of which 2,425 are good. An ideal cycle reference is 8 s per part. The measured running-cycle P155 is 9.8 s using the agreed definition.</p>
+    <ol class="steps">
+      <li>Compute availability (run ÷ planned), performance (ideal cycle × total count ÷ run time, with time units matched), quality (good ÷ total) and their product, overall equipment effectiveness (OEE).</li>
+      <li>Compute good units per planned production hour. Decide whether to accept the rate requirement now. Compare the median and P155 only if you have the cycle records. Use timestamped waits to find where the upper tail comes from.</li>
+      <li>Estimate simple payback with a fictional cost of $96,000 installed, annual savings of $60,000 and $12,000 in added annual operating costs. Then reduce expected savings by 25%. Include integration, training, recurring support, spares and changeover when requesting a real quote.</li>
+    </ol>
+    <details class="quiz"><summary>Check the arithmetic and release decision</summary><div class="answer"><p>Availability ≈ 86.7%, performance ≈ 85.5%, quality = 97.0%, OEE ≈ 71.9%. Throughput ≈ 323.3 good units per planned hour, so throughput passes. P155 misses the 9.5 s limit by 0.3 s, so the combined rate requirement stays open. Base simple payback is 2.0 years. With savings down 25%, the annual net falls to $33,000 and payback is about 2.91 years.</p></div></details>
+    <p>Trace the slowest cycles in this separate <a href="../assets/labs/robot-cell-cycle-trace.csv" download>20-cycle diagnostic sample</a>. All event timestamps use one clock. Compute cycle time as end minus start, station wait as ready minus start, and robot motion as motion end minus ready. Sort the cycle times and use the nearest-rank 95th percentile, the value at rank ceil(0.95 × N) counted from the shortest. Keep IDs so you can return to the corresponding events. This small synthetic sample demonstrates the method and the full-shift trial above sets the acceptance context.</p>
+    <details class="quiz"><summary>Which interval accounts for the slowest cycles?</summary><div class="answer"><p>Rank 19 is 9.8 s, cycle 8. The maximum is 10.5 s, cycle 16. Station-ready wait rises to 1.80 s and 2.45 s. Robot motion lasts 4.54 s and 4.58 s, within the range of other cycles. Trace the CNC station-ready signal and reasons for waiting before changing robot speed.</p></div></details>
+    <a class="crosslink" href="p165-audit-a-robot-cell-pilot.html">P165 · Audit each recipe and quantify the evidence behind a zero-failure trial</a>
+
+    <h2>Recover a fault and preserve the commissioned setup</h2>
+    <p>After a gripper change, the arm reaches the same error repeatedly and the error scales with wrist orientation. Compare tool ID, active TCP, payload data and the parts record against the saved baseline. Confirm which change occurred before recalibration. Retest the same reference and at least one different orientation. If errors appear only at high speed with load, inspect the timestamped following-error and cycle records before changing calibration. Apply site procedures for all actual equipment work.</p>
+    <p>Hand over the approved drawings, I/O map, backed-up robot and PLC configuration, tool and calibration files, software revisions, agreed spares, fault recovery instructions, test results, open issues with responsible people and deadlines, and a documented restore test. Record operator and maintenance training against the actual tasks. Include a <a href="p148-servo-axis-fault-traces.html">servo diagnosis trace</a>, a <a href="p149-cnc-machine-tending-recovery.html">CNC restart exercise</a> and the <a href="p162-recover-a-robot-station-journal.html">retained part record and interruption results</a>. <a href="https://www.safeworkaustralia.gov.au/doc/model-code-practice-managing-risks-plant-workplace">Safe Work Australia · Managing plant risk</a> · <a href="https://www.abb.com/global/en/areas/robotics/products/software/robotstudio-suite">ABB · Example offline simulation workflow</a>.</p>
+
+    <h2>Assemble the acceptance record</h2>
+    <p>Give each line a requirement ID, an owner, the test scope, a result with units, the attachment or log ID, and a decision. Include the revision of the PLC program, robot recipe, gauge setup and reference used so someone can repeat the test after a service change.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Owner in this exercise</th><th scope="col">Evidence to attach</th><th scope="col">Release decision</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Controls and station software</th><td>Attach the before- and after-commit traces and the same-part retry. Record whether the acknowledgment and count agree after review.</td><td>Close the desktop exercise. Repeat with the installed interfaces and agreed delays for site acceptance.</td></tr>
+        <tr><th scope="row">Quality and fixture design</th><td>Attach the two measurement studies and the reference check for the borderline readings.</td><td>Trial the locating fixture with installed tooling. Agree how review cases affect the good count and cycle time.</td></tr>
+        <tr><th scope="row">Production and integration</th><td>Attach planned minutes, accepted serials, the P155 calculation and station-ready waits.</td><td>Keep the combined rate line open. Diagnose the wait and repeat the defined trial for the affected recipe.</td></tr>
+        <tr><th scope="row">Maintenance</th><td>Attach the restore drill’s backup identity, independently accepted calibration revision and reconciled serials.</td><td>Record who verifies the restored state and who approves the return to service at site.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>Keep the requirements, trial calculations, exceptions and one recovery test as a <a href="../career/c16-repair-work-portfolio.html">portfolio case</a>. Return to <a href="p137-robotics-roadmap.html">P137 · Robotics roadmap</a>.</p>
+    <a class="crosslink" href="p171-rehearse-a-robot-cell-restore.html">P171 · Restore the commissioned packet and bring back the latest production records</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

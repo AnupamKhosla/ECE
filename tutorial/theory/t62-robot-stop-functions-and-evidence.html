@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T62 · Robot stop functions, restart and validation evidence</title>
+<meta name="description" content="Separate process stop, protective stop, emergency stop and energy isolation. Learn how to interpret stop and restart evidence.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T62</span>
+    <h1>Robot stop functions, restart and validation evidence</h1>
+    <p class="lede">A halted arm, a drive that cannot produce torque and a machine isolated for service describe different conditions. Read the function and evidence before drawing a conclusion.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes</span><span><b>Before this</b> <a href="t34-industrial-control-signals.html">T34</a> · <a href="t60-industrial-robot-integration.html">T60</a> · <a href="t61-servo-dynamics-and-axis-sizing.html">T61</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the request, the intended state and its proof</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Function or action</th><th scope="col">Why it is used</th><th scope="col">Evidence to look for</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Ordinary process stop</th><td>Pause or end production under normal control.</td><td>Sequencer and drive state, current part disposition, restart behaviour defined for the process.</td></tr>
+        <tr><th scope="row">Protective stop</th><td>Respond to a safeguard according to the application design.</td><td>Device acted, safety response occurred, and the required conditions were met before reset and restart.</td></tr>
+        <tr><th scope="row">Emergency stop</th><td>Allow a person to demand an emergency stopping response.</td><td>The response, latch and deliberate reset defined in the design. Routine access protection has its own safeguards.</td></tr>
+        <tr><th scope="row">Energy isolation for maintenance</th><td>Control energy sources before the work described in the isolation procedure.</td><td>Identified energy sources and verified isolation state, including stored or gravitational energy where relevant.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Safe torque off (STO) prevents drive-generated motor torque according to the drive’s documented safety design. It can leave the drive electrically energised. A coasting axis can still move from inertia, gravity or external force. Safe stop 1 (SS1) is a documented safety function that initiates deceleration and transitions to STO according to its implementation. Brakes, gravity, tooling and retained parts need their own treatment in the application. <a href="https://download.beckhoff.com/download/Document/automation/twinsafe/ax5805_ax5806en.pdf">Beckhoff · Example of a specific SS1 implementation</a>.</p>
+
+    <h2>Measure the whole response</h2>
+    <p>A stop record needs a defined start event and a defined end state. A trigger-to-output delay measures only part of the chain. Include the sensing, decision, drive and physical stopping intervals in the measurement definition. Configuration, speed, load and direction all affect the observed response. If the training design states at most 450 ms and the observations are 410, 435 and 460 ms, the longest observation already fails. Use the same measurement boundary for each run and keep the instrument’s uncertainty.</p>
+    <p>Verification and validation evidence includes the applicable design, test setup, installed revision, representative modes and faults, observed outcomes, exceptions and sign-off from the responsible people. A PLC or ROS dashboard can show process state and still be the wrong source for evidence of an independent safety function. Use the test method required by the approved design. <a href="https://www.iso.org/standard/73934.html">ISO 10218-2 · Industrial robot applications and cells</a> · <a href="https://www.safeworkaustralia.gov.au/doc/model-code-practice-managing-risks-plant-workplace">Safe Work Australia · Managing plant risks</a>.</p>
+
+    <h2>Make reset and restart visible</h2>
+    <p>Test the sequence required by the application when an access condition clears. Acknowledging a stop, establishing readiness and authorising the next operation may be separate transitions. Draw the required transitions before looking at a trace. If the robot restarts when a guard closes or an alarm clears in a case requiring a distinct restart command, record that as a failure. Include a prior held command and power restoration among the planned acceptance cases.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Robot end effectors operating over fixtures in a manufacturing cell">
+      <figcaption>Include the end effector, workpiece and fixture when reviewing what continues to move or stays loaded after a stop.<br><small>Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+
+    <a class="crosslink" href="../practice/p155-review-a-robot-stop-test.html">P155 · Review measured stop intervals and restart records</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

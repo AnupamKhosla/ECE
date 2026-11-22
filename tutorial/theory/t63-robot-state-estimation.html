@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T63 · Robot state estimation and sensor uncertainty</title>
+<meta name="description" content="Work a scalar Kalman filter, interpret innovations and see which frames local filters and map localizers own in ROS 2.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T63</span>
+    <h1>Robot state estimation and sensor uncertainty</h1>
+    <p class="lede">A wheel count estimates travel. A landmark supplies a position observation. This chapter shows how to combine the two, how to quantify the correction and how to tell when the uncertainty model has stopped matching the robot.</p>
+    <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="t35-calibration-and-condition-data.html">T35</a> · <a href="t59-localization-and-navigation.html">T59</a> · <a href="../practice/p140-wheel-odometry.html">P140</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Track the estimate and its uncertainty</h2>
+    <p>Use a toy robot constrained to a straight rail. Its state <i>x</i> is position in metres. An encoder provides signed travel <i>u</i> since the previous update. A fixed landmark occasionally gives an independent position <i>z</i> in the same coordinate system. In this model the remaining incremental travel and observation errors are independent, zero-mean and represented by variances <i>Q</i> and <i>R</i>. A spread of 0.20 m means a variance of 0.040 m². A fixed offset needs its own calibration or a model that can estimate it.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Step</th><th scope="col">Scalar calculation</th><th scope="col">Question answered</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Predict</th><td>x<sup>−</sup> = x + u, P<sup>−</sup> = P + Q</td><td>Where did the wheel travel put the robot, and how much uncertainty accumulated?</td></tr>
+        <tr><th scope="row">Compare</th><td>e = z − x<sup>−</sup>, S = P<sup>−</sup> + R</td><td>How far is the observation from the prediction given the uncertainty of both?</td></tr>
+        <tr><th scope="row">Weight and update</th><td>K = P<sup>−</sup>/S, x = x<sup>−</sup> + Ke, P = (1 − K)P<sup>−</sup></td><td>How much of the discrepancy should move the estimate?</td></tr>
+        <tr><th scope="row">Observation unavailable</th><td>x = x<sup>−</sup>, P = P<sup>−</sup></td><td>What is the uncertainty after one more prediction with no landmark?</td></tr>
+      </tbody>
+    </table></div>
+    <p>The discrepancy <i>e</i> is the <b>innovation</b>. Divide it by √<i>S</i> to report the signed discrepancy in standard deviations. The gain <i>K</i> is unitless. Larger predicted uncertainty puts more weight on an observation of a given quality. Larger observation variance puts less weight on it. <a href="https://sreal.ucf.edu/wp-content/uploads/2017/02/kalman_intro.pdf">Welch and Bishop · An Introduction to the Kalman Filter</a>.</p>
+
+    <h2>Work one correction and one rejection</h2>
+    <p>You expect position 2.20 m with standard deviation 0.12 m. A correctly identified landmark reports 2.05 m with standard deviation 0.09 m. Compute <i>S</i> = 0.0144 + 0.0081 = 0.0225 m². The innovation is −0.15 m, one combined standard deviation. The gain is 0.64, the corrected estimate is 2.104 m and the updated standard deviation is √(0.36 × 0.0144) = 0.072 m.</p>
+    <p>Replay the same prediction with a decoded landmark at 2.80 m. The innovation becomes +0.60 m or +4 combined standard deviations. A 3σ gate would log and reject it. Repeated rejections could indicate that the prediction has drifted outside the filter’s assumptions. Compare the timestamp and landmarks against an independent reference before declaring the observations faulty. The threshold in this example is for the scalar lab. Choose and validate thresholds for the actual sensor, dimension and operating conditions.</p>
+
+    <h2>Carry the idea into a moving robot</h2>
+    <p>In a planar filter, the state can include position, yaw, velocities and sensor biases. The covariance matrix tracks variances on its diagonal and cross-covariances off the diagonal. Heading uncertainty today can become lateral position uncertainty after a long drive. A spare encoder field copied into both pose and twist can carry the same underlying errors. Counting both as independent evidence makes the reported certainty misleading. Coordinate signs, sensor lever arms, stale timestamps and wheel slip all matter before tuning variance.</p>
+    <p>In one common Nav2 configuration, wheel and inertial data feed a local estimator such as <code>robot_localization</code>. It can publish the continuous <code>odom → base_link</code> transform. Adaptive Monte Carlo Localization (AMCL) uses particles and a static map to estimate global pose using scan and odometry data. It can publish <code>map → odom</code>, allowing global corrections while local motion stays continuous. Trace both transform authorities and check the messages at their measurement timestamps. <a href="https://docs.nav2.org/jazzy/configuration_and_development/first_time_robot_setup_guide/odom/setup_robot_localization/">Nav2 · Odometry filtering</a> · <a href="https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/others/configuring_amcl/">Nav2 · AMCL</a>.</p>
+
+    <h2>Choose evidence that exercises the assumptions</h2>
+    <ul>
+      <li>Compare wheel travel and yaw with independent marks on both an easy surface and a slippery surface. Estimate variation and record systematic errors separately.</li>
+      <li>Plot signed innovations through starts, stops, direction changes and dropouts. A run of similar signed discrepancies can indicate synchronization or model error that one maximum value conceals.</li>
+      <li>Measure endpoint error and recovery after observation returns, then repeat at a different site or speed. Check that the estimator’s confidence grows and shrinks plausibly through the interruption.</li>
+    </ul>
+    <a class="crosslink" href="../practice/p156-fuse-wheel-and-landmark-position.html">P156 · Replay a route with missing and wrong landmarks</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

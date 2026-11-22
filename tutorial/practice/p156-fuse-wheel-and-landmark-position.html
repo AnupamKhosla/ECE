@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P156 · Fuse wheel travel with a landmark position</title>
+<meta name="description" content="Replay a biased wheel estimate with independent position fixes, a blackout and a bad landmark, then calculate a filter update by hand.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P156</span>
+    <h1>Fuse wheel travel with a landmark position</h1>
+    <p class="lede">Run the same eight-leg route with wheel travel and intermittent landmark fixes. Compare error against a surveyed reference, tune the assumed sensor uncertainty and see what a gate does to a wrong landmark.</p>
+    <div class="meta"><span><b>Time</b> 60 minutes</span><span><b>Before this</b> <a href="p140-wheel-odometry.html">P140</a> · <a href="../theory/t63-robot-state-estimation.html">T63</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Work the first update</h2>
+    <p>Each leg of this synthetic track is exactly 0.50 m. Wheel travel reads 0.52 m and 0.53 m on the first two legs. Start at x = 0 with 0.10 m initial standard deviation. Assume each wheel increment adds independent uncertainty with standard deviation 0.05 m. The first landmark appears after leg 2 at 1.02 m with 0.20 m standard deviation. Calculate the estimate, gain and standard deviation after that landmark. Keep three decimal places for comparison.</p>
+
+    <h2>Run the same wheels through three observation logs</h2>
+    <div class="widget" id="fusion-trainer">
+      <label for="fusion-case">Landmark log</label><select id="fusion-case"><option value="normal">Landmarks every second leg</option><option value="blackout">No landmarks at legs 4 and 6</option><option value="outlier">Wrong landmark at leg 4</option></select>
+      <label for="fusion-wheel">Assumed wheel increment standard deviation (m)</label><input id="fusion-wheel" type="number" min="0.01" max="0.30" step="any" value="0.05" required>
+      <label for="fusion-landmark">Assumed landmark standard deviation (m)</label><input id="fusion-landmark" type="number" min="0.01" max="0.60" step="any" value="0.20" required>
+      <label class="lab-check"><input id="fusion-gate" type="checkbox" checked> Reject landmarks beyond 3 combined standard deviations</label>
+      <div class="lab-controls"><button type="button" id="run-fusion">Replay position estimates</button></div>
+      <p id="fusion-summary" role="status">Run the replay to compare final position and find when each correction was applied.</p>
+      <canvas class="lab-plot" id="fusion-plot" width="460" height="253" hidden aria-label="Wheel-only and fused position error and the fused one-standard-deviation band. Values follow in the table."></canvas>
+      <p id="fusion-legend" hidden>Dashed line · wheel-only error. Solid line · fused error. Shaded area · one reported standard deviation either side of fused error.</p>
+      <div class="table-wrap" id="fusion-readings" hidden><table>
+        <caption>Eight-leg synthetic replay. Positions and standard deviations are in metres.</caption>
+        <thead><tr><th scope="col">Leg</th><th scope="col">Survey</th><th scope="col">Wheel increment</th><th scope="col">Wheel only</th><th scope="col">Landmark</th><th scope="col">Prediction</th><th scope="col">Innovation (σ)</th><th scope="col">Decision</th><th scope="col">Fused</th><th scope="col">Fused σ</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <noscript><p>Work the first two legs with the numbers above. With all landmarks missing, the final wheel distance is 4.30 m. With the default parameters and no corrections, final standard deviation is √(0.0100 + 8 × 0.0025) = 0.173 m.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Run the default log and check leg 2 against your calculation. Find where wheel error grows fastest. Use the change in wheel increments and the survey to explain why.</li>
+      <li>Keep the model fixed and select the blackout. Compare reported standard deviation at legs 2, 4 and 6, then observe what happens at leg 8 when a landmark returns.</li>
+      <li>Choose the wrong landmark and toggle the gate. With the gate off, inspect the change in estimate and uncertainty at leg 4. A small reported spread can accompany a large actual error.</li>
+      <li>Repeat with assumed wheel spread 0.15 m and landmark spread 0.40 m. Record the innovation and gate outcome. The input log stayed fixed while the assumed uncertainty changed. Write how you would estimate those spreads from real repeat data.</li>
+    </ol>
+    <details class="quiz"><summary>Check leg 2 by hand</summary><div class="answer"><p>Prediction is 1.050 m and variance is 0.0150 m². Innovation is −0.030 m. Combined variance is 0.0550 m² and gain is 0.2727. Corrected estimate is 1.042 m with standard deviation 0.104 m. The surveyed position is 1.000 m.</p></div></details>
+    <p>Save the wheel-only error, each accepted or rejected observation, final fused error and the largest reported spread during the blackout. Add one test that could reveal a wrong wheel scale or a delayed landmark in your own robot.</p>
+    <a class="crosslink" href="p150-ros2-navigation-trace.html">P150 · Diagnose a timestamp fault in a ROS 2 navigation trace</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

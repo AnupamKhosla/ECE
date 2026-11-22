@@ -1,0 +1,52 @@
+Compare coasting, dynamic braking and regeneration at a 12 V motor bus
+.param bus_cap=470u
+.model BodyDiode D(IS=10n N=1.4 RS=0.035)
+.model BrakeFet SW(RON=0.05 ROFF=1e10 VT=2.5 VH=0)
+
+* K is both the back-EMF constant in V/(rad/s) and the torque constant in N*m/A.
+* The mechanical analogy uses 1 volt per rad/s and 1 amp per N*m.
+.subckt BenchMotor vbus omega arm_a current brake params: initial_speed=180
+.param k=0.060 inertia=200u friction=150u
+Bsource 0 vbus I=max(0, (12-v(vbus))/0.10)
+Cbus vbus 0 {bus_cap} ic=12
+Rbleed vbus 0 2k
+
+* Body diode paths remain available with the gate outputs off.
+DhighA arm_a vbus BodyDiode
+DhighB arm_b vbus BodyDiode
+DlowA 0 arm_a BodyDiode
+DlowB 0 arm_b BodyDiode
+SlowA arm_a 0 brake 0 BrakeFet
+SlowB arm_b 0 brake 0 BrakeFet
+RgroundA arm_a 0 10meg
+RgroundB arm_b 0 10meg
+
+Vsense arm_a winding_in 0
+Rwinding winding_in winding_mid 2
+Lwinding winding_mid winding_out 2m ic=0
+Bemf winding_out arm_b V={k*v(omega)}
+Bcurrent current 0 V=i(Vsense)
+
+* Positive winding current produces positive torque.
+Btorque 0 omega I={k*i(Vsense)}
+Rfriction omega 0 {1/friction}
+Cshaft omega 0 {inertia} ic={initial_speed}
+.ends BenchMotor
+
+Vcoast coast 0 0
+Vshort brake 0 5
+Xcoast coast_bus coast_speed coast_a coast_current coast BenchMotor initial_speed=180
+Xbrake brake_bus brake_speed brake_a brake_current brake BenchMotor initial_speed=180
+Xregen regen_bus regen_speed regen_a regen_current coast BenchMotor initial_speed=280
+
+.options method=gear
+.tran 5u 300m 0 5u uic
+.measure tran coast_speed_300 find v(coast_speed) at=300m
+.measure tran brake_speed_300 find v(brake_speed) at=300m
+.measure tran brake_current_min min v(brake_current)
+.measure tran coast_bus_peak max v(coast_bus)
+.measure tran brake_bus_peak max v(brake_bus)
+.measure tran regen_bus_peak max v(regen_bus)
+.measure tran regen_current_min min v(regen_current)
+.measure tran regen_speed_300 find v(regen_speed) at=300m
+.end

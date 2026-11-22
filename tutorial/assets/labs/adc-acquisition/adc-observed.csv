@@ -1,0 +1,11 @@
+case,measurement,voltage_v,target_v,error_mv
+"47 kΩ, high history at 2 µs",acquisition,0.786075376,0.500,286.075376
+"47 kΩ, low history at 2 µs",acquisition,0.450247761,0.500,-49.752239
+"47 kΩ, high history at 10 µs",acquisition,0.500068763,0.500,0.068763
+"56.4 kΩ, 24 pF at 10 µs",acquisition,0.501617543,0.500,1.617543
+"56.4 kΩ, 24 pF at 13 µs",acquisition,0.500183270,0.500,0.183270
+250 Ω at 2 µs,acquisition,0.500000000,0.500,0.000000
+10 nF at 2 µs,acquisition,0.504571740,0.500,4.571740
+220 nF at 2 µs,acquisition,0.500209032,0.500,0.209032
+10 nF at 2 ms after sensor step,tracking,0.845047425,0.850,-4.952575
+220 nF at 2 ms after sensor step,tracking,0.561724165,0.850,-288.275835

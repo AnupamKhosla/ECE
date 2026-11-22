@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T69 · Robot paths, collision checks and planning scenes</title>
+<meta name="description" content="Work through configuration space, Cartesian interpolation, collision-check sampling and validity after time parameterization.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T69</span>
+    <h1>Robot paths, collision checks and planning scenes</h1>
+    <p class="lede">A target pose can be reachable and collision-free while the move to it still crosses a fixture. Planning checks have to account for configuration, scene, motion between samples and the final trajectory.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="t33-robot-motion-and-feedback.html">T33</a> · <a href="t65-robot-trajectory-timing.html">T65</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Define the start, goal and modeled world</h2>
+    <p>A robot configuration <var>q</var> is the set of joint positions. Forward kinematics maps <var>q</var> to the pose of a specific link. Inverse kinematics can give several configurations reaching the same pose. A planning scene adds obstacle shapes and poses, attached equipment, robot link collision geometry and the rules for which pairs may touch. Change the fixture frame, mount a gripper or attach a carried part and you can change which configurations are allowed.</p>
+    <p>A collision query at one state checks the geometry at that configuration. A path requires a sequence leading from verified start to goal with its own state and motion checks. Record which scene and transforms were used. A shape drawn in a viewer is only relevant to the plan when the planning scene accepts it in the intended frame. <a href="https://moveit.picknik.ai/main/doc/examples/planning_scene_ros_api/planning_scene_ros_api_tutorial.html">MoveIt · Applying planning scene changes</a>.</p>
+
+    <h2>Ask separately for a straight move and for a detour</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Request</th><th scope="col">What the planner searches</th><th scope="col">What to verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Straight move of a tool or flange</th><td>Interpolate poses for the specified link along the requested segment. At each step solve joint positions and check applicable constraints.</td><td>Completed fraction, final pose, continuity of the chosen joint solution and clearance. A partial path leaves the goal unreached.</td></tr>
+        <tr><th scope="row">Joint-space transfer to a configuration</th><td>Search configurations and connections between them. The same end configuration can be reached using many different spatial sweeps.</td><td>Check the whole modeled body and tool. Verify any approach direction or orientation that must hold throughout the move. A successful joint goal alone says little about the exact flange path.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Use a constrained straight approach when loading into a close-fitting fixture and a separately checked transfer in free space. At the boundary, verify the transfer actually ends at the proper approach pose with the required orientation and clearance. A sampled planner such as RRTConnect can produce different detours on repeated runs. <a href="https://moveit.picknik.ai/main/doc/examples/move_group_interface/move_group_interface_tutorial.html">MoveIt · Joint, pose and Cartesian planning interfaces</a>.</p>
+
+    <h2>Check motion between samples and after retiming</h2>
+    <p>Sampling a path too coarsely can miss a narrow collision interval. For example, at a 300 mm radius, a 2° joint step sweeps a point about 10.5 mm along a small arc. A narrow fixture edge can lie between the checks. Several joints can contribute to one link’s motion. OMPL expresses its edge-check interval as a fraction of the configuration-space extent. Check physical tool clearance and Cartesian step size in their own units.</p>
+    <p>Time parameterization assigns timestamps, velocities and accelerations under motion limits. MoveIt’s time-optimal processing can also resample a path and deviate within a configured tolerance. Check the produced trajectory, including the interpolation the controller uses, against the same scene, limits and task constraints. A list of sampled valid states proves those sampled states. Confirm the modeled separation and cover the motion between checks. <a href="https://moveit.picknik.ai/main/doc/examples/time_parameterization/time_parameterization_tutorial.html">MoveIt · Time parameterization</a> · <a href="https://moveit.picknik.ai/humble/doc/examples/ompl_interface/ompl_interface_tutorial.html">MoveIt · OMPL motion-check resolution</a>.</p>
+
+    <h2>Keep a fixture or payload change tied to a new decision</h2>
+    <p>Before sending motion, match the planned start to fresh feedback and match the scene revision, tool, loaded part and fixture state to the current job. If any changes, check the path again. A planner result describes the model at its inputs. Machine safeguarding and independent proof of physical clearance are separate engineering tasks.</p>
+    <details class="quiz"><summary>Both endpoints are valid. A response has 73 timed points and the planner reports failure. What should the station do?</summary><div class="answer"><p>Hold the transfer. Read the planner and final trajectory-validation result, and inspect the reported contacts or failed constraints. Treat returned points as diagnostic evidence. Resolve the cause and verify a fresh valid path before proceeding.</p></div></details>
+    <a class="crosslink" href="../practice/p166-check-a-moveit-planning-scene.html">P166 · Check these conditions in a running MoveIt planning scene</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

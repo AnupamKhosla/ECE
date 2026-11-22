@@ -410,7 +410,7 @@
     </ul>
     <p>A calibration check is a 5-point test: 0, 25, 50, 75 and 100 % of range, up and down, recording "as found" and "as left" readings. If the error is outside tolerance, adjust zero and span, then repeat.</p>
     <div class="callout tip"><span class="label">Bench tip</span><p>You can practise all of this at home at 24 V DC: a 24 V plug-pack, a 250 Ω resistor, a multimeter on mA, and a cheap 2-wire 4–20 mA pressure or temperature transmitter from an online supplier. Measure the current at different readings and check it against the formula. Practise on the multimeter's mA range carefully (P03): connect it in series, never across the supply.</p></div>
-    <p>4–20 mA carries one value per pair of wires. When an instrument or drive has many values to share, sites use a fieldbus or Modbus instead. See <a href="../practice/p14-serial-buses-modbus.html">P14 · UART, I²C, SPI, RS-485 and Modbus</a>.</p>
+    <p>4–20 mA carries one value per pair of wires. When an instrument or drive has many values to share, sites use a fieldbus or Modbus. See <a href="../practice/p14-serial-buses-modbus.html">P14 · UART, I²C, SPI, RS-485 and Modbus</a> for wiring and frame basics, then <a href="../practice/p175-verify-a-modbus-register-snapshot.html">P175 · Confirm a coherent multiword reading</a> for register offsets and source updates.</p>
 
     <h2>Reading a P&amp;ID</h2>
     <p>A <b>P&amp;ID</b> (piping and instrumentation diagram) shows the pipes, vessels, pumps, valves and every instrument in a process, with tag numbers. Instrument symbols and tags follow ISA-5.1 style conventions in most of the world, with local and company variations.</p>

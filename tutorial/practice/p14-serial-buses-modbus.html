@@ -614,22 +614,22 @@ print("CDAB:", struct.unpack("&gt;f", cdab)[0])  # nonsense for this device</cod
       <tr><td>I²C: scanner finds nothing</td><td>SDA/SCL swapped, no pull-ups, no power</td><td>Idle SDA and SCL should sit at the supply voltage.</td></tr>
       <tr><td>Modbus: timeout from every device</td><td>Wrong COM port, baud, parity; A/B swapped</td><td>Check settings; swap A and B; enable adapter debug to see bytes.</td></tr>
       <tr><td>Modbus: timeout from one device</td><td>Wrong slave address, duplicate address, device settings differ</td><td>Check the device's address and comms settings on its display or switches.</td></tr>
-      <tr><td>Modbus: exception 02</td><td>Register does not exist</td><td>Off-by-one (40001 vs 0), or wrong table (03 vs 04).</td></tr>
+      <tr><td>Modbus: exception 02</td><td>Server rejected the requested address or address range.</td><td>Compare the function, start offset and quantity with the device table.</td></tr>
       <tr><td>Values belong to the neighbouring register</td><td>0-based vs 1-based numbering</td><td>Shift the start address by one.</td></tr>
-      <tr><td>Values absurd (1e-41, 1e23)</td><td>Word or byte order</td><td>Try the other orders for 32-bit values.</td></tr>
+      <tr><td>Values absurd (1e-41, 1e23)</td><td>Wrong data type, word order or byte order.</td><td>Capture the raw words and check the documented encoding against a known input.</td></tr>
       <tr><td>Value 10× or 100× too big</td><td>Scaling not applied</td><td>Check the map for "×10", "0.01" or a scaling register.</td></tr>
-      <tr><td>Intermittent CRC errors, worse when plant runs</td><td>Missing or extra termination, star wiring, no bias, shield earthed at both ends, cable beside VSD output cables</td><td>Measure A–B resistance (aim for ~60 Ω), fix topology, separate cables.</td></tr>
+      <tr><td>Intermittent CRC errors, worse when plant runs</td><td>Termination, stubs, bias, common-mode voltage, shield bonding or coupling from nearby drive cables.</td><td>Check the isolated training trunk against its drawing. Two passive 120 Ω terminations give about 60 Ω in parallel before other paths. Compare signal levels and noise with the drive stopped and running.</td></tr>
     </table></div>
 
     <h2>Check yourself</h2>
     <details class="quiz"><summary>How long does one byte take at 19 200 baud, 8N1?</summary><div class="answer"><p>10 bits (start + 8 data + stop) × 1/19 200 s = 10 × 52.1 µs ≈ 0.52 ms.</p></div></details>
-    <details class="quiz"><summary>Why can two I²C devices never short each other, unlike two push-pull outputs?</summary><div class="answer"><p>I²C outputs are open-drain: they can only pull the line LOW or let go. Only the pull-up resistor makes the line HIGH. If two devices disagree, LOW simply wins through the resistor, and no large current flows.</p></div></details>
+    <details class="quiz"><summary>Why can correctly configured I²C outputs share one wire?</summary><div class="answer"><p>Each open-drain output either pulls the line low or releases it. The pull-up resistor supplies current when a device asserts low. Check that pins are in the intended open-drain mode and that all devices tolerate the pull-up voltage.</p></div></details>
     <details class="quiz"><summary>A manual lists "Frequency: 40017". What function and wire address do you use?</summary><div class="answer"><p>Holding register table, so function 03 to read. Address on the wire = 17 − 1 = 16 (0x0010).</p></div></details>
-    <details class="quiz"><summary>With all devices off, you measure 120 Ω between A and B. What does that tell you?</summary><div class="answer"><p>Only one 120 Ω terminator is fitted (two in parallel would give about 60 Ω). Find the end of the trunk that is missing its terminator.</p></div></details>
+    <details class="quiz"><summary>An unpowered, isolated trunk designed for two passive 120 Ω terminations reads about 120 Ω. What would you check?</summary><div class="answer"><p>One terminator may be missing or disconnected. Verify each physical end and cable continuity. Remove the known parallel paths if you need to confirm each resistor separately.</p></div></details>
     <details class="quiz"><summary>Why should an RS-485 trunk be a daisy chain and not a star?</summary><div class="answer"><p>At signal edges the cable acts as a transmission line. Branches and unterminated ends reflect energy back as echoes that distort bits. A single line with a matched 120 Ω at each end absorbs the signal at both ends; a star cannot be terminated properly.</p></div></details>
     <details class="quiz"><summary>A meter's voltage reads −2.4 × 10⁻⁴¹ V. What is wrong?</summary><div class="answer"><p>The two 16-bit halves of the 32-bit float are in the wrong order (word swap). Swap the word order in the software or gateway and the value becomes sensible (230.5 V in our example).</p></div></details>
-    <details class="quiz"><summary>What does a response starting 01 83 02 mean?</summary><div class="answer"><p>Slave 1 is reporting an exception (0x83 = 0x03 + 0x80) to a "read holding registers" request, with exception code 02: illegal data address. The register you asked for does not exist on that device.</p></div></details>
-    <details class="quiz"><summary>Why does Modbus TCP not need the CRC?</summary><div class="answer"><p>Ethernet frames carry their own CRC and TCP has its own checksum and retransmission, so corrupted data is detected and resent by the network layers below Modbus.</p></div></details>
+    <details class="quiz"><summary>What does a response starting 01 83 02 mean?</summary><div class="answer"><p>Server 1 returned an exception to a read-holding-registers request (0x83 = 0x03 + 0x80). Exception 02 is illegal data address. Check whether the whole range requested exists in the correct table.</p></div></details>
+    <details class="quiz"><summary>How do Modbus RTU and TCP identify their messages?</summary><div class="answer"><p>RTU has address, function and payload fields plus its frame CRC. A Modbus TCP message uses an MBAP header with a transaction identifier, length and unit identifier. TCP handles stream transport and retries. The application still verifies the function, response and register data.</p></div></details>
 
     <h2>Skills checklist</h2>
     <ul class="checklist">
@@ -642,6 +642,7 @@ print("CDAB:", struct.unpack("&gt;f", cdab)[0])  # nonsense for this device</cod
       <li><input type="checkbox"><span>I can decode a Modbus RTU request and response byte by byte, including exceptions.</span></li>
       <li><input type="checkbox"><span>I can read a Modbus device with QModMaster and Python, and fix word-order and scaling problems.</span></li>
     </ul>
+    <a class="crosslink" href="p175-verify-a-modbus-register-snapshot.html">P175 · Reproduce a valid Modbus reply with a mixed 32-bit position</a>
   </main>
 </div>
 <script src="../assets/toc.js?v=20261120-workshop"></script>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T58 · Robot actuators, loads and drive limits</title>
+<meta name="description" content="Calculate force, torque, speed, current, gearing and payload limits for mobile and industrial robots.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T58</span>
+    <h1>Robot actuators, loads and drive limits</h1>
+    <p class="lede">Start at the wheel or tool where work happens. Work backward through gearing, motor, drive and supply to find what can actually deliver that motion.</p>
+    <div class="meta"><span><b>Time</b> 40 minutes</span><span><b>Before this</b> <a href="t03-power-energy-heat.html">T03</a> · <a href="t19-motors-vsds.html">T19</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Translate a task into force and speed</h2>
+    <p>For a wheeled robot moving uphill, required longitudinal force is approximately F = ma + mg sin(α) + C<sub>rr</sub>mg cos(α). The terms describe acceleration, gravity along the slope and rolling resistance. A passive caster, surface transitions and load distribution can add effects worth measuring. With two equally loaded driven wheels, each supplies half the force in this example. Wheel torque is force per wheel × wheel radius. Wheel angular speed is linear speed divided by radius. Check available traction as well as motor torque. A slipping wheel can show high RPM with very little chassis progress.</p>
+    <div class="formula">ω<sub>motor</sub> = Gω<sub>wheel</sub> &nbsp; · &nbsp; τ<sub>motor</sub> ≈ τ<sub>wheel</sub> / (Gη)</div>
+    <p>G is motor revolutions per wheel revolution. With 0.18 N·m at the wheel, 30:1 gearing and 75% assumed efficiency, the motor needs 0.008 N·m at the shaft. A 50 mm radius wheel at 0.50 m/s turns at 10 rad/s, so the same motor must supply that torque near 2,865 rpm. Check the speed and torque together on the motor’s curve and confirm the gearbox’s own output limit. Larger wheels trade force for speed at a given shaft torque and rpm.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/servo.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Disassembled hobby servo showing motor and reduction gears">
+      <figcaption>The small motor turns quickly. The gear train lowers shaft speed and raises torque within its mechanical rating.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Relate joint motion and forces at the end effector. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/velocity-kinematics-and-statics/">Northwestern · Velocity kinematics and statics video</a>.</p>
+
+    <h2>Current delivers torque and creates heat</h2>
+    <p>In a simple brushed DC motor model, V ≈ IR + L di/dt + k<sub>e</sub>ω, and electromagnetic torque is k<sub>t</sub>I. Back EMF rises with speed. At standstill the back EMF is zero, and steady current would approach V/R if the drive and supply allowed it. Driver current regulation can limit this current. Compare driver, motor and gearhead continuous ratings and peak limits, including the specified time and thermal conditions. Account for both motors starting together and for motor current versus source current under PWM. Driver and battery current limits apply at different measurement points.</p>
+    <p>During deceleration a moving load can feed energy back into the DC bus. Read the driver’s recirculation and braking documentation and check what the power source can absorb. A supply that can deliver current might still have no way to sink it. A vertically loaded axis can move after power loss unless the application has an appropriate means to hold the load.</p>
+    <p>A shorted motor can brake while dissipating energy in its winding and bridge switches. Regeneration routes some mechanical energy back to the source or the bus capacitor. An ideal capacitor accepting energy <var>E</var> would rise from <var>V</var><sub>1</sub> to √(<var>V</var><sub>1</sub>² + 2<var>E</var>/<var>C</var>). Determine how much energy actually reaches that node and check its peak current and voltage. <a href="../practice/p167-measure-motor-braking-and-bus-rise.html">P167 · Compare the current paths and measure bus rise</a>.</p>
+
+    <h2>Choose feedback and mechanics for the task</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Drive choice</th><th scope="col">What to verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Brushed DC gearmotor and encoder</th><td>Motor driver current limit, gearbox backlash, encoder edge count and whether the encoder is upstream of lost motion.</td></tr>
+        <tr><th scope="row">Stepper</th><td>Torque at the demanded speed and acceleration. An open-loop count of commanded steps cannot reveal lost motion after a stall.</td></tr>
+        <tr><th scope="row">Servo drive with feedback</th><td>Encoder reference, following error, drive/brake behavior, and torque and speed limits under continuous and intermittent duty.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For a manipulator, add tool, adapter and part mass. Estimate gravity torque about the joint from the perpendicular moment arm. A 3 kg load at 0.30 m gives about 8.8 N·m from gravity alone when the lever is horizontal. Starting and stopping adds inertia-dependent torque, and the arm’s own mass adds load. Review the manufacturer’s payload, centre-of-gravity and inertia limits for the exact model and configuration. <a href="https://www.universal-robots.com/manuals/EN/HTML/SW10_7/Content/prod-usr-man/complianceUR10e/H_g5_sections/mechanical_interface_g5/maximum_payload_en_10e.htm">UR10e example payload chart</a>.</p>
+
+    <a class="crosslink" href="../practice/p138-robot-drive-sizing.html">P138 · Apply force, speed and current to a two-wheel robot</a>
+    <a class="crosslink" href="t61-servo-dynamics-and-axis-sizing.html">T61 · Calculate reflected inertia and repeated servo torque</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

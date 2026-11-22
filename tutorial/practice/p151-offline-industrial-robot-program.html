@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P151 · Build and prove a pick path on a virtual industrial controller</title>
+<meta name="description" content="Create a PolyScope 5 offline pick routine, compare MoveJ and MoveL, test missing grip and preserve the installation files.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P151</span>
+    <h1>Build and prove a pick path on a virtual industrial controller</h1>
+    <p class="lede">Build a short pick-and-place routine on an offline controller. Measure whether the path stays clear and whether an interrupted job can resume with the correct part state.</p>
+    <div class="meta"><span><b>Time</b> 75–110 minutes</span><span><b>Before this</b> <a href="p142-robot-arm-path-planning.html">P142</a> · <a href="p147-gripper-and-vacuum-diagnostics.html">P147</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Keep your program, tooling and frames together</h2>
+    <p>Use an offline e-Series PolyScope 5 simulator with a virtual robot and no equipment connection. The supplier download may require an account and an appropriate host environment. The steps use the 5.25-era software handbook. Match the manual to your installed version. You can also work the same approach, detour and clearance logic in the browser with <a href="p142-robot-arm-path-planning.html">P142</a> and rehearse part states with <a href="p149-cnc-machine-tending-recovery.html">P149</a>. <a href="https://www.universal-robots.com/download/software-ur-series/simulator-linux/offline-simulator-ur-series-e-series-ur-sim-for-linux-5262/">Universal Robots · Offline simulator example</a> · <a href="https://www.universal-robots.com/manuals/EN/PDF/SW5_25_1/Poly5_handbook_online/e-Series_Software_Handbook_en_Global.pdf">PolyScope 5 e-Series software handbook</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="End effectors positioned over a part tray in a robot cell">
+      <figcaption>The taught points belong to tooling and fixture geometry. Identify the direction the gripper needs to approach and retreat relative to the tray.<br><small>Photo by Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p>Define the active tool centre point in the virtual installation. Note the transform from flange to TCP and the frame used to specify each waypoint. Choose positions within the model’s demonstrated reach. Use a sketch showing the pick surface, approach and place surface. Keep a saved copy of the simulated installation and program together so the same program can be tested with the same tool and feature frames.</p>
+
+    <h2>Teach a path with stopping points</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Segment</th><th scope="col">Move</th><th scope="col">What to observe</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Park to pick approach</th><td>MoveJ to the approach point</td><td>Inspect the whole arm sweep. Joint interpolation can curve the tool path.</td></tr>
+        <tr><th scope="row">Approach to pick</th><td>MoveL into the fixture, zero blend at pick</td><td>Linear TCP travel into the part and an actual stopping point for contact.</td></tr>
+        <tr><th scope="row">Pick to retreat</th><td>MoveL away along the insertion direction</td><td>Check clearance with the carried part envelope before transferring.</td></tr>
+        <tr><th scope="row">Transfer and place</th><td>MoveJ between clear approach points. MoveL into and out of placement.</td><td>Retain the gripper load until release proof. Stop at the placement point.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Step through the sequence in the virtual controller. Compare the same two clear positions with MoveJ and MoveL and record where their TCP paths diverge. On the two-link trainer in P142, compare maximum x in the direct joint move with the straight tool move. Add blend only at an intermediate travel waypoint where the clearance allows rounding. Compare the time and corner path with blend set to zero, then restore zero blend at pick and placement. An emulator’s graphical view may omit workpiece and fixture geometry. Treat your sketch, configured models and the program trace as separate evidence. <a href="https://www.universal-robots.com/manuals/EN/HTML/SW5_25_1/Content/prod-usr-man/software/PolyScope/content/BasicProgNodes/commandtab_way_blend_traj.htm">Universal Robots · Blend trajectories</a>.</p>
+
+    <h2>Demonstrate failure before handing over the program</h2>
+    <p>In the virtual program, use a simulation-only variable for grip proof. Run once with a successful pick and once with proof false at the pick. In the failing run the sequence should stop or enter its training hold state before transfer. Change proof back to true and confirm the held run does not assume a new part merely because proof returned. Test restart with part disposition unknown using the P149 work record.</p>
+    <p>Use a copy of the installation with a known TCP change and repeat the virtual pose comparison. Log which reference changed, which moves depend on it and what you must revalidate. Keep the simulator version, program, installation, waypoint and move list, test results and open clearance items. Plant release uses the approved production configuration and installed tests. <a href="https://www.abb.com/global/en/areas/robotics/products/software/robotstudio-suite">ABB · Another industrial virtual-controller workflow</a>.</p>
+
+    <a class="crosslink" href="p149-cnc-machine-tending-recovery.html">P149 · Verify part transfer and recovery through a machine-tending sequence</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

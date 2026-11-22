@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P179 · Find a motor-start brownout at the power rail</title>
+<meta name="description" content="Run six ngspice power-path comparisons and locate where voltage and time margins disappear.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P179</span>
+    <h1>Find a motor-start brownout at the power rail</h1>
+    <p class="lede">Both wheels start. The controller reboots, or it stays up while the driver still loses power. Trace the same load through six versions of the power path.</p>
+    <div class="meta"><span><b>Time</b> 45–75 minutes</span><span><b>Before this</b> <a href="p138-robot-drive-sizing.html">P138 · Loaded voltage drops</a> · <a href="../theory/t24-measurement-datasheets.html">T24 · Measure at the load</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Measure each supply against its own return</h2>
+    <p>The model starts with a 5.5 V source, 0.22 Ω internal resistance, a 0.50 Ω faulty positive contact and a 0.10 Ω return. Each simulated bridge draws 1.50 A for 10 ms at startup and then ramps to 0.60 A. The controller adds 0.15 A. The representative regulator supplies up to 3.3 V with 0.4 V static dropout. Set the exercise limits at 4.00 V at the driver terminals and 3.05 V between the controller’s supply and ground pins.</p>
+    <p>Measure the pack, the differential bridge input, the contact and the return at the same instant. At peak demand, 3.15 A through the source’s 0.22 Ω drops 0.693 V, leaving 4.807 V at the pack. The 1.575 V contact drop and 0.315 V return drop leave 2.917 V at the bridge. The controller model falls to 2.517 V.</p>
+
+    <h2>Run six versions of the same load</h2>
+    <p>Download the <a href="../assets/labs/startup-rail/startup_rail.cir" download>ngspice model</a>, <a href="../assets/labs/startup-rail/compare_startup.py" download>Python runner</a> and <a href="../assets/labs/startup-rail/observed.csv" download>observed summary</a>. Use ngspice 42 and Python 3. The runner creates six directories and writes each raw trace and simulator log.</p>
+    <pre><code>python3 compare_startup.py startup-run</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Change</th><th scope="col">Minimum bridge / logic</th><th scope="col">Time below the bridge / logic limits</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Faulty contact, both start together</th><td>2.917 / 2.517 V</td><td>15.259 / 12.362 ms</td></tr>
+        <tr><th scope="row">4700 µF, up from 470 µF</th><td>3.102 / 2.702 V</td><td>15.864 / 9.022 ms</td></tr>
+        <tr><th scope="row">Logic supply taken before the contact</th><td>2.992 / 3.300 V</td><td>14.874 / 0 ms</td></tr>
+        <tr><th scope="row">Second start delayed by 25 ms</th><td>3.655 / 3.255 V</td><td>13.212 / 0 ms</td></tr>
+        <tr><th scope="row">Positive contact repaired to 0.055 Ω</th><td>4.319 / 3.300 V</td><td>0 / 0 ms</td></tr>
+        <tr><th scope="row">Repaired contact and a weaker source</th><td>3.163 / 2.763 V</td><td>15.409 / 11.599 ms</td></tr>
+      </tbody>
+    </table></div>
+    <p>More capacitance improves the minimum and changes how quickly the rail recovers. The example remains below the bridge limit slightly longer with the larger capacitor. Its final voltage returns to normal in both traces. A meter reading taken after the pulse would miss the difference.</p>
+
+    <h2>Turn the diagnosis into a repeatable bench check</h2>
+    <ol class="steps">
+      <li>Compare the simultaneous voltage readings. In the weak-source case the pack falls to 3.651 V and fixing the contact alone cannot recover the voltage margin.</li>
+      <li>Use a current-limited isolated low-voltage trainer and a secured motor if you collect hardware results. Trigger on the start command and record the pack, bridge and logic rails with suitably referenced probes. First verify the scope ground before connecting to a point that has a changing return voltage.</li>
+      <li>Record reset reason, rail minima, time below the device’s documented limits and whether the bridge actually enabled. Include the normal load, the startup combination and the declared low-supply corner. Repeat at the same load after work on a connector.</li>
+    </ol>
+    <p>The ngspice load is imposed, and the regulator model is a static voltage relation. A live driver may cut its load or cycle through recovery. Logic regulation also depends on the regulator’s transient response and reset behaviour depends on the MCU’s thresholds and timing. <a href="https://www.ti.com/document-viewer/lit/html/SSZTAC2/GUID-B5877167-E0FE-4366-8E86-6CFCE28E0DA8">Texas Instruments · LDO dropout</a>.</p>
+    <a class="crosslink" href="p173-test-compiled-wheel-firmware-in-an-emulator.html">P173 · Test the firmware response when sensor feedback disappears</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

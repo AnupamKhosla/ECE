@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T72 · Robot cell backups, software rollback and production recovery</title>
+<meta name="description" content="Define a restorable configuration, a consistent database cutoff and the evidence required before an interrupted cell can return to service.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T72</span>
+    <h1>Robot cell backups, software rollback and production recovery</h1>
+    <p class="lede">A controller can boot with the wrong frames, and a database can open with yesterday’s good-part count. Recovery needs proof of what was configured, what production state survived and which functions have been retested.</p>
+    <div class="meta"><span><b>Time</b> 35–45 min</span><span><b>Before this</b> <a href="t60-industrial-robot-integration.html">T60 · Cell integration and acceptance</a> · <a href="t66-robot-station-identity-and-durable-completion.html">T66 · Durable completion</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify the three things that must agree</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Evidence</th><th scope="col">What to save</th><th scope="col">What to prove on restore</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Commissioned configuration</th><td>Robot and PLC program revisions, recipes, I/O mapping, fixture dimensions, tool frame, payload settings, camera calibration and version compatibility.</td><td>Restored file hashes, matching hardware IDs and a reference-pose or station I/O test using the approved setup.</td></tr>
+        <tr><th scope="row">Production history</th><td>A consistent database snapshot, its last retained durable event and the ordered event stream after that point.</td><td>Apply messages with their original identity, compare committed and held serials to an independent record, and keep uncertain units on hold.</td></tr>
+        <tr><th scope="row">Present machine state</th><td>Last known tool, job, part and step, with places that can contain a part clearly identified.</td><td>Inspect and reconcile actual occupancy, ownership and independent safeguard evidence before staged return to service.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Use a documented release or stopped configuration-change window to coordinate versions. A consistent snapshot of one software database does not synchronize separate device controllers. A manifest identifies the bytes in a particular backup. Keep a trusted approved revision record so a correctly copied older PLC file or wrong camera transform can still be rejected.</p>
+    <h2>Establish what a backup can lose and how long recovery takes</h2>
+    <p>A recovery point objective (RPO) defines acceptable loss of recent records. A recovery time objective (RTO) defines acceptable time to restore service with required checks. Suppose a database snapshot stops at 14:00 and the line is interrupted at 14:37. On its own the snapshot leaves up to 37 minutes of events to reconcile, outside a 10-minute RPO. If a separate durable feed is proven through 14:35 and the suffix can be applied, the remaining unexplained time window shrinks to at most two minutes under those assumptions. Inventory and resolve the actual missing work in that window.</p>
+    <p>For a 60-minute RTO, a drill with 8 minutes to retrieve and identify the bundle, 12 minutes to restore the database and config, 7 minutes to reconcile events, and 18 minutes to check the simulated functions totals 45 minutes. A real plant drill also needs the agreed equipment, people and release checks. Time the entire handover from interruption to authorized service.</p>
+    <h2>Reconcile newer state when rolling back a configuration</h2>
+    <p>Returning to an earlier robot program can leave the production database current. Check whether it can read the new schema and orders. If it cannot, stage a migration or compatible restore plan on a clone and reconcile with the independent ledger. Never assume you can roll a part’s history back just because the control file came from an earlier release.</p>
+    <p>Use the database’s supported snapshot mechanism. In SQLite write-ahead logging, committed changes can live in the WAL until a checkpoint transfers them to the main database. A copied main file can have correct internal structure and still end at an older approved part. <a href="https://www.sqlite.org/wal.html">SQLite write-ahead logging</a> · <a href="https://www.sqlite.org/backup.html">SQLite Online Backup API</a>.</p>
+    <details class="quiz"><summary>What distinguishes a valid archived file from a usable recovery point?</summary><div class="answer"><p>Check file integrity first, then compare its release details and event cutoff to independently retained evidence. Restore and exercise the configured functions on a clean target. Recover or account for later production events before considering service release.</p></div></details>
+    <a class="crosslink" href="../practice/p171-rehearse-a-robot-cell-restore.html">Practice P171 · Verify a restore from the backup through the latest part</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

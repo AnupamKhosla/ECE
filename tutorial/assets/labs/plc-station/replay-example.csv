@@ -1,0 +1,41 @@
+case,clock_ms,event,phase,request_valid,consumed_valid,interface_job_id,last_issued_id,last_committed_id,good_parts,first_fault
+complete,0,Boot,ReviewRequired,0,0,0,0,0,0,NoFault
+complete,10,Reviewed idle robot and clear station,ReadyForJob,0,0,0,0,0,0,NoFault
+complete,20,Start job 42,WaitForAck,1,0,42,42,0,0,NoFault
+complete,260,Old acknowledgment while start is held,WaitForAck,1,0,42,42,0,0,NoFault
+complete,270,Matching acknowledgment on deadline,WaitForResult,0,0,42,42,0,0,NoFault
+complete,500,Old result for job 41,WaitForResult,0,0,42,42,0,0,NoFault
+complete,510,Current result without placement proof,WaitForResult,0,0,42,42,0,0,NoFault
+complete,540,New matching placement proof,WaitForClear,0,1,42,42,42,1,NoFault
+complete,550,Held result and start,WaitForClear,0,1,42,42,42,1,NoFault
+complete,560,Link drops after commit,ReviewRequired,0,0,42,42,42,1,LinkLost
+complete,570,Link returns with the same committed result,ReviewRequired,0,1,42,42,42,1,LinkLost
+complete,600,Review record and clear fixture,ReadyForJob,0,0,0,42,42,1,NoFault
+complete,610,Start still held after review,ReadyForJob,0,0,0,42,42,1,NoFault
+complete,620,Start released,ReadyForJob,0,0,0,42,42,1,NoFault
+complete,630,Repeated request for previously issued job 42,ReadyForJob,0,0,0,42,42,1,NoFault
+late_ack,0,Boot,ReviewRequired,0,0,0,0,0,0,NoFault
+late_ack,10,Reviewed idle robot and clear station,ReadyForJob,0,0,0,0,0,0,NoFault
+late_ack,20,Start job 42,WaitForAck,1,0,42,42,0,0,NoFault
+late_ack,270,No acknowledgment at deadline,ReviewRequired,0,0,42,42,0,0,AckDeadline
+late_ack,280,Matching acknowledgment arrives after deadline,ReviewRequired,0,0,42,42,0,0,AckDeadline
+missing_proof,0,Boot,ReviewRequired,0,0,0,0,0,0,NoFault
+missing_proof,10,Reviewed idle robot and clear station,ReadyForJob,0,0,0,0,0,0,NoFault
+missing_proof,20,Start job 42,WaitForAck,1,0,42,42,0,0,NoFault
+missing_proof,50,Robot accepted job,WaitForResult,0,0,42,42,0,0,NoFault
+missing_proof,800,Matching result but proof belongs to job 41,WaitForResult,0,0,42,42,0,0,NoFault
+missing_proof,1550,Result deadline with wrong placement ID,ReviewRequired,0,0,42,42,0,0,ResultDeadline
+wrap_and_loss,4294967235,Boot,ReviewRequired,0,0,0,0,0,0,NoFault
+wrap_and_loss,4294967245,Reviewed idle robot and clear station,ReadyForJob,0,0,0,0,0,0,NoFault
+wrap_and_loss,4294967255,Start job 42,WaitForAck,1,0,42,42,0,0,NoFault
+wrap_and_loss,209,Matching acknowledgment crosses clock wrap,WaitForResult,0,0,42,42,0,0,NoFault
+wrap_and_loss,219,Result and proof coincide with lost link,ReviewRequired,0,0,42,42,0,0,LinkLost
+boot_and_rearm,0,Both buttons held at boot,ReviewRequired,0,0,0,0,0,0,NoFault
+boot_and_rearm,10,Review released,ReviewRequired,0,0,0,0,0,0,NoFault
+boot_and_rearm,20,Fresh review edge,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,30,Start still held,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,40,Start released and prior placement remains active,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,50,Fresh start blocked by prior placement,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,60,Placement clears while start is held,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,70,Start released with station clear,ReadyForJob,0,0,0,0,0,0,NoFault
+boot_and_rearm,80,Start job 42,WaitForAck,1,0,42,42,0,0,NoFault

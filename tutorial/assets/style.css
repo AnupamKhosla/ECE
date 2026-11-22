@@ -62,6 +62,7 @@ p{margin:0 0 16px}
 ul,ol{padding-left:24px;margin:0 0 16px}
 li{margin:6px 0}
 code,kbd{font:0.88em var(--mono);background:var(--code);padding:2px 5px;border-radius:4px}
+:not(pre)>code{overflow-wrap:anywhere}
 pre{font:14px/1.6 var(--mono);background:var(--code);padding:16px 18px;border-radius:var(--radius);overflow-x:auto;border:1px solid var(--line)}
 pre code{background:none;padding:0}
 hr{border:none;border-top:1px solid var(--line);margin:36px 0}
@@ -150,6 +151,14 @@ ul.checklist input{margin-top:6px;width:18px;height:18px;accent-color:var(--acce
 .lab-controls button:hover{border-color:var(--accent)}
 .lab-plot{display:block;width:min(100%,370px);height:auto;margin:16px auto}
 .lab-plot[hidden]{display:none}
+.map-replay-grid th,.map-replay-grid td{min-width:24px;padding:4px;text-align:center}
+.map-replay-grid td[data-kind="wall"],.map-replay-grid td[data-kind="blocked"]{background:var(--wash)}
+.map-replay-grid td[data-kind="route"],.map-replay-grid td[data-kind="start"],.map-replay-grid td[data-kind="goal"]{color:var(--practice);font-weight:700}
+.map-replay-grid td[data-kind="crate"]{color:var(--warn);font-weight:700}
+.map-comparison{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px;margin:18px 0}
+.map-comparison figure{margin:0}
+.map-comparison img{display:block;max-width:100%;height:auto;image-rendering:pixelated;border:1px solid var(--line)}
+.map-comparison figcaption{font-size:.88rem;color:var(--muted);margin-top:7px}
 .widget input[type=file]{max-width:100%;font:inherit}
 
 /* Repair worksheet: values are mirrored as wrapping text for complete printing. */

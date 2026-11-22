@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P172 · Measure ADC acquisition error after a channel change</title>
+<meta name="description" content="Use ngspice to test sample-capacitor settling through a high-impedance source and compare acquisition accuracy with sensor step response.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P172</span>
+    <h1>Measure ADC acquisition error after a channel change</h1>
+    <p class="lede">The input voltage is 0.50 V. Depending on which channel came first, a short acquisition can leave the sampling capacitor at 0.786 V or 0.450 V. Trace the remaining charge and qualify a correction against two different timing limits.</p>
+    <div class="meta"><span><b>Time</b> 50–70 min</span><span><b>Before this</b> <a href="../theory/t24-measurement-datasheets.html">T24 · Instrument loading and ADC settling</a> · <a href="p25-scope-filters.html">P25 · Measure an RC filter</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Set both exercise requirements</h2>
+    <p>The training ADC has a 3.3 V range, 12 bits, a 20 pF sample capacitor and a 1 kΩ closed sampling switch. Use half an ideal count, 3.3 ÷ (2 × 4096) ≈ 0.403 mV, as the acquisition-only error limit. The previous channel could leave 2.80 V or 0.10 V on that capacitor. The selected sensor is initially 0.50 V through a source resistance of 47 kΩ.</p>
+    <p>Later the sensor changes from 0.50 V to 0.85 V. The voltage at the ADC input pin must come within 10 mV of that new target in 2 ms. Measure the acquisition error at the sampling capacitor and the slower sensor tracking error at the pin. The circuit includes a switch and capacitor model. Real converters also add reference, offset, gain, input leakage and other errors. <a href="https://www.ti.com/document-viewer/lit/html/SBAA531/GUID-C628EB31-82F2-49EE-9BCE-BC451204DC7F">TI · SAR acquisition time and input settling</a>.</p>
+
+    <h2>Run the transient</h2>
+    <p>Download <a href="../assets/labs/adc-acquisition/adc-acquisition.cir" download>the ADC acquisition model</a> and run it with ngspice in a writable folder. The switch closes near t = 10 µs. Read at t = 12, 20 and 23 µs for effective acquisitions of roughly 2, 10 and 13 µs. The simulation keeps the switch closed across the measurement points so you can compare multiple possible end times in one trace.</p>
+    <pre><code>ngspice -b adc-acquisition.cir</code></pre>
+    <p>The output includes a short transient and a separate longer run for the sensor step. It writes <code>adc-acquisition.dat</code> and <code>adc-step-tracking.dat</code>. Compare the reported voltages with <a href="../assets/labs/adc-acquisition/adc-observed.csv" download>the ngspice 42 measurements</a>.</p>
+    <figure class="course-photo">
+      <img src="../assets/labs/adc-acquisition/adc-acquisition.png" width="1260" height="975" loading="lazy" decoding="async" alt="The 220 nanofarad capacitor meets the short ADC acquisition limit but follows the later sensor step slowly. A small capacitor tracks the later step and leaves too much short-acquisition error.">
+      <figcaption>Top, the error magnitude at the holding capacitor after changing channel. Bottom, the separate sensor-pin response to a later step. The dotted vertical lines mark 2 µs in the upper chart and 2 ms in the lower chart.</figcaption>
+    </figure>
+
+    <h2>Use the history and source impedance</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Acquisition case</th><th scope="col">Holding voltage</th><th scope="col">Signed error from 0.50 V</th><th scope="col">0.403 mV limit</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">47 kΩ, previous 2.80 V, 2 µs</th><td>0.786075 V</td><td>+286.075 mV</td><td>Miss</td></tr>
+        <tr><th scope="row">47 kΩ, previous 0.10 V, 2 µs</th><td>0.450248 V</td><td>−49.752 mV</td><td>Miss</td></tr>
+        <tr><th scope="row">47 kΩ, previous 2.80 V, 10 µs</th><td>0.500069 V</td><td>+0.069 mV</td><td>Pass at nominal values</td></tr>
+        <tr><th scope="row">56.4 kΩ and 24 pF, 10 µs</th><td>0.501617 V</td><td>+1.617 mV</td><td>Miss at the modeling corner</td></tr>
+        <tr><th scope="row">56.4 kΩ and 24 pF, 13 µs</th><td>0.500183 V</td><td>+0.183 mV</td><td>Pass at the modeling corner</td></tr>
+        <tr><th scope="row">250 Ω source, 2 µs</th><td>0.500000 V as printed</td><td>Below output resolution at this precision</td><td>Pass in the simplified model</td></tr>
+      </tbody>
+    </table></div>
+    <p>Check the prediction for the high-impedance source. The effective resistance is 47 kΩ + 1 kΩ, so 20 pF gives a time constant of 0.96 µs. After a 2.30 V change the error magnitude is roughly 2.30 × exp(−2/0.96) = 0.286 V at 2 µs. In the model corner the time constant increases to about 1.38 µs. Use the 12-bit threshold to calculate when the corner should pass and compare with your run.</p>
+
+    <h2>Compare charge sharing with sensor bandwidth</h2>
+    <p>With a pin capacitor already at 0.50 V, connecting the higher-voltage sample capacitor initially shares charge. A simple estimate of the change is <code>2.30 V × C<sub>hold</sub> ÷ (C<sub>pin</sub> + C<sub>hold</sub>)</code> when the two capacitors equalize faster than the pin recharges through 47 kΩ. Ten nanofarads limits the short acquisition error to 4.572 mV in the simulation. It still misses the 0.403 mV limit. The 220 nF case passes at 0.209 mV.</p>
+    <p>Now check the later 0.35 V sensor step. With 10 nF the pin reaches 0.845 V after 2 ms, within the 10 mV requirement. With 220 nF it reaches 0.562 V, still about 288 mV low. Its 47 kΩ × 220 nF time constant is 10.34 ms. A longer acquisition or a suitable low-impedance buffer gives a different tradeoff. Check the buffer’s actual settling, capacitive-load stability, noise and output range using the target converter and sensor.</p>
+    <details class="quiz"><summary>Why would a DMM on a steady 0.50 V node miss this error?</summary><div class="answer"><p>The stored voltage builds only while the sample switch is closed. A slow average on the source cannot show whether the capacitor has settled at the actual end of acquisition. Check raw ADC readings after different preceding channels and record the acquisition configuration.</p></div></details>
+    <p>Save the before-and-after traces, the input impedances, the sample times and results for both requirements. For bench verification, use two known extra-low-voltage inputs within the converter range. Reverse the channel order and compare first-sample error, repeat readings and longer acquisitions using the actual device specifications.</p>
+    <a class="crosslink" href="p51-load-cell-data-acquisition.html">Practice P51 · Separately qualify sensor calibration and drift</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

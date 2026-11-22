@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>W08 · Design a DC stick welding set and build its current-control trainer</title>
+<meta name="description" content="Build a 9 V regulated-current circuit, measure its load and thermal limits, then specify the power stage and tests for a real MMA machine.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-welding">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Welding Repair Track</div>
+    <span class="eyebrow">W08</span>
+    <h1>Design a DC stick welding set and build its current-control trainer</h1>
+    <p class="lede">Start your own DC MMA design at the point that makes it a welder: regulated current as the load voltage changes. Build that function from components on a 9 V bench, then use it to specify a full-size set.</p>
+    <div class="meta"><span><b>Time</b> 90–120 minutes</span><span><b>Before this</b> <a href="w01-machine-map-safety.html">W01 · Machine families</a> · <a href="w04-switches-drivers.html">W04 · Switches and drivers</a> · <a href="../theory/t21-switching-converters-control.html">T21 · Switching and feedback</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Specify the machine you want</h2>
+    <p>Choose DC manual metal arc welding (MMA, also called stick or SMAW) because it matches the compact inverter machines in W01. A power source can hold approximately the same current across a useful voltage range. With an open electrode there is no load current, and output voltage needs its own limit. In a sustained stick condition, the control has to limit the low-voltage current and respond over time. <a href="https://qacd10.lincolnelectric.com/en/Welding-and-Cutting-Resource-Center/Process-and-Theory/Constant-Current-vs-Constant-Voltage-Output">Lincoln Electric · Constant-current welding characteristic</a>.</p>
+    <p>For a design exercise, write an output target of 100 A at 24 V for 2.40 kW of arc-side power. At a hypothetical 85% efficiency, input real power at that point is about 2.82 kW and heat lost in the equipment is about 424 W. This sets up the thermal and input-current problems. Specify rated current <em>with</em> voltage, supply conditions and duty cycle. Specify permitted open-circuit voltage and any voltage reduction feature with the applicable evaluation lab.</p>
+
+    <h2>Build the 9 V version from components</h2>
+    <p>Use an isolated adjustable 9 V bench supply with its current limit set to 0.20 A, an LM317 in a leaded package, a suitable clip-on heatsink, a 10 Ω 1 W metal-film set resistor, 1 Ω, 22 Ω, 33 Ω and 100 Ω dummy loads rated 2 W, an insulated terminal board and a multimeter. The loads are ordinary resistors. This bench build demonstrates current control and neither strikes an arc nor melts material.</p>
+    <pre><code>9 V positive → LM317 IN
+LM317 OUT → 10 Ω set resistor → load node
+LM317 ADJ → load node
+load node → one dummy load → supply negative</code></pre>
+    <ol class="steps">
+      <li>Use the exact manufacturer pinout and heatsink instructions. On the TI TO-220 drawing the tab is connected to the output. Keep it away from grounded metal and other contacts. Use the input bypass called for by the datasheet and inspect polarity and continuity with power off.</li>
+      <li>Connect the 22 Ω load first and power up. Measure across the set resistor and the load. The nominal regulator reference is 1.25 V, so 1.25 V ÷ 10 Ω gives 0.125 A. Compare the two independently inferred currents using the measured resistor values. Record the regulator input and output-pin voltages to see how much headroom remains.</li>
+      <li>Power down for each load change. The 33 Ω load should need more voltage for about the same current, and 100 Ω asks for 12.5 V at 125 mA, beyond a 9 V input even before regulation losses. Record the lower current at the heavy resistance. For the 1 Ω case, fit the heatsink first, observe only long enough to collect a stable reading and monitor regulator temperature. Stop for a rising temperature beyond your bench limit. Use the resistor instead of directly shorting the output.</li>
+      <li>With the supply off, remove the load. Use the meter to observe the no-load output during a brief power-up, then power off. The isolated bench supply bounds the available voltage. An LM317 current regulator by itself provides no specified open-electrode or anti-stick function for an arc welder.</li>
+    </ol>
+    <p>At 1 Ω the modeled load dissipates only 0.016 W, while the regulator dissipates 0.953 W. At 33 Ω the load takes 0.516 W and the regulator 0.453 W. This demonstrates why the device may heat more during a low-voltage fault even when useful output power is small. Derive temperature rise using the thermal path of the specific package and heatsink. <a href="https://www.ti.com/lit/ds/symlink/lm317.pdf">TI · LM317 pinout and current limiter application</a>.</p>
+
+    <h2>Predict the load curve before measuring it</h2>
+    <p>Download the <a href="../assets/labs/stick-supply/low_voltage_current_source.cir" download>ngspice model</a> and <a href="../assets/labs/stick-supply/observed.csv" download>100 computed load points</a>. Run <code>ngspice -b low_voltage_current_source.cir</code>. The model assumes 2.5 V dropout and a small continuous transition out of current regulation. It models DC loads and omits LM317 tolerance, device heating and circuit dynamics.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Dummy load</th><th scope="col">Modeled voltage</th><th scope="col">Modeled current</th><th scope="col">Interpretation</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1 Ω</th><td>0.125 V</td><td>125 mA</td><td>Near-short surrogate and highest regulator heating among these samples.</td></tr>
+        <tr><th scope="row">22 Ω</th><td>2.750 V</td><td>125 mA</td><td>Current regulation with headroom.</td></tr>
+        <tr><th scope="row">33 Ω</th><td>4.125 V</td><td>125 mA</td><td>Same nominal current at a higher load voltage.</td></tr>
+        <tr><th scope="row">100 Ω</th><td>5.904 V</td><td>59.0 mA</td><td>Voltage headroom runs out before the current reaches the setting.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Turn the bench results into a full-size design brief</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Block</th><th scope="col">Design output to ask for</th><th scope="col">Evidence before release</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input and isolated power stage</th><td>Input protection, inrush handling, auxiliary supply, isolation system, inverter topology and thermal design with qualified suppliers.</td><td>Drawings, component ratings and independent electrical, abnormal operation and EMC assessments.</td></tr>
+        <tr><th scope="row">Output rectifier, choke and leads</th><td>Output voltage and current range, ripple, connector ratings, reverse-recovery and temperature margins.</td><td>Load-bank voltage and current points. Repeat at the rated duty and through fan or cooling faults as the lab specifies.</td></tr>
+        <tr><th scope="row">Current sensing and protection</th><td>Calibrated feedback, independent fast overcurrent protection, limits at open output and a defined stuck-electrode and recovery policy.</td><td>Bench fault cases for lost feedback, low output and over-temperature, then scoped tests on an instrumented prototype under a competent design team.</td></tr>
+        <tr><th scope="row">Product and service</th><td>Model and revision, serial number, matching leads and holder, enclosure, installation instructions and service access scheme.</td><td>Accredited-lab records and a production check under the applicable Indian standard. After electrical verification, a trained welder runs a documented coupon trial with local fume control and welding PPE.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Commission a qualified power-source designer or OEM to develop the enclosed production prototype against your brief. Bring your load table, current range and duty requirement to BIS and your test lab to confirm the current edition, classification and applicable licensing obligations. India’s Gazette lists the 2024 revision of IS 16593 Part 1, based on IEC 60974-1:2021. For an existing machine follow its own test and recommissioning procedure. <a href="https://egazette.gov.in/WriteReadData/2024/255600.pdf">BIS Gazette notice, item 8</a> · <a href="https://webstore.iec.ch/en/publication/64782">IEC welding power sources</a> · <a href="w06-repair-return-to-service.html">W06 · Return to service</a>.</p>
+    <a class="crosslink" href="w09-build-a-shop-made-stick-welding-set.html">W09 · Build the chassis and assemble a 230 V stick welder</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

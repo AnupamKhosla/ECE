@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T68 · How much evidence supports a robot cell acceptance decision?</title>
+<meta name="description" content="Define timing and output denominators, reason about sampled tails and set a one-sided upper bound on failure probability.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T68</span>
+    <h1>How much evidence supports a robot cell acceptance decision?</h1>
+    <p class="lede">A factory demo can meet an output target while a rarely run recipe is still slow or poorly tested. Establish the measurement windows and the evidence required for each recipe before collecting the results.</p>
+    <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="t24-measurement-datasheets.html">T24</a> · <a href="../practice/p146-robot-cell-acceptance.html">P146</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Fix the measurement boundary before the trial</h2>
+    <p>Define a cycle from accepted start to a terminal station decision. Decide how to classify incomplete attempts, rejects, changeovers, operator pauses and upstream starvation. Record what happens in each planned production window, with an agreed list of scheduled exclusions. Start and end timestamps should share one time base for any subtraction.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Question</th><th scope="col">Evidence and denominator</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Can the installed cell supply the line?</th><td>Unique good units divided by planned production hours. Planned changeover and blocked or starved time still consume that window unless the agreement assigns them outside it.</td></tr>
+        <tr><th scope="row">How long does one completed attempt take?</th><td>Cycle duration per eligible terminal attempt, including agreed rejected attempts. Separately count attempted work that never reached a terminal decision.</td></tr>
+        <tr><th scope="row">How often does a placement exceed tolerance?</th><td>Placement failures divided by independently inspected placements. Report inspection coverage. Use measurement uncertainty and a defined sample identity when setting the tolerance.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Use mutually exclusive time intervals for the trial and reconcile them to a known window. Keep the raw count as well as the ratio. For example, 160 good parts in 30 planned minutes yields 320 per planned hour, even if the arm only runs for 24 minutes. The running-only figure of 400 per hour answers how rapidly the cell produced while running.</p>
+
+    <h2>Keep a sample percentile tied to its recipe</h2>
+    <p>For nearest-rank P155, sort the <var>n</var> durations and take the item at rank ⌈0.95<var>n</var>⌉. State the rule because statistical packages use different sample percentile definitions. Also keep the selected cycle ID and the count over the threshold. A 16-cycle sample has rank 16 for P155, so its maximum becomes the reported percentile. A slow recipe can disappear from the upper tail of a pooled P155 when its sample makes up less than 5% of the total. <a href="https://www.itl.nist.gov/div898/handbook/prc/section2/prc262.htm">NIST · Percentiles and order statistics</a>.</p>
+    <p>A sample P155 reports the observed durations. A claim that at most 5% of future cycles exceed 9.5 s needs more evidence. Treat exceedance as a yes-or-no outcome and define the operating conditions to which the claim applies. A stalled attempt belongs to the pre-agreed fault or timeout classification, even if it never appears as a completed-cycle duration.</p>
+
+    <h2>Calculate what zero failures can establish</h2>
+    <p>Suppose independently sampled placements under one defined condition have common failure probability <var>p</var>. The probability of zero failures in <var>n</var> inspections is (1 − <var>p</var>)<sup><var>n</var></sup>. At a one-sided confidence level of 95%, set this probability to 0.05 and solve for the upper bound.</p>
+    <div class="formula">p<sub>upper</sub> = 1 − 0.05<sup>1/n</sup>
+      <small>For <var>k</var> observed failures use the value of <var>p</var> with P(X ≤ <var>k</var>) = 0.05 under a binomial model.</small></div>
+    <p>Zero in 30 gives an upper bound of about 9.50%. To obtain an upper bound of 1% with zero failures, plan at least ⌈ln(0.05)/ln(0.99)⌉ = 299 independent inspections per modeled population. Separate 95% bounds for two recipes are per-recipe statements. An overall confidence commitment covering multiple recipes needs a joint plan agreed in advance. <a href="https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm">NIST · Exact binomial limits and one-sided confidence</a>.</p>
+    <details class="quiz"><summary>How many independent trials with zero late cycles reach a 5% upper bound?</summary><div class="answer"><p>Use ⌈ln(0.05)/ln(0.95)⌉ = 59. This calculation is about the chance of exceeding one fixed deadline. It uses independent cycles from the operating conditions the claim covers.</p></div></details>
+
+    <h2>Test across real change points</h2>
+    <p>Consecutive units from the same lot, fixture or lighting state can share a cause of failure. Cover the actual recipes, lots, shifts, changeovers, warmup and service conditions that matter. If failures cluster, review the sampling unit and analysis with the team responsible for acceptance. A forced sensor or link interruption can prove the specified response on that demand. Keep those deliberately triggered cases separate from the sampled operating rate.</p>
+    <p>Pose and path accuracy or repeatability of the robot are distinct performance measures. Use the contract’s applicable robot-performance test plus the installed application’s process and handover checks. <a href="https://www.iso.org/standard/22244.html">ISO 9283 · Industrial robot performance criteria and test methods</a>.</p>
+    <a class="crosslink" href="../practice/p165-audit-a-robot-cell-pilot.html">P165 · Audit a pilot by recipe, lot and production window</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P153 · Close the speed loop on a small geared motor</title>
+<meta name="description" content="Use an Arduino Uno, a motor driver and one encoder edge to compare open-loop and PI speed with a downloadable training sketch.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P153</span>
+    <h1>Close the speed loop on a small geared motor</h1>
+    <p class="lede">Count a real encoder and measure motor speed before adding feedback. Compare the logged result with the browser model and prove that the bench controller stops when the feedback disappears.</p>
+    <div class="meta"><span><b>Time</b> Two bench sessions</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="p42-mobile-robot-fault-finding.html">P42</a> · <a href="p139-wheel-speed-control.html">P139</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Assemble a single, secured drive</h2>
+    <p>The example uses a 5 V Arduino Uno R3, a Pololu TB6612FNG carrier, the listed 6 V low-power gearmotor and a switched, current-limited extra-low-voltage motor supply. Secure the motor with its output clear of cables and fingers. Use an unloaded shaft with a small visible mark. A reachable motor supply switch lets you remove motor power independently of the sketch. Use <a href="p139-wheel-speed-control.html">P139</a> if the hardware is unavailable.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/encoder.jpg" width="631" height="960" loading="lazy" decoding="async" alt="Encoder measuring rotation on a stationary test stand">
+      <figcaption>The stand keeps the setup fixed while the shaft rotates. Locate the sensor, mechanical coupling and measurement point before wiring the bench trainer.<br><small>International Gemini Observatory/NOIRLab/NSF/AURA, scaled. <a href="https://commons.wikimedia.org/wiki/File:Friction-driven_Encoder_Test_(encoder_02-CC).jpg">Original</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Signal</th><th scope="col">Connection with both supplies off</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Logic supply and common</th><td>Uno USB powers logic. Connect Uno 5 V to driver VCC and encoder VCC. Common the logic reference, encoder ground, driver ground and motor supply negative. Connect 6 V motor positive only to VMOT.</td></tr>
+        <tr><th scope="row">Driver channel A</th><td>STBY to D4, PWMA to D5, AIN1 to D7 and AIN2 to D8. Put the motor leads on AO1 and AO2. Use the documented STBY pull-down. Leave channel B output unused and hold its control inputs low.</td></tr>
+        <tr><th scope="row">Encoder</th><td>Encoder A to D2. Insulate encoder B separately for this single-edge speed example. Check connector identification in the motor data sheet before applying power.</td></tr>
+        <tr><th scope="row">Bench buttons</th><td>Hold-to-run switch from D12 to ground. Second switch from D11 to ground selects the higher target. The sketch enables the Uno’s input pull-ups.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Choose the supply and current limit for the specified motor and wiring. The example motor’s data sheet distinguishes unloaded and stall current. Let the motor stop before handling anything. <a href="https://www.pololu.com/product/5113">Pololu #5113 · Motor and encoder specifications</a> · <a href="https://www.pololu.com/product/713">Pololu #713 · Driver carrier</a>.</p>
+
+    <h2>Predict what the serial log will show</h2>
+    <p>The encoder supplies 12 decoded edges per motor revolution when counting both edges on both channels. The sketch counts just rising edges of channel A, giving 3 per motor revolution. Multiply by 100.37 motor revolutions per gearbox output turn for about 301.1 observed edges per output revolution. In a 100 ms window 30 edges gives about 59.8 rpm. One edge changes the result by about 2 rpm. A single channel measures speed magnitude. When you need signed motion, decode both channels as in P42.</p>
+    <p><a href="../assets/labs/wheel-speed-trainer/wheel-speed-trainer.ino" download>Download the Uno training sketch</a>. Save it in a folder named <code>wheel-speed-trainer</code>, then open it in the Arduino IDE. The encoder interrupt counts edges and timestamps the most recent edge. The main loop reads both together, divides the count change by the actual elapsed sample time and limits duty to 60%. PI holds the previous duty when the last edge is older than 30 ms or the sample window has no edges. The missing-feedback timeout can still disable the bridge. <a href="https://docs.arduino.cc/language-reference/en/functions/external-interrupts/attachInterrupt/">Arduino · External interrupt pins and behaviour</a>.</p>
+
+    <h2>Prove stop, speed and feedback in order</h2>
+    <ol class="steps">
+      <li>Upload with the motor supply switched off. At 115200 baud, confirm that holding the run switch gives a <code>no_encoder_edges</code> message after the grace period. Keep holding the switch and verify there is no new run. Release it before attempting another run. Keep this missing-feedback trial unpowered at VMOT.</li>
+      <li>With run released, switch on the motor supply. In open-loop mode, hold run briefly at the lower target. Record target, measured speed, duty and edge count. Release and confirm drive is disabled. Measure the same speed independently by marking the shaft and counting turns over several seconds or using recorded video.</li>
+      <li>Repeat with the higher target and compare the speed change. Power down the motor supply and re-upload with <code>closedLoop</code> set to <code>true</code>. Compare the same two commands, returning to idle between runs. Use <a href="../theory/t31-feedback-control.html">T31</a> to explain why duty may settle at a different value.</li>
+      <li>Keep one open-loop and one PI trace and name one limitation of each. A missing-edge timeout detects absent counts. It cannot prove direction or reveal motion between an encoder and gearbox output when a coupling slips. This bench sketch uses an unloaded small motor. Its inputs are ordinary training controls.</li>
+    </ol>
+
+    <p>If the accepted count disagrees with the encoder specification after a marked turn, measure the edge at the receiver as in <a href="p154-encoder-signal-integrity.html">P154 · Encoder signal integrity</a>. Use <a href="p173-test-compiled-wheel-firmware-in-an-emulator.html">P173 · Execute both compiled Uno builds with emulated pins</a> to repeat load changes and missing feedback without hardware.</p>
+    <a class="crosslink" href="p148-servo-axis-fault-traces.html">P148 · Follow motor feedback and independent tool travel on an industrial axis</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

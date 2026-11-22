@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P137 · Learn robotics from the first motor to a production cell</title>
+<meta name="description" content="A hands-on route through beginner robotics, drives, feedback, localization, ROS 2, arms, vision, PLCs, mobile fleets and plant acceptance.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P137</span>
+    <h1>Learn robotics from the first motor to a production cell</h1>
+    <p class="lede">Build a robot by proving one link at a time. An encoder count must become the right distance before a map can mean anything. A completed job must correspond to a physical part before a production counter can be trusted.</p>
+    <div class="meta"><span><b>Time</b> 20 minutes to plan</span><span><b>Before this</b> <a href="p00-foundation-roadmap.html">P00 · ECE foundation</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Start with one input and one output</h2>
+    <p>A robot combines a mechanism, a power source, actuators, sensors and a controller. Take a two-wheel line follower. The battery feeds a motor driver. Two reflectance sensors measure the floor. A controller estimates which side of the line it is on and changes wheel duty. Wheels move the frame, so the sensors see a new part of the floor. An encoder adds a separate measurement of wheel rotation. The same boundaries appear on a factory arm, where the joints, tooling and fixture each contribute to where the part ends up.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Robot grippers above trays of parts">
+      <figcaption>Identify the arm, end effector and fixture. Then name one physical signal that could prove a part reached its destination.<br><small>Photo by Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Observe how two joint angles produce one tool position. <a href="https://www.youtube.com/watch?v=cKHsil0V6Qk">Northwestern · Forward kinematics example</a>.</p>
+
+    <h2>Build your first bench robot</h2>
+    <ol class="steps">
+      <li>Use <a href="p02-breadboard-first-led.html">P02</a> and <a href="p03-multimeter-mastery.html">P03</a> to make and measure a circuit. Use <a href="p11-arduino-first-steps.html">P11</a> to prove an input and output in firmware. Check that the output returns to its starting state after a reset.</li>
+      <li>Read a reflectance signal over dark and light material as in <a href="p12-sensors-adc.html">P12</a>. Measure the gap to the paper and keep it fixed during the comparison. Set the threshold only after you know the two readings.</li>
+      <li>Use <a href="p13-actuators-motors.html">P13</a> to identify the motor, driver and separate logic and power connections. Use the hardware route in <a href="p28-line-following-robot.html">P28</a> with a small extra-low-voltage chassis, or practise the motor and motion calculations in the browser. The browser exercises run locally and need no robot.</li>
+      <li>Raise and secure the chassis for P28’s first direction test. Then verify encoder sign and scale for each wheel in <a href="p42-mobile-robot-fault-finding.html">P42</a>. Record command, wheel movement and counts for the same test.</li>
+    </ol>
+
+    <h2>Choose a route and keep the test evidence</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Stage</th><th scope="col">Do the work</th><th scope="col">Show what you proved</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Power and control</th><td><a href="p138-robot-drive-sizing.html">P138 · Size a drive</a> → <a href="p139-wheel-speed-control.html">P139 · Tune simulated wheel speed</a> → <a href="p173-test-compiled-wheel-firmware-in-an-emulator.html">P173 · Run compiled firmware in an emulator</a> → <a href="p154-encoder-signal-integrity.html">P154 · Check the encoder input</a> → <a href="p153-close-the-loop-on-a-real-wheel.html">P153 · Log a real geared motor</a></td><td>A current budget and step responses showing saturation, feedback loss and recovery. Add bench readings if you have a motor.</td></tr>
+        <tr><th scope="row">Braking energy</th><td><a href="p13-actuators-motors.html">P13 · Trace an H-bridge</a> → <a href="p167-measure-motor-braking-and-bus-rise.html">P167 · Measure motor current and bus rise</a></td><td>Signed current and bus-voltage traces for coasting, short braking and regeneration.</td></tr>
+        <tr><th scope="row">Startup power</th><td><a href="p179-find-a-motor-start-brownout.html">P179 · Locate a startup rail sag</a></td><td>Simultaneous pack, bridge and logic readings plus time below the declared device limits.</td></tr>
+        <tr><th scope="row">Embedded timing</th><td><a href="../theory/t70-rtos-priorities-blocking-and-deadlines.html">T70 · Budget task response time</a> → <a href="p168-measure-a-freertos-control-task-delay.html">P168 · Reproduce priority inversion</a> → <a href="p169-check-a-can-sample-freshness-timeout.html">P169 · Prove bus sample freshness</a></td><td>A scheduler trace with resource wait time and a CAN replay showing which frames extend the valid-data interval.</td></tr>
+        <tr><th scope="row">Mobile navigation</th><td><a href="p140-wheel-odometry.html">P140 · Calibrate odometry</a> → <a href="p156-fuse-wheel-and-landmark-position.html">P156 · Fuse wheel and landmark estimates</a> → <a href="p141-ros2-mobile-bringup.html">P141 · Bring up a ROS 2 stack</a> → <a href="p150-ros2-navigation-trace.html">P150 · Diagnose its navigation trace</a> → <a href="p145-mobile-robot-fleet.html">P145 · Commission a fleet on paper</a></td><td>Compare measured and estimated poses, diagnose a timing fault and record a mission recovery.</td></tr>
+        <tr><th scope="row">ROS 2 messages</th><td><a href="p174-debug-ros2-topic-delivery-and-qos.html">P174 · Reproduce QoS and deadline faults</a></td><td>Discovery and match counts, late-join samples and missed updates from two Jazzy middleware implementations.</td></tr>
+        <tr><th scope="row">Maps and route clearance</th><td><a href="../theory/t64-robot-maps-costmaps-and-route-search.html">T64 · Read the costmap</a> → <a href="p157-route-around-a-blocked-aisle.html">P157 · Replan with a wider footprint</a> → <a href="p158-map-a-robot-work-area.html">P158 · Survey, save and reload a map</a></td><td>Reachable routes for two footprints and verified metadata from a fresh map server.</td></tr>
+        <tr><th scope="row">Fleet traffic</th><td><a href="../theory/t71-fleet-traffic-and-timed-clearance.html">T71 · Calculate timed clearance</a> → <a href="p170-check-a-fleet-crossing-with-open-rmf.html">P170 · Check a fleet crossing</a></td><td>Reproducible Open-RMF conflict times and the release evidence after a link loss.</td></tr>
+        <tr><th scope="row">Fixed-arm motion</th><td><a href="p43-robot-arm-position-calibration.html">P43 · Calibrate joint zeros</a> → <a href="p142-robot-arm-path-planning.html">P142 · Plan an arm path</a> → <a href="p159-time-a-two-axis-robot-move.html">P159 · Time a coordinated move</a> → <a href="p166-check-a-moveit-planning-scene.html">P166 · Check a MoveIt detour</a> → <a href="p160-debug-a-joint-trajectory-controller.html">P160 · Debug trajectory execution</a></td><td>A reachable approach, a settling budget, aligned scene and trajectory evidence, and a controller trace.</td></tr>
+        <tr><th scope="row">Robot vision</th><td><a href="p143-camera-to-robot-calibration.html">P143 · Calibrate a fixed camera</a> → <a href="p164-test-hand-eye-calibration.html">P164 · Fit robot camera mounts in 3D</a></td><td>Paired camera and robot poses plus held-out position and orientation errors.</td></tr>
+        <tr><th scope="row">Moving parts</th><td><a href="p152-conveyor-robot-tracking.html">P152 · Find the pick window on a conveyor</a> → <a href="p176-test-machine-vision-on-a-moving-belt.html">P176 · Qualify the moving image</a></td><td>A matched exposure and encoder count, separate checks for detection and image geometry, and a missed-pick result.</td></tr>
+        <tr><th scope="row">Production measurement</th><td><a href="p178-qualify-a-production-measurement-fixture.html">P178 · Qualify a measurement fixture</a></td><td>A crossed study with the same reference parts and a list of the readings that need independent review near tolerance limits.</td></tr>
+        <tr><th scope="row">Factory integration</th><td><a href="p57-robot-inspection-cell.html">P57 · Qualify inspection</a> → <a href="p144-robot-plc-handshake.html">P144 · Prove job ownership</a> → <a href="p161-compile-and-replay-a-plc-robot-station.html">P161 · Execute PLC logic scan by scan</a> → <a href="p151-offline-industrial-robot-program.html">P151 · Test virtual waypoints</a> → <a href="p146-robot-cell-acceptance.html">P146 · Accept and hand over a cell</a></td><td>A mapped interface, a waypoint list, duplicate-job and restart tests, and an acceptance record.</td></tr>
+        <tr><th scope="row">Production records</th><td><a href="../theory/t66-robot-station-identity-and-durable-completion.html">T66 · Match evidence to a job</a> → <a href="p162-recover-a-robot-station-journal.html">P162 · Recover a production journal</a> → <a href="p177-wait-for-a-durable-station-receipt.html">P177 · Test the PLC acknowledgment</a></td><td>A matching inspection, placement and result record for each counted part. Recover the acknowledgment after a process interruption without incrementing the count twice.</td></tr>
+        <tr><th scope="row">Service recovery</th><td><a href="../theory/t72-robot-cell-backup-and-recovery.html">T72 · Set restore and rollback conditions</a> → <a href="p171-rehearse-a-robot-cell-restore.html">P171 · Restore a clean training cell</a></td><td>Known commissioning revisions, a consistent snapshot and the current confirmed serials after replay.</td></tr>
+        <tr><th scope="row">Acceptance evidence</th><td><a href="../theory/t68-robot-cell-acceptance-evidence.html">T68 · Plan the trial evidence</a> → <a href="p165-audit-a-robot-cell-pilot.html">P165 · Audit pilot results by recipe</a></td><td>A reconciled production window, recipe-specific P155 and placement-evidence bounds, and an owned retest plan.</td></tr>
+        <tr><th scope="row">Safeguard evidence</th><td><a href="../theory/t62-robot-stop-functions-and-evidence.html">T62 · Distinguish stop functions</a> → <a href="p155-review-a-robot-stop-test.html">P155 · Review a stop and restart test</a></td><td>A timing decision that includes uncertainty and a separate decision on restart behavior.</td></tr>
+        <tr><th scope="row">Valve outputs</th><td><a href="p08-transistor-switches.html">P08 · Switch a relay coil</a> → <a href="p163-compare-solenoid-release-clamps.html">P163 · Simulate two clamp circuits</a> → <a href="p147-gripper-and-vacuum-diagnostics.html">P147 · Prove release</a></td><td>A switch-voltage budget and separate evidence that the part reached its destination.</td></tr>
+        <tr><th scope="row">Commercial fault finding</th><td><a href="p147-gripper-and-vacuum-diagnostics.html">P147 · Prove gripping</a> → <a href="p149-cnc-machine-tending-recovery.html">P149 · Recover a CNC handoff</a>, or use <a href="p148-servo-axis-fault-traces.html">P148 · Diagnose an axis from traces</a>.</td><td>A fault record with grip or position evidence and the test needed before returning to production.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For a repair role, repeat a symptom with two different causes and explain which reading distinguishes them. For controls work, keep one timestamped sequence and one interrupted-cycle recovery. For a deployment role, bring a requirement, a measured acceptance test and a named owner for any open item. <a href="../career/c18-controls-robotics-and-service-careers.html">Jobs and practical evidence</a>.</p>
+
+    <a class="crosslink" href="p138-robot-drive-sizing.html">Start the new labs with P138 · Size a robot drive and trace a startup fault</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

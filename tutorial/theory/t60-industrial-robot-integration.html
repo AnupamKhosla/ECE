@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T60 · Industrial robot cells, interfaces and acceptance</title>
+<meta name="description" content="Compare commercial robot architectures, separate part ownership from machine protection, and connect cycle evidence to acceptance tests.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T60</span>
+    <h1>Industrial robot cells, interfaces and acceptance</h1>
+    <p class="lede">An industrial robot is one part of a system. The tool, fixture, controller, operator and upstream equipment all affect whether a job succeeds.</p>
+    <div class="meta"><span><b>Time</b> 45 minutes</span><span><b>Before this</b> <a href="t33-robot-motion-and-feedback.html">T33</a> · <a href="t34-industrial-control-signals.html">T34</a> · <a href="t58-robot-actuators-and-loads.html">T58</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Match the mechanism to the task</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Architecture</th><th scope="col">Typical job</th><th scope="col">First checks</th></tr></thead>
+      <tbody><tr><th scope="row">Six-axis articulated arm</th><td>Machine tending or assembly with several tool orientations</td><td>Reach throughout approach and retreat, joint limits, wrist clearance, load and inertia.</td></tr>
+      <tr><th scope="row">SCARA</th><td>Rapid horizontal motion and vertical insertion</td><td>Insertion alignment, vertical stroke, working volume and fixture repeatability.</td></tr>
+      <tr><th scope="row">Delta</th><td>High-rate lightweight picks over a conveyor</td><td>Tracking latency, payload, pick window, missed-pick recovery.</td></tr>
+      <tr><th scope="row">Cartesian gantry</th><td>Loading or transfer over a rectangular work area</td><td>Travel, alignment, vertical-axis load holding and moving cable reach.</td></tr>
+      <tr><th scope="row">Industrial mobile robot</th><td>Transport bins or pallets among fixed stations</td><td>Mission rate, loaded footprint, docking, charging and operating environment.</td></tr></tbody>
+    </table></div>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Industrial pick-and-place equipment gripping parts at a fixture">
+      <figcaption>Reach is tested with the end effector and part in place. Include insertion and withdrawal, where clearances can be tightest.<br><small>Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Trace the end-effector, camera and pick station in the vendor demonstration. <a href="https://video.universal-robots.com/vision-handling-set-3d-r">Universal Robots · 3D vision and handling</a>.</p>
+
+    <h2>Assign interfaces and authority</h2>
+    <p>A cell PLC can own sequencing and part records, the robot controller can own arm motion, and a vision system can report pose and inspection outcome. Agree who requests work, who acknowledges it, which ID each message carries and what independent signal proves the part actually moved. Check startup, lost messages, stale reports, incorrect job IDs and restart while the fixture is occupied. For fieldbus I/O record both directions from the controller’s viewpoint, wire or register number, representation, update interval and the treatment of stale data. <a href="https://www.universal-robots.com/articles/ur/interface-communication/profinet-how-to-guide-e-series/">Universal Robots · Example PROFINET signal mapping</a>.</p>
+    <p>Machine safety covers the complete application. Consider exposed motion, dropped loads, pinch points, tooling, stored energy, loading, cleaning, jam recovery and maintenance. A collaborative-capable arm is one component of that assessment. Qualified people determine the required safeguards, design the safety-related functions and validate them for the installed application. The training labs model ordinary sequence logic and document the independent acceptance boundary. <a href="https://www.iso.org/standard/73934.html">ISO 10218-2 scope</a> · <a href="https://www.safeworkaustralia.gov.au/doc/model-code-practice-managing-risks-plant-workplace">Safe Work Australia · Plant risk management</a>.</p>
+
+    <h2>Understand what a factory demonstration proves</h2>
+    <p>A virtual controller can help confirm program structure and sequence behavior. It depends on accurate geometry, load, timing and I/O models. Factory acceptance testing (FAT) checks agreed requirements before shipment. Site acceptance testing (SAT) repeats relevant checks with installed interfaces, actual utilities, station layout, part mix and operators. The two tests can have different required evidence. Record the configuration used for each. <a href="https://www.abb.com/global/en/areas/robotics/products/software/robotstudio-suite">ABB RobotStudio · Virtual controller example</a>.</p>
+    <p>If a product must leave the line every 9 s, one serial station taking 11 s limits the sustained rate even if the robot itself completes its move in 4 s. Follow part flow, wait, rework and changeover. Choose a measurement window that includes the delays within the contract scope. Compare good output, cycle percentiles, recovery time and the conditions covered by the trial.</p>
+
+    <p><a href="../practice/p144-robot-plc-handshake.html">P144 · Prove the robot handshake</a> → <a href="../practice/p146-robot-cell-acceptance.html">P146 · Write and review acceptance tests</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

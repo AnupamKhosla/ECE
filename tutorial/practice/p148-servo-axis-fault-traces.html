@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P148 · Diagnose a servo axis from following error and tool motion</title>
+<meta name="description" content="Use recorded axis commands, feedback, load position, torque saturation and feedback quality to distinguish common industrial servo faults.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P148</span>
+    <h1>Diagnose a servo axis from following error and tool motion</h1>
+    <p class="lede">An axis can miss its target because the motor cannot follow, because the feedback is invalid, or because motion is lost after the encoder. Compare all three positions on the same time base.</p>
+    <div class="meta"><span><b>Time</b> 65–90 minutes</span><span><b>Before this</b> <a href="p41-drive-and-condition-checks.html">P41</a> · <a href="../theory/t61-servo-dynamics-and-axis-sizing.html">T61</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Put the motor and tool on the same scale</h2>
+    <figure class="course-photo">
+      <img src="../assets/photos/servo.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Disassembled servo showing motor, gears and output shaft">
+      <figcaption>This hobby servo makes the mechanical path visible. On an industrial system locate the actual feedback sensor before treating its reading as tool position.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+    <p>A servo drive can compare the commanded axis position with motor feedback scaled into engineering units. The sign convention here is command minus encoder feedback. The tool can differ further because of deflection, backlash or a loose coupling downstream of that encoder. With a motor-side encoder, 5 motor turns per screw turn and a screw lead of 10 mm per turn, one motor revolution represents 2 mm. Twenty-five forward motor turns nominally give 50 mm. An external scale or dial indicator gives a separate position measurement.</p>
+    <div class="formula">Drive following error = commanded position − encoder-based position<br>Downstream error = encoder-based position − independent tool position</div>
+    <p>Check the encoder’s validity before calculating either value. A quality flag may go bad while the displayed old position remains. The drive’s current or torque estimate indicates effort, subject to the motor configuration and units. The training trace shows the percentage of the configured torque limit. A reading of 100% marks saturation in this trace. Consult the exact axis model for fault thresholds and response. <a href="https://literature.rockwellautomation.com/idc/groups/literature/documents/um/motion-um001_-en-p.pdf">Rockwell Automation · Position feedback and position-error tolerance</a>.</p>
+
+    <h2>Analyse the service traces</h2>
+    <p><a href="../assets/labs/servo-service-traces.csv" download>Download the servo service traces</a>. The rows are synthetic observations at the same time base, grouped by run. A production logger may supply faster or asynchronous channels. The empty <code>encoder_based_mm</code> field means the encoder position could not be trusted. Treat it as missing.</p>
+    <p>Compare this worksheet with the trend example in the autotuning chapter of Rockwell’s guide. Match position command, torque reference and position error to the quantities you computed here. <a href="https://literature.rockwellautomation.com/idc/groups/literature/documents/at/motion-at005_-en-p.pdf">Rockwell Automation · Motion system tuning and trend examples</a>.</p>
+    <ol class="steps">
+      <li>Plot or tabulate command, valid encoder position and independently measured position for each run. Calculate both signed errors for valid rows.</li>
+      <li>Compare A and B during outward travel. Find the first sample where B reaches the torque limit, and note whether following error rises or falls afterwards. Compare C on reversal and D during invalid feedback.</li>
+      <li>The training tolerance is ±0.5 mm at the endpoint after settling. Identify which runs can support a position acceptance decision. For B and C, state the smallest diagnostic step that would distinguish two plausible mechanical causes.</li>
+    </ol>
+    <details class="quiz"><summary>Check the four diagnoses</summary><div class="answer">
+      <p><b>A.</b> At 500 ms, command is 25.0 mm, feedback 24.9 mm and measured tool 24.8 mm. The drive and downstream errors are each +0.1 mm. The settled tool is 0.2 mm short and meets the training tolerance.</p>
+      <p><b>B.</b> At 300 ms the drive reaches its limit. At 400 ms the +7.2 mm following error is much larger than the +0.1 mm downstream error. The endpoint misses by 12.0 mm. Inspect the loaded path, baseline torque, brake status and load setting before changing gains or fault tolerances. An approved unloaded comparison can distinguish load-dependent effort from binding at a position.</p>
+      <p><b>C.</b> On reversal at 700 ms the drive error is −0.1 mm while downstream error is −0.7 mm. Motor feedback follows the command but the tool remains nearly stationary initially. The tool stops 0.7 mm above the endpoint and misses tolerance. Compare approaches from both directions with an independent indicator. Examine mechanical play, couplings and load-dependent compliance under the documented maintenance procedure.</p>
+      <p><b>D.</b> The external position remains continuous while encoder values are invalid. Confirm which events coincide with the failure and use the model-specific encoder and cable diagnostics. The trace alone does not distinguish a damaged cable from a sensor or supply fault. There is no valid closing test for this run.</p>
+    </div></details>
+
+    <h2>Write the return-to-service record</h2>
+    <p>Keep drive and motor model, scaling, gear or screw ratio, load, motion profile, trace channel units and software configuration. Record the original trace, change only the item supported by the diagnosis, then repeat both directions and a representative load. For real equipment follow the authorised isolation and stored-energy process, especially for gravity-loaded axes.</p>
+
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">P146 · Tie the closing servo test to a production requirement</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

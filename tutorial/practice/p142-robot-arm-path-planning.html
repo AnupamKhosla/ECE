@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P142 · Plan an arm path around a fixture</title>
+<meta name="description" content="Solve two-link inverse kinematics, detect collisions along a motion and estimate a trajectory duration from joint limits.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P142</span>
+    <h1>Plan an arm path around a fixture</h1>
+    <p class="lede">Two poses can be reachable while the path between them strikes a fixture. Check the whole arm along the move, then decide how long a valid move would take.</p>
+    <div class="meta"><span><b>Time</b> 65–90 minutes</span><span><b>Before this</b> <a href="p43-robot-arm-position-calibration.html">P43</a> · <a href="../theory/t33-robot-motion-and-feedback.html">T33</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Separate pose, path and trajectory</h2>
+    <p>A pose describes position and orientation. The trainer controls only x and y because this two-joint arm has no independent tool orientation. A geometric path connects positions. A trajectory tells the controller where to be at each time and must respect joint velocity and acceleration limits. Joint interpolation can make a curved tool path. A straight tool path usually takes nonlinear joint motion. Keep both views when checking clearance.</p>
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Robot grippers positioned above fixtures and parts">
+      <figcaption>The jaws and carried part add collision geometry. Note the nearby fixtures and consider clearance during approach and retreat.<br><small>Photo by Lexington Medical, Inc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch</b> · Compare a geometric path with its time scaling. <a href="https://modernrobotics.northwestern.edu/chapters/chapter9/">Northwestern · Trajectory generation videos</a>.</p>
+
+    <h2>Test a direct route and a detour</h2>
+    <p>Start at (180, −75) mm and finish at (180, 75) mm. The links are 150 mm and 100 mm. The fixture’s closed rectangle spans x = 170–195 mm, y = −20–20 mm. The detour goes through (145, −75) and (145, 75) mm. The trainer samples straight tool segments every 5 mm or less. The joint-move option interpolates joint angles with steps of at most 2° per joint. Both modes check the link centre lines against the fixture and flag a singularity at full extension or fold. Real planning also checks joint limits, self-collision, attached workpieces, tooling, continuous clearance and controller-specific blending.</p>
+    <div class="widget" id="arm-path-trainer">
+      <label for="arm-route">Tool route</label><select id="arm-route"><option value="direct">Straight tool move</option><option value="joint">Direct joint move</option><option value="detour">Detour around fixture</option><option value="extension">Full extension (250 mm)</option><option value="outside">Beyond reach (260 mm)</option></select>
+      <label for="arm-branch">Inverse kinematics branch</label><select id="arm-branch"><option value="1">Positive joint 2</option><option value="-1">Negative joint 2</option></select>
+      <div class="lab-controls"><button type="button" id="run-arm">Check route</button></div>
+      <p id="arm-summary" role="status">Check a route to see the first rejected pose or the final pose.</p>
+      <canvas id="arm-path-plot" class="lab-plot" width="340" height="270" hidden role="img" aria-label="Arm and fixture at the reported pose" aria-describedby="arm-summary arm-path-legend"></canvas>
+      <p id="arm-path-legend" hidden>The dashed line shows the planned tool path. The rectangle marks the fixture. The solid lines show the links at the reported pose or the last reachable pose.</p>
+      <noscript><p>Enable JavaScript for route checks. The direct and detour coordinates can also be plotted on graph paper.</p></noscript>
+    </div>
+    <ol class="steps">
+      <li>Calculate both joint solutions at the start using T33. Change the branch in the same route and compare the first collision positions. The tool occupies the same target coordinate while the elbow moves.</li>
+      <li>Compare the straight tool move with the direct joint move. They share endpoints. The joint move holds q₂ steady while q₁ turns, sweeping a circular arc where x reaches about 195 mm. The tool path with Cartesian interpolation stays at x = 180 mm. Compare where each first contacts the fixture.</li>
+      <li>Compare direct and detour. Verify the 260 mm target is outside the arm’s reach. The full extension route reaches 250 mm, where the two links align and the arm loses one instantaneous direction of planar motion.</li>
+      <li>After the ideal detour clears, give the gripper and part 15 mm outward extent in each direction and check clearance again. Inflating the rectangle by 15 mm in the teaching model is a conservative test if that envelope applies to the whole arm.</li>
+    </ol>
+
+    <h2>Time an axis move with acceleration limits</h2>
+    <p>For one 60° joint move from rest to rest at 90°/s and 180°/s², acceleration and deceleration each take 0.50 s and cover 22.5°. The remaining 15° at 90°/s takes 0.167 s. Total time is about 1.17 s. A 30° move with the same limits has a triangular profile because there is insufficient distance to reach 90°/s. A coordinated move must fit all participating axes and the path. Comparing individual axis times gives a lower bound on coordinated duration.</p>
+    <details class="quiz"><summary>Find the time for the 30° joint move</summary><div class="answer"><p>Each half covers 15°. From rest, 15° = ½ × 180°/s² × t², giving 0.408 s per half and 0.816 s in total. Peak speed is about 73.5°/s. This calculation ignores jerk limits and assumes equal acceleration and deceleration.</p></div></details>
+    <p>In MoveIt’s virtual planning scene, repeat the exercise with the example robot. Add a collision object, inspect the planning result, and compare time-parameterized trajectories after reducing allowed velocity and acceleration. Keep the robot, scene and planning configuration together. <a href="https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html">MoveIt virtual planning quickstart</a> · <a href="https://moveit.picknik.ai/main/doc/examples/time_parameterization/time_parameterization_tutorial.html">Trajectory time parameterization</a>.</p>
+
+    <a class="crosslink" href="p166-check-a-moveit-planning-scene.html">P166 · Verify a detour and compare partial results in running MoveIt</a>
+    <a class="crosslink" href="p143-camera-to-robot-calibration.html">P143 · Prove camera coordinates before using them as targets</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/robotics.js?v=20261121-robotics" type="module"></script>
+</body>
+</html>

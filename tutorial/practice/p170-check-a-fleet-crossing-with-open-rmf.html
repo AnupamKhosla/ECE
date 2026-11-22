@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P170 · Check a fleet crossing with Open-RMF</title>
+<meta name="description" content="Run real Open-RMF trajectory conflict queries for two robots under changing load, arrival time and occupancy.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P170</span>
+    <h1>Check a fleet crossing with Open-RMF</h1>
+    <p class="lede">The same crossing plan is clear for two empty robots and conflicts with loaded footprints. Check it with the Open-RMF traffic library, then test what a delay or uncertain occupancy does to the revised plan.</p>
+    <div class="meta"><span><b>Time</b> 60–80 min</span><span><b>Before this</b> <a href="../theory/t71-fleet-traffic-and-timed-clearance.html">T71 · Timed clearance</a> · <a href="p145-mobile-robot-fleet.html">P145 · Paper warehouse fleet</a> · Basic C++</span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Load the traffic library</h2>
+    <p>Use an Ubuntu 24.04 machine or VM with ROS 2 Jazzy configured, CMake, a C++ compiler and the ROS package named below. The exercise uses only the Open-RMF traffic library and starts no robots, fleet adapters or navigation nodes. Download <a href="../assets/labs/rmf-crossing/CMakeLists.txt" download>CMakeLists.txt</a> and <a href="../assets/labs/rmf-crossing/rmf_crossing.cpp" download>rmf_crossing.cpp</a> into one directory.</p>
+    <pre><code>sudo apt install g++ cmake ros-jazzy-rmf-traffic
+source /opt/ros/jazzy/setup.bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/opt/ros/jazzy
+cmake --build build
+./build/rmf_crossing &gt; results.csv</code></pre>
+    <p>Open the source. Robot A goes from (−3, 0) m to (+3, 0) m, and B goes from (0, −3) m to (0, +3) m on the same map. The matching start and end velocities give constant 1 m/s across each six-second segment when Open-RMF interpolates. Every case uses a common relative time origin. Both traffic profiles use circular footprints and the library also uses each footprint for its default vicinity. Start with no checkpoint dependencies. <a href="https://openrmf.readthedocs.io/projects/rmf-traffic/en/latest/api/classrmf__traffic_1_1DetectConflict.html">Open-RMF DetectConflict</a>.</p>
+
+    <h2>Change the footprint and arrival time</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Case</th><th scope="col">Inputs</th><th scope="col">Open-RMF 3.3.3 result</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Same crossing time</th><td>Depart together. Radius A 0.32 m and B 0.30 m.</td><td>First conflict at 2.562 s, before either centre arrives at 3.000 s.</td></tr>
+        <tr><th scope="row">Empty, original plan</th><td>A departs at 0, B at 1.2 s. Combined radius 0.62 m.</td><td>No conflict on the tested spans.</td></tr>
+        <tr><th scope="row">Loaded, same plan</th><td>Same times. Radius A 0.56 m and B 0.40 m.</td><td>Conflict at 3.282 s while both are between endpoints.</td></tr>
+        <tr><th scope="row">A falls behind</th><td>Empty radii. Shift A’s entire modeled trajectory by 0.6 s. B stays at 1.2 s.</td><td>Conflict at 3.580 s. The arrival separation shrinks.</td></tr>
+        <tr><th scope="row">Loaded, B delayed</th><td>A at 0. B at 1.6 s with loaded radii.</td><td>No conflict on the revised modeled spans.</td></tr>
+        <tr><th scope="row">A loses its link</th><td>From 3.2 s, hold A at its last known x = +0.2 m for this case. Use the revised B plan.</td><td>Conflict at 3.661 s under the stationary assumption.</td></tr>
+      </tbody>
+    </table></div>
+    <figure class="course-photo">
+      <img src="../assets/labs/rmf-crossing/crossing-clearance.png" width="1260" height="727" loading="lazy" decoding="async" alt="Four modeled clearances at the crossing. The original empty and revised loaded moving plans stay above zero. The original loaded and stopped-robot cases cross zero at the times returned by Open-RMF.">
+      <figcaption>Analytic disk clearance for four lab cases. Dots mark contact times returned by the actual Open-RMF library. Download <a href="../assets/labs/rmf-crossing/observed-conflicts.csv" download>the observed conflict queries</a>.</figcaption>
+    </figure>
+    <p>For the loaded original plan, both centres are separated by about 3.50 m at the start and end of their overlapping time ranges. The smallest distance is around 0.849 m at 3.6 s. Endpoint clearance alone misses the overlap between those times. For the delayed case, calculate how much separation remains if each location is uncertain by 0.08 m, then reduce the expected departure separation by 0.15 s.</p>
+
+    <h2>Connect the query to a dispatch test</h2>
+    <ol>
+      <li>Screen both waiting locations with the full load footprint. This model checks each supplied span. Include explicit waiting and exit occupancy in a complete timed plan.</li>
+      <li>Reproduce the late-A and lost-link cases in a test record. Keep the route revision, last known pose and time, whether entry is held, and the release evidence. The stationary example is one possible position after a lost link. The actual position can be uncertain over a larger region.</li>
+      <li>Change the second robot’s delay or the disk radii, update the expected decision from the equation, then rebuild. Locate the smallest tested departure separation that retains a stated clearance margin. Turn the result into a fleet test that also covers traffic starvation and the case where a waiting bay is occupied.</li>
+    </ol>
+    <p>A clear library result describes the modeled footprints, timestamps and spans. Installed traffic protection, stopping behavior and authorization to enter are separate evidence. Preserve the hold on unknown occupancy until the agreed verification clears it.</p>
+    <a class="crosslink" href="p146-robot-cell-acceptance.html">Practice P146 · Turn deployment evidence into an acceptance record</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-robotics"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

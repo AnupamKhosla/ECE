@@ -1,0 +1,38 @@
+Two-wheel startup load and a shared supply
+.param source_v=5.5 source_r=0.22 connector_r=0.50
+.param bus_cap=470u cap_esr=0.045 b_start=15m logic_tap=0
+
+Vopen chemical 0 {source_v}
+Rsource chemical pack {source_r}
+Rconnector pack bus {connector_r}
+Rreturn local_gnd 0 0.10
+Resr bus cap {cap_esr}
+Cbus cap local_gnd {bus_cap}
+
+* Bridge input current pulses are imposed. They approximate the same start
+* demand in each comparison. There is no switched motor or driver UVLO model.
+Ia bus local_gnd PWL(0 0 14.9m 0 15m 1.50 25m 1.50 32m 0.60 100m 0.60)
+Ib bus local_gnd PWL(0 0 {b_start-0.1m} 0 {b_start} 1.50
++ {b_start+10m} 1.50 {b_start+17m} 0.60 100m 0.60)
+
+* Route regulator input current from the selected positive tap.
+IlogicLocal bus local_gnd {0.15*(1-logic_tap)}
+IlogicUpstream pack local_gnd {0.15*logic_tap}
+BlogIn logic_in local_gnd V={(1-logic_tap)*V(bus,local_gnd)+logic_tap*V(pack,local_gnd)}
+* Static 400 mV dropout approximation. Logic load is represented above.
+BlogOut logic_out local_gnd V={min(3.3,max(0,V(logic_in,local_gnd)-0.4))}
+
+.control
+set wr_singlescale
+set wr_vecnames
+tran 0.02m 80m 0 0.02m
+let pack_v = v(pack)
+let bus_v = v(bus)-v(local_gnd)
+let controller_v = v(logic_out)-v(local_gnd)
+let positive_drop_v = v(pack)-v(bus)
+let return_drop_v = v(local_gnd)
+let source_current_a = -i(Vopen)
+wrdata trace.txt pack_v bus_v controller_v positive_drop_v return_drop_v source_current_a
+quit
+.endc
+.end
