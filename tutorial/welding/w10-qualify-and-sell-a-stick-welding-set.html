@@ -7,6 +7,7 @@
 <meta name="description" content="Use a guarded load test, a finished-model qualification plan and serial-numbered records to release a manual pilot batch.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-welding">
 <div class="shell">
@@ -19,8 +20,10 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <figure class="course-photo">
-      <img src="../assets/photos/gys.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets.">
-      <figcaption>Use the commercial set as a reference for durable output markings and connections you can identify in a final inspection photograph.<br><small>Photo by Bruno Bouygues. <a href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      <a class="image-preview-figure" href="../assets/photos/gys.jpg" data-image-preview="GYS commercial inverter welder" data-preview-source="w10-gys-photo" aria-haspopup="dialog" aria-label="Enlarge the commercial inverter welder photo">
+        <img src="../assets/photos/gys.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets.">
+      </a>
+      <figcaption>Use the commercial set as a reference for durable output markings and connections you can identify in a final inspection photograph.<br><small>Photo by Bruno Bouygues. <a id="w10-gys-photo" href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
     </figure>
     <p class="course-video"><b>Watch.</b> Observe the lead connections, current setting and polarity selection. Write down the comparable settings for your supervised welding acceptance test. <a href="https://www.youtube.com/watch?v=WJadlatCNy4">Miller Electric · Multimatic 215 PRO stick welding setup</a>.</p>
 
@@ -34,24 +37,67 @@
         <tr><td>Review changes to the transformer, PCB, firmware, fans, vents, enclosure, switch or cord before accepting substitutions.</td><td>Record BOM and drawing revision, critical component lots, any rework and the required repeat tests.</td></tr>
       </tbody>
     </table></div>
+    <p><b>Ask two labs to price the same scope.</b> Send the W09 specification, photos, nameplate draft, electrical schematic, declared duty and installation class. Ask for the applicable edition and clauses, a copy of the relevant accredited scope, sample count, test schedule, destructive-test requirements, written report, retest price, tax and dispatch terms. Check recognition requirements with BIS for the selected certification route. Budget EMC, electrical safety and load/duty checks as separate quote lines so the quote exposes any exclusions. <a href="https://www.bis.gov.in/laboratorys/list-of-bis-recognized-lab/?lang=en">BIS · Recognised lab directory</a> · <a href="https://nabl-india.org/lab-accreditation/">NABL · Accreditation and scope search</a>.</p>
 
     <h2>Run a measured load test before striking an arc</h2>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/stick-supply/guarded-load-bench.svg" data-image-preview="Guarded welding load-test setup" aria-haspopup="dialog" aria-label="Enlarge the guarded welding load test drawing">
+        <img src="../assets/labs/stick-supply/guarded-load-bench.svg" width="1000" height="460" loading="lazy" alt="Protected electrical supply and input power meter feed a closed welder connected to a guarded welding load bank. The diagram shows where readings are logged.">
+      </a>
+      <figcaption>Agree the connection and measurement planes with the test technician. Record voltage at the terminals specified by the test plan and state which current instrument was used. <a href="../assets/labs/stick-supply/guarded-load-bench.svg" download>Download the load-bench map</a>.</figcaption>
+    </figure>
+    <p class="course-video"><b>Watch a commercial validation setup.</b> Identify the load bank, controller and measured welding output. Compare this equipment with the manual validation instructions when specifying a quote for your bench. <a href="https://www.youtube.com/watch?v=74HxVoIkKRY">Kemppi · ArcValidator demonstration</a> · <a href="https://kas-ws.kemppi.com/ArcV/OnlineHelp/arcvalidator_help_en.html">Kemppi · Connection and manual validation guide</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Bench item</th><th scope="col">Specification and India procurement</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Guarded welding load and reference readings
+          <span class="preview-links"><a class="preview-trigger" href="https://cdn-kemppi.contenthub.fi/api/v1/cdn/4495666" data-image-preview="Kemppi ArcValidator equipment" data-preview-note="Compare a commercial welding validation load and operator controller. Confirm its manual compatibility and current range for the specific machine." data-preview-source="w10-load-photo" aria-haspopup="dialog">View load equipment</a></span>
+        </th><td>Quote a lab session first. For in-house repeat tests, ask for a guarded adjustable load with the 60–120 A range at 22.4–24.8 V, at least the needed power and duration, documented cooling and rated connectors. Specify hot load steps near 0.207–0.373 Ω for the worked points. <a href="https://www.kemppi.com/en-IN/contacts">Kemppi India · Demonstration or equipment quote</a> · <a href="https://www.powertrondcps.com/resistive-load-bank.html">Powertron India · Custom load enquiry</a> · <a id="w10-load-photo" href="https://www.kemppi.com/en/family/arcvalidator">Kemppi · Commercial validator shown</a>.</td></tr>
+        <tr><th scope="row">DC output current and voltage instruments
+          <span class="preview-links"><a class="preview-trigger" href="https://shop.hioki.eu/media/f1/69/e3/1732629564/3288-20_2.jpg?ts=1732629564" data-image-preview="Hioki 3288-20 AC/DC clamp meter" data-preview-note="Clamp around a single output conductor and zero on DC according to the manual. Use a calibrated reference of suitable uncertainty for acceptance readings." data-preview-source="w10-clamp-photo" aria-haspopup="dialog">View DC clamp meter</a></span>
+        </th><td>Example spot-check instrument, Hioki <b>3288-20</b>, <b>₹15,339</b> including taxes on 22 November 2026. Check DC zero, range and uncertainty. For calibration, use the lab's traceable shunt or calibrated current reference and a suitable voltage channel at the prescribed measurement points. <a href="https://www.industrybuying.com/digital-clamp-meter-hioki-TES.DIG.22759316">Industrybuying · Clamp meter</a> · <a id="w10-clamp-photo" href="https://shop.hioki.eu/HIOKI-3288-20-AC-DC-True-RMS-Clamp-Meter-with-1000-A-Current-Range">Hioki · Photo and instrument details</a>.</td></tr>
+        <tr><th scope="row">AC input power and temperature logging
+          <span class="preview-links"><a class="preview-trigger" href="https://gomeasure.se/cdn/shop/files/PW3335_1C_ee2e46e6-419f-40bd-a2ac-f4c9e2ab2e4f.jpg?v=1777369651&amp;width=2048" data-image-preview="Hioki PW3335-01 bench power meter" data-preview-note="Identify the instrument display and measurement channels. The test technician specifies the approved input hookup, current range and fixture protection." data-preview-source="w10-power-photo" aria-haspopup="dialog">View power meter</a></span>
+        </th><td>Example instrument family <b>Hioki PW3335</b>. Specify mains voltage, current range, true-RMS readings, active power, true power factor and logging of the required time profile. Ask for the correct probes, current sensor, protected station and calibration with the quote. Include isolated thermal data logging where the qualification plan calls for it. <a href="https://www.hioki.com/in-en/products/power-meters/single-phase-ac-dc/id_5831">Hioki India · Meter specifications and enquiry</a> · <a id="w10-power-photo" href="https://gomeasure.se/products/hioki-pw3335-power-meter-kopi">GoMeasure · PW3335-01 variant photo</a>.</td></tr>
+      </tbody>
+    </table></div>
     <ol class="steps">
       <li>Use a competent test technician and a purpose-built guarded load bank with rated current, voltage, power, duration, cooling and protected connections. At W09's 120 A point the load is about 0.207 Ω and 3 kW. Verify the bank's actual hot resistance at the test point and use the measured voltage at the specified terminals. A bank setup needs its own protection, isolation and shutdown procedure.</li>
       <li>Verify the approved de-energised and electrical-safety checks before first power. Lock the case closed during functional testing and record no-load output by the approved method. Begin at a low load setting and work up through the authorised calibration points. Measure output voltage and current and use a power analyser to log input voltage, true RMS current, active power and power factor.</li>
       <li>For qualification, test with the production case, vents and fan. Log ambient temperature, heatsink and magnetics sensor positions, airflow and time at each duty point. Check thermal protection and recovery with the specified qualification procedure. Have the lab run the specified abnormal, dielectric and EMC tests. Calculate the actual duty ratings from the qualified results.</li>
       <li>Have a trained welder run a coupon trial using the intended rods and polarity with suitable fume extraction, PPE and a screened bay. Record stable start, arc behaviour and lead/connector heating. Keep the coupon record with the engineering test results.</li>
     </ol>
-    <p>Example calibration entry for a trial unit: 85 A requested, 84.7 A measured, 23.4 V at the load and 1.98 kW output. Log the test configuration and approved tolerance beside the readings so the next operator can decide pass or rework from the same limits.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Nominal current</th><th scope="col">Conventional voltage</th><th scope="col">Resistance at the point</th><th scope="col">Output power</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">60 A</th><td>22.4 V</td><td>0.373 Ω</td><td>1.34 kW</td></tr>
+        <tr><th scope="row">85 A</th><td>23.4 V</td><td>0.275 Ω</td><td>1.99 kW</td></tr>
+        <tr><th scope="row">120 A</th><td>24.8 V</td><td>0.207 Ω</td><td>2.98 kW</td></tr>
+      </tbody>
+    </table></div>
+    <p>Example log entry with sample readings: 85 A requested, 84.7 A measured, 23.4 V at the specified terminals and 1.98 kW calculated output. Record the instrument ID and calibration date, supply voltage and power factor, ambient and cooling, load step, time, approved tolerance, disposition and operator. Example readings illustrate the record format. W09 still needs a physically built prototype and approved limits.</p>
 
     <h2>Price and release the pilot</h2>
     <p>Build a small batch by hand after approving the first article. For each unit, assign a serial number and record chassis, inverter and harness revisions, critical parts, inspector, measured results, disposition and retest after repair. Keep one signed reference unit and stock the fan, switches, sockets and matching replacement assembly under revision control.</p>
-    <p>Build the rupee cost from landed electronics and magnetics, chassis work, harnesses, cables, direct labour minutes at your shop rate, test time, packaging, warranty reserve and channel costs. Work out contribution after variable costs and taxes as applicable. If net receipts are ₹9,000 and variable costs are ₹7,000 in a fictional case, ₹1,20,000 of development and test costs would take 60 units to recover. Replace the numbers with quotes and timed pilot builds.</p>
+    <p>Price the first unit and ten-unit batch separately. Start with W09's about ₹2,589 retail cable, holder and clamp subtotal. Add landed electronics, magnetics and connectors, case and coating, harnesses, labour minutes, test time, packaging, warranty reserve and channel costs. Keep fixed development and model testing on their own line. Record whether costs include tax and whether your accounting treats input GST as recoverable.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Worked shop planning example</th><th scope="col">₹ per unit</th><th scope="col">Where to replace the value</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Net receipts</th><td>9,000</td><td>Example after discounts. Use the channel's actual net payment.</td></tr>
+        <tr><th scope="row">Target contribution</th><td>2,000</td><td>Planning target before recovering fixed development and qualification.</td></tr>
+        <tr><th scope="row">Cable, holder, clamp</th><td>2,589</td><td>W09's one-off retail snapshot. Use the actual batch quote.</td></tr>
+        <tr><th scope="row">Assembly labour</th><td>600</td><td>Example 60 minutes at ₹600/hour. Time the first article.</td></tr>
+        <tr><th scope="row">Routine test, packing, reserve</th><td>1,150</td><td>Examples ₹500, ₹350 and ₹300 respectively. Use the agreed per-unit costs.</td></tr>
+        <tr><th scope="row">Remaining budget for inverter, sockets, case and harness</th><td><b>2,661</b></td><td>Subtract the target contribution and listed variable costs from receipts. Compare with W09’s written quotes.</td></tr>
+      </tbody>
+    </table></div>
+    <p>At the example ₹2,000 contribution, ₹1,20,000 of fixed development and test costs would take 60 released units to recover. Use the quotes and timed pilot builds to decide whether to change design, route to market or price before ordering ten assemblies.</p>
     <p>Prepare the qualified rating plate and manual with verified input and installation requirements, current and duty ratings, operating limits, consumables and service contacts. Confirm retail-package declarations and applicable producer obligations for the exact sales model. Release units after the finished model has the applicable approvals and each serial has its signed test record. <a href="https://consumeraffairs.gov.in/index.php/pages/legal-metrology-overview">Department of Consumer Affairs · Legal Metrology</a> · <a href="https://cpcb.nic.in/uploads/Projects/E-Waste/FAQ_ewaste_23012024.pdf">CPCB · E-waste scope</a>.</p>
     <a class="crosslink" href="w09-build-a-shop-made-stick-welding-set.html">W09 · Return to power-source design and hand assembly</a>
   </main>
 </div>
 <script src="../assets/toc.js?v=20261122-workshop"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>

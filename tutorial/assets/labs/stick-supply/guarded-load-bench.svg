@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="460" viewBox="0 0 1000 460" role="img" aria-labelledby="title desc">
+  <title id="title">W10 guarded welding load test bench</title>
+  <desc id="desc">An isolated controlled test station supplies a closed welder through input instrumentation. The insulated output leads go to a guarded, cooled and rated resistive DC load with current and voltage measurement. The diagram marks the log and independent stop points.</desc>
+  <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 7 4 0 8z" fill="#3d5a78"/></marker></defs>
+  <style>
+    text{font:17px system-ui,sans-serif;fill:#15283c}.title{font-size:28px;font-weight:700}.head{font-size:19px;font-weight:700}.note{font-size:15px}
+    .box{fill:#edf5fb;stroke:#3d5a78;stroke-width:1.5}.warm{fill:#fff3d6;stroke:#846423;stroke-width:1.5}.log{fill:#edf8ee;stroke:#488258;stroke-width:1.5}
+    .arrow{fill:none;stroke:#3d5a78;stroke-width:2;marker-end:url(#arr)}.sense{fill:none;stroke:#3d5a78;stroke-width:1.5;stroke-dasharray:6 4}
+  </style>
+  <rect width="1000" height="460" fill="white"/>
+  <text x="36" y="46" class="title">W10 · Guarded DC load test</text>
+  <text x="36" y="77">Test-station arrangement · qualified technician · set points from the approved plan</text>
+  <rect x="36" y="128" width="215" height="111" rx="7" class="box"/>
+  <rect x="303" y="128" width="191" height="111" rx="7" class="box"/>
+  <rect x="545" y="128" width="175" height="111" rx="7" class="box"/>
+  <rect x="773" y="128" width="191" height="111" rx="7" class="warm"/>
+  <g text-anchor="middle">
+    <text x="144" y="158" class="head">Protected supply</text><text x="144" y="187">Station disconnect</text><text x="144" y="214">and stop procedure</text>
+    <text x="399" y="158" class="head">Input meter</text><text x="399" y="187">V, true-RMS A, W</text><text x="399" y="214">and power factor</text>
+    <text x="633" y="158" class="head">Closed welder</text><text x="633" y="187">Final lid, vents</text><text x="633" y="214">and cooling fan</text>
+    <text x="869" y="158" class="head">Guarded DC load</text><text x="869" y="187">Rated terminations</text><text x="869" y="214">and forced cooling</text>
+  </g>
+  <g class="arrow"><path d="M256 183H296M499 183H537M725 183H765"/></g>
+  <path d="M398 242V282M633 242V282M869 242V282" class="sense"/>
+  <rect x="36" y="286" width="928" height="126" rx="7" class="log"/>
+  <text x="57" y="317" class="head">Log input, temperature and output at the defined planes</text>
+  <text x="57" y="347">Input meter readings · ambient and sensor locations · measured DC current through one lead</text>
+  <text x="57" y="374">Voltage at the specified terminals · load step · on/off time · shutdown event and cause if any</text>
+  <text x="57" y="399" class="note">At the 120 A example point, select a station capable of 24.8 V and about 3.0 kW at the required duration.</text>
+</svg>
