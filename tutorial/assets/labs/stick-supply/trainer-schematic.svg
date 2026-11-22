@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-labelledby="title desc">
+  <title id="title">9 V stick-welder current-control trainer</title>
+  <desc id="desc">Isolated 9 V supply through J1 to pin 3 of an LM317T. C1 bypasses the input to return. Pin 2 goes through 10 ohm R1 to the load node. Pin 1 connects to that node. One external load resistor connects across J2 and returns to J1 negative. An inset shows the marked-face pin order and metal tab.</desc>
+  <rect width="900" height="540" rx="18" fill="#f5f8fb"/>
+  <g font-family="system-ui,sans-serif" fill="#14283f">
+    <text x="34" y="48" font-size="30" font-weight="750">9 V constant-current trainer</text>
+    <text x="34" y="78" font-size="17">Solder the circuit on perfboard. Fit one load at J2 with the supply output off.</text>
+    <rect x="30" y="98" width="840" height="281" rx="14" fill="#fff" stroke="#b9cadd"/>
+    <text x="52" y="134" font-size="17" font-weight="700">J1 · Isolated 9 V DC, limited to 0.20 A</text>
+    <text x="602" y="134" font-size="17" font-weight="700">J2 · Swappable load</text>
+    <rect x="265" y="157" width="222" height="100" rx="10" fill="#e9f1f9" stroke="#294a69" stroke-width="2"/>
+    <text x="376" y="186" text-anchor="middle" font-size="20" font-weight="750">U1 · LM317T</text>
+    <text x="282" y="219" font-size="16">3 IN</text>
+    <text x="470" y="219" text-anchor="end" font-size="16">OUT 2</text>
+    <text x="376" y="244" text-anchor="middle" font-size="16">1 ADJ</text>
+    <g stroke="#193b56" stroke-width="3" fill="none" stroke-linejoin="round">
+      <path d="M94 212H265 M487 212H548 M651 212H800 M94 342H800"/>
+      <path d="M376 257V277H717V212 M178 212V262 M178 277V342 M161 262H195 M161 277H195"/>
+      <path d="M800 212V247 M800 306V342"/>
+      <rect x="548" y="200" width="103" height="24" rx="2"/>
+      <rect x="788" y="247" width="24" height="59" rx="2"/>
+    </g>
+    <g fill="#193b56">
+      <circle cx="178" cy="212" r="5"/><circle cx="178" cy="342" r="5"/><circle cx="717" cy="212" r="5"/>
+    </g>
+    <g stroke="#193b56" stroke-width="3" fill="#fff">
+      <circle cx="94" cy="212" r="5"/><circle cx="94" cy="342" r="5"/>
+      <circle cx="754" cy="212" r="5"/><circle cx="754" cy="342" r="5"/>
+    </g>
+    <g font-size="16">
+      <text x="83" y="199">+</text><text x="83" y="329">−</text>
+      <text x="119" y="193">VIN</text><text x="498" y="239">VOUT</text>
+      <text x="600" y="185" text-anchor="middle">R1 · 10 Ω</text>
+      <text x="710" y="193" text-anchor="middle">VLOAD</text>
+      <text x="205" y="262">C1</text><text x="205" y="284">100 nF</text>
+      <text x="124" y="364">0 V · Supply return</text>
+      <text x="774" y="322" text-anchor="end">RL · 2 W · 1, 22, 33 or 100 Ω</text>
+    </g>
+    <rect x="30" y="398" width="840" height="108" rx="14" fill="#e9f1f9" stroke="#b9cadd"/>
+    <rect x="63" y="415" width="68" height="43" rx="4" fill="#aebdca" stroke="#43617c"/>
+    <circle cx="97" cy="426" r="5" fill="#e9f1f9"/>
+    <rect x="59" y="438" width="76" height="35" rx="4" fill="#20384d"/>
+    <path d="M73 473V490 M97 473V490 M121 473V490" stroke="#486983" stroke-width="4"/>
+    <text x="97" y="460" text-anchor="middle" font-size="11" fill="#fff">LM317T</text>
+    <text x="158" y="436" font-size="18" font-weight="700">TO-220 · Marked face toward you, leads down</text>
+    <text x="158" y="462" font-size="17">Left to right · 1 ADJ, 2 OUT, 3 IN. Metal tab is OUT.</text>
+    <text x="158" y="486" font-size="17">For current, measure DC volts across R1 or RL, then divide by its resistance.</text>
+  </g>
+</svg>

@@ -7,6 +7,7 @@
 <meta name="description" content="Build a 9 V regulated-current circuit, measure its load and thermal limits, then specify the power stage and tests for a real MMA machine.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-welding">
 <div class="shell">
@@ -20,27 +21,77 @@
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <figure class="course-photo">
-      <img src="../assets/photos/gys.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets.">
-      <figcaption>Find the output sockets and current control of this commercial inverter. The current-control trainer on this page models its behaviour at a lower voltage and current.<br><small>Photo by Bruno Bouygues. <a href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      <a class="image-preview-figure" href="../assets/photos/gys.jpg" data-image-preview="GYS commercial inverter welder" data-preview-source="gys-photo-credit" aria-haspopup="dialog" aria-label="Enlarge the GYS welder photograph">
+        <img src="../assets/photos/gys.jpg" width="370" height="370" alt="A compact GYS inverter stick welder. The controls and display sit above two brass welding-output sockets.">
+      </a>
+      <figcaption>Find the output sockets and current control. The trainer below demonstrates regulated current on a 9 V bench.<br><small>Photo by Bruno Bouygues. <a id="gys-photo-credit" href="https://commons.wikimedia.org/wiki/File:GYS_-_MMA_Arc_Welder.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
     </figure>
     <p class="course-video"><b>Watch.</b> Identify the power stage, current sensing and control blocks on a commercial inverter before wiring the low-energy trainer. <a href="https://www.youtube.com/watch?v=1XPzV0sXOck">Haseeb Electronics · Inverter welder functions and troubleshooting</a>.</p>
     <h2>Specify the machine you want</h2>
     <p>Choose DC manual metal arc welding (MMA, also called stick or SMAW) because it matches the compact inverter machines in W01. A power source can hold approximately the same current across a useful voltage range. With an open electrode there is no load current, and output voltage needs its own limit. In a sustained stick condition, the control has to limit the low-voltage current and respond over time. <a href="https://qacd10.lincolnelectric.com/en/Welding-and-Cutting-Resource-Center/Process-and-Theory/Constant-Current-vs-Constant-Voltage-Output">Lincoln Electric · Constant-current welding characteristic</a>.</p>
     <p>For a design exercise, write an output target of 100 A at 24 V for 2.40 kW of arc-side power. At a hypothetical 85% efficiency, input real power at that point is about 2.82 kW and heat lost in the equipment is about 424 W. This sets up the thermal and input-current problems. Specify rated current <em>with</em> voltage, supply conditions and duty cycle. Specify permitted open-circuit voltage and any voltage reduction feature with the applicable evaluation lab.</p>
 
-    <h2>Build the 9 V version from components</h2>
-    <p>Use an isolated adjustable 9 V bench supply with its current limit set to 0.20 A, an LM317 in a leaded package, a suitable clip-on heatsink, a 10 Ω 1 W metal-film set resistor, 1 Ω, 22 Ω, 33 Ω and 100 Ω dummy loads rated 2 W, an insulated terminal board and a multimeter. The loads are ordinary resistors. This bench build demonstrates current control and neither strikes an arc nor melts material.</p>
-    <pre><code>9 V positive → LM317 IN
-LM317 OUT → 10 Ω set resistor → load node
-LM317 ADJ → load node
-load node → one dummy load → supply negative</code></pre>
+    <h2>Buy the 9 V trainer parts in India</h2>
+    <p>Build one board with two screw terminals so you can change loads and service the circuit. The parts and readings below describe a 125 mA classroom trainer powered from an isolated, current-limited bench supply.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Part and quantity</th><th scope="col">What to buy and check</th><th scope="col">India source and example price</th></tr></thead>
+      <tbody>
+        <tr>
+          <th scope="row">U1 · 1 regulator <span class="preview-links"><a class="preview-trigger" href="https://www.mouser.in/images/stmicroelectronics/images/to-220.jpg" data-image-preview="STMicroelectronics TO-220 package" data-preview-note="Package reference from the LM317T listing. Check the part marking and use the pin drawing below when wiring." data-preview-source="reg-photo-credit" aria-haspopup="dialog">View regulator</a></span></th>
+          <td>STMicroelectronics LM317T, through-hole TO-220. With the marked face toward you and leads down, pins are ADJ, OUT, IN from left to right. The metal tab is OUT.</td>
+          <td><a href="https://in.element14.com/stmicroelectronics/lm317t/v-reg-adj-1-2-37v-to-220-3-317/dp/9756027">element14 · 9756027 · ₹79.88</a> · <a id="reg-photo-credit" href="https://www.mouser.in/en/ProductDetail/STMicroelectronics/LM317T">Mouser · Package photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 heatsink and mounting kit <span class="preview-links"><a class="preview-trigger" href="https://www.assmann-wsw.com/uploads/productimages/big/v2003.jpg" data-image-preview="Assmann V2003 heatsink family" data-preview-note="Match the body and mounting hole to the V2003X drawing. Leave the fins open for natural convection." data-preview-source="sink-photo-credit" aria-haspopup="dialog">View heatsink</a></span></th>
+          <td>Assmann V2003X, 19 × 22 × 19 mm, 22 K/W nominal. Buy a suitable TO-220 insulating thermal pad, shoulder washer and screw hardware that fit both parts. With the sink mounted, meter-check isolation between the sink and the metal tab.</td>
+          <td><a href="https://robu.in/product-category/aluminium-heat-sink/">Robu · V2003X · ₹93</a> · <a id="sink-photo-credit" href="https://www.assmann-wsw.com/us/product/v2003x/">Assmann · Photo and drawing</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">R1 + RL · 5 resistors <span class="preview-links"><a class="preview-trigger" href="../assets/photos/resistor.jpg" data-image-preview="Through-hole resistors of different power ratings" data-preview-note="These are form examples. Order the resistance and 2 W rating from the supplier and check each resistance with a meter." data-preview-source="resistor-photo-credit" aria-haspopup="dialog">View resistor types</a></span></th>
+          <td>2 W axial, ±5% or tighter. Buy 10 Ω for R1 and one each of 1 Ω, 22 Ω, 33 Ω and 100 Ω for the loads. Vishay PR02 is one series to ask for. Label each load by value before installing it.</td>
+          <td><a href="https://in.element14.com/c/passive-components/resistors-fixed-value/through-hole-resistors?brand=vishay&amp;product-range=pr02-series">element14 · PR02 series</a> · <a href="https://in.element14.com/vishay/pr02000203309ja100/res-33r-2w-500v-axial-metal-film/dp/4844653">33 Ω sample · ₹20.32</a> · <a id="resistor-photo-credit" href="https://commons.wikimedia.org/wiki/File:Carbon_and_ceramic_resistors_of_different_power_ratings.jpg">Photo · David Ludovino, CC BY-SA 3.0, resized</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">C1 · 1 capacitor <span class="preview-links"><a class="preview-trigger" href="https://www.ktron.in/wp-content/uploads/2020/02/kstc0093-ceramic-capacitor-50v-100nf-th-104-1.jpg" data-image-preview="100 nF leaded ceramic disc capacitor" data-preview-note="104 is the capacitance code for 100 nF. Confirm the 50 V rating on the packet or listing." data-preview-source="capacitor-photo-credit" aria-haspopup="dialog">View capacitor</a></span></th>
+          <td>100 nF, 50 V, leaded ceramic disc. Fit across IN and supply return close to U1.</td>
+          <td><a href="https://robu.in/product/100nf-50v-disc-capacitor/">Robu · 662929 · ₹1.22</a> · <a id="capacitor-photo-credit" href="https://www.ktron.in/product/50v-100nf-ceramic-capacitor-th-104/">KTRON · Alternate and photo</a>.</td>
+        </tr>
+        <tr>
+          <th scope="row">1 board + J1 and J2 <span class="preview-links">
+            <a class="preview-trigger" href="https://upload.wikimedia.org/wikipedia/commons/b/b7/CopperCladPerfboard_1.png" data-image-preview="Single-pad perfboard" data-preview-note="The separate copper pads are visible on the solder side. Use insulated wire to connect nets after placing the components." data-preview-source="perfboard-photo-credit" aria-haspopup="dialog">View perfboard</a>
+            <a class="preview-trigger" href="https://robobazar.in/wp-content/uploads/2023/10/2-Pin-PBT-1-1.jpg" data-image-preview="Two-pin solder-in screw terminal" data-preview-note="Check the screw access, wire entry and pins. 5.08 mm spans two 2.54 mm grid spaces. Check the hole diameter with the actual pins." data-preview-source="terminal-photo-credit" aria-haspopup="dialog">View terminal</a>
+          </span></th>
+          <td>50 × 70 mm isolated-pad perfboard on a 2.54 mm grid and two 2-pole, 5.08 mm pitch screw terminals. Buy four nylon standoffs that fit the board, insulated 22 AWG wire, labels and a small nonconductive base.</td>
+          <td><a href="https://store.electrobot.co.in/family/prototype-pcbs">Electrobot · GPB57CM · ₹46</a> · <a id="terminal-photo-credit" href="https://robobazar.in/product/2-pin-5-08mm-pitch-screw-terminal-2-pieces-pack/">Robo Bazar · J1 + J2 · ₹14/pack</a> · <a id="perfboard-photo-credit" href="https://commons.wikimedia.org/wiki/File:CopperCladPerfboard_1.png">Board photo · Klaus-Günter Leiss, CC BY-SA 3.0</a>.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p>The six priced lines total ₹254.42 on the listings checked on 22 November 2026. Add four more resistors, heatsink mounting hardware, standoffs, wire, the base and applicable shipping and tax. Compare delivered quotes if buying for a class.</p>
+    <h2>Set out the tools and read the drawing</h2>
+    <p>Use a soldering station and stand, solder, flush cutters, wire stripper, small screwdriver, digital multimeter with clip leads and a contact thermometer with an electrically insulated probe. Use a bench supply with an isolated adjustable output and a current limit you can set at 0.20 A. The Robu A3005 listing was ₹5,029 as a bench-equipment price reference. Confirm the output characteristics on the specific unit you use. <a href="https://robu.in/product-category/pro-range-adjustable-dc-power-supply/">Robu · Bench supply listings</a>.</p>
+    <div class="preview-links">
+      <a class="preview-trigger" href="../assets/photos/solde.jpg" data-image-preview="Through-hole soldering iron and joint" data-preview-note="Heat the pad and the lead together, then feed solder at the joint." data-preview-source="iron-photo-credit" aria-haspopup="dialog">Soldering iron photo</a>
+      <a class="preview-trigger" href="../assets/photos/meter.jpg" data-image-preview="Digital multimeter" data-preview-note="Use COM and the V/Ω jack for all W08 measurements. Turn off the circuit before using resistance mode." data-preview-source="meter-photo-credit" aria-haspopup="dialog">Multimeter photo</a>
+      <a class="preview-trigger" href="../assets/photos/psu.jpg" data-image-preview="Adjustable bench DC supply" data-preview-note="Reference instrument. Identify voltage adjustment, current limit and the positive and negative output posts." data-preview-source="supply-photo-credit" aria-haspopup="dialog">Bench supply photo</a>
+    </div>
+    <p><small>Tool photos. <a id="iron-photo-credit" href="https://learn.adafruit.com/assets/1996">Soldering · Bill Earl and Adafruit, CC BY-SA 3.0</a> · <a id="meter-photo-credit" href="https://commons.wikimedia.org/wiki/File:UT61D_digital_multimeter_front.jpg">Meter · Anselm Schüler, CC BY-SA 4.0</a> · <a id="supply-photo-credit" href="https://commons.wikimedia.org/wiki/File:Bench_power_supply.jpg">Bench supply · Derrick Parker, CC0</a>.</small></p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/stick-supply/trainer-schematic.svg" data-image-preview="W08 current-control trainer schematic" aria-haspopup="dialog" aria-label="Enlarge the 9 V trainer schematic">
+        <img src="../assets/labs/stick-supply/trainer-schematic.svg" width="900" height="540" loading="lazy" decoding="async" alt="9 V LM317T current-regulator circuit with pin numbers, input bypass capacitor, current-set resistor, load screw terminal and test points">
+      </a>
+      <figcaption>Measure across R1 to find the programmed current and across the external load to find the delivered current. <a href="../assets/labs/stick-supply/trainer-schematic.svg" download>Download the schematic</a> · <a href="https://www.st.com/resource/en/datasheet/lm317.pdf">STMicroelectronics · Pinout and current regulator, figures 1 and 9</a>.</figcaption>
+    </figure>
+    <p class="course-video"><b>Watch the assembly methods.</b> In Pier Aisa’s Italian-language demonstration, follow the resistor and ADJ wiring of the same regulator topology. Use this lesson’s resistor and test values. Watch the Make video for how to join separate pads by hand. <a href="https://www.youtube.com/watch?v=b-7P3d9hoag">Pier Aisa · LM317 current regulator</a> · <a href="https://www.youtube.com/watch?v=3N3ApzmyjzE">Make · Perfboard prototyping</a>.</p>
+    <h2>Assemble and test the board</h2>
     <ol class="steps">
-      <li>Use the exact manufacturer pinout and heatsink instructions. On the TI TO-220 drawing the tab is connected to the output. Keep it away from grounded metal and other contacts. Use the input bypass called for by the datasheet and inspect polarity and continuity with power off.</li>
-      <li>Connect the 22 Ω load first and power up. Measure across the set resistor and the load. The nominal regulator reference is 1.25 V, so 1.25 V ÷ 10 Ω gives 0.125 A. Compare the two independently inferred currents using the measured resistor values. Record the regulator input and output-pin voltages to see how much headroom remains.</li>
-      <li>Power down for each load change. The 33 Ω load should need more voltage for about the same current, and 100 Ω asks for 12.5 V at 125 mA, beyond a 9 V input even before regulation losses. Record the lower current at the heavy resistance. For the 1 Ω case, fit the heatsink first, observe only long enough to collect a stable reading and monitor regulator temperature. Stop for a rising temperature beyond your bench limit. Use the resistor instead of directly shorting the output.</li>
+      <li><b>Dry-fit and label.</b> Point both terminal wire entries outward. Put J1 and J2 at opposite ends of the board and U1 where the heatsink clears both terminals and the base. Mark J1 +9 V and 0 V and J2 LOAD and 0 V. Use nylon standoffs at the board mounting holes. Place the two low-voltage leads from the bench supply so they cannot pull the board over.</li>
+      <li><b>Solder from the wiring drawing.</b> Use a black jumper for the 0 V return from J1 to J2. After soldering U1 and C1, connect pin 2 to one side of R1. Join the other side of R1, pin 1 and J2 LOAD. Leave probe loops at VIN, VOUT, VLOAD and 0 V, spaced to take insulated clips. Trim leads and inspect both sides for loose wire and bridging.</li>
+      <li><b>Check cold.</b> With J1 disconnected and J2 empty, verify J1 + to pin 3, J2 LOAD to pin 1 and the 0 V return from J1 to J2. Measure about 10 Ω across R1 in a powered-off circuit, or measure the part before fitting for the most direct reading. Check that the input is free of a hard short and that the heatsink is electrically isolated from the tab. Measure and record all four loose loads. For 1 Ω, compensate the meter-lead resistance using REL or a four-wire meter.</li>
+      <li><b>Power up with 22 Ω.</b> Set the isolated bench output to 9.0 V and 0.20 A. With the output off, connect the 22 Ω load at J2 and confirm its leads cannot touch. Turn on. If the supply enters current limit, turn off and inspect the wiring. Clip the voltmeter across R1 for V<sub>R1</sub> and across the load for V<sub>LOAD</sub>. Calculate each current using the measured resistance. Expect roughly 125 mA with a nominal 10 Ω R1. A practical checkout range is 114–137 mA at 22 Ω with a ±5% set resistor, based on the reference and resistor tolerances. Record VIN and VOUT to find the regulator's voltage headroom.</li>
+      <li><b>Repeat under load.</b> Turn the output off before changing resistors or moving clips. Test 33 Ω and then 100 Ω. The higher resistance can reduce the regulated current because 100 Ω at 125 mA would require 12.5 V at the load alone. Test 1 Ω last on a cool board with the heatsink fitted. Take a brief stable reading with the thermometer attached and stop at 50 °C at the sink for this exercise. Allow the board and resistors to cool before handling.</li>
       <li>With the supply off, remove the load. Use the meter to observe the no-load output during a brief power-up, then power off. The isolated bench supply bounds the available voltage. An LM317 current regulator by itself provides no specified open-electrode or anti-stick function for an arc welder.</li>
     </ol>
-    <p>At 1 Ω the modeled load dissipates only 0.016 W, while the regulator dissipates 0.953 W. At 33 Ω the load takes 0.516 W and the regulator 0.453 W. This demonstrates why the device may heat more during a low-voltage fault even when useful output power is small. Derive temperature rise using the thermal path of the specific package and heatsink. <a href="https://www.ti.com/lit/ds/symlink/lm317.pdf">TI · LM317 pinout and current limiter application</a>.</p>
+    <p>Log the measured load resistance, VIN, VOUT, V<sub>R1</sub>, V<sub>LOAD</sub>, both inferred currents, sink temperature and time after turn-on. At 1 Ω and nominal regulation, the calculated load loss is 0.016 W and the regulator loss is about 0.95 W. At 33 Ω the corresponding estimates are 0.52 W and 0.45 W. Estimate regulator loss as (VIN − VOUT) × I. Use the thermal resistance of the specific package, pad and heatsink to evaluate a longer run.</p>
 
     <h2>Predict the load curve before measuring it</h2>
     <p>Download the <a href="../assets/labs/stick-supply/low_voltage_current_source.cir" download>ngspice model</a> and <a href="../assets/labs/stick-supply/observed.csv" download>100 computed load points</a>. Run <code>ngspice -b low_voltage_current_source.cir</code>. The model assumes 2.5 V dropout and a small continuous transition out of current regulation. It models DC loads and omits LM317 tolerance, device heating and circuit dynamics.</p>
@@ -70,5 +121,6 @@ load node → one dummy load → supply negative</code></pre>
 </div>
 <script src="../assets/toc.js?v=20261121-robotics"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>
