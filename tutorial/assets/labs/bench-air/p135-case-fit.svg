@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="615" viewBox="0 0 1000 615" role="img" aria-labelledby="title desc">
+  <title id="title">P135 corded blower case fit layout</title>
+  <desc id="desc">Top and rear views of a 240 by 180 by 160 millimetre case with a guarded side intake, guarded end outlet, separated power bay, and assembly rail holes dimensioned from datum A.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto-start-reverse"><path d="M0 0 6 4 0 8z" fill="#365773"/></marker>
+    <marker id="air" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0 0 8 5 0 10z" fill="#1b7690"/></marker>
+  </defs>
+  <style>
+    text{font:17px system-ui,sans-serif;fill:#152a3e}.title{font-size:28px;font-weight:700}.head{font-size:21px;font-weight:700}.small{font-size:15px}
+    .outline{fill:#f5f9fc;stroke:#1d3850;stroke-width:2}.rail{fill:#e0eaf2;stroke:#597286;stroke-width:1.5}.zone{fill:#fff3d6;stroke:#866322;stroke-width:1.5;stroke-dasharray:7 4}
+    .hole{fill:white;stroke:#1d3850;stroke-width:1.6}.dim{fill:none;stroke:#365773;stroke-width:1.3;marker-start:url(#arrow);marker-end:url(#arrow)}.flow{fill:none;stroke:#1b7690;stroke-width:4;marker-end:url(#air)}
+  </style>
+  <rect width="1000" height="615" fill="white"/>
+  <text x="38" y="45" class="title">P135 · Case, guards and airflow</text>
+  <text x="38" y="74">Fit layout · dimensions in mm · transfer the scroll and hardware holes from actual parts</text>
+  <text x="92" y="127" class="head">Top view · lid removed</text>
+  <text x="663" y="127" class="head">Rear view · power bay</text>
+  <rect x="92" y="184" width="384" height="288" class="outline"/>
+  <rect x="124" y="187" width="320" height="30" class="rail"/>
+  <rect x="124" y="439" width="320" height="30" class="rail"/>
+  <rect x="110" y="236" width="84" height="186" rx="3" class="zone"/>
+  <text x="152" y="310" text-anchor="middle" class="small">Closed</text><text x="152" y="334" text-anchor="middle" class="small">power bay</text>
+  <path d="M203 224V430" stroke="#865f1f" stroke-dasharray="7 5" stroke-width="2"/>
+  <rect x="224" y="233" width="188" height="128" rx="12" class="zone"/>
+  <text x="319" y="282" text-anchor="middle">Motor and scroll</text>
+  <text x="319" y="308" text-anchor="middle" class="small">119 × 80 plan allowance</text>
+  <text x="319" y="333" text-anchor="middle" class="small">locate from real module</text>
+  <path d="M320 418V373M421 270H514" class="flow"/>
+  <text x="238" y="413" class="small">Guarded inlet</text><text x="486" y="246" class="small">Guarded</text><text x="486" y="266" class="small">outlet</text>
+  <g class="hole"><circle cx="140" cy="200" r="4.5"/><circle cx="284" cy="200" r="4.5"/><circle cx="428" cy="200" r="4.5"/><circle cx="140" cy="456" r="4.5"/><circle cx="284" cy="456" r="4.5"/><circle cx="428" cy="456" r="4.5"/></g>
+  <path class="dim" d="M94 157H474M60 186V470"/>
+  <text x="284" y="150" text-anchor="middle">240</text><text x="46" y="328" transform="rotate(-90 46 328)" text-anchor="middle">180</text>
+  <text x="92" y="498">A · rear-left top corner</text><text x="476" y="498" text-anchor="end">Discharge end</text>
+  <rect x="662" y="184" width="288" height="256" class="outline"/>
+  <rect x="687" y="210" width="238" height="203" rx="6" class="zone"/>
+  <text x="806" y="254" text-anchor="middle">Rocker switch and entry gland</text>
+  <text x="806" y="284" text-anchor="middle" class="small">Mark openings from actual parts</text>
+  <text x="806" y="311" text-anchor="middle" class="small">Check clearance inside the bay</text>
+  <text x="806" y="338" text-anchor="middle" class="small">Locate PE stud on the chassis</text>
+  <path class="dim" d="M664 157H948M969 186V438"/>
+  <text x="806" y="150" text-anchor="middle">180</text><text x="984" y="313" transform="rotate(-90 984 313)" text-anchor="middle">160</text>
+  <rect x="38" y="526" width="924" height="58" rx="6" fill="#eff5fa" stroke="#bdcad6"/>
+  <text x="56" y="552" class="head">Base and lid rail holes from A</text>
+  <text x="56" y="576" class="small">X along length: 30, 120, 210. Y across width: 10 and 170. Drill Ø4.5 for M4 after marking each face.</text>
+</svg>

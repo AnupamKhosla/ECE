@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="384" viewBox="0 0 1000 384" role="img" aria-labelledby="title desc">
+  <title id="title">P135 mains blower power interface and separate earth bond</title>
+  <desc id="desc">A three-core cord enters a gland. Line and neutral pass through a two-pole switch to the fan interface. Protective earth connects directly to the case and the fan. The run capacitor mounts inside the guarded bay.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 7 4 0 8z" fill="#385474"/></marker></defs>
+  <style>
+    text{font:16px system-ui,sans-serif;fill:#142637}.title{font-size:27px;font-weight:700}.head{font-size:18px;font-weight:700}
+    .box{fill:#edf5fb;stroke:#385474;stroke-width:1.5}.fan{fill:#fff3da;stroke:#866316;stroke-width:1.5}.bond{fill:#e9f6e9;stroke:#35713e;stroke-width:1.5}
+    .path{fill:none;stroke:#385474;stroke-width:2;marker-end:url(#arrow)}.earth{fill:none;stroke:#35713e;stroke-width:3}
+  </style>
+  <rect width="1000" height="384" fill="white"/>
+  <text x="34" y="42" class="title">P135 · Mains and protective-earth paths</text>
+  <text x="34" y="72">Interface drawing · approved harness schematic includes exact maker terminals and protection</text>
+  <g text-anchor="middle">
+    <rect x="35" y="116" width="204" height="90" rx="8" class="box"/>
+    <text x="137" y="148" class="head">AC cord and gland</text><text x="137" y="178">Line, neutral and PE</text>
+    <rect x="310" y="116" width="240" height="90" rx="8" class="box"/>
+    <text x="430" y="146" class="head">Two-pole switch</text><text x="430" y="175">Switch line and neutral</text>
+    <rect x="671" y="116" width="294" height="90" rx="8" class="fan"/>
+    <text x="818" y="145" class="head">G2E085 fan harness</text><text x="818" y="172">Run capacitor and terminal</text><text x="818" y="194">assignments per motor drawing</text>
+    <rect x="336" y="254" width="313" height="68" rx="8" class="bond"/>
+    <text x="493" y="282" class="head">Dedicated case bond</text><text x="493" y="306">Bond accessible metal and fan PE</text>
+  </g>
+  <g class="path"><path d="M245 161H303M556 161H664"/></g>
+  <path class="earth" d="M137 207V289H331M655 289H818V208"/>
+  <text x="150" y="274">PE path</text><text x="699" y="275">Fan PE</text>
+  <text x="35" y="357">Identify motor wires from its terminal legend. Verify continuity on the completed unit before connecting it to a supply.</text>
+</svg>
