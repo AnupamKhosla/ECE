@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P91 · Test a used laptop RAM module and its slot</title>
+<meta name="description" content="Use a known-good SO-DIMM and a bootable test to distinguish a bad module, socket, incompatible pair and memory-controller fault.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P91</span>
+    <h1>Test a used laptop RAM module and its slot</h1>
+    <p class="lede">Use a known-good SO-DIMM and a bootable test to distinguish a bad module, socket, incompatible pair and memory-controller fault.</p>
+    <div class="meta"><span><b>Time</b> 30–45 minutes setup, plus memory test time</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32 laptop modular service</a> · <a href="../theory/t49-dram-chips-memory-faults.html">T49 DRAM theory</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Read the label and find the reference</h2>
+    <p>A RAM symptom can start at a removable module, its socket, the laptop’s power or memory controller, or soldered memory. A laptop that shows no picture may have a display fault. A laptop that starts an operating system and then crashes can have many other causes. Identify the last stage it reliably reached. Check the exact model’s memory generation, capacity limits, ECC support, supported module organisation and single-module slot population before any swap. DDR4, DDR5 and other generations use different electrical interfaces. A similar shape does not establish compatibility. <a href="../theory/t49-dram-chips-memory-faults.html">T49 · Memory chips, the controller and failure modes</a> · <a href="https://www.kingston.com/en/memory">Kingston memory compatibility lookup</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/crucial-ddr4-sodimm.jpg" width="960" height="478" loading="lazy" decoding="async" alt="Crucial Micron DDR4 SO-DIMM with label, edge contacts and notch">
+        <svg viewBox="0 0 960 478" aria-hidden="true">
+          <defs><marker id="p91-crucial" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M585,336 L529,377" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M585,336 L529,377" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p91-crucial)"/>
+          <rect x="549" y="319" width="192" height="56" rx="6" fill="#122029"/><text x="562" y="360" style="fill:#fff;font-size:37px;font-weight:700">Key notch</text>
+          <path d="M534,110 L523,290" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M534,110 L523,290" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p91-crucial)"/>
+          <rect x="475" y="68" width="395" height="56" rx="6" fill="#122029"/><text x="488" y="109" style="fill:#fff;font-size:37px;font-weight:700">Capacity and speed</text>
+        </svg>
+      </div>
+        <figcaption>This label identifies a 16 GB DDR4-3200 SO-DIMM. Match the part number, memory generation and supported organisation. The notch alone cannot prove compatibility.<br><small>Photo by D-Kuru, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:DDR_4_RAM_SO-DIMM_16GB_by_Micron-top_front_PNr%C2%B00840.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/raminstalled.jpg" width="960" height="600" loading="lazy" decoding="async" alt="Crucial DDR4 SO-DIMM mounted flat in a laptop socket">
+        <figcaption>Once seated, both retainers hold the module flat. Use the designated first socket when testing one module. Keep your fingers clear of the gold contacts.<br><small>Photo by Diego Torres Silvestre, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Crucial_CT4G4SFS8213_on_laptop_motherboard_20171218.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Look for the failing address and differing bits. The video demonstrates optional Pro decoding on supported hardware. The swap matrix in this lesson works with a compatible free memory test. <a href="https://www.youtube.com/watch?v=F4iopcL5vxo">PassMark’s memory fault demonstration on YouTube</a>.</p>
+    <p>Use a powered-down trainer and a compatible known-good module <b>A</b>, a suspect module <b>B</b> and the service guide. Disconnect the main battery as directed. Handle boards by the edges and use ESD control. Screen B for cracks, carbonisation, corrosion and damaged edge pads before installation. A visibly burned or suspected shorted module stays unpowered. Use the documented first slot with one module. If there is soldered memory or only one service slot, record that in the test matrix instead of inventing a second slot.</p>
+    <h2>Boot the diagnostic separately from the customer's drive</h2>
+    <ol class="steps">
+      <li><p>On your trainer, set documented normal memory settings. Record the host model, firmware version, capacity, and the configuration in use. If the firmware retrains memory after a change, wait the time the manufacturer specifies before deciding it will not POST. A training delay differs from a repeatable error after boot.</p></li>
+      <li><p>Use a spare USB drive and the official image writer for your chosen tool. Writing the image erases that USB drive. Confirm the destination first. Use your laptop’s documented one-time boot menu. Keep production storage away from the exercise. If a diagnostic does not boot on a particular firmware or Secure Boot setup, choose the compatible manufacturer diagnostic or a compatible image. Preserve the host’s settings and any recovery requirements. <a href="https://www.memtest86.com/download.htm">PassMark MemTest86 for supported UEFI systems</a> · <a href="https://memtest.org/">Memtest86+ downloads and support notes</a>.</p></li>
+      <li><p>First run A in the documented single-module position and complete a full test pass. Record tool, version, detected capacity, configuration, passes and errors. A full pass is a screening baseline. Repeat under the same configuration, including cold starts and a longer run appropriate to the job, before releasing used RAM. Record any reset or freeze, even when there is no printed error. A single reproducible error is enough to hold the part for further diagnosis.</p></li>
+    </ol>
+    <h2>Swap one thing at a time</h2>
+    <p>Power down and isolate between swaps. Where the manual permits each slot to be used independently, test A in both slots and B in both slots. After each B test, recheck the reference if the fixture behaves differently. For an intermittent fault try a second known-good compatible host. Compare single-module and paired operation only in supported combinations.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Repeated observation</th><th scope="col">What it suggests</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">A passes both slots. B errors in both.</th><td>B is the main suspect if its specification is supported.</td><td>Confirm B in a second compatible reference. Compare the part number and look for a board-level clue. Keep it out of service.</td></tr>
+        <tr><th scope="row">A and B pass slot 1. Both error in slot 2.</th><td>The problem follows the host slot or channel.</td><td>Confirm slot 2 alone is allowed. Inspect the socket. A socket, signal path, solder joint or controller can fail along the same path.</td></tr>
+        <tr><th scope="row">Both pass alone. The pair fails.</th><td>Population, module mix, memory training or signal margin could be involved.</td><td>Verify model-supported pairing and stock configuration. Compare with a known-good matched pair.</td></tr>
+        <tr><th scope="row">Several approved modules fail in a host with soldered RAM.</th><td>Results also exercise the permanent memory and shared paths.</td><td>Run the OEM test for the documented base-memory configuration, then assess the board or refer.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>For each swap, record <b>host / slot / module / detected capacity / stock settings / passes / errors / restart behaviour</b>. Preserve the failing condition and one independent comparison. Promote only supported parts that pass your repeatable release test. See <a href="https://www.memtest86.com/troubleshooting.htm">PassMark’s guide to distinguishing memory faults</a> and <a href="p92-inspect-repair-damaged-ram.html">P92 for a cold inspection and repair decision</a>.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

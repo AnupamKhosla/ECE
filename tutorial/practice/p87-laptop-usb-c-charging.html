@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P87 · Find why a USB-C laptop will not charge</title>
+<meta name="description" content="Identify the required charger profile and test ports, cable power rating, detection and battery behaviour separately.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P87</span>
+    <h1>Find why a USB-C laptop will not charge</h1>
+    <p class="lede">Compare the charger, cable, supported port and firmware report before sending a laptop for board diagnosis.</p>
+    <div class="meta"><span><b>Time</b> 35–50 minutes</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32 laptop service</a> · <a href="../theory/t29-usb-c-power-delivery.html">T29 USB-C power</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read the input, cable and port requirements</h2>
+    <p>Find the exact laptop’s power input specification and ports that are meant to accept charge. A USB-C port may support data, display or power in different combinations. A charger may advertise a total rating shared among several outputs. Use the laptop’s approved charger and cable as the reference. For the test record, write the printed output profiles, which charger output is used, the cable ID and the laptop input port. <a href="../theory/t29-usb-c-power-delivery.html">T29 · USB-C attachment and power negotiation</a> · <a href="https://usb.org/sites/default/files/usb_type-c_cable_logo_usage_guidelines_jan26_final.pdf">USB-IF cable logos and ratings</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/laptop-usb-c-port.jpg" width="960" height="1280" loading="lazy" decoding="async" alt="HP laptop with a USB-C connector, USB-A connector and DisplayPort marking">
+        <svg viewBox="0 0 960 1280" aria-hidden="true">
+          <defs><marker id="p87-port" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M398,499 L453,606" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M398,499 L453,606" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-port)"/>
+          <rect x="267" y="444" width="220" height="57" rx="7" fill="#122029"/><text x="279.6666666666667" y="485.8" style="fill:#fff;font-size:38px;font-weight:700">USB-C port</text>
+          <path d="M740,504 L657,575" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M740,504 L657,575" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-port)"/>
+          <rect x="676" y="451" width="224" height="57" rx="7" fill="#122029"/><text x="688.6666666666666" y="492.8" style="fill:#fff;font-size:38px;font-weight:700">DisplayPort</text>
+        </svg>
+      </div>
+        <figcaption>HP ProBook 430 G8 side view. The centre connector is USB-C. Find the USB and DisplayPort symbols beside it. HP lists Power Delivery for this connector. Look up the input capability for the exact machine you are testing. <a href="https://www8.hp.com/content/dam/sites/garage-press/press/press-kits/2020/2020-hp-reinvent/hp_probook_430_g8.pdf">HP datasheet</a>.<br><small>Photo by Logant547, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:USB-C_connector_on_a_laptop.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/laptop-usb-c-adapter.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Apple 96 W USB-C charger with rating and model identifier on the casing">
+        <svg viewBox="0 0 960 640" aria-hidden="true">
+          <defs><marker id="p87-charger" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M463,204 L458,244" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M463,204 L458,244" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-charger)"/>
+          <rect x="323" y="146" width="278" height="57" rx="7" fill="#122029"/><text x="335.6666666666667" y="187.8" style="fill:#fff;font-size:38px;font-weight:700">96 W marking</text>
+        </svg>
+      </div>
+        <figcaption>This Apple charger has the overall rating and model number printed on its case. On the charger used for your lab, look for the separate list of supported V and A combinations or use its datasheet.<br><small>Photo by Tony Webster, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Apple_96W_USB_Type-C_Power_Adapter_for_new_16_inch_MacBook_Pro_(49165128252).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Use the opening minute to identify the BIOS adapter-status field while a compatible supply is attached. Names and navigation vary between models. <a href="https://www.youtube.com/watch?v=DP1EOYPWKb4">Dell Support’s adapter and battery check on YouTube</a>.</p>
+
+    <h2>Change exactly one part of the charging path</h2>
+    <ol class="steps">
+      <li><p>Record the battery state of charge and whether any charge limit is active. Use a normal mid-range state when testing a good laptop, because a healthy system may pause near its charge limit. Disconnect the dock and unnecessary charger loads. With the laptop off or idle, use the known-good direct charger, cable and designated port. Then check the manufacturer’s firmware or system diagnostic for the adapter status, and note whether battery state rises under a light repeatable load over a fixed interval.</p></li>
+      <li><p>Compare another supported port on the same laptop if the model has one. Then substitute one compatible cable or charger while keeping load and battery conditions similar. Retest the good configuration between changes. A port that fails with two supported combinations while another works is an input-path lead. Use a light for exterior inspection and stop if the port is damaged or heats abnormally.</p></li>
+      <li><p>When you have a rated, compatible passive USB-C power monitor, compare the link with and without it. The meter can disturb the very negotiation you are testing. Record the observed VBUS and current together with the firmware status. If you have no meter, the adapter detection and battery trend are already valid evidence. Use only normal charger negotiation. Keep triggers, bare probes and forced voltages out of the laptop input.</p></li>
+    </ol>
+    <p>An example 65 W adapter might offer 20 V at 3.25 A. A standard 3 A cable limits that example at 20 V to 60 W. A suitable electronically marked 5 A cable, approved source and laptop still have to agree a supported profile. A rating alone does not tell you which contract the equipment actually selected. Some high-wattage laptop modes are model-specific.</p>
+
+    <h2>Use the result to decide the next boundary</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Repeatable observation</th><th scope="col">Best next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Expected adapter recognised directly, unrecognised through the dock</th><td>Check the dock’s upstream port, input supply, pass-through power budget and approved cable. The laptop passed the direct comparison.</td></tr>
+        <tr><th scope="row">One port accepts the good source and one designated charging port does not</th><td>Verify the model’s port capabilities and identify that port’s module or board path in the service manual.</td></tr>
+        <tr><th scope="row">20 V observed, firmware recognises the adapter, battery stays at its configured limit</th><td>Confirm the charge policy before replacing hardware. Repeat below the documented threshold if appropriate.</td></tr>
+        <tr><th scope="row">Known compatible equipment stays near 5 V and the laptop never detects charging</th><td>Repeat the same test without the monitor on an approved port. Check the charger and cable on known-good equipment. Escalate the laptop input once the reference path is proved.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Keep the order charger → cable → input → detected power → charger path → battery. Laptop models vary in what preboot information they expose. Do not flash firmware as a test on an unstable power path. Once the input has been proved, use the <a href="p33-laptop-power-diagnostics.html">board rail lesson</a> or <a href="../theory/t28-lithium-batteries.html">battery protection theory</a>. <a href="https://www.dell.com/support/kbdoc/en-us/000125125/how-to-troubleshoot-ac-adapter-issues">Dell example of adapter identification in firmware</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save the label profile, connection combinations, firmware and battery observations, and the first boundary that fails.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

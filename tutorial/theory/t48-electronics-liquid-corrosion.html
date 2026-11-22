@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T48 · How liquid exposure damages electronics</title>
+<meta name="description" content="Moisture and ionic leakage, electrochemical migration, contact corrosion, capillary paths and cold inspection.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T48</span>
+    <h1>How liquid exposure damages electronics</h1>
+    <p class="lede">Connect visible residue to possible faults, understand why moisture can cause intermittent failures, and choose what to document before anyone applies power.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t01-charge-current-voltage.html">T01 charge and voltage</a> · <a href="t03-power-energy-heat.html">T03 power and heat</a> · <a href="t28-lithium-batteries.html">T28 lithium batteries</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Follow the liquid to the vulnerable materials</h2>
+    <p>A battery, connector or PCB can still carry voltage after you turn the device off at the screen. Liquid can travel through a port or seam and wick into closely spaced surfaces such as a flex connector or the gap beneath a shield. The visible wet edge can be some distance from the most affected pins.</p>
+    <p>Tap water, perspiration and seawater contain dissolved ions that conduct electricity. A sweet drink can leave sticky residue and dissolved salts or acids. A leak from an older battery has its own chemistry and needs to be handled according to that battery type. Different contaminants can leave different deposits. A dry-looking outside or a single colour is weak evidence about the electrical state inside.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/corroded-phone-flex.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Corroded contacts at the end of a removed phone flex cable">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <defs><marker id="t48-flex" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M359,188 L306,228" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M359,188 L306,228" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#t48-flex)"/>
+          <rect x="332" y="151" width="218" height="36" rx="7" fill="#122029"/><text x="340" y="177.4" style="fill:#fff;font-size:24px;font-weight:700">Flex contacts</text>
+        </svg>
+      </div>
+        <figcaption>This close-up from an iPhone guide illustrates damage a technician can also look for on Android flex tails. Inspect the individual contact fingers and any matching socket before deciding what failed.<br><small>Photo by Adam O’Camb and iFixit contributors, with on-page callouts. <a href="https://www.ifixit.com/Guide/iPhone+Liquid+Damage+Repair/95280">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pcb-corrosion.jpg" width="960" height="720" loading="lazy" decoding="async" alt="Soldered IC leads and sockets with green corrosion on a PCB">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="t48-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M471,505 L487,367" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M471,505 L487,367" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#t48-board)"/>
+          <rect x="338" y="505" width="290" height="57" rx="7" fill="#122029"/><text x="350.6666666666667" y="546.8" style="fill:#fff;font-size:38px;font-weight:700">Affected pins</text>
+          <path d="M171,316 L210,151" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M171,316 L210,151" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#t48-board)"/>
+          <rect x="24" y="300" width="156" height="57" rx="7" fill="#122029"/><text x="36.666666666666664" y="341.8" style="fill:#fff;font-size:38px;font-weight:700">Socket</text>
+        </svg>
+      </div>
+        <figcaption>The old board was damaged by a leaking nickel-cadmium battery. Compare deposits around the IC legs and sockets. This example shows why inspecting exposed pins and contacts matters even when most of a board looks intact.<br><small>Photo by Binarysequence, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:PCB_corrosion.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <h2>Three ways the same spill becomes an electrical fault</h2>
+    <p class="course-video"><b>Watch.</b> Identify the corrosion in the close-ups. Compare the affected conductors with the photographs above. <a href="https://www.youtube.com/watch?v=DsDpALKQjUQ">iFixit and Jessa Jones on water damage and corrosion</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Failure</th><th scope="col">What changed</th><th scope="col">Possible evidence</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Leakage</th><td>A conductive film creates a parallel path, drawing a small current between nodes. Reabsorbed humidity can change the leakage.</td><td>A high-impedance button or sensor input moves towards the wrong voltage or fails only in damp conditions.</td></tr>
+        <tr><th scope="row">Open or high-resistance contact</th><td>Pads, plating or traces deteriorate. A contact still carries some current until the load increases.</td><td>A camera or speaker drops out when the flex moves. A discoloured pin localises inspection but needs electrical confirmation.</td></tr>
+        <tr><th scope="row">Short</th><td>Conductive liquid or a bridge couples pins or nets that should be isolated. With moisture, bias and the right chemistry, metal can migrate and grow conductive dendrites.</td><td>A known rail shows an unexpectedly low reading against a comparable board in the same cold-test state. Check the schematic and normal rail resistance first.</td></tr>
+      </tbody>
+    </table></div>
+    <h2>Work a leakage example</h2>
+    <p>Imagine a dry 1.8 V logic input with a 100 kΩ pull-up. A 220 kΩ leakage path to ground makes a divider. The input now sees 1.8 × 220 ÷ (100 + 220) ≈ <b>1.24 V</b>. At about 5.6 µA, that tiny current may matter if it brings the input below its guaranteed high threshold. Whether the state is valid depends on its datasheet. A continuity beep would generally miss a 220 kΩ path.</p>
+    <details><summary>What if the leakage path drops to 47 kΩ?</summary><p>The input would fall to 1.8 × 47 ÷ (100 + 47) ≈ <b>0.58 V</b>. Compare this with both the guaranteed high and low thresholds. It can be useful to reproduce this voltage divider with ordinary resistors on a separate low-voltage breadboard instead of introducing moisture.</p></details>
+    <h2>Make a cold observation you can defend</h2>
+    <p>In a dry, previously isolated practice donor, use a loupe to draw a map of seams, flex connectors, shields and deposits. Where a service guide permits cold measurements, compare equivalent points on a known-good board of the same revision. Record probe polarity, range, reading and where you referenced the probes. Capacitors, semiconductors and parallel circuit paths can affect this reading. A healthy low-impedance power rail can read quite low on its own.</p>
+    <p>Battery condition and the value of the stored data determine the next authorised step. A visibly damaged lithium battery ends routine handling. A repair that erases the phone or replaces its original board can lose access to local encrypted files, so confirm data priorities before work. See <a href="../practice/p86-liquid-exposure-intake.html">P86 intake of a liquid-exposed device</a> and <a href="t28-lithium-batteries.html">T28 lithium batteries</a>.</p>
+    <p>For an industry test of this mechanism, see how humidity, bias and surface contamination are evaluated with surface insulation resistance measurements. <a href="https://www.npl.co.uk/products-services/electronics-reliability/surface-insulation-resistance">National Physical Laboratory</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

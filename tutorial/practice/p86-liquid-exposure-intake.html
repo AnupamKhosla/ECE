@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P86 · Triage a phone or laptop after liquid exposure</title>
+<meta name="description" content="Keep power off, distinguish a port alert from internal exposure, and identify corrosion and repair limits.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P86</span>
+    <h1>Triage a phone or laptop after liquid exposure</h1>
+    <p class="lede">Decide when to stop power, preserve customer data and hand the device to a trained repairer. Inspect a safe donor board on the bench.</p>
+    <div class="meta"><span><b>Time</b> 25–40 minutes</span><span><b>Before this</b> <a href="p01-bench-kit-safety.html">P01 bench safety</a> · <a href="../theory/t48-electronics-liquid-corrosion.html">T48 liquid corrosion</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Separate a wet port warning from a spill inside</h2>
+    <p>Record the liquid, location, time, whether the device was powered and what was done afterwards. A port warning can reflect moisture or debris at the connector. Liquid under a keyboard, inside a lens or around multiple boards has a wider scope. Heat, swelling, smoke, hissing or a damaged battery changes the handling decision immediately. Do not charge, power-cycle, heat, puncture or open a device with an active battery hazard. Keep people clear and follow local emergency or hazardous-device procedures. <a href="../theory/t48-electronics-liquid-corrosion.html">T48 · Leakage, corrosion and the limits of a dry surface</a>.</p>
+    <p>For an ordinary exposure with a stable device, make the power source safe to disconnect, stop use and power the device off if safe to do so. Leave it unpowered and seek the model-specific service route when internal ingress is possible. Avoid forcing anything into a wet port. A device that switches on today can develop a delayed fault. <a href="https://support.google.com/pixelphone/answer/9280079">Google Pixel charging-port alert guidance</a> · <a href="https://www.samsung.com/africa_en/support/mobile-devices/protect-galaxy-device-after-water-exposure/">Samsung liquid exposure guidance</a> · <a href="https://www.ifixit.com/News/41383/ask-ifixit-i-spilled-liquid-on-my-laptop-now-what">iFixit laptop spill intake</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/corroded-phone-flex.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Corroded contacts at the end of a removed phone flex cable">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <defs><marker id="p86-flex" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M359,188 L306,228" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M359,188 L306,228" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p86-flex)"/>
+          <rect x="332" y="151" width="218" height="36" rx="7" fill="#122029"/><text x="340" y="177.4" style="fill:#fff;font-size:24px;font-weight:700">Flex contacts</text>
+        </svg>
+      </div>
+        <figcaption>This close-up from an iPhone guide illustrates damage a technician can also look for on Android flex tails. Inspect the individual contact fingers and any matching socket before deciding what failed.<br><small>Photo by Adam O’Camb and iFixit contributors, with on-page callouts. <a href="https://www.ifixit.com/Guide/iPhone+Liquid+Damage+Repair/95280">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pcb-corrosion.jpg" width="960" height="720" loading="lazy" decoding="async" alt="Soldered IC leads and sockets with green corrosion on a PCB">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p86-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M471,505 L487,367" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M471,505 L487,367" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p86-board)"/>
+          <rect x="338" y="505" width="290" height="57" rx="7" fill="#122029"/><text x="350.6666666666667" y="546.8" style="fill:#fff;font-size:38px;font-weight:700">Affected pins</text>
+          <path d="M171,316 L210,151" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M171,316 L210,151" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p86-board)"/>
+          <rect x="24" y="300" width="156" height="57" rx="7" fill="#122029"/><text x="36.666666666666664" y="341.8" style="fill:#fff;font-size:38px;font-weight:700">Socket</text>
+        </svg>
+      </div>
+        <figcaption>The old board was damaged by a leaking nickel-cadmium battery. Compare deposits around the IC legs and sockets. This example shows why inspecting exposed pins and contacts matters even when most of a board looks intact.<br><small>Photo by Binarysequence, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:PCB_corrosion.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Pause for the close-ups of corrosion and compare the appearance of different contact surfaces. The board cleaning shown is specialist work. <a href="https://www.youtube.com/watch?v=DsDpALKQjUQ">iFixit and Jessa Jones on identifying water damage</a>.</p>
+
+    <h2>Inspect a disconnected scrap board without adding damage</h2>
+    <p>Use an already retired, dry module with no cell or external power. If you lack a donor, use the photos and sketch the likely affected paths. Pick a light, magnifier, screw tray and a camera. Handle a board only under its own appropriate ESD and service procedure. Keep powered evaluation, chemical cleaning and high-value data recovery within the scope of a trained technician.</p>
+    <ol class="steps">
+      <li><p>Divide the board photo into regions. Find the external opening, flex tails, sockets and the route liquid could have followed by gravity or capillary action. Label deposits, dull or missing pads, damaged traces and exposed connector contacts separately.</p></li>
+      <li><p>Compare a known-good scrap connector of the same type. Photograph the differences before any cleaning. A discoloured liquid contact indicator can support an exposure history. Its condition does not tell you which net failed or when it happened.</p></li>
+      <li><p>Mark the places you can inspect without lifting a shield or flex. Write what remains hidden. Make one scope decision about what you would assess, quote or refer. Leave customer authentication, encryption and data recovery to the authorised workflow.</p></li>
+    </ol>
+
+    <h2>Make the admission decision</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Intake example</th><th scope="col">Appropriate next action</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Port moisture alert, no evidence of deeper ingress</th><td>Follow the model’s published alert instructions. Keep power and cable disconnected as instructed. Escalate a persistent alert or damage.</td></tr>
+        <tr><th scope="row">Laptop had tea through the keyboard, customer wants files first</th><td>Keep it off. Record data priority and the storage and encryption implications. Quote assessment or refer recovery before replacing major parts.</td></tr>
+        <tr><th scope="row">Phone was submerged in salt water. Hot case or swollen battery.</th><td>Keep people clear and follow emergency or specialist battery handling guidance. Stop ordinary bench intake.</td></tr>
+        <tr><th scope="row">External port looks clean. Corrosion is present inside.</th><td>Describe the evidence and limits of access. A clean port alone cannot justify a power test or a normal warranty promise.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Write one intake decision and a fallback for preserving data. A cold inspection is a valid exercise outcome. Record who can authorise any later return-to-service test. <a href="../career/c16-repair-work-portfolio.html">C16 shop records</a>.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

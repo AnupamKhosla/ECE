@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P82 · Replace an IO-Link sensor and verify its data</title>
+<meta name="description" content="Use a paper trainer or an isolated master to prove device identity, parameters, validity and the PLC's interpretation.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P82</span>
+    <h1>Replace an IO-Link sensor and verify its data</h1>
+    <p class="lede">Use a paper trainer or an isolated master to prove device identity, parameters, validity and the PLC's interpretation.</p>
+    <div class="meta"><span><b>Time</b> 35–50 minutes</span><span><b>Before this</b> <a href="p39-plc-ladder-simulation.html">P39 PLC inputs</a> · <a href="p14-serial-buses-modbus.html">P14 buses</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Trace from sensor to programme</h2>
+    <p>On a modern machine, an IO-Link sensor can report a measured value, device identity and diagnostics over one point-to-point connection to a master port. The master talks upstream to a PLC or control application. Sensor teaching parameters and cyclic process data have different roles. The IODD is the device description that tells commissioning software how to interpret and configure the device. <a href="../theory/t46-commercial-power-and-device-data.html">T46 · Pin functions, data and validity</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/inductive-proximity-sensor.jpg" alt="Threaded barrel inductive proximity sensor with a sensing face, two locknuts and a wired tail" width="500" height="807" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1614" aria-hidden="true">
+            <defs><marker id="parts-inductive-proximity-sensor" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M273,121 L466,235" fill="none" stroke="#18232a" stroke-width="14"/><path d="M273,121 L466,235" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-inductive-proximity-sensor)"/>
+            <rect x="51" y="92" width="222" height="57" rx="8" fill="#122029"/><text x="63" y="132" style="fill:#fff;font-size:35px;font-weight:700">Sensing face</text>
+            <path d="M626,405 L547,391" fill="none" stroke="#18232a" stroke-width="14"/><path d="M626,405 L547,391" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-inductive-proximity-sensor)"/>
+            <rect x="626" y="379" width="266" height="57" rx="8" fill="#122029"/><text x="638" y="419" style="fill:#fff;font-size:35px;font-weight:700">Mounting nuts</text>
+          </svg></div>
+        <figcaption>Secure the sensor by its threaded body. The metal target approaches the sensing face. This photo shows the form factor. Identify IO-Link support by the part number and documentation.<br><small>Photo by Ekbsensor, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Inductive_proximity_sensor.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch ifm’s IO-Link sensor replacement demonstration.</b> Watch which parameter the master restores. Check the device and port compatibility required before depending on this behaviour. <a href="https://www.youtube.com/watch?v=gHupKy-qfJ0">ifm’s IO-Link sensor replacement demonstration on YouTube</a>.</p>
+
+    <h2>Follow the port map on an actual master</h2>
+    <p>Use the AL1100 product photograph and connection drawing as an identification exercise. Trace the name of each connection into the datasheet before choosing any cable. The table describes this ifm model. Other devices can use different port numbers and supplies. <a href="https://www.ifm.com/ca/en/product/AL1100">ifm AL1100 photographs and technical data</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">AL1100 marking</th><th scope="col">What you verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">X01–X04</th><td>Four Class A IO-Link device ports with A-coded M12 connectors. Trace the actual port number to its device identity and PLC mapping.</td></tr>
+        <tr><th scope="row">X21, X22</th><td>Separate PROFINET connections with D-coded M12 connectors. Check the upstream link independently from the sensor status.</td></tr>
+        <tr><th scope="row">Supply connector</th><td>Use the supply connection drawing and only the matching power lead. A threaded body by itself does not identify a connector’s electrical function.</td></tr>
+      </tbody>
+    </table></div>
+    <details><summary>Bench exercise with no master</summary><p>The old worksheet says X02. The replacement reads back the expected device ID on X03. The PLC still shows invalid data from X02. The new sensor has proved communication on its current port. Check the documented cable and port assignment before changing programming or a teach value. Recheck both device ID and process-data validity on the assigned port after the correction.</p></details>
+
+    <h2>Make a replacement test card</h2>
+    <p>Start on paper with an inductive sensor aimed at a small steel target on a fixture. Use a real unit only on your own isolated training kit, with its compatible master, manufacturer cable and isolated supply. Switch the kit off before changing the cable or sensor unless its procedure specifies hot replacement. Check the port mode, Class A or B wiring and current rating before connecting. Use the manufacturer's pinout for all equipment.</p>
+    <ol class="steps">
+      <li><p>Record the old port, vendor and device IDs, compatible revision, IODD, switch-on distance and which PLC tag consumes the value. Record the state at a close target, a far target and with no valid data.</p></li>
+      <li><p>Check the master configuration for port validation and parameter storage. If the exact compatible replacement and both devices support the intended storage behaviour, check which direction the parameter set is transferred. Verify what actually arrived before moving the machine sequence. Never use the trainer for a machinery safety function.</p></li>
+      <li><p>Repeat the original close, far and missing data tests. Record raw data, decoded data and validity separately. Change only one item at a time. A plain switching sensor in standard I/O (SIO) mode may produce a switch state while the expected IO-Link process data and diagnostics are missing.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Synthetic trainer observation</th><th scope="col">Interpretation and next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Port valid, bytes <code>FA 00</code>. Sample map is unsigned little-endian, 0.1 mm per count.</th><td>250 counts gives 25.0 mm. The real device may use another layout. Match the actual process-data definition.</td></tr>
+        <tr><th scope="row">Bytes remain <code>FA 00</code>, port data becomes invalid.</th><td>The old 25.0 mm can be retained on screen. Treat it as invalid and compare port diagnostics, then prove recovery.</td></tr>
+        <tr><th scope="row">New sensor links but switches at a different target distance.</th><td>Verify product identity, selected range, teach-in and master parameter storage. Compare a measured reference after restoring the intended setting.</td></tr>
+        <tr><th scope="row">Device LED changes, PLC tag always stays off.</th><td>Check port mode, mapping, bit position and device process validity before replacing an otherwise responsive sensor.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Check which settings belong in the master port profile and which come from the device description. <a href="https://www.ifm.com/us/en/shared/technologies/io-link/technology/technology">ifm IO-Link technology guide</a> · <a href="https://io-link.com/technology">IO-Link Community specifications and technology</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save device and port IDs, the intended parameters, and a before-and-after test matrix. Explain why a believable number needs a validity check.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

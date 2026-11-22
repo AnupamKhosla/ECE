@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T52 · Why a pneumatic gauge can read normally when air delivery fails</title>
+<meta name="description" content="Understand static pressure, pressure drop, regulation and stored air. Use readings taken under the same demand to localise a restriction.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T52</span>
+    <h1>Why a pneumatic gauge can read normally when air delivery fails</h1>
+    <p class="lede">Understand static pressure, pressure drop, regulation and stored air. Use readings taken under the same demand to localise a restriction.</p>
+    <div class="meta"><span><b>Before this</b> <a href="../practice/p56-electropneumatic-sequence.html">P56 valve and cylinder layout</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Pressure tells you what air can do at a point</h2>
+    <p>Gauge pressure measures the difference from local atmosphere. A closed line with no leaks can reach the set pressure even if its supply opening is narrow. Flow measures the amount of air delivered per unit time. The same pressure reading at rest can hide different flow capacities. Compressed air expands as its pressure falls, so compare flow ratings on the stated reference basis and pressure readings in consistent units.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/air-filter-regulator-cutaway.jpg" width="500" height="783" loading="lazy" decoding="async" alt="Cutaway photograph of a compressed-air filter regulator showing two pipe ports, an adjustment screw and a spring">
+          <svg viewBox="0 0 500 783" aria-hidden="true">
+            <defs><marker id="t52-reg" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M180,83 L243,157" fill="none" stroke="#18232a" stroke-width="12"/><path d="M180,83 L243,157" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t52-reg)"/>
+            <rect x="101" y="62" width="171" height="35" rx="6" fill="#122029"/><text x="110" y="87" style="fill:#fff;font-size:22px;font-weight:700">Adjustment</text>
+            <path d="M70,496 L125,436" fill="none" stroke="#18232a" stroke-width="12"/><path d="M70,496 L125,436" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t52-reg)"/>
+            <rect x="21" y="481" width="101" height="35" rx="6" fill="#122029"/><text x="30" y="506" style="fill:#fff;font-size:22px;font-weight:700">Air port</text>
+            <path d="M383,568 L263,534" fill="none" stroke="#18232a" stroke-width="12"/><path d="M383,568 L263,534" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t52-reg)"/>
+            <rect x="343" y="550" width="99" height="35" rx="6" fill="#122029"/><text x="352" y="575" style="fill:#fff;font-size:22px;font-weight:700">Spring</text>
+          </svg>
+        </div>
+        <figcaption>A sectioned filter regulator from the museum collection. Its ports fit into the air path. The internal spring and valve mechanism illustrate how the pressure is set. Find the flow arrow on the actual assembly.<br><small>Photo from Museo Nazionale della Scienza e della Tecnologia Leonardo da Vinci, Milan, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Filtro_riduttore_di_pressione_per_aria_compressa_-_Museo_scienza_tecnologia_Milano_10921_dia.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/mechanised-plasma-torch.jpg" width="960" height="758" loading="lazy" decoding="async" alt="Mechanised Hypertherm plasma torch transferring its arc to a plate while sparks leave the underside">
+          <svg viewBox="0 0 960 758" aria-hidden="true">
+            <defs><marker id="t52-arc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M701,230 L529,248" fill="none" stroke="#18232a" stroke-width="12"/><path d="M701,230 L529,248" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t52-arc)"/>
+            <rect x="691" y="208" width="120" height="35" rx="6" fill="#122029"/><text x="700" y="233" style="fill:#fff;font-size:22px;font-weight:700">Torch tip</text>
+            <path d="M197,387 L450,309" fill="none" stroke="#18232a" stroke-width="12"/><path d="M197,387 L450,309" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t52-arc)"/>
+            <rect x="103" y="367" width="201" height="35" rx="6" fill="#122029"/><text x="112" y="392" style="fill:#fff;font-size:22px;font-weight:700">Transferred arc</text>
+          </svg>
+        </div>
+        <figcaption>A mechanised HyPerformance torch shown during a real cut. The light and material exiting below the plate demonstrate a transferred arc. The consumables in this system differ from the hand torch in the bench lesson.<br><small>Photo by Hypertherm, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:TorchCuttingCloseup.jpg">Original photograph and free-use notice</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the reading change when air moves.</b> The clip distinguishes the pressure-test function from a cutting operation and shows why the no-flow reading alone is incomplete. <a href="https://www.youtube.com/watch?v=jUFL5-kjOEo&amp;t=150s">Hypertherm's pressure-test demonstration</a>.</p>
+
+    <h2>Measure where the loss occurs</h2>
+    <p>When air flows, pipes, valves, filters and couplings produce pressure losses. A narrow passage, a long run or a loaded filter can dominate the loss. At a steady operating point and along one series path, the total drop equals the sum of the drops between measured points. Pressure before a restriction and downstream at the machine should be recorded during the same demand. Shared loads can make a fault appear only when another machine cycles. <a href="https://www.atlascopco.com/content/dam/atlas-copco/industrial-technique/general/documents/pocketguides/1266%2001%20Pocket%20Guide%20Air%20tools%20installation.pdf">Atlas Copco's air-tool installation guide</a>.</p>
+    <p>Worked calculation. A line reads 6.0 bar at the regulator outlet, 5.5 bar after the filter and 4.0 bar at a tool inlet during one test. That is 0.5 bar from the regulator outlet to the filter outlet and 1.5 bar from the filter outlet to the inlet. The larger measured loss is the hose and fittings in the second span. Localise within that span before calling one component bad.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Part</th><th scope="col">What it does</th><th scope="col">How it can change the readings</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Receiver</th><td>Stores compressed air and can supply brief demand peaks.</td><td>Pressure can hold briefly and fall during a sustained load if supply cannot keep up.</td></tr>
+        <tr><th scope="row">Regulator</th><td>Controls downstream pressure within its supply and flow range.</td><td>The set value may be present at rest while the outlet sags under demand.</td></tr>
+        <tr><th scope="row">Filter and water separation</th><td>Remove particles and some condensate. Air quality requirements depend on the machine.</td><td>A loaded element adds a drop. Water or oil at the tool can still cause faults even when pressure looks adequate.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Confirm the specified air quality, flow and working pressure for the tool. An air preparation train can include shutoff, filter, regulator or dryer as needed. Use the correct service manual for depressurisation because upstream shutoff alone can leave trapped air. <a href="https://www.festo.com/gb/en/e/blog/in-practice/how-does-an-air-preparation-unit-work-id_1522843">Festo's air preparation overview</a> · <a href="../practice/p102-plasma-gas-torch-service.html">P102 compare a plasma air path under demand</a> · <a href="../practice/p56-electropneumatic-sequence.html">P56 apply the same thinking to a cylinder</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

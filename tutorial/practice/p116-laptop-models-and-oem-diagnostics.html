@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P116 · Find the exact laptop manual and run preboot diagnostics</title>
+<meta name="description" content="Compare Lenovo, Dell, HP, ASUS, Samsung, Acer and Framework by model, removable parts and diagnostic tools.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P116</span>
+    <h1>Find the exact laptop manual and run preboot diagnostics</h1>
+    <p class="lede">Compare Lenovo, Dell, HP, ASUS, Samsung, Acer and Framework by model, removable parts and diagnostic tools.</p>
+    <div class="meta"><span><b>Time</b> 45–75 minutes</span><span><b>Before this</b> <a href="../practice/p32-laptop-service.html">P32</a>, <a href="../practice/p33-laptop-power-diagnostics.html">P33</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Keep model, architecture and operating system as separate fields</h2>
+    <p>Windows and Linux can run on the same PC. A Galaxy Book is a Samsung laptop family with model-specific firmware and hardware. Intel versus ARM changes recovery media, while soldered versus removable memory changes the physical job. Record full model, product code, hardware revision where relevant, architecture, operating system, power adapter and customer complaint. Keep serial numbers in the service record and leave them out of public photos.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/thinkpad-t480-board.jpg" width="592" height="444" loading="lazy" decoding="async" alt="ThinkPad T480 motherboard being lifted from its base, with the processor and empty fan area visible">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p98-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M254,104 L308,166" fill="none" stroke="#18232a" stroke-width="12"/><path d="M254,104 L308,166" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="185" y="82" width="123" height="35" rx="6" fill="#122029"/><text x="194" y="107" style="fill:#fff;font-size:22px;font-weight:700">Processor</text>
+            <path d="M432,338 L480,214" fill="none" stroke="#18232a" stroke-width="12"/><path d="M432,338 L480,214" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p98-board)"/>
+            <rect x="416" y="323" width="119" height="35" rx="6" fill="#122029"/><text x="425" y="348" style="fill:#fff;font-size:22px;font-weight:700">Fan bay</text>
+          </svg>
+        </div>
+        <figcaption>The ThinkPad T480 motherboard rises clear of its base. The grey residue marks the processor's contact with the heatsink. The fan and heatsink must be correctly installed for a powered test.<br><small>Photo by Sarah Westberg for iFixit, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Lenovo+ThinkPad+T480+Motherboard+Replacement/140250">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/samsung-pro-360-daughterboard.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Daughterboard removed from a 15-inch Samsung Galaxy Book Pro 360, beside its ribbon cable"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="samsung-pro-360-daughterboard" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M218.25,58 L323,126" fill="none" stroke="#14232b" stroke-width="9"/><path d="M218.25,58 L323,126" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#samsung-pro-360-daughterboard)"/><rect x="97" y="35" width="121.25" height="23" rx="4" fill="#14232b"/><text x="103" y="51" style="fill:#fff;font-size:15px;font-weight:700">Daughterboard</text>
+<path d="M378.5,395 L433,363" fill="none" stroke="#14232b" stroke-width="9"/><path d="M378.5,395 L433,363" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#samsung-pro-360-daughterboard)"/><rect x="322" y="395" width="113" height="23" rx="4" fill="#14232b"/><text x="328" y="411" style="fill:#fff;font-size:15px;font-weight:700">Ribbon cable</text></svg></div><figcaption>The Galaxy Book Pro 360 15-inch model in this guide uses a removable daughterboard. The visible edge connector and linked flex are useful part-matching evidence.<br><small>Photo by Spencer Day and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+Book+Pro+360+15-Inch+Daughterboard+Replacement/155253">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=14GKIpGPNRM">HP Support shows how to run its hardware diagnostics in UEFI</a>.</p>
+
+    <h2>Compare the actual tool and the part before opening</h2>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Example family</th><th scope="col">Find these first</th><th scope="col">Evidence to record</th></tr></thead><tbody><tr><th scope="row">Lenovo ThinkPad T480, 20L5/20L6</th><td>Hardware Maintenance Manual, correct FRU and UEFI diagnostics or documented bootable equivalent.</td><td>Battery isolation sequence, removable parts and any reported diagnostic code.</td></tr><tr><th scope="row">Dell Latitude</th><td>Exact service manual and the F12 Diagnostics entry on supported models. Look up the meaning of the model’s LED code.</td><td>Stage reached, ePSA or SupportAssist result and validation code when present.</td></tr><tr><th scope="row">HP EliteBook or ProBook</th><td>Product-number maintenance guide and installed HP Hardware Diagnostics UEFI, commonly via Esc then F2.</td><td>Targeted component test, failure ID when reported and configuration.</td></tr><tr><th scope="row">ASUS Zenbook, Vivobook or ROG</th><td>Find exact model and whether it supports System Diagnostics in UEFI. Note differences between variants with the same marketing name.</td><td>Supported tests, result and fastener or cable layout.</td></tr><tr><th scope="row">Samsung Galaxy Book</th><td>Use the complete NP product code and region-specific guide. Compare Galaxy Book revisions and convertible hinge designs.</td><td>Authorized parts list, any disassembly prerequisites and installed architecture.</td></tr><tr><th scope="row">Acer Aspire, Swift or Chromebook</th><td>Find model-specific docs with the model or SNID privately. A Chromebook uses ChromeOS tools.</td><td>Exact board or case family, documented test and part availability.</td></tr><tr><th scope="row">Framework Laptop 13</th><td>Find the Mainboard generation. Use the port capability matrix and the matching guide.</td><td>Component part number, board revision and physical slot used.</td></tr></tbody></table></div>
+
+    <h2>Make a two-machine comparison</h2>
+    <p>On a known-good or donated machine, reproduce the symptom before running a targeted test. Record whether power indicators appear, firmware can enter setup, the system sees its drive, and an external display behaves as expected. Match two replaceable parts against the manual. Repeat on a different model or use a documented case. A diagnostics pass is one observation. An intermittent fault needs the same operating condition that exposed it.</p><p>Use <a href="../practice/p129-lenovo-yoga-book-dual-screen-and-halo-repair.html">P129 · Diagnose Lenovo Yoga Book display and keyboard faults</a> for the Lenovo Yoga Book’s display and input paths and <a href="../practice/p130-dell-latitude-5420-preboot-and-module-repair.html">P130 · Triage and service a Dell Latitude 5420</a> for an exact Dell Latitude case. Use <a href="../practice/p117-windows-laptop-startup-and-driver-diagnosis.html">P117 · Diagnose a Windows laptop that reaches firmware but fails to boot</a> or <a href="../practice/p118-linux-live-usb-hardware-diagnostics.html">P118 · Use a Linux live USB to isolate a laptop hardware fault</a> after POST succeeds, <a href="../practice/p119-macbook-diagnostics-and-repair-assistant.html">P119 · Triage a MacBook and prove which module needs service</a> for a Mac and <a href="../practice/p120-chromebook-diagnostics-and-recovery-triage.html">P120 · Troubleshoot a Chromebook with its model and management context</a> for a Chromebook. <a href="../practice/p123-laptop-board-power-good-sequence-trainer.html">P123 · Find a missing enable or power-good signal before swapping a board</a> is the board-level branch after external power and basic hardware tests.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://download.lenovo.com/pccbbs/mobiles_pdf/t480_hmm_en.pdf">ThinkPad T480 maintenance manual</a></li>
+      <li><a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell’s no-power, no-POST, no-boot and no-video guide</a></li>
+      <li><a href="https://support.hp.com/us-en/document/ish_2854458-2733239-16">HP PC Hardware Diagnostics</a></li>
+      <li><a href="https://www.asus.com/support/faq/1048490/">ASUS UEFI diagnostic documentation</a></li>
+      <li><a href="https://www.samsung.com/us/support/self-repair/">Samsung Galaxy Book self-repair entry</a></li>
+      <li><a href="https://www.acer.com/us-en/support/product-support/drivers-and-manuals">Acer laptop or Chromebook manuals by model</a></li>
+      <li><a href="https://guides.frame.work/">Framework model-specific guides</a></li>
+      <li><a href="https://www.ifixit.com/Guide/Samsung+Galaxy+Book+Pro+360+15-Inch+Daughterboard+Replacement/155253">Samsung Galaxy Book Pro 360 15-inch daughterboard service photo sequence</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T51 · How an LCD panel makes an image and lights it</title>
+<meta name="description" content="Follow the video and light paths through the mainboard, display timing, glass, optical layers and LED driver.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T51</span>
+    <h1>How an LCD panel makes an image and lights it</h1>
+    <p class="lede">Follow the video and light paths through the mainboard, display timing, glass, optical layers and LED driver.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t11-semiconductors-diodes.html">Diodes and LEDs</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Follow two different paths</h2>
+    <p>The image path starts at an input or an application. The mainboard decodes the source and delivers pixel data. A timing controller, often called T-Con, distributes this data to the row and column drivers of the panel. Its physical home varies between products. The driver circuitry changes the electric field at each liquid-crystal pixel. Together with the polarizers and red, green and blue filters, this changes how much light emerges from each subpixel. An LCD needs a source of light behind it. In an OLED display the pixels emit light themselves.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-tcon.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Exposed blue T-Con board with white connectors along its top and wide ribbon leads along its lower edge">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="t51-timing" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M210,35 L142,123" fill="none" stroke="#18232a" stroke-width="12"/><path d="M210,35 L142,123" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t51-timing)"/>
+            <rect x="153" y="18" width="190" height="35" rx="6" fill="#122029"/><text x="162" y="43" style="fill:#fff;font-size:22px;font-weight:700">Input connector</text>
+            <path d="M147,278 L199,376" fill="none" stroke="#18232a" stroke-width="12"/><path d="M147,278 L199,376" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t51-timing)"/>
+            <rect x="54" y="255" width="179" height="35" rx="6" fill="#122029"/><text x="63" y="280" style="fill:#fff;font-size:22px;font-weight:700">Panel ribbon</text>
+          </svg>
+        </div>
+        <figcaption>On this Samsung, the T-Con takes image data and drives wide flat cables toward the panel. Other models integrate its function in the panel or mainboard.<br><small>Photo by Arwedus and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+LED+TV+LE37A659+(and+similar+models)+T-Con+Board+Replacement/127143">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-led-array.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Reflective white TV tray with rows of circular LED lenses">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="t51-light" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M436,152 L417,130" fill="none" stroke="#18232a" stroke-width="12"/><path d="M436,152 L417,130" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t51-light)"/>
+            <rect x="430" y="148" width="124" height="35" rx="6" fill="#122029"/><text x="439" y="173" style="fill:#fff;font-size:22px;font-weight:700">LED lens</text>
+            <path d="M166,266 L214,226" fill="none" stroke="#18232a" stroke-width="12"/><path d="M166,266 L214,226" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t51-light)"/>
+            <rect x="65" y="252" width="146" height="35" rx="6" fill="#122029"/><text x="74" y="277" style="fill:#fff;font-size:22px;font-weight:700">Reflector</text>
+          </svg>
+        </div>
+        <figcaption>This Samsung UE40MU5120KXXU has a direct-lit backlight. The image layer is removed here. Individual lenses spread the light, and the reflector sends stray light forward.<br><small>Photo by Greg Sully and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+TV+UE40MU5120KXXU+LED+backlight+strips+Replacement/177517">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the layers come apart.</b> Identify the LCD glass and ribbons first, then the sheets that shape light, and finally the LED array. The operations are for the model in the clip. <a href="https://www.youtube.com/watch?v=HPYjc3s6wBY">ShopJimmy's LG LCD backlight disassembly</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Layer or subsystem</th><th scope="col">What it does</th><th scope="col">What problems can look like</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Mainboard and input</th><td>Reads external or internal sources and processes the image.</td><td>One HDMI input fails while the built-in menu appears correctly, depending on fault.</td></tr>
+        <tr><th scope="row">Timing and panel</th><td>Generates and distributes the timed signals that address pixels. The glass contains the pixels and may carry bonded drivers at its edge.</td><td>Fixed lines, partial image, a lit blank screen or image distortion can also involve a ribbon or supply. Appearance alone rarely identifies one board.</td></tr>
+        <tr><th scope="row">LEDs, optics and driver</th><td>Supply adjustable, reasonably uniform light. Diffusers spread it and some films direct it forward.</td><td>A faint image on a dark screen, dark zones under a white pattern or a local bright spot. Repeat the observation in more than one scene.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Why an LED driver controls current</h2>
+    <p>Each conducting LED drops a voltage that depends on current, part and temperature. LEDs in series carry the same current. The driver adjusts voltage as needed to establish its target current, within its limits. For illustration, twelve LEDs each dropping 3 V need roughly 36 V plus any driver headroom. Actual strip voltages, current, connector labels and switching states depend on the design. In systems with multiple strings, separate current sinks can balance and monitor them.</p>
+    <p>An open LED breaks its string. The driver may raise voltage while seeking its current, then protect itself by shutting a channel or the boost supply down. A shorted LED can leave a dark spot while the remaining LEDs carry current. A driver can also keep all LEDs dark because its enable, supply or dimming command is absent. The TI example illustrates a single string, current control and overvoltage protection. <a href="https://www.ti.com/lit/ds/symlink/tps61197.pdf">TI TPS61197 single-string driver</a> · <a href="https://www.ti.com/product/TPS61199">TI eight-string driver example</a>.</p>
+
+    <h2>Connect the clue to the next test</h2>
+    <p>When you see a faint moving menu during the flashlight test, the panel is modulating enough light to show an image in that area. Your next question is what deprived it of light. A glowing screen with corrupted internal test patterns sends you toward the image path instead. A cold failure and an after-warm-up failure may produce different results, so run the same agreed test at both stages. Use <a href="../practice/p99-lcd-tv-fault-diagnosis.html">P99 to isolate the branch with the case shut</a> and <a href="../practice/p100-tv-backlight-panel-service.html">P100 to prove the open-string behaviour on an isolated trainer</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-board-display"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

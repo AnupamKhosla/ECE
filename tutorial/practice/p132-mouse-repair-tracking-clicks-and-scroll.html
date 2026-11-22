@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P132 · Find and repair a mouse click, tracking or wheel fault</title>
+<meta name="description" content="Separate USB and wireless reports from button switches, optical tracking, scroll encoders and cracked wheel mechanisms.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P132</span>
+    <h1>Find and repair a mouse click, tracking or wheel fault</h1>
+    <p class="lede">Separate USB and wireless reports from button switches, optical tracking, scroll encoders and cracked wheel mechanisms.</p>
+    <div class="meta"><span><b>Time</b> 45–80 minutes</span><span><b>Before this</b> <a href="../practice/p05-soldering-wiring.html">P05</a>, <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Test the three output paths separately</h2>
+    <ol class="steps"><li>Use a known-good second host and same receiver, cable or documented Bluetooth connection. Replace or recharge the battery with a supported source. For a wireless model test near its receiver or host.</li><li>Test tracking on a clean matte surface and watch cursor motion consistently in each direction. Inspect the exterior sensor window and clear loose debris with gentle dry cleaning. Keep the sensor lens unmarked.</li><li>In a local application compare one press per click and one deliberate wheel step per direction. Try another OS profile or check click-speed and mapping settings. Record the exact button, faulty direction and conditions; pointer tracking, left click and wheel reporting have separate paths.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/logitech-m525-scroll.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Opened Logitech M525 with removed scroll wheel and spring"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="logitech-m525-scroll" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M106.5,76 L153,131" fill="none" stroke="#14232b" stroke-width="9"/><path d="M106.5,76 L153,131" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#logitech-m525-scroll)"/><rect x="10" y="53" width="96.5" height="23" rx="4" fill="#14232b"/><text x="16" y="69" style="fill:#fff;font-size:15px;font-weight:700">Wheel axle</text>
+<path d="M300,237 L245,203" fill="none" stroke="#14232b" stroke-width="9"/><path d="M300,237 L245,203" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#logitech-m525-scroll)"/><rect x="300" y="237" width="63.5" height="23" rx="4" fill="#14232b"/><text x="306" y="253" style="fill:#fff;font-size:15px;font-weight:700">Spring</text></svg></div><figcaption>The assembly is lifted from the case; note the axle and small spring before removal.<br><small>Photo by Stephan and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/Logitech+Mouse+M525+Disassembly+%26+Scroll+Wheel+Repair/66223">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/logitech-m525-internal.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Logitech M525 board with scroll wheel frame, click switch and interconnect"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="logitech-m525-internal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M165.625,83 L143,166" fill="none" stroke="#14232b" stroke-width="9"/><path d="M165.625,83 L143,166" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#logitech-m525-internal)"/><rect x="105" y="60" width="121.25" height="23" rx="4" fill="#14232b"/><text x="111" y="76" style="fill:#fff;font-size:15px;font-weight:700">Wheel support</text>
+<path d="M86.5,346 L106,261" fill="none" stroke="#14232b" stroke-width="9"/><path d="M86.5,346 L106,261" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#logitech-m525-internal)"/><rect x="30" y="346" width="113" height="23" rx="4" fill="#14232b"/><text x="36" y="362" style="fill:#fff;font-size:15px;font-weight:700">Click switch</text></svg></div><figcaption>The click switch and wheel are separate assemblies. Match the location before measuring or replacing either.<br><small>Photo by Stephan and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/Logitech+Mouse+M525+Disassembly+%26+Scroll+Wheel+Repair/66223">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=w1IG7YTnZQU">See a Logitech wheel cleaning example. Verify your exact wheel and encoder type before opening</a>.</p>
+
+    <h2>Use the model guide to open the mouse if the symptom follows it</h2>
+    <p>Unplug it and remove the battery or follow the documented isolation procedure. Look for hidden fasteners and replaceable feet before prying. On the M525 case compare the wheel assembly and sensor area to the photos. Check wheel axle, spring location and visible debris. A different model may use a mechanical wheel encoder; match shaft height, pin map, mount and steps to its exact spec before replacement. For a bad click on a detachable or isolated mechanical microswitch, compare its common and switched terminals with a known-good switch. A basic meter checks steady contacts; capture intermittent bounce on an isolated trainer as in <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110 · See a bouncing switch and clean up a digital edge</a>. Optical switches need the correct optical service procedure.</p><p>After repair, repeat the same 20 single clicks per button and 20 scroll increments in both directions. Check tracking, middle-click, side buttons and sleep/wake where applicable. Record whether faults follow the device, receiver, surface, wheel or switch. Use <a href="../practice/p131-iclever-and-keyboard-repair.html">P131 · Diagnose and repair iClever and other keyboards</a> for the equivalent keyboard path.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t55-signal-levels-thresholds-and-time.html">T55 · Logic thresholds, hysteresis and signal timing</a>.</p>
+    <ul>
+      <li><a href="https://www.ifixit.com/Guide/Logitech+Mouse+M525+Disassembly+%26+Scroll+Wheel+Repair/66223">Logitech M525 disassembly and scroll-wheel photographs</a></li>
+      <li><a href="https://www.ifixit.com/logitech">Logitech repair hub with model-specific guides</a></li>
+      <li><a href="https://support.microsoft.com/en-gb/windows/hardware/input-devices/mouse-and-keyboard-problems-in-windows">Mouse and keyboard input checks from Microsoft</a></li>
+      <li><a href="https://www.ifixit.com/Troubleshooting/Logitech_Mouse/logitech+mouse+double+click/642834">iFixit double-click symptom tests</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

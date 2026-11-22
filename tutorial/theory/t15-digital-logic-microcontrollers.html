@@ -371,6 +371,7 @@
     <p>Take two NOR gates and feed each one's output into the other's input. This loop has two stable states, like a light switch that stays where you leave it. Pulse one free input (S, "set") and the output latches to 1. Pulse the other (R, "reset") and it latches to 0. With both inputs at 0, it simply holds. This <b>SR latch</b> is the simplest memory cell. The feedback loop is what turns logic into memory.</p>
 
     <h2>The clock and the D flip-flop</h2>
+    <p>For a different way of storing a bit, follow the transistor and capacitor inside <a href="t49-dram-chips-memory-faults.html">T49 laptop DRAM</a>. Its failure modes explain why a single bad bit cannot usually be repaired from the outside of the package.</p>
     <p>Gates take time to respond, a few nanoseconds each, and different paths through a circuit have different delays. If every memory cell updated whenever its input wiggled, half-settled values would race around the chip. The fix is a <b>clock</b>: a square wave that tells every memory cell <i>when</i> to take a new value. Between clock edges the combinational logic settles; at the edge, everything updates together.</p>
     <p>The memory cell used with a clock is the <b>D flip-flop</b> (D for "data"). Its rule is short:</p>
     <div class="formula">On each rising edge of CLK: Q ← D. At all other times: Q holds.
@@ -766,7 +767,7 @@ out  0x05, r16     ; copy r16 to I/O address 0x05 (PORTB): PB5 goes HIGH, LED on
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

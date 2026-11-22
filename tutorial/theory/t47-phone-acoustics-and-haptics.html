@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T47 · Phone microphones, speakers and haptics</title>
+<meta name="description" content="MEMS microphone ports, seals, audio routing, speaker enclosures and ERM or LRA haptic drives.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T47</span>
+    <h1>Phone microphones, speakers and haptics</h1>
+    <p class="lede">Trace sound through its physical path and signal route. Use the result to separate a blocked port, a routing fault, a loose actuator and an electrical failure.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t16-signals-noise-loops.html">T16 signals and decibels</a> · <a href="t18-sensor-physics.html">T18 sensor physics</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Follow sound from the case to the recording</h2>
+    <p>A phone microphone is a transducer that turns air-pressure changes into an electrical signal. In a common digital MEMS microphone, a tiny moving membrane senses pressure. A chip inside the package processes the signal and passes a digital stream to the phone. The package can have its sound inlet on the top or the bottom. Follow the acoustic path from the outside opening, through any mesh and gasket, into that inlet. A bottom-ported microphone may receive sound through a hole in the board itself.</p>
+    <p>The gasket aligns and seals the channel. A missing or pinched gasket can let sound leak from the housing or loudspeaker into the microphone. A partially blocked mesh can attenuate the voice and change its tone while the electronics still report a healthy device. Compare equivalent assemblies at the same distance and level. A probe pushed through the exterior hole can destroy a mesh or membrane.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pixel-7a-midframe.jpg" width="960" height="1279" loading="lazy" decoding="async" alt="Removed Pixel 7a mid-frame with a lower speaker enclosure, a round actuator and separate openings">
+        <svg viewBox="0 0 960 1279" aria-hidden="true">
+          <defs><marker id="t47-frame" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M324,990 L365,1076" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M324,990 L365,1076" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#t47-frame)"/>
+          <rect x="140" y="932" width="298" height="57" rx="7" fill="#122029"/><text x="152.66666666666666" y="973.8" style="fill:#fff;font-size:38px;font-weight:700">Loudspeaker</text>
+          <path d="M726,957 L801,1050" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M726,957 L801,1050" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#t47-frame)"/>
+          <rect x="638" y="901" width="250" height="57" rx="7" fill="#122029"/><text x="650.6666666666666" y="942.8" style="fill:#fff;font-size:38px;font-weight:700">Actuator</text>
+        </svg>
+      </div>
+        <figcaption>Pixel 7a mid-frame. Compare the distinct loudspeaker enclosure and vibration actuator. Follow the model's acoustic diagram to find which opening serves each microphone.<br><small>Photo by Eavesdropper6735, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Pixel_7a_middle_frame_with_LED_flashlight_and_more.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pixel-8a-actuator-seat.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Round vibration actuator and gold-coloured contacts in an open Pixel 8a">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <defs><marker id="t47-motor" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M458,143 L361,175" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M458,143 L361,175" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#t47-motor)"/>
+          <rect x="397" y="107" width="145" height="36" rx="7" fill="#122029"/><text x="405" y="133.4" style="fill:#fff;font-size:24px;font-weight:700">Actuator</text>
+          <path d="M165,328 L259,265" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M165,328 L259,265" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#t47-motor)"/>
+          <rect x="28" y="319" width="138" height="36" rx="7" fill="#122029"/><text x="36" y="345.4" style="fill:#fff;font-size:24px;font-weight:700">Contacts</text>
+        </svg>
+      </div>
+        <figcaption>Pixel 8a, actuator removal. The round unit sits in a recess near the lower edge. Follow the model guide for contact release, lift direction and installation.<br><small>Photo by Spencer Day and iFixit contributors, with on-page callouts. <a href="https://www.ifixit.com/Guide/Google+Pixel+8a+Vibration+Motor+Replacement/173217">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Follow sound through the opening in the MEMS package, then trace which parts of the phone bring sound to that opening. <a href="https://www.youtube.com/watch?v=IST51rB_SJo">STMicroelectronics’ MEMS microphone explainer on YouTube</a>.</p>
+    <h2>Which input and output does the symptom exercise?</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test</th><th scope="col">Path observed</th><th scope="col">Next comparison</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Local voice recording</th><td>App-selected input, its acoustic channel and recording chain.</td><td>Play the same file through known-good headphones or a second device. This separates capture from playback.</td></tr>
+        <tr><th scope="row">Video with front or rear camera</th><td>A camera app can choose a different mic or combine several.</td><td>Keep distance, room and test phrase constant. Note the camera and the app.</td></tr>
+        <tr><th scope="row">Call in normal mode or on speaker</th><td>Call processing and mode-specific microphones and outputs. A call also depends on the connection and remote device.</td><td>Try an available local mic diagnostic and a consenting second caller. Compare both directions of speech.</td></tr>
+        <tr><th scope="row">Headset or Bluetooth</th><td>Another input, output or both can be selected. The active route depends on app and accessory.</td><td>Check the selected route, then disconnect the accessory and repeat the same stimulus.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A loudspeaker drives a diaphragm to move air. Its module and the surrounding cavity shape frequency response and prevent front-to-back sound leakage. Damage to a seal can change loudness or cause buzzing. Hold the test volume constant and try a voice recording as well as a short steady tone at a comfortable level. A noise that appears only when a panel is fitted can help locate a mechanical contact or loose screw.</p>
+    <h2>What creates vibration?</h2>
+    <p>An eccentric rotating mass (ERM) motor spins an off-centre weight. It takes time to accelerate and to slow down. A linear resonant actuator (LRA) moves a spring-mounted mass back and forth. Its driver excites it near the mechanical resonance and may brake it at the end of a pulse. A module’s outline does not reliably tell you which drive it needs. Use its part number, connector drawing and the manufacturer’s data. An LRA requires the specified alternating drive, so a direct battery connection is an unsuitable test.</p>
+    <p>Follow the command from the operating system to the haptic driver, then through the connector or spring contacts to the actuator and its mounting seat. A mis-seated actuator can buzz against the chassis even when the driver is working. A phone with the right motor can still have per-event vibration disabled. Check both conditions using the same stimuli before and after the repair.</p>
+    <h2>Use the theory at the bench</h2>
+    <ul>
+      <li>When local recorder clips are clear through headphones but the other person hears silence in one call mode, record the good capture path and identify the affected call mode before ordering any part. <a href="../practice/p85-android-microphone-call-audio.html">P85 microphone and call audio</a>.</li>
+      <li>When keyboard vibration works but calls never vibrate, check the call settings with a known incoming call. If every stimulus fails and the correct motor is fitted, test the connector and seating as the service manual directs. <a href="../practice/p84-android-haptic-motor.html">P84 Android haptics</a>.</li>
+    </ul>
+    <p>See the cross-section of a sound channel and a board with both actuator types fitted. <a href="https://www.mouser.com/pdfDocs/Infineon-AN557_MEMS_microphone_mechanical_and_acoustical_implementation-AN-v01_01-EN.pdf">Infineon MEMS microphone application note</a> · <a href="https://www.ti.com/lit/ug/slou348b/slou348b.pdf">Texas Instruments haptic driver evaluation board</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

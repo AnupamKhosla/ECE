@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P113 · Trace a Siemens Desigo point from PXC to Desigo CC</title>
+<meta name="description" content="Use a PXC or DXR training project to compare hardware I/O, BACnet objects and the management station at three different layers.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P113</span>
+    <h1>Trace a Siemens Desigo point from PXC to Desigo CC</h1>
+    <p class="lede">Use a PXC or DXR training project to compare hardware I/O, BACnet objects and the management station at three different layers.</p>
+    <div class="meta"><span><b>Time</b> 75–120 minutes</span><span><b>Before this</b> <a href="../practice/p38-bacnet-point-commissioning.html">P38</a>, <a href="../practice/p63-bms-point-to-point.html">P63</a>, <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Choose the tool that owns the layer</h2>
+    <p>For the supported PXC4/5/7 and DXR families in this exercise, ABT Site is used for the automation project and controller engineering. Desigo Control Point supplies an operator interface on supported projects. Desigo CC is the management station where an integrated point can be displayed, trended or alarmed. Legacy PX and APOGEE projects can have different engineering tools and migration requirements. Identify controller label, firmware, installed project version and documented tool before working.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <img src="../assets/photos/terminal.jpg" width="960" height="638" alt="Installed WAGO controller with field cabling connected to terminal rows" loading="lazy" decoding="async">
+        <figcaption>On the panel side the cable tag and input terminal are separate identifiers. Write both before assigning the screen name.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+<figure>
+      <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+      <figcaption>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=Npi-Nb5GRt0">Siemens demonstrates the Desigo ABT Site engineering workflow</a>.</p>
+
+    <h2>Commission three readings in order</h2>
+    <ol class="steps"><li>Use a licensed PXC/DXR training controller and lab project, a supervised training environment or the document-only equivalent. Select one temperature input, one fan proof and one training command. Record input type, terminal, scaling, device instance and object instance in a single map.</li><li>Using a documented simulator or safe ELV input approved for that hardware, create two values within the selected range. Confirm raw input and engineering value locally in the controller commissioning view. For example, a simulated 0–10 V point configured for 0–50 °C displays about 12.5 °C at 2.5 V and 37.5 °C at 7.5 V. Use a common return only on the documented input configuration.</li><li>Match the BACnet object in the training Desigo CC project and identify it in System Browser or the assigned view. Compare value, units and quality at the same moment. Expose the point on a training graphic and trend those steps. Change the proof input while keeping the command fixed and log both timestamps.</li><li>If the controller reads correctly but the management value is wrong, check mapping, quality and update rules first. If the controller is wrong too, return to the selected hardware input and scale. Restore the training values, review remaining overrides and save the controller project and management project according to the assigned handover procedure.</li></ol><p>Document-only exercise. Use <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a> to obtain the expected fan result and fill the three-layer worksheet with the Siemens model and feature references. Mark which rows still require hardware.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a>.</p>
+    <ul>
+      <li><a href="https://sid.siemens.com/r/A6V11159917/12007450123__V6.1_en-US_17293994507">Siemens Desigo PXC4/5/7 hardware and ABT Site data sheet</a></li>
+      <li><a href="https://sid.siemens.com/v/u/A6V11983451">Siemens Desigo CC engineering documentation</a></li>
+      <li><a href="https://sid.siemens.com/r/A6V13151547/31262763019__V6.1_en-US_31116562187">Siemens PXC4/PXC5/PXC7 and DXR2 commissioning view</a></li>
+      <li><a href="https://resources.sw.siemens.com/en-US/desigo-cc-graphic-generation-webinar-session-2/">Siemens Desigo CC graphics generation webinar</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

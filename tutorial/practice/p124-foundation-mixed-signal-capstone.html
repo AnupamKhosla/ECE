@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P124 · Commission a complete low-voltage sensor and alarm</title>
+<meta name="description" content="Combine a loaded source, analog filter, threshold and visible output in one circuit, then locate a hidden fault using the first bad measurement.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P124</span>
+    <h1>Commission a complete low-voltage sensor and alarm</h1>
+    <p class="lede">Combine a loaded source, analog filter, threshold and visible output in one circuit, then locate a hidden fault using the first bad measurement.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="../practice/p107-source-impedance-and-bench-measurements.html">P107</a>, <a href="../practice/p108-op-amp-sensor-buffer.html">P108</a>, <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Give each stage a test point</h2>
+    <p>Use the isolated 5 V, 30 mA bench setup and SN74HC14 DIP wiring from <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110 · See a bouncing switch and clean up a digital edge</a>. Use its first two inverters in series. Build a 10 kΩ pot across 5 V and return. Feed its wiper through 10 kΩ to FILTER, with 1 µF and a 1 MΩ pulldown in parallel to return. Connect FILTER to the first inverter and the first output to the second input. Connect the second output to a low-current LED through 2.2 kΩ to return. Use a red LED and check polarity. Label supply, wiper, FILTER, first output and LED output. Measure with a common return at the isolated trainer only.</p><p>At each end of pot rotation, pause for the filter to settle and verify the two output states. Then move through the middle slowly in each direction and record the two points where the LED changes. The supply feeds the logic, the potentiometer supplies the input and the two outputs are independent places to test.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" alt="Meter probes clipped to two test points on a breadboard, with a resistor and LED visible between them" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-probe-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M223,449 L325,399" fill="none" stroke="#18232a" stroke-width="18"/><path d="M223,449 L325,399" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="32" y="444" width="251" height="54" rx="7" fill="#122029"/><text x="42" y="484" style="fill:#fff;font-size:36px;font-weight:700">Red probe point</text>
+          <path d="M624,436 L562,369" fill="none" stroke="#18232a" stroke-width="18"/><path d="M624,436 L562,369" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="617" y="430" width="298" height="54" rx="7" fill="#122029"/><text x="627" y="470" style="fill:#fff;font-size:36px;font-weight:700">Black probe point</text>
+        </svg>
+      </div>
+      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 508" aria-hidden="true">
+          <defs><marker id="p15-passive-probe" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M157,381 L52,447" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M157,381 L52,447" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="12" y="323" width="206" height="53" rx="6" fill="#122029"/><text x="24" y="362" style="fill:#fff;font-size:35px;font-weight:700">Signal hook</text>
+          <path d="M346,274 L310,310" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M346,274 L310,310" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
+        </svg>
+      </div>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">Tektronix prepares the probe used for the AC and timing checks</a>.</p>
+
+    <h2>Compare DC, AC amplitude and switching thresholds</h2>
+    <p>On the same circuit, record the stationary midpoint with a DC-coupled scope. Use the <a href="../practice/p25-scope-filters.html">P25 · Measure an RC filter on the oscilloscope</a> signal-generator setup on a separate copy of the 10 kΩ/1 µF filter. Drive a sine centred at 2.5 V, 1 V peak-to-peak measured at its input, staying within the rails. On generators with selectable load settings use high impedance or verify the actual amplitude with the scope. Compare 5 Hz and 50 Hz on the same channels. The nominal corner is about 16 Hz and the 50 Hz signal should be visibly smaller. AC coupling suppresses the displayed DC level; set it back to DC before judging switching thresholds.</p>
+
+    <h2>Troubleshoot a hidden change</h2>
+    <p>Power off and ask a partner to change one thing. They can disconnect the wiper lead, disconnect the capacitor, or reverse the LED. The 1 MΩ pulldown keeps the logic input defined if the wiper lead is disconnected. Record the normal supply, test in chain order and mark the first reading that differs. After repair prove both steady endpoints and repeat the dynamic test. Bring this record to <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a> for the same input, decision and output chain on a building trainer.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t55-signal-levels-thresholds-and-time.html">T55 · Logic thresholds, hysteresis and signal timing</a>.</p>
+    <ul>
+      <li><a href="https://circuits.mit.edu/F26/labs/scopes">MIT measurement and sensor lab</a></li>
+      <li><a href="https://www.ti.com/document-viewer/lit/html/scea046">TI Schmitt trigger application brief</a></li>
+      <li><a href="https://www.ti.com/lit/ds/symlink/sn74hc14.pdf">TI SN74HC14 threshold and output specifications</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

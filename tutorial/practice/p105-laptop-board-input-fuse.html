@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P105 · Prove and replace an open surface-mount board fuse</title>
+<meta name="description" content="Distinguish a missing source, an open fuse and a downstream fault. Practise replacing a documented 1206 fuse on a 5 V board.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P105</span>
+    <h1>Prove and replace an open surface-mount board fuse</h1>
+    <p class="lede">Distinguish a missing source, an open fuse and a downstream fault. Practise replacing a documented 1206 fuse on a 5 V board.</p>
+    <div class="meta"><span><b>Time</b> 50–75 minutes</span><span><b>Before this</b> <a href="p97-laptop-board-short-isolation.html">P97 short isolation</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>A fuse has two test points and a reason for opening</h2>
+    <p>An input fuse is in series with the power path. A missing supply, open link, broken pad and excessive load can all leave the circuit beyond it unpowered. Before pricing a real laptop job, confirm the schematic and board revision and mark the named fuse and both ends. A similarly shaped ferrite bead, zero-ohm link or resettable device can serve a different function. Use <a href="p97-laptop-board-short-isolation.html">P97 to prove a shorted branch</a> and <a href="p26-smd-rework.html">P26 to practise chip rework</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/pcb-fuse-example.jpg" width="960" height="720" loading="lazy" decoding="async" alt="Old through-hole printed-circuit-board fuse with two leads and a small tube body">
+          <svg viewBox="0 0 960 720" aria-hidden="true">
+            <defs><marker id="p105-fuse" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M305,193 L468,326" fill="none" stroke="#18232a" stroke-width="12"/><path d="M305,193 L468,326" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p105-fuse)"/>
+            <rect x="211" y="174" width="125" height="35" rx="6" fill="#122029"/><text x="220" y="199" style="fill:#fff;font-size:22px;font-weight:700">Fuse body</text>
+            <path d="M644,393 L501,381" fill="none" stroke="#18232a" stroke-width="12"/><path d="M644,393 L501,381" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p105-fuse)"/>
+            <rect x="615" y="377" width="124" height="35" rx="6" fill="#122029"/><text x="624" y="402" style="fill:#fff;font-size:22px;font-weight:700">PCB lead</text>
+          </svg>
+        </div>
+        <figcaption>This older PCB fuse has separate leads. A modern 1206 fuse has metal ends soldered to a pad at each side. Both can open internally while looking intact.<br><small>Photo by Dmitry G, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:USSR_PCB_fuse.JPG">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/smde.jpg" width="800" height="576" loading="lazy" decoding="async" alt="Solder wire and iron meeting an exposed surface-mount pad on a training board">
+          <svg viewBox="0 0 800 576" aria-hidden="true">
+            <defs><marker id="p105-solder" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M218,365 L310,311" fill="none" stroke="#18232a" stroke-width="12"/><path d="M218,365 L310,311" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p105-solder)"/>
+            <rect x="94" y="350" width="157" height="35" rx="6" fill="#122029"/><text x="103" y="375" style="fill:#fff;font-size:22px;font-weight:700">Solder pad</text>
+            <path d="M640,371 L414,252" fill="none" stroke="#18232a" stroke-width="12"/><path d="M640,371 L414,252" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p105-solder)"/>
+            <rect x="586" y="335" width="117" height="35" rx="6" fill="#122029"/><text x="595" y="360" style="fill:#fff;font-size:22px;font-weight:700">Iron tip</text>
+          </svg>
+        </div>
+        <figcaption>The tools heat the soldered termination at the pad. This connector joint shows where to look for wetting and nearby bridges. The fuse in the lab has a pad at each end.<br><small>Photo by Bill Earl, with labels. <a href="https://learn.adafruit.com/assets/2042">Adafruit source</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the hot-tweezer technique.</b> Follow how both solder joints release before lifting. Use a suitable tip, magnification and the component maker's solder and handling instructions on your practice board. <a href="https://www.youtube.com/watch?v=_fE-LgYoPZ8">PACE's surface-mount component removal demonstration</a>.</p>
+
+    <h2>Build a protected five-volt practice board</h2>
+    <p>Use a 1206 breakout or two-pad training PCB for <code>F1</code>, two identical documented 1206 fuses with a current rating above the trainer supply limit, a 100 Ω load resistor rated at least 0.5 W, clip leads and an isolated 5 V supply capped at 75 mA. An example part family is the Littelfuse 466 Series. Record the exact variant you fit. The power supply's current limit protects the exercise. The fuse is fitted to practise identification, measurement and replacement. Do not intentionally blow it.</p>
+    <ol class="steps">
+      <li><p>With power disconnected, lay out <code>5V → TP1 → F1 → TP2 → 100 Ω → return</code>. Label the input and output posts. Verify that the empty training footprint separates the points, and that TP2 to return is about 100 Ω. Make the first missing-fuse test with no part fitted. This reproduces the electrical effect of an open fuse without damaging one.</p></li>
+      <li><p>Power only this isolated trainer. Measure TP1 and TP2 against return, then directly across TP1–TP2. Expect about 5 V at TP1, near 0 V at TP2 and about 5 V across the gap. Remove both supply leads before resistance tests or soldering. Verify a spare fuse with a meter on the bench and record the shorted-lead reading for comparison.</p></li>
+      <li><p>Fit the correct fuse to both pads. Check the joint at each end and any nearby pads for bridges. Measure across the newly fitted fuse and verify the output to return still looks like the 100 Ω load. Power up on the trainer's 75 mA cap. Expect TP2 near 5 V and a load current near 50 mA. Measure the small difference between TP1 and TP2 directly if the meter can resolve it.</p></li>
+      <li><p>Disconnect again. Practise removing the first fuse with both ends released and installing the identical spare. Inspect pad condition, repeat the cold measurements, then the powered baseline. Retest the same connections and record the readings. A detached training board with sound pads gives you a safe way to learn the soldering step before touching a laptop.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Expected trainer condition</th><th scope="col">TP1 to return</th><th scope="col">TP2 to return</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Source missing, load and fuse fitted</th><td>Near zero</td><td>Near zero</td><td>Check the source and upstream connection.</td></tr>
+        <tr><th scope="row">Open F1 with good supply and the 100 Ω load in place</th><td>About 5 V</td><td>Near zero</td><td>Verify the open cold and check the load before replacing the part.</td></tr>
+        <tr><th scope="row">Good fuse and good load</th><td>About 5 V</td><td>About 5 V</td><td>Record load current and verify repeatability.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Apply the decision to a donor motherboard</h2>
+    <p>Use the correct service isolation, including its battery supplies, before cold measurements. Confirm that the suspect component is the documented protection device. If its in-circuit reading is ambiguous, a parallel path can mask an open. Use the board documentation and an approved isolation approach before condemning it. Check whether the downstream load looks abnormal compared with the exact reference. Never bridge an open fuse or increase its rating to see what happens.</p>
+    <figure class="course-photo" style="max-width:20rem;margin-inline:auto">
+      <div class="photo-annotation">
+        <img src="../assets/photos/shop-labs/asus-gl552vw-backlight-fuse.jpg" width="270" height="600" loading="lazy" decoding="async" alt="ASUS GL552VW motherboard close-up showing the F4502 backlight fuse position above the display connector">
+        <svg viewBox="0 0 270 600" aria-hidden="true">
+          <defs><marker id="p105-laptop-fuse" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M202,215 L152,244" fill="none" stroke="#18232a" stroke-width="6"/><path d="M202,215 L152,244" fill="none" stroke="#ffda64" stroke-width="2.5" marker-end="url(#p105-laptop-fuse)"/>
+          <rect x="178" y="193" width="88" height="24" rx="4" fill="#122029"/><text x="184" y="209" style="fill:#fff;font-size:12px;font-weight:700">F4502 fuse</text>
+          <path d="M141,327 L94,287" fill="none" stroke="#18232a" stroke-width="6"/><path d="M141,327 L94,287" fill="none" stroke="#ffda64" stroke-width="2.5" marker-end="url(#p105-laptop-fuse)"/>
+          <rect x="128" y="324" width="125" height="24" rx="4" fill="#122029"/><text x="134" y="340" style="fill:#fff;font-size:12px;font-weight:700">Display connector</text>
+        </svg>
+      </div>
+      <figcaption>On this ASUS GL552VW, fuse F4502 protects a display circuit downstream of the main input. Use the photo to practise distinguishing a branch fuse from nearby parts. The workshop’s 1206 part belongs to the separate trainer. A photo and visible discoloration cannot establish the cause of a failure.<br><small>Photo by Amir Akbari on iFixit. ECE Workbench added arrows using the identification in the accepted reply. <a href="https://www.ifixit.com/Answers/View/890856">Original repair thread</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <p>Use the specified part or an approved equivalent for the actual circuit. Compare DC voltage, current, time-current response, inrush withstand, interrupt capability, footprint and temperature limits. Cold continuity and a same-size body cannot verify those ratings. A repeated open or recurring power fault needs diagnosis of the protected circuit before another replacement. <a href="https://www.littelfuse.com/assetdocs/fuse-466-datasheet?assetguid=dbe9bcd7-6072-4adf-bf5b-d33e52a6b90f">Littelfuse 466 actual data sheet</a> · <a href="https://www.littelfuse.com/assetdocs/fuseology-selection-guide?assetguid=fa4aa360-f6c4-4eec-88a6-3d7ec3fe57d5">Littelfuse on fuse selection</a>.</p>
+    <div class="callout good"><span class="label">Keep the accepted measurements</span><p>Record the labelled points, why you called the device open, evidence from the protected load, exact replacement number and the test after rework. If the original cause is unresolved, show what remains uncertain.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

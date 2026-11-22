@@ -15,8 +15,11 @@
     <span class="eyebrow">P32</span>
     <h1>Laptop repair from intake to module replacement</h1>
     <p class="lede">Start with the parts of a desktop PC. Find the same jobs being done inside a laptop, then practise servicing an SSD or RAM and proving the result.</p>
+    <p>Continue with the <a href="../practice/p128-laptop-repair-multiplatform-mastery-route.html">laptop and peripheral repair route</a> for Windows, Linux, Mac, Chromebook, Lenovo Yoga Book and Dell service, plus keyboard and mouse diagnostics.</p>
     <div class="meta"><span><b>Time</b> Three bench sessions</span><span><b>Bench skills</b> <a href="p21-fault-finding.html">P21 diagnosis</a> · <a href="../theory/t26-pcb-rework-esd.html">T26 ESD</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <p>For a USB-C laptop that fails to charge, compare the charger, cable, dock and supported input in <a href="p87-laptop-usb-c-charging.html">P87 laptop USB-C charging</a> before disassembly. A <a href="p86-liquid-exposure-intake.html">spill changes the intake decision</a> and can put data recovery first.</p>
 
     <h2>Start with a desktop computer</h2>
     <p>Start with the case, monitor and keyboard of a desktop PC. The <b>motherboard</b> is the large circuit board that joins the components. The <b>processor (CPU)</b> runs instructions. The <b>RAM</b> is the temporary workspace for the running program, and the <b>SSD</b> is where files and the operating system stay when power is off. The <b>power supply</b> feeds the board and drives. The graphics hardware supplies the image to the monitor. It can be on a separate card or built into the processor.</p>
@@ -184,6 +187,7 @@
     </figure>
 
     <h2 id="bench-exercise-on-a-removable-ssd">Bench exercise on a removable SSD</h2>
+    <p>For an unknown used drive, follow <a href="p93-qualify-used-ssd.html">P93 to verify the interface and health without opening files</a>. Decide how to handle data before powering a donor drive.</p>
     <p>Use the existing scratch drive for a remove-and-refit exercise first. For a replacement, check the manual for <b>interface</b> (SATA or NVMe), <b>form factor</b> (such as M.2 2280), and any allowed thickness or thermal pad arrangement. In 2280, 22 is the width and 80 is the length in millimetres. A card that fits the screw position may still use the wrong interface.</p>
   <figure class="course-photo">
     <img src="../assets/photos/m2.jpg" alt="Bare M.2 NVMe solid-state drive with edge connector and mounting notch" width="960" height="661" loading="lazy" decoding="async">
@@ -199,6 +203,7 @@
     <div class="callout try"><span class="label">Practise a no-boot fault</span><p>With a backed-up spare and no customer data, compare the observed state before and after removing its scratch drive and properly reassembling. Does the computer still reach firmware? Is that drive listed? Refit it and confirm the original state returns. If a real drive is intermittent and its data is important, preserve it and hand off before writes or repeated tests.</p></div>
 
     <h2>Bench exercise on removable RAM</h2>
+    <p>If the fault might follow a used module or a socket, use the <a href="p91-test-used-laptop-ram.html">P91 swap matrix</a> and the <a href="p92-inspect-repair-damaged-ram.html">cold inspection decision in P92</a> before buying or heating parts.</p>
     <p>Find out whether the RAM is removable. In the Ryzen 7040 Framework example it is DDR5 SO-DIMM. Choose a supported part, voltage, generation and capacity from the documentation. The socket photograph below shows the physical concept on a different board.</p>
     <div class="photo-pair">
       <figure class="course-photo">
@@ -230,9 +235,11 @@
 
     <div class="callout why"><span class="label">Why it works</span><p><a href="../theory/t26-pcb-rework-esd.html">T26</a> covers ESD and connector protection. <a href="../theory/t27-board-power-sequencing.html">T27</a> covers the path to POST, <a href="../theory/t28-lithium-batteries.html">T28</a> covers battery health and <a href="../theory/t29-usb-c-power-delivery.html">T29</a> covers charger and cable negotiation.</p></div>
     <p><a class="crosslink" href="p60-laptop-display-cooling-input.html">P60 · Diagnose display, cooling and inputs</a> <a class="crosslink" href="p33-laptop-power-diagnostics.html">P33 · Learn power-rail diagnostics</a></p>
+    <p>Before ordering a part for these faults, <a href="p95-salvage-laptop-display.html">compare the display panel and cable</a> or <a href="p96-laptop-dc-input-harness.html">prove a removable charging jack on the bench</a>.</p>
+    <p>If the fault remains on the motherboard, <a href="p97-laptop-board-short-isolation.html">localise a shorted branch</a> or <a href="p98-laptop-motherboard-replacement.html">prove and verify an exact donor board swap</a>.</p>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

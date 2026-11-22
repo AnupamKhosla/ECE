@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P85 · Find why callers cannot hear an Android phone</title>
+<meta name="description" content="Compare local recording, audio routes and calls, then inspect the microphone mouth and gasket before selecting a module.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P85</span>
+    <h1>Find why callers cannot hear an Android phone</h1>
+    <p class="lede">Use handset, speakerphone, recorder and headset checks to separate audio input, output, routing and a network problem.</p>
+    <div class="meta"><span><b>Time</b> 25–40 minutes</span><span><b>Before this</b> <a href="p34-phone-module-service.html">P34 Android modular repair</a> · <a href="../theory/t47-phone-acoustics-and-haptics.html">T47 audio and haptics</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify who cannot hear whom</h2>
+    <p>“The call has no sound” can mean the far end hears nothing, the local earpiece is silent or audio is travelling through a paired headset. Modern phones often use more than one digital MEMS microphone. Voice, video and speakerphone can select different inputs or combine them. A recording that succeeds on one path gives you a useful comparison. It cannot certify every microphone. <a href="../theory/t47-phone-acoustics-and-haptics.html">T47 · Acoustic paths and signal conversion</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pixel-7a-midframe.jpg" width="960" height="1279" loading="lazy" decoding="async" alt="Removed Pixel 7a mid-frame with a lower speaker enclosure, a round actuator and separate openings">
+        <svg viewBox="0 0 960 1279" aria-hidden="true">
+          <defs><marker id="p85-frame" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M324,990 L365,1076" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M324,990 L365,1076" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p85-frame)"/>
+          <rect x="140" y="932" width="298" height="57" rx="7" fill="#122029"/><text x="152.66666666666666" y="973.8" style="fill:#fff;font-size:38px;font-weight:700">Loudspeaker</text>
+          <path d="M726,957 L801,1050" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M726,957 L801,1050" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p85-frame)"/>
+          <rect x="638" y="901" width="250" height="57" rx="7" fill="#122029"/><text x="650.6666666666666" y="942.8" style="fill:#fff;font-size:38px;font-weight:700">Actuator</text>
+        </svg>
+      </div>
+        <figcaption>Pixel 7a mid-frame. Compare the distinct loudspeaker enclosure and vibration actuator. Follow the model's acoustic diagram to find which opening serves each microphone.<br><small>Photo by Eavesdropper6735, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Pixel_7a_middle_frame_with_LED_flashlight_and_more.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/galaxy-port-board.jpg" width="800" height="600" loading="lazy" decoding="async" alt="Removed Galaxy A54 lower daughterboard alongside flex cables and the opened handset">
+        <figcaption>Galaxy A54 5G lower daughterboard. Compare this removable board with the Pixel mid-frame photo. Match the phone's board and acoustic opening to the service drawing before replacing any assembly.<br><small>Photo by Martyna Bilski for iFixit, scaled for the course. <a href="https://www.ifixit.com/Guide/Samsung+Galaxy+A54+5G+Daughterboard+Replacement/210504#s426401">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Find the test menu in Samsung Members, then choose a single audio diagnostic and record its result alongside the local recorder test. <a href="https://www.youtube.com/watch?v=VkoRE3R8Y3M">Samsung Care’s Galaxy diagnostics walkthrough on YouTube</a>.</p>
+
+    <h2>Build an audio route test card</h2>
+    <p>Use your own phone, a quiet room, a known-good wired or Bluetooth headset if the model supports it and a consenting test caller. Remove the case. Inspect the documented microphone openings from outside with a light. Keep tools, cleaning fluid and compressed air away from the openings. A SIM tray pinhole can look similar. Identify each opening from the exact device drawing.</p>
+    <ol class="steps">
+      <li><p>Disable Bluetooth and remove external audio accessories. Verify microphone access and the app’s permissions. In a locally installed recorder, speak the same short phrase at the same distance and level each time. Play it through a known-good output so a bad speaker does not mask a good recording.</p></li>
+      <li><p>Use the model’s built-in diagnostics when available. On supported Galaxy devices, open Samsung Members → Support → Phone diagnostics and choose the microphone test. Compare its result with the local recording. Then compare a normal call and speakerphone with the same caller. Record which end can hear you.</p></li>
+      <li><p>Change only the route. Repeat with the headset microphone and the same caller. If local checks are good and only one call or app fails, compare another authorised call or network condition. Keep no personal recordings or identifiers in a portfolio. <a href="https://www.samsung.com/in/support/mobile-devices/how-to-troubleshoot-the-microphone-of-your-galaxy-phone-when-it-does-not-recognize-a-voice-well/">Samsung’s microphone triage and mic test</a>.</p></li>
+    </ol>
+
+    <h2>Inspect the acoustic path before selecting the part</h2>
+    <p>Follow the exact phone’s parts drawing from the external opening to the mesh, gasket and microphone inlet. A displaced gasket, adhesive over the port or case occlusion can muffle a working device. The microphone may be soldered to a board, included in a flex or serviced only as part of an assembly. Locate the actual part in the manual before ordering. The <a href="p35-phone-board-triage.html">Galaxy A54 charging daughterboard lesson</a> shows the service route for that board. Use the exact variant’s service information to decide what it also carries.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Reproducible symptom</th><th scope="col">Most useful next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Recording becomes clear with the case removed</th><td>Check case and hole alignment before opening.</td></tr>
+        <tr><th scope="row">Recorder and mic diagnostic fail, but headset mic works</th><td>Compare the built-in input path, mesh and gasket. Use the model-specific test to narrow down the assembly.</td></tr>
+        <tr><th scope="row">Recorder and built-in test pass, only one call app fails</th><td>Check that app’s audio permission and routing and compare a known working call. Keep network symptoms with the ticket.</td></tr>
+        <tr><th scope="row">Far-end speech is audible on speakerphone only</th><td>Check the local earpiece output and route separately from the microphone. Compare with the <a href="p34-phone-module-service.html">sound module repair lesson</a>.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Record the method, audio input, output, receiver and pass or fail. After any repair, repeat the exact failed path and the alternatives. The <a href="p75-voip-one-way-audio.html">IP phone lab</a> shows what to do when the fault follows the network.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

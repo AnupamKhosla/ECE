@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P99 · Find why an LCD television has sound but no picture</title>
+<meta name="description" content="Use the TV’s own picture test, a reference HDMI source and a flashlight to separate external input, image and backlight faults.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P99</span>
+    <h1>Find why an LCD television has sound but no picture</h1>
+    <p class="lede">Use the TV’s own picture test, a reference HDMI source and a flashlight to separate external input, image and backlight faults.</p>
+    <div class="meta"><span><b>Time</b> 25–45 minutes</span><span><b>Before this</b> <a href="../theory/t51-lcd-panel-backlight.html">T51 LCD and backlight theory</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Listen and look before buying anything</h2>
+    <p>Use your own intact LED-backlit LCD television, its remote, a known-good HDMI source and lead, a flashlight and its owner manual. Note the exact model and whether the screen is LCD or OLED. TV standby behaviour varies by model. Stop at external observations if the screen is cracked, there is liquid ingress or the mains cord or enclosure is damaged. A set can play sound even when its image and backlight paths differ. <a href="../theory/t51-lcd-panel-backlight.html">T51 signal and light paths</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-boards.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Rear view of an LCD TV with green mainboard at left, power supply near the centre and T-Con under a metal shield">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p99-layout" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M115,35 L181,107" fill="none" stroke="#18232a" stroke-width="12"/><path d="M115,35 L181,107" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p99-layout)"/>
+            <rect x="64" y="10" width="126" height="35" rx="6" fill="#122029"/><text x="73" y="35" style="fill:#fff;font-size:22px;font-weight:700">Mainboard</text>
+            <path d="M348,20 L332,117" fill="none" stroke="#18232a" stroke-width="12"/><path d="M348,20 L332,117" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p99-layout)"/>
+            <rect x="334" y="12" width="159" height="35" rx="6" fill="#122029"/><text x="343" y="37" style="fill:#fff;font-size:22px;font-weight:700">Power supply</text>
+          </svg>
+        </div>
+        <figcaption>An older Samsung LCD layout. The green mainboard takes source inputs, the central supply converts power, and the T-Con here sits behind a metal shield. The picture is for orientation only.<br><small>Photo by Arwedus and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+LED+TV+LE37A659+(and+similar+models)+T-Con+Board+Replacement/127143">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-tcon.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Exposed blue T-Con board with white connectors along its top and wide ribbon leads along its lower edge">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p99-tcon" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M210,35 L142,123" fill="none" stroke="#18232a" stroke-width="12"/><path d="M210,35 L142,123" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p99-tcon)"/>
+            <rect x="153" y="18" width="190" height="35" rx="6" fill="#122029"/><text x="162" y="43" style="fill:#fff;font-size:22px;font-weight:700">Input connector</text>
+            <path d="M147,278 L199,376" fill="none" stroke="#18232a" stroke-width="12"/><path d="M147,278 L199,376" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p99-tcon)"/>
+            <rect x="54" y="255" width="179" height="35" rx="6" fill="#122029"/><text x="63" y="280" style="fill:#fff;font-size:22px;font-weight:700">Panel ribbon</text>
+          </svg>
+        </div>
+        <figcaption>On this Samsung, the T-Con takes image data and drives wide flat cables toward the panel. Other models integrate its function in the panel or mainboard.<br><small>Photo by Arwedus and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+LED+TV+LE37A659+(and+similar+models)+T-Con+Board+Replacement/127143">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the flashlight test.</b> Copy the front-of-screen observation with the case intact. A faint image gives evidence that the panel is drawing something in the tested area. It leaves the driver, LED assembly, connectors and their control path as candidates. <a href="https://www.youtube.com/watch?v=xUzCLgoSPGM">ShopJimmy demonstrates a faint picture on a dark screen</a>.</p>
+
+    <h2>Compare an internal image with a reference source</h2>
+    <ol class="steps">
+      <li><p>With the cabinet assembled, note the standby indicator and how it changes when you use the power button on the TV. Use the maker's procedure if the model reports a fault code. If it is unresponsive, check the external cord and an independently confirmed intact outlet before quoting a no-power fault.</p></li>
+      <li><p>Try the settings menu or volume bar. If you can see it, use the model's built-in Picture Test where available. Compare a working HDMI source and cable on a second input, selecting that input deliberately. A clean built-in picture with a repeatable source fault points toward the source, lead, port or input settings. Samsung calls it <em>Picture Test</em> on supported sets. <a href="https://www.samsung.com/in/support/tv-audio-video/how-to-adjust-picture-settings-on-your-samsung-smart-tv/">Samsung's self-diagnosis procedure</a> · <a href="https://www.lg.com/in/support/product-support/troubleshoot/help-library/cs-CT52006776-20151747670052LST/">LG's source and Picture Test checks</a>.</p></li>
+      <li><p>If the LCD stays dark while sound continues, dim the room and request a menu or other known image. Illuminate the front from an oblique angle and look for moving text or a menu shape in several places. Record whether the screen glows without the flashlight, whether it appears briefly at startup and whether the symptom follows brightness or warm-up. A negative flashlight test by itself cannot identify a bad panel.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What you can reproduce</th><th scope="col">Where to go next</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Settings and built-in picture are good, one input is blank</th><td>Compare cables, input formats and ports with the same known-good source. Quote the TV's HDMI hardware only after eliminating the external path.</td></tr>
+        <tr><th scope="row">Moving picture visible with the flashlight, very little illumination from the screen</th><td>Record a fault in the light path. The LED strips, supply or driver and command or connector path need separating. See <a href="p100-tv-backlight-panel-service.html">P100 backlight and panel-handling lab</a>.</td></tr>
+        <tr><th scope="row">Screen glows but the built-in menu is absent or a line cuts through it</th><td>Investigate the video, timing, ribbons and panel with model evidence. A line in the menu is strong evidence that an HDMI source cannot explain the line.</td></tr>
+        <tr><th scope="row">Cracked glass and ink-like coloured blotches</th><td>Look up the exact panel price and shipping before quoting. A board or new LED strip cannot restore a broken panel.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>If the backlight stays on but the internal patterns show lines or a partial image, <a href="p106-tv-tcon-panel-diagnosis.html">P106 walks the timing-board, ribbon and LCD panel decision</a>.</p>
+
+    <h2>Make a shop decision</h2>
+    <p>Photograph the back label and the screen showing the fault, then note the source and test steps. A repair quotation should specify the branch proven so far, the cost of deeper diagnosis and what test the set must pass at pickup. Internal diagnosis and final electrical safety checks for a mains-powered set belong on a competent service bench. Unplugging by itself does not verify absence of stored voltage. This exercise uses closed-case tests only. <a href="https://www.hse.gov.uk/PuBns/eis36.htm">HSE guidance for TV servicing and electrical testing</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

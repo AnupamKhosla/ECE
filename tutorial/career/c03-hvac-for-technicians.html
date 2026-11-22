@@ -232,8 +232,9 @@
     </table></div>
     <div class="callout warn"><span class="label">Safety</span><p>AHU fans, pumps, chillers and compressors run on 400 V three-phase supplies, and fans can start automatically at any moment under BMS control. Never reach into an AHU or remove panels unless the unit is isolated and locked out under the site's procedure, done by an authorised person. The 400 V supplies are licensed electrician work. Your work is at the sensor and controller (ELV) end.</p></div>
 
-    <h2>VAV boxes and fan coil units</h2>
+    <h2 id="vav-boxes-and-fan-coil-units">VAV boxes and fan coil units</h2>
     <h3>VAV boxes</h3>
+    <p>For a worked service check, use <a href="../practice/p88-vav-airflow-commissioning.html">P88</a> to compare a terminal’s pressure pickup, position and airflow at two commands.</p>
     <p>A <b>VAV</b> (variable air volume) box sits in the ceiling and controls how much of the AHU's supply air goes into one zone. It has a damper with an actuator, an <b>airflow sensor</b> (a cross-shaped tube that measures velocity pressure, read by a small DP transducer in the controller), and often a reheat coil or electric heater. The room sensor tells the controller the zone temperature.</p>
     <p>Most VAV boxes use <b>pressure-independent cascade control</b>: the temperature loop does not move the damper directly. Instead it sets an <b>airflow setpoint</b> between a minimum and a maximum (say 40–200 L/s), and a second, fast loop moves the damper to hold that airflow. If the duct pressure changes, the airflow loop corrects it before the room even notices.</p>
     <div class="formula">Sensible cooling (W) ≈ 1.2 × airflow (L/s) × ΔT (K)
@@ -242,6 +243,7 @@
     <p>An FCU is a small fan and coil in a ceiling, wall or cassette, fed with chilled water (and sometimes hot water). A <b>2-pipe</b> FCU has one coil that gets either chilled or hot water depending on season; a <b>4-pipe</b> FCU has separate cooling and heating coils. The controller runs the fan (often 3-speed relays or an EC fan with a 0–10 V speed signal) and opens the valve to hold room temperature. Hotels and apartment buildings use many FCUs.</p>
 
     <h2>Sensors you will meet</h2>
+    <p>Use <a href="../practice/p77-duct-differential-pressure.html">P77</a> to measure the pressure difference across a filter and read the HIGH and LOW ports. Use <a href="../practice/p78-hydronic-valve-stroke.html">P78</a> to track coil valve movement, and <a href="../practice/p80-room-air-quality-sensor.html">P80</a> to compare true room CO₂ readings before changing a controller offset.</p>
     <div class="table-wrap"><table>
       <tr><th>Measures</th><th>Common sensor</th><th>Typical signal</th><th>How a tech checks it</th></tr>
       <tr><td>Temperature</td><td>10 kΩ NTC thermistor, PT1000 (platinum)</td><td>Resistance</td><td>Calibrated reference thermometer next to it; measure resistance disconnected</td></tr>
@@ -433,7 +435,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

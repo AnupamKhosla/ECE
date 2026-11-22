@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P103 · Clean and replace a Zebra ZD421 platen roller</title>
+<meta name="description" content="Use the printer's own samples to tell a media calibration problem from a repeating platen defect, then service the correct direct-thermal model.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P103</span>
+    <h1>Clean and replace a Zebra ZD421 platen roller</h1>
+    <p class="lede">Use the printer's own samples to tell a media calibration problem from a repeating platen defect, then service the correct direct-thermal model.</p>
+    <div class="meta"><span><b>Time</b> 40–65 minutes</span><span><b>Before this</b> <a href="p67-barcode-printer-service.html">P67 label printer diagnosis</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Work with a known tape path and reference roll</h2>
+    <p>The worked unit is a Zebra ZD421D direct-thermal printer with a standard platen and ordinary liner-backed direct-thermal stock. Confirm the exact unit, resolution, options and supply at intake. A thermal-transfer model needs its correct ribbon. A linerless platen has a different surface and cleaning procedure. Use the instructions for the actual model. Have a reference roll, the customer's media, approved cleaning supplies, a ruler, a scanner and a labelled A/B job card.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop/label-open.jpg" width="960" height="640" alt="Open Zebra GK420d label printer with arrows pointing to the printhead and platen roller" loading="lazy" decoding="async">
+          <svg viewBox="0 0 960 640" aria-hidden="true">
+            <defs><marker id="p103-label-open-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="white" stroke="#103549" stroke-width="0.5"/></marker></defs>
+            <path d="M773 135 542 91" stroke="#103549" stroke-width="14"/>
+            <path d="M773 135 542 91" stroke="white" stroke-width="6" marker-end="url(#p103-label-open-arrow)"/>
+            <rect x="668" y="112" width="210" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="773" y="154" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Printhead</text>
+            <path d="M160 538 332 525" stroke="#103549" stroke-width="14"/>
+            <path d="M160 538 332 525" stroke="white" stroke-width="6" marker-end="url(#p103-label-open-arrow)"/>
+            <rect x="37" y="515" width="246" height="61" rx="10" fill="#103549" stroke="white" stroke-width="3"/>
+            <text x="160" y="557" text-anchor="middle" font-weight="700" style="fill:white;font-size:36px">Platen roller</text>
+          </svg>
+        </div>
+        <figcaption>Compare the printhead inside the lid with the black platen roller at the front of the base. The green guides locate the label roll.<br><small>Photo by Jiří Sedláček, resized with labels added. <a href="https://commons.wikimedia.org/wiki/File:Overview_of_opened_label_printer_Zebra_GK420d_in_Michle%2C_Prague.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/thermal-head-macro.jpg" width="960" height="542" loading="lazy" decoding="async" alt="Magnified row of thermal print elements connected to fine gold traces">
+          <svg viewBox="0 0 960 542" aria-hidden="true">
+            <defs><marker id="p103-head" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M339,119 L338,296" fill="none" stroke="#18232a" stroke-width="12"/><path d="M339,119 L338,296" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p103-head)"/>
+            <rect x="239" y="102" width="211" height="35" rx="6" fill="#122029"/><text x="248" y="127" style="fill:#fff;font-size:22px;font-weight:700">Heating element row</text>
+            <path d="M678,454 L606,328" fill="none" stroke="#18232a" stroke-width="12"/><path d="M678,454 L606,328" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p103-head)"/>
+            <rect x="624" y="438" width="112" height="35" rx="6" fill="#122029"/><text x="633" y="463" style="fill:#fff;font-size:22px;font-weight:700">Traces</text>
+          </svg>
+        </div>
+        <figcaption>Close-up of the black element stripe and its connections on an Axiohm direct-thermal head. Compare the row's direction with the path the label takes on the Zebra. This substitute photo shows construction, not a Zebra replacement part.<br><small>Photo by Gravis, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Thermal_printhead_macro.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Locate the two bearing releases and observe which end of the platen engages the drive. The maintenance video separates the printhead, platen and media sensor cleaning operations. <a href="https://www.youtube.com/watch?v=fIMElY7ohSw">Zebra replaces the ZD421-family platen</a> · <a href="https://www.youtube.com/watch?v=UfKQDORQDUg">Zebra cleans direct-thermal desktop printers</a>.</p>
+
+    <h2>Print a reference before touching a roller</h2>
+    <ol class="steps">
+      <li><p>Record media width, length, gap or black mark, printer resolution, speed and darkness. Verify the roll is loaded with the printable face in the correct direction. On standard ZD421 controls, after loading media use the manufacturer SmartCal procedure with Pause and Cancel. Print a configuration report to capture the settings. Save the values before touching the customer profile. <a href="https://docs.zebra.com/us/en/printers/desktop/zd421-and-zd621-desktop-printers-user-guide/c-zd620-420-setup/c-zd421-zd621-ug-smartcal-media-calibration.html">Zebra SmartCal procedure</a> · <a href="https://www.zebra.com/us/en/support-downloads/printers/desktop/zd421.html">Model support and configuration report</a>.</p></li>
+      <li><p>On sufficiently wide suitable media, follow Zebra's FEED self-test to generate its built-in print quality report at different settings. Keep the reported speed and darkness on each comparison label. Compare five consecutive labels and mark the feed direction. A built-in defect survives the change from a PC print job. A fault that appears only on one PC template should be checked at the driver, image and label-size settings first. <a href="https://docs.zebra.com/us/en/printers/desktop/zd421-and-zd621-desktop-printers-user-guide/c-zd421-zd621-ug-tools/r-mlk-ug-printer-diagnostics/c-zd410d-ug-perform-a-print-quality-report-feed-self-test/t-zd421-zd621-ug-printing-a-print-quality-report.html">Zebra's print quality report steps</a>.</p></li>
+      <li><p>Try the customer's roll and the known-good roll separately. Recalibrate as required for each type. A line at a fixed position across the print width that runs in the feed direction points toward the head or something consistently contacting that part of the media. A defect recurring along the feed at a spacing close to the roller circumference points toward the platen or something that repeats with it. The location and spacing guide inspection. They are not part diagnoses.</p></li>
+    </ol>
+    <p>If the printer still skips after SmartCal, print the <a href="https://docs.zebra.com/us/en/printers/desktop/zd421-and-zd621-desktop-printers-user-guide/c-zd421-zd621-ug-tools/r-mlk-ug-printer-diagnostics/c-zd620-zd420-ug-sensor-profile.html">Zebra Sensor Profile</a> on suitable wide media. Compare each spike on the profile with a physical gap or black mark on the roll. An extra spike lining up with preprinted artwork gives you a reason to check the sensing mode and sensor position before opening the printer.</p>
+    <div class="callout try"><span class="label">Measure a repeated defect</span><p>On a set of sample labels, marks repeat about every 38 mm along the web. A measured 12 mm roller has an approximate circumference of 38 mm. This comparison gives you a reason to inspect the roller and collect another sample after cleaning. The dimensions are example readings, not Zebra specifications. Take several intervals on the same web and divide their total length by the count so your mark spacing is easier to measure.</p></div>
+
+    <h2>Clean, compare, then replace if needed</h2>
+    <ol class="steps">
+      <li><p>Power off, disconnect the external supply, allow the head to cool and remove the stock. Inspect the smooth head line and roller without scraping them. Clean each area with the technique and consumable Zebra gives for that exact model. Standard and linerless platens have different care instructions. Let cleaned parts dry before powering the printer. <a href="https://support.zebra.com/article/000034892">Zebra maintenance instructions by part and model</a>.</p></li>
+      <li><p>Reassemble and repeat the same samples with the same roll, speed and darkness. If cleaning removes the mark, document it and stop. If a recurring mark remains and you can match it to damage or slipping on the roller, obtain the exact roller variant and follow Zebra's replacement demonstration. Remove the stock, release the two bearings as shown, lift the roller without levering on the media path, then check the drive end and both locks on the replacement.</p></li>
+      <li><p>If the fixed white gap remains with clean sample media and a clean head, document the evidence and use the approved printhead service path. Check the head and connector according to the guide before pricing the repair. Excessive darkness can close the gaps in a barcode and mask the original issue in a visual check.</p></li>
+    </ol>
+
+    <h2>Hand back samples that prove the repair</h2>
+    <p>Print a consecutive run with the customer's agreed stock. Keep the test count, feed errors, repeat mark spacing and settings. Scan a representative sample at the customer's intended station and record the decoded text. Use a compliant verifier if the job specifies a formal barcode grade. A pass on one shop scanner can still be enough for a narrowly agreed handover test. <a href="../theory/t53-thermal-printing-and-barcode-quality.html">T53 dot pitch, heat, sensing and barcode quality</a> · <a href="https://support.gs1.org/support/solutions/articles/43000734152-how-can-i-measure-the-quality-of-my-printed-barcodes-/">GS1 on formal barcode verification</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

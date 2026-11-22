@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P125 · Diagnose a stale or wrongly scaled point across two protocols</title>
+<meta name="description" content="Distinguish field wiring, controller identity, BACnet freshness and Modbus register interpretation on an isolated BMS trainer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P125</span>
+    <h1>Diagnose a stale or wrongly scaled point across two protocols</h1>
+    <p class="lede">Distinguish field wiring, controller identity, BACnet freshness and Modbus register interpretation on an isolated BMS trainer.</p>
+    <div class="meta"><span><b>Time</b> 65–95 minutes</span><span><b>Before this</b> <a href="../practice/p14-serial-buses-modbus.html">P14</a>, <a href="../practice/p38-bacnet-point-commissioning.html">P38</a>, <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Label the network, device and point separately</h2>
+    <p>Use your isolated lab or an instructor-provided read-only dataset. Draw the workstation, controller, router and field trunk. BACnet/IP uses IP networking, while BACnet MS/TP uses an RS-485 bus. Record BACnet device instance and the point’s object type and instance. MS/TP MAC address identifies a station on its local trunk. Verify matching data rate, address uniqueness and the documented terminal polarity, reference, bias and termination on the detached trainer. Separately identify the Modbus server or serial unit, function, register offset, data type, scale and engineering units. An RS-485 connector alone does not identify its protocol.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <img src="../assets/photos/switch.jpg" alt="Numbered Ethernet sockets on a managed switch" width="960" height="640" loading="lazy" decoding="async">
+        <figcaption>An Ethernet switch joins IP devices on the bench. Draw the exact laptop-to-switch-to-controller path and record which link lights show.<br><small>Photo by Ben Franske, resized. <a href="https://commons.wikimedia.org/wiki/File:RJ45_Switch_Ports.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/terminal.jpg" width="960" height="638" alt="Installed WAGO controller with field cabling connected to terminal rows" loading="lazy" decoding="async">
+        <figcaption>On the panel side the cable tag and input terminal are separate identifiers. Write both before assigning the screen name.<br><small>Photo by Pierre75000, resized. <a href="https://commons.wikimedia.org/wiki/File:Automate_industriel_WAGO_pour_un_syst%C3%A8me_de_monitoring_en_industrie_pharmaceutique.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=_7g27pLk8Vw">See a controls specialist test BACnet/IP and MS/TP on a bench before going on site</a>.</p>
+
+    <h2>Work a three-case read-only comparison</h2>
+    <ol class="steps"><li><b>Stale reuse.</b> At 09:01 the controller changes from 20.0 to 21.2 °C. A direct BACnet read agrees at 09:02 but the supervisor still shows 20.0 with a timestamp from 08:55. Compare polling, change-of-value support and freshness configuration before moving any wire.</li><li><b>Wrong scale.</b> The documented training Modbus register 40011 returns raw 212, corresponding to 21.2 °C at 0.1 °C per count. The protocol offset for conventional 40011 numbering is 10. Check whether the configured tool expects the reference notation or the zero-based offset. Record function code 03 for this holding-register example.</li><li><b>Wrong interpretation.</b> A documented training word <code>0xFF9C</code> has signed 16-bit value −100. At 0.1 units per count that gives −10.0. An unsigned interpretation gives 65436 before scale. For larger types, look up vendor word order and type. Two correct devices showing two independent measurements make better test patterns than zeros.</li></ol>
+
+    <h2>Verify quality and recovery without writing commands</h2>
+    <p>Show one update within the agreed allowance and one deliberate stale condition using the classroom simulator or dataset. Label quality, engineering units and the time source. If a whole trunk disappears, compare router or gateway status and the network diagram first. Use only authorised directed reads on the training system. Add the resulting map and recovery row to the platform case in <a href="../practice/p112-niagara-four-workbench-integration.html">P112 · Build and commission a Niagara 4 station on a training system</a>, <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113 · Trace a Siemens Desigo point from PXC to Desigo CC</a> or <a href="../practice/p114-schneider-metasys-honeywell-webctrl.html">P114 · Transfer commissioning skills across four BMS ecosystems</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t56-building-controls-commands-quality-and-sequences.html">T56 · Building control sequences, command priorities and point quality</a>.</p>
+    <ul>
+      <li><a href="https://bacnetinternational.org/tbi/">BACnet Institute learning and reference material</a></li>
+      <li><a href="https://www.modbus.org/file/secure/modbusprotocolspecification.pdf">Modbus application protocol and zero-based addressing</a></li>
+      <li><a href="https://www.modbus.org/file/secure/modbusoverserial.pdf">Modbus over serial line guide for topology and termination</a></li>
+      <li><a href="https://www.tridium.com/us/en/Products/niagara-drivers">Tridium supported driver families by application</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

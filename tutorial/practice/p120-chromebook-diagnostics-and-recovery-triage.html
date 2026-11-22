@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P120 · Troubleshoot a Chromebook with its model and management context</title>
+<meta name="description" content="Use ChromeOS Diagnostics to test a charging, wireless or boot complaint and distinguish hardware work from data-erasing recovery.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P120</span>
+    <h1>Troubleshoot a Chromebook with its model and management context</h1>
+    <p class="lede">Use ChromeOS Diagnostics to test a charging, wireless or boot complaint and distinguish hardware work from data-erasing recovery.</p>
+    <div class="meta"><span><b>Time</b> 40–70 minutes</span><span><b>Before this</b> <a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116</a>, <a href="../practice/p87-laptop-usb-c-charging.html">P87</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Distinguish a Chromebook from a similarly named laptop</h2>
+    <p>Record the full model and board or recovery identifier as documented. Similar external cases can use different storage, display harnesses and mainboards. Identify if a school or employer manages the unit. In that case confirm scope with its administrator before account changes or recovery. On an Acer CP714-1HN practice case look up the lifecycle service diagrams for the correct variant before choosing parts. Compare its guide with the separate Acer CB3-532 I/O board pictured below.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/laptop-usb-c-adapter.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Apple 96 W USB-C charger with rating and model identifier on the casing">
+        <svg viewBox="0 0 960 640" aria-hidden="true">
+          <defs><marker id="p87-charger" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M463,204 L458,244" fill="none" stroke="#18232a" stroke-width="16.88888888888889"/><path d="M463,204 L458,244" fill="none" stroke="#ffda64" stroke-width="9.047619047619047" marker-end="url(#p87-charger)"/>
+          <rect x="323" y="146" width="278" height="57" rx="7" fill="#122029"/><text x="335.6666666666667" y="187.8" style="fill:#fff;font-size:38px;font-weight:700">96 W marking</text>
+        </svg>
+      </div>
+        <figcaption>This Apple charger has the overall rating and model number printed on its case. On the charger used for your lab, look for the separate list of supported V and A combinations or use its datasheet.<br><small>Photo by Tony Webster, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Apple_96W_USB_Type-C_Power_Adapter_for_new_16_inch_MacBook_Pro_(49165128252).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/acer-chromebook-io.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Acer CB3-532-C47C Chromebook I/O board with its mainboard flex connector and USB socket"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="acer-chromebook-io" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M102.5,105 L137,43" fill="none" stroke="#14232b" stroke-width="9"/><path d="M102.5,105 L137,43" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#acer-chromebook-io)"/><rect x="6" y="105" width="96.5" height="23" rx="4" fill="#14232b"/><text x="12" y="121" style="fill:#fff;font-size:15px;font-weight:700">USB socket</text>
+<path d="M382,302 L354,222" fill="none" stroke="#14232b" stroke-width="9"/><path d="M382,302 L354,222" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#acer-chromebook-io)"/><rect x="382" y="302" width="129.5" height="23" rx="4" fill="#14232b"/><text x="388" y="318" style="fill:#fff;font-size:15px;font-weight:700">Mainboard flex</text></svg></div><figcaption>This Acer CB3-532-C47C has a separate I/O board linked to the motherboard by a flex. The CP714 example in the lab is a different model with its own guide.<br><small>Photo by Jerry Wheeler and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Guide/Acer+Chromebook+cb3-532-c47c+I-O+Board+Replacement/149886">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=o308MP1v2u8">Watch the Chromebook Wi-Fi troubleshooting demonstration</a>.</p>
+
+    <h2>Run three closed-case tests</h2>
+    <ol class="steps"><li>Power a known-good or donated unit with an OEM-compatible charger. Record charging behaviour before and after starting. In ChromeOS Diagnostics record the battery entry and test result. Use a second approved adapter if a proper first test fails.</li><li>For slow or unstable use, run the applicable CPU or memory test on a stable machine with owner consent. Record the code or report. Check the connectivity section against a known usable network before assuming the radio failed.</li><li>For a device that does not start, distinguish dead, no video and the explicit ChromeOS recovery screen. Read the displayed model identifier. Internet recovery and removable recovery availability depend on model. Restore or Powerwash only with separate authorization and a plan for local files. Confirm managed enrollment through the administrator.</li></ol><p>Retest the original symptom, channel and battery behaviour after reassembly. For a USB-C fault compare charge and data separately in <a href="../practice/p121-laptop-ports-audio-and-small-module-service.html">P121 · Isolate laptop port, headphone and speaker faults</a>. For customer data and acceptance use <a href="../practice/p122-laptop-data-safe-intake-and-handover.html">P122 · Protect laptop data and run a repeatable handover test</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t57-laptop-firmware-boot-and-board-architecture.html">T57 · How laptop power, firmware, storage and operating systems meet</a>.</p>
+    <ul>
+      <li><a href="https://support.google.com/chromebook/answer/10566784?hl=en">Google Chromebook Diagnostics app and screens</a></li>
+      <li><a href="https://support.google.com/chromebook/answer/1080595?hl=en">Google Chromebook recovery procedure and data loss</a></li>
+      <li><a href="https://global-download.acer.com/GDFiles/Document/Lifecycle%20Ext.%20Guide/Lifecycle%20Ext.%20Guide_Acer_1.0_A_A.pdf?BC=ACER&amp;LC=en&amp;OS=ALL&amp;SC=AAP_6&amp;Step3=CP714-1HN&amp;acerid=638769359512158255">Acer Chromebook Spin 714 model-specific lifecycle service guide</a></li>
+      <li><a href="https://www.acer.com/gb-en/support/Repairability">Acer repair documentation hub</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

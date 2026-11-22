@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P109 · Switch a relay coil and inspect its turn-off pulse</title>
+<meta name="description" content="Measure a low-voltage coil, select a transistor and clamp, then confirm the output and relay contacts on a protected trainer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P109</span>
+    <h1>Switch a relay coil and inspect its turn-off pulse</h1>
+    <p class="lede">Measure a low-voltage coil, select a transistor and clamp, then confirm the output and relay contacts on a protected trainer.</p>
+    <div class="meta"><span><b>Time</b> 50–70 minutes</span><span><b>Before this</b> <a href="../practice/p08-transistor-switches.html">P08</a>, <a href="../practice/p13-actuators-motors.html">P13</a>, <a href="../practice/p15-oscilloscope-logic-analyser.html">P15</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Choose a small DC coil and protect the switch</h2>
+    <p>Use a small documented 5 V DC relay with coil resistance of 100–200 Ω, a 2N2222-family transistor with verified supplier pinout, a 680 Ω base resistor, a 10 kΩ base pulldown, and a 1N400x diode. Set an isolated supply to 5 V with a limit of about 85 mA. Label the coil pins from the relay drawing and measure their resistance disconnected. At 125 Ω the steady expectation is 40 mA. Keep relay contacts on the meter’s unpowered continuity circuit.</p><ol class="steps"><li>Connect emitter to return, collector to one coil end, and the other coil end to +5 V. Fit the diode across the coil, striped cathode to +5 V, before you energise it.</li><li>Fit the 10 kΩ from base to return and switch 5 V to the base through the 680 Ω resistor. Compare supply current and collector voltage in each state. Use a second meter in continuity mode across the isolated COM and NO contacts.</li><li>Probe the collector with a compensated 10× probe and a ground connection only at the isolated trainer return. Trigger on the rising collector edge, use single capture and release the switch. The coil current initially continues and the diode conducts. The nominal clamp is slightly above +5 V at the collector.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+        <img src="../assets/photos/labs/solenoid.jpg" width="960" height="718" alt="Close-up of a DC 24 V valve solenoid coil and a clear electrical plug" loading="lazy" decoding="async">
+        <figcaption>Find the solenoid coil and its electrical connection. It moves the valve mechanism that directs air to the load.<br><small>Photo by Sarah Adrita, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Solenoid_coil_of_a_pneumatic_valve.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 508" aria-hidden="true">
+          <defs><marker id="p15-passive-probe" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M157,381 L52,447" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M157,381 L52,447" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="12" y="323" width="206" height="53" rx="6" fill="#122029"/><text x="24" y="362" style="fill:#fff;font-size:35px;font-weight:700">Signal hook</text>
+          <path d="M346,274 L310,310" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M346,274 L310,310" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p15-passive-probe)"/>
+          <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
+        </svg>
+      </div>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=yEuhPzPBdEU">Tektronix shows passive probe compensation before your measurement</a>.</p>
+
+    <h2>Separate a command, a coil and a contact</h2>
+    <p>A high base drive with little supply current and a low collector suggests checking the coil path. Coil current with no contact change sends you to the relay path or contact identification. Disconnect power before simulating an open coil with one lead removed, and restore the clamp when rebuilding. Keep the diode installed for all scope captures. Higher-voltage clamp topologies trade faster coil release for higher stress and need specified parts before use.</p><p>Keep one annotated scope capture, plus a four-row log of commanded and released states and their measured contact. See <a href="../practice/p79-fan-run-proof.html">P79 · Distinguish a fan command from proof of airflow</a> for why a controller’s run command still needs independent physical proof.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t06-magnetism-inductors.html">T06 · Magnetism and inductors</a>.</p>
+    <ul>
+      <li><a href="https://www.ti.com/lit/an/slvae59/slvae59.pdf">TI inductive-discharge application note</a></li>
+      <li><a href="https://www.tek.com/en/documents/primer/abcs-probes-primer">Tektronix probe fundamentals</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

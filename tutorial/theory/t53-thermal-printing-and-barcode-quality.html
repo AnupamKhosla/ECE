@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T53 · Thermal printheads, media sensing and barcode quality</title>
+<meta name="description" content="Follow a moving label past the sensor and printhead, then explain print defects using dot pitch, heat and contrast.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T53</span>
+    <h1>Thermal printheads, media sensing and barcode quality</h1>
+    <p class="lede">Follow a moving label past the sensor and printhead, then explain print defects using dot pitch, heat and contrast.</p>
+    <div class="meta"><span><b>Before this</b> <a href="t02-resistance-ohms-law.html">T02 resistance and Ohm’s law</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>How one row of heaters makes a label</h2>
+    <p>The printhead has a line of individually controlled resistive elements. The platen supports and advances the label. As the stock advances, the controller pulses a different set of elements to draw each row. Direct-thermal stock darkens where heat is applied. A thermal-transfer printer heats a ribbon and transfers its coating to a compatible label. The process depends on heat, contact, speed and media. <a href="https://www.zebra.com/us/en/support-downloads/printers/desktop/zd421.html">Zebra ZD421-family media and ribbon guidance</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/thermal-printhead.jpg" width="960" height="542" loading="lazy" decoding="async" alt="A detached direct-thermal printhead showing the ceramic head edge, frame and wires">
+          <svg viewBox="0 0 960 542" aria-hidden="true">
+            <defs><marker id="t53-head" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M323,126 L426,212" fill="none" stroke="#18232a" stroke-width="12"/><path d="M323,126 L426,212" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t53-head)"/>
+            <rect x="230" y="103" width="201" height="35" rx="6" fill="#122029"/><text x="239" y="128" style="fill:#fff;font-size:22px;font-weight:700">Printhead edge</text>
+          </svg>
+        </div>
+        <figcaption>This Axiohm head presents a narrow element line across the moving media. Look for the complete row in the magnified photo and compare with the platen under the head on your printer.<br><small>Photo by Gravis, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Thermal_printhead.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/thermal-head-macro.jpg" width="960" height="542" loading="lazy" decoding="async" alt="Magnified row of thermal print elements connected to fine gold traces">
+          <svg viewBox="0 0 960 542" aria-hidden="true">
+            <defs><marker id="t53-elements" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M339,119 L338,296" fill="none" stroke="#18232a" stroke-width="12"/><path d="M339,119 L338,296" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t53-elements)"/>
+            <rect x="239" y="102" width="211" height="35" rx="6" fill="#122029"/><text x="248" y="127" style="fill:#fff;font-size:22px;font-weight:700">Heating element row</text>
+            <path d="M678,454 L606,328" fill="none" stroke="#18232a" stroke-width="12"/><path d="M678,454 L606,328" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#t53-elements)"/>
+            <rect x="624" y="438" width="112" height="35" rx="6" fill="#122029"/><text x="633" y="463" style="fill:#fff;font-size:22px;font-weight:700">Traces</text>
+          </svg>
+        </div>
+        <figcaption>Close-up of the black element stripe and its connections on an Axiohm direct-thermal head. Compare the row's direction with the path the label takes on the Zebra. This substitute photo shows construction, not a Zebra replacement part.<br><small>Photo by Gravis, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Thermal_printhead_macro.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the media path and cleaning points.</b> Identify where the head applies heat, where the roller presses the stock and where the sensor reads the edge or gap. <a href="https://www.youtube.com/watch?v=UfKQDORQDUg">Zebra's direct-thermal maintenance demonstration</a>.</p>
+
+    <h2>Use the physical scale to explain the defect</h2>
+    <p>At 203 dots per inch, one dot is about 0.125 mm across. A 3-dot bar is roughly 0.375 mm wide before heat spread and movement errors. The desired width in a barcode specification must be translated to whole printer dots. On each row, adhesive or a failed element in one position can leave a white stripe that follows the feed direction. A mark once per roller turn can instead repeat at intervals around the circumference. Reprinting with fresh stock at matched settings helps separate the media, roller and head paths.</p>
+    <p>A label gap or black mark positions the job. On many desktops, a gap sensor detects transmitted light through the liner, while a black mark sensor uses reflected light. The calibration depends on the exact sensor, position and stock. A shifted starting position or skipped blank label may come from sensing even when the printed marks look clean. <a href="https://docs.zebra.com/us/en/printers/desktop/zd421-and-zd621-desktop-printers-user-guide/c-zd620-420-setup/r-zd421-zd621-ug-loading-roll-media/r-zd421-zd621-ug-setting-media-sensing-by-media-type.html">Zebra media sensing reference</a>.</p>
+
+    <h2>Checking one scan and measuring barcode quality</h2>
+    <p>Darkening a label can raise contrast but can also spread the bars into narrow spaces. A decoder can read a symbol that is marginal on another scanner or at another angle. A verifier measures properties such as contrast and symbol defects under a specified method and reports a grade. A shop can record successful reads as a functional acceptance test and agree separately if formal verification is required. <a href="https://support.gs1.org/support/solutions/articles/43000734152-how-can-i-measure-the-quality-of-my-printed-barcodes-/">GS1 barcode verification guidance</a> · <a href="../practice/p103-zebra-label-printer-service.html">P103 repair and compare real labels</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

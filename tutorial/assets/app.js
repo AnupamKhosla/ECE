@@ -279,14 +279,17 @@
     if (!box || !out) return;
     var contents = new Map();
     var catalogue = all.map(function (c) {
-      return { chapter: c, code: simplify(c.n), title: simplify(c.title), description: simplify(c.d) };
+      return { chapter: c, code: simplify(c.n), title: simplify(c.title), description: simplify(c.d || "") };
     });
     var loading;
     var complete = fromFile;
     var missingText = false;
 
     function simplify(text) {
-      return text.normalize("NFKC").trim().toLowerCase();
+      return text.normalize("NFKC").toLowerCase()
+        .replace(/[-\u2010-\u2015]/g, " ")
+        .replace(/(\d)\s+(v|mv|a|ma|pa|kpa|w|kw|wh|kwh|hz|khz|mhz|ghz|ppm)\b/g, "$1$2")
+        .replace(/\s+/g, " ").trim();
     }
 
     async function load(c) {
@@ -305,8 +308,9 @@
       }
     }
 
-    function paint(q) {
-      var words = Array.from(new Set(q.split(/\s+/)));
+    function paint(query) {
+      var q = simplify(query);
+      var words = Array.from(new Set(q.split(" ")));
       var hits = [];
       catalogue.forEach(function (entry) {
         var chapter = entry.chapter;
@@ -315,8 +319,9 @@
         var metadata = entry.code + " " + entry.title + " " + entry.description;
         if (!words.every(function (word) { return metadata.includes(word) || text.includes(word); })) return;
         var score = entry.code === q ? 500 : 0;
-        if (entry.title.includes(q)) score += 60;
-        if (entry.description.includes(q)) score += 20;
+        if (entry.title.includes(q)) score += 200;
+        if (entry.description.includes(q)) score += 35;
+        if (text.includes(q)) score += 20;
         words.forEach(function (word) {
           if (entry.title.includes(word)) score += 30;
           if (entry.description.includes(word)) score += 8;
@@ -328,7 +333,7 @@
       var fragment = document.createDocumentFragment();
       var focused = out.contains(document.activeElement) ? document.activeElement.getAttribute("href") : null;
       var refocus;
-      var phrase = new RegExp(words.slice().sort(function (a, b) { return b.length - a.length; })
+      var phrase = new RegExp([query].concat(words).sort(function (a, b) { return b.length - a.length; })
         .map(function (word) { return word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|"), "ig");
       hits.slice(0, 12).forEach(function (hit) {
         var c = hit.entry.chapter;
@@ -374,14 +379,14 @@
 
     var timer = null;
     function run() {
-      var q = simplify(box.value);
-      if (q.length < 2) { out.replaceChildren(); return; }
-      paint(q);
+      var query = box.value.trim();
+      if (simplify(query).length < 2) { out.replaceChildren(); return; }
+      paint(query);
       if (!complete && !loading) {
         loading = loadInParallel(all, load).then(function () {
           complete = true;
-          var latest = simplify(box.value);
-          if (latest.length >= 2) paint(latest);
+          var latest = box.value.trim();
+          if (simplify(latest).length >= 2) paint(latest);
         });
       }
     }

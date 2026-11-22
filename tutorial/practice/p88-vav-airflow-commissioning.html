@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P88 · Find why a VAV box misses its airflow setpoint</title>
+<meta name="description" content="Compare demand, box pickup pressure, reported airflow, actuator travel and an independent reference reading.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P88</span>
+    <h1>Find why a VAV box misses its airflow setpoint</h1>
+    <p class="lede">Follow air, pressure tubes, damper travel and controller readings. Use a worked airflow balancing sheet before changing calibration.</p>
+    <div class="meta"><span><b>Time</b> 30–45 minutes</span><span><b>Before this</b> <a href="p77-duct-differential-pressure.html">P77 duct pressure</a> · <a href="../theory/t45-commercial-hvac-device-signals.html">T45 HVAC signals</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Trace both the air path and the control path</h2>
+    <p>A variable air volume (VAV) terminal box changes supply airflow to a zone. In a pressure-independent airflow sequence, a pickup and pressure sensor estimate the actual flow, and the local controller moves the box damper to meet the requested flow within the available duct pressure. A typical pickup has two tubes. The box manufacturer supplies its pickup relationship and units. The room sensor, box damper and main air handler perform different jobs. Start with the layout in <a href="../career/c03-hvac-for-technicians.html#vav-boxes-and-fan-coil-units">C03</a> and the units in <a href="../theory/t45-commercial-hvac-device-signals.html">T45</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/bms/damper-actuator-shaft.jpg" width="886" height="591" loading="lazy" decoding="async" alt="Belimo damper actuator with visible shaft coupling on a duct assembly">
+        <figcaption>A damper shaft is a physical link between actuator and blade. Compare its movement with the commanded position. This photo illustrates the mechanism used to change airflow.<br><small>Photo by Belimo Automation AG. <a href="https://commons.wikimedia.org/wiki/File:Klappenstellantrieb.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/commercial/water-manometer.jpg" width="680" height="907" loading="lazy" decoding="async" alt="Liquid-column manometer with visible scale">
+        <figcaption>The two liquid levels show a pressure difference, not an airflow value. A terminal measurement requires its own pressure pickup, pressure range and flow conversion.<br><small>Photo by Neurotronix. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p>In the contractor’s installation photos, find the duct, compact controller and the two pressure tubes. Those photos show extract terminals. The exercise below uses a supply terminal and a hood at the diffuser. <a href="https://alphacontrols.io/blog/vav-installation-trox-sontay-co2-trend">Alpha Controls’ installation photos</a> · <a href="https://www.trox.de/en/vav-terminal-units/tvm-cabf03cfe0a0c086?format=html&amp;slug=vav-terminal-units%2Ftvm">TROX terminal unit photographs</a> · <a href="https://tsi.com/products/ventilation-test-instruments/alnor/alnor-capture-hoods/alnor-balometer-capture-hood-ebt731">TSI capture hood photographs</a>.</p>
+    <p class="course-video"><b>Watch.</b> Watch how the capture hood sits at a diffuser and where the technician reads the volume. Compare that location with the VAV terminal's own pickup upstream. <a href="https://www.youtube.com/watch?v=kB4jixLIgBU">TSI’s Alnor capture hood demonstration on YouTube</a>.</p>
+
+    <h2>Work the same check at two setpoints</h2>
+    <p>Use the paper exercise first. A technician uses an approved procedure and a suitable airflow reference, such as a calibrated capture hood at compatible diffusers. Sum all diffusers supplied by the terminal where the procedure calls for it. Account for duct leakage, hood backpressure and outlet geometry as appropriate. System changes and work above ceilings belong to an authorised team.</p>
+    <ol class="steps">
+      <li><p>Use a fictional terminal where <code>Q = K√Δp</code>, with <code>K = 25 (L/s)/√Pa</code>. Predict flow at 16 Pa and 64 Pa. Write down which instrument and which units supplied each input.</p></li>
+      <li><p>Check the room demand, occupied airflow setpoint, controller pressure reading and damper command. Compare with physical position or an independent feedback point. Then compare the expected airflow with a reference measurement in the same stable condition.</p></li>
+      <li><p>Repeat at a different setpoint. Write which box, outlets and conditions you compared. On a real job, retrieve the airflow limits and balancing sequence from the equipment or commissioning record. Restore overrides and report the actual state after the work.</p></li>
+    </ol>
+
+    <h2>Diagnose three different failures from the readings</h2>
+    <p>These are sample snapshots during approved functional checks. Compare each set of observations at the same moment.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Setpoint and box readings</th><th scope="col">Independent comparison</th><th scope="col">First check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">200 L/s target. 64 Pa. BMS shows 160 L/s. Damper responds.</th><td>Approved reference near 200 L/s.</td><td>Check whether the controller has K = 20 instead of 25, and verify pressure and flow units. A wrong factor can produce exactly this difference.</td></tr>
+        <tr><th scope="row">200 L/s target. 25 Pa. Damper commanded 100% open.</th><td>Physical damper open; reference near 125 L/s.</td><td>Check supply static pressure, branch restrictions and airflow conditions. The box estimate is consistent with the reference.</td></tr>
+        <tr><th scope="row">100 L/s target. Pressure value stays fixed as room demand changes.</th><td>Physical airflow changes when the damper moves.</td><td>Look for a stale point, pinched tubing or a blocked pickup. Compare the sensor and controller timestamps and measurements.</td></tr>
+      </tbody>
+    </table></div>
+    <details class="callout try"><summary>Check the expected values</summary><p>At 16 Pa, 25 × 4 gives 100 L/s. At 64 Pa, 25 × 8 gives 200 L/s. At 25 Pa, 25 × 5 gives 125 L/s. A factor of 20 gives 160 L/s at 64 Pa. Each answer assumes the sample equation and units.</p></details>
+    <p>Use the original equipment application and approved balancing procedure for actual settings. <a href="https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/LN-Series-Variable-Air-Volume-VAV-Preloaded-Application-User-s-Guide-Technical-Bulletin/10.1/Detailed-Procedures/Performing-Airflow-Balancing">Johnson Controls airflow balancing procedure</a> · <a href="https://docs.johnsoncontrols.com/ductedsystems/r/Johnson-Controls/en-US/Johnson-Controls-Application-Guide-Variable-Air-Volume-for-Rooftop-Units/2024-05-24/VAV-systems/VAV-terminal-unit">VAV pickup and box selection</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Write the two measured and predicted points, the first failed boundary and the setting or condition the responsible technician must verify next.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

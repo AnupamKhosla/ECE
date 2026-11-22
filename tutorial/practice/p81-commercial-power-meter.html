@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P81 · Check a commercial power meter reading</title>
+<meta name="description" content="Use a low-voltage energy exercise and a meter display case to diagnose a wrong CT ratio, a sign problem or bad BMS units.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P81</span>
+    <h1>Check a commercial power meter reading</h1>
+    <p class="lede">Use a low-voltage energy exercise and a meter display case to diagnose a wrong CT ratio, a sign problem or bad BMS units.</p>
+    <div class="meta"><span><b>Time</b> 35–50 minutes</span><span><b>Before this</b> <a href="p52-dc-power-logging.html">P52 DC logging</a> · <a href="p14-serial-buses-modbus.html">P14 Modbus</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Recognise the meter, sensors and communications path</h2>
+    <p>A commercial feeder meter may have voltage references from each phase, current transformers (CTs) selected for that feeder and communications to a gateway or supervisor. Some smaller meters take the load current directly. Some installations use a different sensor type such as a Rogowski coil or a voltage-output CT. Identify the exact meter, the current input type, the phase map, CT primary and secondary ratings, and declared import direction from the drawings and labels.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/three-phase-current-transformers.jpg" alt="Three ring-shaped current transformers mounted around separate conductors, with smaller secondary cables" width="330" height="151" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 458" aria-hidden="true">
+            <defs><marker id="parts-three-phase-current-transformers" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M216,66 L215,191" fill="none" stroke="#18232a" stroke-width="14"/><path d="M216,66 L215,191" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-three-phase-current-transformers)"/>
+            <rect x="16" y="36" width="200" height="57" rx="8" fill="#122029"/><text x="28" y="76" style="fill:#fff;font-size:35px;font-weight:700">CT window</text>
+          </svg></div>
+        <figcaption>The thick conductor passes through each current transformer. Smaller leads carry the secondary signal. Use the installation drawing and labels to associate each measurement with its phase.<br><small>Photo by Ali@gwc.org.uk, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:CurrentTransformers.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/meter-internal-board.jpg" alt="Interior circuit board of an ORNO single-phase electricity meter with its LCD and terminals visible" width="960" height="670" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 698" aria-hidden="true">
+            <defs><marker id="parts-meter-internal-board" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M693,114 L581,123" fill="none" stroke="#18232a" stroke-width="14"/><path d="M693,114 L581,123" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-meter-internal-board)"/>
+            <rect x="692" y="83" width="91" height="57" rx="8" fill="#122029"/><text x="704" y="123" style="fill:#fff;font-size:35px;font-weight:700">LCD</text>
+            <path d="M735,541 L854,588" fill="none" stroke="#18232a" stroke-width="14"/><path d="M735,541 L854,588" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-meter-internal-board)"/>
+            <rect x="733" y="518" width="170" height="57" rx="8" fill="#122029"/><text x="745" y="558" style="fill:#fff;font-size:35px;font-weight:700">Terminals</text>
+          </svg></div>
+        <figcaption>A directly connected single-phase meter as a parts comparison. The LCD and PCB sit above the current terminals. A commercial three-phase CT meter uses separate, specified inputs.<br><small>Photo by Phiarc, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:ORNO_OR-WE-521_single-phase_electricity_meter.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch Schneider Electric’s PM5000 programming walkthrough.</b> Find the current transformer ratio, wiring mode and communications settings. Use the paper case for your own checks. <a href="https://www.youtube.com/watch?v=p0stSuq2_zc">Schneider Electric’s PM5000 programming walkthrough on YouTube</a>.</p>
+    <p>Work from photos and approved read-only records. Do not open a mains panel for this exercise. A current-output CT with an energised primary can develop dangerous secondary voltage if its circuit is opened. Follow the equipment and site requirements through an authorised electrical worker. <a href="../theory/t46-commercial-power-and-device-data.html">T46 · CT ratio, phase pairing and energy</a>.</p>
+
+    <h2>Measure energy at low voltage first</h2>
+    <ol class="steps">
+      <li><p>Repeat <a href="p52-dc-power-logging.html">the DC measurement exercise</a> with your own isolated low-voltage load. For an example, a stable 5.0 V and 0.20 A uses 1.0 W. Record the start and stop times.</p></li>
+      <li><p>Calculate energy by multiplying average power by time in hours. At 1.0 W for six minutes, you use 0.10 Wh. Double the load at the same voltage while keeping its ratings and supply limit. Compare the energy accumulated over an equal duration.</p></li>
+      <li><p>On paper, take a CT with 200 A primary rated current at 5 A secondary rated current. The ratio is 40:1. A secondary 2.5 A corresponds to 100 A primary in the ideal example. If the meter already reports primary amps, use that reading directly in the BMS. Find the units and scaling in the exact register list.</p></li>
+    </ol>
+
+    <h2>Compare display, raw value and trend</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Training symptom</th><th scope="col">Best first comparison</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Meter shows 100 A. BMS shows 4000 A.</th><td>Compare the register value, declared scaling and BMS multiplier. The 40× difference matches a ratio applied twice in this example.</td></tr>
+        <tr><th scope="row">One phase shows negative power on a known consuming feeder.</th><td>Ask the electrical technician to verify load direction convention, phase mapping and CT orientation against documents. Actual export can be negative too.</td></tr>
+        <tr><th scope="row">Meter shows 3.6 kW. BMS chart shows 3600 kW.</th><td>Check whether the register gives W or kW and where the conversion is applied.</td></tr>
+        <tr><th scope="row">Import energy rises from 1100.00 to 1100.60 kWh in ten minutes.</th><td>The mean power for that interval is 3.6 kW. Compare with the trend for the same window. A single instantaneous reading can differ.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For Modbus, match model and register table first. Confirm addressing convention, type, word order, scaling and quality. An example from one PM5000 model need not match another. Preserve the original readout and time before proposing a change. <a href="https://www.se.com/uk/en/faqs/FA234017/">Schneider PM5000 register lists</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Record a calculated Wh result, the worked CT ratio and an example where the meter display and BMS disagree. State which comparison locates the problem and which work needs the electrical technician.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

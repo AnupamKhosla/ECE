@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P94 · Qualify a donor laptop fan and heatsink</title>
+<meta name="description" content="Separate a blocked air path, failing blower, worn connection and poor heat transfer with a known-good assembly and repeatable load.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P94</span>
+    <h1>Qualify a donor laptop fan and heatsink</h1>
+    <p class="lede">Separate a blocked air path, failing blower, worn connection and poor heat transfer with a known-good assembly and repeatable load.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes plus cooling and matched load tests</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32 laptop modular service</a> · <a href="p60-laptop-display-cooling-input.html">P60 display and cooling</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Locate the fan, fins and heat path</h2>
+    <p>The fan drives air through a fin stack. The heat pipe or heat spreader brings heat to those fins from the processor. A plastic shroud or foam strip can direct air through the fins. A stuck or rattling fan, a blocked fin stack and a poor thermal interface can produce similar hot-laptop symptoms. A quiet fan at low load may be normal. Prove the original symptom with the manufacturer’s diagnostics or a controlled light load first. <a href="p60-laptop-display-cooling-input.html">P60 cooling and input diagnosis</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/laptop-blower-removed.jpg" width="500" height="667" loading="lazy" decoding="async" alt="Removed laptop blower showing motor, part label and outlet edge">
+        <svg viewBox="0 0 500 667" aria-hidden="true">
+          <defs><marker id="p94-fan" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M335,233 L191,151" fill="none" stroke="#18232a" stroke-width="12.38095238095238"/><path d="M335,233 L191,151" fill="none" stroke="#ffda64" stroke-width="5.909090909090908" marker-end="url(#p94-fan)"/>
+          <rect x="252" y="217" width="163" height="39" rx="6" fill="#122029"/><text x="261" y="246" style="fill:#fff;font-size:26px;font-weight:700">Part label</text>
+          <path d="M396,423 L377,310" fill="none" stroke="#18232a" stroke-width="12.38095238095238"/><path d="M396,423 L377,310" fill="none" stroke="#ffda64" stroke-width="5.909090909090908" marker-end="url(#p94-fan)"/>
+          <rect x="301" y="414" width="141" height="39" rx="6" fill="#122029"/><text x="310" y="443" style="fill:#fff;font-size:26px;font-weight:700">Outlet</text>
+        </svg>
+      </div>
+        <figcaption>A removed blower. Read the service part label and check the outlet geometry and cable location. A visually similar plastic housing is only a first clue.<br><small>Photo by Flanoz, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Laptop_fan.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+        <img src="../assets/photos/salvage/laptop-heatpipe-and-fan.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Laptop motherboard with blower, curved heat pipe and exhaust fin stack visible">
+        <svg viewBox="0 0 960 640" aria-hidden="true">
+          <defs><marker id="p94-sink" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M419,553 L338,441" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M419,553 L338,441" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p94-sink)"/>
+          <rect x="203" y="535" width="232" height="56" rx="6" fill="#122029"/><text x="216" y="576" style="fill:#fff;font-size:37px;font-weight:700">Heat pipe</text>
+          <path d="M763,527 L711,374" fill="none" stroke="#18232a" stroke-width="17.619047619047617"/><path d="M763,527 L711,374" fill="none" stroke="#ffda64" stroke-width="8.409090909090908" marker-end="url(#p94-sink)"/>
+          <rect x="711" y="515" width="197" height="56" rx="6" fill="#122029"/><text x="724" y="556" style="fill:#fff;font-size:37px;font-weight:700">Fin stack</text>
+        </svg>
+      </div>
+        <figcaption>Follow heat from the processor contact along the pipe to the fins. The blower drives air through that stack. Trace the air path and the heat path separately.<br><small>Photo by Saud, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Laptop_Heatsink.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Follow the screw sequence, cable release and the way the thermal fan assembly sits. The demonstration uses the named ThinkPad variants. Use your donor’s manual for its sequence. <a href="https://www.youtube.com/watch?v=hUJ6cVccp-w">Lenovo’s ThinkPad thermal fan replacement on YouTube</a>.</p>
+    <h2>Match twice before you connect a donor</h2>
+    <ol class="steps">
+      <li><p>For your owned trainer, find the original fan and heatsink part or service numbers. Compare model, revision, mounting holes, outlet direction, duct seal, cable length and connector. Check whether integrated graphics and discrete graphics versions use different fin or pad layouts.</p></li>
+      <li><p>Check the electrical specification and approved service part list. Two four-wire connectors can have different pin order, voltage or signalling. A fan may carry power, ground, tachometer feedback and a control input. Use the documented host for your test. Leave unidentified fan leads off bench power.</p></li>
+      <li><p>With the host shut down and battery disconnected as directed, clear loose material using the manufacturer’s method. Hold the rotor stationary while cleaning with approved air. Inspect the shroud and the fin passages. If removing the heatsink, follow the specified mounting sequence and thermal interface material, pad thickness and positions. Real dust often builds up on the concealed side of the fins. <a href="https://guides.frame.work/Guide/Heatsink+and+Fan+Replacement+Guide/84">Framework’s heatsink and fan procedure</a>.</p></li>
+    </ol>
+    <h2>Compare the same load before and after</h2>
+    <p>Close the case as required for airflow. Use an OEM fan diagnostic first if available. Then apply the same documented light or normal test job for a fixed time under equivalent room and power conditions. Capture CPU package temperature, RPM if the host reports it, sound and exhaust airflow. Record ambient conditions and throttling if present. Stop a run if the fan fails to start when commanded or temperatures rise abnormally.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Fan speed rises but exhaust flow remains weak</th><td>Inspect the fin stack, exhaust path and duct seal when isolated. A spinning rotor alone does not prove airflow.</td></tr>
+        <tr><th scope="row">Donor proves normal speed and airflow, temperature climbs rapidly</th><td>Check thermal contact, film, paste, required pads and seating. Compare the exact heatpipe assembly with the service information before calling it defective.</td></tr>
+        <tr><th scope="row">Original fan rattles under the same command. An exact donor removes the rattle.</th><td>Verify the donor’s RPM or OEM diagnostic, sustained airflow and temperatures at the same load after reassembly.</td></tr>
+        <tr><th scope="row">Both exact compatible fans fail the same host test</th><td>Prove that the reference fan works in a second compatible host. Then investigate the original host’s connector, supply and control path.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Keep the part number, the measured airflow or observation method, sound, temperature trend and how you matched the test conditions. Release the donor only for the models and assemblies you can substantiate.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

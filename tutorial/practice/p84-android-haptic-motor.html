@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P84 · Diagnose weak vibration and replace a Pixel 8a haptic motor</title>
+<meta name="description" content="Compare several vibration sources, locate the module on a Pixel 8a and repeat the tests after restoration.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P84</span>
+    <h1>Diagnose weak vibration and replace a Pixel 8a haptic motor</h1>
+    <p class="lede">Separate disabled haptics, a rattling assembly and a failed actuator. Follow the model’s actual rear-entry service route.</p>
+    <div class="meta"><span><b>Time</b> 25–40 min for diagnosis, plus model-specific service</span><span><b>Before this</b> <a href="p34-phone-module-service.html">P34 Android modular repair</a> · <a href="../theory/t47-phone-acoustics-and-haptics.html">T47 audio and haptics</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Test three vibration sources with the phone closed</h2>
+    <p>The actuator turns an electrical drive signal into a vibration you can feel through the case. A weak buzz or a missing vibration can come from accessibility settings, sound mode, an app, a loose frame part or the actuator path. Remove the detachable case and compare the same three sources before opening a phone. <a href="../theory/t47-phone-acoustics-and-haptics.html">T47 · Acoustics and haptics</a>.</p>
+    <ol class="steps">
+      <li><p>Record the exact model. On the owned test phone, check vibration intensity and whether touch feedback and call vibration are enabled. Record any focus, bedtime or battery settings that change the test. An app may have its own vibration setting.</p></li>
+      <li><p>Use one known touch action, an alarm with vibration enabled, and an incoming call from a consenting person. Start each with the phone on the same soft surface. Rate each observation as absent, weak, normal or rattling. Keep the same phone case state and volume when comparing sound and vibration.</p></li>
+      <li><p>On a supported Pixel, use the official diagnostics path and look up the tests available for that device. A single app failing while other vibration sources work suggests a settings or software path. A repeatable rattle across several sources merits mechanical inspection. Keep the observations as evidence. <a href="https://support.google.com/pixelphone/answer/14257407?hl=en">Google self-repair and Pixel diagnostics</a>.</p></li>
+    </ol>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pixel-8a-battery-cover.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Tweezers lifting the Pixel 8a battery connector cover near the battery flex">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <defs><marker id="p84-battery-cover" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M344,113 L292,243" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M344,113 L292,243" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p84-battery-cover)"/>
+          <rect x="265" y="76" width="306" height="36" rx="7" fill="#122029"/><text x="273" y="102.4" style="fill:#fff;font-size:24px;font-weight:700">Battery connector cover</text>
+        </svg>
+      </div>
+        <figcaption>Pixel 8a, battery connector cover. The photo shows the bracket being removed. The next images in the service step show how to disconnect the connector itself.<br><small>Photo by Spencer Day and iFixit contributors, with on-page callouts. <a href="https://www.ifixit.com/Guide/Google+Pixel+8a+Vibration+Motor+Replacement/173217">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/diagnostics/pixel-8a-actuator-seat.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Round vibration actuator and gold-coloured contacts in an open Pixel 8a">
+        <svg viewBox="0 0 592 444" aria-hidden="true">
+          <defs><marker id="p84-motor" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M458,143 L361,175" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M458,143 L361,175" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p84-motor)"/>
+          <rect x="397" y="107" width="145" height="36" rx="7" fill="#122029"/><text x="405" y="133.4" style="fill:#fff;font-size:24px;font-weight:700">Actuator</text>
+          <path d="M165,328 L259,265" fill="none" stroke="#18232a" stroke-width="10.666666666666666"/><path d="M165,328 L259,265" fill="none" stroke="#ffda64" stroke-width="5.714285714285714" marker-end="url(#p84-motor)"/>
+          <rect x="28" y="319" width="138" height="36" rx="7" fill="#122029"/><text x="36" y="345.4" style="fill:#fff;font-size:24px;font-weight:700">Contacts</text>
+        </svg>
+      </div>
+        <figcaption>Pixel 8a, actuator removal. The round unit sits in a recess near the lower edge. Follow the model guide for contact release, lift direction and installation.<br><small>Photo by Spencer Day and iFixit contributors, with on-page callouts. <a href="https://www.ifixit.com/Guide/Google+Pixel+8a+Vibration+Motor+Replacement/173217">Original photo</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Follow the Pixel 8a from rear cover to wireless charging assembly and the lower enclosure. Use the written guide for screw and cable order. <a href="https://www.youtube.com/watch?v=G5ghTQ7iY60">PBKreviews’ Pixel 8a disassembly on YouTube</a>.</p>
+
+    <h2>Plan the Pixel 8a disassembly</h2>
+    <p>This model enters through the back. Use the exact model guide, including the antenna branch for the applicable regional version. The haptic actuator is deep in the enclosure. It is a more involved repair than the external symptoms suggest. Practise this path on a decommissioned Pixel 8a or a known-good donor. Use the guide’s battery charge limit, specified warming procedure, pick depth and fastener map. Back up data before an authorised repair, power off and disconnect external power. A swollen or damaged battery needs a separate battery handling decision. <a href="https://www.ifixit.com/Guide/Google+Pixel+8a+Vibration+Motor+Replacement/173217">iFixit’s complete Pixel 8a actuator procedure</a> · <a href="https://it.ifixit.com/Document/YalOXeGSYWPXEAtR/Pixel-8a-Repair-Manual-v1.1.pdf">Google’s Pixel 8a repair manual</a>.</p>
+    <ol class="steps">
+      <li><p>Mark the guide stages before work. Rear cover and wireless charging assembly come before battery disconnection. Follow the battery-disconnect step before working farther. Photograph each bracket and screw location as parts come out.</p></li>
+      <li><p>Follow the manual through the model’s speaker, antenna and logic-board steps to expose the actuator. Note which nearby thermal pads and acoustic seals must return to their original places. The lever point in the actuator photo belongs to this model and stage. Avoid levering against a battery, board or neighbouring cable.</p></li>
+      <li><p>Check the new part against the original and confirm its mounting and contact arrangement. Fit the correct adhesive or gasket as the guide specifies. Use the documented reassembly and authorised test sequence. Restore all brackets, flexes and fasteners before a finished return-to-service check. Document any seal replacement and any available approved seal test.</p></li>
+    </ol>
+
+    <h2>Close the job on the same three stimuli</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Result</th><th scope="col">Next comparison</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Touch never vibrates, but call and alarm vibration work</th><td>Verify the haptics setting and whether the same touch action is supported on that build.</td></tr>
+        <tr><th scope="row">Most stimuli buzz and rattle with the case removed</th><td>Check which assembly is loose or contacting the enclosure before deciding which part to order.</td></tr>
+        <tr><th scope="row">All controlled sources are absent and a known compatible part restores them</th><td>Retest the same stimuli before documenting an actuator fault. Check any functions disturbed while gaining access.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Record the three before-and-after results and the functions you disturbed, such as wireless charging, speakers, microphones and mobile service. Leave the camera and data alone unless the customer authorises the checks.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

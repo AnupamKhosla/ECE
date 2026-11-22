@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T54 · Source resistance, loading and measurement uncertainty</title>
+<meta name="description" content="Learn why voltage changes under load and how a meter, amplifier input or tolerance changes the result.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T54</span>
+    <h1>Source resistance, loading and measurement uncertainty</h1>
+    <p class="lede">Learn why voltage changes under load and how a meter, amplifier input or tolerance changes the result.</p>
+    <div class="meta"><span><b>Time</b> 20–35 minutes</span><span><b>Before this</b> <a href="../theory/t02-resistance-ohms-law.html">T02</a>, <a href="../theory/t04-circuit-laws.html">T04</a>, <a href="../theory/t24-measurement-datasheets.html">T24</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Replace a linear source with a bench model</h2>
+    <p>At a particular pair of terminals, a linear DC network behaves as an ideal voltage V<sub>th</sub> in series with R<sub>th</sub>. With a load R<sub>L</sub>, the measured output is V<sub>th</sub>R<sub>L</sub>/(R<sub>th</sub>+R<sub>L</sub>). A 5 V source with 100 Ω in series reads 2.5 V into 100 Ω. This model applies around the tested condition. A current-limited supply changes behaviour when the requested current exceeds its setting. A battery or oxidised contact can also depart from a fixed resistance model.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-two-resistors.jpg" alt="Two axial resistors on a sideways breadboard, with their midpoint and the two supply rails marked" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-divider-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M430,71 L403,109" fill="none" stroke="#18232a" stroke-width="18"/><path d="M430,71 L403,109" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="379" y="13" width="297" height="54" rx="7" fill="#122029"/><text x="389" y="53" style="fill:#fff;font-size:36px;font-weight:700">Top rail</text>
+          <path d="M310,199 L214,213" fill="none" stroke="#18232a" stroke-width="18"/><path d="M310,199 L214,213" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="307" y="154" width="254" height="54" rx="7" fill="#122029"/><text x="317" y="194" style="fill:#fff;font-size:36px;font-weight:700">Midpoint</text>
+          <path d="M522,492 L545,426" fill="none" stroke="#18232a" stroke-width="18"/><path d="M522,492 L545,426" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="505" y="494" width="311" height="54" rx="7" fill="#122029"/><text x="515" y="534" style="fill:#fff;font-size:36px;font-weight:700">Bottom rail</text>
+        </svg>
+      </div>
+      <figcaption>This two-resistor example has an upper return rail and a lower supply rail. The numbered terminal strips run vertically because the board is turned sideways. The resistor leads in the same connected strip form the midpoint. Check continuity with the battery removed on your own board before relying on a row or rail.<br><small>Photo by Toluaj, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Breadboard_and_resistors.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/bench-voltage.jpg" width="500" height="472" loading="lazy" decoding="async" alt="Meter showing 1.588 volts with the red probe at the positive tip and black probe at the negative end of an AA cell">
+        <figcaption>Red touches the raised positive end and black touches the flat negative end. The two probes span the cell. This meter shows 1.588 V on its manual 2 V DC range. For the other batteries below choose a higher range.<br><small>Photo by Limor Fried for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1057">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=rPGoMbVSUu8">See how a multimeter connects differently for voltage and current</a>.</p>
+
+    <h2>Understand what your reading includes</h2>
+    <p>A 10 MΩ voltage input placed across a 1 MΩ load is a parallel resistance. A current-range meter introduces burden voltage in series. Resistance mode drives its own test current, and other paths on the board often change the result. Read data-sheet input resistance, accuracy format and range resolution. For an illustrative ±(0.5% of reading + 2 counts) meter on a 0.01 V resolution range at 5.00 V, the stated contribution is ±0.045 V before probes or contact effects.</p>
+
+    <h2>Make uncertainty useful</h2>
+    <p>Predict a range before measuring. For an ideal 5 V supply and nominally identical divider resistors with ±5% tolerance, opposite extremes predict 2.375–2.625 V. A reading of 2.47 V is plausible. A loaded midpoint of 1.67 V suggests a changed circuit. Take a second measurement that can distinguish these explanations. Use <a href="../practice/p107-source-impedance-and-bench-measurements.html">P107 · Find a weak supply with a load and a meter</a> for a loaded supply and <a href="../practice/p108-op-amp-sensor-buffer.html">P108 · Buffer a weak sensor signal and find the limits</a> for a buffer.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../practice/p107-source-impedance-and-bench-measurements.html">P107 · Find a weak supply with a load and a meter</a>.</p>
+    <ul>
+      <li><a href="https://download.analog.com/159850/RealAnalog/RealAnalog-Circuits1-Chapter4.pdf">Analog Devices Real Analog circuit analysis and equivalents</a></li>
+      <li><a href="https://physicslabs.colorado.edu/courses/phys-3330/lab-guides/lab1/">University of Colorado Boulder electronic measurements</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

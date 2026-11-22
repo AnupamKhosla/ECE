@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P16 · Raspberry Pi and the Linux you need</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 <style>
   .term-out{min-height:220px;max-height:360px;overflow:auto;white-space:pre;margin:0 0 8px}
   .term-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:14px var(--mono)}
@@ -122,6 +122,34 @@
     </div>
 
     <h3>What you need</h3>
+    <div class="photo-pair">
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/raspberry-pi-5-board.jpg" width="960" height="640" alt="Raspberry Pi 5 from above with the GPIO header, USB-C power socket and two marked micro-HDMI sockets" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 640" aria-hidden="true">
+          <defs><marker id="p16-pi5-top" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M267,211 L357,76" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M267,211 L357,76" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p16-pi5-top)"/>
+          <rect x="168" y="210" width="226" height="53" rx="6" fill="#122029"/><text x="180" y="249" style="fill:#fff;font-size:35px;font-weight:700">GPIO header</text>
+          <path d="M156,463 L135,549" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M156,463 L135,549" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p16-pi5-top)"/>
+          <rect x="31" y="425" width="236" height="53" rx="6" fill="#122029"/><text x="43" y="464" style="fill:#fff;font-size:35px;font-weight:700">USB-C power</text>
+          <path d="M393,481 L382,543" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M393,481 L382,543" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p16-pi5-top)"/>
+          <rect x="356" y="434" width="221" height="53" rx="6" fill="#122029"/><text x="368" y="473" style="fill:#fff;font-size:35px;font-weight:700">Micro-HDMI</text>
+        </svg>
+      </div>
+      <figcaption>On this Pi 5, the USB-C input and micro-HDMI connectors are along the bottom edge. The 40-pin header is on the opposite edge. Compare with the Pi 4 photo above. The markings <code>HDMI0</code> and <code>HDMI1</code> are visible beside the ports.<br><small>Photo by Anil Öztas, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_5_--_2025_--_0009-16.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/raspberry-pi-5-sd-slot.jpg" width="960" height="621" alt="Underside of Raspberry Pi 5 showing the microSD card inserted into the slot on the right edge" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 621" aria-hidden="true">
+          <defs><marker id="p16-pi5-sd" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M759,385 L858,320" fill="none" stroke="#18232a" stroke-width="16.666666666666664"/><path d="M759,385 L858,320" fill="none" stroke="#ffda64" stroke-width="7.954545454545454" marker-end="url(#p16-pi5-sd)"/>
+          <rect x="564" y="381" width="291" height="53" rx="6" fill="#122029"/><text x="576" y="420" style="fill:#fff;font-size:35px;font-weight:700">microSD slot</text>
+        </svg>
+      </div>
+      <figcaption>The microSD slot is on the underside near the right edge in this view. With the board unpowered, match the card orientation and seat it fully without force. Support the board and avoid touching the contacts.<br><small>Photo by Simon Waldherr, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_5_SBC_Backside.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    </div>
     <ul class="kit">
       <li><b>Raspberry Pi 4 (2–4 GB) or Pi 5 (4 GB)</b><small>~A$75–130 · Core Electronics, element14, Altronics, Jaycar</small></li>
       <li><b>Official power supply for that model</b><small>~A$15–25 · AU plug version</small></li>
@@ -145,19 +173,30 @@
     <p>A <b>headless</b> Pi is one with no screen, keyboard or mouse. Most Pis in the field are headless: they sit in a cabinet and you reach them over the network. Raspberry Pi Imager lets you pre-set everything needed for that before the first boot.</p>
     <ol class="steps">
       <li><p><b>Install Imager</b> on your laptop from raspberrypi.com (free, Windows/macOS/Linux).</p></li>
-      <li><p><b>Choose device</b> (Pi 4, Pi 5 or Zero 2 W), then <b>choose OS</b>. Pick <i>Raspberry Pi OS (64-bit)</i>. For a headless logger, <i>Raspberry Pi OS Lite (64-bit)</i> is even better: no desktop, less to update, faster boot. Zero 2 W: Lite only.</p></li>
+      <li><p><b>Choose device</b> (Pi 4, Pi 5 or Zero 2 W), then <b>choose OS</b>. Pick <i>Raspberry Pi OS (64-bit)</i>. For a headless logger, <i>Raspberry Pi OS Lite (64-bit)</i> is even better: no desktop, less to update, faster boot. For the Zero 2 W, Lite is a practical starting point when memory is limited.</p></li>
       <li><p><b>Choose storage</b>: your microSD card. Check the size shown — you do not want to wipe your laptop's backup drive.</p></li>
-      <li><p><b>OS customisation</b> (Imager asks "Would you like to apply OS customisation settings?" → Edit settings). Set:
-        hostname <code>plantpi</code>; username <code>tech</code> and a strong password; wireless LAN SSID and password; <b>wireless LAN country: AU</b>; locale/time zone (e.g. Australia/Sydney) and keyboard <code>us</code>; on the Services tab <b>Enable SSH</b> → "Use password authentication" for now.</p></li>
-      <li><p><b>Write</b>, wait for verification, then put the card in the Pi. Plug in Ethernet (if you have it), then power. The first boot takes 1–2 minutes because the Pi expands the file system and applies your settings. The green activity LED flickers while it works.</p></li>
+      <li><p><b>OS customisation</b>. Create a hostname and local user for your training Pi. This lesson uses <code>plantpi</code> and <code>tech</code>. Choose the country where the Pi operates, your time zone and keyboard. Select your own network or start with Ethernet. For a headless setup, enable SSH and use a unique password or your own public SSH key. Imager menu labels depend on the version. <a href="https://www.raspberrypi.com/documentation/computers/getting-started.html">Official Imager and first-boot steps</a>.</p></li>
+      <li><p><b>Write</b>, wait for verification, then put the card in the Pi. Plug in Ethernet (if you have it), then power. Allow time for the first boot to expand storage and apply settings. Note the activity indicator and use the exact model’s diagnostics if it repeats a warning pattern.</p></li>
     </ol>
-    <div class="callout tip"><span class="label">Bench tip</span><p>There is no default <code>pi</code> user with password <code>raspberry</code> any more (that changed in 2022). If you skip the customisation step on a headless Pi, you cannot log in. Re-flash with settings — it is quicker than troubleshooting.</p></div>
+    <div class="callout tip"><span class="label">Bench tip</span><p>There is no default <code>pi</code> user with password <code>raspberry</code> any more (that changed in 2022). If you skipped customisation for a fresh installation, use the local setup wizard with a display and keyboard, or prepare a spare card with the correct settings for headless use.</p></div>
     <div class="callout aus"><span class="label">In Australia</span><p>Set the Wi-Fi country to <b>AU</b>. It selects the Australian radio rules (allowed channels and power), which are set by the ACMA. A wrong or missing country code can stop 5 GHz Wi-Fi from working at all.</p></div>
+
+    <h3>Prove power, boot and network in that order</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What you see</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">No power indication</th><td>Disconnect, remove the USB accessories and reseat the approved supply at the model’s power connector. Use its guide to identify the power indicator.</td></tr>
+        <tr><th scope="row">Repeated LED flashes or boot diagnostic screen</th><td>Record the pattern or screen before swapping anything. Confirm card seating and try a known-good card prepared for that model. Work from the <a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#led-warning-flash-codes">Raspberry Pi warning codes</a>.</td></tr>
+        <tr><th scope="row">Local login works, remote name fails</th><td>On the Pi, use <code>ip -br address</code> and check which interface has an address on your bench network. Try that address from your laptop. If its address works, investigate the hostname or local name lookup.</td></tr>
+        <tr><th scope="row">The Pi has an address and SSH is refused</th><td>On the local console check <code>systemctl status ssh</code>. Verify that SSH was enabled for this lab and that you are connecting to the Pi’s actual address.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Save the board model, power rating, boot media and the first check that passed. On a used card, back up any needed data before writing an image.</p>
 
     <h2>Log in headless with SSH</h2>
     <p><b>SSH</b> (Secure Shell) gives you an encrypted text terminal on another machine over the network, on TCP port 22. Windows 10/11, macOS and Linux all have an <code>ssh</code> client built in: open PowerShell (Windows) or Terminal (macOS) and type:</p>
 <pre><code>ssh tech@plantpi.local</code></pre>
-    <p><code>tech</code> is the user, <code>plantpi.local</code> is the host. The <code>.local</code> ending uses <b>mDNS</b> (multicast DNS): the Pi announces its own name on the local network, so you do not need to know its IP address. The first time, SSH shows a "fingerprint" and asks if you trust it. Type <code>yes</code>, then the password (nothing appears while you type — that is normal).</p>
+    <p><code>tech</code> is the user, <code>plantpi.local</code> is the host. The <code>.local</code> ending uses <b>mDNS</b> (multicast DNS): the Pi announces its own name on the local network, so you do not need to know its IP address. The first time, SSH shows a host fingerprint. Compare it with the fingerprint displayed on a trusted local console before accepting it. For an Ed25519 host key on Raspberry Pi OS, use <code>ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code> on the Pi. With password login, the terminal keeps the password invisible while you type.</p>
 <pre><code>The authenticity of host 'plantpi.local (192.168.1.42)' can't be established.
 ED25519 key fingerprint is SHA256:Xq3v0m9...kQ.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
@@ -546,7 +585,7 @@ tech@plantpi:~ $ pinctrl get 17
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

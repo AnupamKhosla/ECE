@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P17 · Raspberry Pi GPIO with Python: a data logger</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 <style>
   #tl-csv{width:100%;min-height:120px;font:13px/1.45 var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
   .wbtn{font:600 14px var(--sans);border:1px solid var(--line);background:var(--wash);color:var(--ink);padding:6px 12px;border-radius:6px;cursor:pointer;margin:6px 6px 0 0}
@@ -49,6 +49,7 @@ python3 -m venv --system-site-packages ~/logger/venv
     <p><code>--system-site-packages</code> lets the venv still see apt's gpiozero and Flask, so you get both worlds.</p>
 
     <h2>Part 1 · LED and button with gpiozero</h2>
+    <p>Before moving wires, run <code>pinout</code> on your own Pi and align the connector orientation with the board drawing. Then shut down and disconnect power. Software uses GPIO17 and GPIO27 for this part. On a 40-pin header those are physical pins 11 and 13. Identify a separate ground pin and keep clear of adjacent 5 V supply pins. <a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio">Raspberry Pi GPIO documentation</a>.</p>
   <figure class="course-photo">
     <img src="../assets/photos/piio.jpg" alt="Raspberry Pi wired to a breadboard in a GPIO project" width="644" height="483" loading="lazy" decoding="async">
     <figcaption>This separate GPIO project shows how jumper leads sit on a Pi header and land on a breadboard. Follow this chapter’s BCM pin numbers and resistor placements for the LED and button build.<br><small>Photo by David Pride. <a href="https://commons.wikimedia.org/wiki/File:Cjam-buzzwire-step6.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
@@ -129,14 +130,22 @@ pressed</code></pre>
     <div class="callout tip"><span class="label">Bench tip</span><p>If you get <code>GPIO busy</code>, another program (an earlier copy you left running, or a service) already owns that pin. Find it with <code>ps aux | grep python</code> and stop it, or stop the service with <code>sudo systemctl stop NAME</code>.</p></div>
 
     <h2>Part 2 · Read the DS18B20 temperature sensor</h2>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/ds18b20-to92.jpg" width="250" height="250" alt="Bare DS18B20 temperature sensor beside a coin with its three leads marked" loading="lazy" decoding="async">
+        <svg viewBox="0 0 250 250" aria-hidden="true">
+          <defs><marker id="p17-ds18b20-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M100,192 L155,212" fill="none" stroke="#18232a" stroke-width="6.19047619047619"/><path d="M100,192 L155,212" fill="none" stroke="#ffda64" stroke-width="2.954545454545454" marker-end="url(#p17-ds18b20-photo)"/>
+          <rect x="48" y="176" width="85" height="20" rx="6" fill="#122029"/><text x="53" y="191" style="fill:#fff;font-size:13px;font-weight:700">Three leads</text>
+        </svg>
+      </div>
+      <figcaption>The coin gives scale. The flat marked face and the pin drawing in the datasheet determine orientation. With that face toward you and leads pointing down, read GND, DQ and VDD from left to right. For a cabled probe use its wiring sheet.<br><small>Photo by SparkFun Electronics, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:SparkFun_DS18B20_1.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>.</small></figcaption>
+    </figure>
+    <p>For this powered three-wire setup, use ground, data to GPIO4 (physical pin 7), and 3.3 V. Put the 4.7 kΩ pull-up between data and 3.3 V. If your probe has a breakout board, check whether it already includes a pull-up and where it connects. <a href="https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf">Analog Devices DS18B20 pinout and electrical limits</a>.</p>
     <p>The <b>DS18B20</b> is a digital thermometer chip. It measures temperature itself (−55 to +125 °C, about ±0.5 °C accuracy from −10 to +85 °C) and sends the result as a number over a single data wire, the <b>1-Wire bus</b>. Each sensor has a unique 64-bit serial number burned in at the factory, so you can put many on one wire. It is the cheap sensor you will see in DIY loggers, cool rooms and aquariums.</p>
     <h3>Enable 1-Wire and find the sensor</h3>
-<pre><code># option A: menu
-sudo raspi-config        # Interface Options → 1-Wire → Yes → Finish → reboot
-
-# option B: edit the boot config directly, then reboot
-echo "dtoverlay=w1-gpio" | sudo tee -a /boot/firmware/config.txt
-sudo reboot</code></pre>
+<pre><code>sudo raspi-config        # Interface Options → 1-Wire → Yes → Finish</code></pre>
+    <p>Reboot as prompted. If this Pi already has a custom 1-Wire overlay, review its configured pin before adding anything. Use GPIO4 for this exercise.</p>
     <p>The overlay tells the Linux kernel "GPIO4 is a 1-Wire bus". After the reboot the kernel creates a folder for each sensor it finds. DS18B20 serial numbers start with family code <code>28</code>:</p>
 <pre><code>tech@plantpi:~ $ ls /sys/bus/w1/devices/
 28-3c01d607e1a2  w1_bus_master1
@@ -146,7 +155,8 @@ tech@plantpi:~ $ cat /sys/bus/w1/devices/28-*/w1_slave
     <p>How to read it: the first line ends in <b>YES</b>, which means the checksum (CRC) matched — the data arrived uncorrupted. The second line ends in <code>t=23125</code>, the temperature in thousandths of a degree: <b>23.125 °C</b>. You can check the maths yourself: the first two bytes are the raw reading, low byte first: <code>0x0172</code> = 370. The sensor counts in steps of 1/16 °C at its default 12-bit resolution, so 370 / 16 = 23.125 °C.</p>
     <div class="formula">T = raw / 16 = 0x0172 / 16 = 370 / 16 = 23.125 °C
       <small>12-bit resolution gives steps of 0.0625 °C. One conversion takes up to 750 ms, so reading the file takes most of a second — fine for a logger that samples every minute.</small></div>
-    <p>A reading of exactly <b>85.000 °C</b> is a famous fault, not a hot room: 85 °C is the value the chip holds after power-up, before it has done a conversion. It usually means the sensor is browning out — a missing or wrong pull-up, a long lead, or "parasite power" wiring. Treat it as a sensor fault.</p>
+    <p>The temperature register starts at <b>85.000 °C</b> before the first completed conversion. For this room-temperature exercise, a repeated 85 °C reading warrants a supply, wiring and conversion check. The chip can measure a genuine 85 °C, so a logger intended for that temperature needs a different validation rule.</p>
+    <p>When troubleshooting, write down four points in order. Does the bus master appear? Does the <code>28-…</code> sensor appear? Does its readout pass CRC? Does a valid reading change predictably when you warm the sensor gently between your fingers? If there are several sensors, read the file in the exact sensor directory to know which one moved. Power off before any wiring changes.</p>
 
     <div class="callout why"><span class="label">Why it works</span><p>The 1-Wire bus is <b>open-drain</b>: the Pi and the sensor can only pull the line <i>down</i> to 0 V. The 4.7 kΩ resistor pulls it back up to 3.3 V when nobody is pulling down. Bits are sent as timed low pulses: a short low is a 1, a long low is a 0. Without the pull-up the line never returns high, so the kernel finds no devices. The resistor value is a trade: smaller resistors give faster, sharper rising edges on long cables but cost more current every time a device pulls low (3.3 V / 4.7 kΩ ≈ 0.7 mA).</p></div>
     <a class="crosslink" href="../theory/t15-digital-logic-microcontrollers.html">Theory T15 · Digital logic and how a microcontroller works</a>
@@ -302,7 +312,7 @@ def read_ds18b20():
         raise OSError("CRC check failed (wiring or noise)")
     millideg = int(lines[1].split("t=")[1])
     if millideg == 85000:
-        raise OSError("85.0 C power-on value: sensor did not convert")
+        raise OSError("85.0 C in a room-temperature test: check sensor conversion")
     return millideg / 1000.0
 
 
@@ -583,7 +593,7 @@ sudo reboot                               # the real test: does it come back by 
 
     <h2>Check yourself</h2>
     <details class="quiz"><summary>Why does the button need no external resistor, and why does pressing it make the pin read 0?</summary><div class="answer"><p>gpiozero's <code>Button</code> enables the chip's internal pull-up (~50 kΩ to 3.3 V), so the open button leaves the pin at 3.3 V (1). Pressing connects the pin straight to GND, which wins over the weak pull-up, so it reads 0. gpiozero inverts this so <code>is_pressed</code> is True.</p></div></details>
-    <details class="quiz"><summary>The sensor file says <code>t=85000</code>. What do you tell the client?</summary><div class="answer"><p>Not that the room is 85 °C. 85.000 °C is the DS18B20's power-on register value; the sensor reset or did not complete a conversion, usually due to power or pull-up problems. Treat it as a sensor fault and check wiring, the pull-up and the lead length.</p></div></details>
+    <details class="quiz"><summary>The sensor file says <code>t=85000</code>. What do you tell the client?</summary><div class="answer"><p>In this room-temperature test, record the reading as suspect. 85.000 °C is the register’s initial value. Check that the device completed a conversion, then verify supply, pull-up and lead connections. Confirm the temperature independently.</p></div></details>
     <details class="quiz"><summary>Raw bytes <code>90 01</code> come from a DS18B20 at 12-bit resolution. What is the temperature?</summary><div class="answer"><p>Low byte first, so raw = 0x0190 = 400. 400 / 16 = <b>25.0 °C</b>.</p></div></details>
     <details class="quiz"><summary>With a 30 °C limit and 1 °C deadband, the room reads 30.2, 29.6, 30.1, 29.4, 28.8 °C. How many alarm events, and when does it clear?</summary><div class="answer"><p>One event. It enters alarm at 30.2. 29.6, 30.1 and 29.4 are all at or above 29.0, so it stays in alarm. It clears at 28.8, the first value below 29.0. Without the deadband it would have been two events (30.2 and 30.1).</p></div></details>
     <details class="quiz"><summary>Why log <code>2026-04-05T02:30:00+11:00</code> rather than <code>05/04/2026 2:30</code>?</summary><div class="answer"><p>On the morning daylight saving ends in NSW/Victoria (first Sunday in April), 2:00–3:00 am happens twice: once at +11:00 and again at +10:00. The offset makes each timestamp unique. ISO order (year-month-day) also sorts correctly as text, and avoids the day/month confusion between Australian and US formats.</p></div></details>
@@ -604,7 +614,7 @@ sudo reboot                               # the real test: does it come back by 
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

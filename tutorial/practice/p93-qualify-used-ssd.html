@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P93 · Qualify a used SATA or NVMe SSD without reading files</title>
+<meta name="description" content="Identify the drive interface, run read-only health checks on blank training media, and interpret wear, error counters and intermittent detection.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P93</span>
+    <h1>Qualify a used SATA or NVMe SSD without reading files</h1>
+    <p class="lede">Identify the drive interface, run read-only health checks on blank training media, and interpret wear, error counters and intermittent detection.</p>
+    <div class="meta"><span><b>Time</b> 35–60 minutes, plus an optional device self-test</span><span><b>Before this</b> <a href="p32-laptop-service.html">P32 laptop modular service</a> · <a href="../theory/t50-ssd-health-and-bad-blocks.html">T50 SSD theory</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Keep the drive identity and data decision together</h2>
+    <p>Use an owned, blank training SSD for the live exercise. Many donor drives still hold personal data. At intake, record whether the owner retains the drive, authorises a defined check, requests recovery or separately authorises sanitisation. Put unidentified drives aside with their owner and job ID. Leave their file systems unmounted and use a test system configured to keep automatic mounting off. A health report is a technical assessment. Data release and sanitisation require their own decision and evidence.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <img src="../assets/photos/repair/sata.jpg" width="960" height="720" loading="lazy" decoding="async" alt="2.5-inch SATA SSD with the wide power blade and narrow data blade">
+        <figcaption>A cabled SATA SSD. Compare the two L-shaped connector sections with the single edge on the M.2 card. Identify the interface from the drive’s documentation before connecting it.<br><small>Photo by Dsimic, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:Intel_DC_S3700_SSD_series,_bottom_side_of_a_100_GB_SATA_3.0_model.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <img src="../assets/photos/m2.jpg" width="960" height="661" loading="lazy" decoding="async" alt="M.2 NVMe SSD with the contacts and the screw notch at opposite ends">
+        <figcaption>This M.2 example uses NVMe. Compare physical length, keyed end and mounting position. Verify which interface your host and enclosure support.<br><small>Photo by Kent Madsen (Designermadsen), scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:WesterDigital-Black-NVMe-SSD.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Identify the correct device and locate the health report. For this lab use the report and supplied manual on blank training media. <a href="https://www.youtube.com/watch?v=jn5BaLyTSwQ">Nick Janetakis on viewing SATA and SSD health reports</a>.</p>
+    <h2>Confirm which connection the drive actually uses</h2>
+    <p>A typical 2.5-inch SATA SSD has separate power and data contacts. M.2 describes a family of physical cards and sockets. An M.2 SSD can use SATA or PCIe/NVMe. Key shape, length and available sockets narrow the options, but the drive and host specifications establish compatibility. A USB enclosure can hide SMART data or tests even if the drive shows up. If practical, prove the model in a compatible native slot or SATA connection on the reference host. <a href="https://www.kingston.com/en/ssd/ssd-faq">Kingston comparison of SATA and M.2 interfaces</a> · <a href="../theory/t50-ssd-health-and-bad-blocks.html">T50 SSD health and bad blocks</a>.</p>
+    <h2>Make a read-only health record</h2>
+    <ol class="steps">
+      <li><p>Attach the blank training drive under the model’s documented powered-down procedure. Identify the correct model and capacity in a known-good host. Separately note if the controller is visible but its namespace or usable capacity is missing. Leave the drive unmounted for the lab.</p></li>
+      <li><p>On a Linux lab host with smartmontools, use the scanner to identify the path and then request the drive’s health reports. An example path is shown. Substitute only after verifying the model and capacity against the unit you connected. A SATA path might be <code>/dev/sdb</code> instead. This is an information query. <a href="https://manpages.debian.org/trixie/smartmontools/smartctl.8.en.html">smartctl manual</a>.</p>
+<pre><code>sudo smartctl --scan-open
+sudo smartctl -a /dev/nvme0</code></pre></li>
+      <li><p>Record interface, capacity, temperature, critical warnings, wear, errors and whether a previous self-test result is available. When the exact model supports it and data is already safe, run its documented non-destructive self-test on your blank practice drive. That test may read the device internally and take time. If a drive drops offline or an important drive has signs of failure, stop further stress tests and choose the data recovery path. A missing report through an enclosure does not establish drive failure.</p></li>
+    </ol>
+    <h2>Use two observations before a release decision</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Observed health report</th><th scope="col">Independent check</th><th scope="col">Action</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Correct size and no critical warning through native connection. USB bridge reports health unavailable.</th><td>Compare the exact drive on the native host and on a documented compatible adapter.</td><td>Check bridge support before marking the drive faulty.</td></tr>
+        <tr><th scope="row">SATA interface CRC count increases on one connection.</th><td>Retest with a known-good SATA lead and port. Compare changes, not just the lifetime count.</td><td>Check link integrity before assigning failure to flash. Attribute meanings are vendor-specific.</td></tr>
+        <tr><th scope="row">NVMe critical warning set or unrecovered media error count rises.</th><td>Record the new values and the device’s model manual. Keep valuable data out of further testing.</td><td>Hold from sale. If customer data is on the drive, follow the agreed recovery path.</td></tr>
+        <tr><th scope="row">Drive disappears on two supported hosts, while the reference drive remains stable.</th><td>Compare connection, cooling and power conditions. Record the time and symptoms.</td><td>Hold from sale as unreliable. Board repair may be worthwhile only for a defined recovery job.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save the actual model, test path, two readings, and result of any authorised self-test. Keep part qualification and data handling separate in the record. A SMART pass provides evidence for return to service together with stable detection and use, and cannot guarantee future health.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-laptop-salvage-2"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P80 · Check a room CO₂ sensor against a second meter</title>
+<meta name="description" content="Log a room's behaviour and separate placement, drift and point mapping before adjusting calibration.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P80</span>
+    <h1>Check a room CO₂ sensor against a second meter</h1>
+    <p class="lede">Log a room's behaviour and separate placement, drift and point mapping before adjusting calibration.</p>
+    <div class="meta"><span><b>Time</b> 45–60 minutes</span><span><b>Before this</b> <a href="p12-sensors-adc.html">P12 sensors</a> · <a href="p54-install-a-room-sensor.html">P54 room sensors</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify what the device measures</h2>
+    <p>Room combinations can report temperature, relative humidity and actual CO₂ in ppm, sometimes alongside a VOC or particle measurement. Find which model is installed and which measured quantities it sends by an analogue output or network point. A true CO₂ device may use non-dispersive infrared (NDIR) or a photoacoustic measurement. A device labelled eCO₂ can instead estimate a CO₂-equivalent from other sensing. The readings serve different purposes. <a href="../theory/t45-commercial-hvac-device-signals.html">T45 · CO₂, units, placement and calibration</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/aranet-co2-monitor.jpg" alt="A person holding an Aranet4 room CO₂ monitor showing a ppm value, temperature and humidity" width="960" height="720" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 750" aria-hidden="true">
+            <defs><marker id="parts-aranet-co2-monitor" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M648,441 L519,457" fill="none" stroke="#18232a" stroke-width="14"/><path d="M648,441 L519,457" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-aranet-co2-monitor)"/>
+            <rect x="646" y="414" width="195" height="57" rx="8" fill="#122029"/><text x="658" y="454" style="fill:#fff;font-size:35px;font-weight:700">CO₂ display</text>
+          </svg></div>
+        <figcaption>Find the main ppm value on the portable reference. Temperature and humidity occupy their own fields. Record the placement and settling time before interpreting the reading.<br><small>Photo by Foonarres, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Aranet4_carbon_dioxide_sensor.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/co2mini-display.jpg" alt="CO₂Mini monitor displaying a carbon dioxide concentration of 735 ppm" width="960" height="388" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 404" aria-hidden="true">
+            <defs><marker id="parts-co2mini-display" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M727,286 L776,187" fill="none" stroke="#18232a" stroke-width="14"/><path d="M727,286 L776,187" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-co2mini-display)"/>
+            <rect x="566" y="286" width="217" height="57" rx="8" fill="#122029"/><text x="578" y="326" style="fill:#fff;font-size:35px;font-weight:700">ppm reading</text>
+          </svg></div>
+        <figcaption>Read the number with its unit. A single 735 ppm reading shows the device's result at that moment. For diagnosis, keep the time and the room conditions with it.<br><small>Photo by Morn, Wikimedia thumbnail, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:CO2Mini_monitor_TFA_Dostmann.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch Aranet’s CO₂ and humidity walkthrough.</b> Locate each measured quantity before trying to interpret a reading taken in a room. <a href="https://www.youtube.com/watch?v=NhkwV_I8Jek">Aranet’s CO₂ and humidity walkthrough on YouTube</a>.</p>
+
+    <h2>Run a side-by-side check</h2>
+    <ol class="steps">
+      <li><p>Use one real CO₂ monitor with recent calibration information if you can borrow it. A second compatible meter allows a comparison. Set both together at a representative room position where people will not breathe directly into the sensor and supply air will not blow across it. Follow both manufacturers' warm-up times and placement instructions.</p></li>
+      <li><p>At five-minute intervals for at least 30 minutes, record time, both displayed ppm values, temperature, relative humidity if available, occupancy and whether the window or ordinary ventilation state changed. Mark missing readings. Change one ordinary room condition only when permitted. Take measurements during normal use. Do not confine people or restrict ventilation for the exercise.</p></li>
+      <li><p>Compare values at matched timestamps after the devices have settled. Compare against the stated accuracy and response time of both units. One lower reading near a supply grille can be a placement issue. A disagreement that persists in a side-by-side stable test is stronger evidence for inspection or calibration.</p></li>
+    </ol>
+    <p>Where a local display is available on a 0–2000 ppm, 0–10 V analogue sensor, 800 ppm corresponds to 4 V. A controller mistakenly treating that 4 V as 0–5000 ppm would display 2000 ppm. Check input type, common and scaling before recalibrating. Practise model-specific I/O in <a href="p63-bms-point-to-point.html">P63</a>. For a BACnet sensor check device, object, units and when it last updated. <a href="p38-bacnet-point-commissioning.html">P38 BACnet point checks</a>.</p>
+
+    <h2>Read the trend before intervening</h2>
+    <p>If you lack a monitor, work a paper case. At 09:00, the co-located meters read 620 and 640 ppm. At 09:20 they read 875 and 905 ppm, while the BMS still displays 625 ppm with a 09:00 update time. Compare the two live readings and decide which value is stale. With both meters rated ±50 ppm at those concentrations, their 30 ppm difference at 09:20 can fit their combined tolerances.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Synthetic observation</th><th scope="col">Next check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Two nearby meters rise during normal occupancy and fall when the room clears</th><td>Record the occupancy and ventilation state. Compare agreed reference data under similar conditions.</td></tr>
+        <tr><th scope="row">Wall sensor is low near a supply grille but agrees in a side-by-side test at a common position</th><td>Check mounting position against the design. Review airflow at the sensor with the responsible technician.</td></tr>
+        <tr><th scope="row">Local display and reference follow the room while the BMS point stays fixed</th><td>Check update time, comms quality, object identity or the analogue input signal. A stale value can still look plausible.</td></tr>
+      </tbody>
+    </table></div>
+    <p>CO₂ can help assess ventilation under documented conditions. It does not measure airborne particles or all contaminants. A model's automatic baseline correction may assume regular exposure to a known low-CO₂ baseline. Read its procedure before changing any calibration setting or using outdoor air as a reference. <a href="https://www.cdc.gov/niosh/ventilation/faq/">NIOSH ventilation and CO₂ guidance</a> · <a href="https://sensirion.com/media/documents/33C09C07/620638B8/Sensirion_SCD30_Field_Calibration.pdf">Sensirion SCD30 field calibration</a>.</p>
+    <div class="callout good"><span class="label">Keep this evidence</span><p>Save the model, comparison placement, timestamps and one annotated trend. Write which readings agree within the expected tolerance and which comparison would justify the next action.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-commercial-devices"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+</body>
+</html>

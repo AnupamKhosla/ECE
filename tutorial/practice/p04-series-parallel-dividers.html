@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>P04 · Series, parallel and voltage dividers</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -208,11 +208,42 @@
     </script>
 
     <h2>The loading effect, measured</h2>
+    <div class="photo-pair">
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-two-resistors.jpg" alt="Two axial resistors on a sideways breadboard, with their midpoint and the two supply rails marked" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-divider-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M430,71 L403,109" fill="none" stroke="#18232a" stroke-width="18"/><path d="M430,71 L403,109" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="379" y="13" width="297" height="54" rx="7" fill="#122029"/><text x="389" y="53" style="fill:#fff;font-size:36px;font-weight:700">Top rail</text>
+          <path d="M310,199 L214,213" fill="none" stroke="#18232a" stroke-width="18"/><path d="M310,199 L214,213" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="307" y="154" width="254" height="54" rx="7" fill="#122029"/><text x="317" y="194" style="fill:#fff;font-size:36px;font-weight:700">Midpoint</text>
+          <path d="M522,492 L545,426" fill="none" stroke="#18232a" stroke-width="18"/><path d="M522,492 L545,426" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-divider-photo)"/>
+          <rect x="505" y="494" width="311" height="54" rx="7" fill="#122029"/><text x="515" y="534" style="fill:#fff;font-size:36px;font-weight:700">Bottom rail</text>
+        </svg>
+      </div>
+      <figcaption>This two-resistor example has an upper return rail and a lower supply rail. The numbered terminal strips run vertically because the board is turned sideways. The resistor leads in the same connected strip form the midpoint. Check continuity with the battery removed on your own board before relying on a row or rail.<br><small>Photo by Toluaj, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Breadboard_and_resistors.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" alt="Meter probes clipped to two test points on a breadboard, with a resistor and LED visible between them" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-probe-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M223,449 L325,399" fill="none" stroke="#18232a" stroke-width="18"/><path d="M223,449 L325,399" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="32" y="444" width="251" height="54" rx="7" fill="#122029"/><text x="42" y="484" style="fill:#fff;font-size:36px;font-weight:700">Red probe point</text>
+          <path d="M624,436 L562,369" fill="none" stroke="#18232a" stroke-width="18"/><path d="M624,436 L562,369" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="617" y="430" width="298" height="54" rx="7" fill="#122029"/><text x="627" y="470" style="fill:#fff;font-size:36px;font-weight:700">Black probe point</text>
+        </svg>
+      </div>
+      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    </div>
+    <p>With power off, check that the two resistor leads share one midpoint strip. Check any split power rail that crosses the length of the board. Put the leads in COM and V/Ω and select DC volts. Measure across the battery rails first to get the actual input. Keep the black probe at the negative rail and move the red probe to the midpoint. To add the load, switch off and place it between the midpoint and negative rail. Take a new source reading and use it in the prediction. <a href="p03-multimeter-mastery.html">P03 · Meter jacks and voltage checks</a>.</p>
     <ol class="steps">
       <li><p><b>Build a 10 kΩ / 10 kΩ divider</b> on 9 V. Measure V<sub>out</sub>: half the battery, about 4.5–4.7 V.</p></li>
       <li><p><b>Add a 10 kΩ load</b> from V<sub>out</sub> to 0 V. The bottom becomes 10 k ∥ 10 k = 5 kΩ. Predicted V<sub>out</sub> = 9 × 5 / 15 = <b>3.0 V</b>. Measure it. A third of your output has vanished.</p></li>
       <li><p><b>Swap the load for 100 kΩ.</b> Bottom = 10 k ∥ 100 k = 9.09 kΩ, V<sub>out</sub> = 9 × 9.09 / 19.09 = <b>4.29 V</b>, about 5% low.</p></li>
-      <li><p><b>Now make the meter the load.</b> Build a 1 MΩ / 1 MΩ divider and measure V<sub>out</sub>. You expect 4.5 V; the meter's own 10 MΩ input gives 1 M ∥ 10 M = 0.909 MΩ, so it shows about <b>4.29 V</b>. Same 10:1 ratio, same 5% error.</p></li>
+      <li><p><b>Now make the meter the load.</b> Build a 1 MΩ / 1 MΩ divider and measure V<sub>out</sub>. You expect 4.5 V; a meter with 10 MΩ input gives 1 M ∥ 10 M = 0.909 MΩ, so it shows about <b>4.29 V</b>. Same 10:1 ratio, same 5% error.</p></li>
     </ol>
     <p>The lesson: <b>a divider only gives its ideal voltage when the load is much bigger than the divider resistors</b>. A practical rule is load ≥ 10 × R2 for about 5% error, and ≥ 100 × R2 for under 1%. You cannot power anything hungry from a divider: a divider is for <i>signals</i> (inputs that draw microamps), not for supplying a motor or an LED. For power you need a regulator (P10).</p>
     <div class="callout tip"><span class="label">Bench tip</span><p>If a voltage reads lower than it should only when your meter touches it, suspect loading: the circuit has a very high resistance (hundreds of kΩ or more). Try the measurement on a higher-impedance setting if your meter has one, or measure the resistors instead and calculate.</p></div>
@@ -439,7 +470,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261120-device-service"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

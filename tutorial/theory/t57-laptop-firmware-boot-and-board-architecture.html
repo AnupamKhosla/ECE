@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T57 · How laptop power, firmware, storage and operating systems meet</title>
+<meta name="description" content="Separate hardware families from operating systems and trace the transitions from standby power to firmware, boot, drivers and repair calibration.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T57</span>
+    <h1>How laptop power, firmware, storage and operating systems meet</h1>
+    <p class="lede">Separate hardware families from operating systems and trace the transitions from standby power to firmware, boot, drivers and repair calibration.</p>
+    <div class="meta"><span><b>Time</b> 25–40 minutes</span><span><b>Before this</b> <a href="../theory/t27-board-power-sequencing.html">T27</a>, <a href="../theory/t29-usb-c-power-delivery.html">T29</a>, <a href="../theory/t50-ssd-health-and-bad-blocks.html">T50</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Identify the first stage you can prove</h2>
+    <p>Input protection and charging feed standby rails. Model-specific controller logic handles a wake request and signals that more supplies may start. Early firmware initializes memory and devices and then selects boot software. The operating system loads drivers for display, storage, audio and radios. A black screen can occur at several of these stages. A fan running proves some power and control, and an external display or preboot test provides a different observation.</p>
+    <div class="photo-pair">
+<figure class="course-photo">
+    <div class="photo-annotation">
+      <img src="../assets/photos/laptop.jpg" alt="Open Framework Laptop 13 showing fan, motherboard, battery and removable parts" width="960" height="723" loading="lazy" decoding="async">
+      <svg viewBox="0 0 960 723" aria-hidden="true">
+        <path d="M 192.0,224.1 L 309.2,268.3" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 192.0,224.1 L 309.2,268.3" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 326.4,274.7 L 306.2,276.5 312.3,260.1 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="192.0" cy="224.1" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="192.0" y="224.1" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">1</text>
+        <path d="M 508.8,433.8 L 505.0,422.3" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 508.8,433.8 L 505.0,422.3" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 499.2,404.9 L 513.3,419.5 496.7,425.0 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="508.8" cy="433.8" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="508.8" y="433.8" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">2</text>
+        <path d="M 624.0,542.2 L 597.7,571.9" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 624.0,542.2 L 597.7,571.9" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 585.6,585.6 L 591.2,566.1 604.3,577.7 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="624.0" cy="542.2" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="624.0" y="542.2" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">3</text>
+        <path d="M 681.6,115.7 L 681.6,176.9" fill="none" stroke="#142b38" stroke-width="7.3"/>
+        <path d="M 681.6,115.7 L 681.6,176.9" fill="none" stroke="#fff" stroke-width="3.2"/>
+        <path d="M 681.6,195.2 L 672.9,176.9 690.3,176.9 Z" fill="#fff" stroke="#142b38" stroke-width="1.8"/>
+        <circle cx="681.6" cy="115.7" r="20.3" fill="#103549" stroke="#fff" stroke-width="2.5"/>
+        <text x="681.6" y="115.7" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.2px">4</text>
+      </svg>
+    </div>
+    <figcaption>Find the parts before disconnecting anything. Compare the layout with the exact model’s service guide.<br><b>1 · Cooling fan. 2 · M.2 SSD. 3 · Battery. 4 · Memory module area.</b><br><small>Photo by Ogidya, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Framework_Laptop_13_-_2023_AMD_Ryzen_-_Internal_motherboard_and_component_view.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</small></figcaption>
+  </figure>
+<figure class="course-photo"><div class="photo-annotation"><img src="../assets/photos/deep/macbook-m2-logic.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Apple M2 MacBook Air logic board showing processor, memory and storage"><svg viewBox="0 0 592 444" aria-hidden="true"><defs><marker id="macbook-m2-logic" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs><path d="M218.5,325 L196,259" fill="none" stroke="#14232b" stroke-width="9"/><path d="M218.5,325 L196,259" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="162" y="325" width="113" height="23" rx="4" fill="#14232b"/><text x="168" y="341" style="fill:#fff;font-size:15px;font-weight:700">M2 processor</text>
+<path d="M196.75,136 L218,211" fill="none" stroke="#14232b" stroke-width="9"/><path d="M196.75,136 L218,211" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="165" y="113" width="63.5" height="23" rx="4" fill="#14232b"/><text x="171" y="129" style="fill:#fff;font-size:15px;font-weight:700">Memory</text>
+<path d="M74.5,119 L98,180" fill="none" stroke="#14232b" stroke-width="9"/><path d="M74.5,119 L98,180" fill="none" stroke="#ffda64" stroke-width="3" marker-end="url(#macbook-m2-logic)"/><rect x="18" y="96" width="113" height="23" rx="4" fill="#14232b"/><text x="24" y="112" style="fill:#fff;font-size:15px;font-weight:700">NAND storage</text></svg></div><figcaption>This 2022 M2 Air has its memory alongside the processor and NAND storage on the logic board. Use the model’s teardown chip map to compare with a removable PC SSD.<br><small>Photo by Arthur Shi and iFixit contributors, with added labels. <a href="https://www.ifixit.com/Teardown/Macbook+Air+(M2+2022)+Logic+Board+and+Chip+Identification/151816">Original guide</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption></figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=NjP-aAhHhnE">Compare an Apple silicon teardown with the modular PC photograph</a>.</p>
+
+    <h2>The package and socket change the repair</h2>
+    <p>On a shared x86-64 PC, Windows and Linux can provide a comparison using the same hardware. Different drivers can still change whether the symptom appears. Model, system architecture and boot policy determine valid diagnostics and recovery media. An Apple silicon system packages memory alongside the processor and uses board-mounted storage on the M2 Air pictured here. A Windows PC can also use soldered storage or memory. Check the manual and parts list before assuming a drive or DIMM is removable.</p>
+
+    <h2>A data-aware diagnosis changes the decision</h2>
+    <p>Encryption and platform security protect data and can affect access after a firmware or logic-board change. Some repaired assemblies need a vendor service or calibration flow. Copy the permitted backup and verify it before work that might put data at risk. Record which stages were reached, what code or log you saw, and the model-specific action. Start the operator side with <a href="../practice/p117-windows-laptop-startup-and-driver-diagnosis.html">P117 · Diagnose a Windows laptop that reaches firmware but fails to boot</a>, <a href="../practice/p118-linux-live-usb-hardware-diagnostics.html">P118 · Use a Linux live USB to isolate a laptop hardware fault</a>, <a href="../practice/p119-macbook-diagnostics-and-repair-assistant.html">P119 · Triage a MacBook and prove which module needs service</a> or <a href="../practice/p120-chromebook-diagnostics-and-recovery-triage.html">P120 · Troubleshoot a Chromebook with its model and management context</a>, and use <a href="../practice/p123-laptop-board-power-good-sequence-trainer.html">P123 · Find a missing enable or power-good signal before swapping a board</a> for the earlier power-stage chain.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../practice/p116-laptop-models-and-oem-diagnostics.html">P116 · Find the exact laptop manual and run preboot diagnostics</a>.</p>
+    <ul>
+      <li><a href="https://www.dell.com/support/kbdoc/en-us/000125609/resolve-no-power-no-post-no-boot-or-no-video-issues-with-your-dell-computer">Dell preboot fault classification</a></li>
+      <li><a href="https://support.apple.com/en-us/108900">Apple firmware recovery and supported platforms</a></li>
+      <li><a href="https://ubuntu.com/desktop/docs/en/latest/tutorial/try-ubuntu-desktop/">Canonical Ubuntu desktop live boot</a></li>
+      <li><a href="https://support.microsoft.com/en-gb/windows/experience/backup-recovery/windows-recovery-environment">Microsoft Windows recovery environment</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

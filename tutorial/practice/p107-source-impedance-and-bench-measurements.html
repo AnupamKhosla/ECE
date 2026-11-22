@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P107 · Find a weak supply with a load and a meter</title>
+<meta name="description" content="Measure source resistance, check the meter’s influence and distinguish a weak connection from current limiting.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P107</span>
+    <h1>Find a weak supply with a load and a meter</h1>
+    <p class="lede">Measure source resistance, check the meter’s influence and distinguish a weak connection from current limiting.</p>
+    <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="../practice/p03-multimeter-mastery.html">P03</a>, <a href="../practice/p04-series-parallel-dividers.html">P04</a>, <a href="../practice/p21-fault-finding.html">P21</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Build a five-volt source with a deliberate weak connection</h2>
+    <p>Use an isolated 5.0 V bench supply with a 30 mA current limit, 100 Ω and 220 Ω resistors rated ¼ W or greater and a multimeter. With power off, put the 100 Ω resistor between the supply positive terminal and a node called OUT. Both the source negative and every load return go to the same return strip. OUT is your model equipment connector. The resistor represents a bad series joint, safely and repeatably.</p><ol class="steps"><li>With no load, measure OUT to return and expect nearly 5.0 V.</li><li>Power off, put 220 Ω from OUT to return, and power on. Expect about 3.44 V at OUT, 1.56 V across 100 Ω and 15.6 mA from V<sub>load</sub>/R<sub>load</sub>. Write down the supply terminal voltage as well as OUT.</li><li>Replace the 220 Ω load with a second 100 Ω. Expect 2.50 V and 25 mA. A healthy 5 V reading with the load removed was weak evidence of a good connector.</li><li>Restore the 220 Ω load and power off to remove the series resistor, joining those two points only in this trainer. Now expect about 5 V at OUT. Compare before and after with the same load.</li></ol>
+    <div class="photo-pair">
+<figure class="course-photo">
+      <div class="photo-annotation">
+        <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" alt="Meter probes clipped to two test points on a breadboard, with a resistor and LED visible between them" width="960" height="720" loading="lazy" decoding="async">
+        <svg viewBox="0 0 960 720" aria-hidden="true">
+          <defs><marker id="p04-probe-photo" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+          <path d="M223,449 L325,399" fill="none" stroke="#18232a" stroke-width="18"/><path d="M223,449 L325,399" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="32" y="444" width="251" height="54" rx="7" fill="#122029"/><text x="42" y="484" style="fill:#fff;font-size:36px;font-weight:700">Red probe point</text>
+          <path d="M624,436 L562,369" fill="none" stroke="#18232a" stroke-width="18"/><path d="M624,436 L562,369" fill="none" stroke="#ffda64" stroke-width="8.64" marker-end="url(#p04-probe-photo)"/>
+          <rect x="617" y="430" width="298" height="54" rx="7" fill="#122029"/><text x="627" y="470" style="fill:#fff;font-size:36px;font-weight:700">Black probe point</text>
+        </svg>
+      </div>
+      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+<figure class="course-photo">
+        <img src="../assets/photos/bench-series-probes.jpg" width="600" height="790" loading="lazy" decoding="async" alt="Close-up of clip leads joining a red meter probe and a black meter probe to opposite sides of a break in the positive wire feeding a boost converter">
+        <figcaption>Follow the positive path through the close-up. The red probe connects to the red supply lead through the red clip. The black probe connects via the green jumper and its clips to the converter’s red input lead. The meter bridges this break so current can flow around the loop.<br><small>Photo by Bill Earl for Adafruit, scaled for the course. <a href="https://learn.adafruit.com/assets/1719">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=rPGoMbVSUu8">See DC readings and probe placement in the multimeter demonstration</a>.</p>
+
+    <h2>Prove which path loses voltage</h2>
+    <p>Calculate equivalent series resistance as (V<sub>open</sub> − V<sub>load</sub>)/I<sub>load</sub> using both load readings from the test with the series resistor fitted. If the supply terminals also fall and the front panel shows constant-current mode, recheck the current limit and wiring before diagnosing the series path. Check directly across suspect joints while current flows. The same idea applies to an oxidised sensor terminal, a weak adapter lead or a blown protection device with a high-impedance meter on either side.</p><p>Extension. Measure a 1 MΩ resistor on a detached board first alone and then with a second 1 MΩ across it. The expected parallel result is 0.50 MΩ. To see voltage-mode loading, use a separate 5 V divider with two 1 MΩ resistors. For a verified 10 MΩ meter, the expected measured midpoint is about 2.38 V. Compare against the actual input specification of your meter.</p>
+
+    <h2>Record the transfer test</h2>
+    <p>Give someone else the unloaded output, loaded output, drop across suspect part and supply mode. Ask them to locate the weak link without seeing the circuit. Save the two load readings and your calculated series resistance.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../theory/t54-source-resistance-loading-and-uncertainty.html">T54 · Source resistance, loading and measurement uncertainty</a>.</p>
+    <ul>
+      <li><a href="https://physicslabs.colorado.edu/courses/phys-3330/lab-guides/lab1/">University of Colorado Boulder electronic measurements lab</a></li>
+      <li><a href="https://circuits.mit.edu/F26/labs/scopes">MIT breadboard and instrument lab</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

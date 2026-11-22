@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P101 · Find an intermittent fault in a machine sensor cable</title>
+<meta name="description" content="Map a detached industrial harness pin by pin and reproduce a dropout under load while keeping the machine isolated.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P101</span>
+    <h1>Find an intermittent fault in a machine sensor cable</h1>
+    <p class="lede">Map a detached industrial harness pin by pin and reproduce a dropout under load while keeping the machine isolated.</p>
+    <div class="meta"><span><b>Time</b> 35–55 minutes</span><span><b>Before this</b> <a href="p03-multimeter-mastery.html">P03 meter setup</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Find out what moves when the fault happens</h2>
+    <p>A photoelectric sensor counts every carton when the machine is still. When the carriage moves, its signal sometimes disappears. A broken strand, crimp or contact can reconnect after motion stops, so a fast continuity check can miss it. This lab uses two detached, passive, extra-low-voltage sensor cordsets. One is a known-good reference. Start with a documented four-pin A-coded M12 extension or a pigtail with both ends accessible. The customer leaves machine isolation, removal and reinstallation to the person authorised for the equipment.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/m12-a-coded-connector.webp" width="584" height="1532" loading="lazy" decoding="async" alt="Close-up of a five-pin industrial M12 A-coded connector showing its locating key and cable exit">
+          <svg viewBox="0 0 584 1532" aria-hidden="true">
+            <defs><marker id="p101-m12" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M123,395 L142,249" fill="none" stroke="#18232a" stroke-width="12"/><path d="M123,395 L142,249" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p101-m12)"/>
+            <rect x="34" y="373" width="171" height="35" rx="6" fill="#122029"/><text x="43" y="398" style="fill:#fff;font-size:22px;font-weight:700">Coding key</text>
+            <path d="M435,1097 L337,1007" fill="none" stroke="#18232a" stroke-width="12"/><path d="M435,1097 L337,1007" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p101-m12)"/>
+            <rect x="348" y="1080" width="165" height="35" rx="6" fill="#122029"/><text x="357" y="1105" style="fill:#fff;font-size:22px;font-weight:700">Cable exit</text>
+          </svg>
+        </div>
+        <figcaption>The key and the pin count identify the mating family. This five-pin example is a different variant from the four-wire exercise. Match the actual cable's drawing, pin assignment and duty rating.<br><small>Photo by Anordal, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:M12A5.webp">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/diagnostics/sick-photoelectric-sensor.png" width="500" height="767" loading="lazy" decoding="async" alt="Blue SICK sensor with a printed wire diagram and threaded connector at the bottom">
+          <svg viewBox="0 0 500 767" aria-hidden="true">
+            <defs><marker id="p101-sick" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M316,349 L179,270" fill="none" stroke="#18232a" stroke-width="12"/><path d="M316,349 L179,270" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p101-sick)"/>
+            <rect x="281" y="334" width="167" height="35" rx="6" fill="#122029"/><text x="290" y="359" style="fill:#fff;font-size:22px;font-weight:700">Pin functions</text>
+            <path d="M283,690 L181,678" fill="none" stroke="#18232a" stroke-width="12"/><path d="M283,690 L181,678" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p101-sick)"/>
+            <rect x="270" y="672" width="147" height="35" rx="6" fill="#122029"/><text x="279" y="697" style="fill:#fff;font-size:22px;font-weight:700">Connector</text>
+          </svg>
+        </div>
+        <figcaption>A SICK photoelectric unit prints the terminal functions on its body. Look up the exact data sheet, since other sensors with the same circular connector can map pins to different functions.<br><small>Photo by Lucasbosch, scaled with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:SICK_WL12G-3B2531_Photoelectric_reflex_switch_angled1.png">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch.</b> Observe where ifm applies torque and why the connector shell bears the force. Use the actual cordset's tightening specification when fitted, and keep the load off the conductors. <a href="https://www.youtube.com/watch?v=c_7xBKxQfJ4">ifm's industrial connector mounting demonstration</a>.</p>
+
+    <h2>Map the cable with the source removed</h2>
+    <ol class="steps">
+      <li><p>Log machine and cable part numbers, mating type, coding, pin count and the exact locations where the cable moves. Ask for both mates or exact test adapters. Use the harness wiring table and the sensor's connection drawing. Pair connectors by their actual orientation. The wire colours in this ifm example are a model reference. <a href="https://media.ifm.com/dam/a821e6b8-cb78-4365-af9c-eb89c0d567f6/Original/LMT104-02_EN-GB.pdf">ifm example with four-pin connection drawing</a>.</p></li>
+      <li><p>Disconnect the cable from the sensor, controller, supply and any separate I/O device. Verify it is passive and identify any shield bonds before testing. Keep moulded modules with electronics, Ethernet cords, power leads and safety-rated sensors outside this exercise. Do not test across a connected PLC or sensor with a resistance range.</p></li>
+      <li><p>Short the meter leads to get a baseline. Use a mating breakout or pigtail to avoid spreading female contacts. With the cable at rest, measure each expected end-to-end route and check the six unordered pin pairs for unintended continuity on a four-wire one-to-one harness. For a shielded cable, use the specified pin-to-shell relationship. A handheld meter can detect a gross short within its range. It cannot certify insulation or sealing.</p></li>
+    </ol>
+
+    <h2>Make the intermittent fault repeat under load</h2>
+    <p>Use an isolated 5 V bench supply limited to 60 mA, a 100 Ω resistor rated at least 0.5 W as the load and separate known-good return leads. Confirm the detached passive conductor and its breakouts are rated for this little test. Power off for every connection change.</p>
+    <ol class="steps">
+      <li><p>Connect supply positive to one verified conductor at the near end. At the far end, connect that conductor to the 100 Ω resistor. Return the resistor to supply negative through the separate test lead. At nominal voltage the load draws about 50 mA, and the load has close to 5 V across it with a healthy short cable.</p></li>
+      <li><p>Clip the meter across the load in DC voltage mode. Compare the reference and suspect cable at rest using the same fixture and supply. Keep the test adapter still and gently move one short section of the cable at a time, staying inside the rated bend. Watch the reading at the shell or cable exit and through the known flex zone. Use MIN/MAX capture if your meter supports it and record its response limit. Very short dropouts can escape a slow meter.</p></li>
+      <li><p>Repeat the same movement with the reference. Swap the test adapter if both cables drop out. On the suspect cable show a repeatable dropout at the same location with a stable source. Test the other conductors one at a time before choosing a repair. If the bench cannot reproduce the fault, document that and return it for an installed check of the sensor and controller paths.</p></li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Sample comparison</th><th scope="col">Result at the 100 Ω load</th><th scope="col">Next action</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Reference and suspect, static</th><td>4.98 V and 4.96 V</td><td>Static measurements alone give little evidence of the intermittent break.</td></tr>
+        <tr><th scope="row">Only suspect drops when gently moved at its plug exit</th><td>4.96 V to near 0 V each time, source still about 5 V</td><td>Suspect that cable termination. Compare a known-good adaptor to rule out the mating fixture.</td></tr>
+        <tr><th scope="row">Both units drop at the breakout</th><td>Each drops when the fixture moves</td><td>Repair the test setup and repeat before quoting a customer part.</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>If the dropout follows a supported loose termination, use <a href="p104-m12-sensor-cable-termination.html">P104 to build and prove a four-pin field-wired connector</a>.</p>
+
+    <h2>Choose and prove the service</h2>
+    <p>A failed moulded cordset is usually a matched replacement job. For supported field-wireable assemblies, use the connector maker's approved cable size, termination method, torque and strain relief, then repeat the complete map and loaded flex test. Match the service rating, especially flex duty, shielding and environmental exposure. Record the disposition and leave the return-to-service machine test to the installer. <a href="p89-photoelectric-sensor-alignment.html">P89 checks the optical path</a> · <a href="p82-io-link-sensor-replacement.html">P82 covers sensor replacement</a> · <a href="../career/c19-ludhiana-repair-shop.html">C19 shop pricing and scope</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

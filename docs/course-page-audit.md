@@ -62,7 +62,70 @@ P179 ran six ngspice 42 startup cases. Shifting the logic tap restored 3.300 V t
 
 W08 builds the current-control function of a DC stick set at 9 V. All 100 simulated load rows agree with a separate current, voltage and power calculation. The chapter includes the component connections and the production design and verification brief for a full-size set. P136 compares a guarded 12 V nozzle, a clean filter and a loaded-filter equivalent. Each computed pressure–airflow intersection agreed with an independent quadratic solution. The Indian shop guide carries the product cases, costing example and current regulatory references. No physical units were built. [Stick welding design](../tutorial/welding/w08-build-a-stick-welder-current-source-trainer.html) · [Air product prototypes](../tutorial/practice/p136-build-a-workbench-blower-and-particle-filter.html) · [Indian shop guide](../tutorial/career/c19-ludhiana-repair-shop.html).
 
-The final catalogue has 217 chapters. All 3,698 local HTML references resolved, and all 14 Node tests passed. Chrome checked 217 pages at 320 pixels, then exercised the repaired terminal and PoE instruments, chapter-code and full-text search, and the keyboard menu. The tested lab downloads returned HTTP 200, and the P161 PLC source rebuilt with all 40 replay rows matching the downloadable trace.
+The robotics and shop audit covered 217 chapters before the catalogue merge. All 3,698 local HTML references resolved, and all 14 Node tests passed. Chrome checked 217 pages at 320 pixels, then exercised the repaired terminal and PoE instruments, chapter-code and full-text search, and the keyboard menu. The tested lab downloads returned HTTP 200, and the P161 PLC source rebuilt with all 40 replay rows matching the downloadable trace.
+
+## Foundations, BMS, laptop and peripheral routes · 21 November 2026
+
+- [P126](../tutorial/practice/p126-electronics-foundation-mastery-route.html) sequences existing labs and five new foundation workshops. The new exercises cover measurement under load, a sensor buffer, relay kickback, logic edges and a complete signal-path fault. T54 and T55 explain measurement loading and digital thresholds.
+- [P127](../tutorial/practice/p127-bms-technician-to-platform-commissioning-route.html) starts with field work and instruments, then uses a browser-based air-handler sequence in P111, licensed training workflows for Niagara and Siemens, a comparison across Schneider, Johnson Controls, Honeywell and Automated Logic, plus hydronics and read-only BACnet and Modbus integration tests. T56 connects demand, permission, command, proof and point quality.
+- [P128](../tutorial/practice/p128-laptop-repair-multiplatform-mastery-route.html) separates model and architecture from operating system and connects UEFI, Windows, Linux, Mac and ChromeOS diagnosis to service manuals, data handling, modules, board power sequencing and handover. P129 and P130 build model-specific Lenovo Yoga Book and Dell Latitude cases. P131 and P132 cover iClever, wired and wireless keyboards and optical mice.
+- Every new page links to a relevant existing video and has at least two credited photographs, some showing comparable equipment. New labelled assets show MacBook Air, Samsung Galaxy Book, Acer Chromebook, mechanical key switches and a Logitech mouse. Linked official manuals and demonstrations give exact Yoga Book, Dell Latitude, iClever, JACE and PXC hardware references.
+- The BMS platform procedures require the corresponding authorised training software or hardware for vendor-specific execution. The virtual lab and case readings provide evidence practice without access to a production system.
+
+## Specialist drop-off repair workshops · 21 November 2026
+
+- [P102](../tutorial/practice/p102-plasma-gas-torch-service.html) adapts Hypertherm's separation of cap/consumable faults and gas-pressure faults into a cold inspection and two-point flowing-pressure case. [T52](../tutorial/theory/t52-airflow-and-pressure.html) explains pressure, flow and restrictions using Festo and Atlas Copco references.
+- [P103](../tutorial/practice/p103-zebra-label-printer-service.html) uses Zebra calibration, self-test, cleaning and replacement procedures to build a controlled print comparison. [T53](../tutorial/theory/t53-thermal-printing-and-barcode-quality.html) explains thermal elements, label sensing and the difference between functional scans and GS1 verification.
+- [P104](../tutorial/practice/p104-m12-sensor-cable-termination.html) adds an exact Phoenix Contact termination, complementary assembly videos and a full post-repair pin map and loaded check.
+- [P105](../tutorial/practice/p105-laptop-board-input-fuse.html) uses Littelfuse part documentation and PACE rework training to teach an open chip fuse on a protected five-volt board. [P106](../tutorial/practice/p106-tv-tcon-panel-diagnosis.html) combines a Samsung picture-test procedure, a documented repair case and ribbon handling on detached parts.
+- Each new lesson has at least two real photos and an existing demonstration. The [Ludhiana shop route](../tutorial/index.html#india-repair) and [career guide](../tutorial/career/c19-ludhiana-repair-shop.html) link the five jobs to a reference, a diagnostic result and a handover test.
+
+## Board repair, LCD televisions and industrial cables · 20 November 2026
+
+- [P97](../tutorial/practice/p97-laptop-board-short-isolation.html) adds a protected 5 V branch-isolation exercise and a documented donor-board example. [P98](../tutorial/practice/p98-laptop-motherboard-replacement.html) covers a T480 motherboard swap, FRU matching and acceptance tests.
+- [P99](../tutorial/practice/p99-lcd-tv-fault-diagnosis.html) adds closed-case TV tests. [P100](../tutorial/practice/p100-tv-backlight-panel-service.html) uses a 5 V LED trainer and a separated display stack. [T51](../tutorial/theory/t51-lcd-panel-backlight.html) explains LCD image and light paths.
+- [P101](../tutorial/practice/p101-industrial-sensor-cable-repair.html) reproduces an intermittent dropout in a detached industrial sensor lead. [C19](../tutorial/career/c19-ludhiana-repair-shop.html) now includes bench jobs and public Ludhiana evidence. Service availability and demand still need to be checked with the shop's customers.
+- [P92](../tutorial/practice/p92-inspect-repair-damaged-ram.html) now cites dated Indian price observations and compares repair economics against a tested replacement. All new chapters have annotated photos and video demonstrations.
+
+## Laptop salvage and component decisions · 20 November 2026
+
+Added seven practice chapters and two theory chapters. [Benchtop route](../tutorial/index.html#laptop-salvage)
+
+- Use [P90](../tutorial/practice/p90-laptop-donor-lot.html) for lot intake and safe parts sorting before paying. The revenue example uses fictional prices and test yield.
+- Use [P91](../tutorial/practice/p91-test-used-laptop-ram.html) for a bootable module and socket comparison. [P92](../tutorial/practice/p92-inspect-repair-damaged-ram.html) covers contacts, support components, SPD and BGA decision-making. [T49](../tutorial/theory/t49-dram-chips-memory-faults.html) explains which faults a row spare, ECC or address exclusion can address.
+- Use [P93](../tutorial/practice/p93-qualify-used-ssd.html) and [T50](../tutorial/theory/t50-ssd-health-and-bad-blocks.html) for SSD identification and health evidence. [P94](../tutorial/practice/p94-salvage-laptop-cooling.html) compares matching fan and thermal assemblies.
+- [P95](../tutorial/practice/p95-salvage-laptop-display.html) proves panel and cable faults with one change at a time. [P96](../tutorial/practice/p96-laptop-dc-input-harness.html) checks a removable charging jack and uses BIOS to confirm adapter recognition. All seven practice chapters have annotated photographs and existing demonstrations.
+
+## Device service and foundations · 20 November 2026
+
+Reviewed all 174 chapter pages at the device-service release. The audit counted distinct inline raster images and identified direct video links. Counts identify where to review the media by hand. A raster image may be a diagram or a screenshot, and a video link may need a more precise demonstration.
+
+### Changes published after the scan
+
+- Device service now covers Android vibration and call audio, liquid exposure, laptop USB-C charging, VAV airflow and photoelectric sensing. Each of the six practical pages has two inline photos, a video and a test record to keep. The new theory explains phone acoustics, haptics and liquid-related failures. [Device diagnosis route](../tutorial/index.html#device-diagnostics) · [Commercial controls route](../tutorial/index.html#commercial-devices)
+- P04 now shows the divider midpoint, rail and separate probe contacts. P07 compares real capacitor packages and shows ceramic construction under magnification. P10 shows a real regulator package and corrects load-resistor power and thermal test instructions. P21 adds a repeatable source-to-load comparison. [P04](../tutorial/practice/p04-series-parallel-dividers.html) · [P07](../tutorial/practice/p07-capacitors-rc.html) · [P10](../tutorial/practice/p10-power-supplies.html) · [P21](../tutorial/practice/p21-fault-finding.html)
+- T45, T46 and T48 have now added direct video links. C19 and C20 had no inline raster image or directly linked video in the scan. Their current content is business and job research. Add role or equipment media only where it illustrates the action described by the chapter.
+- P15 now shows the scope and logic analyser connections and adds a calibration capture. P16 pictures both sides of a Pi 5 and adds a boot and network check. P17 shows the temperature sensor package and how to distinguish a GPIO wiring fault from a failed sensor read. [P15](../tutorial/practice/p15-oscilloscope-logic-analyser.html) · [P16](../tutorial/practice/p16-raspberry-pi-linux.html) · [P17](../tutorial/practice/p17-pi-gpio-python.html)
+- P70 now shows a water flowmeter and compares it with level and switch indication. P82 adds a model-specific port identification and mapping exercise using ifm’s AL1100. [P70](../tutorial/practice/p70-machine-chiller-flow.html) · [P82](../tutorial/practice/p82-io-link-sensor-replacement.html)
+
+### Next practical pages with one inline raster image
+
+| Chapter | What to show when revising the lab |
+| --- | --- |
+
+| [P00 Your ECE foundation and learning routes](../tutorial/practice/p00-foundation-roadmap.html) | A completed first circuit beside the first field-style work record, so the route has visible examples of the two difficulty levels. |
+| [P11 Arduino first steps](../tutorial/practice/p11-arduino-first-steps.html) | Board variants and two states of the upload path, with the power, activity and reset indicators named. |
+| [P14 Talking to devices: UART, I²C, SPI, RS-485 and Modbus](../tutorial/practice/p14-serial-buses-modbus.html) | Real UART, I²C, SPI and RS-485 hardware. Show the pins or terminals before comparing a good and a failed transaction. |
+| [P18 ESP32 and IoT: Wi-Fi, MQTT and dashboards](../tutorial/practice/p18-esp32-iot-mqtt.html) | ESP32 power and boot controls, the sensor wired to the actual board, and a dashboard showing live versus stale data. |
+| [P19 Networking hands-on: IP, subnets, switches, PoE, VLANs](../tutorial/practice/p19-networking-hands-on.html) | Patch lead, switch port indicator and a captured local topology for the small network lab. |
+| [P22 Read a site drawing and label a cable](../tutorial/practice/p22-reading-drawings.html) | Separate highlighted parts of a real drawing, cable label and termination it points to. |
+| [P24 Predict a reading before touching the board](../tutorial/practice/p24-datasheets-measurement.html) | The same test points photographed with a meter, and the predicted-versus-measured entries from the comparison. |
+| [P25 Measure an RC filter on the oscilloscope](../tutorial/practice/p25-scope-filters.html) | Probe attachment and the bench RC network, with adjacent input and output traces on a real screen. |
+| [P27 Program a timed controller that can stop](../tutorial/practice/p27-firmware-state-machine.html) | Controller wiring and an independent stop input, then the observed signal at a stop transition. |
+| [P28 Build a two-sensor line-following robot](../tutorial/practice/p28-line-following-robot.html) | Underside sensor clearance and route material, with the wheels and motor connections located. |
+| [P29 Commission a simulated air handler](../tutorial/practice/p29-bms-commissioning-lab.html) | Air-handler and controller views that identify the points in the simulator sequence. |
+| [P30 Make an IoT sensor show stale data clearly](../tutorial/practice/p30-iot-reliability.html) | Bench sensor hookup and two dashboard states with timestamps, using captured test data. |
+| [P82 Replace an IO-Link sensor and verify its data](../tutorial/practice/p82-io-link-sensor-replacement.html) | The connector, master port LEDs, and actual side-by-side displays of parameter restore and current process data. |
 
 ## Practical course comparison and route revision · 20 November 2026
 
@@ -174,9 +237,6 @@ Photo and YouTube counts are from the baseline scan, with the C17 row recorded w
 | [P12 Sensors and the ADC](../tutorial/practice/p12-sensors-adc.html) | 0 | 0 | Put each actual sensor beside its circuit photo. Label LDR divider connections, PIR controls and ultrasonic pins, and show real serial output at two known input conditions. |
 | [P13 Actuators: motors, servos and relays](../tutorial/practice/p13-actuators-motors.html) | 0 | 0 | Photograph a motor, servo, stepper, TB6612FNG and ULN2003 boards. Label logic and motor power, common ground and connectors. Link a video showing one motor running and how to check its response. |
 | [P14 Talking to devices: UART, I²C, SPI, RS-485 and Modbus](../tutorial/practice/p14-serial-buses-modbus.html) | 0 | 0 | Show the actual USB-to-serial adapter, sensor breakout and RS-485 terminals. Label Tx/Rx/GND and the adapter’s printed differential labels, and add captured UART and Modbus frames tied to the same demo. |
-| [P15 Seeing signals: oscilloscope and logic analyser](../tutorial/practice/p15-oscilloscope-logic-analyser.html) | 0 | 0 | Annotate a real scope front panel, probe ground and compensation point. Show the logic analyser harness and real screen captures of the same low-voltage signal with both tools. Link a probe compensation demonstration. |
-| [P16 Raspberry Pi and the Linux you need](../tutorial/practice/p16-raspberry-pi-linux.html) | 0 | 0 | Photograph an actual supported Pi board from both sides, with power, HDMI, Ethernet, microSD and GPIO pin 1 labelled. Show Raspberry Pi Imager and the first SSH login, and link the official setup video. |
-| [P17 Raspberry Pi GPIO with Python: a data logger](../tutorial/practice/p17-pi-gpio-python.html) | 0 | 0 | Show the header and wired LED, button and DS18B20 in close-up. Label physical pin numbers, BCM numbers, 3.3 V, ground and the pull-up. Pair it with a real CSV line and logger screenshot, and link a GPIO demo. |
 | [P18 ESP32 and IoT: Wi-Fi, MQTT and dashboards](../tutorial/practice/p18-esp32-iot-mqtt.html) | 0 | 0 | Show the ESP32 and sensor on the bench and the Pi broker beside them. Capture a publish, subscription and live Node-RED reading. Link an existing walkthrough that traces one message end to end. |
 
 #### Part D · Networks and cabling on the bench

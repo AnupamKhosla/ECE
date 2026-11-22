@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P106 · Separate a TV timing-board fault from a panel fault</title>
+<meta name="description" content="Compare picture patterns and parts, practise ribbon handling on detached boards and learn when an exact T-Con swap is justified.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P106</span>
+    <h1>Separate a TV timing-board fault from a panel fault</h1>
+    <p class="lede">Compare picture patterns and parts, practise ribbon handling on detached boards and learn when an exact T-Con swap is justified.</p>
+    <div class="meta"><span><b>Time</b> 35–65 minutes on detached parts</span><span><b>Before this</b> <a href="p99-lcd-tv-fault-diagnosis.html">P99 TV triage</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Compare the symptom on screen before touching cables</h2>
+    <p>For an LCD TV that has a backlight but shows lines, half a picture or a blank image, start with <a href="p99-lcd-tv-fault-diagnosis.html">P99's closed-cabinet tests</a>. See whether the symptom appears in the volume overlay and built-in Picture Test, across multiple sources and after warm-up. Use a stable camera angle and one reference image for comparison. A line in the same place over every source can be in the display path, including a ribbon, timing board, bonded driver or glass. The result alone does not name a replacement board. <a href="https://www.samsung.com/au/support/tv-audio-video/Lines-On-Samsung-TV-Screen/">Samsung's test for lines across sources</a>.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/samsung-tcon-service-number.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Samsung television timing board with two broad panel connectors and two different identification labels">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p106-new" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M184,322 L165,247" fill="none" stroke="#18232a" stroke-width="12"/><path d="M184,322 L165,247" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p106-new)"/>
+            <rect x="100" y="301" width="183" height="35" rx="6" fill="#122029"/><text x="109" y="326" style="fill:#fff;font-size:22px;font-weight:700">Assembly label</text>
+            <path d="M376,71 L409,20" fill="none" stroke="#18232a" stroke-width="12"/><path d="M376,71 L409,20" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p106-new)"/>
+            <rect x="310" y="58" width="189" height="35" rx="6" fill="#122029"/><text x="319" y="83" style="fill:#fff;font-size:22px;font-weight:700">Panel connector</text>
+            <path d="M324,382 L286,428" fill="none" stroke="#18232a" stroke-width="12"/><path d="M324,382 L286,428" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p106-new)"/>
+            <rect x="231" y="360" width="169" height="35" rx="6" fill="#122029"/><text x="240" y="385" style="fill:#fff;font-size:22px;font-weight:700">From mainboard</text>
+          </svg>
+        </div>
+        <figcaption>The board from Eric Cheung's Samsung UN60FH6003FXZA repair. Find the barcode label and both panel connectors. Match the documented assembly and panel before trying a replacement.<br><small>Photo by Eric Cheung and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Repairing+Samsung+60-Inch+LED+TV+UN60FH6003FXZA+T-Con+failure/39642">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/lcd-tv-tcon.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Older Samsung television timing board mounted beneath a metal brace with a wide ribbon visible">
+          <svg viewBox="0 0 592 444" aria-hidden="true">
+            <defs><marker id="p106-older" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M128,286 L205,376" fill="none" stroke="#18232a" stroke-width="12"/><path d="M128,286 L205,376" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p106-older)"/>
+            <rect x="60" y="267" width="167" height="35" rx="6" fill="#122029"/><text x="69" y="292" style="fill:#fff;font-size:22px;font-weight:700">Panel ribbon</text>
+            <path d="M413,59 L401,148" fill="none" stroke="#18232a" stroke-width="12"/><path d="M413,59 L401,148" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p106-older)"/>
+            <rect x="383" y="38" width="149" height="35" rx="6" fill="#122029"/><text x="392" y="63" style="fill:#fff;font-size:22px;font-weight:700">Metal brace</text>
+          </svg>
+        </div>
+        <figcaption>A different Samsung T-Con has another arrangement and visible flat panel cables. The metalwork supports and shields components. Restore the specified shields, insulation and thermal pads on the actual set.<br><small>Photo by Arwedus and iFixit contributors, scaled with on-page callouts. <a href="https://www.ifixit.com/Guide/Samsung+LED+TV+LE37A659+(and+similar+models)+T-Con+Board+Replacement/127143">Original repair photograph</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch the ribbon handling.</b> Observe how the ShopJimmy technician checks the assembly label, opens the connector lock and lines up the ribbon's insertion mark. This video demonstrates a different Samsung service board. Use it to learn handling, then follow the exact service documentation for your set. <a href="https://www.youtube.com/watch?v=hgXQYeISbq8">ShopJimmy's Samsung T-Con replacement demonstration</a>.</p>
+
+    <h2>Test each plausible path from the observations</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What you have proved with the case closed</th><th scope="col">What the evidence supports</th><th scope="col">Next step</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Built-in menu and patterns stay clean, one external source has lines</th><td>The set can produce a clean image on its own.</td><td>Test a known-good cable and alternate source on that input before opening the cabinet.</td></tr>
+        <tr><th scope="row">The same lines cross built-in patterns and normal video</th><td>The fault travels with the set. Display processing and panel hardware still need separating.</td><td>Record affected area and temperature behaviour. Check the exact display path and whether a separate timing board exists.</td></tr>
+        <tr><th scope="row">Backlight is on, sound is good, built-in menu never appears</th><td>Power and some audio functions work. That does not establish the video supply, timing data or panel state.</td><td>Use qualified model-specific checks or a proven exact substitute if justified, one assembly at a time.</td></tr>
+        <tr><th scope="row">Cracked substrate or visibly torn bonded edge cable</th><td>There is panel-level mechanical damage.</td><td>Quote the exact panel and installed cost. A compatible timing board cannot restore the broken glass or bond.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Use the panel and assembly identity to find a replacement</h2>
+    <p>Work through Eric Cheung's reported UN60FH6003FXZA case. The set showed a lit dark screen with audio. The author replaced the separate board and reported the picture returned. The example lists <code>BN96-28944A</code> and shows another label on the board. This is a repair outcome for that set. Two TVs sold under the same retail model can have different panel versions. Record the complete TV model suffix, version where marked, exact panel label, assembly part number and photos of both sides. Confirm compatibility and return terms before ordering. Use an OEM service listing or a specialist verified cross-reference.</p>
+
+    <h2>Practise a swap on already detached parts</h2>
+    <ol class="steps">
+      <li><p>Use a scrap T-Con and matching loose detachable ribbon on an ESD mat. Photograph both sides and the fully inserted witness line. Mark which plug runs to the mainboard and which ribbons run to the panel. On a different design, verify whether the timing circuit is integrated. A bonded panel flex is not a slip-out ribbon.</p></li>
+      <li><p>Identify the release type from the guide. Open the lock before extracting a removable ribbon. Practise moving straight and keeping the contact face clean. Reinsert to the manufacturer witness line, square the two edges and close the latch without forcing it. On the loose assembly inspect for a bent lock, corrosion or misalignment from both ends.</p></li>
+      <li><p>Dry-fit its bracket, thermal pads and insulation in the original positions. For a real TV, a competent service technician should follow the manufacturer's isolation, stored-energy and safety procedures before handling internal assemblies. All TV connections change in the verified isolated state. Complete the reassembly and required electrical checks before an external powered retest. <a href="https://www.hse.gov.uk/PuBns/eis36.htm">HSE guidance for a TV service bench</a>.</p></li>
+    </ol>
+    <p>Compare the same closed-case test image, remote overlay and source inputs before and after. Retest cold and after normal warm-up. A successful exact substitute is evidence for the original parts combination. If it brings no change, document the result and stop buying boards until the remaining path is proven. <a href="../theory/t51-lcd-panel-backlight.html">T51 how image and light paths meet</a>.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

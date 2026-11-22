@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P104 · Re-terminate a passive four-pin M12 sensor cable</title>
+<meta name="description" content="Fit a documented screw-terminal plug, verify its complete pin map and prove the repair under load before returning it to a machine installer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book</div>
+    <span class="eyebrow">P104</span>
+    <h1>Re-terminate a passive four-pin M12 sensor cable</h1>
+    <p class="lede">Fit a documented screw-terminal plug, verify its complete pin map and prove the repair under load before returning it to a machine installer.</p>
+    <div class="meta"><span><b>Time</b> 35–65 minutes</span><span><b>Before this</b> <a href="p101-industrial-sensor-cable-repair.html">P101 reproduce a cable dropout</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Decide whether changing one connector will fix the cable</h2>
+    <p>Use <a href="p101-industrial-sensor-cable-repair.html">P101 to reproduce the fault on a detached passive cable</a>. A termination fault at the end can justify a replacement plug if the remaining jacket and flex zone are sound and the application allows field-wireable parts. If the break is in a moving section, or the cable needs a special seal, shield termination or safety approval, use the correct complete cable. This exercise uses a dry bench, an unshielded passive pigtail and no machine connection.</p>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/bench-repair/m12-a-coded-connector.webp" width="584" height="1532" loading="lazy" decoding="async" alt="Five-pin M12 A-coded connector showing the coupling shell and cable exit">
+          <svg viewBox="0 0 584 1532" aria-hidden="true">
+            <defs><marker id="p104-m12" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M134,417 L147,247" fill="none" stroke="#18232a" stroke-width="12"/><path d="M134,417 L147,247" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-m12)"/>
+            <rect x="35" y="397" width="168" height="35" rx="6" fill="#122029"/><text x="44" y="422" style="fill:#fff;font-size:22px;font-weight:700">Key</text>
+            <path d="M443,564 L392,645" fill="none" stroke="#18232a" stroke-width="12"/><path d="M443,564 L392,645" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-m12)"/>
+            <rect x="341" y="550" width="181" height="35" rx="6" fill="#122029"/><text x="350" y="575" style="fill:#fff;font-size:22px;font-weight:700">Coupling</text>
+            <path d="M441,1016 L318,1001" fill="none" stroke="#18232a" stroke-width="12"/><path d="M441,1016 L318,1001" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-m12)"/>
+            <rect x="340" y="991" width="187" height="35" rx="6" fill="#122029"/><text x="349" y="1016" style="fill:#fff;font-size:22px;font-weight:700">Cable exit</text>
+          </svg>
+        </div>
+        <figcaption>Find the coding key, coupling shell and cable support. This five-pin photo shows the hardware features. Use the four-pin terminal drawing for the actual pigtail job.<br><small>Photo by Anordal, with labels. <a href="https://commons.wikimedia.org/wiki/File:M12A5.webp">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <div class="photo-annotation">
+          <img src="../assets/photos/shop-labs/wire-end-ferrules.jpg" width="960" height="479" loading="lazy" decoding="async" alt="Ferrule crimper, bare and insulated ferrules, and examples on stranded wires">
+          <svg viewBox="0 0 960 479" aria-hidden="true">
+            <defs><marker id="p104-ferr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M503,48 L561,118" fill="none" stroke="#18232a" stroke-width="12"/><path d="M503,48 L561,118" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-ferr)"/>
+            <rect x="421" y="26" width="199" height="35" rx="6" fill="#122029"/><text x="430" y="51" style="fill:#fff;font-size:22px;font-weight:700">Crimped ferrule</text>
+            <path d="M147,385 L159,275" fill="none" stroke="#18232a" stroke-width="12"/><path d="M147,385 L159,275" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-ferr)"/>
+            <rect x="29" y="366" width="155" height="35" rx="6" fill="#122029"/><text x="38" y="391" style="fill:#fff;font-size:22px;font-weight:700">Crimp jaws</text>
+            <path d="M429,198 L530,240" fill="none" stroke="#18232a" stroke-width="12"/><path d="M429,198 L530,240" fill="none" stroke="#ffda64" stroke-width="5" marker-end="url(#p104-ferr)"/>
+            <rect x="345" y="177" width="185" height="35" rx="6" fill="#122029"/><text x="354" y="202" style="fill:#fff;font-size:22px;font-weight:700">Bare strands</text>
+          </svg>
+        </div>
+        <figcaption>A ferrule gathers strands into a fitted sleeve when the connector allows it. This example teaches the termination method. The pictured power-wire colours do not assign the pins of a machine sensor cable.<br><small>Photo by Simon A. Eugster, scaled with labels. <a href="https://commons.wikimedia.org/wiki/File:Wire_ferrules_with_and_without_insulation.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><b>Watch before stripping.</b> Note which gland and housing pieces must be put on the jacket before the small wires are fitted. The video uses Mencom hardware. Follow the Phoenix Contact drawing and values below if using its example part. <a href="https://www.youtube.com/watch?v=IvC7x89IFr0">Mencom demonstrates field-wireable M12 assembly</a> · <a href="https://www.youtube.com/watch?v=c_7xBKxQfJ4">ifm demonstrates connector torque tools</a>.</p>
+
+    <h2>Choose the parts from the data sheet</h2>
+    <p>Use a Phoenix Contact <code>1681088</code> or another documented four-pin A-coded male screw-terminal plug with its instructions. Collect a compatible passive female breakout, a short cable of the correct outer diameter and conductor area, a wire stripper, correct torque tools, a meter and the P101 load fixture. Use wire ferrules and a matching crimper only when the terminal model allows them. The cable jacket must be round and match the gland design.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Phoenix Contact 1681088 example</th><th scope="col">Value to confirm on the current data sheet</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Outside jacket</th><td>4–6 mm</td></tr>
+        <tr><th scope="row">Flexible conductor cross-section</th><td>0.25–0.75 mm² bare or 0.14–0.75 mm² with a compatible ferrule</td></tr>
+        <tr><th scope="row">Individual wire stripping length</th><td>5 mm, with the fitted wire-end form following the terminal instructions</td></tr>
+        <tr><th scope="row">Three different torque values</th><td>0.2 N·m terminals, 0.8–1.0 N·m pressure screw in its housing and 0.4 N·m at the M12 knurl</td></tr>
+      </tbody>
+    </table></div>
+    <p>Those values apply to the documented part number. Other variants can use different terminals, glands or tightening values. The manufacturer's terminal-side drawing and mating-side drawing are different views. Copy the numbers as printed rather than trying to mirror the pin circle from memory. <a href="https://www.phoenixcontact.com/us/products/1681088/pdf">Phoenix Contact 1681088 data sheet and both pin views</a>.</p>
+
+    <h2>Terminate, label and prove every wire</h2>
+    <ol class="steps">
+      <li><p>Use a short unpowered practice pigtail. Record a four-row map of wire colour or tag to terminal number and identify each far end. A shop cable must follow the original documented map and the mating equipment. If the old end is unavailable and the map cannot be verified, hold the job before cutting or repinning.</p></li>
+      <li><p>Slide the gland parts onto the jacket in the correct order. Strip according to the manufacturer's housing and terminal instructions. Check every strand under light. If you use approved ferrules, check fit and strip and crimp as directed. Do not solder-tin the wire for a screw clamp unless the connector manufacturer specifically calls for it.</p></li>
+      <li><p>Seat each numbered wire fully, with no strands outside the clamp. Tighten each terminal to its specified torque and tug gently according to the instructions. Inspect the seal and seat it over the jacket where designed. Close the housing and tighten the gland so movement is carried by the outer jacket. Leave enough slack for the actual bend radius and mounting geometry. <a href="https://www.igus.com/cable-carriers/resources/energy-chains-designing-filing-com">igus on cable-carrier routing and strain relief</a>.</p></li>
+      <li><p>With both ends isolated, check all four end-to-end routes and all six unordered pairs for unwanted continuity through your breakout. Check the breakout with the reference first. Use P101's 5 V loaded test one wire at a time and gently move the termination within the cable's limits. Swap the fixture if both reference and repair show a dropout.</p></li>
+    </ol>
+    <div class="callout good"><span class="label">Record what you can certify</span><p>Keep the connector and cable numbers, pin map, check results and repeated loaded flex readings. A bench pass verifies the measured paths and that test condition. It does not add a weatherproofing or safety certification. The installer should verify the actual mounted sensor and routing before putting the machine back in service.</p></div>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261120-shop-labs"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>

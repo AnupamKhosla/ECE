@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T56 · Building control sequences, command priorities and point quality</title>
+<meta name="description" content="Understand schedules, permissions, feedback, alarms and timestamps independently of a vendor’s interface.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T56</span>
+    <h1>Building control sequences, command priorities and point quality</h1>
+    <p class="lede">Understand schedules, permissions, feedback, alarms and timestamps independently of a vendor’s interface.</p>
+    <div class="meta"><span><b>Time</b> 25–40 minutes</span><span><b>Before this</b> <a href="../career/c01-bms-fundamentals.html">C01</a>, <a href="../theory/t31-feedback-control.html">T31</a>, <a href="../theory/t34-industrial-control-signals.html">T34</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Model the physical loop and where it closes</h2>
+    <p>A schedule establishes when the equipment should serve a demand. A permission allows a sequence to proceed. A command asks equipment to act, and proof measures whether it did. The controller compares measured feedback to a setpoint and chooses an output within the limits of its sequence. Independent safeties can act outside that software loop. Name each point, give it units and quality, and draw the direction of control before looking at a graphic.</p>
+    <div class="photo-pair">
+<figure>
+      <img src="../assets/photos/kmc.jpg" width="917" height="1000" loading="lazy" alt="KMC building-controls hardware including electronic controllers, valve and damper actuators, and pneumatic devices.">
+      <figcaption>Examples of HVAC control hardware. Compare the wired controller terminals with the actuators that physically move valves or dampers. Photo by Mstucky2, hardware courtesy of KMC Controls. <a href="https://commons.wikimedia.org/wiki/File:KMC_Controls_BAS_Product_Family_Samples_2010_Large.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+<figure class="course-photo">
+        <div class="photo-annotation"><img src="../assets/photos/commercial/water-manometer.jpg" alt="Wall-mounted transparent U-tube differential manometer with a vertical scale" width="680" height="907" loading="lazy" decoding="async">
+          <svg viewBox="0 0 1000 1334" aria-hidden="true">
+            <defs><marker id="parts-water-manometer" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 8,4 0,8z" fill="#ffda64"/></marker></defs>
+            <path d="M490,699 L415,703" fill="none" stroke="#18232a" stroke-width="14"/><path d="M490,699 L415,703" fill="none" stroke="#ffda64" stroke-width="8" marker-end="url(#parts-water-manometer)"/>
+            <rect x="489" y="668" width="212" height="57" rx="8" fill="#122029"/><text x="501" y="708" style="fill:#fff;font-size:35px;font-weight:700">Liquid scale</text>
+          </svg></div>
+        <figcaption>Follow both legs of this real gauge. Read the two liquid levels against the scale. Their vertical separation gives the pressure difference.<br><small>Photo by Neurotronix, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Man%C3%B3metro_diferencial_1.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=acqZfEZzD3Y">Tridium demonstrates Niagara views that expose parts of the model</a>.</p>
+
+    <h2>Understand whose command currently wins</h2>
+    <p>For BACnet commandable properties, the effective value is the highest active priority, with 1 highest through 16 lowest. Relinquishing a command removes that entry by writing NULL at that priority. If every entry is NULL, the Relinquish_Default applies. A controller can separately enforce a safety veto or an equipment interlock. Confirm the physical result after releasing a training override. Follow the building’s approved authorization and priority conventions when reviewing a real site.</p>
+
+    <h2>Keep alarms and trends tied to a point and clock</h2>
+    <p>An alarm can be normal, active or awaiting acknowledgement depending on the system. Acknowledging communicates receipt; fixing the cause returns the condition to normal. A trend can sample periodically or capture changes, depending on system support. Include enough timing resolution to distinguish a fan starting from proof appearing. A value recorded as 21.2 °C without quality or timestamp can be either healthy and current or the last reading from a failed sensor. Practise <a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a> and <a href="../practice/p125-bms-bacnet-modbus-integration-diagnostics.html">P125 · Diagnose a stale or wrongly scaled point across two protocols</a> before the vendor paths in <a href="../practice/p112-niagara-four-workbench-integration.html">P112 · Build and commission a Niagara 4 station on a training system</a>, <a href="../practice/p113-siemens-desigo-pxc-and-desigo-cc.html">P113 · Trace a Siemens Desigo point from PXC to Desigo CC</a> and <a href="../practice/p114-schneider-metasys-honeywell-webctrl.html">P114 · Transfer commissioning skills across four BMS ecosystems</a>.</p>
+
+    <h2>Related lesson and source material</h2>
+    <p><a href="../practice/p111-ahu-sequence-trends-and-commissioning.html">P111 · Commission one complete air-handler sequence</a>.</p>
+    <ul>
+      <li><a href="https://bacnetinternational.org/tbi/">BACnet Institute education</a></li>
+      <li><a href="https://resourcecenter.ashrae.org/technical-resources/standards-and-guidelines/titles-purposes-and-scopes">ASHRAE Guideline 36 scopes and application</a></li>
+      <li><a href="https://www.tridium.com/us/en/services-support/tridium-university">Tridium University learning paths</a></li>
+    </ul>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/app.js?v=20261120-commercial-search"></script>
+</body>
+</html>
