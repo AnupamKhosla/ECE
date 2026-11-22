@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 65–85 minutes</span><span><b>Before this</b> <a href="p161-compile-and-replay-a-plc-robot-station.html">P161</a> · <a href="../theory/t66-robot-station-identity-and-durable-completion.html">T66</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/plc.jpg" width="960" height="627" loading="lazy" decoding="async" alt="Small industrial PLC and DIN rail power supply">
+      <figcaption>Confirm field input state at the controller when restoring a station. The separate journal exercise records what the station had already accepted.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Identify what the controller backup captures. Compare that with the transaction journal you need to replay separately. <a href="https://www.youtube.com/watch?v=w8WJrUPr5TQ">ABB Robotics · Create a Backup file in RobotStudio</a>.</p>
+
     <h2>Read the station’s input contract</h2>
     <p>Download <a href="../assets/labs/station-journal/station-events.csv" download>the synthetic station transcript</a> and <a href="../assets/labs/station-journal/journal.py" download>the Python replay</a> into one writable folder. Use Python 3 with SQLite from its standard library. The files describe an offline exercise. The transcript is in receiver order and the timestamps come from different source clocks.</p>
     <p>A PLC registration declares the job key, part serial and recipe. For a good part the journal needs matching camera inspection, independent placement proof and a good robot result in the current evidence generation. The source labels are assigned in the exercise. A deployment would verify those origins at its interface.</p>

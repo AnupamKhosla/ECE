@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 55–75 min</span><span><b>Before this</b> <a href="p141-ros2-mobile-bringup.html">P141 · ROS 2 navigation stack</a> · <a href="p150-ros2-navigation-trace.html">P150 · Diagnose navigation timing</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Mobile robot platform with computing and base-drive hardware">
+      <figcaption>The robot computer can publish odometry while a remote observer subscribes. Check the publisher and subscriber configuration on both systems.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Follow the publisher and subscriber QoS settings in the C++ examples. Check both profiles before assuming the producer has stopped. <a href="https://www.youtube.com/watch?v=PtFQ2XI5i2I">The Construct · Managing QoS in ROS 2</a>.</p>
+
     <h2>Build the diagnosis around matched endpoints</h2>
     <p>A publisher offers a QoS profile. A subscriber requests a profile. A best-effort offer can satisfy a best-effort request. A reliable request needs a reliable offer. In discovery both endpoints can be listed under the same topic, while an incompatible pair exchanges no messages. Use endpoint properties, match count and the incompatible-policy event together. <a href="https://github.com/ros2/ros2_documentation/blob/jazzy/source/Concepts/Intermediate/About-Quality-of-Service-Settings.rst">ROS 2 Jazzy QoS compatibility rules</a>.</p>
     <p>Durability determines what a late reader is eligible to receive. In this exercise a transient-local publisher retains a sample and a matching late reader receives it while that publisher remains alive. A volatile late reader sees only new publications. Deadline tests the interval between updates. Lifespan limits how long a published sample remains deliverable.</p>

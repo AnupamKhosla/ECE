@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="t33-robot-motion-and-feedback.html">T33</a> · <a href="t65-robot-trajectory-timing.html">T65</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/arm.jpg" width="960" height="540" loading="lazy" decoding="async" alt="Robot grippers above trays of parts">
+      <figcaption>The workpieces and tool add collision geometry. Measure the parts of the station a path planner needs to represent.<br><small>Photo by Lexington Medical, Inc., scaled. <a href="https://commons.wikimedia.org/wiki/File:Lexington_Medical,_Inc._Manufacturing_Robot_Arm.jpg">Original photograph</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch the planning scene before and after the object is inserted. Identify how the route changes. <a href="https://www.youtube.com/watch?v=NzknK_SRDjk">Automatic Addison · Plan around objects in MoveIt 2</a>.</p>
+
     <h2>Define the start, goal and modeled world</h2>
     <p>A robot configuration <var>q</var> is the set of joint positions. Forward kinematics maps <var>q</var> to the pose of a specific link. Inverse kinematics can give several configurations reaching the same pose. A planning scene adds obstacle shapes and poses, attached equipment, robot link collision geometry and the rules for which pairs may touch. Change the fixture frame, mount a gripper or attach a carried part and you can change which configurations are allowed.</p>
     <p>A collision query at one state checks the geometry at that configuration. A path requires a sequence leading from verified start to goal with its own state and motion checks. Record which scene and transforms were used. A shape drawn in a viewer is only relevant to the plan when the planning scene accepts it in the intended frame. <a href="https://moveit.picknik.ai/main/doc/examples/planning_scene_ros_api/planning_scene_ros_api_tutorial.html">MoveIt · Applying planning scene changes</a>.</p>

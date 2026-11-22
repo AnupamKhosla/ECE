@@ -18,6 +18,12 @@
     <p class="lede">Both wheels start. The controller reboots, or it stays up while the driver still loses power. Trace the same load through six versions of the power path.</p>
     <div class="meta"><span><b>Time</b> 45–75 minutes</span><span><b>Before this</b> <a href="p138-robot-drive-sizing.html">P138 · Loaded voltage drops</a> · <a href="../theory/t24-measurement-datasheets.html">T24 · Measure at the load</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <figure class="course-photo">
+      <img src="../assets/photos/scope.jpg" width="960" height="1106" loading="lazy" decoding="async" alt="Four-channel digital oscilloscope displaying several traces">
+      <figcaption>A scope can capture a brief supply drop the meter averages away. Use separate traces for the rail and the start command.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Look for the start and stop current demands and how the supply and local capacitors respond. Compare them with the rail trace. <a href="https://www.ti.com/video/6265440667001">Texas Instruments · Motor power supply voltage margin and bulk capacitance</a>.</p>
     <h2>Measure each supply against its own return</h2>
     <p>The model starts with a 5.5 V source, 0.22 Ω internal resistance, a 0.50 Ω faulty positive contact and a 0.10 Ω return. Each simulated bridge draws 1.50 A for 10 ms at startup and then ramps to 0.60 A. The controller adds 0.15 A. The representative regulator supplies up to 3.3 V with 0.4 V static dropout. Set the exercise limits at 4.00 V at the driver terminals and 3.05 V between the controller’s supply and ground pins.</p>
     <p>Measure the pack, the differential bridge input, the contact and the return at the same instant. At peak demand, 3.15 A through the source’s 0.22 Ω drops 0.693 V, leaving 4.807 V at the pack. The 1.575 V contact drop and 0.315 V return drop leave 2.917 V at the bridge. The controller model falls to 2.517 V.</p>

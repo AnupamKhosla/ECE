@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 60–80 min</span><span><b>Before this</b> <a href="p45-2d-machine-vision.html">P45 · Controlled-light inspection</a> · <a href="p152-conveyor-robot-tracking.html">P152 · Align a frame with conveyor position</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/visioncamera.jpg" width="960" height="640" loading="lazy" decoding="async" alt="IDS uEye industrial camera with an open threaded lens mount and a visible image sensor">
+      <figcaption>The lens mount and camera position determine how much the image moves during an exposure. Mark the trigger position relative to the field of view.<br><small>Photo by Lg123456, scaled. <a href="https://commons.wikimedia.org/wiki/File:Ids-machine-vision-cameras-usb2-2004.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Observe the inspection point on the moving bottle line and identify when a result needs to reach the downstream handling system. <a href="https://bytronic.com/insights/deep-learning-bottle-inspection/">Bytronic · Bottle inspection on a moving production line</a>.</p>
+
     <h2>Calculate how far the target moves during exposure</h2>
     <p>At 400 mm/s and a local image scale of 4 pixels per mm, the image moves at 1,600 pixels/s. It travels 3.2 px during a 2 ms exposure and 12.8 px during 8 ms. That travel is the ideal horizontal smear distance for each feature. If a specific feature must smear by at most 2 px, use an exposure of at most 1.25 ms at the same speed and scale. Check brightness and sensor noise at that exposure.</p>
     <p>The global-shutter model exposes all rows together. The rolling model has a 35 µs step between adjacent rows’ exposure midpoints. The two reference marks lie 80 rows apart. Their exposures are separated by 2.8 ms, so the predicted horizontal displacement difference is 1.12 mm. Reducing the per-row exposure reduces blur. The interval between rows still gives shear when the target moves. Use the actual camera’s shutter and readout documentation. <a href="https://docs.baslerweb.com/electronic-shutter-types">Basler electronic shutter types and row timing</a>.</p>

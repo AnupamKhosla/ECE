@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="t33-robot-motion-and-feedback.html">T33</a> · <a href="t61-servo-dynamics-and-axis-sizing.html">T61</a> · <a href="../practice/p142-robot-arm-path-planning.html">P142</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/servo.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Disassembled servo showing motor, gears and output shaft">
+      <figcaption>The real joint gear train and controlled load both constrain how quickly the shaft can move.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch how each axis position contributes to the tool pose, then work through how a timing profile reaches those positions together. <a href="https://www.youtube.com/watch?v=cKHsil0V6Qk">Northwestern Robotics · Forward kinematics example</a>.</p>
+
     <h2>Find out whether an axis can reach top speed</h2>
     <p>For a rest-to-rest move of length D, use equal acceleration and braking magnitude a and speed limit V. Each ramp covers V²/(2a) if the axis reaches V. For D ≥ V²/a, accelerate for V/a, cruise for (D − V²/a)/V and brake for V/a. For a shorter move the two ramps meet at a lower peak speed √(Da). The time is 2√(D/a). A negative move uses the same duration with the direction reversed.</p>
     <p>For D = 240 mm, V = 120 mm/s and a = 240 mm/s², the ramps use 60 mm in total. The axis accelerates for 0.50 s, cruises for 1.50 s and brakes for 0.50 s. At D = 30 mm it peaks at 84.9 mm/s and takes 0.707 s. A short move can take longer than distance divided by the speed limit because the ramps dominate. <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-2-of-2/">Northwestern · Timing profiles video</a>.</p>

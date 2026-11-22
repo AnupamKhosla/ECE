@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 60–75 minutes</span><span><b>Before this</b> <a href="p142-robot-arm-path-planning.html">P142</a> · <a href="../theory/t65-robot-trajectory-timing.html">T65</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/servo.jpg" width="960" height="640" loading="lazy" decoding="async" alt="Disassembled servo showing motor, gears and output shaft">
+      <figcaption>The exposed gear train connects motor motion to joint position. Record axis travel and velocity limits before timing a shared move.<br><small>Photo by oomlout, resized. <a href="https://commons.wikimedia.org/wiki/File:Exploded_Servo.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Pause to identify the contribution of each joint to tool position. Then use the paired axis timing exercise to keep the endpoints synchronized. <a href="https://www.youtube.com/watch?v=cKHsil0V6Qk">Northwestern Robotics · Forward kinematics example</a>.</p>
+
     <h2>Calculate the motion before running it</h2>
     <p>Each axis starts at relative position 0° and at rest. The lab uses these fictional operating limits. For the shared profiles, divide each limit by the magnitude of the corresponding travel and take the tightest value for each derivative.</p>
     <div class="table-wrap"><table>

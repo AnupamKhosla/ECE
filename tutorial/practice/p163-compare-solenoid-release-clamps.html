@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p08-transistor-switches.html">P08</a> · <a href="../theory/t06-magnetism-inductors.html">T06</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/solenoid.jpg" width="960" height="718" alt="Close-up of a DC 24 V valve solenoid coil and a clear electrical plug" loading="lazy" decoding="async">
+      <figcaption>Find the plug and coil body. Measure coil voltage at the isolated trainer wiring and compare the time of mechanical release.<br><small>Photo by Sarah Adrita, scaled. <a href="https://commons.wikimedia.org/wiki/File:Solenoid_coil_of_a_pneumatic_valve.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Observe how the probe changes a fast edge. Keep that effect separate from the clamp’s effect on the solenoid voltage. <a href="https://www.youtube.com/watch?v=zodpCuxwn_o">w2aew · Oscilloscope probe ground lead length and signal quality</a>.</p>
+
     <h2>Predict the off-state current path</h2>
     <p>Download <a href="../assets/labs/coil-release/coil-release.cir" download>the ngspice circuit</a>. It has two separate 100 mH, 80 Ω windings and identical low-side switches, both fed by an ideal 12 V rail. Trace conventional current from the rail through the winding and switch before turn-off. When the switch opens, the winding current still flows toward the switching node. It returns to the rail through the clamp.</p>
     <pre><code>Freewheel branch     switch node → diode forward → +12 V rail

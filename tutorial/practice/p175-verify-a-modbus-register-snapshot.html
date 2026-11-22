@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 55–75 min</span><span><b>Before this</b> <a href="p14-serial-buses-modbus.html">P14 · Modbus and serial buses</a> · <a href="../theory/t38-time-series-and-digital-buses.html">T38 · Time series and evidence</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/plc.jpg" width="960" height="627" loading="lazy" decoding="async" alt="Small industrial PLC and DIN rail power supply">
+      <figcaption>Industrial controllers exchange values through addressed registers. Keep the register map with the firmware and record each snapshot revision.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Go to the holding-register implementation at 57:48 and identify the response fields you need to verify as a coherent group. <a href="https://www.youtube.com/watch?v=QOT4b1To3tg">ControllersTech · STM32 Modbus RTU master and slave tutorial</a>.</p>
+
     <h2>Read the device map as a contract</h2>
     <p>The training position is a signed 32-bit number in micrometres. It occupies two contiguous holding registers, high word first. Function 03 reads 16-bit registers. The protocol defines high byte first within each word. The device map defines the order, signedness and scale of the combined value. A drawing that numbers the first holding register as 40001 corresponds to starting address zero in the request for this map. <a href="https://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf">Modbus application protocol, section 6.3</a>.</p>
     <div class="table-wrap"><table>

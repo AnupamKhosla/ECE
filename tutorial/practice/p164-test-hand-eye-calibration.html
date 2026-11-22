@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 55–75 minutes</span><span><b>Before this</b> <a href="../theory/t67-robot-hand-eye-calibration.html">T67</a> · <a href="p143-camera-to-robot-calibration.html">P143</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Stereo camera mounted on a tripod">
+      <figcaption>A camera&#x27;s mounting points define its relation to the bracket. Any motion between camera and bracket changes the fitted transform.<br><small>Photo by Marc Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Locate the camera relative to the robot. Check which frame the measured pose must use before the pick. <a href="https://www.youtube.com/watch?v=-wGyW12WX8o">Pickit · Robot vision demonstration</a>.</p>
+
     <h2>Run a reproducible simulation</h2>
     <p>Download <a href="../assets/labs/hand-eye/calibrate.py" download>the calibration exercise</a> and run it with Python 3, NumPy and OpenCV. Ubuntu 24.04 provides <code>python3-opencv</code> and <code>python3-numpy</code>. The measured examples below use OpenCV 4.6.0 and NumPy 1.26.4. No camera, robot or recorded images are required.</p>
     <pre><code>python3 calibrate.py --mount wrist

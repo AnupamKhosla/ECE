@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 45–65 min</span><span><b>Before this</b> <a href="p49-can-bus-and-telemetry.html">P49 · Decode a virtual CAN frame</a> · <a href="../theory/t38-time-series-and-digital-buses.html">T38 · Sampling, buses and evidence</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/can.jpg" width="658" height="960" loading="lazy" decoding="async" alt="Connector used for CAN on equipment at the European Southern Observatory">
+      <figcaption>The connector only defines a physical bus boundary. Identify the sample timestamp and timeout separately at the receiver.<br><small>Photo by ESO/H.H.Heyer, scaled. <a href="https://commons.wikimedia.org/wiki/File:ESO-CANbus-connector_(eso-canbus-0134).jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch frames cross a local virtual CAN interface. Then measure receiver behavior when a sample arrives too late. <a href="https://www.youtube.com/watch?v=icEx1Q_U7J0">The EV Engineer · Virtual CAN interface tutorial</a>.</p>
+
     <h2>Define what can refresh the signal</h2>
     <p>This training wheel monitor expects a valid frame on standard ID <code>0x421</code> approximately every 100 ms. It becomes stale after 350 ms without an accepted sample, measured by the receiver’s monotonic clock. An explicit supervised generation change clears the previous evidence. The fictional format below uses little-endian fields and has no link to a vehicle or a production CAN protocol.</p>
     <div class="table-wrap"><table>

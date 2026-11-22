@@ -18,6 +18,12 @@
     <p class="lede">A production station measures a 20 mm feature. The same reference part passes on one shift and fails on another. Use a crossed measurement study to find the source and test a fixture change.</p>
     <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="../theory/t24-measurement-datasheets.html">T24 · Measurement and uncertainty</a> · <a href="p58-board-production-test.html">P58 · Board test fixture</a> · <a href="p164-test-hand-eye-calibration.html">P164 · Held-out calibration</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/load.jpg" width="960" height="553" loading="lazy" decoding="async" alt="HBBG beam load cell with bellows, cable and sensitivity marked on its label">
+      <figcaption>Find the fixed and loaded ends of the load cell. A measurement fixture should apply force at the intended point in the same way each time.<br><small>Photo by Daraceleste, scaled. <a href="https://commons.wikimedia.org/wiki/File:HBBG-50KG_load_cell.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch how the operator places the board against stops. Identify the equivalent locating and probing checks for your fixture. <a href="https://www.youtube.com/watch?v=9Bb1QzFJNCU">Adafruit · QT Py production test fixture</a>.</p>
     <h2>Cross operators with the same reference parts</h2>
     <p>The nominal dimension is 20.000 mm and the acceptable interval is 19.850–20.150 mm. Compare a flat support with a revised fixture that locates the feature against a defined datum. Use the same ten reference parts for both fixtures, including known good and out-of-limit samples. Each of three operators measures every part twice per fixture, removing and reseating the part each time. This gives 60 readings per fixture. In a live study, blind the operators to the reference readings and previous results, randomise each run, and record the gauge revision, master and environment.</p>
     <p>Run this synthetic study with <a href="../assets/labs/fixture-study/measurements.csv" download>the 120 measurements</a> and <a href="../assets/labs/fixture-study/fixture_study.py" download>the Python analysis</a>. The dataset has declared reference values. Real reference values also carry uncertainty and need a defensible basis before you use them to judge classification errors.</p>

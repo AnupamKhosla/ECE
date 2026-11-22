@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 60–85 min</span><span><b>Before this</b> <a href="p162-recover-a-robot-station-journal.html">P162 · Station journal</a> · <a href="../theory/t72-robot-cell-backup-and-recovery.html">T72 · Cell recovery</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/plc.jpg" width="960" height="627" loading="lazy" decoding="async" alt="Small industrial PLC and DIN rail power supply">
+      <figcaption>Record the controller’s hardware model and wire identifiers before a restore. The parked robot and interlocks also have to be proved.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch where the controller backup is written and name the checks you will run after restoring it to a test system. <a href="https://www.youtube.com/watch?v=w8WJrUPr5TQ">ABB Robotics · Create a Backup file in RobotStudio</a>.</p>
+
     <h2>Gather the packet and commissioning record</h2>
     <p>Use Python 3 with the standard SQLite module and a local writable directory. Put <a href="../assets/labs/station-restore/restore_drill.py" download>restore_drill.py</a>, <a href="../assets/labs/station-journal/journal.py" download>journal.py</a>, <a href="../assets/labs/station-journal/station-events.csv" download>station-events.csv</a> and <a href="../assets/labs/station-restore/post-backup-events.csv" download>post-backup-events.csv</a> in the same directory. The exercise creates only simulated files in a new directory. Run with a fresh name for each attempt.</p>
     <pre><code>python3 restore_drill.py run-01 station-events.csv post-backup-events.csv &gt; restore-log.csv

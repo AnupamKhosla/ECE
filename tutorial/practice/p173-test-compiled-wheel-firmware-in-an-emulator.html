@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 70–100 min</span><span><b>Before this</b> <a href="p153-close-the-loop-on-a-real-wheel.html">P153 · Wheel-speed sketch</a> · <a href="p139-wheel-speed-control.html">P139 · Tune a wheel model</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/pico.jpg" width="960" height="454" alt="Raspberry Pi Pico with RP2040, USB connector and BOOTSEL button" loading="lazy" decoding="async">
+      <figcaption>This board illustrates the hardware target a firmware image can run on. An emulator must model the CPU and the specific peripherals the image uses.<br><small>Photo by Phiarc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Pico_top.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Start at 12:08 for the demos. Look for the firmware binary, simulated target and peripheral or sensor input. <a href="https://www.youtube.com/watch?v=v7Esy1uWhpQ">Nordic Semiconductor and Antmicro · Renode and Zephyr demonstration</a>.</p>
+
     <h2>Build two sketches for the same board</h2>
     <p>Use a new writable exercise directory with Node.js, npm and Arduino CLI. Download <a href="../assets/labs/wheel-speed-trainer/wheel-speed-trainer.ino" download>wheel-speed-trainer.ino</a> into a folder named <code>wheel-speed-trainer</code>. Keep <code>closedLoop</code> false for the first build. Install the pinned Uno core if necessary, then compile the sketch. There is no board to connect or upload in this lab.</p>
     <pre><code>arduino-cli core update-index

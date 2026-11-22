@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 40–60 minutes</span><span><b>Before this</b> <a href="t36-camera-optics-and-depth.html">T36</a> · <a href="../practice/p143-camera-to-robot-calibration.html">P143</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/depth.jpg" width="720" height="960" loading="lazy" decoding="async" alt="Stereo camera mounted on a tripod">
+      <figcaption>Look at the sensor windows and the housing. Establish a repeatable reference to the flange for eye-in-hand calibration.<br><small>Photo by Marc Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:Intel_Realsense_depth_camera_D435.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Find the camera mount and the coordinate frame used for picking. Compare a fixed camera mount with the eye-in-hand example. <a href="https://www.youtube.com/watch?v=-wGyW12WX8o">Pickit · Robot vision demonstration</a>.</p>
+
     <h2>Name the frame each transform maps into</h2>
     <p>Write <code>T(a←b)</code> for a transform that maps a point from frame <var>b</var> into frame <var>a</var>. With column vectors, apply the rightmost factor first. Robot reports supply <code>Gᵢ = T(base←tool)</code>. The camera’s perspective pose estimate supplies <code>Cᵢ = T(camera←target)</code> for the image paired to the same robot pose. Here <em>tool</em> means the rigid flange or tool frame selected for the entire calibration.</p>
     <div class="table-wrap"><table>

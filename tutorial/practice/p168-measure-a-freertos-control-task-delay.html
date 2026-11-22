@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 45–70 min</span><span><b>Before this</b> <a href="../theory/t70-rtos-priorities-blocking-and-deadlines.html">T70 · Tasks, blocking and deadlines</a> · Basic C and terminal use</span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/pico.jpg" width="960" height="454" alt="Raspberry Pi Pico with RP2040, USB connector and BOOTSEL button" loading="lazy" decoding="async">
+      <figcaption>This microcontroller board has accessible pins for logic timing measurements. Use the pinout and a common reference before toggling a test GPIO.<br><small>Photo by Phiarc, scaled. <a href="https://commons.wikimedia.org/wiki/File:Raspberry_Pi_Pico_top.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Observe which task runs at each tick before measuring the start of the periodic task on the trainer. <a href="https://www.youtube.com/watch?v=95yUbClyf3E">DigiKey and Shawn Hymel · Task scheduling in FreeRTOS</a>.</p>
+
     <h2>Build the Linux exercise</h2>
     <p>Use Linux with a C compiler, GNU Make or another CMake generator, CMake 3.16 or newer and the POSIX headers. No board or robot is required. Download <a href="../assets/labs/rtos-priority/CMakeLists.txt" download>CMakeLists.txt</a>, <a href="../assets/labs/rtos-priority/FreeRTOSConfig.h" download>FreeRTOSConfig.h</a> and <a href="../assets/labs/rtos-priority/robot_task_latency.c" download>robot_task_latency.c</a> into one directory. Download the source archive from the <a href="https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/tag/V11.2.0">FreeRTOS-Kernel V11.2.0 release</a> and unpack it beside those files. Replace the kernel path below if the directory has a different name.</p>
     <pre><code>cmake -S . -B build -DFREERTOS_KERNEL="$PWD/FreeRTOS-Kernel-11.2.0"

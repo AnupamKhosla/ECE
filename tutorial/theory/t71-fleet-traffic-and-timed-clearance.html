@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 40 min</span><span><b>Before this</b> <a href="t64-robot-maps-costmaps-and-route-search.html">T64 · Maps and footprint clearance</a> · <a href="../practice/p145-mobile-robot-fleet.html">P145 · Fleet capacity and occupancy</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Mobile robot platform with computing and base-drive hardware">
+      <figcaption>Plan for the footprint of the chassis and load when vehicles share a route. Measure how far that footprint extends past the axle.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Identify the shared places where arrival windows could overlap, then match each crossing decision to its clearance event. <a href="https://vimeo.com/649654300">Open Robotics · RMF multi-robot traffic management demonstration</a>.</p>
+
     <h2>A path occupies space over time</h2>
     <p>Use two equal-speed robots travelling on perpendicular straight paths in the same map frame. Their centres reach the crossing at times <em>t<sub>A</sub></em> and <em>t<sub>B</sub></em>. When both are moving on these segments at speed <em>v</em>, the squared centre distance is <code>d²(t) = v²[(t − t<sub>A</sub>)² + (t − t<sub>B</sub>)²]</code>. The minimum is at the midpoint of the two crossing times if it lies inside both segments. There <code>d<sub>min</sub> = v × |t<sub>B</sub> − t<sub>A</sub>| / √2</code>.</p>
     <p>Compare the distance with the sum of the disk radii. At 1 m/s and 1.2 s separation, the minimum is 0.849 m. Empty disks with combined radius 0.62 m leave 0.229 m of modeled clearance. Loaded disks with combined radius 0.96 m overlap by about 0.111 m. The waypoints and start times are identical in both cases. Use appropriate polygon or envelope models for turning loads whose outlines cannot be represented well by one disk.</p>

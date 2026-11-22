@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 45–65 minutes</span><span><b>Before this</b> <a href="p13-actuators-motors.html">P13</a> · <a href="../theory/t58-robot-actuators-and-loads.html">T58</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/vfd.jpg" alt="Siemens variable-frequency drive keypad and display" width="960" height="1280" loading="lazy" decoding="async">
+      <figcaption>This industrial drive illustrates the motor and power supply boundary. The experiment uses a separate low-voltage trainer with accessible bus test points.<br><small>Photo by Sarah Adrita, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_VFD.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Follow the direction of current during regeneration and compare it with the rise observed at the bus capacitor. <a href="https://www.ti.com/video/6265440667001">Texas Instruments · Motor power supply voltage margin and bulk capacitance</a>.</p>
+
     <h2>Predict which path takes the energy</h2>
     <p>Download <a href="../assets/labs/motor-braking/motor-braking.cir" download>the ngspice motor and bridge model</a>. The three model branches have the same winding, torque constant, inertia and friction. Each begins with a charged 12 V bus capacitor and zero winding current. The first two shafts start at 180 rad/s. The third represents a shaft already driven by its mechanical load to 280 rad/s. The simulation starts after the drive command has been removed.</p>
     <div class="table-wrap"><table>

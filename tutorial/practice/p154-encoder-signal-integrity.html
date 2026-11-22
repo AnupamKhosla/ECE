@@ -26,6 +26,8 @@
       <figcaption>Use the receiver’s own signal reference and document the probe arrangement. Probe capacitance becomes part of the load you measure.<br><small>Photo by Radarvector, resized. <a href="https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg">Original</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
     </figure>
 
+    <p class="course-video"><b>Watch.</b> Watch how a longer return lead changes the displayed waveform. Record the probe grounding used before diagnosing encoder signal quality. <a href="https://www.youtube.com/watch?v=zodpCuxwn_o">w2aew · Oscilloscope probe ground lead length and signal quality</a>.</p>
+
     <h2>Measure a slow rising edge on an isolated 5 V bench</h2>
     <p>With the Uno powered off, put a 4.7 kΩ resistor from D7 to its 5 V rail. There is no motor or field wiring in this exercise. Power the Uno by USB. Tie the scope reference to the trainer ground and probe D7 with an appropriately configured 10× probe. D7 alternates between driving low and going high impedance. The external pull-up creates the rising edge.</p>
     <pre><code>void setup() {

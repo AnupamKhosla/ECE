@@ -18,6 +18,12 @@
     <p class="lede">A robot has placed a part and the record service stops answering. Use a compiled PLC function block and a real SQLite journal to decide when the station can acknowledge that result.</p>
     <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p161-compile-and-replay-a-plc-robot-station.html">P161 · PLC scan replay</a> · <a href="p162-recover-a-robot-station-journal.html">P162 · Durable records</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <figure class="course-photo">
+      <img src="../assets/photos/plc.jpg" width="960" height="627" loading="lazy" decoding="async" alt="Small industrial PLC and DIN rail power supply">
+      <figcaption>A PLC can drive the physical completion signal to the next station. Check the agreement between its tag states and the durable record.<br><small>Photo by MakeMagazinDE, resized. <a href="https://commons.wikimedia.org/wiki/File:Siemens_sps_logo_8_12-24_RCE-03.jpg">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Trace the output contact to a field signal. Then mark the extra step where your controller saves a completion before acknowledging it. <a href="https://www.youtube.com/watch?v=snu8JNM-J1A">RealPars · Convert a wiring diagram to a PLC program</a>.</p>
     <h2>Separate the part, the record and the receipt</h2>
     <p>In this training cell, the robot holds its completed result until the station acknowledges it. The pending candidate binds the cell session, job ordinal, part serial and proof generation. The journal counts a good part only after its own inspection and placement checks. The PLC accepts a positive receipt for that same record while the candidate is still present and the link is healthy. The exercise uses no equipment or motion outputs.</p>
     <p>A delivery timeout leaves two plausible histories. The worker may have exited before committing, or it may have committed and exited before replying. The PLC returns to review in both cases. Once the part evidence has been checked and a fresh review edge arrives, the same event ID is retried. The first history creates the record and the second returns the recorded outcome.</p>

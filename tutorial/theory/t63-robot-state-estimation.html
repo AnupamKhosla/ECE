@@ -19,6 +19,12 @@
     <div class="meta"><span><b>Time</b> 55 minutes</span><span><b>Before this</b> <a href="t35-calibration-and-condition-data.html">T35</a> · <a href="t59-localization-and-navigation.html">T59</a> · <a href="../practice/p140-wheel-odometry.html">P140</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
+    <figure class="course-photo">
+      <img src="../assets/photos/labs/ros.png" width="921" height="960" loading="lazy" decoding="async" alt="Mobile robot platform with computing and base-drive hardware">
+      <figcaption>Wheel motion is one source of pose evidence on a mobile base. It is affected by slip, scale and delay.<br><small>Photo by Auledas, scaled. <a href="https://commons.wikimedia.org/wiki/File:TurtleBot_2.png">Original photograph</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Use the fused localization video to compare the changing estimate with the robot’s motion. <a href="https://docs.picknik.ai/9/how_to/mobile_navigation/nav2_mobile_navigation/">PickNik Robotics · Fused localization and navigation video</a>.</p>
+
     <h2>Track the estimate and its uncertainty</h2>
     <p>Use a toy robot constrained to a straight rail. Its state <i>x</i> is position in metres. An encoder provides signed travel <i>u</i> since the previous update. A fixed landmark occasionally gives an independent position <i>z</i> in the same coordinate system. In this model the remaining incremental travel and observation errors are independent, zero-mean and represented by variances <i>Q</i> and <i>R</i>. A spread of 0.20 m means a variance of 0.040 m². A fixed offset needs its own calibration or a model that can estimate it.</p>
     <div class="table-wrap"><table>
