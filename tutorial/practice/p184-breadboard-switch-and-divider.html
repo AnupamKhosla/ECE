@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P184 · Read a switch and build a voltage divider</title>
+<meta name="description" content="Make two circuits that turn a switch position or two resistor values into a voltage you can measure.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P184</span>
+    <h1>Read a switch and build a voltage divider</h1>
+    <p class="lede">Make two circuits that turn a switch position or two resistor values into a voltage you can measure.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="p182-first-breadboard-circuits.html#first-led">P182 · First LED</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Set up once</h2>
+    <p>Use one 830-point breadboard, a regulated 5 V supply, a multimeter, two 68 kΩ resistors, one 10 kΩ resistor and four jumpers including a removable link. See the <a href="p187-build-a-door-left-open-indicator.html#parts">shared parts list with buying links</a>. Set the red probe in V/Ω and the black probe in COM. Use a current-limited supply set to 50 mA if you have one. A USB-A 5 V screw-terminal breakout on a regulated USB wall adapter is an alternative. Verify polarity at its terminals before connecting the board.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/breadboard-two-resistors.jpg" data-image-preview="Two resistors on a solderless breadboard" data-preview-source="divider-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/breadboard-two-resistors.jpg" width="960" height="720" alt="Two resistors on a solderless breadboard" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Find the shared strip at the two resistor leads. This photograph shows the placement principle. Follow the numbered strips below. <small>Toluaj · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>. <a id="divider-photo" href="https://commons.wikimedia.org/wiki/File:Breadboard_and_resistors.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> See the midpoint move when the resistor values change, then watch what changes when a load draws current. <a href="https://www.youtube.com/watch?v=XxLKfAZrhbM">Afrotechmods · Voltage divider tutorial</a>.</p>
+    <h2 id="divider">1 · Make 2.5 V from two resistors</h2>
+    <pre><code>+5 V ── 68 kΩ ── SENSE ── 68 kΩ ── GND
+                   │
+                   └── red meter probe (DC V)</code></pre>
+    <ol>
+      <li>With power off, wire the red rail to +5 V and the blue rail to GND. Use the same uninterrupted rail section for all these connections. Check a16–b16 continuity and check a16–a17 is open on the bare board.</li>
+      <li>Put one 68 kΩ from the + rail to <b>a16</b>. Put the second from <b>b16</b> to the GND rail. If a resistor cannot span the distance comfortably, put its end on a spare strip and run a jumper from that strip to the rail.</li>
+      <li>Power on. With black on GND, measure +5 V, then probe <b>e16</b>. Expect 4.75–5.25 V on the rail and 2.25–2.75 V at SENSE. Record both readings.</li>
+      <li>Switch off. Add the 10 kΩ resistor from <b>c16</b> to GND. Switch on and repeat the SENSE reading. Expect about <b>0.57 V</b> at a 5 V supply. Remove the extra resistor with power off. Confirm SENSE returns near half the supply.</li>
+    </ol>
+    <p>The two series resistors share the input voltage because the same current passes through both. The extra 10 kΩ makes the effective lower leg about 8.72 kΩ. The changed ratio explains the lower voltage. <a href="../theory/t04-circuit-laws.html">Theory · Dividers and equivalent resistance</a>.</p>
+    <h2 id="pull-up">2 · Give an open switch a defined voltage</h2>
+    <pre><code>+5 V ── 10 kΩ ── CONTACT ── switch ── GND</code></pre>
+    <ol>
+      <li>With power off, move the 10 kΩ into a fresh circuit from + to <b>a10</b>. Leave the divider in place. Make the switch by putting a jumper from <b>b10</b> to GND. Remove that jumper to open the switch. A two-pin normally open button can replace the jumper.</li>
+      <li>Switch on with the jumper removed. Black stays on GND. Probe <b>e10</b>, which should be within 0.1 V of the + rail. Power off, put in the jumper, then switch on. Expect under 0.1 V.</li>
+      <li>Power off and remove the switch jumper and the 10 kΩ. Keep the two 68 kΩ resistors on strip 16 for P185.</li>
+    </ol>
+    <p>The 10 kΩ is a <b>pull-up</b>. It gives the open contact a defined high state. In the closed position the switch pulls CONTACT to GND while the resistor limits current to about 0.5 mA. If every reading is 0 V, check the + rail first. If closing the switch changes nothing, check the jumper reaches GND and strip 10.</p>
+    <details class="quiz"><summary>Why would removing the 10 kΩ make the open-contact reading unreliable?</summary><div class="answer"><p>CONTACT would have no deliberate path to either rail. The meter, nearby wiring and leakage could set the reading.</p></div></details>
+    <p class="caption">Voltage ranges are calculated bench checks. The photo is a representative circuit.</p>
+    <a class="crosslink" href="p185-breadboard-rc-delay.html">Next · Time a rising voltage with a capacitor</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

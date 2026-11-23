@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P189 · Build a mini building-management panel</title>
+<meta name="description" content="Make a tabletop version of a ventilation controller. A dial represents the temperature, a reed contact senses a real door, and two separate lamps show the fan command and the fan proof signal.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P189</span>
+    <h1>Build a mini building-management panel</h1>
+    <p class="lede">Make a tabletop version of a ventilation controller. A dial represents the temperature, a reed contact senses a real door, and two separate lamps show the fan command and the fan proof signal.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p188-solder-a-door-indicator-pcb.html">P188 · Soldered door indicator</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Read the panel before you wire it</h2>
+    <p>In a <a href="../career/c01-bms-fundamentals.html">building management system</a> (BMS), a controller reads field points, makes a decision and reports the result. A fan command says the controller asked the fan to start. A proof point comes back from a separate device that checks it. The green lamp on this trainer stands for the command. A switch injects proof and lights the yellow lamp. Red means door open or a latched proof fault. The dial and fan lamps let you commission the sequence with inexpensive parts.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/esp32-wroom-devboard.jpg" data-image-preview="Classic 30-pin ESP32 development board with header pins" data-preview-source="bms-board-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/esp32-wroom-devboard.jpg" width="1200" height="921" alt="Classic 30-pin ESP32 development board with header pins" loading="lazy" decoding="async">
+      </a>
+      <figcaption>The photographed WROOM board has D25, D26, D27, D32, D33 and D34 marked. Check GPIO23 and GND on your own board. The 38-pin DevKitC uses IO labels and places the pins differently. <small>Ubahnverleih, resized · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. <a id="bms-board-photo" href="https://commons.wikimedia.org/wiki/File:ESP32_Espressif_ESP-WROOM-32_Dev_Board.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/pot.jpg" data-image-preview="A three-terminal rotary potentiometer" data-preview-source="bms-pot-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/pot.jpg" width="888" height="1040" alt="A three-terminal rotary potentiometer" loading="lazy" decoding="async">
+      </a>
+      <figcaption>The outer pins are opposite ends of the track, and the middle terminal is usually the wiper. Confirm which is which using resistance mode on the unplugged part. <small>Iainf · <a href="https://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a>. <a id="bms-pot-photo" href="https://commons.wikimedia.org/wiki/File:Potentiometer.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Two-piece magnetic contact installed on a cabinet door" data-preview-source="reed-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/door-magnet-contact.jpg" width="1200" height="675" alt="Two-piece magnetic contact installed on a cabinet door" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Match the fixed contact body and the magnet on the moving side. This installation illustrates placement. For the build, use a wired contact that closes when its magnet is beside it. <small>Raimond Spekking, resized · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. <a id="reed-photo" href="https://commons.wikimedia.org/wiki/File:Magnet_contact_as_burglary_prevention-9294.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Follow the board and USB port selection, upload and Serial Monitor. Use the downloadable control program below. <a href="https://www.youtube.com/watch?v=xPlN_Tk3VLQ">DroneBot Workshop · Introduction to ESP32 – Getting Started</a>.</p>
+    <h2>Collect one set of parts</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">Specification</th><th scope="col">Australia</th><th scope="col">India</th></tr></thead>
+      <tbody><tr><th scope="row">1 · ESP32 classic WROOM-32/32E <span class="preview-links"><a class="preview-trigger" href="../assets/photos/esp32-wroom-devboard.jpg" data-image-preview="ESP32 board and pins" data-preview-source="bms-board-photo" aria-haspopup="dialog">View photo</a></span></th><td>Fitted pin headers, matching USB data cable and laptop running Arduino IDE. Reuse the board from <a href="p183-control-a-circuit-from-your-laptop.html#parts">P183</a>.</td><td><a href="https://www.mlab.com.au/products/espressif-esp32-devkitc-board">MLAB · 32E DevKitC</a></td><td><a href="https://quartzcomponents.com/products/esp32-30-pin-development-board-with-wi-fi-and-bluetooth?variant=45080070455530">QuartzComponents · 30-pin ESP32</a></td></tr>
+      <tr><th scope="row">1 · 10 kΩ linear potentiometer <span class="preview-links"><a class="preview-trigger" href="../assets/photos/pot.jpg" data-image-preview="Potentiometer with three terminals" data-preview-source="bms-pot-photo" aria-haspopup="dialog">View photo</a></span></th><td>B10K, through-hole or with leads. Simulates a change in supply or room temperature. Add a 100 nF ceramic capacitor from the wiper to GND.</td><td><a href="https://au.element14.com/c/passive-components/potentiometers-trimmers-accessories/potentiometers">element14 Australia · Linear potentiometers</a></td><td><a href="https://in.element14.com/c/passive-components/potentiometers-trimmers-accessories/potentiometers">element14 India · Linear potentiometers</a></td></tr>
+      <tr><th scope="row">3 · Indicators and resistors <span class="preview-links"><a class="preview-trigger" href="../assets/photos/led.jpg" data-image-preview="LEDs of different colours and their leads" data-preview-source="bms-led-photo" aria-haspopup="dialog">View photo</a></span></th><td>One each red, yellow and green, high-efficiency two-lead LEDs and three 1 kΩ ¼ W resistors. <a id="bms-led-photo" href="https://commons.wikimedia.org/wiki/File:LED_Rainbow_Pack_-_5mm_PTH_12903-01_new_aranged.jpg">Elmepi · CC BY 2.0</a>.</td><td><a href="https://www.jaycar.com.au/components-electromechanical/optoelectronics-leds-and-lighting/leds/standard-leds/c/2EAA">Jaycar · Standard LEDs</a></td><td><a href="https://quartzcomponents.com/collections/passive-components">QuartzComponents · LEDs and resistors</a></td></tr>
+      <tr><th scope="row">3 · Passive contacts <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Door magnet with companion contact" data-preview-source="reed-photo" aria-haspopup="dialog">View photo</a></span></th><td>One magnet contact from the door indicator or a jumper, one latching SPST proof switch and one normally open momentary reset button. Verify each contact with a meter before connection. Use a removable jumper in place of either switch for the first test.</td><td><a href="https://www.jaycar.com.au/security-alarm-reed-switch/p/LA5072">Jaycar · Door contact</a></td><td><a href="https://robu.in/product-category/magnetic-switches/">Robu · Wired contacts</a></td></tr>
+      <tr><th scope="row">1 · Breadboard and jumpers <span class="preview-links"><a class="preview-trigger" href="../assets/photos/breadboard.jpg" data-image-preview="830-point breadboard and rails" data-preview-source="bms-breadboard-photo" aria-haspopup="dialog">View photo</a></span></th><td>2.54 mm pitch, nine female-to-male jumpers and eight male-to-male jumpers. <a id="bms-breadboard-photo" href="https://commons.wikimedia.org/wiki/File:Electronics-White-Breadboard.jpg">Evan-Amos · public domain, resized</a>.</td><td><a href="https://core-electronics.com.au/male-female-jumper-wire-40-20cm.html">Core Electronics · Female-to-male</a></td><td><a href="https://quartzcomponents.com/collections/newest-products/products/male-to-male-and-female-to-male-combo-wires-set-of-10-10">QuartzComponents · Combo kit</a></td></tr></tbody>
+    </table></div>
+    <p>Tools are the P03 multimeter, USB cable, marker and scrap cardboard for the panel face. Use leads under 20 cm for the switch inputs on the bench. Make the door contact a dry switch by disconnecting it from the 5 V door indicator. Use a second contact if both products need to run at once.</p>
+    <h2 id="wire-panel">1 · Wire the miniature plant</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/mini-bms-wiring.svg" data-image-preview="ESP32 mini BMS wiring from three contacts and one dial to three LED branches" data-preview-source="bms-wiring-source" aria-label="Enlarge the drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/mini-bms-wiring.svg" width="750" height="475" alt="ESP32 mini BMS wiring from three contacts and one dial to three LED branches" loading="lazy" decoding="async">
+      </a>
+      <figcaption>The USB cable powers the development board. Everything connected to an input comes from its 3.3 V rail or a passive contact to GND. The three LED branches each have a resistor. <a id="bms-wiring-source" href="https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/hw-reference/esp32/get-started-devkitc.html">Reference for this drawing</a> · <a href="../assets/labs/foundation-build/mini-bms-wiring.svg" download>Download drawing</a>.</figcaption>
+    </figure>
+    <ol>
+      <li>Unplug USB. Set the ESP32 next to the breadboard. Wire GND and 3V3 to the uninterrupted blue and red rails. Label the red rail <b>3.3 V</b>. Fit the dial on spare strips on the f–j side or wire it with jumpers if the pin spacing differs. Use the numbers printed on the board headers.</li>
+      <li>Build each lamp and input from the table. Each end of a 1 kΩ resistor is four breadboard pitches (10.16 mm) apart. The LED holes are two pitches (5.08 mm) apart. Keep the anode on the resistor side. Clip the contact pairs to GND rather than bringing in a separate voltage.</li>
+      <li>Cut a stand-up cardboard face roughly 150 × 90 mm. Mark green FAN COMMAND, yellow PROOF, red ALARM, the dial TEMP SIM, and the switches DOOR, PROOF and RESET. For a first test, leave the actual LEDs on the breadboard and stick the labels beside them. Prop a small cardboard door up at the edge. Use the magnet to close its switch when it shuts.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Point and type</th><th scope="col">ESP32 pin</th><th scope="col">Wiring on the breadboard</th></tr></thead>
+      <tbody><tr><th scope="row">Temperature dial · analog input</th><td>GPIO34</td><td>Outer ends to 3V3 and GND. Wiper to g6, then g6 to GPIO34. 100 nF from h6 to GND.</td></tr>
+      <tr><th scope="row">Door shut · digital input</th><td>GPIO32</td><td>Pin to a30. One reed lead to b30 and other to GND. Closed contact means the door is shut.</td></tr>
+      <tr><th scope="row">Fan proof · digital input</th><td>GPIO33</td><td>Pin to a33. Proof switch from b33 to GND. Closed means the fan is proven.</td></tr>
+      <tr><th scope="row">Reset · digital input</th><td>GPIO23</td><td>Pin to a36. Momentary button from b36 to GND. A press acts once.</td></tr>
+      <tr><th scope="row">Fan command · digital output</th><td>GPIO25</td><td>Pin to a5. 1 kΩ b5–b9, LED c9 (A)–c11 (K), jumper a11 to GND.</td></tr>
+      <tr><th scope="row">Proof lamp · digital output</th><td>GPIO26</td><td>Pin to a14. 1 kΩ b14–b18, LED c18 (A)–c20 (K), jumper a20 to GND.</td></tr>
+      <tr><th scope="row">Alarm lamp · digital output</th><td>GPIO27</td><td>Pin to a23. 1 kΩ b23–b27, LED c27 (A)–c29 (K), jumper a29 to GND.</td></tr></tbody>
+    </table></div>
+    <p>Keep 5 V and external signals away from ESP32 inputs. With power off, confirm no short between the two rails and check all contact returns. The three contacts use the same pull-up idea as <a href="p184-breadboard-switch-and-divider.html#pull-up">P184</a>, this time inside the ESP32. An open contact reads high. The firmware translates the closed contact into a meaningful field state.</p>
+    <h2>2 · Load the controller and read live points</h2>
+    <p>Save <a href="../assets/labs/foundation-build/mini-bms/mini-bms.ino" download>mini-bms.ino</a> and <a href="../assets/labs/foundation-build/mini-bms/ventilation.h" download>ventilation.h</a> together in a folder called <code>mini-bms</code>. Open the .ino file. Follow <a href="p183-control-a-circuit-from-your-laptop.html#upload">P183’s Arduino IDE and board setup</a> through USB upload, using this sketch in place of the Wi-Fi sketch. Select ESP32 Dev Module, esp32 board core 3.3.8 and the USB serial port. Open Serial Monitor at <b>115200 baud</b>.</p>
+    <p>Start with the dial low, the door shut and proof open. Look for the CSV columns below. If you miss the header, reset the board. Spin the dial and verify the temperature column changes from roughly 18 °C to 30 °C. This reading comes from a dial scaled to a temperature range. Ground the wiper input temporarily if the value appears locked high.</p>
+    <pre><code>ms,simulated_temp_C,door_shut,proof,fan_command,mode,fault
+2500,21.0,1,0,0,idle,none
+6000,25.2,1,0,1,awaiting_proof,none
+7500,25.2,1,1,1,running,none</code></pre>
+    <p>The control loop turns on at 25 °C and stays on until 23 °C. That gap is the software version of <a href="p186-breadboard-comparator.html">the comparator’s hysteresis</a>. It waits up to eight seconds for proof. A proof that disappears while running or that stays on after stopping causes a lockout. Reset only clears it when the temperature is at or below 23 °C, the door is shut and proof is off.</p>
+    <h2 id="commission">3 · Prove the sequence and find one fault</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What to do</th><th scope="col">Pass result</th></tr></thead>
+      <tbody><tr><th scope="row">Door shut, proof off. Turn slowly through 25 °C.</th><td>Green on, yellow off, mode awaiting_proof.</td></tr>
+      <tr><th scope="row">Close PROOF within 8 s.</th><td>Yellow on, mode running. Green stays on.</td></tr>
+      <tr><th scope="row">Turn down to 24 °C, then to 23 °C.</th><td>At 24 °C green stays on. At or below 23 °C green turns off. Open PROOF within 3 s to return to idle.</td></tr>
+      <tr><th scope="row">Request cooling again with PROOF open and wait 8–9 s.</th><td>Green turns off, red turns on and fault is missing_proof.</td></tr>
+      <tr><th scope="row">Try reset while the dial is still high, then lower it and press again.</th><td>First press leaves the fault latched. Second press at or below 23 °C clears it with the door shut and proof open.</td></tr>
+      <tr><th scope="row">While running, open PROOF without moving the dial.</th><td>Green off and red on. The fault reads lost_proof.</td></tr>
+      <tr><th scope="row">Reset and request cooling again. With PROOF on, open the door.</th><td>Green off and red on for door open. Open PROOF within 3 s to simulate the fan coming to rest. If proof remains on the fault reads unexpected_proof.</td></tr></tbody>
+    </table></div>
+    <p>For a wiring fault, unplug USB and lift the jumper at b33. Reconnect and request cooling. Before changing code, verify that the yellow lamp stays off and the connection between the switch and GPIO33 is missing with power off. Restore the jumper, clear the fault and repeat the passing sequence. If a real fan has been requested but proof is absent, the site investigation starts with the physical fan and proof device. <a href="p79-fan-run-proof.html">P79 · Fan command and airflow proof</a>.</p>
+    <p>Save several lines around each change and mark the field action next to it. Use those records in the <a href="p111-ahu-sequence-trends-and-commissioning.html">full air-handler commission</a>, then map a point from a real cable to a screen in P63. The board photo identifies the hardware. The CSV above illustrates expected behaviour. The fan and temperature are simulated and the complete tabletop circuit still needs the bench checks above.</p>
+    <a class="crosslink" href="p63-bms-point-to-point.html">Next · Trace a building point from field wiring to the display</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

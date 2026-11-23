@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 475" role="img" aria-labelledby="title desc">
+  <title id="title">ESP32 miniature ventilation panel wiring</title>
+  <desc id="desc">The ESP32 reads GPIO34 from a 10 kilohm pot powered by 3.3 volts. Three switches connect GPIO32, GPIO33 and GPIO23 to ground when closed. GPIO25, GPIO26 and GPIO27 each drive one LED through a 1 kilohm resistor.</desc>
+  <defs>
+    <path id="r" d="M0 0h9l7-8 10 16 10-16 10 16 7-8h9" fill="none"/>
+    <path id="ground" d="M0 0v8m-9 0h18m-14 5h10m-7 5h4" fill="none"/>
+    <path id="led" d="M0 -9v18L18 0zM18 -10v20m0-10h13m-29-13 10-8m2 8 10-8" fill="none"/>
+  </defs>
+  <rect width="750" height="475" rx="10" fill="#f8fafc"/>
+  <rect x="312" y="62" width="162" height="295" rx="10" fill="#e7eff8" stroke="#315672" stroke-width="2"/>
+  <g stroke="#20364a" stroke-width="2.5" fill="none" stroke-linejoin="round">
+    <path d="M34 104h125m62 0h30M190 117v25h122m-91 0v21m-10 0h20m-20 8h20m-10 0v11M312 215H166l-24-14m-10 14H97m215 58H166l-24-14m-10 14H97m215 58H166l-24-14m-10 14H97"/>
+    <path d="m190 111-4 7h8z" fill="#20364a"/>
+    <use href="#r" x="159" y="104"/>
+    <use href="#ground" x="251" y="104"/><use href="#ground" x="221" y="182"/>
+    <use href="#ground" x="97" y="215"/><use href="#ground" x="97" y="273"/><use href="#ground" x="97" y="331"/>
+    <path d="M474 142h54m62 0h25m31 0h30m-202 73h54m62 0h25m31 0h30m-202 73h54m62 0h25m31 0h30"/>
+    <use href="#r" x="528" y="142"/><use href="#r" x="528" y="215"/><use href="#r" x="528" y="288"/>
+    <use href="#led" x="615" y="142" stroke="#1f7348"/>
+    <use href="#led" x="615" y="215" stroke="#9a6503"/>
+    <use href="#led" x="615" y="288" stroke="#a4242b"/>
+    <use href="#ground" x="676" y="142"/><use href="#ground" x="676" y="215"/><use href="#ground" x="676" y="288"/>
+    <path d="M392 357v23"/>
+    <use href="#ground" x="392" y="380"/>
+  </g>
+  <circle cx="221" cy="142" r="4" fill="#20364a"/>
+  <g fill="#20364a" font-family="system-ui,sans-serif" font-size="17">
+    <text x="33" y="83">3.3 V</text><text x="152" y="80">10 kΩ dial</text>
+    <text x="233" y="177" font-size="14">100 nF</text>
+    <text x="334" y="100" font-size="21" font-weight="700">ESP32</text>
+    <text x="325" y="136">34 · ADC</text><text x="411" y="136">25</text>
+    <text x="167" y="204">Door contact</text><text x="325" y="209">32 · DI</text><text x="411" y="209">26</text>
+    <text x="167" y="262">Proof switch</text><text x="325" y="267">33 · DI</text><text x="411" y="282">27</text>
+    <text x="167" y="320">Reset button</text><text x="325" y="325">23 · DI</text>
+    <text x="523" y="112">1 kΩ each</text>
+    <text x="507" y="170" fill="#1f7348">Green · command</text>
+    <text x="507" y="243" fill="#8b5b04">Yellow · proof</text>
+    <text x="507" y="316" fill="#a4242b">Red · alarm</text>
+    <text x="30" y="428">Shared return at all ground symbols. Pressing or closing a contact gives logic LOW.</text>
+    <text x="30" y="454">Breadboard pitch 2.54 mm. Match board headers by printed GPIO names.</text>
+  </g>
+</svg>

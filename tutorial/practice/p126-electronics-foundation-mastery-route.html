@@ -20,14 +20,25 @@
     <div class="meta"><span><b>Route</b> Six stages</span><span><b>Before this</b> <a href="../practice/p00-foundation-roadmap.html">P00</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Build one circuit at a time</h2>
+    <h2 id="small-circuits">The workshop route from breadboard to a handmade product</h2>
     <p>Before buying parts, check the <a href="p03-multimeter-mastery.html#what-you-need">short shopping list and meter exercise</a>. Once you can read an AA cell, follow <a href="../theory/t73-how-digital-multimeters-work.html">what happens inside the meter</a>. The <a href="p01-bench-kit-safety.html#mains-in-practice">bench-to-mains route</a> connects the same measurements to isolated AC and local electrical training.</p>
-    <ol>
-      <li>Start with a battery, a resistor and an LED. Check which breadboard holes share a clip and measure the current from the resistor voltage. <a href="p182-first-breadboard-circuits.html#first-led">P182 · First LED and resistor exercise</a> · <a href="../theory/t01-charge-current-voltage.html">T01 · Current, voltage and a closed loop</a>.</li>
-      <li>Turn a diode around, then build a single-diode rectifier and a four-diode bridge. Add a capacitor and time how the voltage falls after power goes off. <a href="p182-first-breadboard-circuits.html#single-diode">P182 · Diode, rectifier and capacitor exercises</a> · <a href="../theory/t11-semiconductors-diodes.html">T11 · Diode theory</a>.</li>
-      <li>Switch that LED with a transistor. Combine it with the bridge and capacitor, then use the meter to trace the combined circuit stage by stage. <a href="p182-first-breadboard-circuits.html#transistor">P182 · Transistor switch and combined build</a> · <a href="../theory/t12-bjt-physics.html">T12 · BJT theory</a>.</li>
-      <li>Find the same three LED connections on a solderable board and repeat your measurements. Put the circuit into KiCad when you can explain the copper path. <a href="../theory/t26-pcb-rework-esd.html">T26 · Copper, laminate and pads</a> · <a href="p48-kicad-testable-pcb.html">P48 · Draw and lay out a simple PCB</a>.</li>
-    </ol>
+    <p>Use this table in order. Build the named circuit, make the measurement in the last column and write down what changed. If you miss a checkpoint, use that lesson’s fault checks before moving on. The door indicator route uses a shared parts list. <a href="p187-build-a-door-left-open-indicator.html#parts">Parts and tools for P184–P187</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Session</th><th scope="col">Build and read</th><th scope="col">Checkpoint to keep</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1 · LED and closed loop</th><td><a href="p182-first-breadboard-circuits.html#first-led">Battery, LED and resistor</a></td><td>Measure voltage across the resistor, calculate the current, then open and close the return.</td></tr>
+        <tr><th scope="row">2 · Diodes and rectifiers</th><td><a href="p182-first-breadboard-circuits.html#single-diode">One diode and half-wave rectification</a>, then <a href="p182-first-breadboard-circuits.html#bridge-rectifier">four-diode bridge</a></td><td>Reverse the input, identify the conducting paths and explain why the output stays the same polarity with the bridge.</td></tr>
+        <tr><th scope="row">3 · Switch and divider</th><td><a href="p184-breadboard-switch-and-divider.html">P184 · Turn a switch into a voltage</a></td><td>Check a loaded divider, and read an open and closed contact with a pull-up.</td></tr>
+        <tr><th scope="row">4 · Store charge and make a delay</th><td><a href="p185-breadboard-rc-delay.html">P185 · Capacitor timing on a meter</a></td><td>Capture a slow charge and fast reset. Estimate the time constant from your readings.</td></tr>
+        <tr><th scope="row">5 · Transistor as a switch</th><td><a href="p182-first-breadboard-circuits.html#transistor">Switch an LED with a 2N3904</a></td><td>Measure the base and collector in both states and explain the two current paths.</td></tr>
+        <tr><th scope="row">6 · Comparator chip</th><td><a href="p186-breadboard-comparator.html">P186 · Make an LM393 turn a light on</a></td><td>Probe SENSE, REF and OUT. Measure the two reference values after adding feedback.</td></tr>
+        <tr><th scope="row">7 · Build something useful</th><td><a href="p187-build-a-door-left-open-indicator.html">P187 · Door-left-open indicator on breadboard</a></td><td>Open a mock door briefly and then leave it open. Record when the light turns on and off.</td></tr>
+        <tr><th scope="row">8 · Solder and mount it</th><td><a href="p188-solder-a-door-indicator-pcb.html">P188 · Hand-solder the same product on a PCB</a></td><td>Repeat the same probe and timing checks on the finished board and after closing the case.</td></tr>
+        <tr><th scope="row">9 · Building controls</th><td><a href="p189-build-a-mini-bms-panel.html">P189 · Make a miniature ventilation panel</a></td><td>Prove command, proof and alarm separately. Disconnect one field wire and diagnose it from the wiring and trend.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For extra circuit practice after the first route, build a <a href="p06-diodes-rectifiers.html#7-a-zener-shunt-regulator">Zener clamp</a>, a <a href="p09-555-timer.html">555 blinker</a>, and a <a href="p109-inductive-load-switch-and-flyback.html">relay with a flyback diode</a>. Make and measure each circuit on its own first.</p>
+    <p>Keep the reference pages handy as you build. <a href="../theory/t01-charge-current-voltage.html">T01 · Current, voltage and a closed loop</a> · <a href="../theory/t11-semiconductors-diodes.html">T11 · Diode theory</a> · <a href="../theory/t12-bjt-physics.html">T12 · BJT theory</a> · <a href="../theory/t26-pcb-rework-esd.html">T26 · Copper, laminate and pads</a>.</p>
     <p>Use the stages below for more practice and to choose what to build next. <a href="p00-foundation-roadmap.html">P00 · Bench setup and learning routes</a> · <a href="../theory/t00-maths-toolkit.html">T00 · Maths for the measurements</a>.</p>
     <div class="photo-pair">
 <figure class="course-photo">
@@ -85,7 +96,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261123-meter"></script>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
 <script src="../assets/app.js?v=20261120-commercial-search"></script>
 <script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P186 · Make an LM393 comparator switch a light</title>
+<meta name="description" content="Add an eight-pin comparator to the same RC circuit. Follow the input, reference and output with three meter readings.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P186</span>
+    <h1>Make an LM393 comparator switch a light</h1>
+    <p class="lede">Add an eight-pin comparator to the same RC circuit. Follow the input, reference and output with three meter readings.</p>
+    <div class="meta"><span><b>Time</b> 35–45 minutes</span><span><b>Before this</b> <a href="p185-breadboard-rc-delay.html">P185 · Working RC circuit</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Read the chip before plugging it in</h2>
+    <p>Reuse P185. Add a Texas Instruments LM393P PDIP-8, one 27 kΩ, two 10 kΩ, one 2.2 kΩ, one 330 kΩ, one high-efficiency red LED and a 100 nF ceramic capacitor. Use the <a href="p187-build-a-door-left-open-indicator.html#parts">shared parts list with buying links</a>. A <a href="../theory/t14-op-amps.html">comparator</a> checks which of its two input voltages is higher. The LM393 output transistor can pull the output down. A pull-up resistor provides the high level when the transistor releases it.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/lm393p-on-pcb.jpg" data-image-preview="Real Texas Instruments LM393P DIP-8 chip on a circuit board" data-preview-source="comparator-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/lm393p-on-pcb.jpg" width="1200" height="675" alt="Real Texas Instruments LM393P DIP-8 chip on a circuit board" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Read LM393P on the package. The adjacent components belong to the photographed equipment. Use the sketch and pin numbers for this build. <small>Raimond Spekking, resized · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. <a id="comparator-photo" href="https://commons.wikimedia.org/wiki/File:ANT_Nachrichtentechnik_DBT-03_-_Texas_Instruments_LM393P-0015.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Focus on the fixed reference and the input crossing it. The video uses a different amplifier circuit. Follow the LM393P pins and output wiring below. <a href="https://www.youtube.com/watch?v=y0Q0ERSP24A">Afrotechmods · Comparator tutorial &amp; clapper circuit</a>.</p>
+    <h2 id="chip-wiring">Wire the pins, reference and output</h2>
+    <p>Power off and fit the chip across the centre gap, with its notch towards the smaller strip numbers. Pin 1 goes in <b>e15</b>. Pin 8 goes in <b>f15</b> directly opposite. The P185 parts remain on the a–e side. Use jumpers to connect the two halves only where listed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Pin or component</th><th scope="col">Exact connection</th></tr></thead>
+      <tbody><tr><th scope="row">U1 pin 1, OUT</th><td><b>e15</b> is OUT. Fit 10 kΩ from +5 V to <b>a15</b>. Put the LED cathode in <b>c15</b>, anode in <b>c12</b>. Fit 2.2 kΩ from +5 V to <b>a12</b>.</td></tr>
+      <tr><th scope="row">U1 pin 2, SENSE</th><td><b>e16</b> joins the P185 divider and capacitor through strip 16.</td></tr>
+      <tr><th scope="row">U1 pin 3, REF</th><td><b>e17</b> is REF. Fit 27 kΩ from +5 V to <b>a17</b> and 10 kΩ from <b>b17</b> to GND.</td></tr>
+      <tr><th scope="row">U1 pin 4 and pin 8</th><td>Jumper <b>d18</b> to GND and <b>h15</b> to +5 V. Fit ceramic C2 from <b>g15 to g19</b>, then jumper <b>f19</b> to GND.</td></tr>
+      <tr><th scope="row">U1 unused section</th><td>Jumper <b>f18</b> (pin 5) to GND and <b>f17</b> (pin 6) to <b>d17</b> (REF). Leave <b>f16</b> (pin 7) open.</td></tr>
+      <tr><th scope="row">330 kΩ feedback, add after tests 1–2</th><td>Use spare strips <b>23</b> and <b>27</b>. Resistor <b>c23 to c27</b>, jumper <b>b23 to b15</b> (OUT) and jumper <b>b27 to c17</b> (REF).</td></tr></tbody>
+    </table></div>
+    <p>Pin numbers run down the left side 1–4 and back up the right side 5–8 with the notch at the top. The 100 nF bypass belongs near the supply pins. The input ranges used here stay near the lower half of the supply. Consult the limits before trying a different input source. <a href="https://www.ti.com/lit/ds/symlink/lm393.pdf">Texas Instruments · LM393P pinout and electrical limits</a>.</p>
+    <h2>Measure it in three steps</h2>
+    <ol>
+      <li><b>RESET connected, feedback still out.</b> With black on GND, touch the C1 positive lead in <b>c16</b> for SENSE. It should read under 0.15 V. REF at the 27 kΩ end in strip 17 should be about <b>1.35 V</b>. OUT at <b>d15</b> should be within 0.2 V of the 5 V rail. The LED stays off.</li>
+      <li><b>Open RESET.</b> After a few seconds SENSE exceeds REF. The output transistor draws OUT down below about 0.4 V and the LED lights. Its current flows from +5 V through the 2.2 kΩ resistor, LED and comparator output transistor to GND. Refit RESET to turn it off.</li>
+      <li><b>Add feedback.</b> Power off, fit the 330 kΩ path in the table, then power on. Measure REF with RESET closed (LED off) and after SENSE has charged (LED on). At 5.0 V expect REF near <b>1.43 V off</b> and <b>1.32 V on</b>. Measure both with black on GND. Small differences from these predictions are normal.</li>
+    </ol>
+    <p>Feeding OUT back to REF gives a higher turn-on and a lower turn-off threshold. The gap is called <a href="../theory/t55-signal-levels-thresholds-and-time.html">hysteresis</a>. A small change near a threshold now has to cross the other threshold before the output reverses.</p>
+    <p><b>If OUT falls but the LED stays dark,</b> check the LED polarity and the 2.2 kΩ path to +5 V. <b>If SENSE moves but OUT never switches,</b> check the pin 8 supply and pin 4 return, then compare the voltages at pins 2 and 3. <b>If REF never shifts,</b> measure power off from each end of 330 kΩ to its intended strip.</p>
+    <p class="caption">These are calculated checks for the proposed circuit. The photo identifies the actual chip package.</p>
+    <a class="crosslink" href="p187-build-a-door-left-open-indicator.html">Next · Use the chip circuit as a door-left-open indicator</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

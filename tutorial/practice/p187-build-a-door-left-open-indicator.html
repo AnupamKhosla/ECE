@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P187 · Build a door-left-open indicator on breadboard</title>
+<meta name="description" content="Turn the switch, capacitor and comparator drills into a 5 V indicator for a cupboard or electronics cabinet. Open the door briefly and the light stays off. Leave it open for a few seconds and it lights.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P187</span>
+    <h1>Build a door-left-open indicator on breadboard</h1>
+    <p class="lede">Turn the switch, capacitor and comparator drills into a 5 V indicator for a cupboard or electronics cabinet. Open the door briefly and the light stays off. Leave it open for a few seconds and it lights.</p>
+    <div class="meta"><span><b>Time</b> 30–45 minutes after P186</span><span><b>Before this</b> <a href="p186-breadboard-comparator.html">P186 · Working comparator</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2 id="parts">Get the parts for this route</h2>
+    <p>The same parts serve P184–P187. You can use a jumper in place of the magnet contact for the first build. Check price, stock and delivery before buying. Bring a multimeter with probes, a timer and small cutters for jumper wire. <a class="preview-trigger" href="../assets/photos/meter.jpg" data-image-preview="Multimeter used for DC volts and continuity" data-preview-source="door-meter-photo" aria-haspopup="dialog">View the meter</a> · <a id="door-meter-photo" href="https://commons.wikimedia.org/wiki/File:UT61D_digital_multimeter_front.jpg">Anselm Schüler, CC BY-SA 4.0</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">What to choose</th><th scope="col">Australia</th><th scope="col">India</th></tr></thead>
+      <tbody><tr><th scope="row">1 · TI LM393P <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/lm393p-on-pcb.jpg" data-image-preview="LM393P eight-pin package" data-preview-source="comparator-photo" aria-haspopup="dialog">View photo</a></span></th><td>Through-hole PDIP-8, 7.62 mm between pin rows. The finished board uses an 8-pin socket.</td><td><a href="https://www.jaycar.com.au/lm393-low-power-dual-comparator-linear-ic/p/ZL3393">Jaycar ZL3393, verify the PDIP package</a></td><td><a href="https://robu.in/product/lm393p-texas-instruments-analogue-comparator-dual-differential-2-comparators-300-ns-2v-to-36v-dip-8-pins/">Robu TI LM393P · ₹28 listed</a></td></tr>
+      <tr><th scope="row">8 · Axial resistors <span class="preview-links"><a class="preview-trigger" href="../assets/photos/resistor.jpg" data-image-preview="Through-hole resistors" data-preview-source="door-resistor-photo" aria-haspopup="dialog">View photo</a></span></th><td>2 × 68 kΩ, 2 × 10 kΩ, and one each of 1 kΩ, 2.2 kΩ, 27 kΩ and 330 kΩ. ¼ W or higher, ±5% or better. Buy a spare 10 kΩ for the divider test if you want to leave it built. <a id="door-resistor-photo" href="https://commons.wikimedia.org/wiki/File:Carbon_and_ceramic_resistors_of_different_power_ratings.jpg">David Ludovino · CC BY-SA 3.0, resized</a>.</td><td><a href="https://au.element14.com/c/passive-components/resistors-fixed-value/through-hole-resistors">element14 Australia · Axial resistors</a></td><td><a href="https://in.element14.com/c/passive-components/resistors-fixed-value/through-hole-resistors">element14 India · Axial resistors</a></td></tr>
+      <tr><th scope="row">2 · Capacitors <span class="preview-links"><a class="preview-trigger" href="../assets/photos/cap.jpg" data-image-preview="Radial aluminium electrolytic examples" data-preview-source="capacitor-photo" aria-haspopup="dialog">View photo</a></span></th><td>C1 Panasonic EEUFR1A101, 100 µF 10 V or equivalent with specified leakage at most 10 µA after conditioning. C2 100 nF ceramic ≥25 V, nonpolar.</td><td><a href="https://au.element14.com/panasonic/eeufr1a101/cap-100-f-10v-20/dp/2760319">element14 Australia · C1</a></td><td><a href="https://in.element14.com/panasonic/eeufr1a101/cap-100-f-10v-20/dp/2760319">element14 India · C1</a></td></tr>
+      <tr><th scope="row">1 · Red LED <span class="preview-links"><a class="preview-trigger" href="../assets/photos/led.jpg" data-image-preview="Two-lead LEDs" data-preview-source="door-led-photo" aria-haspopup="dialog">View photo</a></span></th><td>3 or 5 mm, two leads, high efficiency so it is visible at about 1–2 mA. <a id="door-led-photo" href="https://commons.wikimedia.org/wiki/File:LED_Rainbow_Pack_-_5mm_PTH_12903-01_new_aranged.jpg">Elmepi · CC BY 2.0</a>.</td><td><a href="https://www.jaycar.com.au/red-5mm-led-1200mcd-round-clear/p/ZD0152">Jaycar ZD0152</a></td><td><a href="https://quartzcomponents.com/products/3mm-led-red-color">QuartzComponents · Red LED</a></td></tr>
+      <tr><th scope="row">1 · Two-piece wired magnetic contact <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Magnet and fixed contact on a door" data-preview-source="reed-photo" aria-haspopup="dialog">View photo</a></span></th><td>Choose the version that reads below 2 Ω with the magnet close and open with it far away. Use that measured behaviour to choose, since alarm vendors label contact states differently.</td><td><a href="https://www.jaycar.com.au/security-alarm-reed-switch/p/LA5072">Jaycar LA5072</a></td><td><a href="https://robu.in/product-category/magnetic-switches/">Robu Sentek wired contacts · check the form</a></td></tr>
+      <tr><th scope="row">1 each · Breadboard and power source <span class="preview-links"><a class="preview-trigger" href="../assets/photos/breadboard.jpg" data-image-preview="Typical 830-point board" data-preview-source="door-board-photo" aria-haspopup="dialog">View photo</a></span></th><td>830-point breadboard, 15 male-to-male jumpers, regulated 5 V USB-A supply with a labelled +5 V/GND breakout or a current-limited 5 V bench supply. <a id="door-board-photo" href="https://commons.wikimedia.org/wiki/File:Electronics-White-Breadboard.jpg">Evan-Amos · public domain, resized</a>.</td><td><a href="https://core-electronics.com.au/professional-solderless-breadboard-830-tie-points-metal-backing-plate.html">Core Electronics BB830</a></td><td><a href="https://roboticsdna.in/product/mb-102-bread-board/">RoboticsDNA · MB102</a></td></tr></tbody>
+    </table></div>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Two-piece magnetic contact installed on a cabinet door" data-preview-source="reed-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/door-magnet-contact.jpg" width="1200" height="675" alt="Two-piece magnetic contact installed on a cabinet door" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Match the fixed contact body and the magnet on the moving side. This installation illustrates placement. For the build, use a wired contact that closes when its magnet is beside it. <small>Raimond Spekking, resized · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. <a id="reed-photo" href="https://commons.wikimedia.org/wiki/File:Magnet_contact_as_burglary_prevention-9294.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/lm393p-on-pcb.jpg" data-image-preview="Real Texas Instruments LM393P DIP-8 chip on a circuit board" data-preview-source="comparator-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/lm393p-on-pcb.jpg" width="1200" height="675" alt="Real Texas Instruments LM393P DIP-8 chip on a circuit board" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Read LM393P on the package. The adjacent components belong to the photographed equipment. Use the sketch and pin numbers for this build. <small>Raimond Spekking, resized · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. <a id="comparator-photo" href="https://commons.wikimedia.org/wiki/File:ANT_Nachrichtentechnik_DBT-03_-_Texas_Instruments_LM393P-0015.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/cap.jpg" data-image-preview="Several real aluminium electrolytic capacitors" data-preview-source="capacitor-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/cap.jpg" width="960" height="720" alt="Several real aluminium electrolytic capacitors" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Use the small radial shape with both leads at one end. The stripe identifies the negative lead on the aluminium electrolytic used here. <small>Elcap · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. <a id="capacitor-photo" href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch the output respond as the input crosses the reference. The demonstration senses sound. The LM393 here senses the timed door contact. <a href="https://www.youtube.com/watch?v=y0Q0ERSP24A">Afrotechmods · Comparator tutorial &amp; clapper circuit</a>.</p>
+    <h2 id="breadboard-build">Complete the breadboard</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/door-alarm.svg" data-image-preview="Complete 5 V door-left-open indicator schematic" data-preview-source="door-schematic-source" aria-label="Enlarge the drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/door-alarm.svg" width="780" height="455" alt="Complete 5 V door-left-open indicator schematic" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Read left to right from the switch and timing capacitor, through the comparator, to the LED. The circuit keeps the same SENSE, REF and OUT points on the soldered PCB. <a id="door-schematic-source" href="https://www.ti.com/lit/ds/symlink/lm393.pdf">Reference for this drawing</a> · <a href="../assets/labs/foundation-build/door-alarm.svg" download>Download drawing</a>.</figcaption>
+    </figure>
+    <ol>
+      <li>Build the <a href="p184-breadboard-switch-and-divider.html#divider">two 68 kΩ divider</a>, add the <a href="p185-breadboard-rc-delay.html#wire-rc">capacitor and 1 kΩ reset path</a>, then finish the <a href="p186-breadboard-comparator.html#chip-wiring">LM393 pin connections</a>. Start with the reset jumper in. The 330 kΩ feedback path stays fitted for the finished circuit.</li>
+      <li>Test the loose reed contact with the meter in continuity mode before wiring it. Bring the two halves together and get a stable beep. Move the magnet away and verify an open reading. If it has three wires, pick the pair that matches these observations.</li>
+      <li>Unplug the 5 V supply. Remove the jumper between <b>a21</b> and GND. Connect one reed wire to <b>a21</b> and the other to GND. Keep the 1 kΩ between the contact and the capacitor. Keep the loose ends insulated so they cannot reach +5 V.</li>
+      <li>Tape the contact to a cardboard frame and the magnet to a cardboard flap. Start with the mating faces lined up and about 3–5 mm apart with the flap shut, or within the supplier’s specified operating gap. Open the flap until the meter reliably shows an open contact. Mount the real parts only after this dry run.</li>
+      <li>Apply 5 V. Set the meter to DC volts and keep black on GND. Open and shut the flap from the same starting position. Time from the moment the contact opens. Record the results below before moving to the PCB.</li>
+    </ol>
+    <h2 id="test">Check your build without guessing</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Test</th><th scope="col">Probe position or action</th><th scope="col">Expected result</th></tr></thead>
+      <tbody><tr><th scope="row">Supply</th><td>Red on pin 8 supply, black on pin 4 GND</td><td>4.75–5.25 V</td></tr>
+      <tr><th scope="row">Door closed for at least 2 s</th><td>C1 positive lead c16; then OUT d15</td><td>SENSE below 0.15 V, OUT within 0.2 V of supply, LED dark</td></tr>
+      <tr><th scope="row">Open briefly and close</th><td>Under 1 s open</td><td>LED stays dark</td></tr>
+      <tr><th scope="row">Leave open</th><td>Measure SENSE and OUT after the LED lights</td><td>LED lights in 1.5–8 s, OUT below 0.4 V, SENSE climbs to at least 1.8 V by 20 s</td></tr>
+      <tr><th scope="row">Close again</th><td>Observe LED</td><td>LED off within 1 s, then SENSE below 0.15 V</td></tr>
+      <tr><th scope="row">Repeatability</th><td>Repeat full checks five times</td><td>All five cycles give the same sequence</td></tr></tbody>
+    </table></div>
+    <p>Opening the door opens the reed contact. The 100 µF capacitor charges towards half the supply through the divider. At about 1.43 V the comparator switches the LED on. Expect roughly three seconds with nominal parts. The check allows for resistor tolerance and electrolytic capacitance and leakage. Closing the door drains the capacitor quickly through the 1 kΩ and reed. Near 1.32 V the chip releases its output and the LED goes out. If the cable is disconnected while powered, the circuit behaves like an open door.</p>
+    <p><b>LED never goes off.</b> Check if SENSE falls when you bring the magnet closer. With power off, verify the reed pair and the wire to a21. <b>LED never goes on.</b> Check whether SENSE rises past REF. If it stops below 1.8 V after 20 seconds, test the contact for a short, check C1 orientation and try a known-good capacitor. <b>LED goes on immediately.</b> Check C1 placement and GND continuity.</p>
+    <p class="caption">This is a workshop reminder circuit with calculated acceptance checks. The photographs show identified reference parts. The complete board still needs a physical bench test.</p>
+    <a class="crosslink" href="p188-solder-a-door-indicator-pcb.html">Next · Solder the same door indicator on a PCB</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

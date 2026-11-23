@@ -1,0 +1,10 @@
+build,date,trial,door_action,expected,supply_v,sense_v,reference_v,output_v,elapsed_s,result,notes
+breadboard,,1,closed for 2 s,LED off and SENSE below 0.15 V,,,,,,,
+breadboard,,2,open under 1 s and close,LED stays off,,,,,,,
+breadboard,,3,open and leave open,LED on in 1.5 to 8 s,,,,,,,
+breadboard,,4,close with LED on,LED off within 1 s,,,,,,,
+pcb,,1,closed for 2 s,LED off and SENSE below 0.15 V,,,,,,,
+pcb,,2,open under 1 s and close,LED stays off,,,,,,,
+pcb,,3,open and leave open,LED on in 1.5 to 8 s,,,,,,,
+pcb,,4,close with LED on,LED off within 1 s,,,,,,,
+boxed,,1,full open and close cycle,Repeat five times and record each result,,,,,,,

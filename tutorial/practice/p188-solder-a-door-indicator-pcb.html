@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P188 · Solder your door indicator on a PCB</title>
+<meta name="description" content="Transfer the working breadboard circuit to a through-hole prototype PCB. Solder the components and socket, install the board in a case, and prove the same readings before mounting it on a door.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P188</span>
+    <h1>Solder your door indicator on a PCB</h1>
+    <p class="lede">Transfer the working breadboard circuit to a through-hole prototype PCB. Solder the components and socket, install the board in a case, and prove the same readings before mounting it on a door.</p>
+    <div class="meta"><span><b>Time</b> 90–120 minutes</span><span><b>Before this</b> <a href="p187-build-a-door-left-open-indicator.html#test">P187 · Passing breadboard readings</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Buy or reuse the assembly parts</h2>
+    <p>Move the parts from P187 or use a second set to keep the working breadboard as a reference. Get the following additions. Tools are a temperature-controlled soldering iron, electronics solder and flux, cutter, wire stripper, workholder, multimeter, marker and drill for the plastic case. Work on a spare pad first. <a class="preview-trigger" href="../assets/photos/solde.jpg" data-image-preview="Solder wire and iron meeting a through-hole joint" data-preview-source="p188-iron" aria-haspopup="dialog">View iron and joint</a> · <a id="p188-iron" href="https://learn.adafruit.com/assets/1996">Bill Earl, CC BY-SA 3.0, resized</a> · <a href="p05-soldering-wiring.html">P05 · Through-hole practice</a>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">Specification</th><th scope="col">Australia</th><th scope="col">India</th></tr></thead>
+      <tbody><tr><th scope="row">1 · Pad-per-hole PCB <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/assembled-prototyping-board.jpg" data-image-preview="Example of hand-soldered prototyping board" data-preview-source="assembly-photo" aria-haspopup="dialog">View photo</a></span></th><td>2.54 mm grid, individual isolated copper pads, at least 15 columns × 16 rows of usable holes. Use the board’s existing mounting holes where available.</td><td><a href="https://www.jaycar.com.au/universal-pre-punched-experimenters-board-small/p/HP9550">Jaycar HP9550 · A$5.95 listed</a></td><td><a href="https://robu.in/product/79-cm-universal-pcb-prototype-board-double-sided/">Robu 70 × 90 mm double-sided board</a></td></tr>
+      <tr><th scope="row">1 · DIP-8 socket <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/lm393p-on-pcb.jpg" data-image-preview="LM393P package to match its socket" data-preview-source="pcb-chip-photo" aria-haspopup="dialog">View photo</a></span></th><td>7.62 mm row spacing, 2.54 mm along each row. Solder the socket and fit the chip after cold checks. <a id="pcb-chip-photo" href="https://commons.wikimedia.org/wiki/File:ANT_Nachrichtentechnik_DBT-03_-_Texas_Instruments_LM393P-0015.jpg">Raimond Spekking · CC BY-SA 4.0, resized</a>.</td><td><a href="https://au.element14.com/c/connectors/ic-sockets">element14 Australia · IC sockets</a></td><td><a href="https://in.element14.com/c/connectors/ic-sockets">element14 India · IC sockets</a></td></tr>
+      <tr><th scope="row">1 set · Jumper wire and housing <span class="preview-links"><a class="preview-trigger" href="../assets/photos/jumpers-male-female.jpg" data-image-preview="Insulated bench jumpers, for comparison" data-preview-source="pcb-wire-photo" aria-haspopup="dialog">View photo</a></span></th><td>About 1 m of insulated, tinned 26 AWG solid wire and 0.5 m of flexible 24–26 AWG two-core wire for the reed. One plastic case sized to your board plus 5 mm clearance at each edge. For the 95 × 72 mm board, allow at least 105 × 82 × 22 mm inside. Fit four ≥6 mm nylon standoffs and matching screws, and a grommet and clamp at each cable entry.</td><td>Use a local electronics shop or reuse a suitable enclosure.</td><td>Use a local electronics shop or reuse a suitable enclosure. <a id="pcb-wire-photo" href="https://commons.wikimedia.org/wiki/File:Jumper_male-to-female.jpg">Reference photo by Edwiyanto · CC BY-SA 4.0</a>. Use bare tinned ends for soldering.</td></tr></tbody>
+    </table></div>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/assembled-prototyping-board.jpg" data-image-preview="Soldered prototype with an IC socket, resistors and wires" data-preview-source="assembly-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/assembled-prototyping-board.jpg" width="840" height="794" alt="Soldered prototype with an IC socket, resistors and wires" loading="lazy" decoding="async">
+      </a>
+      <figcaption>This example shows through-hole assembly and a chip socket on a different board. The pad layout below specifies individual copper pads. <small>Alexander Jones · public domain. <a id="assembly-photo" href="https://commons.wikimedia.org/wiki/File:Stripboardexample.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch the tip touch the pad and lead together, and check what a soldered joint looks like from the copper side. <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Adafruit Industries · Collin's Lab: Soldering</a>.</p>
+    <h2 id="placement">1 · Label the board and fit parts</h2>
+    <p>With the component side up, mark columns <b>A–O</b> left to right and rows <b>1–16</b> top to bottom. Ignore any existing printed grid and choose a rectangle that keeps all mounting holes clear. The outside hole centres span <b>35.56 × 38.10 mm</b>. Write “A1” on both faces near that corner. Turn the board over from left to right so row numbers stay in order and columns reverse on the solder side.</p>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/door-pcb-placement.svg" data-image-preview="Door indicator perfboard component-side map and 2.54 mm pitch" data-preview-source="pcb-placement-source" aria-label="Enlarge the drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/door-pcb-placement.svg" width="790" height="640" alt="Door indicator perfboard component-side map and 2.54 mm pitch" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Compare the outline and hole numbering with your board. Fit the DIP socket with pin 1 on the marked corner. Dashed outlines mark parts and do not represent copper. <a id="pcb-placement-source" href="#copper-wires">Reference for this drawing</a> · <a href="../assets/labs/foundation-build/door-pcb-placement.svg" download>Download drawing</a>.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Component</th><th scope="col">Holes viewed from the top</th><th scope="col">Orientation or job</th></tr></thead>
+      <tbody><tr><th scope="row">U1 socket</th><td>Pin 1 D7, 2 D8, 3 D9, 4 D10, 5 G10, 6 G9, 7 G8, 8 G7</td><td>Notch toward row 6.</td></tr>
+      <tr><th scope="row">R1, R2 · 68 kΩ each</th><td>A8–A12; B12–B16</td><td>Either way.</td></tr>
+      <tr><th scope="row">R3 · 1 kΩ</th><td>C12–C16</td><td>Reset current limit.</td></tr>
+      <tr><th scope="row">R4 · 27 kΩ; R5 · 10 kΩ</th><td>J6–J10; K10–K14</td><td>Reference divider.</td></tr>
+      <tr><th scope="row">R6 · 330 kΩ; R7 · 10 kΩ</th><td>I12–I16; J3–J7</td><td>Feedback; output pull-up.</td></tr>
+      <tr><th scope="row">R8 · 2.2 kΩ; D1 · red LED</th><td>L3–L7; L8 (anode)–N8 (cathode)</td><td>LED shorter lead or flat side is cathode.</td></tr>
+      <tr><th scope="row">C1 · 100 µF; C2 · 100 nF</th><td>E13 (+)–E14 (−); H7–H10</td><td>C1 stripe to E14. C2 can be fitted either way.</td></tr>
+      <tr><th scope="row">J1 supply; J2 reed</th><td>A3 (+5 V), A5 (GND); O9 (RESET), O11 (GND)</td><td>Insulated flexible leads. Strain relief is on the housing.</td></tr></tbody>
+    </table></div>
+    <p>Place and solder resistors first, then the empty socket, capacitors, LED and input leads. Keep the socket flat against the board while tacking two opposite corners. Leave C1 high enough to read the stripe. Trim leads and inspect after each group.</p>
+    <h2 id="copper-wires">2 · Make the copper connections</h2>
+    <p>Each pad on this board starts electrically separate. Use insulated 26 AWG wire to join <b>successive pairs</b> in each row of the table. For example, G7 to H7, then H7 to J3. Use exposed wire only at the solder joint. At a shared pad, solder the two wire ends onto the joint or use a neighbouring spare pad as a soldered branch and verify it with the meter. Cross wires only where their insulation remains intact.</p>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/door-pcb-wires.svg" data-image-preview="Door-indicator PCB wire ends viewed from the solder side" data-preview-source="pcb-wire-drawing-source" aria-label="Enlarge the drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/door-pcb-wires.svg" width="790" height="640" alt="Door-indicator PCB wire ends viewed from the solder side" loading="lazy" decoding="async">
+      </a>
+      <figcaption>A1 moves to the upper-right corner when you flip the board. Each coloured line joins two pads. Crossings between coloured lines have intact wire insulation. <a id="pcb-wire-drawing-source" href="#placement">Reference for this drawing</a> · <a href="../assets/labs/foundation-build/door-pcb-wires.svg" download>Download drawing</a>.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Net</th><th scope="col">Join the pads in this order</th><th scope="col">Probe pad</th></tr></thead>
+      <tbody><tr><th scope="row">+5 V</th><td>G7 → H7 → J3 → L3 → J6 → N5 → A3 → A8</td><td>N5</td></tr>
+      <tr><th scope="row">GND</th><td>A5 → B16 → E14 → F14 → D10 → G10 → H10 → K14 → O11</td><td>F14</td></tr>
+      <tr><th scope="row">SENSE</th><td>D8 → A12 → B12 → C12 → E13 → F12</td><td>F12</td></tr>
+      <tr><th scope="row">REF</th><td>D9 → G9 → J10 → K10 → I16 → J16</td><td>J16</td></tr>
+      <tr><th scope="row">OUT</th><td>D7 → J7 → I12 → N12 → N8</td><td>N12</td></tr>
+      <tr><th scope="row">RESET</th><td>C16 → O9</td><td>O9</td></tr>
+      <tr><th scope="row">LED anode</th><td>L7 → L8</td><td>L8</td></tr></tbody>
+    </table></div>
+    <p>Fit a short wire loop in each free probe pad <b>N5</b>, <b>F14</b>, <b>F12</b>, <b>J16</b> and <b>N12</b>. The pad coordinates refer to the component side. Turn the board repeatedly as you work to identify the correct hole before soldering on the underside.</p>
+    <h2 id="first-power">3 · Check the board before inserting the chip</h2>
+    <ol>
+      <li>Leave the IC out and disconnect supply and reed. Use continuity to check every pair of pads in each net row. Probe from the socket pins to the test loops too. Check adjacent pads for accidental join. Use resistance mode if a connected resistor makes a continuity reading ambiguous.</li>
+      <li>Verify <b>+5 V to GND</b> has no persistent low reading, and re-check C1, D1 and socket orientation. With the reed open and no IC, the reading can move while the meter charges C1. A reading that settles below 1 kΩ calls for inspection before power.</li>
+      <li>Power without the chip. With black on F14, check socket pin 8 reads 4.75–5.25 V and socket pins 4 and 5 read below 0.1 V. Disconnect power. Wait for N5 and F12 to drop below 0.1 V, then fit the LM393 with its notch matching the socket.</li>
+      <li>Connect the reed and use a 50 mA current limit for first power if available. Repeat <a href="p187-build-a-door-left-open-indicator.html#test">the breadboard tests</a> using the labelled loops. If a board reading differs, stop and measure OUT, REF and SENSE in that order. An output reading only tells you what the chip did. The two input readings explain why.</li>
+    </ol>
+    <h2>4 · Put the working board in the case</h2>
+    <p>Dry-fit the board on four nylon standoffs with at least 6 mm clearance under the solder joints. Transfer the actual mounting-hole positions to the case with the board removed for drilling. Deburr the entries. Bring the LED to a clear lid or drill for the LED holder you bought. Clamp the USB power cable and reed cable inside so pulling on either cable cannot move the solder joint. Attach the fixed reed to the frame and the magnet to the door. Tape first, then fix them in place after the five-cycle test with the lid shut.</p>
+    <p><b>Keep a record.</b> Save a top photo, a solder-side photo, the five timings and the supply, SENSE, REF, OUT readings before and after you close the box. <a href="../assets/labs/foundation-build/workshop-record.csv" download>Download the workshop record</a>. To order a custom-made board for the same circuit later, use the verified layout and test points with <a href="p48-kicad-testable-pcb.html">P48 · Draw and lay out a PCB</a>.</p>
+    <p class="caption">This build uses a bare PCB with isolated pads and hand-wired connections. The plan was checked against the schematic. A physical board still needs to pass the checks in this lesson.</p>
+    <a class="crosslink" href="p189-build-a-mini-bms-panel.html">Next · Build a mini building-management control panel</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

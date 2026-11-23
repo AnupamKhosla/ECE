@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P185 · Time a rising voltage with a capacitor</title>
+<meta name="description" content="Reuse the voltage divider and add a capacitor and a reset link. Measure a delay you can see on a plain multimeter.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P185</span>
+    <h1>Time a rising voltage with a capacitor</h1>
+    <p class="lede">Reuse the voltage divider and add a capacitor and a reset link. Measure a delay you can see on a plain multimeter.</p>
+    <div class="meta"><span><b>Time</b> 25 minutes</span><span><b>Before this</b> <a href="p184-breadboard-switch-and-divider.html">P184 · Measured divider</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <h2>Keep the divider and add only two components</h2>
+    <p>Keep the 5 V supply, both 68 kΩ resistors and the multimeter from P184. Add one 100 µF, 10 V radial aluminium electrolytic, one 1 kΩ resistor and three jumpers. Use a phone stopwatch. See the <a href="p187-build-a-door-left-open-indicator.html#parts">shared parts list with buying links</a>.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/cap.jpg" data-image-preview="Several real aluminium electrolytic capacitors" data-preview-source="capacitor-photo" aria-label="Enlarge the photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/cap.jpg" width="960" height="720" alt="Several real aluminium electrolytic capacitors" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Use the small radial shape with both leads at one end. The stripe identifies the negative lead on the aluminium electrolytic used here. <small>Elcap · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. <a id="capacitor-photo" href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photograph</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><b>Watch.</b> Watch for the point where the rising curve reaches about 63% of its eventual change. You will read the slower curve with a meter. <a href="https://www.youtube.com/watch?v=o-wegFuA3RA">Keysight Labs · How to Measure the Time Constant with an Oscilloscope</a>.</p>
+    <h2 id="wire-rc">Wire the delay and reset</h2>
+    <pre><code>+5 V ── 68 kΩ ── SENSE ── 68 kΩ ── GND
+                   ├──── + C1 100 µF − ── GND
+                   └──── 1 kΩ ── RESET link ── GND</code></pre>
+    <ol>
+      <li>Switch off and unplug. The two 68 kΩ resistors still meet on strip <b>16</b>. Put C1 positive in <b>c16</b> and the stripe-marked negative in <b>c20</b>. Jumper <b>a20</b> to the GND rail. Use a short jumper if the capacitor leads do not reach four pitches without strain.</li>
+      <li>Fit 1 kΩ from <b>d16 to d21</b>. Fit the removable reset jumper from <b>a21</b> to GND. Clip or hold the black probe on GND and red on <b>e16</b>. Select DC volts.</li>
+      <li>Switch on with RESET fitted. Wait for the meter to settle below 0.15 V. Remove only the insulated reset jumper at <b>a21</b> and start the stopwatch. The resistor remains in the circuit when RESET connects. Refit the jumper to return near zero.</li>
+      <li>Repeat it a few times. If you have two hands free, film the meter and clock, then pause the recording while you fill in the table. Put the jumper back for at least two seconds between runs.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Time since opening RESET</th><th scope="col">Nominal SENSE at 5 V</th><th scope="col">Your reading</th></tr></thead>
+      <tbody><tr><th scope="row">Before opening</th><td>0.07 V</td><td>______</td></tr>
+      <tr><th scope="row">1 s</th><td>0.69 V</td><td>______</td></tr>
+      <tr><th scope="row">3 s</th><td>1.50 V</td><td>______</td></tr>
+      <tr><th scope="row">5 s</th><td>1.94 V</td><td>______</td></tr>
+      <tr><th scope="row">20 s</th><td>about 2.5 V</td><td>______</td></tr></tbody>
+    </table></div>
+    <p>The two 68 kΩ resistors look like <b>34 kΩ</b> to the charging capacitor when the 5 V source is treated as fixed. This gives <b>τ ≈ 34,000 × 0.000100 = 3.4 seconds</b>. The final voltage is half the supply, so one time constant takes SENSE about 63% of the way from its starting voltage to 2.5 V. With RESET closed, the 1 kΩ gives a much faster discharge. <a href="../theory/t05-capacitors-fields.html">Theory · Capacitors and RC time</a>.</p>
+    <p><b>Pass.</b> SENSE starts below 0.15 V, climbs smoothly through 1 V, settles roughly 1.8–2.75 V at 20 seconds, and returns below 0.15 V when reset. Capacitance tolerance, capacitor leakage and meter speed can shift the intermediate times. If the voltage jumps as soon as you open RESET, check C1’s two strips and ground jumper. If it stays near zero, check the reset connection is open.</p>
+    <p class="caption">The table is calculated for nominal parts. Keep your observed values for the comparator exercise.</p>
+    <a class="crosslink" href="p186-breadboard-comparator.html">Next · Make a chip decide whether the voltage is high</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-foundation"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>
