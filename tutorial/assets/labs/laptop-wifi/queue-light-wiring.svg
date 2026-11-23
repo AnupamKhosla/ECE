@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 390" role="img" aria-labelledby="title desc">
+  <title id="title">ESP32 queue light electrical schematic and breadboard placement</title>
+  <desc id="desc">GPIO25 goes to a5, through a 1 kilohm resistor from b5 to b8 and a green LED from c8 to c10. GPIO26 goes to a14, through a resistor from b14 to b17 and a red LED from c17 to c19. Both cathodes return to ESP32 ground through the same breadboard rail.</desc>
+  <defs>
+    <g id="resistor" fill="none" stroke="#21364a" stroke-width="3" stroke-linejoin="round">
+      <path d="M0 0h13l7-9 10 18 10-18 10 18 10-18 10 18 7-9h13"/>
+    </g>
+    <g id="led" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0h9m24-12v24m0-12h10M13-18l10-10m-6 1 6-1-1 6m5 6 10-10m-6 1 6-1-1 6" fill="none"/>
+      <path d="M9-12l24 12L9 12z" fill="currentColor"/>
+    </g>
+  </defs>
+  <rect width="740" height="390" rx="12" fill="#f7fafc"/>
+  <g font-family="system-ui, sans-serif" fill="#21364a">
+    <rect x="30" y="53" width="174" height="182" rx="10" fill="#e1eaf4" stroke="#58738c"/>
+    <text x="50" y="83" font-size="23" font-weight="700">ESP32</text>
+    <text x="50" y="124" font-size="19">GPIO25</text>
+    <text x="50" y="172" font-size="19">GPIO26</text>
+    <text x="50" y="218" font-size="19">GND</text>
+    <text x="254" y="94" font-size="17">R1 · 1 kΩ</text>
+    <text x="254" y="151" font-size="17">R2 · 1 kΩ</text>
+    <text x="434" y="94" font-size="18" fill="#176b43">Green LED</text>
+    <text x="434" y="151" font-size="18" fill="#a9322d">Red LED</text>
+    <text x="405" y="240" font-size="17">Common return rail</text>
+    <text x="30" y="281" font-size="21" font-weight="700">Breadboard holes</text>
+    <text x="30" y="312" font-size="18">GPIO25 → a5 · R1 b5 to b8 · green LED c8 (A) to c10 (K)</text>
+    <text x="30" y="341" font-size="18">GPIO26 → a14 · R2 b14 to b17 · red LED c17 (A) to c19 (K)</text>
+    <text x="30" y="370" font-size="18">GND, a10 and a19 → same rail · 2.54 mm hole pitch</text>
+  </g>
+  <g fill="none" stroke="#21364a" stroke-width="3" stroke-linecap="round">
+    <path d="M204 118h53m90 0h99m43 0h101v94H204"/>
+    <path d="M204 167h53m90 0h99m43 0h101"/>
+    <circle cx="590" cy="167" r="3" fill="#21364a"/>
+  </g>
+  <use href="#resistor" x="257" y="118"/>
+  <use href="#resistor" x="257" y="167"/>
+  <use href="#led" x="446" y="118" color="#176b43"/>
+  <use href="#led" x="446" y="167" color="#a9322d"/>
+</svg>

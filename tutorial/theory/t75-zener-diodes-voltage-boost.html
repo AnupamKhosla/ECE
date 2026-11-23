@@ -87,6 +87,12 @@
 
     <h2 id="boost-dc">How a DC boost converter gets a higher voltage</h2>
     <p>Voltage is energy per unit charge. Current is charge per second. Multiply the two to get power, which is energy per second. A converter can give each coulomb more energy at its output by drawing more coulombs per second from its input.</p>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/boost-switching-paths.svg" data-image-preview="Boost converter schematic in both switch positions" data-preview-source="boost-drawing-source" aria-haspopup="dialog" aria-label="Enlarge the boost converter schematic">
+        <img src="../assets/labs/boost-switching-paths.svg" width="620" height="434" alt="When the switch closes, input current builds through the inductor. When it opens, current continues through the diode to the capacitor and load." loading="lazy" decoding="async">
+      </a>
+      <figcaption>In steady operation, the diode blocks while the switch is closed. When the switch opens, inductor current takes the path through the diode. The green arrows trace conventional current. <a id="boost-drawing-source" href="https://www.ti.com/lit/an/slva372d/slva372d.pdf">Texas Instruments · Boost power-stage reference</a>.</figcaption>
+    </figure>
     <ol>
       <li><b>Switch on.</b> The battery drives a rising current through an <a href="t06-magnetism-inductors.html">inductor</a> and the switch. The inductor stores energy in its magnetic field. The output capacitor keeps feeding the load.</li>
       <li><b>Switch off.</b> The inductor reverses the voltage across its own terminals to keep the current flowing. Its voltage adds to the source voltage along the path through the rectifying diode, charging the output capacitor above the input.</li>

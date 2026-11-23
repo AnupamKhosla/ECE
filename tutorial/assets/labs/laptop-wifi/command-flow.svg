@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 275" role="img" aria-labelledby="title desc">
+  <title id="title">Laptop decisions and ESP32 execution</title>
+  <desc id="desc">The laptop reads queue.txt and decides which light to show. It sends the command over local Wi-Fi. The ESP32 validates and applies it, replies with the active output, and turns the LEDs off after five seconds without a new colour command.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0l10 5-10 5z" fill="#285573"/>
+    </marker>
+  </defs>
+  <rect width="680" height="275" rx="12" fill="#f7fafc"/>
+  <g fill="#e2edf7" stroke="#6f8ca6" stroke-width="2">
+    <rect x="18" y="35" width="192" height="198" rx="12"/>
+    <rect x="466" y="35" width="196" height="198" rx="12"/>
+  </g>
+  <g font-family="system-ui, sans-serif" fill="#1c354a">
+    <g font-size="24" font-weight="700"><text x="36" y="77">Laptop</text><text x="484" y="77">ESP32 board</text></g>
+    <g font-size="17">
+      <text x="36" y="113">Read queue.txt</text>
+      <text x="36" y="142">Count pending jobs</text>
+      <text x="36" y="171">Decide red or green</text>
+      <text x="484" y="113">Validate the request</text>
+      <text x="484" y="142">Set the output pins</text>
+      <text x="484" y="171">Time out after 5 s</text>
+      <text x="338" y="94" text-anchor="middle">Wi-Fi command</text>
+      <text x="338" y="192" text-anchor="middle">Reply with light state</text>
+    </g>
+  </g>
+  <path d="M225 111h226" fill="none" stroke="#285573" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M451 164H225" fill="none" stroke="#285573" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>

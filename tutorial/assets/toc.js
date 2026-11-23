@@ -29,6 +29,7 @@ window.TOC = {
           { n: "P15", file: "practice/p15-oscilloscope-logic-analyser.html", title: "Seeing signals: oscilloscope and logic analyser", d: "Cheap scopes, probes, triggering, and decoding a serial bus on screen." },
           { n: "P16", file: "practice/p16-raspberry-pi-linux.html", title: "Raspberry Pi and the Linux you need", d: "Flash, SSH, the terminal, files, services and networking commands." },
           { n: "P17", file: "practice/p17-pi-gpio-python.html", title: "Raspberry Pi GPIO with Python: a data logger", d: "Read a sensor, log to CSV, serve a web page, and run it as a service." },
+          { n: "P183", file: "practice/p183-control-a-circuit-from-your-laptop.html", title: "Control a circuit from your laptop over Wi-Fi", d: "Use Python to turn a job list into commands for a standalone ESP32 breadboard status light." },
           { n: "P18", file: "practice/p18-esp32-iot-mqtt.html", title: "ESP32 and IoT: Wi-Fi, MQTT and dashboards", d: "Build a small sensor network the way building IoT systems do it." }
         ]},
         { title: "Part D · Networks and cabling on the bench", blurb: "The skills every installer job ad assumes.", chapters: [

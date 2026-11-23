@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P183 · Control a circuit from your laptop over Wi-Fi</title>
+<meta name="description" content="Build an ESP32 status light from two LEDs. Your laptop reads a job list, decides what to display, and sends the board commands over direct Wi-Fi.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part C</div>
+    <span class="eyebrow">Practice · Lab P183</span>
+    <h1>Control a circuit from your laptop over Wi-Fi</h1>
+    <p class="lede">Build a wireless status light for your workshop. Your laptop reads a job list, counts the jobs and decides whether to show green or red. A separately powered ESP32 board receives the command and switches the light.</p>
+    <div class="meta"><span><b>Time</b> 60–90 minutes</span><span><b>Before this</b> <a href="p182-first-breadboard-circuits.html#first-led">P182 · Wire an LED</a></span><span><b>Theory</b> <a href="../theory/t15-digital-logic-microcontrollers.html">Microcontrollers</a> · <a href="../theory/t17-networking-theory.html">IP and UDP</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2 id="who-does-what">The laptop decides and the board executes</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/laptop-wifi/command-flow.svg" data-image-preview="Laptop and ESP32 command flow" data-preview-source="p183-flow-source" aria-haspopup="dialog" aria-label="Enlarge the command flow drawing">
+        <img src="../assets/labs/laptop-wifi/command-flow.svg" width="680" height="275" alt="Laptop reads and counts jobs, then sends a Wi-Fi command. The ESP32 checks it, sets a light, sends a reply and times out in five seconds.">
+      </a>
+      <figcaption>The full job list stays on your laptop. Each Wi-Fi packet carries a short command, and the board replies with the state it set. <a id="p183-flow-source" href="../assets/labs/laptop-wifi/queue_light.py">Laptop program used in the drawing</a>.</figcaption>
+    </figure>
+    <p>The ESP32 creates its own <a href="../theory/t17-networking-theory.html">local Wi-Fi network</a>. You can run it without a router or internet connection. The laptop can use the same design to process a spreadsheet, a camera image or an AI result later. Only the laptop’s decision rule changes if the board keeps the same commands.</p>
+
+    <h2 id="parts">Parts to buy or reuse</h2>
+    <figure class="photo">
+      <a class="image-preview-figure" href="../assets/photos/esp32-wroom-devboard.jpg" data-image-preview="30-pin ESP32-WROOM development board with GPIO25, GPIO26 and GND labels" data-preview-source="p183-esp-photo" aria-haspopup="dialog" aria-label="Enlarge the ESP32 development board photograph">
+        <img src="../assets/photos/esp32-wroom-devboard.jpg" width="1200" height="921" alt="30-pin ESP32-WROOM board with a Micro-USB connector, two rows of header pins, and D25 and D26 printed beside neighbouring pins" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Use the printed D25, D26 and GND labels on this 30-pin board. Espressif’s 38-pin DevKitC uses IO25 and IO26 and places the pins differently. Match the markings on your own board. Photo by Ubahnverleih, resized. <a id="p183-esp-photo" href="https://commons.wikimedia.org/wiki/File:ESP32_Espressif_ESP-WROOM-32_Dev_Board.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a> · <a href="https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/hw-reference/esp32/get-started-devkitc.html">DevKitC V4 pinout</a>.</figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Qty and part</th><th scope="col">Specification</th><th scope="col">Australia</th><th scope="col">India</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1 · <a href="../theory/t15-digital-logic-microcontrollers.html">ESP32 development board</a><br><a class="preview-trigger" href="../assets/photos/esp32-wroom-devboard.jpg" data-image-preview="ESP32-WROOM development board and pin labels" data-preview-source="p183-esp-photo" aria-haspopup="dialog">View board</a></th><td>Assembled classic ESP32 with WROOM-32 or WROOM-32E module, USB serial and fitted header pins. Check GPIO25, GPIO26 and GND. For this pin map, buy the classic ESP32 version.</td><td><a href="https://www.mlab.com.au/products/espressif-esp32-devkitc-board">MLAB · ESP32-DevKitC V4 32E, A$23.84 listed</a></td><td><a href="https://quartzcomponents.com/products/esp32-30-pin-development-board-with-wi-fi-and-bluetooth?variant=45080070455530">QuartzComponents · 30-pin CP2102, ₹375 listed</a></td></tr>
+        <tr><th scope="row">1 · Solderless breadboard<br><a class="preview-trigger" href="../assets/photos/breadboard.jpg" data-image-preview="Solderless breadboard with marked rows and side rails" data-preview-source="p183-breadboard-photo" aria-haspopup="dialog">View breadboard</a></th><td>400 or 830 tie points, 2.54 mm hole pitch, one usable return rail. <a id="p183-breadboard-photo" href="https://commons.wikimedia.org/wiki/File:Electronics-White-Breadboard.jpg">Photo by Evan-Amos, public domain, resized</a>.</td><td><a href="https://core-electronics.com.au/professional-solderless-breadboard-830-tie-points-metal-backing-plate.html">Core Electronics · BB830</a></td><td><a href="https://roboticsdna.in/product/mb-102-bread-board/">RoboticsDNA · MB102</a></td></tr>
+        <tr><th scope="row">2 · Axial resistors<br><a class="preview-trigger" href="../assets/photos/resistor.jpg" data-image-preview="Examples of through-hole resistor bodies" data-preview-source="p183-resistor-photo" aria-haspopup="dialog">View resistors</a></th><td>1 kΩ, ¼ W or higher, ±5% or better. <a id="p183-resistor-photo" href="https://commons.wikimedia.org/wiki/File:Carbon_and_ceramic_resistors_of_different_power_ratings.jpg">Photo by David Ludovino, CC BY-SA 3.0, resized</a>.</td><td><a href="https://www.jaycar.com.au/1k-ohm-0-5-watt-metal-film-resistors-pack-of-8/p/RR0572">Jaycar · RR0572</a></td><td><a href="https://quartzcomponents.com/products/1k-ohm-1-4-watt-resistor-with-1-tolerance-pack-of-10">QuartzComponents · 1 kΩ pack</a></td></tr>
+        <tr><th scope="row">2 · <a href="../theory/t11-semiconductors-diodes.html">LEDs</a><br><a class="preview-trigger" href="../assets/photos/led.jpg" data-image-preview="Two-lead through-hole LEDs" data-preview-source="p183-led-photo" aria-haspopup="dialog">View LED leads</a></th><td>One red, one green. Standard 3 or 5 mm two-lead types, preferably visible below 2 mA. Check polarity before trimming. <a id="p183-led-photo" href="https://commons.wikimedia.org/wiki/File:LED_Rainbow_Pack_-_5mm_PTH_12903-01_new_aranged.jpg">Photo by Elmepi, CC BY 2.0</a>.</td><td><a href="https://www.jaycar.com.au/red-5mm-led-1200mcd-round-clear/p/ZD0152">Jaycar · Red LED</a> and <a href="https://www.jaycar.com.au/green-5mm-led-80mcd-round-diffused/p/ZD0170">green LED</a>.</td><td><a href="https://quartzcomponents.com/products/3mm-led-red-color">QuartzComponents · Red LED</a> and <a href="https://quartzcomponents.com/products/green-5mm-led">green LED</a></td></tr>
+        <tr><th scope="row">5 · Jumpers<br><a class="preview-trigger" href="../assets/photos/jumpers-male-female.jpg" data-image-preview="Female-to-male jumper wires with sockets and pins" data-preview-source="p183-jumper-photo" aria-haspopup="dialog">View jumper ends</a></th><td>Three female-to-male for the ESP32 headers and two male-to-male for the breadboard. 10–20 cm is enough. <a id="p183-jumper-photo" href="https://commons.wikimedia.org/wiki/File:Jumper_male-to-female.jpg">Photo by Edwiyanto, CC BY-SA 4.0, resized</a>.</td><td><a href="https://core-electronics.com.au/male-female-jumper-wire-40-20cm.html">Core Electronics · Female-to-male</a> and <a href="https://core-electronics.com.au/prototyping/prototyping-wire.html">male-to-male jumpers</a>.</td><td><a href="https://quartzcomponents.com/collections/newest-products/products/male-to-male-and-female-to-male-combo-wires-set-of-10-10">QuartzComponents · Combo pack</a></td></tr>
+        <tr><th scope="row">1 · USB data cable<br><a class="preview-trigger" href="../assets/photos/usb-connector-examples.jpg" data-image-preview="USB connector examples, with Micro-USB at the left and USB-A at the right" data-preview-source="p183-usb-photo" aria-haspopup="dialog">View USB ends</a></th><td>Match both ports. The photo shows Micro-USB at the far left and USB-A at the far right. Many newer laptop or board ports use USB-C. Reuse a cable you know transfers data. <a id="p183-usb-photo" href="https://commons.wikimedia.org/wiki/File:USB_types.jpg">Photo by George Shuklin, public domain, resized</a>.</td><td colspan="2">Use a local computer shop or the cable that came with the board. For the standalone test, borrow a 5 V USB power bank or a regulated USB charger that can supply at least 1 A.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Use your laptop, a plain-text editor and a <a href="p03-multimeter-mastery.html">digital multimeter</a> with leads. <a class="preview-trigger" href="../assets/photos/meter.jpg" data-image-preview="UNI-T UT61D meter with a selector and probe jacks" data-preview-source="p183-meter-photo" aria-haspopup="dialog">View the meter</a> <small><a id="p183-meter-photo" href="https://commons.wikimedia.org/wiki/File:UT61D_digital_multimeter_front.jpg">Photo by Anselm Schüler, CC BY-SA 4.0</a>.</small> The board comes assembled, and the two LED circuits plug into the breadboard without soldering.</p>
+
+    <h2 id="wire-the-lights">1 · Wire and check two LED branches</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/laptop-wifi/queue-light-wiring.svg" data-image-preview="Two LED circuits and their breadboard coordinates" data-preview-source="p183-pinout" aria-haspopup="dialog" aria-label="Enlarge the wiring drawing">
+        <img src="../assets/labs/laptop-wifi/queue-light-wiring.svg" width="740" height="390" alt="GPIO25 and GPIO26 each feed a 1 kilohm resistor and an LED in series. Both LEDs return to ESP32 ground. Breadboard coordinates are in the text below." loading="lazy" decoding="async">
+      </a>
+      <figcaption>Build from the printed pin names and the table below. The ESP32 sits beside the breadboard, so narrow and wide boards use the same wiring. <a id="p183-pinout" href="https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32/hw-reference/esp32/get-started-devkitc.html">Espressif · DevKitC V4 header reference</a>.</figcaption>
+    </figure>
+    <ol>
+      <li>With USB unplugged, place the board on an insulating surface beside the breadboard. Connect its GND to the breadboard’s blue return rail with a female-to-male jumper. Check continuity along the part of the rail you plan to use. Some rails are split in the middle.</li>
+      <li>Build each branch using the holes below. One numbered strip connects <b>a–e</b> together on one side of the centre gap. For each resistor, the holes listed are three pitches (7.62 mm) apart. For each LED, the holes are two pitches (5.08 mm) apart. Spread long leads gently. A jumper from the marked cathode’s strip goes to the return rail.</li>
+      <li>Power still off, measure each loose resistor if its bands are unclear. Recheck GPIO25 and GPIO26 against the pin labels. A GPIO high is about 3.3 V. With the resistor in place, even a short across the LED would draw only about 3.3 mA at 3.3 V. Connect USB power only after checking the wiring.</li>
+    </ol>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Output</th><th scope="col">Board to breadboard</th><th scope="col">1 kΩ resistor</th><th scope="col">LED anode and cathode</th><th scope="col">Return</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Green</th><td>GPIO25 → a5</td><td>b5 to b8</td><td>c8 (A), c10 (K)</td><td>a10 → same GND rail</td></tr>
+        <tr><th scope="row">Red</th><td>GPIO26 → a14</td><td>b14 to b17</td><td>c17 (A), c19 (K)</td><td>a19 → same GND rail</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="upload">2 · Upload the board program</h2>
+    <p>Download <a href="../assets/labs/laptop-wifi/queue-light/queue-light.ino" download>queue-light.ino</a> into a folder named <code>queue-light</code>. Download <a href="../assets/labs/laptop-wifi/queue_light.py" download>queue_light.py</a> into the same working folder for the laptop steps.</p>
+    <ol>
+      <li>Install <a href="https://www.arduino.cc/en/software/">Arduino IDE</a>. In its preferences add the Espressif Boards Manager URL below, then install <b>esp32 by Espressif Systems</b>. The project uses the 3.3.8 board package. <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html">Espressif · IDE installation steps</a>.</li>
+      <li>Open the sketch. Replace the example <code>labPassphrase</code> with an 8–63 character passphrase for this lab. Connect the ESP32 over USB. Select <b>ESP32 Dev Module</b> and the USB serial port it appeared on. Upload. Open Serial Monitor at <b>115200 baud</b>, and press EN or RESET if the startup message has scrolled by. Look for <code>Queue light ready at 192.168.4.1</code>. Both external LEDs should be off.</li>
+      <li>On your laptop, join <b>ECE-Queue-Light</b> using the passphrase you put in the sketch. Your operating system may say the network has no internet. Stay on it for this test. The board’s USB connection can now supply power while the laptop sends data over Wi-Fi. <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html">Espressif · Wi-Fi access point mode</a>.</li>
+    </ol>
+    <pre><code>https://espressif.github.io/arduino-esp32/package_esp32_index.json</code></pre>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=xPlN_Tk3VLQ">Introduction to ESP32 – Getting Started · DroneBot Workshop</a><br>Watch how the demonstrator picks a board profile and USB port and uploads a first sketch. Use the board package and sketch above for this project.</p>
+
+    <h2 id="send-commands">3 · Send a command and test each light</h2>
+    <p>Use <a href="https://www.python.org/downloads/">Python 3</a> on the laptop. Open Terminal at the folder holding <code>queue_light.py</code>. On Windows use <code>py -3</code> in place of <code>python3</code>. Run each line separately. Set the meter to DC volts. Put the black probe on the return rail and the red probe on a spare hole in the driven GPIO’s strip, such as d5 or d14. A helper can type the command while you read the meter because the light stays on for five seconds.</p>
+    <pre><code>python3 queue_light.py status
+python3 queue_light.py set green
+python3 queue_light.py set red
+python3 queue_light.py set off</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Command or condition</th><th scope="col">Expected reply or light</th><th scope="col">What to check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Boot, then <code>status</code></th><td><code>ESP32: off</code></td><td>Both external LEDs dark.</td></tr>
+        <tr><th scope="row"><code>set green</code> or <code>set red</code></th><td>Only the named LED on</td><td>About 3.0–3.4 V at the requested GPIO, under 0.2 V at the other. A reply confirms the pin state requested by software. The LED and meter confirm the electrical result.</td></tr>
+        <tr><th scope="row">Wait six seconds after the last colour command</th><td>Both LEDs dark. <code>status</code> reads <code>off</code>.</td><td>Reading status does not extend the five-second timer.</td></tr>
+        <tr><th scope="row">Connect the ESP32 to a USB power bank instead of the laptop</th><td>Same result after rejoining the board’s network</td><td>Repeat a colour command with the laptop cable disconnected. Some power banks shut off automatically at low load. Use a known always-on 5 V USB source if this happens.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="run-your-laptop-logic">4 · Let the laptop decide from real data</h2>
+    <p>In the same folder, make a plain-text file named <code>queue.txt</code>. Save it empty and run the command below. Add a line such as <code>Inspect blower wiring</code> in your editor and save it again. The light changes to red. Remove all lines and save, and it goes green. Each nonempty line counts as one job.</p>
+    <pre><code>python3 queue_light.py watch queue.txt</code></pre>
+    <p>Python reads the file, applies the rule and renews the command about once a second. Press Ctrl+C to stop and send <code>off</code>. To test a lost link, leave the board powered, run the watcher and disconnect the laptop from its Wi-Fi. The LED should go out within about five seconds of the most recent command that reached the board.</p>
+    <p>The message <code>1a2b3c4d red</code> is one <a href="../theory/t17-networking-theory.html">UDP datagram</a> to port 4210. The board checks the command, sets GPIO26 high and sends <code>1a2b3c4d red</code> back to confirm. The eight matching characters let the laptop tell which request the reply belongs to. If a reply is missing, the laptop reports it. The timeout runs on the board even when the laptop is disconnected.</p>
+
+    <h2>Find the fault by following the chain</h2>
+    <ul>
+      <li><b>No USB serial port.</b> Try a known data cable and watch the port list when you unplug and replug the board. Use the board supplier’s USB serial driver instructions if needed.</li>
+      <li><b>No board reply.</b> Verify the ESP32’s Wi-Fi name and IP from Serial Monitor. Join the board again if the laptop switched back to your home Wi-Fi. If Serial Monitor shows a different board IP, use <code>python3 queue_light.py --host &lt;board-ip&gt; status</code> with the printed address.</li>
+      <li><b>Reply arrives but LED stays dark.</b> Check the GPIO voltage first, then measure the drop across the resistor. Power off before moving a lead. Double-check LED polarity, the numbered strips and the GND rail. A modern green LED with a high forward voltage may be very dim at this current.</li>
+      <li><b>Queue stays red.</b> Check that the editor saved the very same <code>queue.txt</code> file as plain text. A single nonblank line keeps red on. The laptop prints the count to help you check the rule.</li>
+    </ul>
+    <p>To add motion later, start with the low-voltage driver in <a href="p13-actuators-motors.html">P13 · Actuators</a> and the local stop logic in <a href="p27-firmware-state-machine.html">P27 · Timed controllers</a>. A motor needs its own rated driver and power path. Keep limit switches and emergency stopping local to the equipment. For a shared network and multiple boards, continue with <a href="p18-esp32-iot-mqtt.html">P18 · Wi-Fi and MQTT</a>.</p>
+    <p class="caption">The component photos show the individual parts. The two drawings show the proposed build and its wiring. The circuit still needs a physical bench check using the acceptance table above.</p>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-laptop-wifi"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>
