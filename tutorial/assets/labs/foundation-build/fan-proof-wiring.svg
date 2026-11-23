@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 830 605" role="img" aria-labelledby="title desc">
+  <title id="title">Wiring a guarded 5 V fan with relay switching and rotation feedback</title>
+  <desc id="desc">GPIO25 drives a 2N3904 through 680 ohms. The transistor energises the 5 V relay coil, and the normally open contact switches the fan positive lead. The fan tach output and 4.7 kilohm pull-up go to GPIO33. The two power supplies share ground but their positive rails are separate.</desc>
+  <rect width="830" height="605" rx="14" fill="#f7fafc"/>
+  <g font-family="system-ui,sans-serif" fill="#172d43">
+    <g font-weight="700" font-size="23">
+      <text x="28" y="39">1 · Switch the relay coil</text>
+      <text x="28" y="239">2 · Switch the fan’s positive lead</text>
+      <text x="28" y="447">3 · Read the open-collector tach output</text>
+    </g>
+    <g fill="none" stroke="#28425a" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M32 103h96m0-9h64v18h-64zM192 103h159m0-12v24m0-18 31-18h67m-98 30 31 18v39h-246m87-63v17m-8 0h16v29h-16zM223 149v17"/>
+      <path d="m370 116 12 11-15-2z" fill="#28425a"/>
+      <path d="M449 79h30q11-21 23 0q12-21 24 0q12-21 24 0q12-21 24 0h73m-198 0v87h80m17 0h101V79"/>
+      <path d="M529 154v24l17-12zM546 154v24" fill="#28425a"/>
+      <circle cx="223" cy="103" r="3.8" fill="#28425a"/><circle cx="223" cy="166" r="3.8" fill="#28425a"/>
+      <circle cx="449" cy="79" r="3.8" fill="#28425a"/><circle cx="647" cy="79" r="3.8" fill="#28425a"/>
+      <path d="M32 296h147m0 0 62-27m0 27h96m0-23h164v46H337zM501 296h172m-386 0v73h108m0-11v22m0-11 19-11v22zM414 369h155v-73"/>
+      <circle cx="179" cy="296" r="3.5" fill="#28425a"/><circle cx="241" cy="296" r="3.5" fill="#28425a"/>
+      <circle cx="287" cy="296" r="3.8" fill="#28425a"/><circle cx="569" cy="296" r="3.8" fill="#28425a"/>
+      <path d="M32 535h678m-336 0v-21m-9 0h18v-31h-18zM374 483v-13"/>
+      <circle cx="374" cy="535" r="4" fill="#28425a"/>
+    </g>
+    <g font-size="16">
+      <text x="32" y="87">GPIO25</text><text x="130" y="83">680 Ω</text><text x="235" y="144">10 kΩ</text>
+      <text x="290" y="151">2N3904</text><text x="297" y="95">B</text><text x="392" y="72">C</text><text x="394" y="145">E</text>
+      <text x="136" y="193">Common GND</text><text x="470" y="61">K1 · 5 V coil · pins 2 and 9</text>
+      <text x="670" y="85" fill="#9c3026" font-weight="700">+5 V FAN SUPPLY</text>
+      <text x="469" y="197">D1 · 1N4007 · band at +5 V</text>
+      <text x="32" y="280" fill="#9c3026" font-weight="700">+5 V FAN SUPPLY</text>
+      <text x="148" y="320">COM 5/6</text><text x="226" y="320">NO 10</text>
+      <text x="350" y="302">5 V SUNON FAN</text><text x="278" y="279" fill="#9c3026">Red</text>
+      <text x="514" y="282">Black</text><text x="616" y="322">Common GND</text>
+      <text x="309" y="398">D2 · 1N5819 · band at fan red</text>
+      <text x="32" y="520">Fan yellow · FG</text><text x="613" y="520">ESP32 GPIO33</text>
+      <text x="389" y="480" fill="#9c3026">ESP32 3.3 V</text><text x="393" y="508">4.7 kΩ</text>
+      <text x="28" y="581" fill="#28425a">Join the external supply GND to ESP32 GND. Keep its +5 V separate from the ESP32 supply pins.</text>
+    </g>
+    <path d="M28 209H801M28 418H801" fill="none" stroke="#b7c5d3"/>
+  </g>
+</svg>

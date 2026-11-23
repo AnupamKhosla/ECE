@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P190 · Build a guarded 5 V fan with rotation proof</title>
+<meta name="description" content="Build a tabletop 5 V ventilation unit, solder a relay driver and show the fan command and measured rotation separately on your ESP32 panel.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P190</span>
+    <h1>Build a guarded 5 V fan with rotation proof</h1>
+    <p class="lede">Add a real fan to your mini building-management panel. The green light shows the ESP32 issued a command. The yellow light comes on when it measures pulses from the rotating fan.</p>
+    <div class="meta"><span><b>Time</b> 90–120 minutes</span><span><b>Before this</b> <a href="p189-build-a-mini-bms-panel.html">P189 · Build the mini ventilation panel</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/axial-fan-example.jpg" data-image-preview="Real 40 mm axial fan and its corner mounting holes" data-preview-source="fan-photo" aria-label="Enlarge the fan photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/axial-fan-example.jpg" width="988" height="1050" loading="lazy" decoding="async" alt="Small square axial fan with four corner mounting holes and a cable coming out of the frame.">
+      </a>
+      <figcaption>Use this 40 mm Delta fan photo to identify the frame, hub and corner holes. Build with the 5 V Sunon model in the parts list. <small>Trio3D, resized and converted to JPEG · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> · <a id="fan-photo" href="https://commons.wikimedia.org/wiki/File:Delta_Electronics_EFB0412VHD.png">Original photo</a>.</small></figcaption>
+    </figure>
+    <p class="course-video">Watch how a separate tachometer wire sends speed feedback. This build runs the fan at full supply voltage when the relay closes. <a href="https://www.youtube.com/watch?v=42XcLfcTHik">DigiKey · Sunon fans and tachometer feedback</a>.</p>
+    <h2 id="parts">Collect parts and tools</h2>
+    <p>Reuse the ESP32 panel, dial, door switch and lamps from P189. The fan was listed at about ₹641 in India and A$10.95 including GST in Australia. Check delivery charges before buying just one part. The guarded unit uses a separate 5 V supply and the two supplies share a ground.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">Specification</th><th scope="col">Sources</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1 · Fan <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/axial-fan-example.jpg" data-image-preview="40 mm axial fan frame and mounting holes" data-preview-source="fan-photo" aria-haspopup="dialog">View photo</a></span></th><td>Sunon MF40100V1-1000U-G99, 5 V DC, 40 × 40 × 10 mm, 136 mA nominal. Yellow is the open-collector FG tach signal. Verify the full suffix and the red, black and yellow leads.</td><td><a href="https://www.digikey.in/en/products/detail/sunon-fans/MF40100V1-1000U-G99/7927772">DigiKey India</a> · <a href="https://www.digikey.com.au/en/products/detail/sunon-fans/MF40100V1-1000U-G99/7927772">DigiKey Australia</a> · <a id="sunon-drawing" href="https://vikiwat.com/userfiles/productimages/111310/files/ventilator-sunon-mf40100v1-1000u-g99-datasheet.pdf#page=6">Sunon specification and dimensions</a></td></tr>
+        <tr><th scope="row">2 · 40 mm finger guards <span class="preview-links"><a class="preview-trigger" href="https://cdn.sameskydevices.com/products/image/getproductimage/516823?typecode=m&amp;width=600" data-image-preview="Same Sky FG40-32 wire guard" data-preview-source="fan-guard-photo" aria-haspopup="dialog">View guard</a></span></th><td>Same Sky FG40-32, 32 mm hole pitch. Four M4 machine screws, washers and nuts. Measure the stack to choose 25–30 mm screws and check the ends clear the blades. Use a roughly 80 × 90 × 3 mm sheet for the panel and a small base to keep it upright.</td><td><a href="https://www.digikey.in/en/products/detail/same-sky-formerly-cui-devices/FG40-32/11192380">DigiKey India · FG40-32</a> · <a href="https://www.digikey.com.au/en/products/detail/same-sky-formerly-cui-devices/FG40-32/11192380">DigiKey Australia · FG40-32</a> · <a id="fan-guard-photo" href="https://www.sameskydevices.com/product/thermal-management/thermal-accessories/fan-guards-and-filters/fg40-32">Same Sky · Product photo and dimensions</a></td></tr>
+        <tr><th scope="row">1 · 5 V relay <span class="preview-links"><a class="preview-trigger" href="../assets/photos/relaymechanism.jpg" data-image-preview="Opened electromechanical relay with a coil and contacts" data-preview-source="fan-relay-photo" aria-haspopup="dialog">View coil and contacts</a></span></th><td>G5V-1 DC5, Omron or Aratas, SPDT, 167 Ω coil, 30 mA nominal. Solder to a small piece of 2.54 mm pad-per-hole board. The photo shows how a different relay works inside.</td><td><a href="https://www.digikey.in/en/products/detail/omron-electronics-inc-emc-div/G5V-1-DC5/87831">DigiKey India</a> · <a href="https://www.digikey.com.au/en/products/detail/omron-electronics-inc-emc-div/G5V-1-DC5/87831">DigiKey Australia</a> · <a id="fan-relay-photo" href="https://commons.wikimedia.org/wiki/File:Relay_Parts.jpg">David Boettcher · public-domain photo, resized</a></td></tr>
+        <tr><th scope="row">1 · Driver and clamp set <span class="preview-links"><a class="preview-trigger" href="../assets/photos/bjt.jpg" data-image-preview="Through-hole 2N3904 transistor" data-preview-source="fan-bjt-photo" aria-haspopup="dialog">View transistor</a></span></th><td>One 2N3904, one 680 Ω, one 10 kΩ and one 4.7 kΩ resistor, all ≥¼ W. One 1N4007 and one axial 1N5819. Add 22–24 AWG insulated wire and a 3-pole terminal for fan red, black and yellow.</td><td><a href="p182-first-breadboard-circuits.html#kit">P182 · transistor, diode and resistor suppliers</a> · <a href="https://in.element14.com/onsemi/1n5819g/diode-schottky-1a-59-10/dp/1458992">element14 India · 1N5819</a> · <a href="https://au.element14.com/onsemi/1n5819g/diode-schottky-1a-59-10/dp/1458992">element14 Australia · 1N5819</a> · <a id="fan-bjt-photo" href="https://commons.wikimedia.org/wiki/File:2N3904.jpg">Windell Oskay · CC BY 2.0</a></td></tr>
+        <tr><th scope="row">1 · External 5 V source <span class="preview-links"><a class="preview-trigger" href="../assets/photos/psu.jpg" data-image-preview="Adjustable bench supply voltage and current controls" data-preview-source="fan-supply-photo" aria-haspopup="dialog">View bench supply</a></span></th><td>Start with a regulated bench supply at 5.00 V and a 0.5 A current limit. For a portable demo, use a protected 5 V USB supply with a labelled DC breakout and an inline 500 mA fuse at the positive output. Keep the ESP32 on its own USB cable.</td><td><a href="p01-bench-kit-safety.html">P01 · Bench source and tools</a> · <a href="p03-multimeter-mastery.html#what-you-need">P03 · Meter</a> · <a id="fan-supply-photo" href="https://commons.wikimedia.org/wiki/File:Bench_power_supply.jpg">Derrick Parker · CC0, resized</a></td></tr>
+      </tbody>
+    </table></div>
+    <p>Bring a ruler, marker, small drill and 4.5 mm bit, a hole saw or coping saw for the air opening, a deburring file, screwdriver and spanner. Use the iron, solder and clip leads from the door-indicator build. <span class="preview-links"><a class="preview-trigger" href="../assets/photos/solde.jpg" data-image-preview="Iron heating a through-hole solder joint" data-preview-source="fan-iron-photo" aria-haspopup="dialog">View iron and joint</a></span> <a id="fan-iron-photo" href="https://learn.adafruit.com/assets/1996">Bill Earl · CC BY-SA 3.0, resized</a> · <a href="p188-solder-a-door-indicator-pcb.html">P188 · Soldering tools and continuity checks</a>.</p>
+    <h2>1 · Mount the guarded fan</h2>
+    <ol>
+      <li>Mark the fan centre on the panel. Mark four mounting points 16 mm horizontally and vertically from that centre, forming a 32 mm square. Transfer the marks from the actual frame to confirm before drilling.</li>
+      <li>Cut a roughly 36 mm opening on the centre mark. Drill four 4.5 mm mounting holes and file the edges. If using a pilot bit, clamp the panel to a scrap backer before drilling.</li>
+      <li>Fasten a guard on each accessible side, with the frame arrows pointing toward the outlet. Clamp the panel to a base or stand. Keep the cable outside the swept area and secure it to the panel. With power off, verify that the screw ends and guards clear the blades. Follow the fan drawing’s tightening limit.</li>
+    </ol>
+    <h2 id="wire">2 · Wire and test the relay before fitting the fan</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/fan-proof-wiring.svg" data-image-preview="5 V fan relay and tachometer wiring" aria-label="Enlarge the fan wiring drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/fan-proof-wiring.svg" width="830" height="605" loading="lazy" decoding="async" alt="Three wiring panels for the transistor and protected relay coil, the fan high-side contact and clamp, and the tachometer pull-up to the ESP32.">
+      </a>
+      <figcaption>Each label repeated in the drawing refers to the same connection. Both supply returns join at common GND. The command and proof lamps stay wired as in P189. <a href="../assets/labs/foundation-build/fan-proof-wiring.svg" download>Download the wiring drawing</a>.</figcaption>
+    </figure>
+    <ol>
+      <li>Look at the G5V-1 with its pins toward you and the case mark on the left. On the solder side, the pins across the top are 1, 2 and 5. Across the bottom they are 10, 9 and 6. Put the left pair two pitches apart across the rows, leaving one hole between them, the next pair one column to its right, and the right pair three more columns to the right. Mark these six pads before soldering. With power off, check about 167 Ω between pins 2 and 9 and continuity from 5 or 6 to pin 1. Pin 10 is normally open. <a href="https://omronfs.omron.com/en_US/ecb/products/pdf/en-g5v_1.pdf#page=4">G5V-1 bottom view and contact diagram</a>.</li>
+      <li>Solder relay pins 2 and 9 to two separate insulated leads. Put pin 2 on external +5 V and pin 9 on the 2N3904 collector. Put the 1N4007 directly across these points with its band at +5 V. The diode gives the coil current a path when the transistor switches off. <a href="p109-inductive-load-switch-and-flyback.html">P109 · Measure a relay coil and its flyback pulse</a>.</li>
+      <li>Put the 2N3904 emitter at common GND. Connect its base to GND through 10 kΩ and to a loose test jumper through 680 Ω. The latter will eventually go to GPIO25. Leave COM and NO disconnected from power for the first test.</li>
+      <li>With the fan off the circuit, power the ESP32 and turn on the separate current-limited 5 V supply. Put the loose jumper at GND, then at the ESP32 3V3 rail. The relay should release and then click. With the meter in continuity mode across the isolated COM (pin 5 or 6) and NO (pin 10), check that only the high command closes the contact. With meter on DC volts and black at GND, the collector should be near 5 V when off and below 0.3 V when on.</li>
+      <li>Switch off both supplies. Connect COM to the external +5 V and NO to fan red. Fan black goes to common GND. Put the 1N5819 across fan red and black with its band at fan red. Insulate the unused NC pin and anchor the leads. Once contacts are connected to the supply, use voltage mode for powered checks.</li>
+    </ol>
+    <h2 id="proof">3 · Move from a manual proof switch to measured rotation</h2>
+    <ol>
+      <li>With both supplies disconnected, move the loose 680 Ω jumper to the same GPIO25 strip as the green lamp input, a5 in the P189 layout. Remove the old proof switch from b33. Land the yellow fan lead and one end of 4.7 kΩ in separate free holes on strip 33, with GPIO33 still at a33. Put the other end of the resistor on the ESP32 3.3 V rail. The pull-up sets the high level. The fan’s output transistor pulls the same line down in pulses. <a href="p186-breadboard-comparator.html">P186 · Learn how an open-collector output works</a>.</li>
+      <li>Open P189’s sketch files and change <code>constexpr bool useFanTach = false;</code> to <code>constexpr bool useFanTach = true;</code>. Leave the dial, door, reset and lamps wired. Upload with the external supply off and set Serial Monitor to 115200 baud. The header now ends in <code>tach_Hz</code>. <a href="../assets/labs/foundation-build/mini-bms/mini-bms.ino" download>mini-bms.ino</a> · <a href="../assets/labs/foundation-build/mini-bms/ventilation.h" download>ventilation.h</a>.</li>
+      <li>Start with the door shut and the dial at or below 23 °C. Apply 5 V. Verify green and yellow are dark and frequency is zero. Raise the dial through 25 °C. The green light comes on, the relay drives the fan, and the yellow light comes on once the ESP32 counts enough falling edges. At full speed expect roughly 200–270 Hz in free air from 7,000 RPM at two pulses per revolution, allowing the rated speed tolerance. The trainer accepts 100–350 Hz as its running range.</li>
+    </ol>
+    <h2>4 · Diagnose a missing signal and prove the interlock</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Your test</th><th scope="col">Expected</th><th scope="col">Where to look if it differs</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Request a run with the door shut</th><td>Green on. Fan red to black reads near 5 V once the relay pulls in. Yellow follows rotation.</td><td>Check +5 V at COM, then voltage at NO. A low COM reading points to the supply, fuse or power lead. A normal COM reading and low NO reading point to the relay or its terminals.</td></tr>
+        <tr><th scope="row">Switch off both supplies and remove the yellow lead. Restart and request a run.</th><td>Fan runs briefly with yellow off. After about 8 s green goes off and red lights for <code>missing_proof</code>.</td><td>With the lead removed, GPIO33 should sit near 3.3 V. Restore the lead with both supplies off. A fixed level during rotation points to the FG wire, fan suffix or pull-up.</td></tr>
+        <tr><th scope="row">With a healthy run, turn off the external 5 V supply while keeping the ESP32 powered.</th><td>Proof disappears and the command stops with <code>lost_proof</code>.</td><td>Compare commanded state, measured fan voltage and the tach reading in Serial Monitor. Lower the dial and press reset once proof is off.</td></tr>
+        <tr><th scope="row">Restore power and run, then open the door.</th><td>Green goes off, red indicates the open door and yellow drops when rotation slows. It should clear within 3 s.</td><td>If there is 5 V at the fan red lead after command goes off, check the contact used and verify coil release.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Verify air movement separately by holding a paper strip clear of the outlet guard. The tachometer tells you the rotor is turning. In a duct, a pressure or airflow switch can report whether useful air actually moves. Save your own readings and timestamps from the four tests. The tables give design expectations and the photos show examples. <a href="p79-fan-run-proof.html">P79 · Prove fan operation in a building system</a>.</p>
+    <a class="crosslink" href="p63-bms-point-to-point.html">P63 · Trace a building point from field wiring to the display</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-fan-proof"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>
