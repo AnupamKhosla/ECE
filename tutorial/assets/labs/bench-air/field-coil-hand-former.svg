@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="760" viewBox="0 0 1050 760" role="img" aria-labelledby="title desc">
+  <title id="title">Field coil hand former and low-voltage test circuit</title>
+  <desc id="desc">A 40 by 12 by 12 millimetre wooden mandrel with two removable side cheeks produces a rectangular 60-turn practice coil. Two AA cells and a 33 ohm resistor allow measurement of the coil resistance from two voltage readings.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto-start-reverse">
+      <path d="m1 1 5 3-5 3" fill="none" stroke="#365164" stroke-width="1.3"/>
+    </marker>
+  </defs>
+  <rect width="1050" height="760" rx="14" fill="#f4f7fa"/>
+  <g font-family="system-ui,sans-serif" fill="#172b3b">
+    <text x="28" y="44" font-size="25" font-weight="700">P181 · Hand-wind a practice field coil</text>
+    <text x="28" y="69" font-size="16">Rev A · Dimensions in mm · 30 SWG enamelled copper · 60 turns</text>
+    <g stroke="#ccdae4" fill="#fff">
+      <rect x="28" y="92" width="495" height="346" rx="8"/>
+      <rect x="541" y="92" width="481" height="346" rx="8"/>
+      <rect x="28" y="456" width="994" height="256" rx="8"/>
+    </g>
+    <g font-size="18" font-weight="700">
+      <text x="50" y="122">Face of the mandrel</text>
+      <text x="565" y="122">Side view with cheeks fitted</text>
+      <text x="50" y="487">Check the coil with two AA cells</text>
+    </g>
+    <g stroke="#486475" stroke-width="1.4">
+      <rect x="78" y="156" width="352" height="209" rx="2" fill="#e9e2cd"/>
+      <rect x="144" y="228" width="220" height="66" rx="16.5" fill="#cbb277"/>
+      <rect x="134" y="218" width="240" height="86" rx="24" fill="none" stroke="#ae5729" stroke-width="2"/>
+      <path d="M147 156v59h13v-59" fill="#fff" stroke="#80959f"/>
+      <path d="M78 255h65v12H78m352-12h-66v12h66" fill="#fff" stroke="#80959f"/>
+      <circle cx="254" cy="261" r="11.5" fill="#fff"/>
+      <path d="M144 305v33m220-33v33M374 228h29m-29 66h29" fill="none"/>
+      <path d="M145 327H363M398 228v66" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <path d="M113 285l31-20M179 199l-23 25" fill="none" marker-end="url(#arrow)"/>
+    </g>
+    <g font-size="14">
+      <text x="164" y="182">Starter lead slot</text><text x="182" y="198">Corner R3</text>
+      <text x="92" y="301">Tie slot</text><text x="229" y="321">40 ±0.2</text><text x="373" y="285">12 ±0.2</text>
+      <text x="49" y="395">Cheeks 64 × 38 × 3, with coaxial Ø4.2 holes.</text>
+      <text x="49" y="417">Ease the edges. Sand all wire-contact faces smooth.</text>
+    </g>
+    <g stroke="#486475" stroke-width="1.4">
+      <rect x="672" y="169" width="13" height="182" fill="#e9e2cd"/>
+      <rect x="742" y="169" width="13" height="182" fill="#e9e2cd"/>
+      <rect x="685" y="221" width="57" height="78" fill="#cbb277"/>
+      <path d="M647 261H778" stroke="#506b80" stroke-width="10"/>
+      <path d="M643 250v22h12v-22zM777 250v22h12v-22z" fill="#aabac7"/>
+      <path d="M695 212h38m-38 5h38m-38 86h38m-38 5h38" stroke="#ae5729" stroke-width="3"/>
+      <path d="M686 155v14m56-14v14" fill="none"/>
+      <path d="M687 158h54" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <path d="M810 197h-65l-12 17" fill="none" marker-end="url(#arrow)"/>
+      <path d="M808 263h-18m-107 60h124" fill="none"/>
+    </g>
+    <g font-size="14">
+      <text x="686" y="148">12 clear</text><text x="819" y="201">2 layers of 30 turns</text>
+      <text x="819" y="266">M4 × 30 bolt and nut</text><text x="819" y="327">Removable cheeks</text>
+      <text x="565" y="395">Leave 100 mm at each end. Keep the same wrap direction.</text>
+      <text x="565" y="417">Tie the coil at two points before removing a cheek.</text>
+    </g>
+    <g fill="none" stroke="#365164" stroke-width="2.5">
+      <path d="M106 599v-36h98m16 0h66m56 0h106m74 0h61v79H106v-13"/>
+      <path d="M206 563l16-12"/>
+      <path d="M286 563l5-10 8 20 8-20 9 20 8-20 8 20 10-10"/>
+      <path d="M448 563c0-18 18-18 18 0c0-18 18-18 18 0c0-18 18-18 18 0c0-18 20-18 20 0"/>
+      <path d="M91 599h30m-25 10h20m-25 10h30m-25 10h20"/>
+      <path d="M278 568v16h73v-16m90 0v16h89v-16" stroke="#768c9d" stroke-width="1.4"/>
+    </g>
+    <g font-size="15">
+      <text x="79" y="553">+</text><text x="122" y="616">2 × AA</text><text x="185" y="538">Switch</text>
+      <text x="283" y="538">33 Ω, 2 W</text><text x="438" y="538">Coil under test</text>
+      <text x="302" y="607">V<tspan baseline-shift="sub" font-size="10">R</tspan></text>
+      <text x="474" y="607">V<tspan baseline-shift="sub" font-size="10">C</tspan></text>
+      <text x="643" y="542">Measure the resistor before connecting the cells.</text>
+      <text x="643" y="570">Read DC volts across the resistor and coil.</text>
+      <text x="643" y="608">I = V<tspan baseline-shift="sub" font-size="10">R</tspan> ÷ R<tspan baseline-shift="sub" font-size="10">limit</tspan></text>
+      <text x="643" y="636">R<tspan baseline-shift="sub" font-size="10">coil</tspan> = V<tspan baseline-shift="sub" font-size="10">C</tspan> ÷ I</text>
+      <text x="50" y="681">Place the meter tips on the bare coil leads just inside the current clips. Switch off after taking readings.</text>
+    </g>
+    <text x="28" y="741" font-size="15">This coil and its measurement circuit are sized for bench practice with two AA cells.</text>
+  </g>
+</svg>

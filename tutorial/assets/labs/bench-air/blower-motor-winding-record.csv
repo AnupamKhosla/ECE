@@ -1,0 +1,26 @@
+Donor ID,Type code,Date,Operator,Group,Item,Measurement or result,Units,Method or notes
+,,,,Donor,Nameplate data,,,Record model voltage input power speed and serial
+,,,,Donor,Reference photos,,,Record file names for both ends and all connections
+,,,,Donor,Viewed from,,,Use one reference end and direction for all indices
+,,,,Field,Stack length and outside dimensions,,mm,
+,,,,Field,Pole spacing and coil window,,mm,
+,,,,Field,F1 lead starts and finishes,,,Sketch which face and the winding direction
+,,,,Field,F2 lead starts and finishes,,,Sketch which face and the winding direction
+,,,,Field,F1 resistance and temperature,,ohm and C,Record meter range and zero offset
+,,,,Field,F2 resistance and temperature,,ohm and C,Record only if winding is isolated and accessible
+,,,,Field,Turns by layer and total,,turns,Use an expendable coil for unwinding
+,,,,Field,Wire diameter insulated and bare,,mm,Measure separately at three locations
+,,,,Field,Parallel strands,,count,
+,,,,Field,Three turn lengths,,mm,
+,,,,Field,Liner sleeve and projection dimensions,,mm,Record materials and routing
+,,,,Armature,Slots and commutator bars,,count,
+,,,,Armature,Coil mapping observation,,,Duplicate line for each coil and enter slots bars direction and layer
+,,,,Armature,Adjacent bar readings,,,Log repeat readings and compare with a reference sample
+,,,,Armature,Journal and shoulder dimensions,,mm,Record fan and commutator ends separately
+,,,,Practice,Coil turns,,turns,Target 60 in two layers
+,,,,Practice,Measured series resistor,,ohm,Measure with cells disconnected
+,,,,Practice,Voltage across series resistor,,V,
+,,,,Practice,Voltage across winding,,V,
+,,,,Practice,Calculated current,,A,Resistor voltage divided by measured resistor
+,,,,Practice,Calculated winding resistance,,ohm,Coil voltage divided by current
+,,,,Practice,Inspection and disposition,,pass/fail,Record ties enamel and repeatability
