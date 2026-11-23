@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 375" role="img" aria-labelledby="title desc">
+  <title id="title">A 3.3 V supervised door input and its two-wire cable</title>
+  <desc id="desc">At the ESP32 end, a 2.2 kilohm pull-up runs from 3.3 volts to SENSE, with a 100 nanofarad capacitor from SENSE to ground. Two wires go to a door end board. Its 2.2 kilohm series resistor leads to the reed switch in parallel with another 2.2 kilohm resistor.</desc>
+  <rect width="800" height="375" rx="12" fill="#f8fafc"/>
+  <rect x="22" y="36" width="304" height="293" rx="12" fill="#eaf2fc" stroke="#a4bbd3"/>
+  <rect x="474" y="36" width="304" height="293" rx="12" fill="#fff5e6" stroke="#d5bc96"/>
+  <g fill="none" stroke="#253b53" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M232 94v22m-9 0h18v33h-18zM232 149v31h249m-249 0H82m92 0v57m-14 0h28m-28 11h28m-14 0v42m-92 0H614"/>
+    <path d="M481 172h64v16h-64zM545 180h154m-85 0v40m0 38v32m85-110v36m-9 0h18v39h-18zM699 255v35h-85"/>
+    <path d="M614 220l21 34"/>
+    <circle cx="614" cy="220" r="3" fill="#253b53"/><circle cx="614" cy="258" r="3" fill="#253b53"/>
+    <circle cx="174" cy="180" r="4" fill="#253b53"/><circle cx="232" cy="180" r="4" fill="#253b53"/>
+    <circle cx="174" cy="290" r="4" fill="#253b53"/><circle cx="614" cy="180" r="4" fill="#253b53"/>
+    <circle cx="614" cy="290" r="4" fill="#253b53"/>
+  </g>
+  <g font-family="system-ui,sans-serif" fill="#253b53" font-size="17">
+    <text x="44" y="68" font-size="22" font-weight="700">Controller end</text>
+    <text x="496" y="68" font-size="22" font-weight="700">Door end</text>
+    <text x="232" y="88" text-anchor="middle" font-weight="700">3.3 V</text>
+    <text x="250" y="139">R1 · 2.2 kΩ</text>
+    <text x="82" y="164">GPIO34 · SENSE</text>
+    <text x="37" y="245">C1 · 100 nF</text>
+    <text x="82" y="311">GND</text>
+    <text x="342" y="163">Outgoing wire</text>
+    <text x="348" y="314">Return wire</text>
+    <text x="482" y="158">R2 · 2.2 kΩ</text>
+    <text x="550" y="239">Reed</text>
+    <text x="715" y="229">R3</text><text x="715" y="251">2.2 kΩ</text>
+    <text x="26" y="355">The reed bypasses R3 when the door is shut. R2 and R3 go at the far end of the cable.</text>
+  </g>
+</svg>

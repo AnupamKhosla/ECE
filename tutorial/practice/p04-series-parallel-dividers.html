@@ -337,7 +337,7 @@
     <div class="callout tip"><span class="label">Bench tip</span><p>The meter itself can warm a thermistor: on the ohms range it pushes a small current through it. The controller does too: with 5 V across 20 kΩ about 0.25 mA flows and the thermistor dissipates around 0.6 mW, enough to warm a tiny bead by a fraction of a degree in still air. That "self-heating" is why sensor circuits keep the current small.</p></div>
     <a class="crosslink" href="../practice/p12-sensors-adc.html">Practice P12 · Sensors and the ADC (read this thermistor with an Arduino)</a>
 
-    <h2>End-of-line resistors: four states from one pair of wires</h2>
+    <h2 id="end-of-line">End-of-line resistors: four states from one pair of wires</h2>
     <p>An alarm panel has to know more than "door open or closed". It must also know if someone has <b>cut</b> the cable, or <b>shorted</b> it to fool the panel. With a plain switch on two wires, a cut wire looks exactly like an open door, and a short looks exactly like a closed door. The fix is to put known resistors at the <b>end of the line</b> (EOL), at the device, so each state gives a different resistance.</p>
     <figure>
       <svg viewBox="0 0 640 250" role="img" aria-label="Double end-of-line zone: panel input, cable pair, door contact in parallel with an alarm resistor, in series with an end-of-line resistor at the device">
@@ -351,7 +351,7 @@
         <text class="t t-small t-muted" x="90" y="166" text-anchor="middle">voltage)</text>
         <circle class="f-ink" cx="160" cy="80" r="4"/><circle class="f-ink" cx="160" cy="170" r="4"/>
         <text class="t t-small" x="168" y="74">Z</text><text class="t t-small" x="168" y="188">COM</text>
-        <path class="s-line" d="M160 80 H400 M160 170 H560 V150 M508 80 H560 V100"/>
+        <path class="s-line" d="M160 80 H400 M160 170 H560 V150 M496 80 H560 V100"/>
         <rect class="f-wash s-thin s-dash" x="200" y="60" width="160" height="130" rx="6"/>
         <text class="t t-small t-muted" x="280" y="210" text-anchor="middle">cable run (can be cut or shorted)</text>
         <path class="s-accent" d="M400 80 l6 -9 l12 18 l12 -18 l12 18 l12 -18 l12 18 l12 -18 l12 18 l6 -9"/>
@@ -359,6 +359,7 @@
         <path class="s-accent" d="M560 100 l-9 5 l18 8 l-18 8 l18 8 l-18 8 l18 8 l-9 5"/>
         <text class="t t-small" x="578" y="118">alarm</text><text class="t t-small" x="578" y="134">2.2 kΩ</text>
         <path class="s-line" d="M520 80 V100 M520 150 V170"/>
+        <circle class="f-ink" cx="520" cy="80" r="3.5"/><circle class="f-ink" cx="520" cy="170" r="3.5"/>
         <line class="s-line" x1="520" y1="100" x2="536" y2="146"/>
         <circle class="f-ink" cx="520" cy="100" r="3"/><circle class="f-ink" cx="520" cy="150" r="3"/>
         <text class="t t-small" x="440" y="124" text-anchor="middle">door contact</text>
@@ -392,11 +393,11 @@
         <div><small>Zone voltage</small><span class="out" id="p04-eolv">–</span></div>
         <div><small>Panel decides</small><span class="out" id="p04-eold" style="font-size:16px">–</span></div>
       </div>
-      <svg viewBox="0 0 400 54" style="width:100%;max-width:520px;display:block;margin-top:10px" aria-label="Voltage windows used by the panel">
-        <rect class="f-warn-soft" x="0" y="14" width="80" height="20"/><rect class="f-career-soft" x="80" y="14" width="120" height="20"/>
-        <rect class="f-practice-soft" x="200" y="14" width="136" height="20"/><rect class="f-warn-soft" x="336" y="14" width="64" height="20"/>
-        <text class="t t-small" x="40" y="10" text-anchor="middle">short</text><text class="t t-small" x="140" y="10" text-anchor="middle">normal</text>
-        <text class="t t-small" x="268" y="10" text-anchor="middle">alarm</text><text class="t t-small" x="368" y="10" text-anchor="middle">open</text>
+      <svg viewBox="-7 0 414 54" style="width:100%;max-width:520px;display:block;margin-top:10px" aria-label="Voltage windows used by the panel">
+        <rect class="f-warn-soft" x="0" y="14" width="80" height="20"/><rect class="f-career-soft" x="80" y="14" width="152" height="20"/>
+        <rect class="f-practice-soft" x="232" y="14" width="104" height="20"/><rect class="f-warn-soft" x="336" y="14" width="64" height="20"/>
+        <text class="t t-small" x="40" y="10" text-anchor="middle">short</text><text class="t t-small" x="156" y="10" text-anchor="middle">normal</text>
+        <text class="t t-small" x="284" y="10" text-anchor="middle">alarm</text><text class="t t-small" x="368" y="10" text-anchor="middle">open</text>
         <text class="t t-small t-muted" x="0" y="50">0 V</text><text class="t t-small t-muted" x="400" y="50" text-anchor="end">5 V</text>
         <polygon id="p04-eolptr" class="f-ink" points="0,36 -6,46 6,46"/>
       </svg>
@@ -434,6 +435,7 @@
     <p><b>Fire circuits</b> use the same idea differently. On a conventional fire zone, detectors are connected <b>in parallel</b> across the pair and an EOL device sits at the far end. In normal state a small supervisory current flows through the EOL. A detector in alarm draws a much larger, defined current. An open cable stops the supervisory current (fault), and a short draws more current than any detector would. The panel watches the current level to tell these apart; exactly how a short is treated depends on the panel and its standard.</p>
     <div class="callout aus"><span class="label">In Australia</span><p>EOL values are set by the panel manufacturer (common values include 1 kΩ, 2.2 kΩ, 4.7 kΩ and 6.8 kΩ, but use exactly what the panel's installation manual specifies). Fire detection and alarm systems are designed and installed to <b>AS 1670.1</b>, and fire-protection work is licensed or accredited in some states. Security installation work generally needs a security licence from your state's licensing body. Requirements differ by state and change over time, so confirm with the relevant regulator (see C04, C06 and C11).</p></div>
     <a class="crosslink" href="../career/c06-access-control-alarms.html">Job Track C06 · Access control and intruder alarms</a>
+    <a class="crosslink" href="p191-build-a-supervised-door-input.html">P191 · Build and measure a 3.3 V door input with two end-of-line resistors</a>
     <a class="crosslink" href="../career/c04-fire-detection-ewis.html">Job Track C04 · Fire detection and EWIS basics</a>
 
     <h2>Troubleshooting</h2>

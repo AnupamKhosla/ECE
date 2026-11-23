@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P191 · Build a door input that detects its own wiring faults</title>
+<meta name="description" content="Build a two-wire supervised door input and use an ESP32 to distinguish a shut door, an open door, a disconnected cable and a short.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-practice">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › <a href="p126-electronics-foundation-mastery-route.html#small-circuits">Foundation workshop route</a></div>
+    <span class="eyebrow">Practice · Lab P191</span>
+    <h1>Build a door input that detects its own wiring faults</h1>
+    <p class="lede">Make a small door monitor from three resistors, a magnetic contact and your ESP32. Use a meter to prove what each of four states looks like, then let the board identify them on the laptop.</p>
+    <div class="meta"><span><b>Time</b> 45–75 minutes</span><span><b>Before this</b> <a href="p184-breadboard-switch-and-divider.html">P184 · Switches and voltage dividers</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Real magnetic contact on a cabinet door" data-preview-source="zone-reed-photo" aria-label="Enlarge the door contact photograph" aria-haspopup="dialog">
+        <img src="../assets/photos/foundation/door-magnet-contact.jpg" width="1200" height="675" loading="lazy" decoding="async" alt="Wired magnetic contact on a cabinet frame next to its magnet on the moving door.">
+      </a>
+      <figcaption>Mount the wired contact on the fixed frame and the magnet on the moving side. Put the two end-of-line resistors beside the fixed contact. <small>Raimond Spekking, resized · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> · <a id="zone-reed-photo" href="https://commons.wikimedia.org/wiki/File:Magnet_contact_as_burglary_prevention-9294.jpg">Original photo</a>.</small></figcaption>
+    </figure>
+    <p class="course-video">Watch how the resistor ratio sets the midpoint. In this build the door and its cable change the lower resistance. <a href="https://www.youtube.com/watch?v=XxLKfAZrhbM">Afrotechmods · Voltage dividers</a>.</p>
+    <h2 id="parts">Find the parts on your bench</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Quantity and part</th><th scope="col">Specification</th><th scope="col">Sources</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1 · ESP32 and breadboard <span class="preview-links"><a class="preview-trigger" href="../assets/photos/esp32-wroom-devboard.jpg" data-image-preview="Classic ESP32 development board" data-preview-source="zone-esp-photo" aria-haspopup="dialog">View board</a></span></th><td>Classic ESP32-WROOM from P189. Keep the USB data cable and red LED branch on GPIO27. Use the 830-point board and jumpers.</td><td><a href="p183-control-a-circuit-from-your-laptop.html#parts">P183 · Board and cable suppliers</a> · <a id="zone-esp-photo" href="https://commons.wikimedia.org/wiki/File:ESP32_Espressif_ESP-WROOM-32_Dev_Board.jpg">Ubahnverleih · CC0, resized</a></td></tr>
+        <tr><th scope="row">3 · 2.2 kΩ resistors <span class="preview-links"><a class="preview-trigger" href="../assets/photos/resistor.jpg" data-image-preview="Real axial through-hole resistors" data-preview-source="zone-resistor-photo" aria-haspopup="dialog">View resistors</a></span></th><td>Axial through-hole ¼ W, ±5% or better. Measure before fitting. Use one at the controller and the other two at the door.</td><td><a href="https://in.element14.com/yageo/cfr-25jt-52-2k2/res-2k2-5-0-25w-axial-carbon-film/dp/3496813">element14 India</a> · <a href="https://au.element14.com/yageo/cfr-25jt-52-2k2/res-2k2-5-0-25w-axial-carbon-film/dp/3496813">element14 Australia</a> · <a id="zone-resistor-photo" href="https://commons.wikimedia.org/wiki/File:Carbon_and_ceramic_resistors_of_different_power_ratings.jpg">David Ludovino · CC BY-SA 3.0, resized</a></td></tr>
+        <tr><th scope="row">1 · 100 nF capacitor <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/capacitor-package-comparison.jpg" data-image-preview="Ceramic, film and electrolytic capacitor packages" data-preview-source="zone-cap-photo" aria-haspopup="dialog">View packages</a></span></th><td>Non-polarised ceramic or film, often marked 104, at least 10 V. It goes across the analog input and GND to steady readings.</td><td><a href="p187-build-a-door-left-open-indicator.html#parts">P187 · Capacitor sources</a> · <a id="zone-cap-photo" href="https://commons.wikimedia.org/wiki/File:Condensators.JPG">Aka · CC BY-SA 3.0</a></td></tr>
+        <tr><th scope="row">1 · Magnetic contact and cable <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/door-magnet-contact.jpg" data-image-preview="Wired reed contact with its magnet" data-preview-source="zone-reed-photo" aria-haspopup="dialog">View contact</a></span></th><td>A dry reed that closes beside its magnet, two short leads for breadboard work and a 30–50 cm two-core cable for the soldered version. Use a jumper to emulate the reed initially if needed.</td><td><a href="p187-build-a-door-left-open-indicator.html#parts">P187 · Magnetic contact suppliers</a></td></tr>
+        <tr><th scope="row">1 · Optional solderable board <span class="preview-links"><a class="preview-trigger" href="../assets/photos/foundation/assembled-prototyping-board.jpg" data-image-preview="Hand-soldered prototyping board example" data-preview-source="zone-pcb-photo" aria-haspopup="dialog">View soldered example</a></span></th><td>Pad-per-hole board with at least five columns and twelve rows. Small plastic housing, wire clamp and insulated hook-up wire.</td><td><a href="p188-solder-a-door-indicator-pcb.html">P188 · Board, tools and supplies</a> · <a id="zone-pcb-photo" href="https://commons.wikimedia.org/wiki/File:Stripboardexample.jpg">Alexander Jones · Public domain</a></td></tr>
+      </tbody>
+    </table></div>
+    <p>Use a multimeter, wire stripper and permanent marker. Do this as a separate exercise with the 5 V fan supply and the 5 V door indicator disconnected. Move the ESP32’s dial and its 100 nF capacitor off GPIO34 before using this input. Use the P189 red alarm lamp (GPIO27, 1 kΩ and red LED to GND). <a href="p189-build-a-mini-bms-panel.html#wire-panel">P189 · Lamp wiring</a>.</p>
+    <h2>1 · Assemble the two ends and measure the resistance</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/supervised-door-input.svg" data-image-preview="Supervised contact wiring from the ESP32 to the door" aria-label="Enlarge the supervised contact drawing" aria-haspopup="dialog">
+        <img src="../assets/labs/foundation-build/supervised-door-input.svg" width="800" height="375" loading="lazy" decoding="async" alt="A 3.3 V pull-up is wired at the controller and two resistors and the reed switch sit at the far end of a two-wire cable.">
+      </a>
+      <figcaption>Follow the outgoing wire through R2. When the door is shut, the reed provides a low-resistance path around R3. Opening the door leaves a path through both resistors. <a href="../assets/labs/foundation-build/supervised-door-input.svg" download>Download the drawing</a>.</figcaption>
+    </figure>
+    <ol>
+      <li>Unplug USB. Join ESP32 3V3 and GND to the red and blue rails. Use the 2.2 kΩ resistor R1 from the red rail to a6. Join b6 to GPIO34. Connect 100 nF from e6 to GND. This is the controller side of the breadboard.</li>
+      <li>Build the door side across the centre gap. R2 goes g16–g20 and R3 goes i20–g24. The wired contact goes h20–h24. The two cable jumpers run c6–f16 (outgoing) and blue GND rail–f24 (return). Use separate holes in each shared strip for the meter.</li>
+      <li>Leave USB unplugged and lift both jumpers only at the controller ends. Set the meter to resistance and probe those two loose ends. With the magnet beside the switch, expect about 2.2 kΩ. Far enough away to open it, expect about 4.4 kΩ. If both positions give about 4.4 kΩ, check the contact alone in continuity mode with the magnet held next to it.</li>
+    </ol>
+    <h2>2 · Read the four voltages</h2>
+    <p>Return the two jumpers, select DC volts and plug USB in. Place black on the blue GND rail and red at d6. R1 is the top of a voltage divider. The cable and resistors make its lower leg. The current under a direct cable short is about 1.5 mA through R1.</p>
+    <div class="formula">V<sub>SENSE</sub> = 3.3 V × R<sub>loop</sub> ÷ (2.2 kΩ + R<sub>loop</sub>)
+      <small>With the door shut, R<sub>loop</sub> is about 2.2 kΩ, so SENSE is half the rail. With the door open, the lower leg doubles to 4.4 kΩ and SENSE is two-thirds of the rail. A disconnected loop draws almost no current, so SENSE rises near the rail.</small></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">What to try</th><th scope="col">Loop resistance</th><th scope="col">Expected meter reading at d6</th><th scope="col">Firmware state</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Door shut · magnet next to the reed</th><td>2.2 kΩ</td><td>1.65 V</td><td>door_shut</td></tr>
+        <tr><th scope="row">Door open · move the magnet away</th><td>4.4 kΩ</td><td>2.20 V</td><td>door_open</td></tr>
+        <tr><th scope="row">Cable open · lift the c6 end of the outgoing jumper</th><td>Open circuit (OL)</td><td>Near 3.3 V</td><td>cable_open</td></tr>
+        <tr><th scope="row">Cable short · with c6 restored, jumper i16 to i24</th><td>Near 0 Ω</td><td>Near 0 V</td><td>cable_short</td></tr>
+      </tbody>
+    </table></div>
+    <p>Unplug USB before each jumper change. Keep R1 in the circuit. If you see 3.3 V for every door position, verify both outgoing and return jumpers and then measure the disconnected loop. For 0 V in every position, check for a short to the ground rail at SENSE or along the pair.</p>
+    <h2 id="upload">3 · Let the ESP32 report what the meter proved</h2>
+    <ol>
+      <li>Save <a href="../assets/labs/foundation-build/supervised-door/supervised-door.ino" download>supervised-door.ino</a> in a folder named <code>supervised-door</code>. Open it in Arduino IDE. Select ESP32 Dev Module and the USB port, then upload. Open Serial Monitor at 115200 baud. <a href="p183-control-a-circuit-from-your-laptop.html#upload">P183 · Board and upload setup</a>.</li>
+      <li>Repeat all four checks. Each line gives the millisecond timestamp, SENSE in millivolts and the state. The red lamp is out only when the measured state is <code>door_shut</code>. If you missed the header, reset the ESP32.</li>
+      <li>If the meter reads normally but the reported state differs, compare the ESP32 reading with your meter at d6, using GND for both. The sketch averages 16 readings and accepts a state after 80 ms. Its voltage windows are in <code>classify()</code>. Values between the windows give <code>check_wiring</code>. The classic ESP32 ADC stops increasing near the top of its range, so a physical 3.3 V can be reported lower while still within the cable-open window. <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/adc.html">Espressif · Calibrated ADC millivolts and input ranges</a>.</li>
+    </ol>
+    <pre><code>ms,sense_mV,zone
+1500,1640,door_shut
+3500,2200,door_open
+5500,3100,cable_open
+7500,0,cable_short</code></pre>
+    <h2>4 · Make a small wired door module</h2>
+    <ol>
+      <li>Mark A–E and 1–12 on a 2.54 mm pad-per-hole board. Fit R2 at B2–B6 and R3 at C6–C10. Put the reed leads at D6 and D10. Put the outgoing wire at A2 and return at A10.</li>
+      <li>Use short insulated wires on the solder side to join A2 to B2, B6 to C6 to D6, and A10 to C10 to D10. Mark the two cable leads with their terminal names. Fit the assembly in a small enclosure beside the contact and clamp the cable so movement does not pull on the joints. <a href="p188-solder-a-door-indicator-pcb.html">P188 · How to wire pad-per-hole PCB and check solder joints</a>.</li>
+      <li>Repeat the disconnected 2.2 kΩ and 4.4 kΩ checks at the end of the cable. Then connect the module to c6 and GND in place of the original door-side jumpers. Repeat all four voltage and firmware checks from the controller side. Keep your measured reference values with the wiring drawing.</li>
+    </ol>
+    <p>The voltage table and sample log show expected results. Real controllers use their own resistor values and acceptance windows. For the trainer, the useful skill is locating the fault by comparing a device-end resistance with a controller-end voltage. <a href="p04-series-parallel-dividers.html#end-of-line">P04 · Compare one and two end-of-line resistors</a>.</p>
+    <a class="crosslink" href="p63-bms-point-to-point.html">P63 · Trace a point from field cable to screen</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-supervised-door"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>
