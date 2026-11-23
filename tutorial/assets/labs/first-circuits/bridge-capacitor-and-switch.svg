@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="title description">
+  <title id="title">Connect the storage capacitor and LED switch to the bridge</title>
+  <desc id="description">The bridge positive output goes to column 22 and the negative output to column 20 below the breadboard gap. A capacitor and discharge resistor are across these strips. Two jumpers carry this supply to the transistor switch from the previous circuit.</desc>
+  <rect width="960" height="440" rx="14" fill="#eef4f7"/>
+  <g font-family="system-ui,sans-serif" fill="#153043">
+    <text x="28" y="44" font-size="24" font-weight="700">Bridge, storage capacitor and LED switch</text>
+    <g fill="#fff" stroke="#bacbd5">
+      <rect x="28" y="75" width="211" height="258" rx="8"/>
+      <rect x="287" y="75" width="408" height="258" rx="8"/>
+      <rect x="743" y="75" width="189" height="258" rx="8"/>
+    </g>
+    <g font-size="16" font-weight="700">
+      <text x="46" y="108">Four-diode bridge</text>
+      <text x="307" y="108">Storage and discharge below the gap</text>
+      <text x="761" y="108">Transistor switch</text>
+    </g>
+    <path d="M291 145h401" stroke="#82919b" stroke-width="2" stroke-dasharray="7 5"/>
+    <rect x="377" y="153" width="153" height="163" rx="9" fill="#f8f4e9" stroke="#b5c5cb"/>
+    <g stroke-width="5" fill="none" opacity=".45">
+      <path d="M420 177v114" stroke="#145a95"/><path d="M486 177v114" stroke="#a8343c"/>
+    </g>
+    <g stroke="#9AA9AC" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="0.5 27.5">
+      <path d="M420 176v116m33-116v116m33-116v116"/>
+    </g>
+    <g font-size="13">
+      <text x="414" y="168">20</text><text x="477" y="168">22</text>
+      <text x="394" y="181">f</text><text x="394" y="209">g</text><text x="394" y="237">h</text>
+      <text x="394" y="265">i</text><text x="394" y="293">j</text><text x="493" y="188">+</text>
+    </g>
+    <g stroke-width="3" fill="none" stroke-linejoin="round">
+      <path d="M212 175h121v29h87m0 84v95h310V233h31" stroke="#145a95"/>
+      <path d="M212 232h140v-7h134v-21m0 84v41h230V182h45" stroke="#a8343c"/>
+      <path d="M420 176h66m-66 56h66" stroke="#243d4b"/>
+    </g>
+    <rect x="431" y="166" width="45" height="20" rx="8" fill="#617980"/>
+    <path d="M437 168v16" stroke="#e6e9e9" stroke-width="4"/>
+    <rect x="432" y="223" width="43" height="18" rx="6" fill="#b77b49"/>
+    <g font-size="15">
+      <text x="46" y="151">Battery to b7 and a13</text>
+      <text x="46" y="180">DC− jumper from c5</text>
+      <text x="46" y="237">DC+ jumper from e17</text>
+      <text x="545" y="180">C1 470 µF</text><text x="545" y="202">f22 +, f20 −</text>
+      <text x="545" y="236">10 kΩ resistor</text><text x="545" y="258">h22 to h20</text>
+      <text x="763" y="187">Positive rail</text>
+      <text x="763" y="238">Return rail</text>
+      <text x="763" y="270">Use the previous</text>
+      <text x="763" y="291">LED switch layout.</text>
+      <text x="28" y="412">Power the bridge inputs only. At the switch, move the command between its two rails to test ON and OFF.</text>
+    </g>
+  </g>
+</svg>

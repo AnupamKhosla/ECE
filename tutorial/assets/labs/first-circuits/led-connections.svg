@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="590" viewBox="0 0 1000 590" role="img" aria-labelledby="title description">
+  <title id="title">One LED circuit as a schematic, on a breadboard and on a PCB</title>
+  <desc id="description">A 4.5 volt pack feeds a 1 kilohm resistor, red LED and return in series. The same three nets are highlighted in the breadboard view and on the bottom copper of a single-sided board.</desc>
+  <rect width="1000" height="590" rx="14" fill="#eef4f7"/>
+  <g font-family="system-ui,sans-serif" fill="#153043">
+    <text x="25" y="34" font-size="24" font-weight="700">Follow the same three connections</text>
+    <g fill="#fff" stroke="#bacbd5">
+      <rect x="22" y="53" width="956" height="132" rx="8"/>
+      <rect x="22" y="199" width="470" height="300" rx="8"/>
+      <rect x="509" y="199" width="469" height="300" rx="8"/>
+    </g>
+    <g font-size="18" font-weight="700">
+      <text x="42" y="82">Schematic</text><text x="42" y="229">Solderless breadboard · from above</text><text x="529" y="229">Example PCB · look at the copper side</text>
+    </g>
+    <g stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M125 121h178" stroke="#a8343c"/>
+      <path d="M411 121h208" stroke="#a55b0a"/>
+      <path d="M670 121h191v39H125" stroke="#145a95"/>
+      <path d="M303 121l12-12 15 24 15-24 15 24 15-24 15 24 12-12h9M641 102v38m0-19h29" stroke="#153043"/>
+      <path d="M619 103l22 18-22 18z" fill="#a8343c" stroke="#a8343c"/>
+      <path d="M622 99l11-9 0 6m13 0 11-9 0 6" stroke="#a8343c" stroke-width="2"/>
+    </g>
+    <g font-size="15">
+      <text x="147" y="109">+ from 3 cells</text><text x="321" y="105">R1 · 1 kΩ</text>
+      <text x="566" y="154">Anode A</text><text x="653" y="154">Cathode K</text><text x="142" y="154">0 V to pack</text>
+    </g>
+    <rect x="52" y="250" width="411" height="201" rx="10" fill="#f5f1e8" stroke="#c6cdd0"/>
+    <g stroke-width="5" fill="none" opacity=".40">
+      <path d="M90 317H432" stroke="#a8343c"/><path d="M90 341H432" stroke="#145a95"/>
+      <path d="M270 370v66" stroke="#a55b0a"/><path d="M342 370v66" stroke="#145a95"/>
+    </g>
+    <g fill="#b6bec2">
+      <path d="M126 368v70m36-70v70m36-70v70m36-70v70m36-70v70m36-70v70m36-70v70m36-70v70" fill="none" stroke="#929fa6" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 16.5"/>
+      <path d="M126 317H379m-253 24H379" fill="none" stroke="#929fa6" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 35"/>
+    </g>
+    <g fill="none" stroke="#153043" stroke-width="3">
+      <path d="M126 317L270 370"/><path d="M270 387h72"/>
+      <path d="M342 370v-29" stroke="#145a95"/>
+    </g>
+    <path d="M166 332l64 24" stroke="#b77b49" stroke-width="15" stroke-linecap="round"/>
+    <path d="M190 341l3-8m9 13 3-8m8 12 3-8" stroke="#4a351e" stroke-width="3"/>
+    <rect x="285" y="376" width="41" height="22" rx="10" fill="#dc5965" stroke="#7f2834"/>
+    <path d="M320 377v20" stroke="#7f2834" stroke-width="3"/>
+    <g font-size="14">
+      <text x="62" y="303">+ rail</text><text x="63" y="346">0 V</text>
+      <text x="111" y="285">Col 4</text><text x="252" y="285">Col 8</text><text x="323" y="285">Col 10</text>
+      <text x="393" y="376">a</text><text x="393" y="394">b</text>
+      <text x="172" y="328">R1</text><text x="292" y="422">A → K</text>
+    </g>
+    <text x="42" y="480" font-size="14">Within each numbered strip, holes a–e share a clip.</text>
+
+    <rect x="548" y="253" width="394" height="196" rx="8" fill="#d7debf" stroke="#6d7e64" stroke-width="2"/>
+    <path d="M903 254v20h38" fill="#e7ecdb" stroke="#6d7e64" stroke-width="2"/>
+    <g stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M590 299h59v22h37" stroke="#a8343c"/>
+      <path d="M753 321h43v42h33" stroke="#a55b0a"/>
+      <path d="M871 363h27v47H590" stroke="#145a95"/>
+    </g>
+    <g fill="#e5a857" stroke="#78501c" stroke-width="1.5">
+      <circle cx="590" cy="299" r="12"/><circle cx="686" cy="321" r="12"/><circle cx="753" cy="321" r="12"/>
+      <circle cx="829" cy="363" r="12"/><circle cx="871" cy="363" r="12"/><circle cx="590" cy="410" r="12"/>
+    </g>
+    <g fill="#fff" stroke="#6d7e64">
+      <circle cx="590" cy="299" r="4"/><circle cx="686" cy="321" r="4"/><circle cx="753" cy="321" r="4"/>
+      <circle cx="829" cy="363" r="4"/><circle cx="871" cy="363" r="4"/><circle cx="590" cy="410" r="4"/>
+    </g>
+    <g stroke="#5c6d72" stroke-width="1.5" stroke-dasharray="4 3">
+      <path d="M701 321h37m106 42h12"/>
+    </g>
+    <g font-size="14">
+      <text x="565" y="282">J1 +</text><text x="565" y="439">J1 −</text><text x="697" y="300">R1</text><text x="821" y="340">A</text><text x="864" y="340">K</text>
+      <text x="529" y="480">The three coloured paths stand for separate copper traces.</text>
+    </g>
+    <g font-size="15">
+      <text x="25" y="535">Red · battery + to R1</text><text x="306" y="535">Amber · R1 to LED A</text><text x="638" y="535">Blue · LED K back to battery −</text>
+      <text x="25" y="566">Teaching drawing. Check the actual board orientation, pad spacing and copper pattern before soldering.</text>
+    </g>
+  </g>
+</svg>

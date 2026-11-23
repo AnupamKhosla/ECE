@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="734" viewBox="0 0 960 734" role="img" aria-labelledby="title description">
+  <title id="title">From one diode to a four-diode bridge</title>
+  <desc id="description">One diode in series with the LED, a single-diode rectifier with a resistor as the load, and a bridge breadboard layout.</desc>
+  <rect width="960" height="734" rx="14" fill="#eef4f7"/>
+  <g font-family="system-ui,sans-serif" fill="#153043">
+    <text x="28" y="43" font-size="24" font-weight="700">From one diode to a four-diode bridge</text>
+    <text x="29" y="80" font-size="18" font-weight="700">One diode in series</text>
+    <text x="29" y="104" font-size="15">Battery + → D1 anode → D1 band at column 6 → R1 → red LED → battery −</text>
+    <g font-size="14">
+      <rect x="29" y="125" width="902" height="70" rx="7" fill="#fff" stroke="#bbc9d0"/>
+      <path d="M51 160H878" fill="none" stroke="#243d4b" stroke-width="2.5"/>
+      <rect x="225" y="151" width="44" height="18" rx="4" fill="#243d4b"/>
+      <path d="M261 152v16" stroke="#e6e9e9" stroke-width="4"/>
+      <text x="247" y="164" text-anchor="middle" font-size="11" fill="#fff">D1</text>
+      <rect x="383" y="151" width="93" height="18" rx="6" fill="#b77b49"/>
+      <text x="399" y="164" fill="#142535">R1 · 1 kΩ</text>
+      <rect x="601" y="149" width="59" height="22" rx="9" fill="#dc5965"/>
+      <path d="M652 150v20" stroke="#7f2834" stroke-width="3"/>
+      <text x="575" y="145">A</text><text x="668" y="145">K</text>
+      <text x="48" y="148">+</text><text x="864" y="148">0 V</text>
+    </g>
+    <text x="29" y="228" font-size="18" font-weight="700">Half-wave rectifier · use the resistor as the load</text>
+    <rect x="29" y="241" width="902" height="79" rx="7" fill="#fff" stroke="#bbc9d0"/>
+    <path d="M51 287H878" stroke="#243d4b" stroke-width="2.5"/>
+    <rect x="140" y="276" width="80" height="22" rx="5" fill="#b77b49"/>
+    <rect x="365" y="278" width="62" height="18" rx="4" fill="#243d4b"/>
+    <path d="M416 279v16" stroke="#e6e9e9" stroke-width="4"/>
+    <rect x="640" y="276" width="95" height="22" rx="5" fill="#b77b49"/>
+    <g font-size="14" text-anchor="middle">
+      <text x="51" y="272">A</text><text x="180" y="292">100 Ω</text><text x="266" y="272">Strip 4</text>
+      <text x="394" y="292" font-size="11" fill="#fff">1N4007</text><text x="495" y="272">Strip 6</text>
+      <text x="688" y="292">1 kΩ load</text><text x="878" y="272">B</text>
+      <text x="495" y="309">Red probe</text><text x="878" y="309">Black probe</text>
+    </g>
+    <circle cx="266" cy="287" r="4"/><circle cx="495" cy="287" r="4"/>
+    <g transform="translate(0 124)">
+    <text x="29" y="233" font-size="18" font-weight="700">Four-diode bridge · use the holes below</text>
+    <text x="29" y="259" font-size="15">Place all four bands to the right. Check one diode at a time against the hole table.</text>
+    <rect x="51" y="290" width="649" height="248" rx="9" fill="#f8f4e9" stroke="#bbc9d0"/>
+    <g fill="none" stroke="#a9b5b9" stroke-width="6" stroke-dasharray="0.5 40.5" stroke-linecap="round">
+      <path d="M98 324v167"/>
+      <path d="M146 324v167"/>
+      <path d="M194 324v167"/>
+      <path d="M242 324v167"/>
+      <path d="M290 324v167"/>
+      <path d="M338 324v167"/>
+      <path d="M386 324v167"/>
+      <path d="M434 324v167"/>
+      <path d="M482 324v167"/>
+      <path d="M530 324v167"/>
+      <path d="M578 324v167"/>
+      <path d="M626 324v167"/>
+      <path d="M674 324v167"/>
+    </g>
+    <g font-size="13" text-anchor="middle">
+      <text x="98" y="310">5</text>
+      <text x="146" y="310">6</text>
+      <text x="194" y="310">7</text>
+      <text x="242" y="310">8</text>
+      <text x="290" y="310">9</text>
+      <text x="338" y="310">10</text>
+      <text x="386" y="310">11</text>
+      <text x="434" y="310">12</text>
+      <text x="482" y="310">13</text>
+      <text x="530" y="310">14</text>
+      <text x="578" y="310">15</text>
+      <text x="626" y="310">16</text>
+      <text x="674" y="310">17</text>
+      <text x="68" y="329">a</text>
+      <text x="68" y="370">b</text>
+      <text x="68" y="411">c</text>
+      <text x="68" y="452">d</text>
+      <text x="68" y="493">e</text>
+    </g>
+    <g font-size="14" font-weight="700">
+      <text x="65" y="536">5 · DC−</text><text x="256" y="536">9 · input A</text><text x="446" y="536">13 · input B</text><text x="646" y="536">17 · DC+</text>
+    </g>
+    <path d="M290 365H674" stroke="#243d4b" stroke-width="2.5"/>
+    <rect x="460" y="356" width="44" height="18" rx="4" fill="#243d4b"/>
+    <path d="M496 357v16" stroke="#e6e9e9" stroke-width="4"/>
+    <text x="482" y="369" text-anchor="middle" font-size="11" fill="#fff">D1</text>
+    <path d="M482 406H674" stroke="#243d4b" stroke-width="2.5"/>
+    <rect x="556" y="397" width="44" height="18" rx="4" fill="#243d4b"/>
+    <path d="M592 398v16" stroke="#e6e9e9" stroke-width="4"/>
+    <text x="578" y="410" text-anchor="middle" font-size="11" fill="#fff">D2</text>
+    <path d="M98 447H290" stroke="#243d4b" stroke-width="2.5"/>
+    <rect x="172" y="438" width="44" height="18" rx="4" fill="#243d4b"/>
+    <path d="M208 439v16" stroke="#e6e9e9" stroke-width="4"/>
+    <text x="194" y="451" text-anchor="middle" font-size="11" fill="#fff">D3</text>
+    <path d="M98 488H482" stroke="#243d4b" stroke-width="2.5"/>
+    <rect x="268" y="479" width="44" height="18" rx="4" fill="#243d4b"/>
+    <path d="M304 480v16" stroke="#e6e9e9" stroke-width="4"/>
+    <text x="290" y="492" text-anchor="middle" font-size="11" fill="#fff">D4</text>
+    <g fill="none" stroke="#243d4b" stroke-width="2">
+      <path d="M98 324v-53h576v53" stroke="#687e91"/>
+      <path d="M194 324h96"/>
+    </g>
+    <rect x="345" y="260" width="95" height="22" rx="5" fill="#b77b49"/>
+    <text x="392" y="276" font-size="14" text-anchor="middle">RL · 1 kΩ</text>
+    <rect x="211" y="316" width="60" height="16" rx="5" fill="#b77b49"/>
+    <path d="M194 365h-23m311-41h-26" stroke="#a8343c" stroke-width="3" fill="none"/>
+    <g font-size="15">
+      <text x="735" y="326">R0 = 100 Ω</text><text x="735" y="352">between a7 and a9</text>
+      <text x="735" y="395">Source wires</text><text x="735" y="421">b7 and a13</text>
+      <text x="735" y="457">Read DC volts</text><text x="735" y="483">+ at 17, − at 5.</text>
+      <text x="29" y="574">Both input directions use two diodes. The end of the load at column 17 stays positive.</text>
+    </g>
+    </g>
+  </g>
+</svg>

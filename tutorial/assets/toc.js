@@ -14,6 +14,7 @@ window.TOC = {
           { n: "P05", file: "practice/p05-soldering-wiring.html", title: "Soldering, crimping and wiring like a tradie", d: "Through-hole soldering, stripboard, ferrules, crimps, heatshrink and cable management." }
         ]},
         { title: "Part B · Components at work", blurb: "Diodes, capacitors, transistors, timers and power supplies.", chapters: [
+          { n: "P182", file: "practice/p182-first-breadboard-circuits.html", title: "Build your first breadboard circuits", d: "Go from a battery and LED to one diode, a bridge rectifier, a capacitor and a transistor-controlled indicator." },
           { n: "P06", file: "practice/p06-diodes-rectifiers.html", title: "Diodes on the bench: rectifiers and protection", d: "LED on AC, half-wave and bridge rectifiers, reverse-polarity protection, Zener regulators." },
           { n: "P07", file: "practice/p07-capacitors-rc.html", title: "Capacitors: timing, smoothing and decoupling", d: "Watch an RC charge, smooth a rectifier, and learn why every chip has a 100 nF next to it." },
           { n: "P08", file: "practice/p08-transistor-switches.html", title: "Transistors as switches: BJT, MOSFET, relays", d: "Drive a motor or a relay from a tiny signal, with the flyback diode that saves your circuit." },
@@ -275,7 +276,7 @@ window.TOC = {
         { title: "Part 7 · Measuring and repairing boards", blurb: "Read specifications, understand real instruments and follow the board’s power path.", chapters: [
           { n: "T24", file: "theory/t24-measurement-datasheets.html", title: "Measurement loading, tolerance and datasheets", d: "Meter impedance, burden voltage, accuracy and guaranteed operating conditions." },
           { n: "T25", file: "theory/t25-filters-resonance.html", title: "Filters, frequency response and resonance", d: "RC gain and phase, step response, RLC resonance and damping." },
-          { n: "T26", file: "theory/t26-pcb-rework-esd.html", title: "PCB construction, solder joints and ESD", d: "Pads, vias and planes, solder wetting, electrostatic discharge and TVS protection." },
+          { n: "T26", file: "theory/t26-pcb-rework-esd.html", title: "PCB basics from breadboard to copper traces", d: "Follow a battery, resistor and LED from hidden breadboard clips to copper traces, pads and solder joints." },
           { n: "T27", file: "theory/t27-board-power-sequencing.html", title: "Board power rails, enables and startup sequencing", d: "Standby rails, laptop embedded controllers, phone PMICs, EN, power-good and reset." },
           { n: "T28", file: "theory/t28-lithium-batteries.html", title: "Lithium-ion cells, charging and protection", d: "Pack protection, fuel gauges, charge controllers, energy and runtime." },
           { n: "T29", file: "theory/t29-usb-c-power-delivery.html", title: "USB-C attachment, power delivery and diagnosis", d: "CC, VBUS, power contracts, cables and charging tests." }

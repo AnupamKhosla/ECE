@@ -6,6 +6,7 @@
 <title>P08 · Transistors as switches: BJT, MOSFET, relays</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -14,6 +15,7 @@
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Practice Book › Part B</div>
     <span class="eyebrow">Practice · Lab P08</span>
     <h1>Transistors as switches: BJT, MOSFET, relays</h1>
+    <p class="crosslink"><b>First transistor circuit?</b> <a href="p182-first-breadboard-circuits.html#transistor">Switch one red LED from three batteries on a breadboard</a>. Use the numbered holes and two meter checks there first.</p>
     <p class="lede">You will switch a 12 V load from a 5 V signal three ways: with a bipolar transistor (calculating the base resistor so it switches hard), with a logic-level MOSFET, and with a relay protected by a flyback diode. Then you will see exactly where these circuits live inside BMS controllers and access-control panels.</p>
     <div class="meta"><span><b>Time</b> 2–3 h</span><span><b>Level</b> Intermediate</span><span><b>Kit cost</b> ~A$40</span><span><b>Theory</b> T12, T13, T06</span></div>
 
@@ -43,8 +45,10 @@
 
     <h2>2 · NPN transistor low-side switch</h2>
   <figure class="course-photo">
-    <img src="../assets/photos/bjt.jpg" alt="Three-lead 2N3904 NPN transistor with a flat marked face" width="760" height="570" loading="lazy" decoding="async">
-    <figcaption>Read the part number on the flat face and use that part’s datasheet to identify base, emitter and collector. The lab’s BC547 has a different pin order.<br><small>Photo by Windell Oskay. <a href="https://commons.wikimedia.org/wiki/File:2N3904.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
+    <a class="image-preview-figure" href="../assets/photos/bjt.jpg" data-image-preview="2N3904 NPN transistor with three leads" data-preview-source="p08-bjt" aria-haspopup="dialog" aria-label="Enlarge the transistor photograph">
+      <img src="../assets/photos/bjt.jpg" alt="Three-lead 2N3904 NPN transistor with a flat marked face" width="760" height="570" loading="lazy" decoding="async">
+    </a>
+    <figcaption>Read the part number on the flat face and use that part’s datasheet to identify base, emitter and collector. The lab’s BC547 has a different pin order.<br><small>Photo by Windell Oskay. <a id="p08-bjt" href="https://commons.wikimedia.org/wiki/File:2N3904.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>.</small></figcaption>
   </figure>
 
 
@@ -169,8 +173,10 @@
 
     <h2>3 · Logic-level N-MOSFET low-side switch</h2>
   <figure class="course-photo">
-    <img src="../assets/photos/mosfet.jpg" alt="Power MOSFET packages with mounting tabs and three leads" width="960" height="640" loading="lazy" decoding="async">
-    <figcaption>The tab can be electrically connected to the drain. Read the package drawing before choosing a heatsink or assuming that the tab is isolated.<br><small>Photo by Suyash Dwivedi, resized. <a href="https://commons.wikimedia.org/wiki/File:Power_MOSFET.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+    <a class="image-preview-figure" href="../assets/photos/mosfet.jpg" data-image-preview="Three-lead power MOSFET packages" data-preview-source="p08-mosfet" aria-haspopup="dialog" aria-label="Enlarge the MOSFET photograph">
+      <img src="../assets/photos/mosfet.jpg" alt="Power MOSFET packages with mounting tabs and three leads" width="960" height="640" loading="lazy" decoding="async">
+    </a>
+    <figcaption>The tab can be electrically connected to the drain. Read the package drawing before choosing a heatsink or assuming that the tab is isolated.<br><small>Photo by Suyash Dwivedi, resized. <a id="p08-mosfet" href="https://commons.wikimedia.org/wiki/File:Power_MOSFET.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
   </figure>
 
     <p>A MOSFET (metal–oxide–semiconductor field-effect transistor) is controlled by <b>voltage</b>, not current. The gate is insulated by a thin layer of oxide, so in steady state it draws essentially no current. Put enough voltage between gate and source and a conducting channel forms between drain and source with a very low resistance, R<sub>DS(on)</sub>, often tens of milliohms. That makes MOSFETs ideal for switching amps from a microcontroller pin.</p>
@@ -442,7 +448,8 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261123-first-circuits"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>

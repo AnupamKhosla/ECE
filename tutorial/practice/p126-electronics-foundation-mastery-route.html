@@ -7,6 +7,7 @@
 <meta name="description" content="Work through electricity, measurement, components, analog and digital signals, assembly and system diagnosis with practical checkpoints.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -19,10 +20,17 @@
     <div class="meta"><span><b>Route</b> Six stages</span><span><b>Before this</b> <a href="../practice/p00-foundation-roadmap.html">P00</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Build and measure before buying more tools</h2>
-    <p>Use <a href="../practice/p00-foundation-roadmap.html">P00 · Your ECE foundation and learning routes</a> for the first three sessions and progress through the stages below. Our exercises follow the pattern used in university labs: predict a result, create the circuit, measure it and explain unexpected readings. Start with low-voltage circuits and an isolated supply. Use <a href="../theory/t00-maths-toolkit.html">T00 · Maths toolkit: the school maths electronics uses</a> whenever units, logarithms or algebra interrupt a test.</p>
+    <h2>Build one circuit at a time</h2>
+    <ol>
+      <li>Start with a battery, a resistor and an LED. Check which breadboard holes share a clip and measure the current from the resistor voltage. <a href="p182-first-breadboard-circuits.html#first-led">P182 · First LED and resistor exercise</a> · <a href="../theory/t01-charge-current-voltage.html">T01 · Current, voltage and a closed loop</a>.</li>
+      <li>Turn a diode around, then build a single-diode rectifier and a four-diode bridge. Add a capacitor and time how the voltage falls after power goes off. <a href="p182-first-breadboard-circuits.html#single-diode">P182 · Diode, rectifier and capacitor exercises</a> · <a href="../theory/t11-semiconductors-diodes.html">T11 · Diode theory</a>.</li>
+      <li>Switch that LED with a transistor. Combine it with the bridge and capacitor, then use the meter to trace the combined circuit stage by stage. <a href="p182-first-breadboard-circuits.html#transistor">P182 · Transistor switch and combined build</a> · <a href="../theory/t12-bjt-physics.html">T12 · BJT theory</a>.</li>
+      <li>Find the same three LED connections on a solderable board and repeat your measurements. Put the circuit into KiCad when you can explain the copper path. <a href="../theory/t26-pcb-rework-esd.html">T26 · Copper, laminate and pads</a> · <a href="p48-kicad-testable-pcb.html">P48 · Draw and lay out a simple PCB</a>.</li>
+    </ol>
+    <p>Use the stages below for more practice and to choose what to build next. <a href="p00-foundation-roadmap.html">P00 · Bench setup and learning routes</a> · <a href="../theory/t00-maths-toolkit.html">T00 · Maths for the measurements</a>.</p>
     <div class="photo-pair">
 <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/breadboard-probe-test-points.jpg" data-image-preview="LED breadboard and test points" data-preview-source="p126-led-photo" aria-haspopup="dialog" aria-label="Enlarge the LED circuit photograph">
       <div class="photo-annotation">
         <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" alt="Meter probes clipped to two test points on a breadboard, with a resistor and LED visible between them" width="960" height="720" loading="lazy" decoding="async">
         <svg viewBox="0 0 960 720" aria-hidden="true">
@@ -33,9 +41,11 @@
           <rect x="617" y="430" width="298" height="54" rx="7" fill="#122029"/><text x="627" y="470" style="fill:#fff;font-size:36px;font-weight:700">Black probe point</text>
         </svg>
       </div>
-      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
+      </a>
+      <figcaption>The probe tips contact leads in the breadboard. The red and black tips are on different nodes. This LED circuit illustrates the probing technique. For the divider, use the midpoint and battery negative.<br><small>Photo by Zeroping, with on-page callouts. <a id="p126-led-photo" href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
     </figure>
 <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/scope-passive-probe.jpg" data-image-preview="Oscilloscope probe and ground clip" data-preview-source="p126-scope-photo" aria-haspopup="dialog" aria-label="Enlarge the oscilloscope probe photograph">
       <div class="photo-annotation">
         <img src="../assets/photos/foundation/scope-passive-probe.jpg" width="960" height="508" alt="Passive 10× oscilloscope probe with the hook tip and separate ground lead marked" loading="lazy" decoding="async">
         <svg viewBox="0 0 960 508" aria-hidden="true">
@@ -46,15 +56,16 @@
           <rect x="315" y="220" width="263" height="53" rx="6" fill="#122029"/><text x="327" y="259" style="fill:#fff;font-size:35px;font-weight:700">Ground lead</text>
         </svg>
       </div>
-      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
+      </a>
+      <figcaption>Find the signal hook and the thinner ground lead that branches from the probe body. The clip at the end of the ground lead is outside the frame. On your instrument identify the calibration output and reference tab in the manual before attaching either lead.<br><small>Photo by Severino666, with on-page callouts. <a id="p126-scope-photo" href="https://commons.wikimedia.org/wiki/File:Oscilloscope_probe.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/">Public domain</a>.</small></figcaption>
     </figure>
     </div>
-    <p class="course-video"><a href="https://www.youtube.com/watch?v=XpMZoR3fgd0">Review the bench tools before starting the foundation route</a>.</p>
+    <p class="course-video">Look for the rows of contacts and the power rails when the underside of the breadboard is open. <a href="https://www.youtube.com/watch?v=XpMZoR3fgd0">Moritz Klein · Beginner's guide to breadboards</a>.</p>
 
     <h2>Follow the stages and keep the result</h2>
     <div class="table-wrap"><table><thead><tr><th scope="col">Stage</th><th scope="col">Practical work</th><th scope="col">What proves you can move on</th></tr></thead><tbody>
 <tr><th scope="row">1. Electricity and safe instruments</th><td>Use <a href="../practice/p01-bench-kit-safety.html">P01 · Your bench: kit, budget and safety</a>, <a href="../practice/p02-breadboard-first-led.html">P02 · Breadboard and your first LED circuit</a>, <a href="../practice/p03-multimeter-mastery.html">P03 · Multimeter mastery</a> and <a href="../practice/p04-series-parallel-dividers.html">P04 · Series, parallel and voltage dividers</a>. Read <a href="../theory/t01-charge-current-voltage.html">T01 · Charge, current and voltage</a>, <a href="../theory/t02-resistance-ohms-law.html">T02 · Resistance and Ohm's law, physically</a>, <a href="../theory/t03-power-energy-heat.html">T03 · Power, energy and heat</a> and <a href="../theory/t04-circuit-laws.html">T04 · Circuit laws: Kirchhoff, Thevenin and superposition</a> alongside measurements.</td><td>Predict current, power and voltage drops; choose the right terminals and ranges; verify the result.</td></tr>
-<tr><th scope="row">2. Assembly, parts and protection</th><td>Work through <a href="../practice/p05-soldering-wiring.html">P05 · Soldering, crimping and wiring like a tradie</a>, <a href="../practice/p06-diodes-rectifiers.html">P06 · Diodes on the bench: rectifiers and protection</a>, <a href="../practice/p07-capacitors-rc.html">P07 · Capacitors: timing, smoothing and decoupling</a>, <a href="../practice/p08-transistor-switches.html">P08 · Transistors as switches: BJT, MOSFET, relays</a>, <a href="../practice/p09-555-timer.html">P09 · The 555 timer: blinkers and PWM</a> and <a href="../practice/p10-power-supplies.html">P10 · Power supplies: regulators, buck converters, batteries</a>. Use <a href="../practice/p24-datasheets-measurement.html">P24 · Predict a reading before touching the board</a> for ratings and <a href="../practice/p26-smd-rework.html">P26 · Surface-mount soldering and inspection</a> for basic SMD rework.</td><td>Read a schematic and construct a stable power path. Show a clean joint and explain the effect of a backwards or open part.</td></tr>
+<tr><th scope="row">2. Components and combined circuits</th><td>Finish <a href="p182-first-breadboard-circuits.html">P182 · The introductory builds</a>. For more practice, use <a href="p06-diodes-rectifiers.html">P06 · Diodes and rectifiers</a>, <a href="p07-capacitors-rc.html">P07 · Timing and smoothing</a> and <a href="p08-transistor-switches.html">P08 · BJT, MOSFET and relay switching</a>. Then try <a href="p09-555-timer.html">P09 · Make a 555 LED blinker</a> and <a href="p10-power-supplies.html">P10 · Power supplies and regulators</a>. Use <a href="p05-soldering-wiring.html">P05 · Through-hole soldering</a> for the <a href="../theory/t26-pcb-rework-esd.html">T26 · Copper transfer exercise</a>.</td><td>Explain each current path on the breadboard. Measure a known-good circuit before you introduce and trace a simple fault.</td></tr>
 <tr><th scope="row">3. Loaded measurement and analog signals</th><td>Complete <a href="../practice/p107-source-impedance-and-bench-measurements.html">P107 · Find a weak supply with a load and a meter</a>, <a href="../practice/p108-op-amp-sensor-buffer.html">P108 · Buffer a weak sensor signal and find the limits</a>, then <a href="../practice/p15-oscilloscope-logic-analyser.html">P15 · Seeing signals: oscilloscope and logic analyser</a> and <a href="../practice/p25-scope-filters.html">P25 · Measure an RC filter on the oscilloscope</a>. Read <a href="../theory/t07-ac-fundamentals.html">T07 · AC: sine waves, RMS, phase and impedance</a>, <a href="../theory/t14-op-amps.html">T14 · Op-amps: the golden rules</a>, <a href="../theory/t24-measurement-datasheets.html">T24 · Measurement loading, tolerance and datasheets</a> and <a href="../theory/t54-source-resistance-loading-and-uncertainty.html">T54 · Source resistance, loading and measurement uncertainty</a>.</td><td>Prove a weak series path under load. Measure gain, filter attenuation and the onset of clipping.</td></tr>
 <tr><th scope="row">4. Switching, timing and feedback</th><td>Use <a href="../practice/p109-inductive-load-switch-and-flyback.html">P109 · Switch a relay coil and inspect its turn-off pulse</a>, <a href="../practice/p110-digital-edges-bounce-and-logic-thresholds.html">P110 · See a bouncing switch and clean up a digital edge</a>, <a href="../practice/p11-arduino-first-steps.html">P11 · Arduino first steps</a>, <a href="../practice/p12-sensors-adc.html">P12 · Sensors and the ADC</a>, <a href="../practice/p13-actuators-motors.html">P13 · Actuators: motors, servos and relays</a> and <a href="../practice/p27-firmware-state-machine.html">P27 · Program a timed controller that can stop</a>. Read <a href="../theory/t06-magnetism-inductors.html">T06 · Magnetism and inductors</a>, <a href="../theory/t15-digital-logic-microcontrollers.html">T15 · Digital logic and how a microcontroller works</a>, <a href="../theory/t31-feedback-control.html">T31 · Feedback, interlocks and control loops</a> and <a href="../theory/t55-signal-levels-thresholds-and-time.html">T55 · Logic thresholds, hysteresis and signal timing</a>.</td><td>Show a switching waveform, a filtered input, and how a command and independent feedback describe different states.</td></tr>
 <tr><th scope="row">5. Reading diagrams and communication</th><td>Use <a href="../practice/p22-reading-drawings.html">P22 · Read a site drawing and label a cable</a>, <a href="../practice/p14-serial-buses-modbus.html">P14 · Talking to devices: UART, I²C, SPI, RS-485 and Modbus</a> and <a href="../practice/p19-networking-hands-on.html">P19 · Networking hands-on: IP, subnets, switches, PoE, VLANs</a> for terminal plans, serial data and Ethernet. Use <a href="../theory/t16-signals-noise-loops.html">T16 · Signals: sampling, decibels, noise and 4–20 mA loops</a>, <a href="../theory/t17-networking-theory.html">T17 · How networks really work: Ethernet, IP, TCP/UDP</a> and <a href="../theory/t40-pcb-layout-and-emc.html">T40 · PCB return paths, decoupling and EMC</a> for references and noise.</td><td>Map a cable, distinguish power/reference/signal, and identify why a healthy physical link may still deliver the wrong data.</td></tr>
@@ -73,7 +84,8 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261121-deep-routes"></script>
+<script src="../assets/toc.js?v=20261123-first-circuits"></script>
 <script src="../assets/app.js?v=20261120-commercial-search"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>

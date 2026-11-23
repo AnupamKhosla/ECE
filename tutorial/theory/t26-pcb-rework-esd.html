@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>T26 · PCB construction, solder joints and ESD</title>
+<title>T26 · PCB basics from breadboard to copper traces</title>
+<meta name="description" content="Follow a battery, resistor and LED from a breadboard to a simple PCB. See how copper traces, insulating laminate, pads and solder mask work.">
 <script src="../assets/theme.js?v=20261105-theme"></script>
-<link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-theory">
 <div class="shell">
@@ -13,54 +15,96 @@
   <main class="page">
     <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
     <span class="eyebrow">T26</span>
-    <h1>PCB construction, solder joints and ESD</h1>
-    <p class="lede">Learn what solder must bond to, what heat does to a board, and how static discharge damages a device before a visible fault appears.</p>
-    <div class="meta"><span><b>Prerequisites</b> T03, T05</span><span><b>Bench</b> P05, P26</span></div>
+    <h1>PCB basics from breadboard to copper traces</h1>
+    <p class="lede">Wire a battery, resistor and LED on a breadboard. Then follow those same three connections as copper traces on a simple printed circuit board.</p>
+    <div class="meta"><span><b>Before this</b> <a href="../practice/p02-breadboard-first-led.html">P02 · Breadboard and your first LED</a></span><span><b>Bench sequence</b> <a href="../practice/p182-first-breadboard-circuits.html">P182 · First circuits on a breadboard</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
-    <h2>Pad, via and plane</h2>
-  <figure class="course-photo">
-    <img src="../assets/photos/smd.jpg" alt="Close view of populated PCB, component end caps and solder pads" width="1024" height="800" loading="lazy" decoding="async">
-    <figcaption>Pick a chip resistor and follow each termination onto its copper pad. Look for the small through-board holes that join copper layers.<br><small>Photo by John Fader. <a href="https://commons.wikimedia.org/wiki/File:Smt_closeup.jpg">Original photo</a> · <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
-  </figure>
-
-    <p>A pad is exposed copper with a solderable finish. A plated via joins selected layers. Planes spread current and conduct heat away from pads. Solder mask covers most of the copper, and the laminate bonds the layers together. A through-hole barrel may join inner layers, so bridging a lifted pad to the first visible trace may restore only one branch of the net. A multilayer repair starts with the actual net and all of its destinations.</p>
-
-    <h2>Recognise the connector before moving it</h2>
-    <p>A ribbon cable has a short row of exposed contacts. Its connector holds those contacts in alignment. The mechanics differ. If a plug resists, look up the socket and support it before trying another direction.</p>
+    <h2>Start with one working circuit</h2>
     <div class="photo-pair">
       <figure class="course-photo">
-        <img src="../assets/photos/repair/laptop-zif.jpg" width="960" height="633" loading="lazy" decoding="async" alt="Two flat ribbon cables with gold contacts beside their two low-profile laptop ZIF sockets">
-        <figcaption>Each flat cable slides into its unlocked socket. The darker moving bar or tab retains the cable. Check which end is the latch on your particular connector.<br><small>Photo by Zeroping, scaled for the course. <a href="https://commons.wikimedia.org/wiki/File:ZIF_connector_and_FFC.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+        <a class="image-preview-figure" href="../assets/photos/foundation/breadboard-probe-test-points.jpg" data-image-preview="Real LED and resistor circuit on a breadboard" data-preview-source="t26-led-photo" aria-haspopup="dialog" aria-label="Enlarge the breadboard LED circuit photograph">
+          <img src="../assets/photos/foundation/breadboard-probe-test-points.jpg" width="960" height="720" loading="lazy" decoding="async" alt="An LED and resistor inserted in a white solderless breadboard, with two meter probe tips contacting exposed leads.">
+        </a>
+        <figcaption>Find the resistor, LED and probe tips on this example build. The numbered holes for the exercise are in the drawing below.<br><small>Photo by Zeroping. <a id="t26-led-photo" href="https://commons.wikimedia.org/wiki/File:Multimeter_probes_on_breadboard.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small></figcaption>
       </figure>
       <figure class="course-photo">
-        <img src="../assets/photos/repair/pixel-screen-plug.jpg" width="592" height="444" loading="lazy" decoding="async" alt="Spudger beside the Pixel 4a display flex press connector">
-        <figcaption>Follow the flex back from the screen to the plug. Lift at the edge shown in the guide. Align the replacement plug before pressing its ends down.<br><small>Photo by Sam Omiotek for <a href="https://www.ifixit.com/">iFixit</a>, scaled for the course. <a href="https://www.ifixit.com/Guide/Google+Pixel+4a+Screen+Replacement/139544#s277766">iFixit guide, step 14</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</small></figcaption>
+        <a class="image-preview-figure" href="../assets/photos/foundation/stripboard-copper-side.jpg" data-image-preview="Copper strips and component holes from below" data-preview-source="t26-strip-photo" aria-haspopup="dialog" aria-label="Enlarge the exposed copper strips">
+          <img src="../assets/photos/foundation/stripboard-copper-side.jpg" width="1280" height="853" loading="lazy" decoding="async" alt="Underside of a prototyping board with parallel exposed copper bands and two unsoldered leads passing through holes.">
+        </a>
+        <figcaption>The metallic bands carry current. The gaps insulate adjacent bands from each other. A custom PCB shapes copper for one circuit.<br><small>Photo by Morahman7vn, resized. <a id="t26-strip-photo" href="https://commons.wikimedia.org/wiki/File:Copper_trace_side_of_stripboard,_with_leads_protruding_outward.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
       </figure>
     </div>
-    <ul>
-      <li><b>Flat cable in a latch socket.</b> A zero-insertion-force (ZIF) socket has a tab or bar that releases the cable. Open the latch in the direction shown by the manual and slide the cable out along its plane. Inspect the contacts and reseat the cable straight before locking the latch.</li>
-      <li><b>Press connector.</b> The small Pixel display plug mates straight down. Lift the plug only where its guide shows. Keep the tool clear of the soldered board socket and align the plug before seating it.</li>
-      <li><b>Sliding connector.</b> Some battery and fan plugs slide out along the board. Grip the housing as indicated by the guide and keep tension off the wires.</li>
-    </ul>
-    <p>A connector levered off the board may tear the thin copper pads under it. Practise identifying the release style on an isolated spare before you put a tool against a populated board. <a href="https://www.ifixit.com/Guide/Recognizing+%26+Disconnecting+Cable+Connectors/25629">iFixit’s connector types and release directions</a> · <a href="../practice/p34-phone-module-service.html#exercise-with-a-documented-display-replacement">P34’s visual screen practice</a>.</p>
+    <p class="course-video"><b>Watch the conductors.</b> Find the hidden metal clips in the breadboard video. In the factory video, watch a continuous copper surface become separate paths. <a href="https://www.youtube.com/watch?v=XpMZoR3fgd0">Moritz Klein · Beginner's guide to breadboards</a> · <a href="https://www.youtube.com/watch?v=yEdGj3BigWk">Eurocircuits · Etching the outer layers</a>.</p>
 
-    <h2>Wetting and heat transfer</h2>
-  <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=QKbJxytERvg">Collin&#x27;s Lab: Soldering · Adafruit Industries</a><br>Watch how the solder first flows onto a heated joint. Compare the resulting shape with the surface-mount joint in the photo.</p>
+    <p>Disconnect the three-cell battery holder. In continuity mode, compare holes <b>a8 and b8</b>, then <b>a8 and a9</b>. The first pair shares a spring clip and should beep. The second pair uses separate clips and should stay open. Check your power rails for a break and stay on the section that carries the battery connection. <a href="https://learn.adafruit.com/breadboards-for-beginners/breadboards">Adafruit · The clips inside a breadboard</a>.</p>
+    <ol class="steps">
+      <li>Put a 1 kΩ resistor between the positive rail at column 4 and <b>a8</b>. Put the red LED's anode in <b>b8</b> and cathode in <b>b10</b>. Use a jumper from <b>a10</b> to the negative rail. The cathode usually has a shorter lead and a flat rim on its body.</li>
+      <li>Connect the 4.5 V battery holder. With the meter in DC volts and the black probe on battery negative, check the positive rail near 4.5 V, the LED anode roughly 1.6–2.2 V and the LED cathode near 0 V.</li>
+      <li>Measure directly across the resistor. For example, 2.6 V across 1 kΩ means about 2.6 mA through the LED. Keep that reading for the PCB comparison.</li>
+    </ol>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/first-circuits/led-connections.svg" data-image-preview="One LED circuit drawn as schematic, breadboard and PCB" aria-haspopup="dialog" aria-label="Enlarge the LED circuit drawing">
+        <img src="../assets/labs/first-circuits/led-connections.svg" width="1000" height="590" loading="lazy" decoding="async" alt="The same series LED circuit as a schematic, on a breadboard with numbered holes and on a PCB with three drawn traces.">
+      </a>
+      <figcaption>The clip at column 8 joins the resistor to the LED. On the example PCB, the amber trace joins the same two terminals. Follow the other two connections in both views.</figcaption>
+    </figure>
 
-    <p>Flux removes or disrupts oxides during heating so molten solder can wet the exposed metals. A thin intermetallic layer forms at the interface. Tip-to-joint contact area, a thin solder film and the thermal mass of the copper determine how quickly both surfaces reach soldering temperature. A large ground pad can need more heat delivery even when the iron display is unchanged. Heat applied for too long can weaken the pad bond, melt connectors or damage nearby components.</p>
-    <p>Inspect under magnification for wetting around both ends, alignment, bridges, lifted pads and disturbed neighbouring parts. Compare continuity from component terminal to a separate point on the routed net. Surface finish varies by solder alloy. <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit’s photographed solder defects</a>.</p>
+    <h2>What the board is made of</h2>
+    <div class="photo-pair">
+      <figure class="course-photo">
+        <a class="image-preview-figure" href="../assets/photos/foundation/copper-before-etching.jpg" data-image-preview="Copper-clad board before etching" data-preview-source="t26-before-etch" aria-haspopup="dialog" aria-label="Enlarge the copper before etching">
+          <img src="../assets/photos/foundation/copper-before-etching.jpg" width="1200" height="645" loading="lazy" decoding="async" alt="Copper-clad laminate with a dark printed circuit pattern on the continuous copper foil.">
+        </a>
+        <figcaption>Before etching, the copper is a continuous sheet. The dark pattern covers the copper that will become pads and tracks.<br><small>Photo by Tinux, resized. <a id="t26-before-etch" href="https://commons.wikimedia.org/wiki/File:Circuit_board_with_protective_layer_ready_for_etching.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+      <figure class="course-photo">
+        <a class="image-preview-figure" href="../assets/photos/foundation/copper-after-etching.jpg" data-image-preview="Board after unwanted copper is removed" data-preview-source="t26-after-etch" aria-haspopup="dialog" aria-label="Enlarge the board after etching">
+          <img src="../assets/photos/foundation/copper-after-etching.jpg" width="1200" height="900" loading="lazy" decoding="async" alt="Etched board with isolated traces and pads left on a pale insulating substrate.">
+        </a>
+        <figcaption>After etching, the unwanted copper is gone. The pale insulating areas separate the remaining conductors.<br><small>Photo by Tinux, resized. <a id="t26-after-etch" href="https://commons.wikimedia.org/wiki/File:Circuit_board_after_manual_etching.jpg">Original photo</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</small></figcaption>
+      </figure>
+    </div>
+    <dl>
+      <dt><b>Laminate</b></dt><dd>The stiff, insulating board underneath the copper. A common type, FR-4, uses glass fabric and epoxy.</dd>
+      <dt><b>Copper foil and traces</b></dt><dd>Foil starts as a continuous layer bonded to the laminate. Etching removes unwanted copper. The remaining copper forms traces, pads and sometimes large areas called planes. A common starting foil is about 35 µm thick.</dd>
+      <dt><b>Pad, hole and via</b></dt><dd>A pad is a copper landing for solder. A through-hole lead passes through a drilled hole. A plated hole has a conductive wall. A via uses such a wall to join copper on different layers.</dd>
+      <dt><b>Solder mask and pad finish</b></dt><dd>The mask is the protective coating, often green. Openings give access to pads, which commonly have a solderable surface finish. Bare copper, masked copper and finished pads can look different while sharing a connection.</dd>
+      <dt><b>Silkscreen</b></dt><dd>Printed ink shows part labels, outlines and polarity marks. Use the legend to place parts and the copper or meter to tell what is connected.</dd>
+    </dl>
+    <p>A single-sided board puts copper on one face. A two-layer board adds copper to the other face. Multilayer boards can route connections inside the laminate. <a href="https://learn.sparkfun.com/tutorials/pcb-basics/composition">SparkFun · Photographs of PCB materials</a> · <a href="https://www.eurocircuits.com/technical-guidelines/pcb-manufacturing-technology/making-a-pcb-pcb-manufacture-step-by-step/">Eurocircuits · How a PCB is made</a>.</p>
 
-    <h2>Static discharge and protection parts</h2>
-    <p>Charge on a person, tool or insulator can make a fast pulse when a conductive path appears. Even a pulse too small to feel can damage gate oxides or thin structures inside an IC. A dissipative work surface, grounded wrist strap connected to the designated ESD common point, suitable packaging and handling boards by their edges reduce voltage differences on an unpowered bench.</p>
-    <p>A TVS diode or protection array near a connector diverts surge energy along a designed path. A failed clamp can read short, and a good clamp can show a diode path. Signal lines can require low-capacitance arrays. Verify pinout, directionality, standoff voltage and capacitance before specifying a replacement. <a href="https://www.esda.org/esd-overview/esd-fundamentals/part-3-basic-esd-control-procedures-and-materials/">EOS/ESD Association workstation guidance</a>.</p>
+    <h2>Move the same circuit to a solderable board</h2>
+    <p>Use a solderable breadboard with groups of five pads, such as the BusBoard SB400. A regular stripboard has longer copper strips and needs its own layout. Mark a reference corner before you turn the board over. The solder-side view reverses left and right if you turn it over around a vertical edge. <a href="https://www.busboard.com/SB400">BusBoard · SB400 specifications</a> · <a href="https://www.mouser.in/en/c/tools-supplies/prototyping-products/pcbs-breadboards/?description%2Ffunction=Solderable+PC+breadboard">Mouser India · Find the SB400</a>.</p>
+    <p class="preview-links"><a class="preview-trigger" href="https://www.busboard.com/images/products/BPS-SB400_Bottom.jpg" data-image-preview="SB400 copper side with connected pad groups" data-preview-source="t26-sb400" aria-haspopup="dialog">View the copper side</a> <a class="preview-trigger" href="https://www.busboard.com/images/products/BPS-SB400_Top.jpg" data-image-preview="SB400 component side" data-preview-source="t26-sb400" aria-haspopup="dialog">View the component side</a> <a class="preview-trigger" href="../assets/photos/solde.jpg" data-image-preview="Soldering a through-hole joint" data-preview-source="t26-solder-photo" aria-haspopup="dialog">View soldering at a pad</a></p>
+    <p><small><a id="t26-sb400" href="https://www.busboard.com/SB400">SB400 photos · BusBoard Prototype Systems</a> · <a id="t26-solder-photo" href="https://learn.adafruit.com/assets/1996">Soldering photo · Bill Earl and Adafruit, CC BY-SA 3.0</a>.</small></p>
+    <ol class="steps">
+      <li>On the empty board, use continuity to find two separate rails and two isolated five-pad groups. Label the groups <b>8</b> and <b>10</b>. Two ends of one copper strip should read approximately the resistance of your shorted probes. The two rails should read open.</li>
+      <li>Remove the battery cells. Place the resistor between + and group 8. Put the LED anode in group 8 and its cathode in group 10. Add a jumper from group 10 to −. Solder from the copper side and connect the battery leads last. <a href="../practice/p05-soldering-wiring.html">P05 · Soldering your first joint</a>.</li>
+      <li>Check the resistor leg in group 8 to the LED anode lead, and the LED cathode lead to the battery return. Probe the leads away from the solder blobs. If battery + to − reads near zero, find the short before connecting cells.</li>
+      <li>Power the board and repeat the three voltage readings. With the same cells and parts, the result should match the breadboard closely. If the LED stays dark, find the first node with an unexpected reading.</li>
+    </ol>
+    <p>Solder wets a joint when it flows onto the lead and pad. A large copper area can draw heat away from the iron. Excess heat can lift a pad. Handle boards by their edges and add an ESD bench setup as you reach sensitive devices. <a href="https://learn.adafruit.com/adafruit-guide-excellent-soldering/common-problems">Adafruit · Solder joint photographs</a> · <a href="https://www.esda.org/esd-overview/esd-fundamentals/part-3-basic-esd-control-procedures-and-materials/">EOS/ESD Association · Safe bench handling</a>.</p>
 
-    <h2>Check yourself</h2>
-    <details class="quiz"><summary>A component body looks secure, but its net is open. Where do you measure?</summary><div class="answer"><p>With power off, measure between the component’s terminal and a separate exposed point on the same net, such as a confirmed test point or the next component. Checking across the solder blob alone can miss a break between pad and trace.</p></div></details>
-    <p><a class="crosslink" href="../practice/p26-smd-rework.html">Practice P26 · SMD rework on a training PCB</a></p>
+    <h2>Keep building</h2>
+    <a class="crosslink" href="../practice/p182-first-breadboard-circuits.html">P182 · Add diodes, a capacitor and a transistor on breadboard</a>
+    <a class="crosslink" href="../practice/p48-kicad-testable-pcb.html">P48 · Lay out the LED circuit as a custom PCB in KiCad</a>
+    <a class="crosslink" href="../practice/p26-smd-rework.html">P26 · Practise surface-mount joints after the through-hole build</a>
+    <details class="quiz" id="after-first-board">
+      <summary>For later work on assembled boards</summary>
+      <div class="answer">
+        <h3 id="wetting-and-heat-transfer">Wetting and heat transfer</h3>
+        <p>Flux removes or disrupts oxides so solder can wet the metals. A thin intermetallic layer forms at the interface. Tip contact area, a thin solder film and the copper's thermal mass affect heating. Under magnification, check both ends of a joint for wetting, alignment, bridges and lifted pads. Compare continuity between the terminal and an independent point on the same net.</p>
+        <h3 id="static-discharge-and-protection-parts">Static discharge and protection</h3>
+        <p>A fast discharge can damage gate oxide even when you feel nothing. On an unpowered bench, a dissipative mat, grounded wrist strap at the designated common point and ESD-safe packaging reduce voltage differences. A TVS diode or array near a connector diverts transients. Check pinout, directionality, standoff voltage and capacitance before replacing it. <a href="https://www.esda.org/esd-overview/esd-fundamentals/part-3-basic-esd-control-procedures-and-materials/">EOS/ESD Association · Workstation guidance</a>.</p>
+        <h3 id="recognise-the-connector-before-moving-it">Recognise the connector before moving it</h3>
+        <p>Look up the connector before using a tool. A zero-insertion-force ribbon socket releases a latch before the cable slides out. A press connector lifts vertically at its specified edge. A sliding plug releases in the direction given by its service guide. Pull on the housing and protect the copper pads beneath the socket. <a href="https://www.ifixit.com/Guide/Recognizing+%26+Disconnecting+Cable+Connectors/25629">iFixit · Connector types and release directions</a> · <a href="../practice/p34-phone-module-service.html#exercise-with-a-documented-display-replacement">P34 · Photographed connector practice</a>.</p>
+      </div>
+    </details>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261123-first-circuits"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>
