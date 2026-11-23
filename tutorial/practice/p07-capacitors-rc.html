@@ -6,6 +6,7 @@
 <title>P07 · Capacitors: timing, smoothing and decoupling</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -35,6 +36,7 @@
 
     <h2>1 · Know your capacitors</h2>
     <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/capacitor-package-comparison.jpg" data-image-preview="Ceramic, film and electrolytic capacitor packages" data-preview-source="p07-packages-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
       <div class="photo-annotation">
         <img src="../assets/photos/foundation/capacitor-package-comparison.jpg" alt="A row of ceramic, film and electrolytic capacitors with a centimetre ruler" width="717" height="265" loading="lazy" decoding="async">
         <svg viewBox="0 0 717 265" aria-hidden="true">
@@ -47,11 +49,14 @@
           <rect x="485" y="9" width="173" height="36" rx="7" fill="#122029"/><text x="495" y="36" style="fill:#fff;font-size:24px;font-weight:700">Electrolytic</text>
         </svg>
       </div>
-      <figcaption>Start by finding the ceramic disc, film box and cylindrical aluminium electrolytic. Then read the printed value and voltage rating. For a polarised aluminium electrolytic, use its polarity marking and datasheet before wiring. Package shape is only the first clue.<br><small>Photo by Aka, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:Condensators.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
+      </a>
+      <figcaption>Start by finding the ceramic disc, film box and cylindrical aluminium electrolytic. Then read the printed value and voltage rating. For a polarised aluminium electrolytic, use its polarity marking and datasheet before wiring. Package shape is only the first clue.<br><small>Photo by Aka, with on-page callouts. <a id="p07-packages-photo" href="https://commons.wikimedia.org/wiki/File:Condensators.JPG">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</small></figcaption>
     </figure>
   <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/cap.jpg" data-image-preview="Through-hole aluminium electrolytic capacitors" data-preview-source="p07-cap-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
     <img src="../assets/photos/cap.jpg" alt="Several aluminium electrolytic capacitor packages side by side" width="960" height="720" loading="lazy" decoding="async">
-    <figcaption>Match the package to the way it will mount. A large snap-in capacitor and a small radial capacitor can share a voltage rating while having very different terminals and ripple ratings.<br><small>Photo by Elcap. <a href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
+      </a>
+      <figcaption>Match the package to the way it will mount. A large snap-in capacitor and a small radial capacitor can share a voltage rating while having very different terminals and ripple ratings.<br><small>Photo by Elcap. <a id="p07-cap-photo" href="https://commons.wikimedia.org/wiki/File:E-cap-family-14-02-02.jpg">Original photo</a> · <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>.</small></figcaption>
   </figure>
 
     <p>A <b>capacitor</b> is two conductors separated by a thin insulator (the <b>dielectric</b>). Push charge onto one plate and the same amount leaves the other; a voltage builds up between them. Capacitance C tells you how much charge it stores per volt: Q = C × V. One farad is huge, so real parts are in microfarads (µF, 10<sup>−6</sup>), nanofarads (nF, 10<sup>−9</sup>) and picofarads (pF, 10<sup>−12</sup>).</p>
@@ -312,8 +317,17 @@
 
     <div class="callout job"><span class="label">On the job</span><p>RC timing is everywhere you look once you know it: the delay on a security light, the debounce on a door contact input, the soft start in a power supply, the "hold-up time" that lets a controller ride through a short power dip. When a BMS or alarm input "misses" short pulses, an RC filter on that input is often the reason. The same maths sets how fast a temperature sensor responds inside its pocket.</p></div>
 
-    <h2>3 · Smoothing the bridge rectifier from P06</h2>
-    <p>The bridge gave you pulses: 100 humps per second, from 0 V up to about 15.6 V. A big capacitor across the output fills up at each peak and then supplies the load between peaks. The output becomes DC with <b>ripple</b>.</p>
+    <h2 id="smooth-the-bridge">3 · Smoothing the bridge rectifier from P06</h2>
+    <p>A bridge on a 50 Hz sine supply gives 100 output pulses per second. A capacitor across the output takes charge near each peak. Between peaks the capacitor supplies the load, so the voltage falls a little before the next peak. That rise and fall is <b>ripple</b>.</p>
+    <h3>Repeat the measurement on your first breadboard</h3>
+    <ol class="steps">
+      <li>Keep the 1 kΩ load between a17 (+) and a5 (−) and the 100 Ω, 0.5 W resistor at the input. Use the same supervised, isolated 4–6 V AC source. Measure its input on V AC and your bridge output on V DC, with red d17 and black b5. At 6.0 V AC, the fixed-drop model predicts about 3.71 V DC before adding a capacitor. <a href="p182-first-breadboard-circuits.html#bridge-rectifier">P182 · Bridge layout</a> · <a href="p06-diodes-rectifiers.html#p6w-rect">P06 · Predict the raw rectifier output</a>.</li>
+      <li>Disconnect the source. Put the 470 µF, 16 V capacitor across the load, with positive at f22 and negative stripe at f20. Jumper e17 to g22 and c5 to g20 so the capacitor shares the bridge output. Keep the 1 kΩ load in place. Connect the source and repeat the DC reading at the same probes.</li>
+      <li>A fixed-drop calculation with the source at 6.0 V AC gives about 5.2 V with the capacitor. Write down your measured value. Use it to estimate load current from I = V / 1 kΩ. For 5.2 V, I is 5.2 mA and the short formula below gives about 0.11 V peak-to-peak. The estimate assumes discharge over a whole 10 ms period. Actual charging occupies part of it, and diode drop, source regulation and capacitance vary. A scope gives the actual ripple. <a href="p15-oscilloscope-logic-analyser.html">P15 · Scope measurements</a>.</li>
+      <li>Disconnect power. Leave the 1 kΩ load connected so the capacitor discharges through it. Watch the DC meter fall below 0.1 V before moving the capacitor or changing any wires. With battery power instead, use the same capacitor to observe how the voltage falls after battery switch-off. <a href="p182-first-breadboard-circuits.html#capacitor">P182 · Time the battery discharge</a>.</li>
+    </ol>
+    <h3>Example with a measured 12 V AC input</h3>
+    <p>With 12 V AC measured at the source and a silicon bridge, the pulses below reach about 15.6 V. Use capacitors rated for at least 25 V for this example and confirm your measured source voltage before fitting one.</p>
 
     <figure>
       <svg viewBox="0 0 640 230" role="img" aria-label="Full-wave rectified pulses with a smoothing capacitor: the output follows the peaks and sags linearly between them">
@@ -339,7 +353,7 @@
 
     <p>Between peaks, the capacitor alone supplies the load current I for about one ripple period (10 ms for full-wave). Charge lost = I × t, and the voltage drop is that charge divided by C.</p>
     <div class="formula">ΔV ≈ I / (f × C)
-      <small>ΔV is the peak-to-peak ripple. I is the load current. f is the ripple frequency: <b>100 Hz for a full-wave bridge on Australia's 50 Hz</b>, 50 Hz for half-wave. C is in farads. It slightly overestimates the ripple, which is the safe direction.</small></div>
+      <small>ΔV is the peak-to-peak ripple. I is the load current in amperes. For a 50 Hz supply, use <b>100 Hz for a full-wave bridge</b> or 50 Hz for half-wave. C is in farads. This approximation assumes the load draws almost constant current and the capacitor discharges for the full interval between pulses.</small></div>
 
     <h3>Worked examples</h3>
     <ul>
@@ -356,7 +370,7 @@
       <li><p><b>Read the ripple.</b> Switch the meter to V AC across the capacitor. Many meters ignore the DC part on this range and show the RMS of the ripple, about 0.3 × the peak-to-peak value. Expect around 0.04–0.06 V for 0.15 V peak-to-peak. Not every meter behaves this way, so treat it as a rough check; a scope (P15) shows the real sawtooth.</p></li>
       <li><p><b>Change the load to 470 Ω (1 W).</b> DC drops slightly, ripple roughly doubles.</p></li>
       <li><p><b>Swap the capacitor for 100 µF.</b> The ripple is about ten times bigger, and the DC reading falls because the average is now well below the peak.</p></li>
-      <li><p><b>Power off and discharge</b> the capacitor through 100 Ω before you pull it out.</p></li>
+      <li><p><b>Disconnect power and wait for discharge through the load.</b> If the load is disconnected, clip a 2.2 kΩ, 0.5 W resistor across the capacitor with insulated leads. Measure below 0.1 V before handling it.</p></li>
     </ol>
 
     <h3>Expected readings (12 V AC plug-pack, bridge, 1 kΩ load unless stated)</h3>
@@ -403,6 +417,7 @@
 
     <h2 id="4-decoupling-the-100-nf-next-to-every-chip">4 · Place a decoupling capacitor near the chip</h2>
     <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/ceramic-capacitor-cross-section.jpg" data-image-preview="Layers inside a ceramic capacitor" data-preview-source="p07-section-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
       <div class="photo-annotation">
         <img src="../assets/photos/foundation/ceramic-capacitor-cross-section.jpg" alt="Close-up cross-section through a multilayer ceramic capacitor showing parallel metal layers and the conductive end termination" width="960" height="720" loading="lazy" decoding="async">
         <svg viewBox="0 0 960 720" aria-hidden="true">
@@ -413,7 +428,8 @@
           <rect x="661" y="155" width="288" height="54" rx="7" fill="#122029"/><text x="671" y="195" style="fill:#fff;font-size:36px;font-weight:700">End termination</text>
         </svg>
       </div>
-      <figcaption>This real section through an MLCC shows many internal electrodes ending at a conductive termination. Alternate electrodes connect to the opposite ends. On an intact board use the circuit and part list to identify the device before judging its value. Similar-looking surface-mount parts can perform different jobs.<br><small>Photo by TubeTimeUS, with on-page callouts. <a href="https://commons.wikimedia.org/wiki/File:MLCC_cross_section_detail.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
+      </a>
+      <figcaption>This real section through an MLCC shows many internal electrodes ending at a conductive termination. Alternate electrodes connect to the opposite ends. On an intact board use the circuit and part list to identify the device before judging its value. Similar-looking surface-mount parts can perform different jobs.<br><small>Photo by TubeTimeUS, with on-page callouts. <a id="p07-section-photo" href="https://commons.wikimedia.org/wiki/File:MLCC_cross_section_detail.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</small></figcaption>
     </figure>
     <p>Look beside an integrated circuit (IC) for capacitors between its supply and ground pins. Many designs use 100 nF ceramics there. The value, type and placement come from the chip’s datasheet and the layout. These <b>decoupling</b> or <b>bypass</b> capacitors supply short bursts of current locally.</p>
     <p>A digital chip does not draw a smooth current. Every time its internal transistors switch (millions of times per second), it gulps a short spike of current, lasting a few nanoseconds. The supply is far away along wires and copper tracks. Those have <b>inductance</b>: they resist <i>changes</i> in current. The voltage lost across an inductance is V = L × (ΔI / Δt).</p>
@@ -520,7 +536,8 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-device-service"></script>
+<script src="../assets/toc.js?v=20261123-fan-proof"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>

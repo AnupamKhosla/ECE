@@ -6,6 +6,7 @@
 <title>P06 · Diodes on the bench: rectifiers and protection</title>
 <script src="../assets/theme.js?v=20261105-theme"></script>
 <link rel="stylesheet" href="../assets/style.css?v=20261105-theme">
+<link rel="stylesheet" href="../assets/image-preview.css">
 </head>
 <body class="book-practice">
 <div class="shell">
@@ -19,28 +20,32 @@
 
     <nav class="otp" data-auto></nav>
 
-    <h2>What you need</h2>
+    <h2 id="start-with-your-board">Start with the breadboard you already built</h2>
+    <p>Use the 1N4007s, 1 kΩ load and 100 Ω input resistor from P182. With the battery, switch off, swap its two input leads and check the same output holes again. Across the single-diode load, only one input orientation gives a reading. Across the four-diode bridge, both orientations give a positive reading. This shows what each half-cycle will do when the source changes direction by itself. <a href="p182-first-breadboard-circuits.html#single-diode">P182 · Exact diode and breadboard holes</a> · <a href="p182-first-breadboard-circuits.html#bridge-rectifier">P182 · The four-diode bridge layout</a>.</p>
+    <p>For the AC measurement on that board, remove the holder and use a supervised isolated 4–6 V AC source. Keep the 100 Ω resistor rated for at least 0.5 W. Measure the input voltage in <b>V AC</b> across the two source terminals. For the load, change the meter to <b>V DC</b> and use red c6 and black B on the one-diode board, or red d17 and black b5 on the bridge. The <a href="#p6w-rect">calculator</a> includes the series resistor.</p>
+    <p>Example for a measured 6.0 V AC and a 1 kΩ load. A sine wave peaks at about 8.49 V. With the 100 Ω input resistor and a constant 0.7 V drop per diode, expect about <b>2.15 V DC</b> on the half-wave circuit and <b>3.71 V DC</b> on the bridge. Record the measured AC input alongside both DC readings so you can explain a change caused by the supply or the circuit.</p>
+
+    <h2>Parts for the additional experiments</h2>
     <ul class="kit">
-      <li><b>AC plug-pack, 9–12 V AC, 0.5–1 A</b><small>~A$20–30 · Jaycar or Altronics. It must say "AC" on the label and output. A DC plug-pack will not show you AC.</small></li>
-      <li><b>1N4007 rectifier diodes ×10</b><small>~A$2 · 1 A, 1000 V, black body with a grey band</small></li>
+      <li><b>Isolated 9–12 V AC source for the worked examples</b><small>Confirm an enclosed, locally approved source with AC output and a matching protected breakout. The worked readings below use an actual measured input of 12 V AC. <a href="https://www.altronics.com.au/product/m9267a-powertran-12v-ac-1a-appliance-powerpack">Altronics Australia · 12 V AC pack</a> · <a href="https://www.nvistech.com/wp-content/uploads/2023/12/Nvis_230P.pdf">Nvis India · Training unit with step-down outputs</a>. Ask a lab instructor to identify the isolated step-down terminals before using a trainer.</small></li>
+      <li><b>1N4007 rectifier diodes ×10 <a class="preview-trigger" href="../assets/photos/diode.jpg" data-image-preview="Axial diode with the cathode band" data-preview-source="p06-diode-photo" aria-haspopup="dialog">View diode</a></b><small>1 A, 1000 V, axial body with a cathode band. The photo shows the same package style on a 1N4001. <a href="p182-first-breadboard-circuits.html#kit">P182 · Parts in India and Australia</a></small></li>
       <li><b>1N4148 small-signal diodes ×5</b><small>~A$1 · glass body, black band</small></li>
       <li><b>1N5819 Schottky diodes ×2</b><small>~A$1 · 1 A, low forward drop</small></li>
       <li><b>Bridge rectifier module, 1–2 A</b><small>~A$1–3 · small round or 4-pin inline package marked ~ ~ + −</small></li>
       <li><b><a href="../theory/t75-zener-diodes-voltage-boost.html#identify-the-diode">5.1 V Zener diodes</a> ×3</b><small>1N4733A, 1 W · <a href="https://au.element14.com/multicomp-pro/1n4733a/diode-zener-1w-5-1v-do-41/dp/1861447">element14 Australia</a> · <a href="https://in.element14.com/c/semiconductors-discretes/diodes-rectifiers/zener-single-diodes?zener-voltage-nom=5.1v">element14 India</a> (search 1N4733A)</small></li>
       <li><b>LEDs, mixed colours, 5 mm</b><small>~A$5 for a bag: red, green, yellow, blue, white, plus one infrared if you can</small></li>
-      <li><b>Resistors</b><small>220 Ω, 470 Ω, 1 kΩ (0.5 W if you have it), 1.5 kΩ, 10 kΩ</small></li>
+      <li><b>Resistors</b><small>220 Ω, 470 Ω, 1 kΩ, 1.5 kΩ and 10 kΩ. Use at least 0.5 W for the 1 kΩ and 1.5 kΩ parts on the 9–12 V AC source. Keep the 100 Ω, 0.5 W part with the 4–6 V AC exercise.</small></li>
       <li><b>9 V battery and snap</b><small>~A$6 · for the Zener lab</small></li>
       <li><b>Screw-terminal or barrel adaptor</b><small>~A$3 · to get the plug-pack wires into the breadboard without cutting the plug</small></li>
       <li><b>Multimeter with diode test</b><small>Your meter from P03</small></li>
       <li><b>Phone with slow-motion video</b><small>Any phone that films at 120 or 240 frames per second</small></li>
     </ul>
 
-    <div class="callout warn"><span class="label">Safety: stay on the low-voltage side</span><p>The plug-pack is a factory-sealed, approved appliance. You plug it into the wall and work only on its thin low-voltage output lead. Never open a plug-pack, never wire a bare transformer to 230 V, and never measure inside anything mains-powered. In Australia, mains wiring is legally limited to licensed electricians. A 12 V AC plug-pack peaks near 17–20 V, which is well inside the extra-low-voltage (ELV) limit of 50 V AC.</p></div>
-
-    <div class="callout aus"><span class="label">In Australia</span><p>Plug-packs sold here must meet the Electrical Equipment Safety System and should carry the RCM mark (a tick inside a triangle). Cheap no-name AC adaptors from overseas marketplaces sometimes do not. Buy the AC plug-pack locally from Jaycar or Altronics. AC plug-packs are less common than they were, so ask for "AC output plugpack" or "AC adaptor". If your state regulator publishes recalls, check them; rules and enforcement differ by state, so confirm with your state's electrical safety regulator.</p></div>
+    <div class="callout warn"><span class="label">Work on the isolated output</span><p>Use only labelled low-voltage output terminals or the external connector of a sealed pack. Unplug the source before moving wires. If your measured AC voltage is more than 15 V RMS, choose a lower voltage source for these builds. Use the battery exercises if you do not have a suitable AC source.</p></div>
 
     <h2>1 · Read a diode with your meter</h2>
   <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/diode.jpg" data-image-preview="Axial diode cathode band" data-preview-source="p06-diode-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
     <div class="photo-annotation">
       <img src="../assets/photos/diode.jpg" alt="Axial diode with the cathode band visible on one end of the black body" width="1024" height="217" loading="lazy" decoding="async">
       <svg viewBox="0 0 1024 217" aria-hidden="true">
@@ -51,7 +56,8 @@
         <text x="665.6" y="62.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:14.0px">1</text>
       </svg>
     </div>
-    <figcaption>Find the light band on the case. It marks the cathode, the end that goes to the black probe for the forward reading.<br><b>1 · The silver band marks the cathode.</b><br><small>Photo by Vonvon, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Diode_1n4001.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
+      </a>
+      <figcaption>Find the light band on the case. It marks the cathode, the end that goes to the black probe for the forward reading.<br><b>1 · The silver band marks the cathode.</b><br><small>Photo by Vonvon, with labels added. <a id="p06-diode-photo" href="https://commons.wikimedia.org/wiki/File:Diode_1n4001.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</small></figcaption>
   </figure>
 
     <p>A diode lets conventional current flow one way only: from the <b>anode</b> (A) to the <b>cathode</b> (K). On the part, the cathode end has a painted band. On the symbol, the cathode is the bar, and the triangle points the way current is allowed to flow.</p>
@@ -111,7 +117,7 @@
     <a class="crosslink" href="../theory/pn-junction-deep-dive.html">Theory T11+ · Deep dive: why a diode has polarity</a>
 
     <h2>2 · An LED on AC: see 50 Hz with your own eyes</h2>
-    <p>Mains in Australia alternates at 50 Hz: 50 full cycles per second. The plug-pack's transformer steps it down, but the frequency stays at 50 Hz. If you drive an LED from that low-voltage AC, it can only light on the half-cycle that forward-biases it. So it switches on and off 50 times every second. Your eyes blur that into steady light, but a phone can catch it.</p>
+    <p>The nominal mains frequency is 50 Hz in India and Australia. An isolated transformer reduces the voltage and keeps the frequency. An LED on that low-voltage AC lights only on the half-cycle that forward-biases it, so there are 50 light pulses per second. You can see the flicker with slow-motion video. <a href="../theory/t07-ac-fundamentals.html">T07 · AC waveforms and frequency</a>.</p>
 
     <h3>The circuit and the numbers</h3>
     <p>First measure your plug-pack with the meter on <b>V AC</b>. A "12 V AC" plug-pack often reads 13–15 V with no load, because a simple transformer's rated voltage is at full load. Use your measured number.</p>
@@ -119,7 +125,7 @@
       <small>The meter's AC reading is the RMS value (the "heating-equivalent" value). A sine wave's peak is √2 ≈ 1.414 times bigger. The LED and resistor see the peak, so design for the peak.</small></div>
     <div class="formula">I<sub>peak</sub> = (V<sub>peak</sub> − V<sub>LED</sub>) / R = (17 − 2) / 1000 = 15 mA
       <small>15 mA at the very top of each wave is safe for a 5 mm LED rated at 20 mA. The average current is much lower, about 4–5 mA, because the LED is off half the time and below peak most of the rest.</small></div>
-    <p>The resistor is in the circuit for both half-cycles, so it sees nearly the full 12 V RMS: P ≈ 11² / 1000 ≈ 0.12 W. A 0.25 W resistor survives but runs warm; a 0.5 W resistor or a 1.5 kΩ value runs cool.</p>
+    <p>The resistor conducts on both halves because of the protection diode. For an upper bound, use the full measured RMS input across the resistor. Even at 15 V RMS, 15² / 1,000 = 0.225 W, so choose a 0.5 W resistor. If your LED permits less than the calculated peak current, increase to 1.5 kΩ and calculate it again.</p>
     <p>There is one more problem. On the reverse half-cycle, the LED would see about 17 V backwards. Most LEDs are only rated for <b>5 V reverse</b>. So we put an ordinary diode <b>anti-parallel</b> across the LED: same two points, pointing the opposite way. On the reverse half-cycle that diode conducts and holds the LED's reverse voltage to about 0.7 V.</p>
 
     <figure>
@@ -209,14 +215,15 @@
     <p>Two ideas give you every number.</p>
     <ul>
       <li><b>Peak:</b> the output peak is the AC peak minus one diode drop. With 12 V AC: 17.0 − 0.7 ≈ 16.3 V.</li>
-      <li><b>What the DC meter shows:</b> a DC meter shows the <b>average</b> voltage over time, not the peak. A half-wave output is a hump for 10 ms then zero for 10 ms. The average of one sine hump is 2/π of its peak, and it is "on" only half the time, so the average is 1/π ≈ 0.318 of the peak.</li>
+      <li><b>Average:</b> imagine the ideal half-wave as one 10 ms sine hump and then 10 ms at zero. Across the whole cycle, the ideal average is 1/π of the input peak. For a quick estimate, apply 1/π to the reduced peak. A real diode also flattens the bottom of the hump near zero, which lowers the average a little further.</li>
     </ul>
     <div class="formula">V<sub>DC meter</sub> ≈ V<sub>peak,out</sub> / π = 16.3 / 3.14 ≈ 5.2 V
-      <small>The load "feels" pulses up to 16 V, but the meter averages them to about 5 V. Neither number is the 12 V written on the plug-pack. Learn to ask "which 12 V?" whenever someone quotes an AC voltage.</small></div>
+      <small>The quick estimate is 5.2 V. Accounting for the flattened part gives about 5.1 V in the fixed-drop calculator. The load sees instantaneous pulses up to about 16 V, and the source itself measures 12 V RMS.</small></div>
 
     <h2 id="4-full-wave-bridge-rectifier-four-diodes">4 · Full-wave bridge rectifier: four diodes</h2>
   <div class="photo-pair">
     <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/rectifier.jpg" data-image-preview="Bridge rectifier packages and their markings" data-preview-source="p06-packages-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
     <div class="photo-annotation">
       <img src="../assets/photos/rectifier.jpg" alt="Bridge rectifiers in several packages laid out with their terminals visible" width="960" height="726" loading="lazy" decoding="async">
       <svg viewBox="0 0 960 726" aria-hidden="true">
@@ -242,9 +249,11 @@
         <text x="864.0" y="667.9" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.3px">4</text>
       </svg>
     </div>
-    <figcaption>Rectifiers come in several shapes. Find the +, − and ~ marks on the larger packages. Check the part number and datasheet before applying the same pin order to another part.<br><b>On the lower-right Fagor bridge, 1 is DC positive, 2 and 3 are the AC inputs, and 4 is DC negative.</b><br><small>Photo by Smial at German Wikipedia, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Brueckengleichrichter_IMGP5380.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 de</a>.</small></figcaption>
+      </a>
+      <figcaption>Rectifiers come in several shapes. Find the +, − and ~ marks on the larger packages. Check the part number and datasheet before applying the same pin order to another part.<br><b>On the lower-right Fagor bridge, 1 is DC positive, 2 and 3 are the AC inputs, and 4 is DC negative.</b><br><small>Photo by Smial at German Wikipedia, resized, with labels added. <a id="p06-packages-photo" href="https://commons.wikimedia.org/wiki/File:Brueckengleichrichter_IMGP5380.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 de</a>.</small></figcaption>
   </figure>
     <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/bridgeopen.jpg" data-image-preview="Hand-wired four-diode bridge" data-preview-source="p06-bridge-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
     <div class="photo-annotation">
       <img src="../assets/photos/bridgeopen.jpg" alt="Four discrete diodes hand-wired into a bridge with yellow, red and blue leads" width="960" height="1280" loading="lazy" decoding="async">
       <svg viewBox="0 0 960 1280" aria-hidden="true">
@@ -270,7 +279,8 @@
         <text x="134.4" y="806.4" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:37.4px">4</text>
       </svg>
     </div>
-    <figcaption>This hand-wired bridge exposes the four diodes that a moulded package hides. The two yellow wires are AC inputs. The red wire joins two banded ends at DC positive. The blue wire joins two unbanded ends at DC negative.<br><b>1 and 2 · AC inputs, yellow. 3 · DC positive, red. 4 · DC negative, blue.</b><br><small>Photo by MarBar SK, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Diode_bridge_Diodov%C3%BD_most%C3%ADk.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </a>
+      <figcaption>This hand-wired bridge exposes the four diodes that a moulded package hides. The two yellow wires are AC inputs. The red wire joins two banded ends at DC positive. The blue wire joins two unbanded ends at DC negative.<br><b>1 and 2 · AC inputs, yellow. 3 · DC positive, red. 4 · DC negative, blue.</b><br><small>Photo by MarBar SK, resized, with labels added. <a id="p06-bridge-photo" href="https://commons.wikimedia.org/wiki/File:Diode_bridge_Diodov%C3%BD_most%C3%ADk.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
   </figure>
   </div>
   <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=cyhzpFqXwdA">Diode Tutorial &amp; How to build an AC to DC power supply · Afrotechmods</a><br>Watch the bridge conduct on both halves of the AC cycle and compare the output before and after the smoothing capacitor. Use the chapter’s isolated low-voltage source for your build.</p>
@@ -319,7 +329,7 @@
       <li><p><b>Check it unpowered.</b> Diode test from − to each ~ pin, and from each ~ pin to +: four readings of about 0.6 V. Reverse each: OL.</p></li>
       <li><p><b>Add a 1 kΩ load</b> between + and −, then power up.</p></li>
       <li><p><b>Measure V DC across the load.</b> Compare with the table below.</p></li>
-      <li><p><b>Swap the two AC wires.</b> The DC reading does not change sign. That is the whole point of a bridge: the output polarity no longer depends on how the input is connected.</p></li>
+      <li><p><b>Switch off, swap the low-voltage AC wires, then switch on.</b> The DC reading keeps the same sign. The bridge steers either input polarity through the load from + to −.</p></li>
     </ol>
 
     <h3>See the shapes</h3>
@@ -352,48 +362,75 @@
     </figure>
 
     <h2>5 · Expected readings, and why the meter reads less than the peak</h2>
-    <p>Use your own measured AC voltage in the calculator below. The table assumes 12.0 V AC and a 1 kΩ load.</p>
+    <p>Use your actual measured input in the calculator. The table uses the isolated 12.0 V AC source example, a 1 kΩ load and no extra input resistor.</p>
     <div class="table-wrap"><table>
       <tr><th>Measurement</th><th>Meter setting</th><th>Expected</th><th>If it's way off</th></tr>
       <tr><td>Plug-pack output, no load</td><td>V AC</td><td>12–15 V</td><td>0 V: dead pack or bad adaptor. Very low on V DC: correct, AC averages to 0.</td></tr>
-      <tr><td>Half-wave across 1 kΩ</td><td>V DC</td><td>≈ 5.0–5.5 V</td><td>≈ 10 V: you built a bridge by accident. Negative: diode reversed.</td></tr>
-      <tr><td>Bridge across 1 kΩ</td><td>V DC</td><td>≈ 9.5–10.5 V</td><td>≈ 5 V: one diode open (it has become half-wave).</td></tr>
+      <tr><td>Half-wave across 1 kΩ</td><td>V DC</td><td>≈ 5.0 V</td><td>Negative with the shown probe positions: check diode direction.</td></tr>
+      <tr><td>Bridge across 1 kΩ</td><td>V DC</td><td>≈ 9.1–9.5 V</td><td>≈ 5 V: one path through the bridge may be open, leaving one half-cycle.</td></tr>
       <tr><td>Bridge, after swapping the AC wires</td><td>V DC</td><td>Same as above, same sign</td><td>Sign flips: you measured on the AC side.</td></tr>
       <tr><td>Each conducting diode</td><td>(calculated)</td><td>0.7–0.9 V drop at 10–20 mA</td><td>—</td></tr>
       <tr><td>Bridge with a big capacitor added (P07)</td><td>V DC</td><td>≈ 15–16 V (near peak)</td><td>The capacitor holds the peaks. That is next chapter.</td></tr>
     </table></div>
 
     <div class="widget" id="p6w-rect">
-      <span class="label">Interactive · Rectifier reading predictor</span>
-      <label>Measured AC voltage (RMS) <span class="out" id="p6r-vout">12.0 V</span><input type="range" id="p6r-v" min="6" max="24" step="0.5" value="12"></label>
+      <span class="label">Rectifier reading predictor for a 1 kΩ load</span>
+      <label>Measured input (AC volts RMS) <span class="out" id="p6r-vout">6.0 V</span><input type="range" id="p6r-v" min="4" max="15" step="0.5" value="6"></label>
       <label>Diode type <select id="p6r-d"><option value="0.7">Silicon (1N4007), ~0.7 V</option><option value="0.4">Schottky (1N5819), ~0.4 V</option></select></label>
+      <label>Input wiring <select id="p6r-r"><option value="100">P182 · 100 Ω in series</option><option value="0">P06 · Source directly to rectifier</option></select></label>
       <div class="readings">
         <div><small>AC peak (1.414 × RMS)</small><span class="out" id="p6r-pk">—</span></div>
         <div><small>Half-wave peak</small><span class="out" id="p6r-hp">—</span></div>
         <div><small>Half-wave, DC meter</small><span class="out" id="p6r-ha">—</span></div>
         <div><small>Bridge peak</small><span class="out" id="p6r-fp">—</span></div>
         <div><small>Bridge, DC meter</small><span class="out" id="p6r-fa">—</span></div>
-        <div><small>Bridge + big capacitor</small><span class="out" id="p6r-fc">—</span></div>
+        <div><small>Bridge plus capacitor with very light load (estimate)</small><span class="out" id="p6r-fc">—</span></div>
       </div>
+      <p>These values use a sine input and a fixed drop per conducting diode. They account for the part of each half-cycle where the diodes are off. The final estimate is the unloaded peak with two assumed diode drops. Under load the capacitor discharges between pulses and its average falls. <a href="p07-capacitors-rc.html#smooth-the-bridge">P07 · Measure smoothing and ripple</a>.</p>
     </div>
     <script>
     (function(){
-      var v=document.getElementById('p6r-v'),d=document.getElementById('p6r-d');
-      function s(id,x){document.getElementById(id).textContent=x.toFixed(1)+' V';}
-      function upd(){
-        var vr=+v.value,vd=+d.value,vp=vr*Math.SQRT2;
-        document.getElementById('p6r-vout').textContent=vr.toFixed(1)+' V';
-        var hp=Math.max(0,vp-vd),fp=Math.max(0,vp-2*vd);
-        s('p6r-pk',vp);s('p6r-hp',hp);s('p6r-ha',hp/Math.PI);s('p6r-fp',fp);s('p6r-fa',2*fp/Math.PI);
-        document.getElementById('p6r-fc').textContent='≈ '+(fp*0.95).toFixed(1)+'–'+fp.toFixed(1)+' V';
+      const voltage = document.getElementById('p6r-v');
+      const diode = document.getElementById('p6r-d');
+      const resistor = document.getElementById('p6r-r');
+
+      function show(id, value) {
+        document.getElementById(id).textContent = value.toFixed(2) + ' V';
       }
-      v.oninput=upd;d.onchange=upd;upd();
+
+      function halfWaveAverage(peak, drop) {
+        if (peak <= drop) return 0;
+        // Integrate (peak × sin(angle) − drop) over the conducting interval.
+        const start = Math.asin(drop / peak);
+        const area = 2 * peak * Math.cos(start) - drop * (Math.PI - 2 * start);
+        return area / (2 * Math.PI);
+      }
+
+      function update() {
+        const rms = Number(voltage.value);
+        const drop = Number(diode.value);
+        const peak = rms * Math.SQRT2;
+        const loadFraction = 1000 / (1000 + Number(resistor.value));
+
+        show('p6r-vout', rms);
+        show('p6r-pk', peak);
+        show('p6r-hp', Math.max(0, peak - drop) * loadFraction);
+        show('p6r-ha', halfWaveAverage(peak, drop) * loadFraction);
+        show('p6r-fp', Math.max(0, peak - 2 * drop) * loadFraction);
+        show('p6r-fa', 2 * halfWaveAverage(peak, 2 * drop) * loadFraction);
+        show('p6r-fc', Math.max(0, peak - 2 * drop));
+      }
+
+      voltage.addEventListener('input', update);
+      diode.addEventListener('change', update);
+      resistor.addEventListener('change', update);
+      update();
     })();
     </script>
 
     <div class="callout myth"><span class="label">Common misconception</span><p><b>Wrong:</b> "A 12 V AC supply gives 12 V DC after a rectifier." <b>Right:</b> the 12 V is an RMS value. The peak is about 17 V. After a bridge you get pulses that peak near 15.6 V and average about 10 V. Add a big capacitor and the DC sits near the peak, about 15–16 V with a light load. So a "12 V AC" plug-pack can easily give 16 V DC, which can damage a 12 V device that has no regulator. Always measure, and always ask which kind of voltage a number means: RMS, peak or average.</p></div>
 
-    <div class="callout why"><span class="label">Why the meter reads low</span><p>On V DC, a meter measures the average voltage over many cycles. A rectified sine spends only a moment at its peak and lots of time lower down, so its average is 0.637 of the peak for full-wave and 0.318 for half-wave. On V AC, a cheap "average-responding" meter assumes a pure sine and scales its reading; on a rectified shape that guess is wrong. A "True RMS" meter calculates RMS from the actual shape. For pulsing waveforms, a scope (P15) is the honest tool.</p></div>
+    <div class="callout why"><span class="label">Why the meter reads below the peak</span><p>On V DC, a meter averages across many cycles. With ideal diodes, the full-wave average is 0.637 of the AC peak and the half-wave average is 0.318. Real diodes lower the peaks and leave a short zero-voltage interval around each crossing. On V AC, most meters remove a DC component before measuring. Use the scope in P15 to see both parts of the waveform, or check whether your meter offers a separate AC+DC RMS mode. <a href="p03-multimeter-mastery.html#isolated-ac">P03 · Measure isolated AC</a>.</p></div>
     <a class="crosslink" href="../theory/t07-ac-fundamentals.html">Theory T07 · AC: sine waves, RMS, phase and impedance</a>
 
     <div class="callout job"><span class="label">On the job</span><p>Many access-control and security devices are labelled "12–24 V AC/DC". Inside is a bridge rectifier, so you can connect either polarity and either AC or DC, and you lose about 1.4 V in the bridge. Electric door strikes are often sold this way. In HVAC, many controllers and actuators run from 24 V AC and use a single half-wave diode inside, with one side of the 24 V AC tied to their signal common. If several such devices share one transformer and you swap the two 24 V wires on just one of them, you can short the transformer through their internal diodes. That is why manuals insist the "24 V common" (often labelled G0, COM or ⊥) goes to the same transformer leg on every device.</p></div>
@@ -617,6 +654,7 @@
 
     <h2>Continue into welding repair</h2>
     <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/boardbridge.jpg" data-image-preview="Bridge rectifier mounted on a circuit board" data-preview-source="p06-boardbridge-photo" aria-haspopup="dialog" aria-label="Enlarge the photograph">
     <div class="photo-annotation">
       <img src="../assets/photos/boardbridge.jpg" alt="Bridge rectifier installed on an Acer monitor power-supply board" width="960" height="720" loading="lazy" decoding="async">
       <svg viewBox="0 0 960 720" aria-hidden="true">
@@ -637,7 +675,8 @@
         <text x="844.8" y="432.0" text-anchor="middle" dominant-baseline="central" font-weight="700" style="fill:#fff;font-size:28.1px">3</text>
       </svg>
     </div>
-    <figcaption>The black General Semiconductor VSIB4A60 is the power supply’s input bridge. Its four terminal markings are along the bottom of the case. A neighbouring part partly hides the pins on this board.<br><b>1 · Part number. 2 · Positive marking. 3 · Negative marking. The two AC markings are between them.</b><br><small>Photo by Raimond Spekking, resized, with labels added. <a href="https://commons.wikimedia.org/wiki/File:Acer_V233H_-_board_1_-_General_Semiconductor_VSIB4A60-7197.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
+      </a>
+      <figcaption>The black General Semiconductor VSIB4A60 is the power supply’s input bridge. Its four terminal markings are along the bottom of the case. A neighbouring part partly hides the pins on this board.<br><b>1 · Part number. 2 · Positive marking. 3 · Negative marking. The two AC markings are between them.</b><br><small>Photo by Raimond Spekking, resized, with labels added. <a id="p06-boardbridge-photo" href="https://commons.wikimedia.org/wiki/File:Acer_V233H_-_board_1_-_General_Semiconductor_VSIB4A60-7197.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>.</small></figcaption>
   </figure>
     <p>Practise a complete bridge test on loose parts before encountering a welder's input bridge. The repair track explains the separate fast output rectifier and the limits of low-voltage diode testing.</p>
     <a class="crosslink" href="../welding/w02-rectifier-bench-lab.html">W02 · Eight-reading bridge test and interactive meter trainer</a>
@@ -669,7 +708,8 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261123-zener"></script>
+<script src="../assets/toc.js?v=20261123-fan-proof"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
 </body>
 </html>
