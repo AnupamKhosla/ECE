@@ -34,7 +34,7 @@
       <li><b>LEDs and a push-button</b><small>From your P02 kit</small></li>
     </ul>
 
-    <div class="callout warn"><span class="label">Safety</span><p>Everything in this lab runs from 12 V DC and 5 V. A relay's contacts may be printed "10 A 250 V AC". That rating does not give you permission to switch mains: in Australia, connecting anything to 230 V is work for a licensed electrician. Use relays here only to switch ELV loads. Motors and LED strips can draw amps, so keep the plug-pack's current rating in mind and never short its output.</p></div>
+    <div class="callout warn"><span class="label">Bench power</span><p>Use the small DC supplies shown in the build. Keep relay tests on extra-low voltage and set a current limit for the LED strip and motor exercises. Switch power off before moving a load lead or putting a meter in series.</p></div>
 
     <h2>1 · The idea: a small signal controls a big current</h2>
   <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=Te5YYVZiOKs">Transistor / MOSFET tutorial · Afrotechmods</a><br>Follow the control signal and the load current along separate paths as the transistor turns on.</p>
@@ -182,14 +182,14 @@
     <p>A MOSFET (metal–oxide–semiconductor field-effect transistor) is controlled by <b>voltage</b>, not current. The gate is insulated by a thin layer of oxide, so in steady state it draws essentially no current. Put enough voltage between gate and source and a conducting channel forms between drain and source with a very low resistance, R<sub>DS(on)</sub>, often tens of milliohms. That makes MOSFETs ideal for switching amps from a microcontroller pin.</p>
 
     <figure>
-      <svg viewBox="0 0 640 290" role="img" aria-label="N-MOSFET low-side switch for a 12 V LED strip or motor: gate resistor 220 ohm, pull-down 10k, flyback diode across a motor">
+      <svg viewBox="0 0 640 290" role="img" aria-label="N-MOSFET low-side switch for a small 12 V load with a 220 ohm gate resistor, a 10 kilohm pull-down and an optional motor flyback diode">
         <defs><marker id="p8-arrM" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="f-ink" d="M0,0 L8,4 L0,8 z"/></marker></defs>
         <text class="t t-small t-bold" x="372" y="22">+12 V</text>
         <path class="s-line" d="M390 30 V54 H470 V64 M390 54 H310 V64"/>
         <!-- load box -->
         <rect class="f-accent-soft s-accent" x="300" y="64" width="180" height="48" rx="4"/>
         <text class="t t-small" x="312" y="86">LED strip or DC motor</text>
-        <text class="t t-small t-muted" x="312" y="102">up to ~1–2 A</text>
+        <text class="t t-small t-muted" x="312" y="102">up to 0.5 A for this lab</text>
         <path class="s-line" d="M390 112 V150"/>
         <!-- flyback diode for motor -->
         <path class="s-thin s-dash" d="M470 54 H540 V78 M540 98 V130 H390"/>
@@ -226,30 +226,55 @@
       <figcaption>Figure 2. Logic-level MOSFET low-side switch. The 220 Ω limits the brief current spike into the gate's capacitance when it switches. The 10 kΩ keeps the gate at 0 V when nothing drives it. A motor (an inductor) needs the dashed diode across it, cathode to +12 V.</figcaption>
     </figure>
 
-    <h3>What "logic-level" means</h3>
-    <p>Every MOSFET datasheet lists V<sub>GS(th)</sub>, the threshold voltage. Beginners think the MOSFET is "on" above this. It is not. Threshold is where it <i>starts</i> to conduct, typically defined at only 250 µA. What you need is the R<sub>DS(on)</sub> figure quoted at your gate voltage. A <b>logic-level</b> MOSFET has R<sub>DS(on)</sub> specified at V<sub>GS</sub> = 4.5 V (sometimes 2.5 V), so 5 V from an Arduino turns it fully on. A standard MOSFET such as an IRF540N is specified at 10 V; at 5 V it may be only partly on, and at 3.3 V it may barely conduct.</p>
+    <h3>Choose by the on-resistance test voltage</h3>
+    <p>The datasheet’s V<sub>GS(th)</sub> is the voltage where the MOSFET starts conducting the small test current. To choose a switch, find a guaranteed maximum R<sub>DS(on)</sub> at or below the lowest gate voltage your circuit can deliver. A part specified at 4.5 V can be suitable for a 5 V control circuit. For the 3.3 V exercise below, use a part specified at 2.5 V. The standard IRF540N specifies its on-resistance at 10 V.</p>
+
+    <h3 id="3v3-switch">Start with one MOSFET, one resistor load and a meter</h3>
+    <p>Use one exact IRLML6344TRPBF and one 0.95 mm-pitch SOT-23 adapter that takes three-pin parts, with 2.54 mm headers. Its on-resistance is specified at <b>37 mΩ maximum at 2.5 V gate drive</b> under the datasheet test conditions. Add one 220 Ω, one 10 kΩ and one 100 Ω resistor rated for at least 0.5 W. Reuse the switched AA holder for the 4.5 V load. The 3V3 pin of your USB-powered ESP32 supplies the manual control test. Join the two returns. <a href="https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlml6344-datasheet-en.pdf">Infineon · Exact ratings and pinout</a>.</p>
+    <p>Look for order code 1857299 and check the minimum order. Take a fine-tip iron, flux, tweezers, solder wick, magnifier and multimeter to the bench. <a href="https://in.element14.com/infineon/irlml6344trpbf/mosfet-n-ch-30v-5a-sot23/dp/1857299">element14 India · MOSFET</a> · <a href="https://au.element14.com/infineon/irlml6344trpbf/mosfet-n-ch-30v-5a-sot23/dp/1857299">element14 Australia · MOSFET</a> · <a href="https://www.tanotis.com/collections/sparkfun-india/products/genuine-sparkfun-sparkfun-sot23-to-dip-adapter">Tanotis India · Adapter</a> · <a href="https://core-electronics.com.au/sot23-to-dip-adapter.html">Core Electronics Australia · Adapter, A$2.15 listed</a> · <a href="p188-solder-a-door-indicator-pcb.html">P188 · Tools for soldering and inspecting joints</a>.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/sot23-package.jpg" data-image-preview="Three-pin SOT-23 package" data-preview-source="p08-sot23" aria-haspopup="dialog" aria-label="Enlarge the surface-mount photograph">
+        <img src="../assets/photos/foundation/sot23-package.jpg" alt="Close-up of a small SOT-23 surface-mount package showing two leads on one side and one on the other" width="640" height="640" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Find the two leads on one side and one opposite. The photo shows a package example. Use the Infineon drawing to assign the leads on the part you buy. <small>Leapfrog · public domain. <a id="p08-sot23" href="https://commons.wikimedia.org/wiki/File:SOT23.jpg">Original photo</a>.</small></figcaption>
+    </figure>
+    <p class="course-video">Watch how small surface-mount leads meet the adapter pads. Use the pin order and pad checks below for your MOSFET. <a href="https://www.youtube.com/watch?v=KZG172eeeR0">DiodeGoneWild · Mount a surface-mount package on an adapter</a>.</p>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/foundation-build/first-mosfet-switch.svg" data-image-preview="3.3 V MOSFET switch and SOT-23 pinout" aria-haspopup="dialog" aria-label="Enlarge the MOSFET wiring drawing">
+        <img src="../assets/labs/foundation-build/first-mosfet-switch.svg" alt="IRLML6344 top-view pinout and a circuit that switches a 100 ohm load using a 3.3 volt command" width="790" height="390" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Trace the load loop from the battery through the resistor and drain to source. The ESP32 supplies the test voltage at the gate side. <a href="../assets/labs/foundation-build/first-mosfet-switch.svg" download>Download drawing</a>.</figcaption>
+    </figure>
+    <ol class="steps">
+      <li>With no power, check where the three footprint pads go using continuity. Tin one pad lightly, align the package, tack its lead and check all three align before soldering the remaining two. Follow pad 1 to its header and mark it G. Mark pad 2’s header S and pad 3’s header D. Inspect for solder bridges. A strip of six-pad SOT-23-6 breakout labels can use different numbers than a SOT-23-3 part. Trace the physical pads before wiring.</li>
+      <li>With the adapter in unused breadboard strips, connect G to e14, S to e15 and D to e16 with short jumpers. Connect battery black and ESP32 GND to the same return rail, and join a15 to it. Put the 10 kΩ from d14 to d15 and the 220 Ω from a14 to a20. The command jumper runs from b20 to either GND or ESP32 3V3. Wire the 100 Ω from the battery’s positive rail to a16.</li>
+      <li>Set the command to GND and switch on the two supplies. Put the meter’s black probe at c15. With red at c14, expect near 0 V between gate and source. At c16, expect almost the full battery voltage from drain to source. Across the 100 Ω resistor expect almost 0 V because the load loop is open.</li>
+      <li>Switch off before moving the command to 3V3. Restore power and repeat. Gate-to-source should be about 3.2 V because of the 220 Ω and 10 kΩ pair. Drain-to-source should fall near zero. Expect nearly the full battery voltage across the 100 Ω resistor. For 4.5 V, calculate 4.5 ÷ 100 = <b>45 mA</b>. At 45 mA and the datasheet’s 37 mΩ, the estimated drain drop is under 2 mV. A basic meter may show zero here.</li>
+      <li>Switch off, remove the command jumper and power up again. The 10 kΩ should hold the gate near 0 V and the drain should return to battery voltage. If the load still draws current, verify the 10 kΩ path. Check orientation too. Source and drain reversed can let the MOSFET’s internal diode conduct while the gate is off.</li>
+    </ol>
+    <p>If the gate reaches about 3.2 V but the drain stays high, check continuity at the adapter and verify the source return and part number. If the gate stays low, measure at b20 first and then follow the 220 Ω path. To see the same switch operate a light, power off and replace the 100 Ω test load with a red LED and 1 kΩ in series, anode toward the positive rail. <a href="p182-first-breadboard-circuits.html#transistor">P182 · Compare the BJT’s base and collector readings</a>.</p>
+
+    <h3>Scale the example with a 5 V gate and 12 V load</h3>
 
     <div class="formula">P = I² × R<sub>DS(on)</sub> = (1.0 A)² × 0.03 Ω = 0.03 W     V<sub>DS</sub> = I × R<sub>DS(on)</sub> = 30 mV
       <small>30 mW in a TO-220 package is nothing; it stays at room temperature without a heatsink. A BJT carrying 1 A with 0.5–1 V across it would make 0.5–1 W and need a base current of about 100 mA. That is why MOSFETs took over power switching.</small></div>
 
     <ol class="steps">
       <li><p><b>Pin-out.</b> Most TO-220 MOSFETs, seen from the front with legs down: Gate, Drain, Source from left to right. The metal tab is the drain. Check your datasheet.</p></li>
-      <li><p><b>Build Figure 2</b> with the LED strip as the load (strip + to +12 V, strip − to drain).</p></li>
+      <li><p><b>Build Figure 2</b> with a strip rated to draw at most 0.5 A at 12 V (strip + to +12 V, strip − to drain). Use a current-limited source and short secure load connections.</p></li>
       <li><p><b>Switch it.</b> Control to 5 V: strip on. Control to 0 V: strip off.</p></li>
       <li><p><b>Measure V<sub>DS</sub> while on</b>, and the strip current with the meter in series (10 A range, red lead moved to the 10 A socket). Calculate R<sub>DS(on)</sub> = V<sub>DS</sub> / I.</p></li>
-      <li><p><b>Feel the tab after a minute.</b> Cool. Then try 3.3 V as the control (two AA cells ≈ 3 V). A logic-level part usually still works; note any rise in V<sub>DS</sub>.</p></li>
-      <li><p><b>Motor version.</b> Swap the strip for a 12 V fan or motor, with the 1N4007 or 1N5819 across the motor (band to +12 V). Add a 100 nF ceramic across the motor terminals to reduce electrical noise.</p></li>
+      <li><p><b>Check the estimated dissipation.</b> Multiply your measured current by the on-state drain voltage. Compare that value with the package’s thermal limits and with the model below.</p></li>
+      <li><p><b>Motor version.</b> Use a small 12 V brushed motor whose start and stall currents are below the test supply’s 0.5 A limit. Fit a 1N5819 across the motor with its band to +12 V. Add a 100 nF ceramic across the motor terminals to reduce electrical noise. Fix the motor to the bench and keep its shaft clear.</p></li>
     </ol>
 
     <div class="table-wrap"><table>
       <tr><th>Condition</th><th>Expected V<sub>DS</sub></th><th>Tab temperature</th><th>Notes</th></tr>
       <tr><td>Off (gate 0 V)</td><td>≈ 12 V</td><td>Cool</td><td>Strip dark</td></tr>
       <tr><td>Logic-level part, 5 V gate, 0.5 A</td><td>≈ 10–25 mV</td><td>Cool</td><td>R<sub>DS(on)</sub> in the tens of milliohms</td></tr>
-      <tr><td>Logic-level part, 3 V gate, 0.5 A</td><td>tens to hundreds of mV</td><td>Cool to warm</td><td>Check the datasheet curve for low gate voltages</td></tr>
-      <tr><td>Standard (non-logic) part, 5 V gate, 0.5 A</td><td>0.2 V to several volts</td><td>Warm to hot</td><td>Partly on: the wrong part for 5 V logic</td></tr>
     </table></div>
 
-    <div class="callout try"><span class="label">Try this: why the pull-down matters</span><p>Remove the 10 kΩ pull-down and unplug the control wire. Touch the gate leg with a finger, then touch 0 V with the other hand, then 12 V. The strip may switch on or off and <i>stay</i> that way. The gate is a tiny capacitor (a few nanofarads) with almost no leakage, so it holds whatever charge you gave it. In a real product, that is a motor starting by itself while the microcontroller boots. Put the pull-down back.</p></div>
+    <div class="callout try"><span class="label">Check the power-up state</span><p>With power off, disconnect the command wire and leave the 10 kΩ in place. Restore load power and confirm the strip stays dark. This is what you want while a microcontroller boots and its output is still floating. Keep the gate connected to its pull-down whenever the switch is wired into a load.</p></div>
 
     <div class="callout why"><span class="label">Why it works</span><p>The gate, oxide and silicon underneath form a capacitor. A positive gate voltage pulls electrons to the surface of the p-type silicon under the gate until, above threshold, the surface "inverts" into a thin n-type channel joining the n-type drain and source. More gate voltage, more electrons, lower resistance. No steady current flows into the gate, only the charge needed to fill that capacitor when it switches.</p></div>
     <a class="crosslink" href="../theory/t13-mosfet-physics.html">Theory T13 · How a MOSFET works</a>

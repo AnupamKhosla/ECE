@@ -17,12 +17,12 @@
     <span class="eyebrow">P126</span>
     <h1>Electronics foundations from first circuit to fault isolation</h1>
     <p class="lede">Work through electricity, measurement, components, analog and digital signals, assembly and system diagnosis with practical checkpoints.</p>
-    <div class="meta"><span><b>Route</b> Six stages</span><span><b>Before this</b> <a href="../practice/p00-foundation-roadmap.html">P00</a></span></div>
+    <div class="meta"><span><b>Workshop</b> Ten bench sessions</span><span><b>Before this</b> <a href="../practice/p00-foundation-roadmap.html">P00</a></span></div>
     <nav class="otp" aria-label="On this page" data-auto></nav>
 
     <h2 id="small-circuits">The workshop route from breadboard to a handmade product</h2>
     <p>Before buying parts, check the <a href="p03-multimeter-mastery.html#what-you-need">short shopping list and meter exercise</a>. Once you can read an AA cell, follow <a href="../theory/t73-how-digital-multimeters-work.html">what happens inside the meter</a>. The <a href="p01-bench-kit-safety.html#mains-in-practice">bench-to-mains route</a> connects the same measurements to isolated AC and local electrical training.</p>
-    <p>Use this table in order. Build the named circuit, make the measurement in the last column and write down what changed. If you miss a checkpoint, use that lesson’s fault checks before moving on. The door indicator route uses a shared parts list. <a href="p187-build-a-door-left-open-indicator.html#parts">Parts and tools for P184–P187</a>.</p>
+    <p>Build each circuit and make the measurement in the last column. If a checkpoint fails, keep the board wired and follow that lesson’s fault checks before moving on. Buy the starter kit first, then reuse the meter and breadboard when you add the parts for the door indicator. <a href="p182-first-breadboard-circuits.html#kit">Starter kit</a> · <a href="../assets/labs/first-circuits/bench-readings.csv" download>First readings sheet</a> · <a href="p187-build-a-door-left-open-indicator.html#parts">Shared parts for P184–P187</a>.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Session</th><th scope="col">Build and read</th><th scope="col">Checkpoint to keep</th></tr></thead>
       <tbody>
@@ -30,7 +30,7 @@
         <tr><th scope="row">2 · Diodes and rectifiers</th><td><a href="p182-first-breadboard-circuits.html#single-diode">One diode and half-wave rectification</a>, then <a href="p182-first-breadboard-circuits.html#bridge-rectifier">four-diode bridge</a></td><td>Reverse the input, identify the conducting paths and explain why the output stays the same polarity with the bridge.</td></tr>
         <tr><th scope="row">3 · Switch and divider</th><td><a href="p184-breadboard-switch-and-divider.html">P184 · Turn a switch into a voltage</a></td><td>Check a loaded divider, and read an open and closed contact with a pull-up.</td></tr>
         <tr><th scope="row">4 · Store charge and make a delay</th><td><a href="p185-breadboard-rc-delay.html">P185 · Capacitor timing on a meter</a></td><td>Capture a slow charge and fast reset. Estimate the time constant from your readings.</td></tr>
-        <tr><th scope="row">5 · Transistor as a switch</th><td><a href="p182-first-breadboard-circuits.html#transistor">Switch an LED with a 2N3904</a></td><td>Measure the base and collector in both states and explain the two current paths.</td></tr>
+        <tr><th scope="row">5 · Transistor as a switch</th><td><a href="p182-first-breadboard-circuits.html#transistor">Switch an LED with a 2N3904</a>. Then try a <a href="p08-transistor-switches.html#3v3-switch">3.3 V MOSFET switch</a>.</td><td>Measure the control and load terminals in both states and trace the load current.</td></tr>
         <tr><th scope="row">6 · Comparator chip</th><td><a href="p186-breadboard-comparator.html">P186 · Make an LM393 turn a light on</a></td><td>Probe SENSE, REF and OUT. Measure the two reference values after adding feedback.</td></tr>
         <tr><th scope="row">7 · Build something useful</th><td><a href="p187-build-a-door-left-open-indicator.html">P187 · Door-left-open indicator on breadboard</a></td><td>Open a mock door briefly and then leave it open. Record when the light turns on and off.</td></tr>
         <tr><th scope="row">8 · Solder and mount it</th><td><a href="p188-solder-a-door-indicator-pcb.html">P188 · Hand-solder the same product on a PCB</a></td><td>Repeat the same probe and timing checks on the finished board and after closing the case.</td></tr>

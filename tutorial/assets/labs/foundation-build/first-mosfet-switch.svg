@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 790 390" role="img" aria-labelledby="title desc">
+  <title id="title">IRLML6344 pinout and 3.3 V gate-drive bench circuit</title>
+  <desc id="desc">The three-pin surface-mount package places gate one and source two on one side and drain three opposite. The load connects from a 4.5 to 5 volt rail to drain. Source is ground. A movable control link drives the gate through 220 ohms, and 10 kilohms holds the gate at ground without that link.</desc>
+  <rect width="790" height="390" rx="13" fill="#f8fafc"/>
+  <rect x="22" y="30" width="260" height="320" rx="12" fill="#eaf2fc" stroke="#a4bbd3"/>
+  <g font-family="system-ui,sans-serif" fill="#24374b" font-size="17">
+    <text x="42" y="65" font-size="22" font-weight="700">SOT-23 top view</text>
+    <text x="42" y="89">Rotate to match this view.</text>
+    <rect x="114" y="125" width="82" height="110" rx="8" fill="#24374b"/>
+    <rect x="78" y="143" width="36" height="18" fill="#738797"/><rect x="78" y="197" width="36" height="18" fill="#738797"/>
+    <rect x="196" y="170" width="36" height="18" fill="#738797"/>
+    <text x="57" y="158" font-weight="700">1</text><text x="57" y="214" font-weight="700">2</text><text x="240" y="185" font-weight="700">3</text>
+    <text x="42" y="270">1 · Gate (G)</text><text x="42" y="297">2 · Source (S)</text><text x="42" y="324">3 · Drain (D)</text>
+
+    <text x="312" y="65" font-size="22" font-weight="700">Switch a 100 Ω test load</text>
+    <g fill="none" stroke="#24374b" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M320 200h107m0-9h56v18h-56zM483 200h154m0-18v36m10-36v10m0 6v8m0 6v10m0-35h47v-43m0-40v-26m-9 26h18v40h-18zM647 217h47v89H345"/>
+      <path d="M687 206h-34m0 0 8-5m-8 5 8 5M523 200v36m-9 0h18v34h-18zM523 270v36"/>
+      <circle cx="523" cy="200" r="4" fill="#24374b"/><circle cx="523" cy="306" r="4" fill="#24374b"/>
+    </g>
+    <text x="320" y="171">0 V or 3.3 V</text><text x="320" y="190">command</text><text x="428" y="180">220 Ω</text>
+    <text x="534" y="252">10 kΩ</text><text x="612" y="224">G</text><text x="706" y="184">D</text><text x="706" y="235">S</text>
+    <text x="575" y="138">IRLML6344</text><text x="704" y="130">100 Ω</text>
+    <text x="681" y="98" text-anchor="end" font-weight="700">4.5–5.0 V load rail</text>
+    <text x="345" y="333">Common GND · both supply returns</text>
+    <text x="312" y="370">V<tspan baseline-shift="sub" font-size="12">GS</tspan> is measured between the gate and source.</text>
+  </g>
+</svg>
