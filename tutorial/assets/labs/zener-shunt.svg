@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 272" role="img" aria-labelledby="title desc">
+  <title id="title">5.1 V Zener shunt regulator</title>
+  <desc id="desc">The supply positive connects through a 220 ohm series resistor to the output. A reverse-biased Zener and a 1 kilohm load connect in parallel from output to the supply return. The band on the Zener faces the output.</desc>
+  <rect width="600" height="272" rx="12" fill="#f8fafc"/>
+  <g stroke="#20354b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M65 65H140l7-11 12 22 12-22 12 22 12-22 12 22 7-11H464V115"/>
+    <path d="M464 115l-10 7 20 12-20 12 20 12-20 12 10 7V218H65"/>
+    <path d="M280 65v59m-16-7 4 7h24l4 7M280 153v65"/>
+    <path d="M280 218v16m-14 0h28m-22 7h16m-12 7h8"/>
+    <circle cx="61" cy="65" r="4"/><circle cx="61" cy="218" r="4"/>
+  </g>
+  <g fill="#20354b">
+    <path d="M268 153h24l-12-28z"/>
+    <circle cx="280" cy="65" r="5"/><circle cx="280" cy="218" r="5"/>
+  </g>
+  <g font-family="system-ui, sans-serif" font-size="19" fill="#20354b">
+    <text x="35" y="50">+V in</text><text x="34" y="247">0 V</text>
+    <text x="138" y="42">220 Ω</text><text x="315" y="50">V out</text>
+    <text x="303" y="118">Band (K)</text><text x="303" y="151">5.1 V Zener</text>
+    <text x="485" y="140">Load</text><text x="485" y="165">1 kΩ</text>
+  </g>
+  <g fill="#972c22" font-family="system-ui, sans-serif" font-size="17">
+    <path d="M155 92h55l-10-5v10l10-5m30 34v42l-5-10h10l-5 10m194-42v42l-5-10h10l-5 10" stroke="#972c22" stroke-width="2"/>
+    <text x="138" y="114">I R</text><text x="209" y="152">I Z</text><text x="401" y="152">I L</text>
+  </g>
+</svg>

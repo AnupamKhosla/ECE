@@ -1,5 +1,6 @@
 # ECE course publishing rules
 
+- At the first teaching use of a component or concept in a practical section, link its name inline to the most specific relevant theory chapter or heading. Link the theory back to the corresponding bench exercise when one exists.
 - Every published lesson must show relevant photographs of real parts, tools, test setups or equipment and link to a relevant video. Give photos useful captions, alt text and credits. Name the video, its publisher and what viewers should look for. Label comparable equipment and manufacturer demonstrations with the model and the difference that matters.
 - Keep the main photographs and drawings inline. Make them enlargeable on the same page and offer same-page photo previews for parts in procurement tables and for tools that readers may need to identify. Use direct image links and include a source link in each photo preview.
 - For a build lesson, provide a quantified bill of materials with exact part numbers or procurement specifications, supplier links for the intended market, the tool list, dimensioned mechanical and electrical drawings, the order of operations, and final checks with limits. Identify the components bought as assemblies and the parts made in the shop. Cover the motor, bearings, fasteners, guards, switches and safety-critical ratings where applicable.

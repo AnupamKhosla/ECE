@@ -26,7 +26,7 @@
       <li><b>1N4148 small-signal diodes ×5</b><small>~A$1 · glass body, black band</small></li>
       <li><b>1N5819 Schottky diodes ×2</b><small>~A$1 · 1 A, low forward drop</small></li>
       <li><b>Bridge rectifier module, 1–2 A</b><small>~A$1–3 · small round or 4-pin inline package marked ~ ~ + −</small></li>
-      <li><b>5.1 V Zener diodes ×3</b><small>~A$1 · 1 W type (1N4733A) or 0.5 W type</small></li>
+      <li><b><a href="../theory/t75-zener-diodes-voltage-boost.html#identify-the-diode">5.1 V Zener diodes</a> ×3</b><small>~A$1 · 1 W type (1N4733A) or 0.5 W type</small></li>
       <li><b>LEDs, mixed colours, 5 mm</b><small>~A$5 for a bag: red, green, yellow, blue, white, plus one infrared if you can</small></li>
       <li><b>Resistors</b><small>220 Ω, 470 Ω, 1 kΩ (0.5 W if you have it), 1.5 kΩ, 10 kΩ</small></li>
       <li><b>9 V battery and snap</b><small>~A$6 · for the Zener lab</small></li>
@@ -476,8 +476,8 @@
 
     <div class="callout tip"><span class="label">Bench tip</span><p>A "12 V" device fed through a series diode from a 12 V supply gets about 11.3 V. If the device also sits at the end of a long cable, that lost 0.7 V adds to the cable drop (P10). Many cameras stop working reliably below about 11 V. A Schottky or a MOSFET buys that margin back.</p></div>
 
-    <h2>7 · A Zener shunt regulator</h2>
-    <p>A <b>Zener diode</b> is made to break down at a known reverse voltage, such as 5.1 V. Below that voltage it blocks. At that voltage it conducts as much current as needed to stop the voltage rising further. Put a resistor in series to limit the current, and you have a simple <b>shunt regulator</b>: the Zener "shunts" (diverts) extra current to ground so the output stays near V<sub>Z</sub>.</p>
+    <h2 id="7-a-zener-shunt-regulator">7 · A Zener shunt regulator</h2>
+    <p>A <b><a href="../theory/t75-zener-diodes-voltage-boost.html#identify-the-diode">Zener diode</a></b> is designed to carry reverse current near a specified breakdown voltage, such as 5.1 V. A series resistor limits how much current the source can deliver. At the output, that current splits between the load and the diode. The diode diverts the spare current to the return, which holds the output near V<sub>Z</sub> while enough current is available. <a href="../theory/t75-zener-diodes-voltage-boost.html#try-the-shunt">See what happens when the input voltage falls.</a></p>
 
     <figure>
       <svg viewBox="0 0 640 250" role="img" aria-label="Zener shunt regulator: 9 V battery, series resistor, 5.1 V Zener to ground, and a load resistor">
@@ -519,7 +519,7 @@
     </figure>
 
     <h3>Design it by hand</h3>
-    <p>Design rule: at the lowest input voltage and the highest load current, the Zener must still get a few milliamps to stay in regulation. Then check the worst case for heat: highest input voltage with the load disconnected, when the Zener takes everything.</p>
+    <p>Pick a minimum Zener current from the datasheet and the voltage accuracy you need. This example uses 5 mA as a starting assumption. At the lowest input voltage and highest load current, check that the diode still gets that much. Then check the heat at the highest input voltage with the load disconnected, when the Zener takes all the resistor current.</p>
     <div class="formula">R = (V<sub>in,min</sub> − V<sub>Z</sub>) / (I<sub>L,max</sub> + I<sub>Z,min</sub>) = (9 − 5.1) / (0.010 + 0.005) = 260 Ω → use 220 Ω
       <small>Round down to a standard value so the current is slightly higher than needed (never round up, or the Zener may starve). With 220 Ω: I<sub>R</sub> = 3.9 / 220 = 17.7 mA.</small></div>
     <div class="formula">P<sub>R</sub> = (V<sub>in</sub> − V<sub>Z</sub>) × I<sub>R</sub> = 3.9 × 0.0177 ≈ 0.07 W     P<sub>Z,worst</sub> = V<sub>Z</sub> × I<sub>R</sub> = 5.1 × 0.0177 ≈ 0.09 W
@@ -669,7 +669,7 @@
     </ul>
   </main>
 </div>
-<script src="../assets/toc.js?v=20261120-workshop"></script>
+<script src="../assets/toc.js?v=20261123-zener"></script>
 <script src="../assets/app.js?v=20261120-course"></script>
 </body>
 </html>

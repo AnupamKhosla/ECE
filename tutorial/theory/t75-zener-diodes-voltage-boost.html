@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T75 · Zener diodes, voltage clamps and voltage boost</title>
+<meta name="description" content="Follow the current in a 5.1 V Zener shunt regulator, then see how a boost converter or AC stabiliser raises voltage while conserving energy.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T75</span>
+    <h1>Zener diodes, voltage clamps and voltage boost</h1>
+    <p class="lede">A 5.1 V Zener can hold a circuit near 5.1 V when the source supplies enough current. If that source falls to 4 V, the Zener can’t bring it back up. Follow the current to see why, then work out where the extra volts in a boost converter or mains stabiliser come from.</p>
+    <div class="meta"><span><b>Start with</b> <a href="t11-semiconductors-diodes.html">T11 · Diode basics</a></span><span><b>Bench exercise</b> <a href="../practice/p06-diodes-rectifiers.html#7-a-zener-shunt-regulator">P06 · Build the shunt regulator</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2 id="identify-the-diode">Find the cathode and read the 5.1 V rating</h2>
+    <figure class="photo">
+      <a class="image-preview-figure" href="../assets/photos/zener-axial.jpg" data-image-preview="Glass-bodied axial Zener diode and cathode band" data-preview-source="zener-photo-source" aria-haspopup="dialog" aria-label="Enlarge the Zener diode photograph">
+        <img src="../assets/photos/zener-axial.jpg" width="1200" height="797" alt="An axial glass Zener diode beside a ruler, with its black cathode band on the left" decoding="async">
+      </a>
+      <figcaption>Look for the dark band at the left end. It marks the cathode (K). This is a representative glass-bodied Zener. A 1N4733A can have a black moulded body, so confirm the part number on the package or the seller’s label. Photo by Medvedev, resized. <a id="zener-photo-source" href="https://commons.wikimedia.org/wiki/File:Zener_diode.jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</figcaption>
+    </figure>
+    <p>With its <b>anode</b> positive relative to its cathode, a Zener behaves much like an ordinary silicon diode. The 5.1 V rating refers to the other direction. Connect the <b>cathode</b> to the more positive point and the diode is reverse-biased. Its reverse current stays small well below the rating, then rises steeply as the junction approaches breakdown.</p>
+    <p>For the onsemi 1N4733A, the sheet specifies <b>4.845–5.355 V at a test current of 49 mA</b> under its stated conditions. At a few milliamps, expect a different reading. The bend in the current curve, called the <b>knee</b>, is gradual. Breakdown is part of normal operation when current, power and temperature stay within the part’s limits. <a href="https://www.onsemi.com/pdf/datasheet/1n4736at-d.pdf">onsemi · 1N4733A datasheet table</a> · <a href="t11-semiconductors-diodes.html#zener-and-avalanche-breakdown">Why the junction conducts in reverse</a>.</p>
+    <p class="course-video"><b>Watch on YouTube</b> · <a href="https://www.youtube.com/watch?v=xS8VOTZOBf0">Zener diode voltage regulator · Khan Academy India – English</a><br>The video uses a 2 V example. Follow the reverse-bias graph, then watch where the current goes as the input moves above and below 2 V.</p>
+
+    <h2 id="follow-the-current">Follow the current through the resistor and the two branches</h2>
+    <figure>
+      <a class="image-preview-figure" href="../assets/labs/zener-shunt.svg" data-image-preview="Schematic of the 5.1 V shunt regulator" data-preview-source="zener-drawing-source" aria-haspopup="dialog" aria-label="Enlarge the shunt regulator schematic">
+        <img src="../assets/labs/zener-shunt.svg" width="600" height="272" alt="A 220 ohm resistor connects the source to the output, and a 5.1 V Zener and 1 kilohm load connect from the output to return" loading="lazy" decoding="async">
+      </a>
+      <figcaption>Schematic. The bent bar is the cathode. The diode and load share the same two terminals, so both see the output voltage. <a id="zener-drawing-source" href="../practice/p06-diodes-rectifiers.html#7-a-zener-shunt-regulator">Corresponding bench circuit</a>.</figcaption>
+    </figure>
+    <ol>
+      <li><b>Start at 9 V.</b> If the diode is clamping near 5.1 V, the 220 Ω resistor drops about 3.9 V. Ohm’s law gives 3.9 V ÷ 220 Ω ≈ 17.7 mA into the junction where the wires meet.</li>
+      <li><b>Split that current.</b> The 1 kΩ load draws about 5.1 mA. The Zener carries the remaining 12.6 mA to return. If the load is removed, nearly all 17.7 mA flows through the Zener, which gets hotter.</li>
+      <li><b>Lower the input to 4 V.</b> The Zener barely conducts at this voltage. The 220 Ω resistor and 1 kΩ load now form a <a href="../practice/p04-series-parallel-dividers.html">voltage divider</a>, giving about <b>3.28 V</b> across the load. With the load disconnected, the output would be about 4 V.</li>
+    </ol>
+    <p>Even when the source is above 5.1 V, a heavier load can use up the available current. The output starts falling once there is too little diode current to hold the target voltage. That loss of regulation is called <b>dropout</b>.</p>
+
+    <h2 id="try-the-shunt">Try lowering the input voltage</h2>
+    <div class="widget" id="zener-model">
+      <label>Input voltage <output class="out" id="shunt-input-value" for="shunt-input">9.0 V</output><input type="range" id="shunt-input" min="0" max="12" step="0.1" value="9"></label>
+      <label>Load <select id="shunt-load"><option value="1000">1 kΩ</option><option value="470">470 Ω</option><option value="220">220 Ω</option><option value="open">Disconnected</option></select></label>
+      <div class="readings" aria-live="polite">
+        <div><small>Output voltage</small><output id="shunt-output">5.10 V</output></div>
+        <div><small>Through series resistor</small><output id="shunt-resistor-current">17.7 mA</output></div>
+        <div><small>Through load</small><output id="shunt-load-current">5.1 mA</output></div>
+        <div><small>Through Zener</small><output id="shunt-diode-current">12.6 mA</output></div>
+      </div>
+    </div>
+    <p>This model assumes sharp breakdown at 5.1 V. A real diode changes more gradually and can start losing accuracy before the predicted dropout. Try 4.0 V with the 1 kΩ load, then return to 9.0 V and select 220 Ω. In both cases, the output falls below the clamp voltage.</p>
+    <script>
+      (() => {
+        const input = document.getElementById('shunt-input');
+        const load = document.getElementById('shunt-load');
+        const inputValue = document.getElementById('shunt-input-value');
+        const output = document.getElementById('shunt-output');
+        const resistorCurrent = document.getElementById('shunt-resistor-current');
+        const loadCurrent = document.getElementById('shunt-load-current');
+        const diodeCurrent = document.getElementById('shunt-diode-current');
+        function update() {
+          const inputVoltage = input.valueAsNumber;
+          const conductance = load.value === 'open' ? 0 : 1 / Number(load.value);
+          const dividerVoltage = inputVoltage / (1 + 220 * conductance);
+          const outputVoltage = Math.min(5.1, dividerVoltage);
+          const feedMilliamps = (inputVoltage - outputVoltage) / 220 * 1000;
+          const loadMilliamps = outputVoltage * conductance * 1000;
+          inputValue.value = inputVoltage.toFixed(1) + ' V';
+          output.value = outputVoltage.toFixed(2) + ' V';
+          resistorCurrent.value = feedMilliamps.toFixed(1) + ' mA';
+          loadCurrent.value = loadMilliamps.toFixed(1) + ' mA';
+          diodeCurrent.value = Math.max(0, feedMilliamps - loadMilliamps).toFixed(1) + ' mA';
+        }
+        input.addEventListener('input', update);
+        load.addEventListener('change', update);
+        update();
+      })();
+    </script>
+
+    <h2 id="boost-dc">How a DC boost converter gets a higher voltage</h2>
+    <p>Voltage is energy per unit charge. Current is charge per second. Multiply the two to get power, which is energy per second. A converter can give each coulomb more energy at its output by drawing more coulombs per second from its input.</p>
+    <ol>
+      <li><b>Switch on.</b> The battery drives a rising current through an <a href="t06-magnetism-inductors.html">inductor</a> and the switch. The inductor stores energy in its magnetic field. The output capacitor keeps feeding the load.</li>
+      <li><b>Switch off.</b> The inductor reverses the voltage across its own terminals to keep the current flowing. Its voltage adds to the source voltage along the path through the rectifying diode, charging the output capacitor above the input.</li>
+      <li><b>Repeat.</b> Feedback changes the switch timing to hold the output near the target within the converter’s input, current and thermal limits. <a href="https://www.ti.com/lit/an/slva372d/slva372d.pdf">Texas Instruments · Boost converter power stage</a>.</li>
+    </ol>
+    <div class="formula">12 V × 0.5 A = 6 W out<br>At 90% efficiency, 6 W ÷ 0.90 ≈ 6.67 W in<br>From a 5 V source, 6.67 W ÷ 5 V ≈ 1.33 A in</div>
+    <p>The source supplies the 6 W delivered to the load plus roughly 0.67 W of losses. A 5 V source limited to 1 A only supplies 5 W. At 90% efficiency this caps the 12 V output at about 0.375 A in steady operation, even if an unloaded voltmeter shows 12 V.</p>
+
+    <h2 id="low-grid-voltage">What raises voltage when the grid is low?</h2>
+    <p>An AC <a href="t08-transformers.html">step-up transformer</a> transfers energy through a changing magnetic field. An output winding with more turns than the input winding produces a higher voltage. For a simple first calculation, treat the transformer as ideal and use a resistive load.</p>
+    <div class="formula">230 V × 2.0 A = 460 W out<br>From 190 V, 460 W ÷ 190 V ≈ 2.42 A in, before losses</div>
+    <p>A relay-tap <b>automatic voltage regulator</b> (AVR) selects a winding tap to boost a low input or trim a high input. Each unit has an operating range and a load rating. If the incoming circuit is weak, the extra current can make the voltage sag further. A unit may cut off outside its input range. A UPS can switch to its battery, which then supplies the energy. <a href="https://www.apc.com/salestools/JGNY-9X784R/JGNY-9X784R_R0_EN.pdf">APC · AVR Boost, AVR Trim and On Battery</a>.</p>
+    <p>For workshop equipment, read the input range and current on the nameplate. Motor starting current, power factor and welder input peaks can matter when sizing a supply. If the workshop actually has persistent low voltage or flickering lights, report the supply issue to your distribution utility and have a qualified electrician assess the installation. Use the battery circuit in P06 for this exercise. <a href="t74-mains-earthing-safety-india.html">Mains in India</a> · <a href="t09-mains-earthing-safety.html">Mains in Australia</a>.</p>
+
+    <h2>Check your understanding</h2>
+    <details class="quiz"><summary>Why does a meter show 4.5 V in the 9 V shunt circuit when the load is 220 Ω?</summary><div class="answer"><p>The load and the series resistor are both 220 Ω, so they split the 9 V equally. At 4.5 V the 5.1 V Zener carries little current. To verify this on the bench, go to the <a href="../practice/p06-diodes-rectifiers.html#7-a-zener-shunt-regulator">P06 shunt-regulator exercise</a>.</p></div></details>
+    <details class="quiz"><summary>If a stabiliser raises 190 V to 230 V under load, where does the energy come from?</summary><div class="answer"><p>While operating from the grid, it comes from the 190 V input. The stabiliser draws more input current than the output current in the ideal resistive example. A UPS on battery draws from stored chemical energy.</p></div></details>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-zener"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js"></script>
+</body>
+</html>

@@ -253,6 +253,7 @@ window.TOC = {
         ]},
         { title: "Part 3 · Semiconductors and active devices", blurb: "Diodes, transistors, op-amps.", chapters: [
           { n: "T11", file: "theory/t11-semiconductors-diodes.html", title: "Semiconductors and the diode family", d: "Bands, doping and the p–n junction in brief, then LED, Zener, Schottky and photodiode." },
+          { n: "T75", file: "theory/t75-zener-diodes-voltage-boost.html", title: "Zener diodes, voltage clamps and voltage boost", d: "See where a 5.1 V shunt drops out, how DC converters and AC transformers raise voltage, and where the energy comes from." },
           { n: "T11+", file: "theory/pn-junction-deep-dive.html", title: "Deep dive: why a diode has polarity (our earlier session)", d: "Your original diode questions answered from the physics up, with a numerical model." },
           { n: "T12", file: "theory/t12-bjt-physics.html", title: "How a bipolar transistor really works", d: "Two junctions, a thin base, and why a small base current controls a big one." },
           { n: "T13", file: "theory/t13-mosfet-physics.html", title: "How a MOSFET works", d: "Field effect, the inversion channel, threshold voltage and on-resistance." },

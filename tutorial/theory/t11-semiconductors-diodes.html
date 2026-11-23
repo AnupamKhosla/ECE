@@ -435,7 +435,7 @@
     <p>Worked: red at 630 nm. E = hc/λ = (6.63×10<sup>−34</sup> × 3.00×10<sup>8</sup>) / (630×10<sup>−9</sup>) = 3.16×10<sup>−19</sup> J. Divide by 1.60×10<sup>−19</sup> J/eV: <strong>1.97 eV</strong>. So the forward voltage must be at least about 2 V; the measured 1.8–2.2 V fits. Green InGaN LEDs need more voltage than their photon energy suggests, because of extra losses in that material. The forward voltage table is why you can never put LEDs of different colours in parallel on one resistor: the red one takes all the current.</p>
     <div class="callout job"><span class="label">On the job</span><p>CCTV cameras use infrared LEDs for night vision. 850 nm LEDs give a faint red glow you can see on the camera; 940 nm ones are invisible ("covert") but the image is dimmer because camera sensors are less sensitive there. When a site complains "the cameras glow at night", now you know why.</p></div>
 
-    <h3>Zener and avalanche breakdown</h3>
+    <h3 id="zener-and-avalanche-breakdown">Zener and avalanche breakdown</h3>
     <p>Every diode conducts heavily in reverse once the field in the depletion layer gets strong enough. Two mechanisms (both explained in the <a href="pn-junction-deep-dive.html#breakdown">deep dive, section 12</a>):</p>
     <ul>
       <li><strong>Zener (tunnelling) breakdown.</strong> Heavy doping on both sides makes the depletion layer extremely thin, maybe tens of nanometres. Electrons on the p side can tunnel straight through to empty states on the n side. Dominant below about 5 V. As temperature rises, the gap shrinks a little and tunnelling gets easier, so the breakdown voltage falls (negative temperature coefficient).</li>
@@ -443,6 +443,7 @@
     </ul>
     <p>Near 5.6 V the two effects roughly cancel, which is why 5.6 V references are popular. All of these parts are sold as "Zener diodes" whatever the mechanism. <strong>TVS diodes</strong> (transient voltage suppressors) are avalanche diodes built with large junctions to absorb short surges.</p>
     <p><strong>Worked Zener regulator.</strong> 12 V supply, 5.1 V Zener, 330 Ω series resistor, 10 mA load. Resistor current = (12 − 5.1)/330 = 20.9 mA. Zener takes 20.9 − 10 = 10.9 mA. Zener power = 5.1 × 0.0109 ≈ 56 mW; resistor power = 6.9²/330 ≈ 0.14 W. Without the load, the Zener takes all 20.9 mA (107 mW), well inside a 500 mW part. With 1 kΩ and no load you get the deep dive's numbers: 6.9 mA and 35 mW.</p>
+    <a class="crosslink" href="t75-zener-diodes-voltage-boost.html">T75 · Zener diodes, voltage clamps and voltage boost</a>
     <div class="callout job"><span class="label">On the job</span><p>TVS diodes sit on RS-485 lines between BMS controllers, on camera PoE inputs and on 24 V field wiring, where long cables pick up surges from lightning and switching. A failed TVS usually fails short, which looks like a dead bus or a supply that keeps tripping.</p></div>
 
     <h3>Schottky diode: metal against semiconductor</h3>
