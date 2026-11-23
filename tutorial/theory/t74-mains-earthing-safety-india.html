@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T74 · 230 V mains, earthing and protection in India</title>
+<meta name="description" content="Read 230 V and 400 V AC ratings, distinguish line, neutral and earth, and interpret readings from an instructor-led electrical trainer.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T74</span>
+    <h1>230 V mains, earthing and protection in India</h1>
+    <p class="lede">Use what you learned on isolated AC to read an appliance nameplate, interpret a distribution board and follow a supervised measurement session.</p>
+    <div class="meta"><span><b>Bench</b> <a href="../practice/p03-multimeter-mastery.html#isolated-ac">P03 · Measure isolated AC</a></span><span><b>Australia</b> <a href="t09-mains-earthing-safety.html">T09 · Australian installations</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Read voltage and frequency from the label</h2>
+    <p>For a common Indian supply, <b>230 V</b> is the nominal RMS voltage between one phase and neutral, and <b>400 V</b> is the nominal RMS voltage between phases. The nominal frequency is <b>50 Hz</b>. Some supply codes list 240 V and 415 V as well. Check the distribution utility’s declared voltage for your location. Use RMS figures when reading a meter, and peak voltage when thinking about what the insulation sees. <a href="https://www.arpdop.gov.in/dopap-portal/doc/file/2024-03-06-34-EOG-Notification-No-138-Electtricity-supply-Code-2024.pdf">Arunachal Pradesh supply code · section 2</a> · <a href="https://www.derc.gov.in/sites/default/files/1st%20Amendment%20Regulations-%202.2.2018_0.pdf">Delhi DERC supply code amendment · regulation 4</a>.</p>
+    <ul>
+      <li><b>230 V RMS and 50 Hz</b> mean roughly 325 V peak on a sine wave, with one cycle every 20 ms. Three phases are separated by 120°. The phase-to-phase voltage is about 230 × √3 ≈ 400 V.</li>
+      <li><b>Try it on an unplugged appliance.</b> Find the input label. A marking such as <b>220–240 V~ 50 Hz 650 W</b> refers to mains input. If 650 W is input power and power factor is 1, 650 ÷ 230 ≈ 2.8 A. For a motor use the stated input current if available. Power factor and starting current also matter.</li>
+      <li><b>Read the output separately.</b> A sealed adapter can accept 230 V AC and supply 12 V DC. Use the voltage and polarity on the output label when testing the low-voltage side. India and Australia use the same electrical principles. Plug fittings, rules and authorisation are local.</li>
+    </ul>
+
+    <h2>Follow the working current and the fault path</h2>
+    <p><b>Line (L)</b> feeds the load. <b>Neutral (N)</b> carries the normal return current in a single-phase circuit. It can be hazardous, particularly if disconnected upstream. <b>Protective earth (PE)</b> bonds exposed metal on Class I equipment to the installation’s earthing system so protection can act during a fault. A double-insulated Class II appliance relies on its insulation system. Read the markings and the installation documentation with the instructor.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/rcd.jpg" data-image-preview="Techna CTEC two-pole RCCB with test button and rating" data-preview-source="t74-rcd" aria-haspopup="dialog" aria-label="Enlarge the RCCB photograph">
+        <img src="../assets/photos/rcd.jpg" width="960" height="1496" loading="lazy" decoding="async" alt="Example Techna CTEC RCCB with a blue test button and 230 volt, 100 amp and 0.1 amp residual-current markings.">
+      </a>
+      <figcaption>Identify the blue test button and the IΔn marking on this comparable Techna CTEC device. It reads 0.1 A (100 mA). Use the photo to learn to read the marking. The CEA domestic requirement described below is 30 mA or less.<br><small>Photo by Jimbob82, resized. <a id="t74-rcd" href="https://commons.wikimedia.org/wiki/File:Residual_current_device_2pole.jpg">Original photo</a> · Public domain.</small></figcaption>
+    </figure>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Device</th><th scope="col">What it responds to</th><th scope="col">What to look for</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">MCB</th><td>Overload and short-circuit current.</td><td>A current rating and a trip curve. It protects the circuit against overcurrent.</td></tr>
+        <tr><th scope="row">RCCB</th><td>Difference between outgoing and returning current. If some returns through a case, earth or another path, the difference can trigger a trip.</td><td>IΔn in mA and a separate current rating in A. A separate overcurrent protective device is needed.</td></tr>
+        <tr><th scope="row">RCBO</th><td>Both residual current and overcurrent.</td><td>A residual-current rating and overcurrent characteristics on the same device.</td></tr>
+      </tbody>
+    </table></div>
+    <p>An RCCB may see no imbalance if equal current flows through line and neutral, even in a dangerous shock. It supplements protective earthing and safe working. Regulation 44 of the CEA’s 2023 regulations calls for a domestic residual operating current of no more than 30 mA. Use the applicable regulations and standards to select and test equipment. <a href="https://www.cea.nic.in/regulations-subcategory/e089d2b8-8f0d-4428-a927-c3c450011131?lang=en">Central Electricity Authority · Safety and Electric Supply regulations</a>.</p>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=4Wzob50E8Yk">ASHOK ETUTOR · What is RCCB in Electrical System?</a>, listed by <a href="https://bharatskills.gov.in/Home/StudyMaterial?Default=YES&amp;var=sH%2FtaJi1ovCTV1F1DV1EJA%3D%3D">Bharat Skills</a>. Watch how the device compares outgoing and returning current.</p>
+
+    <h2 id="readings">Interpret a supervised mains demonstration</h2>
+    <p>Start with an isolated low-voltage trainer as in P03. For the next session, an instructor controls an approved mains trainer, shows the correct instrument and leads for the installation and demonstrates safe isolation and proving a voltage tester. Observe live measurements from the instructor’s designated position. At home, leave outlets, switchboards and mains-side appliance terminals closed and use the example data below.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Instructor’s measurement</th><th scope="col">Illustrative reading</th><th scope="col">What to write in your notes</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Line to neutral</th><td>231 V AC</td><td>Supply across a nominal 230 V single-phase load.</td></tr>
+        <tr><th scope="row">Line to protective earth</th><td>232 V AC</td><td>Could look similar in an intact installation. This voltage reading alone does not establish the condition of the earth path.</td></tr>
+        <tr><th scope="row">Neutral to protective earth</th><td>1 V AC</td><td>A small reading can arise from load current in neutral. A small or zero reading cannot establish safe isolation.</td></tr>
+        <tr><th scope="row">Phase to phase on a 400 V trainer</th><td>401 V AC</td><td>Between two different phases. Compare it with the expected phase-to-neutral reading.</td></tr>
+      </tbody>
+    </table></div>
+    <p>In a supervised session, record the test point, AC mode, load state, measured result and the meter and lead markings. Ask how the instructor proved the tester before and after the check for absence of voltage. Earth continuity, insulation resistance, loop impedance and RCCB trip time are distinct tests with dedicated methods and instruments. An everyday continuity beep cannot certify an installation.</p>
+    <p>The examples above are illustrative, with no live measurements performed for this lesson. For hands-on training in India, see the <a href="https://dgt.gov.in/en/node/4877">DGT Electrician trade curriculum</a> and ask an ITI or training workshop about supervised measurement and isolation exercises. Check work authorisation with the relevant State Electrical Inspectorate and site supervisor.</p>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html#isolated-ac">P03 · Measure AC on an isolated output</a>
+    <a class="crosslink" href="t07-ac-fundamentals.html">T07 · Waveforms, RMS and power factor</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-meter"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
+</body>
+</html>

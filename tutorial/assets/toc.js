@@ -7,9 +7,9 @@ window.TOC = {
       parts: [
         { title: "Part A · Your bench", blurb: "Tools, safety and the first circuits.", chapters: [
           { n: "P00", file: "practice/p00-foundation-roadmap.html", title: "Your ECE foundation and learning routes", d: "A first-session plan, four foundation checkpoints and routes into welding, BMS, repair, embedded systems and RF." },
-          { n: "P01", file: "practice/p01-bench-kit-safety.html", title: "Your bench: kit, budget and safety", d: "What to buy in Australia, what each tool is for, and the ELV safety line you must not cross." },
+          { n: "P01", file: "practice/p01-bench-kit-safety.html", title: "Your bench: kit, budget and safety", d: "Set up a first bench and follow one learning sequence from batteries to isolated AC and mains theory." },
           { n: "P02", file: "practice/p02-breadboard-first-led.html", title: "Breadboard and your first LED circuit", d: "How a breadboard is wired inside, resistor colour codes, and Ohm's law you can measure." },
-          { n: "P03", file: "practice/p03-multimeter-mastery.html", title: "Multimeter mastery", d: "Volts, amps, ohms, continuity and diode test, and the mistakes that blow fuses." },
+          { n: "P03", file: "practice/p03-multimeter-mastery.html", title: "Multimeter mastery", d: "Buy or borrow a first meter and kit, then measure volts, current, a diode and isolated AC." },
           { n: "P04", file: "practice/p04-series-parallel-dividers.html", title: "Series, parallel and voltage dividers", d: "Prove Kirchhoff's laws with a meter, then use dividers the way sensors do." },
           { n: "P05", file: "practice/p05-soldering-wiring.html", title: "Soldering, crimping and wiring like a tradie", d: "Through-hole soldering, stripboard, ferrules, crimps, heatshrink and cable management." }
         ]},
@@ -248,6 +248,7 @@ window.TOC = {
           { n: "T07", file: "theory/t07-ac-fundamentals.html", title: "AC: sine waves, RMS, phase and impedance", d: "230 V 50 Hz explained, reactance, impedance, and power factor." },
           { n: "T08", file: "theory/t08-transformers.html", title: "Transformers", d: "Flux linkage, turns ratio, losses, isolation, and why the grid is AC." },
           { n: "T09", file: "theory/t09-mains-earthing-safety.html", title: "Mains, three-phase, earthing and RCDs (Australia)", d: "The MEN system, why RCDs save lives, and what LV and ELV mean legally." },
+          { n: "T74", file: "theory/t74-mains-earthing-safety-india.html", title: "230 V mains, earthing and protection in India", d: "Read ratings, distinguish line, neutral and earth, and interpret supervised AC measurements." },
           { n: "T10", file: "theory/t10-em-waves-antennas-fibre.html", title: "Electromagnetic waves, antennas and optical fibre", d: "Radio, Wi-Fi, 4G/5G, and light trapped in glass by total internal reflection." }
         ]},
         { title: "Part 3 · Semiconductors and active devices", blurb: "Diodes, transistors, op-amps.", chapters: [
@@ -274,6 +275,7 @@ window.TOC = {
           { n: "T23", file: "theory/t23-capacitor-thermal-failure.html", title: "Capacitor ageing, heat and failure chains", d: "ESR, ripple heating, inrush, thermal resistance and why the visibly broken component may be a victim." }
         ]},
         { title: "Part 7 · Measuring and repairing boards", blurb: "Read specifications, understand real instruments and follow the board’s power path.", chapters: [
+          { n: "T73", file: "theory/t73-how-digital-multimeters-work.html", title: "How a digital multimeter works", d: "Follow each jack through dividers, shunts, AC processing and the converter that drives the display." },
           { n: "T24", file: "theory/t24-measurement-datasheets.html", title: "Measurement loading, tolerance and datasheets", d: "Meter impedance, burden voltage, accuracy and guaranteed operating conditions." },
           { n: "T25", file: "theory/t25-filters-resonance.html", title: "Filters, frequency response and resonance", d: "RC gain and phase, step response, RLC resonance and damping." },
           { n: "T26", file: "theory/t26-pcb-rework-esd.html", title: "PCB basics from breadboard to copper traces", d: "Follow a battery, resistor and LED from hidden breadboard clips to copper traces, pads and solder joints." },

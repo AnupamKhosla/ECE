@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T73 · How a digital multimeter works</title>
+<meta name="description" content="Follow voltage, current and resistance from a digital multimeter's jacks through dividers, shunts, test sources and the ADC.">
+<script src="../assets/theme.js?v=20261105-theme"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261120-labs">
+<link rel="stylesheet" href="../assets/image-preview.css">
+</head>
+<body class="book-theory">
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="page">
+    <div class="crumbs"><a href="../index.html">ECE Workbench</a> › Theory Book</div>
+    <span class="eyebrow">T73</span>
+    <h1>How a digital multimeter works</h1>
+    <p class="lede">Follow the signal from the probe tips to the display. The same divider and resistor laws you used on the breadboard explain most meter modes.</p>
+    <div class="meta"><span><b>Before this</b> <a href="../practice/p03-multimeter-mastery.html#first-reading">Measure one cell</a></span><span><b>Practise</b> <a href="../practice/p03-multimeter-mastery.html">P03 · Multimeter exercises</a></span></div>
+    <nav class="otp" aria-label="On this page" data-auto></nav>
+
+    <h2>Find the jacks, selector and chip</h2>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/photos/foundation/ut61d-internal-board.jpg" data-image-preview="Front side of the UNI-T UT61D multimeter circuit board" data-preview-source="t73-board" aria-haspopup="dialog" aria-label="Enlarge the meter circuit board photograph">
+        <img src="../assets/photos/foundation/ut61d-internal-board.jpg" width="1024" height="768" loading="lazy" decoding="async" alt="Red circuit board from a UNI-T UT61D with probe jacks at right, round rotary switch contact tracks in the middle, and a large measuring chip at left.">
+      </a>
+      <figcaption>On this UT61D board, the jacks are on the right, the selector turns over the circular gold contacts and the large measurement IC is on the left. Compare it with <a href="../practice/p03-multimeter-mastery.html#first-reading">the assembled front of the same model</a>.<br><small>Photo by Uwe Hermann. <a id="t73-board" href="https://commons.wikimedia.org/wiki/File:UNI-T_UT61D_PCB,_front_(7481768190).jpg">Original photo</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>.</small></figcaption>
+    </figure>
+    <p class="course-video"><a href="https://www.youtube.com/watch?v=0B-AcdbXiLE">The Teenage Engineer · How to use a digital multimeter, and teardown of the Ames DM600</a>. At about 11:20, follow the current-shunt explanation. Later, look for the current fuse and selector on the opened meter. The Ames DM600’s layout differs from the UT61D above.</p>
+    <figure class="course-photo">
+      <a class="image-preview-figure" href="../assets/labs/first-circuits/multimeter-signal-paths.svg" data-image-preview="Signal paths inside a digital multimeter" aria-haspopup="dialog" aria-label="Enlarge the multimeter signal pathways">
+        <img src="../assets/labs/first-circuits/multimeter-signal-paths.svg" width="960" height="390" loading="lazy" decoding="async" alt="Four meter signal paths connect the probe jacks and input circuitry to an analog-to-digital converter and display controller.">
+      </a>
+      <figcaption>Conceptual block diagram. The exact switching and AC processing depend on the model. Follow the row that matches the dial setting and red lead socket.</figcaption>
+    </figure>
+
+    <h2 id="voltage-input">DC volts use a high-resistance input</h2>
+    <p>The meter reads red relative to COM. A precision divider scales the voltage to a range the converter can accept. For example, a 9 MΩ resistor over 1 MΩ gives a 10 MΩ input. A 4.50 V battery puts 0.450 V across the lower resistor in this simplified circuit. The meter applies the divider ratio so the display reads 4.50 V. Reversing the probes reverses the sign.</p>
+    <p>The input resistance also sits in parallel with what you measure. Put two 1 MΩ resistors in series on a 4.50 V battery. The untouched midpoint is 2.25 V. Across the lower resistor, a 10 MΩ meter reads about <b>2.14 V</b>, and a 1 MΩ meter about <b>1.50 V</b>. If you already have these resistors, repeat with 1 kΩ in both positions. The readings should be much closer to half the battery voltage. Use your actual battery voltage and the input impedance from your meter’s manual. <a href="t24-measurement-datasheets.html">T24 · How to calculate loading</a>.</p>
+
+    <h2>Current uses a shunt and a fuse</h2>
+    <p>The circuit current flows through a small, known resistance called a shunt. For example, 8.0 mA through a 10 Ω shunt drops 80 mV. The meter uses I = V/R and shows milliamps. The drop across the shunt, fuse and connections is called burden voltage. That extra series voltage drop can lower the current you intended to measure.</p>
+    <p>That low-resistance path explains why the A or mA input is used in series. If you put a current input across a source it can short the source. When finished, switch the circuit off and return the red lead to VΩ. Use the fuse part specified in the manual. Its voltage rating and breaking capacity matter along with its amp rating.</p>
+
+    <h2>Ohms, continuity and diode mode supply a test signal</h2>
+    <p>For a resistance test the meter typically supplies a known current and measures the resulting voltage. If 100 µA produces 0.100 V, R = V/I gives 1.00 kΩ. In continuity mode the meter compares the result with its own beep threshold. A beep shows there is a conductive path at the meter’s small test current.</p>
+    <p>Diode mode also applies a small test current and displays the forward voltage. On a loose silicon diode, one direction may show 0.6 V and the other OL. An LED can need more voltage than your meter supplies, so check the manual before diagnosing it from OL. For all three tests disconnect external power, discharge stored energy safely and isolate a part if parallel paths could change the result.</p>
+
+    <h2>AC processing and the converter</h2>
+    <p>An average-responding meter can rectify the waveform, average it and scale the result to RMS for a clean sine wave. A true-RMS meter measures effective voltage within its bandwidth, crest factor and range limits. The circuitry may compute RMS from samples or produce a related DC signal before conversion. An AC-only mode usually excludes any DC offset. A 6.0 V RMS sine wave peaks at about 8.5 V.</p>
+    <p>An analogue-to-digital converter (ADC) compares the conditioned signal with a stable reference and reports a number. The controller applies calibration and the selected range, then puts the decimal point and units on the display. Auto-ranging switches internal paths to keep the signal within useful bounds. Some precision meters integrate over time to reject noise. For a real design, the Keysight 34401A service guide describes its multislope converter and analogue front end. <a href="https://www.keysight.com/blogs/en/tech/bench/2022/06/14/how-to-use-a-digital-multimeter">Keysight · Meter block diagram</a> · <a href="https://www.keysight.com/us/en/assets/9018-05613/service-manuals/9018-05613.pdf">Keysight · 34401A service guide</a>.</p>
+    <p>Display resolution is the size of the last step. Accuracy additionally includes specified errors. A range with 0.01 V steps and ±(0.5% of reading + 2 counts) permits about ±0.043 V at 4.50 V under its stated conditions.</p>
+
+    <h2>Protection depends on where you measure</h2>
+    <p>Meter protection can include current fuses, voltage input clamps and components that limit surge energy. Board spacing and the case help contain faults. A range printed as 600 V describes a voltage limit. A measurement category such as CAT III 600 V also describes a tested environment for transients. The leads, tips, adapters and instrument all count. See the actual manufacturer documentation for the measurement and use. <a href="https://media.fluke.com/51012112-8f43-4aa7-a30a-b2e3016e8f2f_original%20file.pdf">Fluke · Multimeter safety and measurement categories</a>.</p>
+    <a class="crosslink" href="../practice/p03-multimeter-mastery.html#first-reading">P03 · Check these ideas on the battery circuit</a>
+  </main>
+</div>
+<script src="../assets/toc.js?v=20261123-meter"></script>
+<script src="../assets/app.js?v=20261120-course"></script>
+<script src="../assets/image-preview.js?v=20261122-shared"></script>
+</body>
+</html>

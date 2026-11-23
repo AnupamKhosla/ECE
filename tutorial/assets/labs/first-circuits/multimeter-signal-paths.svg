@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="390" viewBox="0 0 960 390" role="img" aria-labelledby="title desc">
+  <title id="title">How four meter modes produce a reading</title>
+  <desc id="desc">The meter selects a path from the probe jacks through a voltage divider, AC processing circuit, current shunt, or resistance test source. The resulting signal goes to a converter that uses a voltage reference, and a controller formats the display.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#36596f"/>
+    </marker>
+  </defs>
+  <rect width="960" height="390" rx="14" fill="#eef4f7"/>
+  <g font-family="system-ui,sans-serif" fill="#153043">
+    <text x="28" y="42" font-size="25" font-weight="700">From probe tips to a number</text>
+    <text x="28" y="69" font-size="16">The selected mode changes the electrical path first.</text>
+    <g fill="#fff" stroke="#bbc9d0" stroke-width="2">
+      <rect x="28" y="99" width="193" height="54" rx="7"/>
+      <rect x="28" y="166" width="193" height="54" rx="7"/>
+      <rect x="28" y="233" width="193" height="54" rx="7"/>
+      <rect x="28" y="300" width="193" height="54" rx="7"/>
+      <rect x="265" y="99" width="265" height="54" rx="7"/>
+      <rect x="265" y="166" width="265" height="54" rx="7"/>
+      <rect x="265" y="233" width="265" height="54" rx="7"/>
+      <rect x="265" y="300" width="265" height="54" rx="7"/>
+      <rect x="615" y="190" width="141" height="85" rx="7"/>
+      <rect x="801" y="190" width="133" height="85" rx="7"/>
+    </g>
+    <g fill="none" stroke="#36596f" stroke-width="2.5">
+      <path d="M221 126H262M221 193H262M221 260H262M221 327H262" marker-end="url(#arrow)"/>
+      <path d="M530 126H570V327H530M530 193H570M530 260H570"/>
+      <path d="M570 232H612M756 232H798" marker-end="url(#arrow)"/>
+      <path d="M685 152V186" marker-end="url(#arrow)"/>
+    </g>
+    <g font-weight="650" font-size="17">
+      <text x="42" y="132">VΩ + COM · DC V</text>
+      <text x="42" y="199">VΩ + COM · AC V</text>
+      <text x="42" y="266">mA + COM · DC I</text>
+      <text x="42" y="322">VΩ + COM</text>
+      <text x="280" y="132">High-resistance input divider</text>
+      <text x="280" y="199">Attenuation and AC processing</text>
+      <text x="280" y="266">Fuse, shunt and sense voltage</text>
+      <text x="280" y="322">Apply test current</text>
+      <text x="685" y="218" text-anchor="middle">ADC</text>
+      <text x="867" y="218" text-anchor="middle">Controller</text>
+    </g>
+    <g font-size="14">
+      <text x="42" y="342">Ω, continuity or diode</text>
+      <text x="280" y="342">Read the voltage it produces</text>
+      <text x="685" y="142" text-anchor="middle">Stable reference</text>
+      <text x="685" y="246" text-anchor="middle">Analogue signal</text>
+      <text x="685" y="264" text-anchor="middle">to number</text>
+      <text x="867" y="246" text-anchor="middle">Scales and labels</text>
+      <text x="867" y="264" text-anchor="middle">the display</text>
+    </g>
+  </g>
+</svg>
