@@ -1,0 +1,16 @@
+Build ID,Date,Operator,Drawing revision,Item,Units,Lower,Upper,Minimum observed,Maximum observed,Result,Disposition,Instrument ID,Notes
+,,,A,Shaft at left bearing seat,mm,7.987,7.995,,,,,,"Measure in two directions"
+,,,A,Shaft at right bearing seat,mm,7.987,7.995,,,,,,"Measure in two directions"
+,,,A,Shaft diameter at all four collar positions,mm,7.987,7.995,,,,,,"Record individual positions on a continuation sheet"
+,,,A,Bare shaft on V blocks left seat TIR,mm,0,,,,,,,"Record maximum minus minimum"
+,,,A,Bare shaft on V blocks right seat TIR,mm,0,,,,,,,"Record maximum minus minimum"
+,,,A,Left bearing width B,mm,,,,,,,,
+,,,A,Right bearing width B,mm,,,,,,,,
+,,,A,Left finished pocket diameter,mm,22.000,22.020,,,,,,"Check at two depths if possible"
+,,,A,Right finished pocket diameter,mm,22.000,22.020,,,,,,"Check at two depths if possible"
+,,,A,Left depth less width B,mm,0.05,0.10,,,,,,"Subtract measured bearing width from pocket depth"
+,,,A,Right depth less width B,mm,0.30,0.50,,,,,,"Subtract measured bearing width from pocket depth"
+,,,A,Assembled left TIR,mm,0,0.05,,,,,,"Probe 15 mm outside keeper and subtract minimum from maximum"
+,,,A,Assembled right TIR,mm,0,0.05,,,,,,"Probe 15 mm outside keeper and subtract minimum from maximum"
+,,,A,Endplay,mm,0.04,0.30,,,,,,"Provisional training screen using light push and pull"
+,,,A,Hand feel and collar witness marks,pass/fail,,,,,,,,"20 hand turns and three push-pull cycles"

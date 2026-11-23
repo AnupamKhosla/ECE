@@ -107,7 +107,8 @@ window.TOC = {
           { n: "P133", file: "practice/p133-hand-build-a-bench-blower.html", title: "Hand-build a 12 V bench blower", d: "Cut and drill a guarded housing, wire and test it, then use a drill jig to make a second unit in an Indian workshop." },
           { n: "P134", file: "practice/p134-build-a-battery-powered-blower.html", title: "Build a battery-powered workshop blower", d: "Fit a protected rechargeable pack and measure startup, runtime and cutoff." },
           { n: "P135", file: "practice/p135-build-a-corded-mains-blower.html", title: "Build a 230 V corded workshop blower", d: "Fabricate a case around a direct-mains centrifugal blower and test the finished Class I assembly." },
-          { n: "P136", file: "practice/p136-build-a-workbench-blower-and-particle-filter.html", title: "Build a low-voltage bench blower and particle-filter prototype", d: "Measure installed airflow, compare restrictions, and work out what it would take to sell a serviceable unit in India." }
+          { n: "P136", file: "practice/p136-build-a-workbench-blower-and-particle-filter.html", title: "Build a low-voltage bench blower and particle-filter prototype", d: "Measure installed airflow, compare restrictions, and work out what it would take to sell a serviceable unit in India." },
+          { n: "P180", file: "practice/p180-fit-a-blower-shaft-and-bearings.html", title: "Make and align a blower shaft and bearing fixture", d: "Bore the bearing seats, turn inner-ring spacers and measure shaft runout and endplay by hand." }
         ]},
         { title: "Part M · Telecommunications service", blurb: "Troubleshoot broadband, fibre, mobile and business voice services and practise fault handovers.", chapters: [
           { n: "P71", file: "practice/p71-nbn-service-desk-triage.html", title: "Find where an NBN broadband service stops", d: "Use a router, wired test, optical indicator and outage record to separate a local fault from the access service." },
