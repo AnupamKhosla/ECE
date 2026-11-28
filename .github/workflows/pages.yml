@@ -1,0 +1,56 @@
+# Publish the course (tutorial/) as the root of https://anupamkhosla.github.io/ECE/.
+# Old /ECE/tutorial/... addresses get small redirect pages to their new location.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site from tutorial/
+        run: |
+          mkdir _site
+          cp -R tutorial/. _site/
+          rm -f _site/_template.html
+          touch _site/.nojekyll
+          python3 - <<'EOF'
+          import html, pathlib
+          base = "https://anupamkhosla.github.io/ECE/"
+          for page in pathlib.Path("tutorial").rglob("*.html"):
+              rel = page.relative_to("tutorial").as_posix()
+              if rel == "_template.html":
+                  continue
+              new = base + ("" if rel == "index.html" else rel)
+              out = pathlib.Path("_site/tutorial") / rel
+              out.parent.mkdir(parents=True, exist_ok=True)
+              u = html.escape(new, quote=True)
+              out.write_text(
+                  f'<!doctype html><meta charset="utf-8"><title>Moved</title>'
+                  f'<link rel="canonical" href="{u}"><meta name="robots" content="noindex">'
+                  f'<meta http-equiv="refresh" content="0; url={u}">'
+                  f'<script>location.replace("{u}" + location.hash)</script>'
+                  f'<p><a href="{u}">This page moved here</a></p>\n')
+          EOF
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
